@@ -14,6 +14,12 @@ class IconBuilder(val builderFlags: IconBuilderFlag = IconBuilderFlag()) {
         when(iconId) {
             //image
             IconList.ID_MESSAGE -> listIcon.add(IconList.MessageIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_INBOX -> listIcon.add(
+                    IconList.InboxIcon.get(
+                            builderFlags.pageSource, disableRouteManager,
+                            disableDefaultGtmTracker, onClick
+                    )
+            )
             IconList.ID_WISHLIST -> listIcon.add(IconList.WishlistIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
             IconList.ID_SHARE -> listIcon.add(IconList.ShareIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
             IconList.ID_CART -> listIcon.add(IconList.CartIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))

@@ -28,7 +28,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
@@ -165,7 +165,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
-        return view!!.findViewById(R.id.recyclerView)
+        return requireView().findViewById(R.id.recyclerView)
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
@@ -541,7 +541,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         context?.let {
             val menus = createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
                 override fun onDeleteClicked() {
-                    createDeleteDialog(positionInFeed, postId).show()
+                    createDeleteDialog(positionInFeed, postId)?.show()
                 }
 
                 override fun onReportClick() {
@@ -716,7 +716,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
         if (context != null) {
             RouteManager.route(
-                    context!!,
+                    requireContext(),
                     redirectUrl
             )
         }
@@ -829,18 +829,20 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(com.tokopedia.kolcommon.R.string.kol_delete_post))
-        dialog.setDesc(getString(com.tokopedia.kolcommon.R.string.kol_delete_post_desc))
-        dialog.setBtnOk(getString(com.tokopedia.kolcommon.R.string.kol_title_delete))
-        dialog.setBtnCancel(getString(com.tokopedia.kolcommon.R.string.kol_title_cancel))
-        dialog.setOnOkClickListener {
-            presenter.deletePost(id, rowNumber)
-            dialog.dismiss()
+    private fun createDeleteDialog(rowNumber: Int, id: Int): DialogUnify? {
+        return context?.let{
+            val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(com.tokopedia.kolcommon.R.string.kol_delete_post))
+            dialog.setDescription(getString(com.tokopedia.kolcommon.R.string.kol_delete_post_desc))
+            dialog.setPrimaryCTAText(getString(com.tokopedia.kolcommon.R.string.kol_title_delete))
+            dialog.setSecondaryCTAText(getString(com.tokopedia.kolcommon.R.string.kol_title_cancel))
+            dialog.setPrimaryCTAClickListener {
+                presenter.deletePost(id, rowNumber)
+                dialog.dismiss()
+            }
+            dialog.setSecondaryCTAClickListener { dialog.dismiss() }
+            dialog
         }
-        dialog.setOnCancelClickListener { dialog.dismiss() }
-        return dialog
     }
 
     private fun goToContentReport(contentId: Int) {
@@ -872,7 +874,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         view?.let {
             Toaster.make(it, getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
                     Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener { })
+                    getString(R.string.label_close), View.OnClickListener { })
         }
     }
 
@@ -880,7 +882,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         view?.let {
             Toaster.make(it, errorMsg,
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener { })
+                    getString(R.string.label_close), View.OnClickListener { })
         }
     }
 
@@ -904,7 +906,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun showError(message: String, listener: View.OnClickListener?) {
         listener?.let {
-            Toaster.make(view!!, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+            Toaster.make(requireView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.abstraction.R.string.title_try_again), it)
         }
     }
@@ -914,7 +916,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     fun clearCache() {
-        presenter.clearCache()
+        if(::presenter.isInitialized)
+            presenter.clearCache()
     }
 
     private fun trackGotoSellerApp() {

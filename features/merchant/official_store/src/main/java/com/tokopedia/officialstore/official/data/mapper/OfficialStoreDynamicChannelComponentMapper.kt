@@ -10,6 +10,7 @@ object OfficialStoreDynamicChannelComponentMapper {
                 id = channel.id,
                 groupId = "",
                 type = "",
+                style = ChannelStyle.ChannelOS,
                 name = channel.name,
                 layout = channel.layout,
                 verticalPosition = verticalPosition,
@@ -56,32 +57,36 @@ object OfficialStoreDynamicChannelComponentMapper {
                         categoryPersona = channel.categoryPersona,
                         campaignId = channel.campaignID.toString()
                 ),
-                channelGrids = channel.grids?.map {
+                channelGrids = channel.grids.map {
                     ChannelGrid(
-                            id = it?.id.toString(),
-                            price = it?.price.toString(),
-                            imageUrl = it?.imageUrl?:"",
-                            name = it?.name?:"",
-                            applink = it?.applink?:"",
-                            discount = it?.discount?:"",
-                            slashedPrice = it?.slashedPrice?:"",
-                            label = it?.label?:"",
-                            soldPercentage = it?.soldPercentage?.toInt()?:0,
-                            attribution = it?.attribution?:"",
-                            impression = it?.impression?:"",
-                            cashback = it?.cashback?:"",
-                            productClickUrl = it?.productClickUrl?:"",
-                            isFreeOngkirActive = it?.freeOngkir?.isActive?:false,
-                            labelGroup = it?.labelGroup?.map { label ->
+                            id = it.id.toString(),
+                            price = it.price,
+                            imageUrl = it.imageUrl,
+                            name = it.name,
+                            applink = it.applink,
+                            discount = it.discount,
+                            slashedPrice = it.slashedPrice,
+                            label = it.label,
+                            soldPercentage = it.soldPercentage.toInt(),
+                            attribution = it.attribution,
+                            impression = it.impression,
+                            cashback = it.cashback,
+                            rating = it.rating,
+                            countReview = it.countReview,
+                            ratingFloat = it.ratingAverage?:"",
+                            productClickUrl = it.productClickUrl,
+                            isFreeOngkirActive = it.freeOngkir?.isActive?:false,
+                            freeOngkirImageUrl = it.freeOngkir?.imageUrl?:"",
+                            labelGroup = it.labelGroup.map { label ->
                                 LabelGroup(
                                         title = label.title,
                                         position = label.position,
                                         type = label.type,
                                         url = label.imageUrl
                                 )
-                            }?: listOf()
+                            }
                     )
-                }?: listOf()
+                }
         )
     }
 }

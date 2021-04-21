@@ -11,7 +11,7 @@
             android:label="@string/title_setting_bank"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -33,7 +33,7 @@
         <activity
             android:name=".view.activity.ChooseBankActivity"
             android:theme="@style/Theme.AppCompat.Translucent">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />

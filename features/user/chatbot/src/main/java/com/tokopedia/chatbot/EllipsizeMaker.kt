@@ -25,6 +25,7 @@ object EllipsizeMaker {
         if (message.layout != null) {
             val lineEndIndex = message.layout.getLineEnd(MESSAGE_LINE_COUNT - 1)
             val text = removeUnderlineFromLink(msg)
+            if (text.length < lineEndIndex) return
             val spannable = text.subSequence(0, lineEndIndex - 3)
             val fText = (spannable as SpannableStringBuilder).append(message.context.getString(R.string.cb_bot_three_dots))
             message.text = fText

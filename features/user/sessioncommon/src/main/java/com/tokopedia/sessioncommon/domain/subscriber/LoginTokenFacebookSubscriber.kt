@@ -12,7 +12,8 @@ class LoginTokenFacebookSubscriber(val userSession: UserSessionInterface,
                                    val onSuccessLoginToken: (pojo: LoginTokenPojo) -> Unit,
                                    val onErrorLoginToken: (e: Throwable) -> Unit,
                                    val onShowPopupError: (pojo: LoginTokenPojo)  -> Unit,
-                                   val onGoToSecurityQuestion : () -> Unit ) :
+                                   val onGoToSecurityQuestion : () -> Unit,
+                                   val onFinished : () -> Unit? = {}) :
         Subscriber<GraphqlResponse>() {
 
     override fun onNext(response: GraphqlResponse) {
@@ -52,7 +53,7 @@ class LoginTokenFacebookSubscriber(val userSession: UserSessionInterface,
     }
 
     override fun onCompleted() {
-
+        onFinished()
     }
 
     override fun onError(e: Throwable?) {

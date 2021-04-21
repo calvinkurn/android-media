@@ -156,6 +156,14 @@ class CatalogDetailPageFragment : Fragment(),
                 }
                 else if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     isBottomSheetOpen = true
+                }else if (newState == BottomSheetBehavior.STATE_DRAGGING){
+                    if(!isBottomSheetOpen){
+                        CatalogDetailAnalytics.sendEvent(
+                                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                                CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
+                                catalogId,userSession.userId)
+                    }
                 }
             }
         })
@@ -304,14 +312,6 @@ class CatalogDetailPageFragment : Fragment(),
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                 CatalogDetailAnalytics.EventKeys.EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_CATALOG_IMAGE,
-                catalogId,userSession.userId)
-    }
-
-    override fun onImagesScrolled() {
-        CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
                 catalogId,userSession.userId)
     }
 

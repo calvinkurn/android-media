@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
@@ -152,7 +152,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private fun onActionClicked(pos: Int) {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_SETUP_KEY, groupId.toString(), userID)
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
-        sheet.show(fragmentManager!!, "")
+        sheet.show(childFragmentManager, "")
         sheet.onSaved = { bid, type, position ->
             if (ifNewKeyword((adapter.items[position] as EditKeywordItemViewModel).data.tag)) {
                 addedKeywords?.forEach {
@@ -202,20 +202,23 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun showConfirmationDialog(position: Int) {
-        val dialog = DialogUnify(context!!, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(getString(R.string.topads_edit_delete_keyword_conf_dialog_title))
-        dialog.setDescription(Html.fromHtml(String.format(getString(R.string.topads_edit_delete_keyword_conf_dialog_desc),
-                (adapter.items[position] as EditKeywordItemViewModel).data.tag)))
-        dialog.setPrimaryCTAText(getString(R.string.topads_edit_batal))
-        dialog.setSecondaryCTAText(getString(R.string.topads_edit_ya))
-        dialog.setPrimaryCTAClickListener {
-            dialog.dismiss()
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(R.string.topads_edit_delete_keyword_conf_dialog_title))
+            dialog.setDescription(MethodChecker.fromHtml(String.format(getString(R.string.topads_edit_delete_keyword_conf_dialog_desc),
+                    (adapter.items[position] as EditKeywordItemViewModel).data.tag)))
+            dialog.setPrimaryCTAText(getString(R.string.topads_edit_batal))
+            dialog.setSecondaryCTAText(getString(R.string.topads_edit_ya))
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.setSecondaryCTAClickListener {
+                deleteKeyword(position)
+                dialog.dismiss()
+            }
+            dialog.show()
         }
-        dialog.setSecondaryCTAClickListener {
-            deleteKeyword(position)
-            dialog.dismiss()
-        }
-        dialog.show()
+
     }
 
 
@@ -302,7 +305,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             setEmptyView()
         } else {
             data.forEach { result ->
-                if ((result.type == KEYWORD_TYPE_EXACT || result.type == KEYWORD_TYPE_PHRASE) && result.status != -1) {
+                if ((result.type == KEYWORD_TYPE_EXACT || result.type == KEYWORD_TYPE_PHRASE)) {
                     adapter.items.add(EditKeywordItemViewModel(result))
                     isnewlyAddded.add(false)
                     initialBudget.add(result.priceBid)

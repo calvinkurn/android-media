@@ -31,7 +31,6 @@ import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButton;
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.CartEmptyInfo;
@@ -104,7 +103,6 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setIneligiblePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled());
             dataResult.setOpenPrerequisiteSite(shipmentAddressFormDataResponse.isOpenPrerequisiteSite());
             dataResult.setEligibleNewShippingExperience(shipmentAddressFormDataResponse.isEligibleNewShippingExperience());
-            dataResult.setAbTestButton(new ABTestButton(shipmentAddressFormDataResponse.getAbTestButton().getEnable()));
 
             if (shipmentAddressFormDataResponse.getDisabledFeatures() != null &&
                     shipmentAddressFormDataResponse.getDisabledFeatures().contains(CheckoutDisabledFeaturesKt.multiAddress) &&
@@ -562,7 +560,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     } else {
                                         analyticsProductCheckoutData.setTokopediaCornerFlag(String.valueOf(false));
                                     }
-                                    analyticsProductCheckoutData.setIsFulfillment(String.valueOf(groupShop.isFulfillment()));
+                                    analyticsProductCheckoutData.setFulfillment(String.valueOf(groupShop.isFulfillment()));
                                     analyticsProductCheckoutData.setDiscountedPrice(product.getProductOriginalPrice() > 0);
                                     analyticsProductCheckoutData.setCampaignId(product.getCampaignId());
 

@@ -33,4 +33,8 @@ data class MultiLineGraphWidgetUiModel(
     override fun copy(): BaseWidgetUiModel<MultiLineGraphDataUiModel> {
         return MultiLineGraphWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState, isComparePeriodeOnly)
     }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<MultiLineGraphDataUiModel>): Boolean {
+        return dataKey != other.dataKey
+    }
 }

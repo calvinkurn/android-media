@@ -35,6 +35,8 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
@@ -368,9 +370,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             if (linkSegment.get(1).equals("search")) {
                 RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_SRP + "?" + uri.getQuery());
                 context.finish();
-            } else if (linkSegment.size() >= 3 && linkSegment.get(2).equals("h")) {
-                String hotelId = uri.getQueryParameter("id");
-                RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + hotelId + "?" + uri.getQuery());
+            } else if (linkSegment.size() >= 4 && linkSegment.get(2).equals("h")) {
+                // eg : https://www.tokopedia.com/hotel/Indonesia/h/the-apurva-kempinski-bali-960088/
+                String[] hotelNames = linkSegment.get(3).split("-");
+                String hotelId = hotelNames[hotelNames.length - 1];
+                if (uri.getQuery() != null) {
+                    RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + hotelId + "?" + uri.getQuery());
+                } else {
+                    RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + hotelId);
+                }
                 context.finish();
             } else {
                 RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_HOTEL));
@@ -501,7 +509,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     prepareOpenWebView(uriData);
                 }
                 if (e instanceof ResponseV4ErrorException) {
-                    Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#OneSegment;link_segment='%s';uri='%s'", linkSegment.get(0), uriData.toString());
+                    Map<String, String> messageMap = new HashMap<>();
+                    messageMap.put("type", "OneSegment");
+                    messageMap.put("link_segment", linkSegment.get(0));
+                    messageMap.put("uri", uriData.toString());
+                    ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
                 }
             }
 
@@ -550,7 +562,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
                         context.finish();
                     } else {
-                        Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#OneSegment;link_segment='%s';uri='%s'", linkSegment.get(0), uriData.toString());
+                        Map<String, String> messageMap = new HashMap<>();
+                        messageMap.put("type", "OneSegment");
+                        messageMap.put("link_segment", linkSegment.get(0));
+                        messageMap.put("uri", uriData.toString());
+                        ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
                         if (!GlobalConfig.DEBUG) {
                             crashlytics.recordException(new ShopNotFoundException(linkSegment.get(0)));
                         }
@@ -632,8 +648,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     context.finish();
                 }
                 if (e instanceof ResponseV4ErrorException) {
-                    Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#TwoSegments;link_segment='%s';uri='%s'",
-                            linkSegment.get(0) + "/" + linkSegment.get(1), uriData.toString());
+                    Map<String, String> messageMap = new HashMap<>();
+                    messageMap.put("type", "TwoSegments");
+                    messageMap.put("link_segment", linkSegment.get(0) + "/" + linkSegment.get(1));
+                    messageMap.put("uri", uriData.toString());
+                    ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
                 }
             }
 
@@ -661,8 +680,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         productIntent.putExtra("layoutID", layoutTesting);
                         context.startActivity(productIntent);
                     } else {
-                        Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#TwoSegments;link_segment='%s';uri='%s'",
-                                linkSegment.get(0) + "/" + linkSegment.get(1), uriData.toString());
+                        Map<String, String> messageMap = new HashMap<>();
+                        messageMap.put("type", "TwoSegments");
+                        messageMap.put("link_segment", linkSegment.get(0) + "/" + linkSegment.get(1));
+                        messageMap.put("uri", uriData.toString());
+                        ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
                         if (!GlobalConfig.DEBUG) {
                             crashlytics.recordException(new ShopNotFoundException(linkSegment.get(0)));
                             crashlytics.recordException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
@@ -831,8 +853,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
             Object xClid = campaignMap.get(AppEventTracking.GTM.X_CLID);
             if (xClid != null && xClid instanceof String) {
-                String xClid_  = (String)xClid;
-                customDimension.put(AppEventTracking.GTM.X_CLID,xClid_);
+                String xClid_ = (String) xClid;
+                customDimension.put(AppEventTracking.GTM.X_CLID, xClid_);
             }
             TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
         } catch (MalformedURLException e) {

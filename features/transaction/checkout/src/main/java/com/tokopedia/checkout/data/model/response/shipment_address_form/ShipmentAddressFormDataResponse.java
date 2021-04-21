@@ -1,8 +1,9 @@
 package com.tokopedia.checkout.data.model.response.shipment_address_form;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButtonResponse;
 import com.tokopedia.checkout.data.model.response.egold.EgoldAttributes;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
@@ -42,6 +43,7 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("message")
     @Expose
     private Message message;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("is_hide_courier_name")
     @Expose
     private boolean isHidingCourier;
@@ -84,9 +86,6 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("eligible_new_shipping_experience")
     @Expose
     private boolean eligibleNewShippingExperience;
-    @SerializedName("ab_test_button")
-    @Expose
-    private ABTestButtonResponse abTestButton;
     @SerializedName("pop_up_message")
     @Expose
     private String popUpMessage = "";
@@ -179,10 +178,6 @@ public class ShipmentAddressFormDataResponse {
 
     public boolean isEligibleNewShippingExperience() {
         return eligibleNewShippingExperience;
-    }
-
-    public ABTestButtonResponse getAbTestButton() {
-        return abTestButton;
     }
 
     public String getPopUpMessage() {

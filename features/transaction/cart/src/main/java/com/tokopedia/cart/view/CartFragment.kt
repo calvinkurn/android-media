@@ -3,6 +3,7 @@ package com.tokopedia.cart.view
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -93,7 +94,6 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_CART
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_DEFAULT
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -813,6 +813,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         setToolbarShadowVisibility(false)
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private fun initNavigationToolbar(view: View) {
         activity?.let {
             val statusBarBackground = binding?.statusBarBg
@@ -872,6 +873,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventClickTopNavMenuNavToolbar(userSession.userId)
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private fun initBasicToolbar(view: View) {
         activity?.let {
             val args = arguments?.getString(CartFragment::class.java.simpleName)
@@ -1748,10 +1750,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun renderAbTestButton(button: ABTestButton) {
-        binding?.goToCourierPageButton?.buttonType = button.getUnifyButtonType()
-    }
-
     override fun renderInitialGetCartListDataSuccess(cartListData: CartListData?) {
         recommendationPage = 1
         cartListData?.let {
@@ -1763,7 +1761,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             sendAnalyticsScreenNameCartPage()
             updateStateAfterFinishGetCartList(it)
 
-            renderAbTestButton(cartListData.abTestButton)
             renderCheckboxGlobal(cartListData)
             renderTickerAnnouncement(it)
             renderChooseAddressWidget(cartListData.localizationChooseAddressData)
@@ -2074,6 +2071,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         cartListData?.shoppingSummaryData?.promoValue = lastApplyData.benefitSummaryInfo.finalBenefitAmount
+    }
+
+    private fun setLastApplyDataToShopGroup(lastApplyData: LastApplyUiModel) {
+        cartListData?.lastApplyShopGroupSimplifiedData = lastApplyData
+    }
+
+    private fun renderPromoSummaryFromStickyPromo(lastApplyData: LastApplyUiModel) {
         cartListData?.promoSummaryData?.details?.clear()
         cartListData?.promoSummaryData?.details?.addAll(
                 lastApplyData.additionalInfo.usageSummaries.map {
@@ -2086,10 +2090,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     )
                 }.toList()
         )
-    }
-
-    private fun setLastApplyDataToShopGroup(lastApplyData: LastApplyUiModel) {
-        cartListData?.lastApplyShopGroupSimplifiedData = lastApplyData
     }
 
     private fun getAllPromosApplied(lastApplyData: LastApplyUiModel): List<String> {
@@ -3373,6 +3373,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel) {
         val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
         renderPromoCheckoutButton(lastApplyUiModel)
+        renderPromoSummaryFromStickyPromo(lastApplyUiModel)
         if (promoUiModel.globalSuccess) {
             setLastApplyDataToShopGroup(lastApplyUiModel)
         }

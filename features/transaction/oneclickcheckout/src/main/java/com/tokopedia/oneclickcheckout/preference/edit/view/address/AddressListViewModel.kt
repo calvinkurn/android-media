@@ -8,7 +8,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
-class AddressListViewModel @Inject constructor(private val useCase: GetAddressCornerUseCase, private val dispatcher: ExecutorDispatchers) : BaseViewModel(dispatcher.main) {
+class AddressListViewModel @Inject constructor(private val useCase: GetAddressCornerUseCase, private val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.immediate) {
 
     var savedQuery: String = ""
     var selectedId: String = DEFAULT_SELECTED_ID
@@ -113,6 +113,16 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
                         destinationLatitude = item.latitude
                         destinationLongitude = item.longitude
                         destinationPostalCode = item.postalCode
+
+                        selectedAddressModel = AddressModel(
+                                addressId = item.id?.toIntOrZero() ?: 0,
+                                cityId = item.cityId?.toIntOrZero() ?: 0,
+                                districtId = item.destinationDistrictId?.toIntOrZero() ?: 0,
+                                latitude = item.latitude,
+                                longitude = item.longitude,
+                                addressName = item.addressName,
+                                receiverName = item.recipientName,
+                                postalCode = item.postalCode)
                     }
                 }
                 addressListModel.listAddress = if (isLoadMore) {

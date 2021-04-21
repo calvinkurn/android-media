@@ -15,6 +15,6 @@ data class AnnouncementDataUiModel(
         val imgUrl: String = ""
 ) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {
-        return !isFromCache && (title.isBlank() || subtitle.isBlank())
+        return title.isBlank() || subtitle.isBlank()
     }
 }

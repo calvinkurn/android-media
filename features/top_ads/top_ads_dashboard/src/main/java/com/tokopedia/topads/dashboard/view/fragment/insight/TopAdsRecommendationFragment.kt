@@ -45,6 +45,8 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     companion object {
         const val HEIGHT = "addp_bar_height"
+        const val PRODUCT_RECOM = "productRecommendData"
+        const val BUDGET_RECOM = "dailyBudgetRecommendData"
         fun createInstance(height: Int?, redirectToTabInsight: Int): TopAdsRecommendationFragment {
             val bundle = Bundle()
             bundle.putInt(HEIGHT, height ?: 0)
@@ -220,10 +222,17 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     private fun getViewPagerAdapter(): TopAdsDashboardBasePagerAdapter? {
         val list: ArrayList<FragmentTabItem> = arrayListOf()
-        if (countProduct != 0)
-            list.add(FragmentTabItem("", TopAdsInsightBaseProductFragment(productRecommendData, arguments?.getInt(HEIGHT))))
-        if (countBid != 0)
-            list.add(FragmentTabItem("", TopAdsInsightBaseBidFragment(dailyBudgetRecommendData)))
+        if (countProduct != 0) {
+            val bundle = Bundle()
+            bundle.putParcelable(PRODUCT_RECOM, productRecommendData)
+            bundle.putInt(HEIGHT, arguments?.getInt(HEIGHT) ?: 0)
+            list.add(FragmentTabItem("", TopAdsInsightBaseProductFragment.createInstance(bundle)))
+        }
+        if (countBid != 0) {
+            val bundle = Bundle()
+            bundle.putParcelable(BUDGET_RECOM, dailyBudgetRecommendData)
+            list.add(FragmentTabItem("", TopAdsInsightBaseBidFragment.createInstance(bundle)))
+        }
         if (countKey != 0)
             list.add(FragmentTabItem("", TopadsInsightBaseKeywordFragment.createInstance()))
         val pagerAdapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)

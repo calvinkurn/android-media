@@ -31,7 +31,4 @@ sealed class InteractionEvent {
     object CartPage : InteractionEvent() {
         override val needLogin: Boolean = true
     }
-    object ClickPinnedProduct : InteractionEvent() {
-        override val needLogin: Boolean = false
-    }
 }

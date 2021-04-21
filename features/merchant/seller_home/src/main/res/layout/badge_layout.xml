@@ -10,6 +10,6 @@
     android:paddingTop="@dimen/sah_dimen_1dp"
     android:paddingRight="@dimen/spacing_lvl2"
     android:paddingBottom="@dimen/sah_dimen_1dp"
-    android:textColor="@color/Neutral_N0"
+    android:textColor="@color/Unify_N0"
     android:textSize="@dimen/fontSize_lvl1"
     tools:text="99" />

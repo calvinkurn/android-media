@@ -12,6 +12,8 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifyprinciples.Typography
 
 interface DynamicProductDetailListener {
@@ -19,6 +21,7 @@ interface DynamicProductDetailListener {
     fun getLifecycleFragment(): Lifecycle
     fun refreshPage()
     fun isNavOld(): Boolean
+    fun getFragmentTrackingQueue(): TrackingQueue?
 
     /**
      * ProductMediaViewHolder
@@ -38,7 +41,6 @@ interface DynamicProductDetailListener {
     fun txtTradeinClicked(componentTrackDataModel: ComponentTrackDataModel)
     fun onSwipePicture(type: String, url: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?)
     fun shouldShowWishlist(): Boolean
-    fun shareProductFromContent(componentTrackDataModel: ComponentTrackDataModel?)
 
     /**
      * ProductInfoViewHolder
@@ -66,7 +68,6 @@ interface DynamicProductDetailListener {
     fun onSeeAllLastItemImageReview(componentTrackDataModel: ComponentTrackDataModel?)
     fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?)
     fun onReviewClick()
-    fun onImageHelpfulReviewClick(listOfImages: List<String>, position: Int, reviewId: String?, componentTrackDataModel: ComponentTrackDataModel?)
     fun onSeeAllTextView(componentTrackDataModel: ComponentTrackDataModel?)
 
     /**
@@ -78,7 +79,7 @@ interface DynamicProductDetailListener {
     fun onSeeAllMerchantVoucherClick(componentTrackDataModel: ComponentTrackDataModel)
 
     /**
-     * ProductShopInfoViewHolder
+     * ProductShopCredibilityViewHolder
      */
     fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel)
     fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel)
@@ -94,10 +95,16 @@ interface DynamicProductDetailListener {
     fun onSeeAllRecomClicked(pageName: String, applink: String, componentTrackDataModel: ComponentTrackDataModel)
     fun eventRecommendationClick(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
     fun eventRecommendationImpression(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun onThreeDotsClick(recomItem: RecommendationItem, adapterPosition: Int, carouselPosition: Int)
     fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool?
     fun getRecommendationCarouselSavedState(): SparseIntArray
     fun sendTopAdsClick(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
     fun sendTopAdsImpression(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
+
+    /**
+     * PdpComparisonWidgetViewHolder
+     */
+    fun getStickyTitleView(): StickyTitleView?
 
     /**
      * ProductGeneralInfoViewHolder
@@ -125,11 +132,6 @@ interface DynamicProductDetailListener {
      * ProductNotifyMeViewHolder
      */
     fun onNotifyMeClicked(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel)
-
-    /**
-     * ProductMiniShopInfoViewHolder
-     */
-    fun onMiniShopInfoClicked(componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductTickerViewHolder

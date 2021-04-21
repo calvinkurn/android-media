@@ -2,6 +2,7 @@ package com.tokopedia.home_component.customview
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.home_component.util.getLink
@@ -135,6 +137,13 @@ class DynamicChannelHeaderView: FrameLayout {
             }
 
             handleSubtitlePosition(channelSubtitleName, channel, channelTitleContainer)
+
+            if(channel.style == ChannelStyle.ChannelHome){
+                seeAllButton?.setTextColor(ContextCompat.getColor(context, R.color.Unify_G500))
+            } else if(channel.style == ChannelStyle.ChannelOS){
+                seeAllButton?.setTypeface(null, Typeface.NORMAL)
+                seeAllButton?.setTextColor(ContextCompat.getColor(context, R.color.Unify_P600))
+            }
 
             seeAllButton?.show()
             seeAllButton?.setOnClickListener {

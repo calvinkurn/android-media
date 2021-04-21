@@ -12,6 +12,7 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfilter.AnnotationChipFilterAdapter
 import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfilter.AnnotationChipListener
+import com.tokopedia.recommendation_widget_common.widget.bestseller.decoration.CommonMarginStartDecoration
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel.Companion.BEST_SELLER_HIDE_LOADING_RECOMMENDATION
@@ -96,6 +97,20 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             if(itemView.best_seller_recommendation_recycler_view.adapter == null) {
                 itemView.best_seller_recommendation_recycler_view.adapter = recommendationAdapter
             }
+            if (itemView.best_seller_recommendation_recycler_view.itemDecorationCount == 0) {
+                itemView.best_seller_recommendation_recycler_view.addItemDecoration(
+                        CommonMarginStartDecoration(
+                                marginStart = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_12)
+                        )
+                )
+            }
+            if (itemView.best_seller_chip_filter_recyclerview.itemDecorationCount == 0) {
+                itemView.best_seller_chip_filter_recyclerview.addItemDecoration(
+                        CommonMarginStartDecoration(
+                                marginStart = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                        )
+                )
+            }
             val recommendationCarouselList: MutableList<Visitable<RecommendationCarouselTypeFactory>> = element.recommendationItemList.withIndex().map {
                 RecommendationCarouselItemDataModel(it.value, element.productCardModelList[it.index])
             }.toMutableList()
@@ -142,6 +157,10 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
     override fun onProductImpression(item: RecommendationItem) {
         if (item.isTopAds) TopAdsUrlHitter(itemView.context).hitImpressionUrl(CLASS_NAME, item.trackerImageUrl, item.productId.toString(), item.name, item.imageUrl)
         bestSellerDataModel?.let { listener.onBestSellerImpress(it, item, adapterPosition) }
+    }
+
+    override fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
+        bestSellerDataModel?.let { listener.onBestSellerThreeDotsClick(it, item, adapterPosition) }
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {}

@@ -31,7 +31,7 @@ class BestSellerMapper (
 
     private fun mappingProductCards(recommendationList: List<RecommendationItem>): List<ProductCardModel> {
         return recommendationList.map { recommendationItem ->
-            recommendationItem.toProductCardModel()
+            recommendationItem.toProductCardModel(hasThreeDots = true)
         }
     }
 

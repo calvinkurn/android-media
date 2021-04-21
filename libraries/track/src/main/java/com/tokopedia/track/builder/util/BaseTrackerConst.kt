@@ -195,9 +195,9 @@ abstract class BaseTrackerConst {
                     CURRENCY_CODE, IDR,
                     CLICK, DataLayer.mapOf(
                     ACTION_FIELD, DataLayer.mapOf(
-                    LIST, setNewList(products.firstOrNull(), list)
+                    LIST, if (list.isEmpty()) setNewList(products.firstOrNull(), list) else list
             ),
-                    PRODUCTS, getProductsClick(products, list)
+                    PRODUCTS, getProductsClick(products, if (list.isEmpty()) setNewList(products.firstOrNull(), list) else list)
             )
             )
         }
@@ -266,11 +266,11 @@ abstract class BaseTrackerConst {
             map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
             map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = checkBebasOngkir(product)
-            map[KEY_DIMENSION_40] = setNewList(product, list)
+            map[KEY_DIMENSION_40] = if (list.isEmpty()) setNewList(product, list) else list
             if(product.clusterId != -1) map[KEY_DIMENSION_11] = product.clusterId.toString()
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
             if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
-            if (list.isNotEmpty()) map[KEY_LIST] = setNewList(product, list)
+            if (list.isNotEmpty()) map[KEY_LIST] = if (list.isEmpty()) setNewList(product, list) else list
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_45] = product.cartId
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_79] = product.shopId
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_80] = NONE

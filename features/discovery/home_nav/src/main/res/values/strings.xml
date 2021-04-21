@@ -87,6 +87,7 @@
 
     <string name="content_desc_image_transaction">image transaction</string>
     <string name="content_desc_image_payment">image payment</string>
+    <string name="account_header_store_empty_shop">Pengen buka toko?</string>
     <string name="account_header_store_title">Toko saya:</string>
     <string name="account_header_store_title_role">Peran saya:</string>
 </resources>

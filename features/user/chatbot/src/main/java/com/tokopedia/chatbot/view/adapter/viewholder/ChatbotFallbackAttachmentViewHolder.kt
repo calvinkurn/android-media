@@ -23,6 +23,7 @@ class ChatbotFallbackAttachmentViewHolder(itemView: View,
     override fun getCustomChatLayoutId(): Int =  com.tokopedia.chatbot.R.id.customChatLayout
     override fun getSenderAvatarId(): Int = R.id.senderAvatar
     override fun getSenderNameId(): Int = R.id.senderName
+    override fun getDateContainerId(): Int = R.id.dateContainer
 
     companion object {
         val LAYOUT = R.layout.chatbot_fallback_attachment_layout

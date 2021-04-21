@@ -33,13 +33,13 @@ import javax.inject.Inject
  * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD]
  * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD]
  */
-class VerificationActivity : BaseOtpActivity() {
+open class VerificationActivity : BaseOtpActivity() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
 
     var isResetPin2FA = false
-    private var otpData = OtpData()
+    var otpData = OtpData()
     private var isLoginRegisterFlow = false
 
     override fun getNewFragment(): Fragment? = null
@@ -70,7 +70,7 @@ class VerificationActivity : BaseOtpActivity() {
     }
 
     private fun setupParams() {
-        if(isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true) {
+        if(isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN) == true) {
             otpData.userId = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID, "").toEmptyStringIfNull()
         }else {
             otpData.userId = userSession.userId ?: userSession.temporaryUserId
@@ -81,7 +81,8 @@ class VerificationActivity : BaseOtpActivity() {
         otpData.msisdn = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "").toEmptyStringIfNull()
         otpData.source = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "").toEmptyStringIfNull()
         otpData.userIdEnc = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, "").toEmptyStringIfNull()
-
+        otpData.canUseOtherMethod = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false) ?: false
+        otpData.isShowChooseMethod = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false) ?: false
         otpData.accessToken = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, "").toEmptyStringIfNull()
         isLoginRegisterFlow = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, false)?: false
     }
@@ -97,7 +98,7 @@ class VerificationActivity : BaseOtpActivity() {
         return bundle
     }
 
-    private fun doFragmentTransaction(fragment: Fragment, tag: String, isBackAnimation: Boolean) {
+    fun doFragmentTransaction(fragment: Fragment, tag: String, isBackAnimation: Boolean) {
         supportFragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         val fragmentTransactionManager = supportFragmentManager.beginTransaction()
 
@@ -109,7 +110,7 @@ class VerificationActivity : BaseOtpActivity() {
         fragmentTransactionManager.commit()
     }
 
-    fun goToVerificationMethodPage() {
+    open fun goToVerificationMethodPage() {
         val fragment = VerificationMethodFragment.createInstance(createBundle())
         doFragmentTransaction(fragment, TAG_OTP_MODE, true)
     }
@@ -136,7 +137,7 @@ class VerificationActivity : BaseOtpActivity() {
     companion object {
         private const val BACK_STACK_ROOT_TAG = "root_fragment"
 
-        private const val TAG_OTP_MODE = "otpMode"
+        const val TAG_OTP_MODE = "otpMode"
         private const val TAG_OTP_VALIDATOR = "otpValidator"
         private const val TAG_OTP_MISCALL = "otpMiscall"
     }

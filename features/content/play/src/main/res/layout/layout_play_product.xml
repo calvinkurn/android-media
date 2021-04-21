@@ -24,6 +24,20 @@
             tools:src="@tools:sample/avatars"
             />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_product_out_of_stock"
+            android:layout_width="@dimen/play_product_image_size"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@drawable/bg_play_product_out_of_stock"
+            android:gravity="center"
+            android:text="@string/play_out_of_stock"
+            android:textColor="@color/Unify_Static_White"
+            android:textSize="@dimen/fontSize_lvl1"
+            android:visibility="invisible"
+            app:typographyWeight="bold"
+            tools:visibility="visible" />
+
     </FrameLayout>
 
     <com.tokopedia.unifyprinciples.Typography

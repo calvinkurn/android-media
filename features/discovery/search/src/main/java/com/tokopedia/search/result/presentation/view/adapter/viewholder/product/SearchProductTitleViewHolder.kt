@@ -16,6 +16,11 @@ class SearchProductTitleViewHolder(itemView: View): AbstractViewHolder<SearchPro
     }
 
     override fun bind(element: SearchProductTitleDataView) {
-        itemView.searchProductTitle?.text = element.title
+        itemView.searchProductTitle?.text = getTitle(element)
     }
+
+    private fun getTitle(element: SearchProductTitleDataView) =
+            if (element.isRecommendationTitle)
+                getString(R.string.search_result_local_search_other_products, element.title)
+            else element.title
 }

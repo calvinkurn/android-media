@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/holder_sticky_rv"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:animateLayoutChanges="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.recyclerview.widget.RecyclerView
+        android:background="@color/Unify_N0"
+        android:paddingBottom="@dimen/dp_6"
+        android:visibility="invisible"
+        android:id="@+id/sticky_title_rv"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
+</FrameLayout>

@@ -2,25 +2,28 @@ package com.tokopedia.autocomplete.suggestion
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineViewModel
-import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineWithoutImageViewModel
-import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineViewModel
-import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleViewModel
-import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetViewModel
+import com.tokopedia.autocomplete.suggestion.productline.SuggestionProductLineDataDataView
+import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineDataDataView
+import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineWithoutImageDataDataView
+import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineDataDataView
+import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleDataView
+import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetDataView
 
 interface SuggestionTypeFactory {
 
-    fun type(viewModel: SuggestionTitleViewModel): Int
+    fun type(suggestionTitleDataView: SuggestionTitleDataView): Int
 
-    fun type(viewModel: SuggestionSingleLineViewModel): Int
+    fun type(suggestionSingleLineDataView: SuggestionSingleLineDataDataView): Int
 
-    fun type(viewModel: SuggestionDoubleLineViewModel): Int
+    fun type(suggestionDoubleLineDataView: SuggestionDoubleLineDataDataView): Int
 
-    fun type(viewModel: SuggestionTopShopWidgetViewModel): Int
+    fun type(suggestionTopShopWidgetDataView: SuggestionTopShopWidgetDataView): Int
 
-    fun type(viewModel: SuggestionDoubleLineWithoutImageViewModel): Int
+    fun type(suggestionDoubleLineWithoutImageDataView: SuggestionDoubleLineWithoutImageDataDataView): Int
 
-    fun type(viewModel: SuggestionSeparatorViewModel): Int
+    fun type(suggestionSeparatorDataView: SuggestionSeparatorDataView): Int
+
+    fun type(suggestionProductLineDataView: SuggestionProductLineDataDataView): Int
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 }

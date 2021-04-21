@@ -44,7 +44,6 @@ import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescript
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.MAX_DESCRIPTION_CHAR
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.MAX_VIDEOS
-import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.VALIDATE_REQUEST_DELAY
 import com.tokopedia.product.addedit.description.presentation.dialog.GiftingDescriptionBottomSheet
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
@@ -312,11 +311,11 @@ class AddEditProductDescriptionFragment:
 
     override fun startRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
-        getRecyclerView(view).viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 stopRenderPerformanceMonitoring()
                 stopPerformanceMonitoring()
-                getRecyclerView(view).viewTreeObserver.removeOnGlobalLayoutListener(this)
+                getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
@@ -347,7 +346,7 @@ class AddEditProductDescriptionFragment:
             }
         }
 
-        getRecyclerView(view).itemAnimator = object: DefaultItemAnimator() {
+        getRecyclerView(view)?.itemAnimator = object: DefaultItemAnimator() {
             override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
                 return true
             }
@@ -558,9 +557,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun validateDescriptionText(it: String) {
-        view?.postDelayed({
-            descriptionViewModel.validateProductDescriptionInput(it)
-        }, VALIDATE_REQUEST_DELAY)
+        descriptionViewModel.validateDescriptionChanged(it)
     }
 
     private fun updateDescriptionFieldErrorMessage(message: String) {

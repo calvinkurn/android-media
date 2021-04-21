@@ -14,7 +14,7 @@ data class MultiLineGraphDataUiModel(
         val metrics: List<MultiLineMetricUiModel> = emptyList()
 ) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {
-        return !isFromCache && metrics.all { it.yAxis.all { it.yValue == 0f } }
+        return metrics.all { it.yAxis.all { it.yValue == 0f } }
     }
 }
 

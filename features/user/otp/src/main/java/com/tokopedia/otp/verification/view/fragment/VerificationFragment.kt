@@ -68,7 +68,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 02/06/20.
  */
 
-class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCallBroadcastReceiver.OnCallStateChange {
+open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCallBroadcastReceiver.OnCallStateChange {
 
     @Inject
     lateinit var analytics: TrackingOtpUtil
@@ -100,15 +100,15 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
     private var indexTempOtp = 0
     private val delayAnimateText: Long = 350
 
-    private val handler: Handler = Handler()
     private var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
+    private var handler: Handler? = null
 
     private val characterAdder: Runnable = object : Runnable {
         override fun run() {
             tempOtp?.let {
                 viewBound.pin?.value = it.subSequence(0, indexTempOtp++)
                 if (indexTempOtp <= it.length) {
-                    handler.postDelayed(this, delayAnimateText)
+                    handler?.postDelayed(this, delayAnimateText)
                 }
             }
         }
@@ -137,6 +137,9 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         modeListData = arguments?.getParcelable(OtpConstant.OTP_MODE_EXTRA) ?: ModeListData()
         viewModel.isLoginRegisterFlow = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW)?: false
         isMoreThanOneMethod = arguments?.getBoolean(OtpConstant.IS_MORE_THAN_ONE_EXTRA, true) ?: true
+        activity?.runOnUiThread {
+            handler = Handler()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -175,7 +178,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         if (permissionCheckerHelper.hasPermission(it, getPermissions())) {
             phoneCallBroadcastReceiver.registerReceiver(it, this)
         } else {
-            sendLogTracker("PhoneCallBroadcastReceiver not registered")
+            sendLogTracker("PhoneCallBroadcastReceiver not registered; permission=${permissionCheckerHelper.hasPermission(it, getPermissions())}")
         }
     }
 
@@ -202,6 +205,8 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         analytics.trackClickBackOtpPage(otpData.otpType)
         if (otpData.otpType == OtpConstant.OtpType.REGISTER_PHONE_NUMBER) {
             analytics.trackClickBackRegisterPhoneOtp()
+        } else if (otpData.otpType == OtpConstant.OtpType.REGISTER_EMAIL) {
+            analytics.trackClickBackRegisterEmailOtp()
         }
         return true
     }
@@ -353,7 +358,7 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
                         }
                         if ((activity as VerificationActivity).isResetPin2FA) {
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
-                                bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true)
+                                bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true)
                                 bundle.putString(ApplinkConstInternalGlobal.PARAM_USER_ID, otpData.userId)
                                 putExtras(bundle)
                             }
@@ -407,8 +412,8 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         tempOtp = txt
         indexTempOtp = 0
         viewBound.pin?.value = ""
-        handler.removeCallbacks(characterAdder)
-        handler.postDelayed(characterAdder, delayAnimateText)
+        handler?.removeCallbacks(characterAdder)
+        handler?.postDelayed(characterAdder, delayAnimateText)
     }
 
     private fun isCountdownFinished(): Boolean {

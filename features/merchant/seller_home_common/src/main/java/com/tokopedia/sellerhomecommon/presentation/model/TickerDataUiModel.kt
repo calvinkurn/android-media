@@ -12,6 +12,6 @@ data class TickerDataUiModel(
         override val showWidget: Boolean = true
 ) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {
-        return !isFromCache && tickers.isEmpty()
+        return tickers.isEmpty()
     }
 }

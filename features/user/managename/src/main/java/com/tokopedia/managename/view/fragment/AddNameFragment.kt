@@ -3,7 +3,8 @@ package com.tokopedia.managename.view.fragment
 import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
-import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.TextPaint
 import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
@@ -69,7 +70,7 @@ class AddNameFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver(){
-        viewModel.updateNameLiveData.observe(this, Observer {
+        viewModel.updateNameLiveData.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> onSuccessAddName()
                 is Fail -> onErrorRegister(it.throwable)
@@ -110,15 +111,23 @@ class AddNameFragment : BaseDaggerFragment() {
 
     private fun initTermPrivacyView() {
         context?.let {
-            val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
-            termPrivacy.setSpan(termConditionClickAction(), 34, 54, 0)
-            termPrivacy.setSpan(privacyClickAction(), 61, 78, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0)
+            val textTermPrivacy1 = "${getString(R.string.text_term_and_privacy_1)} "
+            val textTermPrivacy2 = " ${getString(R.string.text_term_and_privacy_2)} "
+            val textTermCondition = getString(R.string.text_term_condition)
+            val textPrivacyPolicy = getString(R.string.text_privacy_policy)
+            val termPrivacy = SpannableStringBuilder()
+            termPrivacy.append(textTermPrivacy1)
+            termPrivacy.append(textTermCondition)
+            termPrivacy.setSpan(termConditionClickAction(), termPrivacy.length - textTermCondition.length, termPrivacy.length, 0)
+            termPrivacy.append(textTermPrivacy2)
+            termPrivacy.append(textPrivacyPolicy)
+            termPrivacy.setSpan(privacyClickAction(), termPrivacy.length - textPrivacyPolicy.length, termPrivacy.length, 0)
 
-            bottom_info.setText(termPrivacy, TextView.BufferType.SPANNABLE)
-            bottom_info.movementMethod = LinkMovementMethod.getInstance()
-            bottom_info.isSelected = false
+            bottom_info?.run {
+                movementMethod = LinkMovementMethod.getInstance()
+                isSelected = false
+                text = termPrivacy
+            }
         }
     }
 
@@ -129,6 +138,11 @@ class AddNameFragment : BaseDaggerFragment() {
                     startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION))
                 }
             }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400)
+            }
         }
     }
 
@@ -138,6 +152,11 @@ class AddNameFragment : BaseDaggerFragment() {
                 context?.let {
                     startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY))
                 }
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400)
             }
         }
     }

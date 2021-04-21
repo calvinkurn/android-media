@@ -2,8 +2,8 @@
 <resources>
     <color name="product_card_orange_detail">#CCFA591D</color>
     <color name="travel_subhome_transparent">#00000000</color>
-    <color name="travel_subhome_shadow_color_1">#00CCCCCC</color>
-    <color name="travel_subhome_shadow_color_2">#10CCCCCC</color>
-    <color name="travel_subhome_shadow_color_3">#15CCCCCC</color>
-    <color name="travel_subhome_shadow_color_5">#25CCCCCC</color>
+    <color name="travel_dms_toolbar_bg_shadow_bottom1">#00CCCCCC</color>
+    <color name="travel_dms_toolbar_bg_shadow_bottom2">#10CCCCCC</color>
+    <color name="travel_dms_toolbar_bg_shadow_bottom3">#15CCCCCC</color>
+    <color name="travel_dms_toolbar_bg_shadow_bottom4">#25CCCCCC</color>
 </resources>

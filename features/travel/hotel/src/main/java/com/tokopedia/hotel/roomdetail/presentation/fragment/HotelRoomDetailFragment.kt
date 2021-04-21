@@ -32,6 +32,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.HotelGqlMutation
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity.Companion.ROOM_DETAIL_SCREEN_NAME
@@ -263,7 +264,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 1 + hotelRoom.creditCardInfo.header.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             spannableString.setSpan(LeadingMarginSpan.Standard(50, 0), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            pay_at_hotel_title.text = getString(R.string.hotel_room_detail_pay_at_hotel)
+            pay_at_hotel_title.text = hotelRoom.isDirectPaymentString
             pay_at_hotel_desc.text = spannableString
         }
     }
@@ -370,7 +371,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 room_detail_button.isEnabled = false
                 trackingHotelUtil.hotelChooseRoomDetails(context, hotelRoom, roomIndex, addToCartParam,
                         ROOM_DETAIL_SCREEN_NAME)
-                roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
+                roomDetailViewModel.addToCart(HotelGqlMutation.ADD_TO_CART, addToCartParam)
             } else {
                 navigateToLoginPage()
             }

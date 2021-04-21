@@ -5,8 +5,12 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common_digital.atc.DigitalAddToCartUseCase
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_KODE_PROMO
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.response.CancelVoucherData
@@ -15,12 +19,14 @@ import com.tokopedia.digital_checkout.data.response.ResponsePatchOtpSuccess
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getAttributesCheckout
+import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getDummyGetCartResponse
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.usecase.DigitalCancelVoucherUseCase
 import com.tokopedia.digital_checkout.usecase.DigitalCheckoutUseCase
 import com.tokopedia.digital_checkout.usecase.DigitalGetCartUseCase
 import com.tokopedia.digital_checkout.usecase.DigitalPatchOtpUseCase
 import com.tokopedia.digital_checkout.utils.DeviceUtil
+import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.data.model.response.DataResponse
@@ -34,6 +40,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertNull
 import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Rule
@@ -136,15 +143,6 @@ class DigitalCartViewModelTest {
         assert(mappedCartInfoData.id == dummyResponse.id)
         assert(mappedCartInfoData.isInstantCheckout == dummyResponse.isInstantCheckout)
 
-        // show correct additional info list
-        val additionalInfoValue = digitalCartViewModel.cartAdditionalInfoList.value
-        assert(additionalInfoValue != null)
-        assert(additionalInfoValue?.getOrNull(0)?.title == dummyResponse.additionalInfo.getOrNull(0)?.title)
-        assert(additionalInfoValue?.getOrNull(0)?.items?.getOrNull(0)?.label
-                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label)
-        assert(additionalInfoValue?.getOrNull(0)?.items?.getOrNull(0)?.value
-                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value)
-
         // show correct total price
         assert(digitalCartViewModel.totalPrice.value != null)
         assert(digitalCartViewModel.totalPrice.value == dummyResponse.price)
@@ -230,15 +228,6 @@ class DigitalCartViewModelTest {
                 dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
         assert(mappedCartInfoData.id == dummyResponse.id)
         assert(mappedCartInfoData.isInstantCheckout == dummyResponse.isInstantCheckout)
-
-        // show correct additional info list
-        val additionalInfoValue = digitalCartViewModel.cartAdditionalInfoList.value
-        assert(additionalInfoValue != null)
-        assert(additionalInfoValue?.getOrNull(0)?.title == dummyResponse.additionalInfo.getOrNull(0)?.title)
-        assert(additionalInfoValue?.getOrNull(0)?.items?.getOrNull(0)?.label
-                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label)
-        assert(additionalInfoValue?.getOrNull(0)?.items?.getOrNull(0)?.value
-                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value)
 
         // show correct total price
         assert(digitalCartViewModel.totalPrice.value != null)
@@ -505,7 +494,25 @@ class DigitalCartViewModelTest {
     }
 
     @Test
-    fun onRecievedPromoCode_addOnAdditionalInfoAndUpdateTotalPayment() {
+    fun onRecievedPromoCode_notUpdateTotalPayment() {
+        // given
+        val promoData = PromoData()
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.setPromoData(promoData)
+        digitalCartViewModel.applyPromoData(promoData)
+
+        // then
+        // if amount == 0, then expected if total price not updated and no changes on additional info
+        assert(digitalCartViewModel.promoData.value?.amount == 0)
+        assert(digitalCartViewModel.promoData.value?.promoCode == "")
+        assert(digitalCartViewModel.totalPrice.value == getDummyGetCartResponse().price)
+    }
+
+
+    @Test
+    fun onResetVoucherCart_addOnAdditionalInfoAndUpdateTotalPayment() {
         // given
         val promoData = PromoData()
         promoData.amount = 12000
@@ -516,104 +523,186 @@ class DigitalCartViewModelTest {
         getCart_onSuccess_NoNeedOtpAndIsNotSubscribed()
         digitalCartViewModel.setPromoData(promoData)
         digitalCartViewModel.applyPromoData(promoData)
+        digitalCartViewModel.resetCheckoutSummaryPromoAndTotalPrice()
 
         // then
-        // if promo has its amount, then apply promo to total price and add additional info
-        assert(digitalCartViewModel.promoData.value?.amount == 12000)
-        assert(digitalCartViewModel.promoData.value?.promoCode == "dummyPromoCode")
-        assert(digitalCartViewModel.totalPrice.value == DigitalCartDummyData.getDummyGetCartResponseWithDefaultCrossSellType().price)
-        assert(digitalCartViewModel.cartAdditionalInfoList.value?.size == 2)
-        assert(digitalCartViewModel.cartAdditionalInfoList.value?.lastOrNull()?.title == "Pembayaran")
+        assert(digitalCartViewModel.totalPrice.value == getDummyGetCartResponse().price)
     }
 
     @Test
-    fun onRecievedPromoCode_notUpdateTotalPayment() {
+    fun onApplyDiscountPromoCode_updateCheckoutSummary() {
         // given
         val promoData = PromoData()
+        promoData.amount = 12000
+        promoData.promoCode = "dummyPromoCode"
+        promoData.state = TickerCheckoutView.State.ACTIVE
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.setPromoData(promoData)
+        digitalCartViewModel.applyPromoData(promoData)
+
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            it.title == STRING_KODE_PROMO}
+        assert(summary?.priceAmount == String.format("-%s", getStringIdrFormat(promoData.amount.toDouble())))
+    }
+
+    @Test
+    fun onApplyNonDiscountPromoCode_notUpdateCheckoutSummary() {
+        // given
+        val promoData = PromoData()
+        promoData.state = TickerCheckoutView.State.ACTIVE
 
         // when
         getCart_onSuccess_NoNeedOtpAndIsNotSubscribed()
         digitalCartViewModel.setPromoData(promoData)
         digitalCartViewModel.applyPromoData(promoData)
 
-        // then
-        // if amount == 0, then expected if total price not updated and no changes on additional info
-        assert(digitalCartViewModel.promoData.value?.amount == 0)
-        assert(digitalCartViewModel.promoData.value?.promoCode == "")
-        assert(digitalCartViewModel.totalPrice.value == DigitalCartDummyData.getDummyGetCartResponseWithDefaultCrossSellType().price)
-        assert(digitalCartViewModel.cartAdditionalInfoList.value?.size == 1)
+            val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            it.title == STRING_KODE_PROMO}
+        assertNull(summary)
     }
 
-
     @Test
-    fun onResetVoucherCart_addOnAdditionalInfoAndUpdateTotalPayment() {
+    fun onDiscardPromoCode_updateCheckoutSummary() {
         // given
+        val promoData1 = PromoData()
+        promoData1.amount = 12000
+        promoData1.promoCode = "dummyPromoCode"
+        promoData1.state = TickerCheckoutView.State.ACTIVE
 
         // when
-        onRecievedPromoCode_addOnAdditionalInfoAndUpdateTotalPayment()
-        digitalCartViewModel.resetAdditionalInfoAndTotalPrice()
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.setPromoData(promoData1)
+        digitalCartViewModel.applyPromoData(promoData1)
+        digitalCartViewModel.resetCheckoutSummaryPromoAndTotalPrice()
+
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            it.title == STRING_KODE_PROMO}
+        assertNull(summary)
+    }
+
+    @Test
+    fun onCheckedFintechProduct_updateCheckoutSummary() {
+        // given
+        val fintechInfo = FintechProduct.FintechProductInfo(title = "fintech A")
+        val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0, info = fintechInfo, transactionType = "Pulsa")
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.onFintechProductChecked(fintechProduct, true, null)
 
         // then
-        assert(digitalCartViewModel.totalPrice.value == DigitalCartDummyData.getDummyGetCartResponseWithDefaultCrossSellType().price)
-        assert(digitalCartViewModel.cartAdditionalInfoList.value?.size == 1)
+        val fintechPrice = digitalCartViewModel.requestCheckoutParam.fintechProducts["3"]?.fintechAmount
+                ?: 0.0
+        val fintechName = digitalCartViewModel.requestCheckoutParam.fintechProducts["3"]?.transactionType
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull {
+            it.title == fintechName
+        }
+
+        assert(summary?.priceAmount == getStringIdrFormat(fintechPrice))
+    }
+
+    @Test
+    fun onUncheckedFintechProduct_updateCheckoutSummary() {
+        // given
+        val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0)
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.updateCheckoutSummaryWithFintechProduct(fintechProduct, true)
+        digitalCartViewModel.updateCheckoutSummaryWithFintechProduct(fintechProduct, false)
+
+        // then
+        val fintechName = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.fintechProduct?.getOrNull(0)?.info?.title
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull {
+            it.title == fintechName
+        }
+
+        assertNull(summary)
+        assert(digitalCartViewModel.requestCheckoutParam.fintechProducts.isEmpty())
+    }
+
+    @Test
+    fun onInputPrice_UpdateCheckoutSummary() {
+        // given
+        val userInputPrice = 30000.0
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.setSubtotalPaymentSummaryOnUserInput(userInputPrice)
+
+        // then
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull {
+            it.title == STRING_SUBTOTAL_TAGIHAN
+        }
+
+        assert(summary?.priceAmount == getStringIdrFormat(userInputPrice))
     }
 
     @Test
     fun updateTotalPriceWithFintechProduct_checked() {
         // given
+        val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0)
 
         // when
-        getCart_onSuccess_NoNeedOtpAndIsNotSubscribed()
-        digitalCartViewModel.updateTotalPriceWithFintechProduct(true, null)
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.onFintechProductChecked(fintechProduct, true, null)
 
         // then
         // if fintech product checked, update total price
-        val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain ?: 0.0
-        val fintechPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ?: 0.0
+        val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain
+                ?: 0.0
+        val fintechPrice = digitalCartViewModel.requestCheckoutParam.fintechProducts["3"]?.fintechAmount
+                ?: 0.0
         assert(digitalCartViewModel.totalPrice.value == oldTotalPrice + fintechPrice)
     }
 
     @Test
     fun updateTotalPriceWithFintechProduct_unChecked() {
         // given
+        val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0)
 
         // when
         updateTotalPriceWithFintechProduct_checked()
-        digitalCartViewModel.updateTotalPriceWithFintechProduct(false, null)
+        digitalCartViewModel.onFintechProductChecked(fintechProduct, false, null)
 
         // then
         val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain ?: 0
+        assert(digitalCartViewModel.requestCheckoutParam.fintechProducts.isEmpty())
         assert(digitalCartViewModel.totalPrice.value == oldTotalPrice)
     }
 
     @Test
     fun updateTotalPriceWithFintechProductAndInputPrice_checked() {
         // given
+        val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0)
         val userInputPrice = 30000.0
 
         // when
-        getCart_onSuccess_NoNeedOtpAndIsNotSubscribed()
-        digitalCartViewModel.updateTotalPriceWithFintechProduct(true, userInputPrice)
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.onFintechProductChecked(fintechProduct, true, userInputPrice)
 
         // then
         // if fintech product checked, update total price
-        val fintechPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ?: 0.0
+        val fintechPrice = digitalCartViewModel.requestCheckoutParam.fintechProducts["3"]?.fintechAmount
+                ?: 0.0
         assert(digitalCartViewModel.totalPrice.value == userInputPrice + fintechPrice)
     }
 
     @Test
     fun updateTotalPriceWithFintechProductAndInputPrice_unChecked() {
         // given
+        val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0)
         val userInputPrice = 30000.0
 
         // when
-        getCart_onSuccess_NoNeedOtpAndIsNotSubscribed()
-        digitalCartViewModel.updateTotalPriceWithFintechProduct(false, userInputPrice)
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.onFintechProductChecked(fintechProduct, false, userInputPrice)
         digitalCartViewModel.onSubscriptionChecked(true)
 
         // then
         // if fintech product checked, update total price
-        val fintechPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ?: 0.0
         assert(digitalCartViewModel.totalPrice.value == userInputPrice)
     }
 
@@ -623,11 +712,26 @@ class DigitalCartViewModelTest {
         val userInput = 100000.0
 
         // when
-        getCart_onSuccess_NoNeedOtpAndIsNotSubscribed()
-        digitalCartViewModel.setTotalPriceBasedOnUserInput(userInput, false)
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.setTotalPriceBasedOnUserInput(userInput)
 
         // then
         assert(digitalCartViewModel.totalPrice.value == userInput)
+    }
+
+    @Test
+    fun setSubtotalPayment_afterUserInputNumber() {
+        // given
+        val userInput = 100000.0
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.setSubtotalPaymentSummaryOnUserInput(userInput)
+
+        // then
+        val summary = digitalCartViewModel.payment.value!!.summaries.first {
+            it.title == DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN }
+        assert(summary.priceAmount == getStringIdrFormat(userInput))
     }
 
     @Test

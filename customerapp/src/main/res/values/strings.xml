@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Tokopedia</string>
+
+    <string name="asset_statements">[{\"include\": \"https://www.tokopedia.com/.well-known/assetlinks.json\"}]</string>
     <string name="lihat_smua_promo">Lihat Semua Promo</string>
 
     <!-- Push Notif -->

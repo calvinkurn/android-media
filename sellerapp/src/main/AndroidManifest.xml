@@ -20,8 +20,8 @@
     <application
         android:name=".SellerMainApplication"
         android:allowBackup="false"
-        android:icon="@drawable/ic_sellerapp_launcher"
-        android:roundIcon="@drawable/ic_sellerapp_launcher"
+        android:icon="@mipmap/ic_launcher_sellerapp_ramadhan"
+        android:roundIcon="@mipmap/ic_sellerapp_launcher_ramadhan_round"
         android:label="@string/app_name"
         android:hasCode="true"
         android:supportsRtl="true"
@@ -34,7 +34,7 @@
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3.Launcher">
+            android:theme="@style/Theme.Tokopedia3.Sellerapp.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,10 +50,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3.PlainGreen">
         </activity>
-
-        <activity
-            android:name=".welcome.WelcomeActivity"
-            android:screenOrientation="portrait"/>
 
         <activity
             android:name="com.tokopedia.sellerhome.view.activity.SellerHomeActivity"

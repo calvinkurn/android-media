@@ -59,10 +59,10 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.topads.view.activity.KeywordSearchActivity"
+            android:name="com.tokopedia.topads.view.activity.KeywordSuggestionActivity"
+            android:label="@string/add_keyword"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
-
-        </activity>
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="adjustPan" />
     </application>
 </manifest>
