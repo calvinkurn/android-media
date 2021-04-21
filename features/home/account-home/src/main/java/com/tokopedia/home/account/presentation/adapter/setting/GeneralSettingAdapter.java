@@ -105,7 +105,11 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
-        return settingItems.size();
+        if (settingItems != null) {
+            return settingItems.size();
+        } else {
+            return 0;
+        }
     }
 
     class GeneralSettingViewHolder extends RecyclerView.ViewHolder{
