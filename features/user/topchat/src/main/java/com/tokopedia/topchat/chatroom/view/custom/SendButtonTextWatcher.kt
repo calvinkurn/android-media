@@ -3,8 +3,6 @@ package com.tokopedia.topchat.chatroom.view.custom
 import android.text.Editable
 import android.text.TextWatcher
 import com.tokopedia.topchat.chatroom.view.listener.ReplyBoxTextListener
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
 
 class SendButtonTextWatcher (
         private val replyBoxTextListener: ReplyBoxTextListener
