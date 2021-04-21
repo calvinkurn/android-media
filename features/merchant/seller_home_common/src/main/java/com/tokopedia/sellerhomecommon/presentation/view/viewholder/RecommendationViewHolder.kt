@@ -18,6 +18,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWi
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_recommendation_widget.view.*
 import kotlinx.android.synthetic.main.shc_recommendation_widget_error.view.*
@@ -119,6 +120,15 @@ class RecommendationViewHolder(
                     RecommendationTickerUiModel.TYPE_WARNING -> Ticker.TYPE_WARNING
                     else -> Ticker.TYPE_ANNOUNCEMENT
                 }
+                tickerShcRecommendation.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        RouteManager.route(context, linkUrl.toString())
+                    }
+
+                    override fun onDismiss() {
+
+                    }
+                })
 
                 val marginLeft = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
                 val marginTop = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
