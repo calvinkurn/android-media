@@ -68,6 +68,7 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImageRounded(url, roundedRadius) { bitmap, dataSource ->
         handleOnResourceReady(dataSource, bitmap, performanceMonitoring)
+        this.setImageBitmap(bitmap)
     }
 }
 
