@@ -20,14 +20,9 @@ data class RestrictionInfoResponse(
         const val SHOP_EXCLUSIVE_TYPE = "exclusive_discount"
     }
 
-    fun restrictionShopFollowersType(): Boolean {
-        return restrictionData.firstOrNull()?.restrictionShopFollowersType() ?: false
+    fun getReByProductId(productId: String): RestrictionData? {
+        return restrictionData.firstOrNull { it.productId == productId }
     }
-
-    fun restrictionExclusiveType(): Boolean {
-        return restrictionData.firstOrNull()?.restrictionExclusiveType() ?: false
-    }
-
 }
 
 data class RestrictionData(
