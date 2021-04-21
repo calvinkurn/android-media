@@ -58,7 +58,7 @@ object ShopOperationalHourMapper {
 
         val timeLabel = when {
             is24Hour && isShopOpen -> R.string.shop_operational_hour_24_hour
-            !isShopActive -> R.string.shop_operational_hour_set_operational_time
+            !isShopActive && !isShopClosed -> R.string.shop_operational_hour_set_operational_time
             else -> null
         }
 
