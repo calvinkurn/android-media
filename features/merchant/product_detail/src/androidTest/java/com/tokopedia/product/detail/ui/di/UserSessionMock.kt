@@ -16,4 +16,5 @@ class UserSessionMock(context: Context?) : UserSession(context) {
     override fun getUserId(): String {
         return "123"
     }
+
 }

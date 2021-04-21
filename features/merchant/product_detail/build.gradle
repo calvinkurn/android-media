@@ -17,12 +17,15 @@ android {
         unitTests.all {
             testLogging.events = ["passed", "skipped", "failed"]
         }
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
+
 }
 
 buildscript {
@@ -156,6 +159,7 @@ dependencies {
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
 
 project.ext {

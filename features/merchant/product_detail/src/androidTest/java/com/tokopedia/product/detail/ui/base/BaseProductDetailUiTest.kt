@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.ui.base
 
-//import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.Context
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
@@ -33,15 +32,17 @@ abstract class BaseProductDetailUiTest {
 
     protected var productDetailTestComponent: ProductDetailTestComponent? = null
 
+    abstract fun before()
+
     @Before
     fun doBeforeRun() {
+        before()
         productDetailTestComponent = DaggerProductDetailTestComponent
                 .builder()
                 .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
 
         productDetailTestComponent?.inject(this)
-
 
         val intent = ProductDetailActivityMock.createIntent(context, "1060957410")
         activityCommonRule.launchActivity(intent)

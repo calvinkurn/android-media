@@ -17,6 +17,17 @@ import java.util.*
 
 object InstrumentationAuthHelper {
 
+    fun modifyUserSession(
+            context: Context = InstrumentationRegistry.getInstrumentation().targetContext,
+            modifyUserSession: ((UserSession) -> Unit)) {
+        try {
+            val userSession = UserSession(context)
+            modifyUserSession.invoke(userSession)
+        } catch (throwable: Throwable) {
+            throwable.printStackTrace()
+        }
+    }
+
     fun loginInstrumentationTestUser1() {
         userSession {
             userId = "108956738"
@@ -61,7 +72,22 @@ object InstrumentationAuthHelper {
     ) {
         try {
             val userSession = UserSession(context)
+            userSession.setIsLogin(true)
+            userSession.action()
+        }
+        catch (throwable: Throwable) {
+            throwable.printStackTrace()
+        }
+    }
 
+    private fun userSessionWithModifier(
+            context: Context = InstrumentationRegistry.getInstrumentation().targetContext,
+            modifyUserSession: ((UserSession) -> Unit)? = null,
+            action: UserSession.() -> Unit
+    ) {
+        try {
+            val userSession = UserSession(context)
+            modifyUserSession?.invoke(userSession)
             userSession.setIsLogin(true)
             userSession.action()
         }
