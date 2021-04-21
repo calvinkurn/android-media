@@ -34,7 +34,7 @@ object BranchProductGroup {
             ROAMING             -> listOf("1078", "1911", "1341")
             TELKOM              -> listOf("689")
             TV_KABEL            -> listOf("577", "1249", "1600")
-            else -> null
+            else                -> listOf(categoryId)
         }
     }
 }
