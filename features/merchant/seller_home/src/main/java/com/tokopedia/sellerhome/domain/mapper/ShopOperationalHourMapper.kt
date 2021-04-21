@@ -19,7 +19,12 @@ object ShopOperationalHourMapper {
         closedInfoResponse: ShopClosedInfoDetailResponse,
         shopSettingsAccess: Boolean
     ): ShopOperationalUiModel {
-        val startTime = if(closedInfoResponse.isClosed()) {
+        val isShopOpen = closedInfoResponse.isOpen()
+        val isShopClosed = closedInfoResponse.isClosed()
+        val isShopActive = operationalHourResponse.statusActive
+        val is24Hour = operationalHourResponse.is24Hour()
+
+        val startTime = if(isShopClosed) {
             DateFormatUtils.getFormattedDate(
                 closedInfoResponse.startDate,
                 SHOP_CLOSED_INFO_DATE_FORMAT
@@ -32,7 +37,7 @@ object ShopOperationalHourMapper {
             )
         }
 
-        val endTime = if(closedInfoResponse.isClosed()) {
+        val endTime = if(isShopClosed) {
             DateFormatUtils.getFormattedDate(
                 closedInfoResponse.openDate,
                 SHOP_CLOSED_INFO_DATE_FORMAT
@@ -45,31 +50,31 @@ object ShopOperationalHourMapper {
             )
         }
 
-        val time = if(closedInfoResponse.isOpen()) {
+        val time = if(isShopOpen) {
             "$startTime - $endTime $OPERATIONAL_HOUR_TIMEZONE"
         } else {
             "$startTime - $endTime"
         }
 
         val timeLabel = when {
-            operationalHourResponse.is24Hour() -> R.string.shop_operational_hour_24_hour
-            !operationalHourResponse.statusActive -> R.string.shop_operational_hour_set_operational_time
+            is24Hour && isShopOpen -> R.string.shop_operational_hour_24_hour
+            !isShopActive -> R.string.shop_operational_hour_set_operational_time
             else -> null
         }
 
         val status = when {
-            closedInfoResponse.isClosed() -> R.string.settings_operational_hour_not_set
-            operationalHourResponse.statusActive -> R.string.settings_operational_hour_open
+            isShopClosed -> R.string.settings_operational_hour_not_set
+            isShopActive -> R.string.settings_operational_hour_open
             else -> R.string.settings_operational_hour_closed
         }
 
         val labelType = when {
-            closedInfoResponse.isClosed() -> Label.GENERAL_LIGHT_RED
-            operationalHourResponse.statusActive -> Label.GENERAL_LIGHT_GREEN
+            isShopClosed -> Label.GENERAL_LIGHT_RED
+            isShopActive -> Label.GENERAL_LIGHT_GREEN
             else -> Label.GENERAL_LIGHT_GREY
         }
 
-        val icon = if(closedInfoResponse.isClosed()) {
+        val icon = if(isShopClosed) {
             R.drawable.ic_sah_calendar
         } else {
             R.drawable.ic_sah_clock
