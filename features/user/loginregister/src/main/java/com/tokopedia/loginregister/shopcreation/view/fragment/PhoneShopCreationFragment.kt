@@ -177,6 +177,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             override fun afterTextChanged(s: Editable) {
                 super.afterTextChanged(s)
                 removeFirstZeroPhoneNUmber(s)
+                removePhoneMaskingAtFirst(s)
             }
         })
 
@@ -407,6 +408,14 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun removeFirstZeroPhoneNUmber(s: Editable) {
         s.toString()?.let {
             if (it.isNotEmpty() && it.first().toString() == "0") {
+                textFieldPhone.textFieldInput.setText(it.drop(1))
+            }
+        }
+    }
+
+    private fun removePhoneMaskingAtFirst(s: Editable) {
+        s.toString()?.let {
+            if (it.isNotEmpty() && it.first().toString() == "-") {
                 textFieldPhone.textFieldInput.setText(it.drop(1))
             }
         }
