@@ -133,6 +133,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private val loaderContent by lazy { view?.findViewById<ConstraintLayout>(R.id.loader_content) }
 
     private val layoutNoAddress by lazy { view?.findViewById<ConstraintLayout>(R.id.layout_no_address) }
+    private val iuNoAddress by lazy { view?.findViewById<ImageUnify>(R.id.iu_no_address) }
     private val descNoAddress by lazy { view?.findViewById<Typography>(R.id.desc_no_address) }
     private val btnAddNewAddress by lazy { view?.findViewById<UnifyButton>(R.id.btn_occ_add_new_address) }
 
@@ -577,6 +578,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         val displayMetrics = context?.resources?.displayMetrics
         val minHeight = if (displayMetrics != null) 420.dpToPx(displayMetrics) else 0
         layoutNoAddress?.layoutParams?.height = max(height, minHeight)
+        iuNoAddress?.setImageUrl(NO_ADDRESS_IMAGE)
         descNoAddress?.text = getString(R.string.occ_lbl_desc_no_address)
         btnAddNewAddress?.setOnClickListener {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
@@ -1457,6 +1459,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         const val REQUEST_CODE_ADD_NEW_ADDRESS = 21
 
         const val QUERY_PRODUCT_ID = "product_id"
+
+        private const val NO_ADDRESS_IMAGE = "https://images.tokopedia.net/img/android/cart/ic_occ_no_address.png"
 
         private const val SOURCE_ADD_PROFILE = "add_profile"
         private const val SOURCE_PDP = "pdp"
