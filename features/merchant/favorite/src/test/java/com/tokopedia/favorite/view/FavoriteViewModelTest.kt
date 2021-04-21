@@ -5,7 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
-import com.tokopedia.favorite.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCaseWithCoroutine
 import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUseCaseWithCoroutine
 import com.tokopedia.favorite.domain.interactor.GetInitialDataPageUseCaseWithCoroutine
@@ -56,7 +56,7 @@ class FavoriteViewModelTest {
 
     private val viewModel by lazy {
         FavoriteViewModel(
-                TestDispatcherProvider(),
+                CoroutineTestDispatchersProvider,
                 getInitialDataPageUseCase,
                 toggleFavouriteShopUseCase,
                 getAllDataFavoriteUseCase,

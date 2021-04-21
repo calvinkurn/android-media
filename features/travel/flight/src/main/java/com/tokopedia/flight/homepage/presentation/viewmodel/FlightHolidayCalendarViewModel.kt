@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.calendar.Legend
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -14,8 +14,8 @@ import java.util.*
 import javax.inject.Inject
 
 class FlightHolidayCalendarViewModel @Inject constructor(private val useCase: TravelCalendarHolidayUseCase,
-                                                         dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+                                                         dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     val holidayCalendarData = MutableLiveData<ArrayList<Legend>>()
 
@@ -24,10 +24,10 @@ class FlightHolidayCalendarViewModel @Inject constructor(private val useCase: Tr
             useCase.execute().also {
                 when (it) {
                     is Success -> {
-                        holidayCalendarData.value = mappingHolidayData(it.data)
+                        holidayCalendarData.postValue(mappingHolidayData(it.data))
                     }
                     is Fail -> {
-                        holidayCalendarData.value = arrayListOf()
+                        holidayCalendarData.postValue(arrayListOf())
                     }
                 }
             }

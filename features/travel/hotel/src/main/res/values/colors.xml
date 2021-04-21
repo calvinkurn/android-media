@@ -26,6 +26,8 @@
 
     <color name="hotel_textview_light">#ae31353b</color>
 
+    <color name="hotel_color_active_price_marker">#00AA5B</color>
+
     <color name="hotel_property_label_text_color">#9e9fa3</color>
     <color name="hotel_dms_property_label_background_color">#FFEAEF</color>
 

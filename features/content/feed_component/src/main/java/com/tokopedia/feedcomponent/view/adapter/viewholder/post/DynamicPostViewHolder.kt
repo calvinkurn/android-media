@@ -22,6 +22,7 @@ import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateHeader
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
+import com.tokopedia.feedcomponent.util.ColorUtil
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
@@ -254,7 +255,7 @@ open class DynamicPostViewHolder(v: View,
                         .replace("\n","<br/>")
                         .replace(NEWLINE, "<br/>")
                         .plus("... ")
-                        .plus("<font color='#42b549'><b>")
+                        .plus("<font color='${ColorUtil.getColorFromResToString(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)}'>" + "<b>")
                         .plus(caption.buttonName)
                         .plus("</b></font>")
 
