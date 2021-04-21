@@ -28,6 +28,7 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
 
     protected var sellerSmartReply = GetExistingChatPojo()
     protected var sellerTopBot = GetExistingChatPojo()
+    protected var sellerAutoReply = GetExistingChatPojo()
     protected var sellerProductChatReplies = GetExistingChatPojo()
     protected var sellerProductCarouselChatReplies = GetExistingChatPojo()
     protected var sellerBroadcastProductCarouselChatReplies = GetExistingChatPojo()
@@ -58,6 +59,10 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
         )
         sellerTopBot = AndroidFileUtil.parse(
                 "seller/success_chat_reply_topbot.json",
+                GetExistingChatPojo::class.java
+        )
+        sellerAutoReply = AndroidFileUtil.parse(
+                "seller/success_chat_reply_auto_reply.json",
                 GetExistingChatPojo::class.java
         )
         sellerProductChatReplies = AndroidFileUtil.parse(
