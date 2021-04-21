@@ -134,7 +134,7 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
     }
 
     fun isFromSmartReply(): Boolean {
-        return source == SOURCE_TOPBOT
+        return source == SOURCE_TOPBOT || source.startsWith(SOURCE_SMART_REPLY)
     }
 
     fun isFromBroadCast(): Boolean {
