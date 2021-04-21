@@ -16,7 +16,6 @@
         android:layout_marginEnd="@dimen/dp_12"
         android:layout_marginBottom="@dimen/dp_12"
         android:layout_marginStart="@dimen/dp_12"
-        android:layout_gravity="center"
         >
 
         <com.tokopedia.iconunify.IconUnify
@@ -25,8 +24,6 @@
             android:layout_height="@dimen/unify_space_24"
             tools:src="@tools:sample/avatars"
             tools:ignore="ContentDescription"
-            android:visibility="gone"
-            tools:visibility="gone"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -36,8 +33,6 @@
             android:layout_marginTop="@dimen/dp_8"
             app:typographyType="heading_6"
             tools:text="Layar"
-            android:visibility="gone"
-            tools:visibility="gone"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -48,35 +43,8 @@
             android:layout_marginTop="@dimen/dp_6"
             app:typographyType="body_3"
             android:ellipsize="end"
-            android:lines="3"
-            android:visibility="gone"
-            tools:visibility="gone"
+            android:maxLines="3"
             tools:text="6.1 inch Super Retina HDR Display, 1170 x 2532 pixels"
-            />
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/lihat_logo"
-            android:layout_width="@dimen/unify_space_48"
-            android:layout_height="@dimen/unify_space_48"
-            app:srcCompat="@drawable/ic_product_action_see_more_arrow_normal_352"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            tools:visibility="visible"
-            />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/lihat_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/catalog_lihat_selengkapnya_two_lines"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
-            android:textColor="@color/Unify_G500"
-            android:visibility="gone"
-            tools:visibility="visible"
             />
 
     </LinearLayout>

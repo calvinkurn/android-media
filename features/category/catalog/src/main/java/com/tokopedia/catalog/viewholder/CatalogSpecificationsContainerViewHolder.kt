@@ -22,7 +22,10 @@ class CatalogSpecificationsContainerViewHolder(private val view : View,
     override fun bind(element: CatalogTopSpecificationDataModel) {
         val specificationsRV = view.findViewById<RecyclerView>(R.id.catalog_specification_rv)
         specificationsRV.layoutManager = layoutManager
-        specificationsAdapter = CatalogSpecificationsAdapter(element.topSpecificationsList,catalogDetailListener)
+        specificationsAdapter = CatalogSpecificationsAdapter(element.topSpecificationsList)
         specificationsRV.adapter = specificationsAdapter!!
+        view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.view_more_specifications).setOnClickListener {
+            catalogDetailListener.onViewMoreSpecificationsClick()
+        }
     }
 }

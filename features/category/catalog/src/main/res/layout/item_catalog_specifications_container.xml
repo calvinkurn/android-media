@@ -36,6 +36,18 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/view_more_specifications"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/product_specification_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:text="@string/catalog_lihat_selengkapnya"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_G500"
+        />
 
     <View
         android:layout_width="match_parent"
