@@ -3,6 +3,7 @@ package com.tokopedia.flight.homepage.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
+import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -1047,4 +1048,32 @@ class FlightHomepageViewModelTest {
         // then
     }
 
+    @Test
+    fun validateSendTrackingVideoBannerImpression_LoggedIn(){
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns true
+        coEvery { userSessionInterface.userId } returns "dummy user id"
+
+        flightHomepageViewModel.sendTrackingVideoBannerImpression(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel,
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
+        }
+    }
+
+    @Test
+    fun validateSendTrackingVideoBannerImpression_NotLoggedIn(){
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns false
+
+        flightHomepageViewModel.sendTrackingVideoBannerImpression(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel,
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
+        }
+    }
 }
