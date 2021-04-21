@@ -12,7 +12,10 @@ interface ShopPerformanceListener {
 interface ItemShopPerformanceListener {
     fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String,
                                          identifierPerformanceDetail: String)
-    fun onViewItemDetailPerformanceListener(view: View)
+}
+
+interface PeriodDetailPerformanceListener {
+    fun onAddCoachMarkItemPeriod(view: View)
 }
 
 interface ItemHeaderShopPerformanceListener {
@@ -40,6 +43,7 @@ interface ItemStatusPowerMerchantListener {
 
 interface SectionFaqListener {
     fun onHelpCenterClicked()
+    fun onImpressHelpCenter()
 }
 
 interface ItemFaqListener {
@@ -50,6 +54,8 @@ interface ItemTimerNewSellerListener {
     fun onBtnShopPerformanceToFaqClicked()
     fun onBtnShopPerformanceToInterruptClicked(infoPageUrl: String)
     fun onWatchVideoClicked(videoId: String)
+    fun onImpressBtnLearnPerformance()
+    fun onImpressWatchVideo()
 }
 
 interface GlobalErrorListener {

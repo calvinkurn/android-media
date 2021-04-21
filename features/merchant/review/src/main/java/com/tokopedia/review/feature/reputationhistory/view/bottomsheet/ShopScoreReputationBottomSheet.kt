@@ -8,9 +8,12 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.constant.PeriodType.COMMUNICATION_PERIOD
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
+import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -72,18 +75,19 @@ class ShopScoreReputationBottomSheet : BaseBottomSheetShopScoreReputation() {
         tvDescGetBenefitPerformance = findViewById(R.id.tv_desc_get_benefit_performance)
         ivMoreFocusService = findViewById(R.id.iv_more_focus_shop_service)
         ivMoreInterestBuyer = findViewById(R.id.iv_more_interest_buyer)
+        btnShopPerformance = findViewById(R.id.btnShopPerformance)
     }
 
     private fun setupView(periodType: String) {
         cardDateMoveReputation?.background = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_content_info_penalty) }
-        tvDatePerformancePage?.text = MethodChecker.fromHtml(getString(R.string.desc_info_reputation_migrate_shop_score, "1 Juni 2021"))
+        tvDatePerformancePage?.text = MethodChecker.fromHtml(getString(R.string.desc_info_reputation_migrate_shop_score, getShopScoreDate(context)))
         tvMoreInterestBuyer?.text = MethodChecker.fromHtml(getString(R.string.more_interest_candidate_buyer))
 
         tvDescGetBenefitPerformance?.setTextMakeHyperlink(
                 if (userSession?.isGoldMerchant == true) getString(R.string.desc_get_benefit_performance_pm)
                 else getString(R.string.desc_get_benefit_performance_rm)) {
             val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
-            RouteManager.route(requireContext(), appLink)
+            RouteManager.route(context, appLink)
         }
 
         if (periodType == COMMUNICATION_PERIOD) {
@@ -91,7 +95,7 @@ class ShopScoreReputationBottomSheet : BaseBottomSheetShopScoreReputation() {
                 iconSpeakerReputation?.setImageDrawable(getIconUnifyDrawable(
                         it,
                         IconUnify.SPEAKER,
-                        ContextCompat.getColor(it, R.color.Unify_G500)
+                        ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                 ))
             }
         } else if (periodType == TRANSITION_PERIOD) {
@@ -99,7 +103,7 @@ class ShopScoreReputationBottomSheet : BaseBottomSheetShopScoreReputation() {
                 iconSpeakerReputation?.setImageDrawable(getIconUnifyDrawable(
                         it,
                         IconUnify.ERROR,
-                        ContextCompat.getColor(it, R.color.Unify_Y300)
+                        ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Y300)
                 ))
             }
         }
@@ -116,7 +120,7 @@ class ShopScoreReputationBottomSheet : BaseBottomSheetShopScoreReputation() {
             if (periodType.isBlank()) return@setOnClickListener
             when (periodType) {
                 COMMUNICATION_PERIOD -> {
-                    //go to info page
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, GMCommonUrl.SHOP_INTERRUPT_PAGE)
                 }
                 else -> {
                     RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)

@@ -7,7 +7,8 @@ data class ItemDetailPerformanceUiModel(var titleDetailPerformance: String = "",
                                         var colorValueDetailPerformance: String = "",
                                         var targetDetailPerformance: String = "",
                                         var isDividerHide: Boolean = false,
-                                        var identifierDetailPerformance: String = ""
+                                        var identifierDetailPerformance: String = "",
+                                        var parameterValueDetailPerformance: String = ""
 ): BaseShopPerformance {
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
         return typeFactory.type(this)

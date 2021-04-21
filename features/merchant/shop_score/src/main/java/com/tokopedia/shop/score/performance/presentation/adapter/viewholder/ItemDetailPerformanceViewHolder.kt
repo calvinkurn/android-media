@@ -4,9 +4,7 @@ import android.graphics.Color
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
@@ -19,18 +17,11 @@ class ItemDetailPerformanceViewHolder(view: View,
 
     companion object {
         val LAYOUT = R.layout.item_detail_shop_performance
-        const val POSITION_ITEM_DETAIL_PERFORMANCE_COACH_MARK = 2
+        const val PERCENT = "%"
     }
 
-    private val impressHolder = ImpressHolder()
     override fun bind(element: ItemDetailPerformanceUiModel?) {
         with(itemView) {
-            if (adapterPosition == POSITION_ITEM_DETAIL_PERFORMANCE_COACH_MARK) {
-                addOnImpressionListener(impressHolder) {
-                    itemShopPerformanceListener.onViewItemDetailPerformanceListener(this)
-                }
-            }
-
             setupItemDetailPerformance(element)
 
             setOnClickListener {
@@ -55,10 +46,16 @@ class ItemDetailPerformanceViewHolder(view: View,
 
             if (element?.isDividerHide == true) {
                 cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(context, R.drawable.corner_rounded_performance_list)
-                cardItemDetailShopPerformance?.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 8.toPx())
+                cardItemDetailShopPerformance?.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 16.toPx())
+            } else {
+                cardItemDetailShopPerformance?.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 0.toPx())
             }
             tvTitlePerformanceProgress?.text = element?.titleDetailPerformance.orEmpty()
-            tvPerformanceValue?.text = element?.valueDetailPerformance ?: "-"
+            tvPerformanceValue?.text =
+                    if (element?.parameterValueDetailPerformance == PERCENT)
+                        StringBuilder("${element.valueDetailPerformance}${element.parameterValueDetailPerformance}")
+                    else
+                        StringBuilder("${element?.valueDetailPerformance} ${element?.parameterValueDetailPerformance}")
             if (element?.colorValueDetailPerformance?.isNotBlank() == true) {
                 tvPerformanceValue.setTextColor(Color.parseColor(element.colorValueDetailPerformance))
             }

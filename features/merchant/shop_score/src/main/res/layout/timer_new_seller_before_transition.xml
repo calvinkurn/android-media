@@ -87,6 +87,12 @@
                 app:layout_constraintTop_toTopOf="@id/btn_shop_performance_learn"
                 app:typographyType="heading_5" />
 
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/watchVideoGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="ic_video_shop_performance_learn, tv_watch_video"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 

@@ -9,7 +9,7 @@ data class ShopScoreLevelParam (
         val shopID: String = "",
         @Expose
         @SerializedName("source")
-        val source: String = "sellerapp",
+        val source: String = "android",
         @Expose
         @SerializedName("calculateScore")
         val calculateScore: Boolean = false,

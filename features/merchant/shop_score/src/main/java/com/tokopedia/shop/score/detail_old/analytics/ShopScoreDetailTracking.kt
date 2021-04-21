@@ -20,4 +20,17 @@ object ShopScoreDetailTracking {
         )
         tracker.sendGeneralEvent(mapData)
     }
+
+    fun impressHereTickerOldShopScoreDetail(userId: String, typeShop: String) {
+        val mapData = mapOf(
+                TrackAppUtils.EVENT to ShopScoreTrackingConstant.VIEW_SHOP_SCORE_IRIS,
+                TrackAppUtils.EVENT_CATEGORY to ShopScoreTrackingConstant.OLD_PERFORMA_TOKO_PAGE,
+                TrackAppUtils.EVENT_ACTION to ShopScoreTrackingConstant.IMPRESSION_LEARN_MORE,
+                TrackAppUtils.EVENT_LABEL to typeShop,
+                ShopScoreTrackingConstant.BUSSINESS_UNIT to ShopScoreTrackingConstant.PHYSICAL_GOODS,
+                ShopScoreTrackingConstant.CURRENT_SITE to ShopScoreTrackingConstant.TOKOPEDIA_SELLER,
+                ShopScoreTrackingConstant.USER_ID to userId
+        )
+        tracker.sendGeneralEvent(mapData)
+    }
 }

@@ -13,6 +13,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
+import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.kotlin.extensions.view.*
@@ -64,6 +67,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     @Inject
     lateinit var sellerMenuTracker: SellerMenuTracker
+
     @Inject
     lateinit var adminPermissionMapper: AdminPermissionMapper
 
@@ -71,6 +75,8 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     lateinit var pmShopScoreInterruptHelper: PMShopScoreInterruptHelper
 
     private var canShowErrorToaster = true
+    private var isNewSeller = false
+    private var periodType = ""
 
     private val adapter by lazy {
         SellerMenuAdapter(OtherMenuAdapterTypeFactory(
@@ -135,6 +141,19 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {}
 
+    override fun onScoreClicked() {
+        if (periodType == COMMUNICATION_PERIOD) {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL, userSession.shopId)
+        } else {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE, userSession.shopId)
+        }
+        sellerMenuTracker.sendShopScoreEntryPoint(isNewSeller)
+    }
+
+    override fun onScoreImpressed() {
+        sellerMenuTracker.impressShopScoreEntryPoint(isNewSeller)
+    }
+
     override fun onSaldoClicked() {
         if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
             RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
@@ -183,13 +202,15 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observe(viewModel.shopAccountTickerPeriod) {
             when (it) {
                 is Success -> {
-                    if (it.data) {
+                    if (it.data.first) {
                         val tickerShopInfoData = TickerShopScoreUiModel(
-                                tickerTitle = getString(R.string.seller_menu_ticker_title_shop_score,
-                                        getShopScoreDate(requireContext())),
+                                tickerTitle = context?.let {
+                                    context -> getString(R.string.seller_menu_ticker_title_shop_score, getShopScoreDate(context))
+                                } ?: "",
                                 descTitle = getString(R.string.seller_menu_ticker_desc_shop_score))
                         adapter.showShopScoreTicker(tickerShopInfoData)
                     }
+                    isNewSeller = it.data.second.isNewSeller
                 }
             }
         }

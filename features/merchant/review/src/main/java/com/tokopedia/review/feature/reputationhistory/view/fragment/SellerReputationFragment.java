@@ -260,8 +260,10 @@ public class SellerReputationFragment extends BaseDaggerFragment
     }
 
     private void initCardShopScore(String periodType) {
-        String date = ReviewUtil.INSTANCE.getShopScoreDate(requireContext());
-        tvInfoMigrateReputation.setText(MethodChecker.fromHtml(getString(R.string.desc_title_card_shop_score, date)));
+        if (getContext() != null) {
+            String date = ReviewUtil.INSTANCE.getShopScoreDate(getContext());
+            tvInfoMigrateReputation.setText(MethodChecker.fromHtml(getString(R.string.desc_title_card_shop_score, date)));
+        }
         iconChevronRightReputationDetail.setOnClickListener(view -> showBottomSheetMoveShopScore(periodType));
 
         cardReputationShopScore.setOnClickListener(view -> showBottomSheetMoveShopScore(periodType));

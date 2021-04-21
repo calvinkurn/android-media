@@ -4,7 +4,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
@@ -19,19 +18,15 @@ class ItemStatusPMViewHolder(view: View,
         val LAYOUT = R.layout.item_status_power_merchant
     }
 
-    private val impressHolder = ImpressHolder()
-
     private val impressHolderPowerMerchantHeader = ImpressHolder()
 
     override fun bind(element: ItemStatusPMUiModel?) {
         if (element == null) return
         with(itemView) {
-            addOnImpressionListener(impressHolder) {
-                itemStatusPowerMerchantListener.onViewItemPowerMerchantListener(itemView)
-            }
+            itemStatusPowerMerchantListener.onViewItemPowerMerchantListener(containerPowerMerchant)
             containerDescPmSection?.showWithCondition(element.isInActivePM)
 
-            potentialPowerMerchantWidget.addOnImpressionListener(impressHolderPowerMerchantHeader) {
+            potentialPowerMerchantWidget?.addOnImpressionListener(impressHolderPowerMerchantHeader) {
                 itemStatusPowerMerchantListener.onImpressHeaderPowerMerchantSection()
             }
         }

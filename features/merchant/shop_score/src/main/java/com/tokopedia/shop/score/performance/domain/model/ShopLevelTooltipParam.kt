@@ -9,7 +9,7 @@ data class ShopLevelTooltipParam (
         val shopID: String = "",
         @Expose
         @SerializedName("source")
-        val source: String = "sellerapp",
+        val source: String = "android",
         @Expose
         @SerializedName("lang")
         val lang: String = "id"

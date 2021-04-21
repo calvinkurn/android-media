@@ -4,23 +4,30 @@ import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.BUSSI
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_CHECK_PENALTY
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_COMPLETE_INFO
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_CONTACT_HELP_CENTER
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_HELP_CENTER
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_LEARN_MORE
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_LEARN_SHOP_PERFORMANCE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_MERCHANT_TOOLS
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_SEE_ALL_BENEFIT
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_SEE_DETAIL_PENALTY
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_SHOP_SCORE
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_WATCH_VIDEO
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_YOUR_SHOP_GET_PM
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CURRENT_SITE
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_CALL_HELP_CENTER
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_CHECK_PENALTY
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_COMPLETE_INFO
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_GET_PM
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_HELP_CENTER
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_LEARN_MORE
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_LEARN_SHOP_PERFORMANCE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_MERCHANT_TOOLS
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_SEE_ALL_BENEFIT
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_SEE_PENALTY_DETAIL
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_WATCH_VIDEO
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.OLD_PERFORMA_TOKO_PAGE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.PHYSICAL_GOODS
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_SCORE_PAGE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_TYPE_OS
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_TYPE_PM
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_TYPE_RM
@@ -70,8 +77,8 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
         sendShopScoreTransitionItemEvent(CLICK_YOUR_SHOP_GET_PM)
     }
 
-    fun clickSeeAllBenefitInRM() {
-        sendShopScoreTransitionItemEvent(CLICK_SEE_ALL_BENEFIT)
+    fun clickSeeAllBenefitInRM(isNewSeller: Boolean) {
+        sendShopScoreTransitionItemEvent(CLICK_SEE_ALL_BENEFIT, isNewSeller)
     }
 
     fun clickLearMorePenaltyPage() {
@@ -96,10 +103,6 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
         tracker.sendGeneralEvent(mapData)
     }
 
-    fun impressHereTickerOldShopScoreDetail() {
-        impressShopScoreItemEvent(OLD_PERFORMA_TOKO_PAGE, IMPRESSION_LEARN_MORE)
-    }
-
     fun impressTickerPenaltyShopScore() {
         impressShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_SEE_PENALTY_DETAIL)
     }
@@ -112,12 +115,12 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
         impressShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_COMPLETE_INFO)
     }
 
-    fun impressPotentialPowerMerchant() {
-        impressShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_GET_PM)
+    fun impressPotentialPowerMerchant(isNewSeller: Boolean) {
+        impressShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_GET_PM, isNewSeller)
     }
 
-    fun impressSeeAllBenefitPowerMerchant() {
-        impressShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_SEE_ALL_BENEFIT)
+    fun impressSeeAllBenefitPowerMerchant(isNewSeller: Boolean) {
+        impressShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_SEE_ALL_BENEFIT, isNewSeller)
     }
 
     fun impressLearnMorePenaltyPage() {
@@ -125,7 +128,31 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
     }
 
     fun impressHelpCenterPenaltyDetail() {
-        impressShopScoreItemEvent(TRANSITION_PERIOD_PENALTY_PAGE, IMPRESSION_HELP_CENTER)
+        impressShopScoreItemEvent(TRANSITION_PERIOD_PENALTY_PAGE, IMPRESSION_CALL_HELP_CENTER)
+    }
+
+    fun impressWatchVideoNewSeller(isNewSeller: Boolean) {
+        impressShopScoreItemEvent(SHOP_SCORE_PAGE, IMPRESSION_WATCH_VIDEO, isNewSeller)
+    }
+
+    fun clickWatchVideoNewSeller() {
+        sendShopScoreItemEventNewSeller(CLICK_WATCH_VIDEO)
+    }
+
+    fun clickLearnShopPerformanceNewSeller() {
+        sendShopScoreItemEventNewSeller(CLICK_LEARN_SHOP_PERFORMANCE)
+    }
+
+    fun impressLearnShopPerformanceNewSeller(isNewSeller: Boolean) {
+        impressShopScoreItemEvent(SHOP_SCORE_PAGE, IMPRESSION_LEARN_SHOP_PERFORMANCE, isNewSeller)
+    }
+
+    fun clickHelpCenterFaqNewSeller() {
+        sendShopScoreItemEventNewSeller(CLICK_HELP_CENTER)
+    }
+
+    fun impressHelpCenterFaqNewSeller(isNewSeller: Boolean) {
+        impressShopScoreItemEvent(SHOP_SCORE_PAGE, IMPRESSION_HELP_CENTER, isNewSeller)
     }
 
     fun impressMerchantToolsRecommendation() {
@@ -142,12 +169,12 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
         tracker.sendGeneralEvent(mapData)
     }
 
-    private fun impressShopScoreItemEvent(categoryName: String, actionName: String) {
+    private fun impressShopScoreItemEvent(categoryName: String, actionName: String, isNewSeller: Boolean = false) {
         val mapData = mapOf(
                 TrackAppUtils.EVENT to VIEW_SHOP_SCORE_IRIS,
                 TrackAppUtils.EVENT_CATEGORY to categoryName,
                 TrackAppUtils.EVENT_ACTION to actionName,
-                TrackAppUtils.EVENT_LABEL to typeShop,
+                TrackAppUtils.EVENT_LABEL to  if (isNewSeller) "${ShopScoreTrackingConstant.NEW_SELLER} $typeShop" else typeShop,
                 BUSSINESS_UNIT to PHYSICAL_GOODS,
                 CURRENT_SITE to TOKOPEDIA_SELLER,
                 USER_ID to userSession.userId
@@ -155,12 +182,25 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
         tracker.sendGeneralEvent(mapData)
     }
 
-    private fun sendShopScoreTransitionItemEvent(actionName: String) {
+    private fun sendShopScoreTransitionItemEvent(actionName: String, isNewSeller: Boolean = false) {
         val mapData = mapOf(
                 TrackAppUtils.EVENT to CLICK_SHOP_SCORE,
                 TrackAppUtils.EVENT_CATEGORY to TRANSITION_PERIOD_SHOP_SCORE,
                 TrackAppUtils.EVENT_ACTION to actionName,
-                TrackAppUtils.EVENT_LABEL to typeShop,
+                TrackAppUtils.EVENT_LABEL to  if (isNewSeller) "${ShopScoreTrackingConstant.NEW_SELLER} $typeShop" else typeShop,
+                BUSSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_SELLER,
+                USER_ID to userSession.userId
+        )
+        tracker.sendGeneralEvent(mapData)
+    }
+
+    private fun sendShopScoreItemEventNewSeller(actionName: String) {
+        val mapData = mapOf(
+                TrackAppUtils.EVENT to CLICK_SHOP_SCORE,
+                TrackAppUtils.EVENT_CATEGORY to SHOP_SCORE_PAGE,
+                TrackAppUtils.EVENT_ACTION to actionName,
+                TrackAppUtils.EVENT_LABEL to "${ShopScoreTrackingConstant.NEW_SELLER} $typeShop",
                 BUSSINESS_UNIT to PHYSICAL_GOODS,
                 CURRENT_SITE to TOKOPEDIA_SELLER,
                 USER_ID to userSession.userId

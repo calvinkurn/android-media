@@ -138,11 +138,10 @@ class ShopInfoViewHolder(
     private fun showShopScore(uiModel: ShopInfoUiModel) {
         itemView.shopScore.text = uiModel.shopScore.toString()
         itemView.shopScoreLayout.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL, userSession?.shopId)
-            sellerMenuTracker?.sendShopScoreEntryPoint()
+            listener?.onScoreClicked()
         }
         itemView.shopScoreLayout.addOnImpressionListener(shopScoreImpressHolder) {
-            sellerMenuTracker?.impressShopScoreEntryPoint()
+            listener?.onScoreImpressed()
         }
     }
 
@@ -304,6 +303,8 @@ class ShopInfoViewHolder(
     }
 
     interface ShopInfoListener {
+        fun onScoreClicked()
+        fun onScoreImpressed()
         fun onSaldoClicked()
         fun onRefreshShopInfo()
     }
