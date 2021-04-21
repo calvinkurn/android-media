@@ -33,7 +33,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
@@ -80,7 +79,10 @@ import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
+import com.tokopedia.shop.common.util.ShopUtil.isShouldCheckShopType
+import com.tokopedia.shop.common.util.ShopUtil.isNotRegularMerchant
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
+import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
@@ -117,6 +119,7 @@ import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
+import com.tokopedia.shop.showcase.presentation.fragment.ShopPageShowcaseFragment
 import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
@@ -133,6 +136,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.new_shop_page_fragment_content_layout.*
 import kotlinx.android.synthetic.main.new_shop_page_main.*
+import kotlinx.android.synthetic.main.shop_page_tab_view.view.*
 import java.io.File
 import javax.inject.Inject
 
@@ -181,6 +185,7 @@ class NewShopPageFragment :
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
+        private const val IS_FIRST_TIME_SHOW_TAB_LABEL = "isFirstTimeShowTabLabel"
         private const val SOURCE = "shop page"
 
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
@@ -232,6 +237,12 @@ class NewShopPageFragment :
         get() = R.drawable.ic_shop_tab_product_active.takeIf {
             isUsingNewNavigation()
         } ?: -1
+    private val iconTabShowcaseInactive: Int
+        get() = R.drawable.ic_shop_tab_showcase_inactive.takeIf {
+            isUsingNewNavigation()
+        } ?: R.drawable.ic_shop_tab_showcase_inactive_old
+    private val iconTabShowcaseActive: Int
+        get() = R.drawable.ic_shop_tab_showcase_active
     private val iconTabFeedInactive: Int
         get() = R.drawable.ic_shop_tab_feed_inactive.takeIf {
             isUsingNewNavigation()
@@ -1061,12 +1072,12 @@ class NewShopPageFragment :
         context?.let {
             val drawable = ContextCompat.getDrawable(it, R.drawable.ic_cart_menu)
             if (drawable is LayerDrawable) {
-                val countDrawable = CountDrawable(it)
+                val countDrawable = ShopPageCountDrawable(it)
                 val cartCount = cartLocalCacheHandler?.getInt(TOTAL_CART_CACHE_KEY, 0).orZero()
                 countDrawable.setCount(cartCount.toString())
                 drawable.mutate()
                 drawable.setDrawableByLayerId(R.id.ic_cart_count, countDrawable)
-                menu?.findItem(R.id.action_cart)?.icon = drawable
+                menu?.findItem(R.id.menu_action_cart)?.icon = drawable
             }
         }
     }
@@ -1233,6 +1244,16 @@ class NewShopPageFragment :
         shopShareBottomSheet?.dismiss()
     }
 
+    private fun saveFirstShowTabLabel() {
+        sharedPreferences?.edit()?.run {
+            putBoolean(IS_FIRST_TIME_SHOW_TAB_LABEL, true)
+        }?.apply()
+    }
+
+    private fun isFirstTimeShowTabLabel(): Boolean? {
+        return sharedPreferences?.getBoolean(IS_FIRST_TIME_SHOW_TAB_LABEL, false)
+    }
+
     private fun setupTabs() {
         listShopPageTabModel = createListShopPageTabModel()
         viewPagerAdapter?.setTabData(listShopPageTabModel)
@@ -1250,7 +1271,13 @@ class NewShopPageFragment :
         viewPagerAdapter?.notifyDataSetChanged()
         tabLayout?.apply {
             for (i in 0 until tabCount) {
-                getTabAt(i)?.customView = viewPagerAdapter?.getTabView(i, selectedPosition)
+                val tabCustomView = viewPagerAdapter?.getTabView(i, selectedPosition)
+                if (listShopPageTabModel[i].tabFragment is ShopPageShowcaseFragment && isFirstTimeShowTabLabel() == false) {
+                    // temporary show label "BARU" for new showcase tab
+                    tabCustomView?.icon_tab_label?.visible()
+                    saveFirstShowTabLabel()
+                }
+                getTabAt(i)?.customView = tabCustomView
             }
         }
         viewPager.setCurrentItem(selectedPosition, false)
@@ -1379,6 +1406,37 @@ class NewShopPageFragment :
                     iconTabProductActive,
                     shopPageProductFragment
             ))
+
+            if (isShouldCheckShopType()) {
+                if (isNotRegularMerchant(shopPageHeaderDataModel)) {
+                    add(ShopPageTabModel(
+                            getString(R.string.shop_info_title_tab_showcase),
+                            iconTabShowcaseInactive,
+                            iconTabShowcaseActive,
+                            ShopPageShowcaseFragment.createInstance(
+                                    shopId,
+                                    shopRef,
+                                    shopAttribution,
+                                    shopPageHeaderDataModel?.isOfficial ?: false,
+                                    shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                            )
+                    ))
+                }
+            } else {
+                add(ShopPageTabModel(
+                        getString(R.string.shop_info_title_tab_showcase),
+                        iconTabShowcaseInactive,
+                        iconTabShowcaseActive,
+                        ShopPageShowcaseFragment.createInstance(
+                                shopId,
+                                shopRef,
+                                shopAttribution,
+                                shopPageHeaderDataModel?.isOfficial ?: false,
+                                shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                        )
+                ))
+            }
+
             if (isShowFeed) {
                 val feedFragment = FeedShopFragment.createInstance(
                         shopId,
