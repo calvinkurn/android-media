@@ -43,7 +43,8 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
         try {
             if (activity != null && activityCount == 0) {
                 trackIrisEventForAppOpen(activity);
-                RulesManager.getInstance().updateVisibleStateForAlreadyShown();
+                if (RulesManager.getInstance() != null)
+                    RulesManager.getInstance().updateVisibleStateForAlreadyShown();
             }
             activityCount++;
             lifecycleHandler.onActivityCreatedInternalForPush(activity);
