@@ -5,13 +5,12 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.product.addedit.common.constant.ProductStatus
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
@@ -33,20 +32,17 @@ import com.tokopedia.product.addedit.specification.domain.model.AnnotationCatego
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
-import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.UNVALIDATED
-import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.VALIDATION_SUCCESS
-import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.VALIDATION_ERROR
+import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.*
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
-import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
-import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
+import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
+import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -204,6 +200,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
             addSource(getProductDraftResult) {
                 productInputModel.value = when(it) {
                     is Success -> {
+                        if (it.data.productId == 0L) getProductLimitation() // obtain data when draft mode entered
                         val productInputModel = mapDraftToProductInputModel(it.data)
                         productInputModel
                     }

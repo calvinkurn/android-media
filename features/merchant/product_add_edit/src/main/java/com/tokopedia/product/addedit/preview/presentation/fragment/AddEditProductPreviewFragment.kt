@@ -39,7 +39,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -1171,7 +1170,7 @@ class AddEditProductPreviewFragment :
 
     private fun observeProductLimitationData() {
         if (isAdding() || viewModel.isDuplicate) {
-            if (isFragmentFirstTimeLoaded) viewModel.getProductLimitation()
+            if (isFragmentFirstTimeLoaded && !isDrafting()) viewModel.getProductLimitation()
             viewModel.productLimitationData.observe(viewLifecycleOwner) {
                 when(it) {
                     is Success -> {
