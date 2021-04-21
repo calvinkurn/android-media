@@ -23,6 +23,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -486,7 +487,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
 
             p2UiData = mapIntoUiData(successData.response)
         } catch (t: Throwable) {
-
+            Timber.d(t)
         }
         return p2UiData
     }
