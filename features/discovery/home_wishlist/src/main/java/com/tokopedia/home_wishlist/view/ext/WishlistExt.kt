@@ -115,7 +115,8 @@ fun mappingTopadsBannerWithRecommendationToWishlist(
         recommendationPositionInPage: Int,
         currentPage: Int,
         isInBulkMode: Boolean,
-        maxItemInPage: Int): List<WishlistDataModel> {
+        maxItemInPage: Int,
+        recommendationIndex: Int): List<WishlistDataModel> {
     val recommendationPositionInThisPage = ((currentPage-1) * maxItemInPage) + recommendationPositionInPage
     val list = mutableListOf<WishlistDataModel>()
     list.addAll(wishlistVisitable)
@@ -131,7 +132,6 @@ fun mappingTopadsBannerWithRecommendationToWishlist(
                         isOnBulkRemoveProgress = isInBulkMode))
     }
 
-    val recommendationIndex = recommendationPositionInThisPage + 1
     if (isInBulkMode) {
         listRecommendationCarouselOnMarked[recommendationIndex] =
                 RecommendationCarouselDataModel(

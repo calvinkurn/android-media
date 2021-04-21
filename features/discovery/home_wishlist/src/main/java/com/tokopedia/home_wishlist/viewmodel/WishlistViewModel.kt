@@ -153,19 +153,19 @@ open class WishlistViewModel @Inject constructor(
 
                 val visitableWishlist = data.items.mappingWishlistToVisitable(isInBulkMode.value ?: false)
 
-                if (data.items.size < recommendationPositionInPage) {
-                    wishlistData.value = getRecommendationWishlist(visitableWishlist, currentPage, data.items.map { it.id }, data.items.size)
+                when {
+                    data.items.size < recommendationPositionInPage -> {
+                        wishlistData.value = getRecommendationWishlist(visitableWishlist, currentPage, data.items.map { it.id }, data.items.size)
+                    }
 
                     // if user has 4 products, banner ads is after 4th of products, and recom widget is after TDN (at the bottom of the page)
-                } else if (data.items.size == recommendationPositionInPage) {
-                    wishlistData.value = getTopadsAndRecommendationWishlist(visitableWishlist, currentPage, data.items.map { it.id }, data.items.size)
+                    data.items.size == recommendationPositionInPage -> {
+                        wishlistData.value = getTopadsAndRecommendationWishlist(visitableWishlist, currentPage, data.items.map { it.id }, data.items.size)
+                    }
 
                     // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
-                } else if (data.items.size > recommendationPositionInPage) {
-                    if (data.items.size == 20 && !data.hasNextPage){
-                        wishlistData.value = getRecommendationWishlist(visitableWishlist, currentPage, data.items.map { it.id }, maxItemInPage-1)
-                    } else {
-                        wishlistData.value = getTopAdsBannerData(visitableWishlist, currentPage, data.items.map { it.id }, recommendationPositionInPage)
+                    data.items.size > recommendationPositionInPage -> {
+                        wishlistData.value = getTopadsAndRecommendationWishlist(visitableWishlist, currentPage, data.items.map { it.id }, data.items.size)
                     }
                 }
             }
@@ -379,7 +379,8 @@ open class WishlistViewModel @Inject constructor(
                                     currentPage = currentPage,
                                     isInBulkMode = isInBulkMode.value ?: false,
                                     listRecommendationCarouselOnMarked = listRecommendationCarouselOnMarked,
-                                    maxItemInPage = maxItemInPage
+                                    maxItemInPage = maxItemInPage,
+                                    recommendationIndex = recomIndex+1
                             )
                         } else if (recommendationResult.isNotEmpty()) {
                             return@withContext recommendationResult.mappingRecommendationToWishlist(
