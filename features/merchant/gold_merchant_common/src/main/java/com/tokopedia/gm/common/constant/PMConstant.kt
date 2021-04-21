@@ -20,6 +20,7 @@ object PMConstant {
     }
 
     object Urls {
+        const val POWER_MERCHANT_PAGE = "https://www.tokopedia.com/myshop/power-merchant"
         const val SHOP_SCORE_INTERRUPT_PAGE = "https://www.tokopedia.com/shop-interrupt"
     }
 }
