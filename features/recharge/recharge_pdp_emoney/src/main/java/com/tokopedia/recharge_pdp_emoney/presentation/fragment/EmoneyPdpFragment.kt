@@ -28,6 +28,7 @@ import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
@@ -142,7 +143,9 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
         emoneyPdpViewModel.selectedRecentNumber.observe(viewLifecycleOwner, Observer {
             emoneyFullPageLoadingLayout.show()
-            addToCart(it)
+            proceedAddToCart(emoneyPdpViewModel.generateCheckoutPassData(
+                    (requireActivity() as EmoneyPdpActivity).promoCode,
+                    it.clientNumber, it.productId.toString(), it.operatorId.toString()))
         })
 
         emoneyPdpViewModel.catalogData.observe(viewLifecycleOwner, Observer {
@@ -160,7 +163,11 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                 is Success -> {
                     navigateToCart(it.data)
                 }
-                is Fail -> emoneyPdpViewModel.setErrorMessage(it.throwable)
+                is Fail -> {
+                    if (it.throwable is DigitalAddToCartViewModel.DigitalUserNotLoginException) {
+                        navigateToLoginPage()
+                    } else emoneyPdpViewModel.setErrorMessage(it.throwable)
+                }
             }
             emoneyFullPageLoadingLayout.hide()
             emoneyBuyWidget.onBuyButtonLoading(false)
@@ -289,6 +296,10 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                         renderCardState(this)
                     }
                 }
+
+                REQUEST_CODE_LOGIN -> {
+                    proceedAddToCart(emoneyPdpViewModel.digitalCheckoutPassData)
+                }
             }
         }
     }
@@ -407,25 +418,13 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     override fun onClickNextBuyButton() {
         emoneyBuyWidget.onBuyButtonLoading(true)
-        addToCart()
+        proceedAddToCart(emoneyPdpViewModel.generateCheckoutPassData(
+                (requireActivity() as EmoneyPdpActivity).promoCode,
+                emoneyPdpInputCardWidget.getNumber()))
     }
 
-    private fun addToCart() {
-        val digitalCheckoutPassData = emoneyPdpViewModel.generateCheckoutPassData(
-                (requireActivity() as EmoneyPdpActivity).promoCode,
-                emoneyPdpInputCardWidget.getNumber())
-        addToCartViewModel.addToCart(digitalCheckoutPassData, DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-                DigitalSubscriptionParams())
-    }
-
-    private fun addToCart(recentNumber: TopupBillsRecommendation) {
-        val digitalCheckoutPassData = emoneyPdpViewModel.generateCheckoutPassData(
-                (requireActivity() as EmoneyPdpActivity).promoCode,
-                recentNumber.clientNumber,
-                recentNumber.productId.toString(),
-                recentNumber.operatorId.toString())
-        addToCartViewModel.addToCart(digitalCheckoutPassData,
-                DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+    private fun proceedAddToCart(digitalCheckoutData: DigitalCheckoutPassData) {
+        addToCartViewModel.addToCart(digitalCheckoutData, DeviceUtil.getDigitalIdentifierParam(requireActivity()),
                 DigitalSubscriptionParams())
     }
 
@@ -438,11 +437,17 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         }
     }
 
+    private fun navigateToLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    }
+
     companion object {
         private const val REQUEST_CODE_EMONEY_PDP_CHECK_SALDO = 1007
         private const val REQUEST_CODE_EMONEY_PDP_CAMERA_OCR = 1008
         private const val REQUEST_CODE_CART_DIGITAL = 1090
         private const val REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER = 1004
+        private const val REQUEST_CODE_LOGIN = 1010
 
         private const val EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA = "EXTRA_PARAM_PASS_DATA"
 
