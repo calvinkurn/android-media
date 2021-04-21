@@ -21,8 +21,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -49,6 +47,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
 import com.tokopedia.product.detail.usecase.*
+import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
@@ -110,13 +109,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
     companion object {
-        private const val LOG_TAG_ATC = "BUYER_FLOW_PDP_ATC"
-        private const val LOG_TAG_WISHLIST = "BUYER_FLOW_PDP_WISHLIST"
+        private const val ATC_ERROR_TYPE = "error_atc"
+        private const val WISHLIST_ERROR_TYPE = "error_wishlist"
         private const val WISHLIST_STATUS_KEY = "wishlist_status"
         private const val ADD_WISHLIST = "true"
         private const val REMOVE_WISHLIST = "false"
-        private const val P2_LOGIN_LOG_TAG = "BUYER_FLOW_PDP_P2_LOGIN"
-        private const val P2_DATA_LOG_TAG = "BUYER_FLOW_PDP_P2_DATA"
+        private const val P2_LOGIN_ERROR_TYPE = "error_p2_login"
+        private const val P2_DATA_ERROR_TYPE = "error_p2_data"
     }
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -430,9 +429,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         withContext(dispatcher.io) {
             val result = addToCartUseCase.get().createObservable(requestParams).toBlocking().single()
             if (result.isDataError()) {
-                ServerLogger.log(Priority.P2, LOG_TAG_ATC, mapOf())
-                _addToCartLiveData.postValue(MessageErrorException(result.errorMessage.firstOrNull()
-                        ?: "").asFail())
+                val errorMessage = result.errorMessage.firstOrNull() ?: ""
+                if(errorMessage.isNotBlank()) {
+                    ProductDetailLogger.logMessage(errorMessage, ATC_ERROR_TYPE, getDynamicProductInfoP1?.basic?.productID ?: "", userId, deviceId)
+                }
+                _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
             } else {
                 _addToCartLiveData.postValue(result.asSuccess())
             }
@@ -443,8 +444,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         withContext(dispatcher.io) {
             val result = addToCartOcsUseCase.get().createObservable(requestParams).toBlocking().single()
             if (result.isDataError()) {
-                _addToCartLiveData.postValue(MessageErrorException(result.errorMessage.firstOrNull()
-                        ?: "").asFail())
+                val errorMessage = result.errorMessage.firstOrNull() ?: ""
+                if(errorMessage.isNotBlank()) {
+                    ProductDetailLogger.logMessage(errorMessage, ATC_ERROR_TYPE, getDynamicProductInfoP1?.basic?.productID ?: "", userId, deviceId)
+                }
+                _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
             } else {
                 _addToCartLiveData.postValue(result.asSuccess())
             }
@@ -455,9 +459,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         withContext(dispatcher.io) {
             val result = addToCartOccUseCase.get().createObservable(requestParams).toBlocking().single()
             if (result.isDataError()) {
-                _addToCartLiveData.postValue(MessageErrorException(result.getAtcErrorMessage()
-                        ?: "").asFail())
-
+                val errorMessage = result.getAtcErrorMessage() ?: ""
+                if(errorMessage.isNotBlank()) {
+                    ProductDetailLogger.logMessage(errorMessage, ATC_ERROR_TYPE, getDynamicProductInfoP1?.basic?.productID ?: "", userId, deviceId)
+                }
+                _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
             } else {
                 _addToCartLiveData.postValue(result.asSuccess())
             }
@@ -582,13 +588,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             }
 
             override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                ServerLogger.log(Priority.P2, LOG_TAG_WISHLIST, mapOf(
-                        Pair(ProductDetailConstant.PRODUCT_ID_KEY, productId ?: ""),
-                        ProductDetailConstant.USER_ID_KEY to userId,
-                        ProductDetailConstant.DEVICE_ID_KEY to deviceId,
-                        WISHLIST_STATUS_KEY to REMOVE_WISHLIST,
-                        Pair(ProductDetailConstant.MESSAGE_KEY, errorMessage ?: "")
-                ))
+                if(!(errorMessage.isNullOrEmpty() || productId.isNullOrEmpty())) {
+                    val extras = mapOf(WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
+                    ProductDetailLogger.logMessage(errorMessage, WISHLIST_ERROR_TYPE, productId, userId, deviceId, extras)
+                }
                 onErrorRemoveWishList?.invoke(errorMessage)
             }
 
@@ -604,13 +607,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         addWishListUseCase.get().createObservable(productId,
                 userSessionInterface.userId, object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                ServerLogger.log(Priority.P2, LOG_TAG_WISHLIST, mapOf(
-                        Pair(ProductDetailConstant.PRODUCT_ID_KEY, productId ?: ""),
-                        ProductDetailConstant.USER_ID_KEY to userId,
-                        ProductDetailConstant.DEVICE_ID_KEY to deviceId,
-                        WISHLIST_STATUS_KEY to ADD_WISHLIST,
-                        Pair(ProductDetailConstant.MESSAGE_KEY, errorMessage ?: "")
-                ))
+                if(!(errorMessage.isNullOrEmpty() || productId.isNullOrEmpty())) {
+                    val extras = mapOf(WISHLIST_STATUS_KEY to ADD_WISHLIST).toString()
+                    ProductDetailLogger.logMessage(errorMessage, WISHLIST_ERROR_TYPE, productId, userId, deviceId, extras)
+                }
                 onErrorAddWishList?.invoke(errorMessage)
             }
 
@@ -917,22 +917,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     private fun logP2Login(throwable: Throwable, productId: String) {
-        ServerLogger.log(Priority.P1, P2_LOGIN_LOG_TAG, mapOf(
-                ProductDetailConstant.PRODUCT_ID_KEY to productId,
-                ProductDetailConstant.USER_ID_KEY to userId,
-                ProductDetailConstant.MESSAGE_KEY to throwable.localizedMessage,
-                ProductDetailConstant.STACK_TRACE_KEY to throwable.stackTrace.toString().substring(0, 50)
-        ))
+        ProductDetailLogger.logThrowable(throwable, P2_LOGIN_ERROR_TYPE, productId, userId, deviceId)
     }
 
     private fun logP2Data(throwable: Throwable, productId: String, pdpSession: String) {
-        ServerLogger.log(Priority.P1, P2_DATA_LOG_TAG, mapOf(
-                ProductDetailConstant.PRODUCT_ID_KEY to productId,
-                ProductDetailConstant.SESSION_KEY to pdpSession,
-                ProductDetailConstant.DEVICE_ID_KEY to deviceId,
-                ProductDetailConstant.USER_ID_KEY to userId,
-                ProductDetailConstant.MESSAGE_KEY to throwable.localizedMessage,
-                ProductDetailConstant.STACK_TRACE_KEY to throwable.stackTrace.toString().substring(0, 50)
-        ))
+        val extras = mapOf(ProductDetailConstant.SESSION_KEY to pdpSession).toString()
+        ProductDetailLogger.logThrowable(throwable, P2_DATA_ERROR_TYPE, productId, userId, deviceId, extras)
     }
 }

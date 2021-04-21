@@ -6,9 +6,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.estimasiongkir.data.RatesMapper
@@ -28,7 +26,7 @@ class RatesEstimationBoeViewModel @Inject constructor(private val ratesUseCase: 
                                                       val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
 
     companion object {
-        private const val LOG_TAG = "BUYER_FLOW_PDP_RATE_ESTIMATE"
+        private const val ERROR_TYPE_RATE_ESTIMATE = "error_rate_estimate"
         private const val LOCALIZATION_DATA_KEY = "localization_data"
     }
 
@@ -62,14 +60,8 @@ class RatesEstimationBoeViewModel @Inject constructor(private val ratesUseCase: 
     }
 
     private fun logRateEstimate(throwable: Throwable) {
-        ServerLogger.log(Priority.P2, LOG_TAG, mapOf(
-                ProductDetailConstant.USER_ID_KEY to userSession.userId,
-                Pair(ProductDetailConstant.PRODUCT_ID_KEY, _ratesRequest.value?.productId ?: ""),
-                ProductDetailConstant.DEVICE_ID_KEY to userSession.deviceId,
-                Pair(LOCALIZATION_DATA_KEY, _ratesRequest.value?.destination ?: ""),
-                ProductDetailConstant.MESSAGE_KEY to throwable.localizedMessage,
-                ProductDetailConstant.STACK_TRACE_KEY to throwable.stackTrace.toString().substring(0, 50)
-        ))
+        val extras = mapOf(Pair(LOCALIZATION_DATA_KEY, _ratesRequest.value?.destination ?: "")).toString()
+        ProductDetailLogger.logThrowable(throwable, ERROR_TYPE_RATE_ESTIMATE, _ratesRequest.value?.productId ?: "", userSession.userId, userSession.deviceId, extras)
     }
 
 }

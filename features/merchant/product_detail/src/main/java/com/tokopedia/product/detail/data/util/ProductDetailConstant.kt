@@ -206,4 +206,7 @@ object ProductDetailConstant {
     const val SESSION_KEY = "param_session"
     const val MESSAGE_KEY = "message"
     const val STACK_TRACE_KEY = "stacktrace"
+    const val ERROR_TYPE_KEY = "error_type"
+    const val EXTRAS_KEY = "extras"
+    const val PDP_LOG_TAG = "BUYER_FLOW_PDP"
 }
