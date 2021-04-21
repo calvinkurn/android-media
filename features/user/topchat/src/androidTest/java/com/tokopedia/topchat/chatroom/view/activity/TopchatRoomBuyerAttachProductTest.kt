@@ -445,7 +445,7 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun expand_collapse_srw_when_user_open_or_hide_keyboard() {
+    fun collapse_srw_when_user_open_keyboard() {
         // Given
         setupChatRoomActivity {
             putProductAttachmentIntent(it)
@@ -461,8 +461,21 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         // Then
         assertSrwContentIsVisible()
         assertSrwCollapsed()
+    }
+
+    @Test
+    fun expand_srw_when_user_hide_keyboard() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
 
         // When
+        clickComposeArea()
         pressBack()
 
         // Then
@@ -471,7 +484,7 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun expand_collapse_srw_when_keyboard_opened() {
+    fun expand_srw_when_keyboard_opened() {
         // Given
         setupChatRoomActivity {
             putProductAttachmentIntent(it)
@@ -483,19 +496,27 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickComposeArea()
-
-        // Then
-        assertSrwContentIsVisible()
-        assertSrwCollapsed()
-
-        // When
         onView(withId(R.id.tp_srw_container_partial)).perform(click())
 
         // Then
         assertSrwContentIsVisible()
         assertSrwExpanded()
+    }
+
+    @Test
+    fun collapse_srw_when_keyboard_opened() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
 
         // When
+        clickComposeArea()
+        onView(withId(R.id.tp_srw_container_partial)).perform(click())
         onView(withId(R.id.tp_srw_container_partial)).perform(click())
 
         // Then
