@@ -12,7 +12,10 @@ interface ShopPerformanceListener {
 interface ItemShopPerformanceListener {
     fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String,
                                          identifierPerformanceDetail: String)
-    fun onViewItemDetailPerformanceListener(view: View)
+}
+
+interface PeriodDetailPerformanceListener {
+    fun onAddCoachMarkItemPeriod(view: View)
 }
 
 interface ItemHeaderShopPerformanceListener {

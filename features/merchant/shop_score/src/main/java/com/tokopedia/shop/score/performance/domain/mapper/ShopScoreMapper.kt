@@ -356,12 +356,12 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             val shopScoreLevelSize = shopScoreLevelFilter?.size.orZero()
             val sortShopScoreLevelParam = sortItemDetailPerformanceFormatted(shopScoreLevelFilter)
             sortShopScoreLevelParam.forEachIndexed { index, shopScoreDetail ->
-                val targetDetailPerformanceText = when (shopScoreDetail.identifier) {
-                    CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> "${shopScoreDetail.nextMinValue} $minuteText"
+                val (targetDetailPerformanceText, parameterItemDetailPerformance) = when (shopScoreDetail.identifier) {
+                    CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> Pair("${shopScoreDetail.nextMinValue} $minuteText", minuteText)
                     ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY, TOTAL_BUYER_KEY ->
-                        "${shopScoreDetail.nextMinValue}$percentText"
-                    OPEN_TOKOPEDIA_SELLER_KEY -> "${shopScoreDetail.nextMinValue} $dayText"
-                    else -> ""
+                        Pair("${shopScoreDetail.nextMinValue}$percentText", percentText)
+                    OPEN_TOKOPEDIA_SELLER_KEY -> Pair("${shopScoreDetail.nextMinValue} $dayText", dayText)
+                    else -> Pair("", "")
                 }
 
                 add(ItemDetailPerformanceUiModel(
@@ -370,7 +370,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                         colorValueDetailPerformance = shopScoreDetail.colorText,
                         targetDetailPerformance = targetDetailPerformanceText,
                         isDividerHide = index + 1 == shopScoreLevelSize,
-                        identifierDetailPerformance = shopScoreDetail.identifier
+                        identifierDetailPerformance = shopScoreDetail.identifier,
+                        parameterValueDetailPerformance = parameterItemDetailPerformance
                 ))
             }
         }

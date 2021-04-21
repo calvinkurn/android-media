@@ -23,14 +23,11 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
         val LAYOUT = R.layout.item_header_shop_performance
     }
 
-    private val impressHolder = ImpressHolder()
     private val impressHolderTicker = ImpressHolder()
 
     override fun bind(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
-            addOnImpressionListener(impressHolder) {
-                itemHeaderShopPerformanceListener.onViewHeaderListener(this)
-            }
+            itemHeaderShopPerformanceListener.onViewHeaderListener(containerCornerShopPerformance)
         }
 
         setBackgroundRadiusHeader()

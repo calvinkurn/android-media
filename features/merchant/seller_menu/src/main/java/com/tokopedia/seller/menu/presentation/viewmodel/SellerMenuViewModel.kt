@@ -14,6 +14,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiM
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.seller.menu.common.view.uimodel.TickerShopScoreUiModel
 import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
@@ -58,14 +59,14 @@ class SellerMenuViewModel @Inject constructor(
     val isToasterAlreadyShown: LiveData<Boolean>
         get() = _isToasterAlreadyShown
 
-    val shopAccountTickerPeriod: LiveData<Result<Pair<Boolean, Boolean>>>
+    val shopAccountTickerPeriod: LiveData<Result<Pair<Boolean, ShopInfoPeriodUiModel>>>
         get() = _shopAccountTickerPeriod
 
     private val _settingShopInfoLiveData = MutableLiveData<Result<ShopInfoUiModel>>()
     private val _shopProductLiveData = MutableLiveData<Result<ShopProductUiModel>>()
     private val _sellerMenuNotification = MutableLiveData<Result<NotificationUiModel>>()
     private val _isToasterAlreadyShown = MutableLiveData(false)
-    private val _shopAccountTickerPeriod = MutableLiveData<Result<Pair<Boolean, Boolean>>>()
+    private val _shopAccountTickerPeriod = MutableLiveData<Result<Pair<Boolean, ShopInfoPeriodUiModel>>>()
 
     fun getShopAccountTickerPeriod() {
         launchCatchError(block = {
@@ -74,8 +75,7 @@ class SellerMenuViewModel @Inject constructor(
                 getShopInfoPeriodUseCase.executeOnBackground()
             }
             val isTickerShow = SellerUiModelMapper.mapToIsShowTickerShopAccount(data)
-            val isNewSeller = data.isNewSeller
-            _shopAccountTickerPeriod.value = Success(Pair(isTickerShow, isNewSeller))
+            _shopAccountTickerPeriod.value = Success(Pair(isTickerShow, data))
         }, onError = {
             _shopAccountTickerPeriod.value = Fail(it)
         })

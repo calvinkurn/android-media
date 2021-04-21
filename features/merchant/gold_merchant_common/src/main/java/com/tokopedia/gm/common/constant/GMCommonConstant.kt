@@ -15,6 +15,4 @@ const val START_TENURE_EIGHTY_THREE = 83
 const val TRANSITION_PERIOD = "transition_period"
 const val COMMUNICATION_PERIOD = "communication_period"
 const val END_PERIOD = "final"
-const val START_DATE_TRANSITION_SHOP_SCORE = "android_transition_start_date_pm_shop_score"
-const val SHOP_SCORE_PM_PERIOD = "android_shop_score_pm_period"
-
+const val START_DATE_TRANSITION_SHOP_SCORE = "android_transition_start_date_shop_score"

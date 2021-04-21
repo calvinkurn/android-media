@@ -138,7 +138,6 @@ class ShopInfoViewHolder(
     private fun showShopScore(uiModel: ShopInfoUiModel) {
         itemView.shopScore.text = uiModel.shopScore.toString()
         itemView.shopScoreLayout.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL, userSession?.shopId)
             listener?.onScoreClicked()
         }
         itemView.shopScoreLayout.addOnImpressionListener(shopScoreImpressHolder) {

@@ -13,6 +13,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
+import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.kotlin.extensions.view.*
@@ -73,6 +76,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private var canShowErrorToaster = true
     private var isNewSeller = false
+    private var periodType = ""
 
     private val adapter by lazy {
         SellerMenuAdapter(OtherMenuAdapterTypeFactory(
@@ -138,6 +142,11 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {}
 
     override fun onScoreClicked() {
+        if (periodType == COMMUNICATION_PERIOD) {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL, userSession.shopId)
+        } else {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE, userSession.shopId)
+        }
         sellerMenuTracker.sendShopScoreEntryPoint(isNewSeller)
     }
 
@@ -201,7 +210,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                                 descTitle = getString(R.string.seller_menu_ticker_desc_shop_score))
                         adapter.showShopScoreTicker(tickerShopInfoData)
                     }
-                    isNewSeller = it.data.second
+                    isNewSeller = it.data.second.isNewSeller
                 }
             }
         }
