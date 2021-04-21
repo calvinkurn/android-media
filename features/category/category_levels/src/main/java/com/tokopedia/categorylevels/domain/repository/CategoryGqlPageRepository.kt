@@ -38,7 +38,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
                     components = getCategoryComponents(data),
                     pageInfo = PageInfo(
                             identifier = departmentId, name = basicInfo.name, type = "", path = basicInfo.url, id = basicInfo.id
-                            ?: 0,
+                            ?: 0, showChooseAddress = true,
                             searchTitle = "Cari di ${basicInfo.name}",
                             searchApplink = "${SEARCH_APPLINK}/searchbox?hint=${encodeURL("Cari di ${basicInfo.name}")}&navsource=catpage&srp_page_id=${basicInfo.id}&srp_page_title=${encodeURL(basicInfo.name)}",
                             redirectionUrl = basicInfo.appRedirectionURL,
