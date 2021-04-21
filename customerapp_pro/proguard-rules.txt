@@ -23,9 +23,6 @@
 -dontwarn com.viewpagerindicator.LinePageIndicator
 -dontwarn sun.misc.Unsafe
 
-#https://github.com/facebook/react-native/issues/25679
--keep class com.facebook.hermes.unicode.** { *; }
-
 -keep class id.co.veritrans.android.api.**{ *;}
 -keepclassmembers class id.co.veritrans.android.api.**{
  @id.co.veritrans.android.api.** *;
@@ -165,7 +162,6 @@
 }
 -dontwarn kotlinx.coroutines.flow.**inlined**
 -dontwarn kotlinx.coroutines.flow.**
--dontwarn kotlinx.coroutines.reactive.**
 
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
@@ -258,3 +254,8 @@
 -keep class **.HanselDialog.*{*;}
 -keep class * implements io.hansel.**.* {*;}
 -keep class * extends io.hansel.**.* {*;}
+
+# data visor
+-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
+-keepclasseswithmembers class * { native <methods>; }
+-keep class com.datavisor.vangogh.** { *; }

@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.presentation.activity
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -34,6 +35,7 @@ import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCal
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+
 var idlingResource: TkpdIdlingResource? = null
 
 
@@ -69,6 +71,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         super.onCreate(savedInstanceState)
         updateTitle("")
         component.inject(this)
+        sendOpenScreenEvent(intent.data)
         idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
         idlingResource?.increment()
     }
@@ -90,6 +93,18 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         return LoaderFragment.getLoaderFragmentInstance(bundle)
     }
 
+    override fun sendScreenAnalytics() {
+        //Empty to remove double open screen events
+    }
+
+    private fun sendOpenScreenEvent(data: Uri?) {
+        data?.apply {
+            thankYouPageAnalytics.get().sendScreenAuthenticatedEvent(
+                    getQueryParameter(ARG_PAYMENT_ID),
+                    getQueryParameter(ARG_MERCHANT),
+                    SCREEN_NAME)
+        }
+    }
 
     override fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData

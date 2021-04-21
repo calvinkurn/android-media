@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.FORMAT_DATE_TIME
@@ -32,7 +33,6 @@ import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteReorderFac
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListReorderPresenter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_shop_note_reorder.*
 import java.util.*
 import javax.inject.Inject
 
@@ -94,13 +94,15 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val itemTouchHelperCallback = SimpleItemTouchHelperCallback(adapter)
-        itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
-        itemTouchHelper?.attachToRecyclerView(recyclerView)
+        adapter?.let {
+            val itemTouchHelperCallback = SimpleItemTouchHelperCallback(it)
+            itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+            itemTouchHelper?.attachToRecyclerView(recyclerView)
+        }
     }
 
     override fun loadData(page: Int) {
-        if (shopNoteModels != null && shopNoteModels!!.size > 0) {
+        if (shopNoteModels != null && shopNoteModels?.size.toZeroIfNull() > 0) {
             shopNoteModels?.get(0)?.apply {
                 val itemNoteReorder = view?.findViewById<LinearLayout>(R.id.item_note_reorder)
                 val tpNoteName = view?.findViewById<Typography>(R.id.tvNoteName)
@@ -167,17 +169,17 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
         if (progressDialog == null) {
             progressDialog = ProgressDialog(activity)
         }
-        if (!progressDialog!!.isShowing) {
-            progressDialog!!.setMessage(message)
-            progressDialog!!.isIndeterminate = true
-            progressDialog!!.setCancelable(false)
-            progressDialog!!.show()
+        if (progressDialog?.isShowing != true) {
+            progressDialog?.setMessage(message)
+            progressDialog?.isIndeterminate = true
+            progressDialog?.setCancelable(false)
+            progressDialog?.show()
         }
     }
 
     fun hideSubmitLoading() {
-        if (progressDialog != null && progressDialog!!.isShowing) {
-            progressDialog!!.dismiss()
+        if (progressDialog != null && progressDialog?.isShowing == true) {
+            progressDialog?.dismiss()
             progressDialog = null
         }
     }
@@ -191,8 +193,10 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
         // no-op
     }
 
-    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
-        itemTouchHelper!!.startDrag(viewHolder)
+    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
+        viewHolder?.let {
+            itemTouchHelper?.startDrag(it)
+        }
     }
 
     override fun onAttachActivity(context: Context) {

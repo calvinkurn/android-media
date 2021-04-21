@@ -44,7 +44,7 @@ data class ProductContentDataModel(
         val identifier = data?.campaign?.campaignIdentifier ?: return false
         return when (identifier) {
             CampaignRibbon.FLASH_SALE, CampaignRibbon.NEW_USER, CampaignRibbon.NPL, CampaignRibbon.THEMATIC_CAMPAIGN -> true
-            CampaignRibbon.SLASH_PRICE -> data?.campaign?.shouldShowRibbonCampaign == true // if ribbon slash price appear, return true
+            CampaignRibbon.SLASH_PRICE -> data?.campaign?.shouldShowRibbonCampaign == true || data?.thematicCampaign?.campaignName?.isNotEmpty() == true // if ribbon slash price appear, return true
             else -> false
         }
     }

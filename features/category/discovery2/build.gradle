@@ -23,6 +23,7 @@ android {
     }
 }
 dependencies {
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -40,6 +41,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.circularViewPager)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.features.categoryNavBottomSheet)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.supportLibDependencies.constraintLayout

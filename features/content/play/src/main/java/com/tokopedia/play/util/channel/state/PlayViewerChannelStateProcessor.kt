@@ -6,7 +6,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
@@ -20,14 +20,14 @@ class PlayViewerChannelStateProcessor constructor(
         private val playVideoPlayer: PlayVideoWrapper,
         private val exoPlaybackExceptionParser: ExoPlaybackExceptionParser,
         private val channelTypeSource: () -> PlayChannelType,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val scope: CoroutineScope
 ) {
 
     @PlayScope
     class Factory @Inject constructor(
             private val exoPlaybackExceptionParser: ExoPlaybackExceptionParser,
-            private val dispatcher: CoroutineDispatcherProvider
+            private val dispatcher: CoroutineDispatchers
     ) {
         fun create(
                 playVideoPlayer: PlayVideoWrapper,

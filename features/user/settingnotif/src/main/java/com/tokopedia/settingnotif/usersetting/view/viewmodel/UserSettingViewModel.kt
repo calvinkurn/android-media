@@ -9,7 +9,7 @@ import com.tokopedia.settingnotif.usersetting.data.pojo.setusersetting.SetUserSe
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.util.SingleLiveEvent
-import com.tokopedia.settingnotif.usersetting.util.dispatcher.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
@@ -24,8 +24,8 @@ import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase.Compa
 class UserSettingViewModel @Inject constructor(
         private val getUserSettingUseCase: GetUserSettingUseCase,
         private val setUserSettingUseCase: SetUserSettingUseCase,
-        private val dispatcher: DispatcherProvider
-) : BaseViewModel(dispatcher.io()), SettingFieldContract.UserSetting {
+        private val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io), SettingFieldContract.UserSetting {
 
     private val _userSetting = SingleLiveEvent<UserSettingDataView>()
     val userSetting: LiveData<UserSettingDataView> get() = _userSetting
@@ -46,7 +46,7 @@ class UserSettingViewModel @Inject constructor(
         )
         launchCatchError(block = {
             val result = setUserSettingUseCase.executeOnBackground()
-            withContext(dispatcher.ui()) {
+            withContext(dispatcher.main) {
                 _setUserSetting.value = result
             }
         }, onError = {
@@ -57,7 +57,7 @@ class UserSettingViewModel @Inject constructor(
     override fun loadUserSettings() {
         launchCatchError(block = {
             val result = getUserSettingUseCase.executeOnBackground()
-            withContext(dispatcher.ui()) {
+            withContext(dispatcher.main) {
                 val mapToDataView = UserSettingMapper.map(result)
                 _userSetting.setValue(mapToDataView)
             }
