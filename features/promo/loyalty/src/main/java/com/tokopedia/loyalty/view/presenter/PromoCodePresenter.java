@@ -10,6 +10,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loyalty.domain.usecase.TrainCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
@@ -23,6 +25,9 @@ import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -42,8 +47,8 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
     private final IPromoCodeView view;
     private final IPromoCodeInteractor promoCodeInteractor;
-    private TrainCheckVoucherUseCase trainCheckVoucherUseCase;
-    private UserSession userSession;
+    private final TrainCheckVoucherUseCase trainCheckVoucherUseCase;
+    private final UserSession userSession;
 
     @Inject
     public PromoCodePresenter(IPromoCodeView view,
@@ -100,7 +105,11 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                         view.hideProgressLoading();
 
                         if (e instanceof JsonSyntaxException) {
-                            Timber.w(CommonConstant.LOYALTY_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                            Map<String, String> messageMap = new HashMap<>();
+                            messageMap.put("type", "json");
+                            messageMap.put("err", Log.getStackTraceString(e));
+                            messageMap.put("req", PromoCodePresenter.class.getCanonicalName());
+                            ServerLogger.log(Priority.P2, "LOYALTY_PARSE_ERROR", messageMap);
                         }
 
                         if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException || e instanceof com.tokopedia.abstraction.common.network.exception.ResponseErrorException) {
@@ -165,7 +174,11 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                 view.hideProgressLoading();
 
                 if (e instanceof JsonSyntaxException) {
-                    Timber.w(CommonConstant.LOYALTY_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                    Map<String, String> messageMap = new HashMap<>();
+                    messageMap.put("type", "json");
+                    messageMap.put("err", Log.getStackTraceString(e));
+                    messageMap.put("req", PromoCodePresenter.class.getCanonicalName());
+                    ServerLogger.log(Priority.P2, "LOYALTY_PARSE_ERROR", messageMap);
                 }
 
                 if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
@@ -197,7 +210,11 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                 view.hideProgressLoading();
 
                 if (e instanceof JsonSyntaxException) {
-                    Timber.w(CommonConstant.LOYALTY_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                    Map<String, String> messageMap = new HashMap<>();
+                    messageMap.put("type", "json");
+                    messageMap.put("err", Log.getStackTraceString(e));
+                    messageMap.put("req", PromoCodePresenter.class.getCanonicalName());
+                    ServerLogger.log(Priority.P2, "LOYALTY_PARSE_ERROR", messageMap);
                 }
 
                 if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
@@ -228,7 +245,11 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                 view.sendTrackingOnCheckDigitalVoucherError(e.getMessage());
 
                 if (e instanceof JsonSyntaxException) {
-                    Timber.w(CommonConstant.LOYALTY_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                    Map<String, String> messageMap = new HashMap<>();
+                    messageMap.put("type", "json");
+                    messageMap.put("err", Log.getStackTraceString(e));
+                    messageMap.put("req", PromoCodePresenter.class.getCanonicalName());
+                    ServerLogger.log(Priority.P2, "LOYALTY_PARSE_ERROR", messageMap);
                 }
 
                 if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {

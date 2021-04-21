@@ -8,6 +8,8 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.network.utils.ErrorHandler
@@ -35,7 +37,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import timber.log.Timber
 import java.io.File
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -149,7 +150,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         val exception = AddEditProductUploadException(errorMessage, throwable)
 
         AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
-        Timber.w("P2#PRODUCT_UPLOAD#%s", errorMessage)
+        ServerLogger.log(Priority.P2, "PRODUCT_UPLOAD", mapOf("type" to errorMessage))
     }
 
     protected fun logError(title: String, throwable: Throwable) {
@@ -161,7 +162,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         val exception = AddEditProductUploadException(errorMessage, throwable)
 
         AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
-        Timber.w("P2#PRODUCT_UPLOAD#%s", errorMessage)
+        ServerLogger.log(Priority.P2, "PRODUCT_UPLOAD", mapOf("type" to errorMessage))
     }
 
     private fun initInjector() {

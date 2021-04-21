@@ -1071,7 +1071,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 if (contactURI != null) {
                     contact = context?.let { AddEditAddressUtil.convertContactUriToData(it.contentResolver, contactURI) }
                 }
-                et_receiver_name.setText(contact?.name)
                 et_phone.setText(contact?.contactNumber)
             } else {
                 // this solves issue when positif ANA changed into negatif ANA

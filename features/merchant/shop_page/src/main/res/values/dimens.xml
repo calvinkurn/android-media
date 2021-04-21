@@ -4,6 +4,11 @@
     <dimen name="shop_page_logo_width">72dp</dimen>
     <dimen name="dp_72">72dp</dimen>
     <dimen name="dp_145">145dp</dimen>
+    <dimen name="dp_116">116dp</dimen>
+    <dimen name="dp_150">150dp</dimen>
+    <dimen name="dp_140">140dp</dimen>
+    <dimen name="dp_156">156dp</dimen>
+    <dimen name="dp_68">68dp</dimen>
 
     <dimen name="shop_page_header_sub_info_min_height">58dp</dimen>
     <dimen name="shop_page_header_sub_button_height">36dp</dimen>
@@ -13,6 +18,7 @@
     <dimen name="image_width_product_list">105dp</dimen>
     <dimen name="price_margin_top">6dp</dimen>
     <dimen name="line_spacng_extra">4sp</dimen>
+    <dimen name="label_text_size">7.5sp</dimen>
     <dimen name="image_width_wishlist_icon">20dp</dimen>
     <dimen name="image_width_wishlist_container">34dp</dimen>
 
@@ -26,10 +32,15 @@
 
     <dimen name="shop_product_item_badge_deprecated_font">9sp</dimen>
     <dimen name="size_labelview">56sp</dimen>
+    <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_32">32dp</dimen>
     <dimen name="dp_18">18dp</dimen>
     <dimen name="dp_64">64dp</dimen>
     <dimen name="sp_4">4sp</dimen>
     <dimen name="sp_6">6sp</dimen>
+    <dimen name="sp_8">8sp</dimen>
+    <dimen name="sp_16">16sp</dimen>
+    <dimen name="sp_12">12sp</dimen>
     <dimen name="width_product_empty_state_buyer">133dp</dimen>
     <dimen name="max_width_etalase_chip">180dp</dimen>
     <dimen name="min_add_product_card_height">198dp</dimen>

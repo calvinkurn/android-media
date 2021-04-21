@@ -532,16 +532,23 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         }
     }
 
-    override fun trackNotifyClick(componentsItems: ComponentsItem, isLogin: Boolean) {
-        val eventCategory = "$VALUE_DISCOVERY_PAGE - $pageType - ${removeDashPageIdentifier(pageIdentifier)}"
+    override fun trackNotifyClick(componentsItems: ComponentsItem, isLogin: Boolean, userID: String?) {
         val productItem = componentsItems.data?.firstOrNull()
         val map: MutableMap<String, Any> = mutableMapOf(
                 KEY_EVENT to EVENT_CLICK_DISCOVERY,
-                KEY_EVENT_CATEGORY to eventCategory,
-                KEY_EVENT_ACTION to "${productItem?.notifyMe?.let { 
-                    if(it) PRODUCT_NOTIFY_CANCEL_CLICK else PRODUCT_NOTIFY_CLICK
-                }}",
-                KEY_EVENT_LABEL to "${productItem?.productId ?: ""} - ${if (isLogin) LOGIN else NON_LOGIN} - ${getProductComponentName(componentsItems.name)} - - ${if (productItem?.tabName.isNullOrEmpty()) "" else formatTabName(productItem!!.tabName)}")
+                KEY_EVENT_CATEGORY to VALUE_DISCOVERY_PAGE,
+                KEY_EVENT_ACTION to "${
+                    productItem?.notifyMe?.let {
+                        if (it) PRODUCT_NOTIFY_CANCEL_CLICK else PRODUCT_NOTIFY_CLICK
+                    }
+                }",
+                KEY_EVENT_LABEL to "${productItem?.productId ?: ""} - ${if (isLogin) LOGIN else NON_LOGIN} - ${getProductComponentName(componentsItems.name)} - - ${if (productItem?.tabName.isNullOrEmpty()) "" else formatTabName(productItem!!.tabName)}",
+                CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
+                USER_ID to (userID ?: ""),
+                BUSINESS_UNIT to HOME_BROWSE,
+                PAGE_TYPE to pageType,
+                PAGE_PATH to removeDashPageIdentifier(pageIdentifier)
+        )
         getTracker().sendGeneralEvent(map)
     }
 

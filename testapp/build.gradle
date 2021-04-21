@@ -23,11 +23,6 @@ android {
         exclude 'META-INF/**'
     }
 
-    project.ext {
-        react = [
-                nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
-        ]
-    }
     compileSdkVersion rootProject.ext.compileSdkVersion
     useLibrary 'org.apache.http.legacy'
     lintOptions {

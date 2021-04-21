@@ -19,6 +19,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.Label
