@@ -27,6 +27,7 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
     private val gson = Gson()
 
     protected var sellerSmartReply = GetExistingChatPojo()
+    protected var sellerTopBot = GetExistingChatPojo()
     protected var sellerProductChatReplies = GetExistingChatPojo()
     protected var sellerProductCarouselChatReplies = GetExistingChatPojo()
     protected var sellerBroadcastProductCarouselChatReplies = GetExistingChatPojo()
@@ -53,6 +54,10 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
         super.setupResponse()
         sellerSmartReply = AndroidFileUtil.parse(
                 "seller/success_chat_reply_smart_reply.json",
+                GetExistingChatPojo::class.java
+        )
+        sellerTopBot = AndroidFileUtil.parse(
+                "seller/success_chat_reply_topbot.json",
                 GetExistingChatPojo::class.java
         )
         sellerProductChatReplies = AndroidFileUtil.parse(
