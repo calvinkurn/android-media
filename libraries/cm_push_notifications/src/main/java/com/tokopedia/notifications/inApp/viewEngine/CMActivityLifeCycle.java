@@ -11,6 +11,7 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
+import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.utils.NotificationCancelManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,6 +43,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
         try {
             if (activity != null && activityCount == 0) {
                 trackIrisEventForAppOpen(activity);
+                RulesManager.getInstance().updateVisibleStateForAlreadyShown();
             }
             activityCount++;
             lifecycleHandler.onActivityCreatedInternalForPush(activity);
