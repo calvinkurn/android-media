@@ -2,6 +2,7 @@ package com.tokopedia.navigation_common.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
@@ -35,7 +36,11 @@ public class WalletPref {
     public WalletModel retrieveWallet() {
         try {
             String jsonWallet = preferences.getString(WALLET_PREF, null);
-            return gson.fromJson(jsonWallet, WalletModel.class);
+            if(TextUtils.isEmpty(jsonWallet)) {
+                return null;
+            } else {
+                return gson.fromJson(jsonWallet, WalletModel.class);
+            }
         } catch (Exception e) {
             return null;
         }
