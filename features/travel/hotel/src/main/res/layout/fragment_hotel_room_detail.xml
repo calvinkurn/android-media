@@ -206,7 +206,8 @@
                                 android:layout_height="@dimen/layout_lvl2"
                                 android:layout_marginTop="@dimen/hotel_1dp"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:ignore="ContentDescription"/>
 
                             <com.tokopedia.unifyprinciples.Typography
                                 android:id="@+id/pay_at_hotel_desc"
