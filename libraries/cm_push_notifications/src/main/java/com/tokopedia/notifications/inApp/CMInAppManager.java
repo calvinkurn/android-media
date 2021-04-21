@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.FragmentObserver;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMNotificationUtils;
@@ -33,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -54,7 +57,7 @@ public class CMInAppManager implements CmInAppListener,
         ShowInAppCallback,
         SendPushContract, CmDialogVisibilityContract {
 
-    private static CMInAppManager inAppManager;
+    private static final CMInAppManager inAppManager;
     private Application application;
     private CmInAppListener cmInAppListener;
     private final Object lock = new Object();
@@ -248,18 +251,32 @@ public class CMInAppManager implements CmInAppListener,
                     sendEventInAppDelivered(cmInApp);
                     new CMInAppController().downloadImagesAndUpdateDB(application, cmInApp);
                 } else {
-                    Timber.w("%svalidation;reason='application_null';data=''", CMConstant.TimberTags.TAG);
+                    Map<String, String> messageMap = new HashMap<>();
+                    messageMap.put("type", "validation");
+                    messageMap.put("reason", "application_null");
+                    messageMap.put("data",  "");
+                    ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
                 }
             }
         } catch (Exception e) {
             Map<String, String> data = remoteMessage.getData();
-            if (data != null)
-                Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
-                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data='" + data.toString()
-                        .substring(0, (Math.min(data.toString().length(), CMConstant.TimberTags.MAX_LIMIT))) + "'");
-            else
-                Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
-                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data=''");
+            if (data != null) {
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("type", "exception");
+                messageMap.put("err", Log.getStackTraceString
+                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+                messageMap.put("data", data.toString()
+                        .substring(0, (Math.min(data.toString().length(), CMConstant.TimberTags.MAX_LIMIT))));
+                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+            }
+            else {
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("type", "exception");
+                messageMap.put("err", Log.getStackTraceString
+                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+                messageMap.put("data", "");
+                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+            }
         }
     }
 
@@ -283,7 +300,11 @@ public class CMInAppManager implements CmInAppListener,
             activity.startActivity(RouteManager.getIntent(activity, appLink));
             CMNotificationUtils.INSTANCE.sendUTMParamsInGTM(appLink);
         } else {
-            Timber.w("%svalidation;reason='application_null_no_activity';data=''", CMConstant.TimberTags.TAG);
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "application_null_no_activity");
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
         }
 
         switch (elementType.getViewType()) {

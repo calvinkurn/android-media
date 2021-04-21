@@ -13,7 +13,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.view.uimodel.recom.PlayLikeParamInfoUiModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -30,7 +30,7 @@ class PlayInteractionViewModel @Inject constructor(
         private val postLikeUseCase: PostLikeUseCase,
         private val postFollowPartnerUseCase: PostFollowPartnerUseCase,
         private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatcherProvider,
+        private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
 
     private val _observableFollowPartner = MutableLiveData<Result<Boolean>>()

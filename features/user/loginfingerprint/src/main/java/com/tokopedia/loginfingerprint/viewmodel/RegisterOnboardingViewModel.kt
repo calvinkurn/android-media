@@ -8,7 +8,7 @@ import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
-import com.tokopedia.loginfingerprint.utils.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
@@ -22,12 +22,12 @@ import javax.inject.Inject
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class RegisterOnboardingViewModel @Inject constructor(dispatcher: DispatcherProvider,
+class RegisterOnboardingViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                                       private val userSession: UserSessionInterface,
                                                       private val cryptographyUtils: Cryptography?,
                                                       private val fingerprintSetting: FingerprintSetting,
                                                       private val registerFingerprintUseCase: RegisterFingerprintUseCase)
-    : BaseViewModel(dispatcher.io()){
+    : BaseViewModel(dispatcher.io){
 
     private val mutableRegisterFingerprintResult = MutableLiveData<Result<RegisterFingerprintResult>>()
     val verifyRegisterFingerprintResult: LiveData<Result<RegisterFingerprintResult>>

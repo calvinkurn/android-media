@@ -174,6 +174,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   is_request_cancel
                   request_cancel_time
                   reason
+                  status
                 }
                 flag_order_type{
                   is_order_cod

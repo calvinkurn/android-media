@@ -265,7 +265,14 @@ data class HomeBalanceModel (
                     action = {
                         balanceDrawerItemModels[it] = drawerContent.mapToHomeBalanceItemModel(
                                 drawerItemType = type,
-                                state = STATE_SUCCESS
+                                state = STATE_SUCCESS,
+                                defaultIconRes = when (type) {
+                                    TYPE_TOKOPOINT -> R.drawable.ic_new_tokopoints
+                                    TYPE_COUPON -> R.drawable.ic_new_coupon
+                                    TYPE_REWARDS -> R.drawable.ic_new_points
+                                    TYPE_FREE_ONGKIR -> R.drawable.ic_new_bbo
+                                    else -> null
+                                }
                         )
                     }
             )

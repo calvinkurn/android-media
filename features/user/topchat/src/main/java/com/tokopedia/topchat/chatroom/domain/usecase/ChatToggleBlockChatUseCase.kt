@@ -3,14 +3,14 @@ package com.tokopedia.topchat.chatroom.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class ChatToggleBlockChatUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatSettingsResponse>,
-        private var dispatchers: TopchatCoroutineContextProvider
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
     private val paramMsgId = "messageID"
@@ -18,7 +18,7 @@ class ChatToggleBlockChatUseCase @Inject constructor(
     private val paramIsBlocked = "isBlocked"
     private var promoStateChangerJob: Job? = null
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     fun safeCancel() {
         if (coroutineContext.isActive) {
@@ -71,19 +71,19 @@ class ChatToggleBlockChatUseCase @Inject constructor(
             onSuccess: (ChatSettingsResponse) -> Unit,
             onError: (Throwable) -> Unit
     ): Job {
-        return launchCatchError(dispatchers.IO,
+        return launchCatchError(dispatchers.io,
                 {
                     val response = gqlUseCase.apply {
                         setTypeClass(ChatSettingsResponse::class.java)
                         setRequestParams(params)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onSuccess(response)
                     }
                 },
                 {
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onError(it)
                     }
                 }

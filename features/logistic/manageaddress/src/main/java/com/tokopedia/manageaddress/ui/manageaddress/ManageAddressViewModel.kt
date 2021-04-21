@@ -109,7 +109,6 @@ class ManageAddressViewModel @Inject constructor(
         deletePeopleAddressUseCase.execute(id.toInt(), {
             _result.value = ManageAddressState.Success("Success")
             isClearData = true
-            searchAddress("", prevState, localChosenAddrId, isWhiteListChosenAddress)
             getStateChosenAddress("address")
         },  {
             _addressList.value  = ManageAddressState.Fail(it, "")

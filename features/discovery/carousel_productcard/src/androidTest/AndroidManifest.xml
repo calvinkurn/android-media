@@ -10,11 +10,11 @@
 
         <activity
             android:name=".CarouselProductCardGridActivityTest"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.White"/>
 
         <activity
             android:name=".CarouselProductCardListActivityTest"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.White"/>
 
     </application>
 </manifest>

@@ -23,6 +23,8 @@ import com.tokopedia.core.gcm.notification.promotions.GeneralNotification;
 import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -45,9 +47,8 @@ import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.HashMap;
 import java.util.Map;
-
-import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
@@ -69,12 +70,14 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     @Override
     public void notifyReceiverBackgroundMessage(Bundle bundle) {
-        Timber.w("P2#PUSH_NOTIF_UNUSED#AppNotificationReceiverUIBackground;allowed_notif='%s';isApplink='%s';isSupported='%s';isDedicated='%s';bundle='%s'"
-                , isAllowedNotification(bundle)
-                , isApplinkNotification(bundle)
-                , isSupportedApplinkNotification(bundle)
-                , isDedicatedNotification(bundle)
-                , bundle.toString());
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "AppNotificationReceiverUIBackground");
+        messageMap.put("allowed_notif", String.valueOf(isAllowedNotification(bundle)));
+        messageMap.put("isApplink", String.valueOf(isApplinkNotification(bundle)));
+        messageMap.put("isSupported", String.valueOf(isSupportedApplinkNotification(bundle)));
+        messageMap.put("isDedicated", String.valueOf(isDedicatedNotification(bundle)));
+        messageMap.put("bundle", bundle.toString());
+        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
         if (isAllowedNotification(bundle)) {
             mFCMCacheManager.setCache();
             if (isApplinkNotification(bundle)) {

@@ -18,7 +18,7 @@ import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState
 import com.tokopedia.troubleshooter.notification.ui.state.StatusState
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
-import com.tokopedia.troubleshooter.notification.util.dispatchers.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.troubleshooter.notification.util.isEqualsTo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -55,7 +55,7 @@ class TroubleshootViewModelTest {
     private val tokenObserver: Observer<Result<String>> = mockk(relaxed = true)
     private val dndMode: Observer<Boolean> = mockk(relaxed = true)
 
-    private val dispatcherProvider = TestDispatcherProvider()
+    private val dispatcherProvider = CoroutineTestDispatchersProvider
 
     private lateinit var viewModel: TroubleshootViewModel
 
