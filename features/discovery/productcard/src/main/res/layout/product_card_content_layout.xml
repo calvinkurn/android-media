@@ -26,6 +26,7 @@
         android:layout_height="@dimen/product_card_flashsale_pdpcount_height"
         android:layout_marginTop="@dimen/product_card_flashsale_pdpcount_margintop"
         android:visibility="gone"
+        android:contentDescription="@string/content_desc_imagePDPView"
         app:layout_goneMarginTop="@dimen/product_card_flashsale_pdpcount_gone_margintop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewGimmick"
@@ -277,6 +278,7 @@
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
+            tools:ignore="ContentDescription"
             tools:src="@drawable/product_card_ic_rating_active" />
 
         <ImageView
@@ -286,6 +288,7 @@
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
+            tools:ignore="ContentDescription"
             tools:src="@drawable/product_card_ic_rating_active" />
 
         <ImageView
@@ -295,6 +298,7 @@
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
+            tools:ignore="ContentDescription"
             tools:src="@drawable/product_card_ic_rating_active" />
 
         <ImageView
@@ -304,6 +308,7 @@
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
+            tools:ignore="ContentDescription"
             tools:src="@drawable/product_card_ic_rating_active" />
 
         <ImageView
@@ -313,6 +318,7 @@
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
+            tools:ignore="ContentDescription"
             tools:src="@drawable/product_card_ic_rating_active" />
 
     </LinearLayout>
@@ -355,6 +361,7 @@
         android:gravity="center"
         android:scaleType="centerCrop"
         android:visibility="gone"
+        android:contentDescription="@string/content_desc_imageRating"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewIntegrity"
         app:srcCompat="@drawable/ic_rating_apps_active"
@@ -413,6 +420,7 @@
         android:gravity="center"
         android:scaleType="centerCrop"
         android:visibility="gone"
+        android:contentDescription="@string/content_desc_imageShopRating"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/salesRatingFloat"
         app:srcCompat="@drawable/product_card_ic_shop_rating"
