@@ -1,12 +1,15 @@
 package com.tokopedia.media.loader
 
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
@@ -115,31 +118,31 @@ internal object MediaLoaderApi {
             imageView: ImageView,
             source: String?,
             radius: Int,
-            onSuccess: (Bitmap?, MediaDataSource?) -> Unit
+            onSuccess: (Drawable?, MediaDataSource?) -> Unit
     ) {
         if (source != null && source.isNotEmpty()) {
             GlideApp.with(imageView.context)
-                    .asBitmap()
-                    .centerCrop()
                     .load(source)
-                    .transform(RoundedCorners(radius))
+                    .centerCrop()
+                    .format(DecodeFormat.PREFER_ARGB_8888)
+                    .transform(CenterCrop(), RoundedCorners(radius))
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .placeholder(PLACEHOLDER_RES_UNIFY)
                     .error(ERROR_RES_UNIFY)
-                    .listener(object : RequestListener<Bitmap> {
+                    .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(
                                 e: GlideException?,
                                 model: Any?,
-                                target: Target<Bitmap>?,
+                                target: Target<Drawable>?,
                                 isFirstResource: Boolean
                         ): Boolean {
                             return true
                         }
 
                         override fun onResourceReady(
-                                resource: Bitmap?,
+                                resource: Drawable?,
                                 model: Any?,
-                                target: Target<Bitmap>?,
+                                target: Target<Drawable>?,
                                 dataSource: DataSource?,
                                 isFirstResource: Boolean
                         ): Boolean {

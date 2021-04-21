@@ -66,9 +66,8 @@ fun ImageView.loadIconFitCenter(url: String, fpmItemLabel: String = ""){
 
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    this.loadImageRounded(url, roundedRadius) { bitmap, dataSource ->
-        handleOnResourceReady(dataSource, bitmap, performanceMonitoring)
-        this.setImageBitmap(bitmap)
+    this.loadImageRounded(url, roundedRadius) { _, dataSource ->
+        handleOnResourceReady(dataSource, null, performanceMonitoring)
     }
 }
 

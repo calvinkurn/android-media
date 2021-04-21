@@ -115,7 +115,7 @@ fun ImageView.loadImageTopRightCrop(source: String) {
 fun ImageView.loadImageRounded(
         source: String,
         radius: Int,
-        onSuccess: (Bitmap?, MediaDataSource?) -> Unit
+        onSuccess: (Drawable?, MediaDataSource?) -> Unit
 ) {
     if (context.isValid()) {
         try {
