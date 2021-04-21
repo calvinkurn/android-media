@@ -343,4 +343,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         assertHeaderRightMsgBubbleBlueDotVisibility(0, not(isDisplayed()))
     }
 
+    // TODO: Add test is fulfillment / tokocabang view
+    // TODO: Add test is not fulfillment / tokocabang view
+
 }
