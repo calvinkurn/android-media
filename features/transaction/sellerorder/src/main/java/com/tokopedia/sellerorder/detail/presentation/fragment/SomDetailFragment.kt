@@ -791,6 +791,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     init(view)
                     setTitle(getString(R.string.som_detail_other_bottomsheet_title))
                     setActions(actions)
+                    hideKnob()
+                    showCloseButton()
                 } ?: initSecondaryActionBottomSheet(view, actions)
 
                 secondaryBottomSheet?.show()
@@ -803,6 +805,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
             init(view)
             setTitle(getString(R.string.som_detail_other_bottomsheet_title))
             setActions(actions)
+            hideKnob()
+            showCloseButton()
         }
     }
 
@@ -969,6 +973,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     })
                     init(it)
                     setTitle(SomConsts.TITLE_UBAH_RESI)
+                    hideKnob()
+                    showCloseButton()
                     show()
                 }
                 return
@@ -1045,6 +1051,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
             })
             init(view, popUp, Utils.getL2CancellationReason(detailResponse?.buyerRequestCancel?.reason.orEmpty()), detailResponse?.statusCode.orZero())
             setTitle(view.context.getString(R.string.som_request_cancel_bottomsheet_title))
+            hideKnob()
+            showCloseButton()
         }
     }
     

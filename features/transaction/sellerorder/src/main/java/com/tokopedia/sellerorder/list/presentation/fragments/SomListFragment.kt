@@ -573,6 +573,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             })
             init(view, order.buttons.firstOrNull()?.popUp ?: PopUp(), order.cancelRequestOriginNote, order.orderStatusId)
             setTitle(view.context.getString(R.string.som_request_cancel_bottomsheet_title))
+            hideKnob()
+            showCloseButton()
         }
     }
 
@@ -605,6 +607,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             })
             init(it)
             setTitle(SomConsts.TITLE_UBAH_RESI)
+            hideKnob()
+            showCloseButton()
         }
     }
 
@@ -1564,7 +1568,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
-    // disini suf
     private fun showBulkAcceptOrderBottomSheet() {
         view?.let {
             if (it is ViewGroup) {
@@ -1581,6 +1584,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     bottomSheet.setItems(items)
                     bottomSheet.showButtonAction()
                     bottomSheet.setListener(this@SomListFragment)
+                    bottomSheet.hideKnob()
+                    bottomSheet.showCloseButton()
                     bottomSheet.show()
                 }
                 return
@@ -1608,6 +1613,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     bottomSheet.setItems(items)
                     bottomSheet.hideButtonAction()
                     bottomSheet.setListener(this@SomListFragment)
+                    bottomSheet.hideKnob()
+                    bottomSheet.showCloseButton()
                     bottomSheet.show()
                 }
                 return

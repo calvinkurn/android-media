@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.gone
@@ -147,6 +148,17 @@ abstract class SomBottomSheet(context: Context) : View(context) {
 
     fun setTitle(title: String) {
         BottomSheetUnify.bottomSheetBehaviorTitle(requireNotNull(bottomSheetLayout), title)
+    }
+
+    fun showCloseButton() {
+        bottomSheetLayout?.findViewById<ImageView>(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)?.apply {
+            show()
+            setOnClickListener { dismiss() }
+        }
+    }
+
+    fun hideKnob() {
+        bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_knob)?.gone()
     }
 
     fun show() {
