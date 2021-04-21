@@ -176,11 +176,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
             override fun afterTextChanged(s: Editable) {
                 super.afterTextChanged(s)
-                s.toString()?.let {
-                    if (it.isNotEmpty() && it.first().toString() == "0") {
-                        textFieldPhone.textFieldInput.setText(it.drop(1))
-                    }
-                }
+                removeFirstZeroPhoneNUmber(s)
             }
         })
 
@@ -406,6 +402,14 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
         startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
+    }
+
+    private fun removeFirstZeroPhoneNUmber(s: Editable) {
+        s.toString()?.let {
+            if (it.isNotEmpty() && it.first().toString() == "0") {
+                textFieldPhone.textFieldInput.setText(it.drop(1))
+            }
+        }
     }
 
     companion object {
