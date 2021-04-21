@@ -171,9 +171,9 @@ class ShopPageLabelView : ShopPageBaseCustomView {
             contentTextView?.setTextColor(contentColorValue)
             subTitleTextView?.setTextColor(subtitleColorValue)
         } else {
-            titleTextView?.setTextColor(ContextCompat.getColor(context, R.color.font_black_disabled_38))
-            contentTextView?.setTextColor(ContextCompat.getColor(context, R.color.font_black_disabled_38))
-            subTitleTextView?.setTextColor(ContextCompat.getColor(context, R.color.font_black_disabled_38))
+            titleTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            contentTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            subTitleTextView?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
         }
     }
 
