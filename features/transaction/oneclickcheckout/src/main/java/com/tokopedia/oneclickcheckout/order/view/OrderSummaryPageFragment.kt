@@ -39,6 +39,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
@@ -250,8 +251,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun onResultFromAddNewAddress(resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && data?.extras != null) {
-            refresh()
+        if (resultCode == Activity.RESULT_OK && data?.hasExtra(LogisticConstant.EXTRA_ADDRESS_NEW) == true) {
+            val addressDataModel: SaveAddressDataModel? = data.getParcelableExtra(LogisticConstant.EXTRA_ADDRESS_NEW)
+            if (addressDataModel != null) {
+                updateLocalCacheAddressData(addressDataModel)
+                refresh()
+            }
         }
     }
 
@@ -562,6 +567,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     context = it,
                     addressId = addressModel.addressId.toString(),
+                    cityId = addressModel.cityId.toString(),
+                    districtId = addressModel.districtId.toString(),
+                    lat = addressModel.latitude,
+                    long = addressModel.longitude,
+                    label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
+                    postalCode = addressModel.postalCode)
+        }
+    }
+
+    private fun updateLocalCacheAddressData(addressModel: SaveAddressDataModel) {
+        activity?.let {
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    context = it,
+                    addressId = addressModel.id.toString(),
                     cityId = addressModel.cityId.toString(),
                     districtId = addressModel.districtId.toString(),
                     lat = addressModel.latitude,
