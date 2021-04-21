@@ -586,7 +586,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 USER_ID to (userID ?: ""),
                 BUSINESS_UNIT to HOME_BROWSE,
                 PAGE_TYPE to pageType,
-                PAGE_PATH to removeDashPageIdentifier(pageIdentifier)
+                PAGE_PATH to removedDashPageIdentifier
         )
         getTracker().sendGeneralEvent(map)
     }
