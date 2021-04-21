@@ -15,7 +15,7 @@ import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.stub.chatroom.view.service.UploadImageChatServiceStub
 import com.tokopedia.user.session.UserSessionInterface
@@ -50,7 +50,7 @@ class TopChatRoomPresenterStub @Inject constructor(
         chatToggleBlockChat: ChatToggleBlockChatUseCase,
         chatBackgroundUseCase: ChatBackgroundUseCase,
         sharedPref: SharedPreferences,
-        dispatchers: TopchatCoroutineContextProvider,
+        dispatchers: CoroutineDispatchers,
         remoteConfig: RemoteConfig
 ) : TopChatRoomPresenter(tkpdAuthInterceptor,
         fingerprintInterceptor,

@@ -26,11 +26,11 @@ import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.di.NfcCheckBalanceInstance
 import com.tokopedia.common_electronic_money.util.EmoneyAnalytics
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
 open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
@@ -176,12 +176,17 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     protected fun showError(errorMessage: String) {
         statusCloseBtn = FAILED_CLOSE_BTN
         emoneyAnalytics.onShowErrorTracking()
+
+        val updatedErrorMessage = if (errorMessage.contains(getString(R.string.emoney_nfc_grpc_timeout), true)) {
+            getString(R.string.emoney_nfc_grpc_label_error)
+        } else errorMessage
+
         if (eTollUpdateBalanceResultView.visibility == View.VISIBLE) {
-            eTollUpdateBalanceResultView.showError(errorMessage)
+            eTollUpdateBalanceResultView.showError(updatedErrorMessage)
         } else {
             tapETollCardView.visibility = View.VISIBLE
             tapETollCardView.showInitialState()
-            tapETollCardView.showErrorState(errorMessage)
+            tapETollCardView.showErrorState(updatedErrorMessage)
         }
         emoneyAnalytics.openScreenFailedReadCardNFC(userSession.userId, irisSessionId)
     }

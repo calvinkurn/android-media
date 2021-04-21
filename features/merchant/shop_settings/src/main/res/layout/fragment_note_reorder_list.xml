@@ -10,7 +10,7 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
-        android:background="@drawable/bg_line_separator_thin"
+        android:background="@color/Unify_N75"
         android:layout_marginStart="@dimen/dp_16"/>
 
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView

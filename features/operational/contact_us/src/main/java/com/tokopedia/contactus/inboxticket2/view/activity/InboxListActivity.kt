@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -46,6 +47,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, ChatWidgetToolTip.
     private var btnFilterTv: TextView? = null
     private var chatWidget: CustomChatWidgetView? = null
     private var chatWidgetNotification: View? = null
+    private var bottomFragment: BottomSheetDialogFragment? = null
 
     override fun renderTicketList(ticketItemList: MutableList<InboxTicketListResponse.Ticket.Data.TicketItem>) {
         if (mAdapter == null) {
@@ -170,8 +172,19 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, ChatWidgetToolTip.
         return -1
     }
 
-    override fun getBottomSheetLayoutRes(): Int {
+    override fun showBottomFragment() {
+        val BOTTOM_FRAGMENT = "Bottom_Sheet_Fragment"
+        bottomFragment = supportFragmentManager.findFragmentByTag(BOTTOM_FRAGMENT) as BottomSheetDialogFragment?
+        if (bottomFragment == null) bottomFragment = (mPresenter as InboxListContract.Presenter).getBottomFragment(getBottomSheetLayoutRes())
+        bottomFragment?.show(supportFragmentManager, BOTTOM_FRAGMENT)
+    }
+
+    fun getBottomSheetLayoutRes(): Int {
         return R.layout.layout_bottom_sheet_fragment
+    }
+
+    override fun hideBottomFragment() {
+        bottomFragment?.dismiss()
     }
 
     override fun doNeedReattach(): Boolean {

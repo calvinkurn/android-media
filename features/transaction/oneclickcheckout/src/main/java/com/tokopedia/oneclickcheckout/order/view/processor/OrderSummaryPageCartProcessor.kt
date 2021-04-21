@@ -4,7 +4,7 @@ import com.google.gson.JsonParser
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExternalUseCase: Lazy<AddToCartOccExternalUseCase>,
                                                         private val getOccCartUseCase: GetOccCartUseCase,
                                                         private val updateCartOccUseCase: UpdateCartOccUseCase,
-                                                        private val executorDispatchers: ExecutorDispatchers) {
+                                                        private val executorDispatchers: CoroutineDispatchers) {
 
     suspend fun atcOcc(productId: String, userId: String): OccGlobalEvent {
         OccIdlingResource.increment()

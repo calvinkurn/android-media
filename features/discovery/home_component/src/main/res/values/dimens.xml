@@ -6,6 +6,7 @@
     <dimen name="home_reminder_buy_button_margin_bottom">12dp</dimen>
     <dimen name="home_reminder_shimmering_card_size">120dp</dimen>
     <dimen name="home_banner_mix_carousel_width">125dp</dimen>
+    <dimen name="home_banner_mix_carousel_max_height">284dp</dimen>
     <dimen name="home_banner_mix_arrow_icon_size">50dp</dimen>
     <dimen name="home_component_margin_default">16dp</dimen>
 </resources>

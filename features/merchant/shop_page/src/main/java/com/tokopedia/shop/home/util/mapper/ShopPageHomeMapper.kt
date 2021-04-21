@@ -92,6 +92,7 @@ object ShopPageHomeMapper {
 
         val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon
                 ?: "")
+
         return if(isHasOCCButton) {
             ProductCardModel(
                     productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
@@ -110,7 +111,7 @@ object ShopPageHomeMapper {
                     discountPercentage = discountPercentage,
                     slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
                     formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
-                    countSoldRating = shopHomeProductViewModel.rating.toString(),
+                    countSoldRating = if (shopHomeProductViewModel.rating != 0.0) shopHomeProductViewModel.rating.toString() else "",
                     freeOngkir = freeOngkirObject,
                     labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                         mapToProductCardLabelGroup(it)
@@ -120,7 +121,7 @@ object ShopPageHomeMapper {
         }
     }
 
-    fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel): ProductCardModel {
+    fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel, isWideContent: Boolean): ProductCardModel {
         val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%", "")
                 ?: ""
         val discountPercentage = if (discountWithoutPercentageString == "0") {
@@ -144,7 +145,8 @@ object ShopPageHomeMapper {
                 },
                 hasThreeDots = hasThreeDots,
                 hasAddToCartButton = isHasAddToCartButton,
-                addToCartButtonType = UnifyButton.Type.MAIN
+                addToCartButtonType = UnifyButton.Type.MAIN,
+                isWideContent = isWideContent
         )
     }
 

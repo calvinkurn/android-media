@@ -36,7 +36,7 @@ import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -69,7 +69,7 @@ class PlayViewModel @Inject constructor(
         private val playSocketToModelMapper: PlaySocketToModelMapper,
         private val playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatcherProvider,
+        private val dispatchers: CoroutineDispatchers,
         private val remoteConfig: RemoteConfig,
         private val playPreference: PlayPreference,
         private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
@@ -253,6 +253,7 @@ class PlayViewModel @Inject constructor(
                 if (pinnedProduct != null) {
                     val newPinnedProduct = pinnedProduct.copy(
                             productTags = pinnedProduct.productTags.setContent(
+                                    basicInfo = it.data.basicInfo,
                                     productList = it.data.productList,
                                     voucherList = it.data.voucherList
                             )
@@ -620,6 +621,15 @@ class PlayViewModel @Inject constructor(
                     status = PlayLikeStatusInfoUiModel(
                             totalLike = finalTotalLike,
                             totalLikeFormatted = finalTotalLike.toAmountString(amountStringStepArray, separator = "."),
+                            isLiked = shouldLike,
+                            source = LikeSource.UserAction
+                    )
+            )
+        } else {
+            _observableLikeInfo.value = likeInfo.copy(
+                    status = PlayLikeStatusInfoUiModel(
+                            totalLike = likeInfo.status.totalLike,
+                            totalLikeFormatted = likeInfo.status.totalLikeFormatted,
                             isLiked = shouldLike,
                             source = LikeSource.UserAction
                     )

@@ -2,7 +2,7 @@ package com.tokopedia.travelhomepage.homepage.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.travelhomepage.homepage.data.ParamData
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageItemModel
@@ -22,9 +22,9 @@ import javax.inject.Inject
 
 class TravelHomepageViewModel @Inject constructor(
         private val getEmptyModelsUseCase: GetEmptyModelsUseCase,
-        dispatcherProvider: TravelDispatcherProvider,
+        dispatcherProvider: CoroutineDispatchers,
         private val getSubhomepageUnifiedDataUseCase: GetSubhomepageUnifiedDataUseCase)
-    : BaseViewModel(dispatcherProvider.io()) {
+    : BaseViewModel(dispatcherProvider.io) {
 
     var travelItemList = mutableListOf<TravelHomepageItemModel>()
     val travelItemListLiveData = MutableLiveData<MutableList<TravelHomepageItemModel>>()

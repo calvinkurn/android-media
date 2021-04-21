@@ -44,8 +44,8 @@ public interface InAppDataDao {
     @Query("SELECT * from inapp_data where id = :id LIMIT 1")
     CMInApp getInAppData(long id);
 
-    @Query("UPDATE inapp_data SET freq = freq-1 where parentId = :parentId")
-    void updateFrequency(String parentId);
+    @Query("UPDATE inapp_data SET freq = freq-1, last_shown = :currentTime  where parentId = :parentId")
+    void updateFrequencyWithShownTime(String parentId, long currentTime);
 
     @Query("UPDATE inapp_data SET shown = 1 where id = :id")
     void updateShown(long id);
