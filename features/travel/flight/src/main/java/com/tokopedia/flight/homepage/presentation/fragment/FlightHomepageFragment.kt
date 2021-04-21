@@ -317,6 +317,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         flightHomepageVideoBanner.listener = this
         flightHomepageVideoBanner.setData(bannerData)
         flightHomepageVideoBanner.build()
+        flightHomepageViewModel.sendTrackingVideoBannerImpression(flightHomepageVideoBanner.getData())
     }
 
     private fun hideVideoBannerView() {
