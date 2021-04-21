@@ -225,6 +225,23 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
+    fun srw_displayed_with_multiple_questions_from_start_intent() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponseMultipleQuestion
+        inflateTestFragment()
+
+        // Then
+        assertSrwContentIsVisible()
+        assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
+        assertSrwTotalQuestion(3)
+    }
+
+    @Test
     fun srw_displayed_if_buyer_attach_from_attach_product() {
         // Given
         setupChatRoomActivity()
