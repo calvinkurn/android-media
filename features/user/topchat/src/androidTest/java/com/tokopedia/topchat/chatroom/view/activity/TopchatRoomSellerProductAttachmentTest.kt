@@ -330,4 +330,17 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         assertHeaderRightMsgBubbleText(0, "Dibalas oleh Balasan Otomatis")
     }
 
+    @Test
+    fun header_msg_from_normal_inbox() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerSourceInbox
+        chatAttachmentUseCase.response = sellerProductAttachment
+        inflateTestFragment()
+
+        // Then
+        assertHeaderRightMsgBubbleVisibility(0, not(isDisplayed()))
+        assertHeaderRightMsgBubbleBlueDotVisibility(0, not(isDisplayed()))
+    }
+
 }
