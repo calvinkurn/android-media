@@ -108,8 +108,12 @@ class PlayBottomSheetViewModelTest {
                 .isInstanceOf(PlayResult.Success::class.java)
 
         Assertions
-                .assertThat((actualValue as PlayResult.Success).data)
-                .isEqualToComparingFieldByField(expectedResult.data)
+                .assertThat((actualValue as PlayResult.Success).data.peekContent())
+                .isEqualToIgnoringGivenFields(expectedResult.data.peekContent(), "product")
+
+        Assertions
+                .assertThat(actualValue.data.peekContent().product)
+                .isEqualToIgnoringGivenFields(expectedResult.data.peekContent().product, "impressHolder")
     }
 
     @Test
@@ -141,8 +145,12 @@ class PlayBottomSheetViewModelTest {
                 .isInstanceOf(PlayResult.Success::class.java)
 
         Assertions
-                .assertThat((actualValue as PlayResult.Success).data)
-                .isEqualToComparingFieldByField(expectedResult.data)
+                .assertThat((actualValue as PlayResult.Success).data.peekContent())
+                .isEqualToIgnoringGivenFields(expectedResult.data.peekContent(), "product")
+
+        Assertions
+                .assertThat(actualValue.data.peekContent().product)
+                .isEqualToIgnoringGivenFields(expectedResult.data.peekContent().product, "impressHolder")
     }
 
     @Test

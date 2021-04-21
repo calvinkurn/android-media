@@ -43,6 +43,7 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -130,6 +131,9 @@ class TopChatViewStateImpl constructor(
         typingImage = toolbar.findViewById(com.tokopedia.chat_common.R.id.iv_typing)
         typingText = toolbar.findViewById(com.tokopedia.chat_common.R.id.tv_typing)
 
+        typingImage?.let {
+            ImageUtil.setTypingAnimation(it)
+        }
         initProductPreviewLayout()
         initHeaderLayout()
         setupChatStickerMenu()
@@ -668,7 +672,7 @@ class TopChatViewStateImpl constructor(
         typingImage?.show()
         typingText?.show()
         typingImage?.let {
-            MethodChecker.animateVectorDrawable(true, it.drawable, view.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
+            ImageUtil.startAVDTypingAnimation(it)
         }
     }
 
@@ -677,7 +681,7 @@ class TopChatViewStateImpl constructor(
         typingImage?.hide()
         typingText?.hide()
         typingImage?.let {
-            MethodChecker.animateVectorDrawable(false, it.drawable, view.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
+            ImageUtil.stopAVDTypingAnimation(it)
         }
     }
 }
