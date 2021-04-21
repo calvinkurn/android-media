@@ -48,9 +48,11 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
 
+    implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.list
+    implementation rootProject.ext.unifyDependencies.icons
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 

@@ -22,7 +22,7 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
                                                           defStyleAttr: Int = 0)
     : LinearLayout(context, attrs, defStyleAttr) {
 
-    val recyclerView: RecyclerView
+    private val recyclerView: RecyclerView
     private val titleWidget: TextView
     private val promoList = mutableListOf<TopupBillsPromo>()
     private lateinit var topupBillsPromoListAdapter: TopupBillsPromoListAdapter
@@ -93,6 +93,8 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
     fun toggleTitle(value: Boolean) {
         if (value) titleWidget.show() else titleWidget.hide()
     }
+
+    fun getRecyclerView(): RecyclerView = recyclerView
 
     interface ActionListener {
         fun onCopiedPromoCode(promoId: Int, voucherCode: String)
