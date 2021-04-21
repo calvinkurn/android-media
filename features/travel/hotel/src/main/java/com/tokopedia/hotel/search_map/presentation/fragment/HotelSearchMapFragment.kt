@@ -582,6 +582,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
 
         if (isHotelListShowingError()) {
+            hideSearchWithMap()
             rvVerticalPropertiesHotelSearchMap.setMargin(0,
                     resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7),
                     0,
