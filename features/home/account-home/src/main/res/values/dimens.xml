@@ -10,4 +10,8 @@
     <dimen name="account_home_ic_open_shop_size">55dp</dimen>
     <dimen name="account_home_ic_seller_shop_size">20dp</dimen>
     <dimen name="account_home_seller_shop_bg_width">42dp</dimen>
+    <dimen name="account_home_add_name_bottom_sheet_26dp">26dp</dimen>
+    <dimen name="account_home_add_name_bottom_sheet_6dp">6dp</dimen>
+
+    <dimen name="image_quality_dp11">11dp</dimen>
 </resources>

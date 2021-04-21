@@ -31,6 +31,8 @@ import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelSourceEnum
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
+import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_HOMEPAGE
 import com.tokopedia.hotel.destination.data.model.PopularSearch
@@ -48,6 +50,7 @@ import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomS
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
+import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -156,7 +159,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         loadTickerData()
 
         if (hotelHomepageModel.locName.isEmpty()) {
-            homepageViewModel.getDefaultHomepageParameter(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_default_homepage_parameter))
+            homepageViewModel.getDefaultHomepageParameter(HotelGqlQuery.DEFAULT_HOMEPAGE_PARAMETER)
         }
     }
 
@@ -579,15 +582,19 @@ class HotelHomepageFragment : HotelBaseFragment(),
                     val hotelSearchModel = HotelSearchModel(name = hotelHomepageModel.locName,
                             id = hotelHomepageModel.locId,
                             type = hotelHomepageModel.locType,
-                            lat = hotelHomepageModel.locLat.toFloat(),
-                            long = hotelHomepageModel.locLong.toFloat(),
+                            lat = hotelHomepageModel.locLat,
+                            long = hotelHomepageModel.locLong,
                             checkIn = hotelHomepageModel.checkInDate,
                             checkOut = hotelHomepageModel.checkOutDate,
                             room = hotelHomepageModel.roomCount,
                             adult = hotelHomepageModel.adultCount,
                             searchType = hotelHomepageModel.searchType,
                             searchId = hotelHomepageModel.searchId)
-                    startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
+                    if (remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_SEARCH_WITH_MAP, true)) {
+                        startActivityForResult(HotelSearchMapActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
+                    } else {
+                        startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
+                    }
                 }
             }
         }
@@ -608,7 +615,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun loadRecentSearchData() {
-        homepageViewModel.getRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_recent_search))
+        homepageViewModel.getRecentSearch(HotelGqlQuery.RECENT_SEARCH_DATA)
     }
 
     val bannerImpressionIndex: HashSet<Int> = hashSetOf()
@@ -676,7 +683,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         tv_hotel_last_search_title.text = data.title
         tv_hotel_homepage_delete_last_search.setOnClickListener {
-            homepageViewModel.deleteRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_hotel_delete_recent_search))
+            homepageViewModel.deleteRecentSearch(HotelGqlMutation.DELETE_RECENT_SEARCH)
         }
         rv_hotel_homepage_last_search.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         rv_hotel_homepage_last_search.adapter = HotelLastSearchAdapter(data.items, this)
@@ -714,17 +721,17 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner?, position: Int) {
         promo?.let {
-            trackingHotelUtil.hotelClickBanner(context, it, position, HOMEPAGE_SCREEN_NAME)
-            context?.let { ctx ->
+            context?.let { contextNotNull ->
+                trackingHotelUtil.hotelClickBanner(contextNotNull, it, position, HOMEPAGE_SCREEN_NAME)
                 when {
-                    RouteManager.isSupportApplink(ctx, it.attribute.appUrl) -> {
-                        RouteManager.route(ctx, it.attribute.appUrl)
+                    RouteManager.isSupportApplink(contextNotNull, it.attribute.appUrl) -> {
+                        RouteManager.route(contextNotNull, it.attribute.appUrl)
                     }
-                    getRegisteredNavigation(ctx, it.attribute.appUrl).isNotEmpty() -> {
-                        RouteManager.route(ctx, getRegisteredNavigation(ctx, it.attribute.appUrl))
+                    getRegisteredNavigation(contextNotNull, it.attribute.appUrl).isNotEmpty() -> {
+                        RouteManager.route(contextNotNull, getRegisteredNavigation(contextNotNull, it.attribute.appUrl))
                     }
                     it.attribute.webUrl.isNotEmpty() -> {
-                        RouteManager.route(ctx, it.attribute.webUrl)
+                        RouteManager.route(contextNotNull, it.attribute.webUrl)
                     }
                     else -> {
                     }

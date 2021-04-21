@@ -8,6 +8,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.gone
@@ -85,6 +86,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     private fun inflateWaitingUI(numberTypeTitle: String?, isCopyVisible: Boolean, highlightAmountDigits: Boolean) {
         tvPaymentGatewayName.text = thanksPageData.gatewayName
         ivPaymentGatewayImage.loadImage(thanksPageData.gatewayImage)
+        ivPaymentGatewayImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
         numberTypeTitle?.let {
             tvAccountNumberTypeTag.text = numberTypeTitle
             tvAccountNumber.text = thanksPageData.additionalInfo.accountDest

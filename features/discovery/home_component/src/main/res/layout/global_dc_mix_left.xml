@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_mixleft"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,47 +33,53 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <FrameLayout
-            android:id="@+id/parallax_view"
+        <View
+            tools:background="@color/Unify_N700"
+            android:id="@+id/parallax_background"
+            android:paddingTop="@dimen/dp_14"
+            android:paddingBottom="@dimen/dp_14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginLeft="-40dp"
-            android:layout_marginRight="-40dp">
-
-            <View
-                android:id="@+id/parallax_background"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-            <ImageView
-                android:id="@+id/parallax_image"
-                android:layout_marginLeft="@dimen/dp_48"
-                android:layout_height="match_parent"
-                android:layout_width="@dimen/product_card_flashsale_width"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="centerCrop"
-                android:contentDescription="@string/content_desc_mix_left" />
-
-        </FrameLayout>
+            android:layout_height="0dp"/>
+        <ImageView
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_max="@dimen/home_banner_mix_carousel_max_height"
+            tools:src="@drawable/test"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/parallax_image"
+            android:layout_height="0dp"
+            android:layout_width="@dimen/product_card_flashsale_width"
+            android:adjustViewBounds="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/content_desc_mix_left" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_product"
+            tools:translationX="200dp"
+            tools:layout_height="300dp"
+            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginBottom="@dimen/dp_14"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_12"
             android:paddingLeft="@dimen/home_component_margin_default"
             android:paddingRight="@dimen/dp_8"
             android:clipToPadding="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:itemCount="10"
             tools:spanCount="3"
             tools:orientation="horizontal"
             tools:listitem="@layout/home_banner_item_flashsale_carousel"/>
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

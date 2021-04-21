@@ -1,0 +1,21 @@
+[
+  {
+    "data": {
+      "ticker": {
+        "meta": {
+          "total_data": 0
+        },
+        "tickers": [
+          {
+            "id": "593",
+            "title": "Ticker Revamp QA - Warning",
+            "message": "This ticker purpose is for QA Ticker Revamp yeay! &nbsp;<a href=\\\"tokopedia://home\\\"\\>here refresh home</a>",
+            "color": "#cde4c3",
+            "layout": "default",
+            "ticker_type": 0
+          }
+        ]
+      }
+    }
+  }
+]

@@ -13,7 +13,7 @@
         android:id="@+id/tvCentralizedPromoPostListTitle"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
@@ -42,11 +42,9 @@
         android:layout_marginTop="@dimen/layout_lvl1"
         android:maxLines="1"
         android:paddingStart="@dimen/layout_lvl0"
-        android:paddingLeft="@dimen/layout_lvl0"
         android:paddingEnd="@dimen/layout_lvl2"
-        android:paddingRight="@dimen/layout_lvl2"
         android:text="@string/sah_more"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         android:textSize="@dimen/fontSize_lvl3"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -66,6 +64,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tvCentralizedPromoPostListSeeDetails"
         app:layout_constraintLeft_toRightOf="@id/tvCentralizedPromoPostListSeeDetails"
         app:layout_constraintTop_toTopOf="@+id/tvCentralizedPromoPostListSeeDetails"
-        app:srcCompat="@drawable/ic_arrow_right_default" />
+        app:srcCompat="@drawable/ic_arrow_right_default"
+        android:contentDescription="@string/centralized_promo_content_desc_button_lihat_detail_promo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

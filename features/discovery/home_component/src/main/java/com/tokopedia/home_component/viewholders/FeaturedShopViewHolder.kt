@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.decoration.CommonMarginStartDecoration
 import com.tokopedia.home_component.listener.FeaturedShopListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -60,6 +61,13 @@ class FeaturedShopViewHolder(
 
     private fun initItems(element: FeaturedShopDataModel)
     {
+        if (itemView.dc_banner_rv.itemDecorationCount == 0) {
+            itemView.dc_banner_rv.addItemDecoration(
+                    CommonMarginStartDecoration(
+                            marginStart = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_14)
+                    )
+            )
+        }
         val listData = mutableListOf<Visitable<*>>()
         val productDataList = convertDataToProductData(element.channelModel)
         listData.addAll(productDataList)

@@ -1,9 +1,11 @@
 package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.autocomplete.complete
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocomplete.jsonToObject
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -32,7 +34,7 @@ internal open class InitialStatePresenterTestFixtures {
 
     protected val testException = TestException("Error")
 
-    private val initialStateCommonResponse = "autocomplete/initialstate/common-response.json"
+    protected val initialStateCommonResponse = "autocomplete/initialstate/common-response.json"
     protected val initialStateCommonData = initialStateCommonResponse.jsonToObject<InitialStateUniverse>().data
 
     protected val ID_POPULAR_SEARCH = "popular_search"
@@ -53,15 +55,26 @@ internal open class InitialStatePresenterTestFixtures {
         `Given presenter get initial state data`()
     }
 
+    protected fun `Given initial state use case capture request params`(list: List<InitialStateData>) {
+        every { getInitialStateUseCase.execute(any(), any()) }.answers {
+            secondArg<Subscriber<List<InitialStateData>>>().complete(list)
+        }
+    }
+
     private fun `Given presenter get initial state data`() {
         initialStatePresenter.getInitialStateData()
     }
 
-    protected fun `Given initial state use case capture request params`(list: List<InitialStateData>) {
-        every { getInitialStateUseCase.execute(any(), any()) }.answers {
-            secondArg<Subscriber<List<InitialStateData>>>().onStart()
-            secondArg<Subscriber<List<InitialStateData>>>().onNext(list)
-        }
+    protected fun `Given view already get initial state`(responseJSON: String) {
+        val initialStateUniverse = responseJSON.jsonToObject<InitialStateUniverse>()
+
+        `Given initial state use case capture request params`(initialStateUniverse.data)
+        `Given view will show initial state result`()
+        `Given presenter get initial state data`()
+    }
+
+    private fun `Given view will show initial state result`() {
+        every { initialStateView.showInitialStateResult(capture(slotVisitableList)) } just runs
     }
 
     protected fun `Then verify initial state view behavior is correct`() {
@@ -109,5 +122,15 @@ internal open class InitialStatePresenterTestFixtures {
             //This showInitialStateResult is only called once when it loads initial state data
             initialStateView.showInitialStateResult(capture(slotVisitableList))
         }
+    }
+
+    protected inline fun <reified T> findDataView(): T {
+        val visitableList = slotVisitableList.captured
+
+        return visitableList.find { it is T} as T
+    }
+
+    protected fun List<BaseItemInitialStateSearch>.findByType(type: String = ""): BaseItemInitialStateSearch {
+        return this.find { it.type == type } as BaseItemInitialStateSearch
     }
 }

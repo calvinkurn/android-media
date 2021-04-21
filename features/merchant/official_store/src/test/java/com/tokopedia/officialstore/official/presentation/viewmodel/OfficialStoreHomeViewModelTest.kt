@@ -2,7 +2,7 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
-import com.tokopedia.officialstore.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
@@ -84,7 +84,7 @@ class OfficialStoreHomeViewModelTest {
                 addWishListUseCase,
                 topAdsWishlishedUseCase,
                 removeWishListUseCase,
-                TestDispatcherProvider()
+                CoroutineTestDispatchersProvider
         )
     }
 

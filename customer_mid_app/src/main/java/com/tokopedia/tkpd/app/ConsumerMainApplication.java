@@ -23,7 +23,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.facebook.FacebookSdk;
-import com.facebook.soloader.SoLoader;
 import com.google.firebase.FirebaseApp;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
@@ -31,8 +30,6 @@ import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
-import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
@@ -47,13 +44,21 @@ import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallba
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.encryption.security.AESEncryptorECB;
+import com.tokopedia.keys.Keys;
+import com.tokopedia.logger.LogManager;
+import com.tokopedia.logger.LoggerProxy;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.moengage_wrapper.interfaces.CustomPushDataListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
-import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
 import com.tokopedia.moengage_wrapper.util.NotificationBroadcast;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.media.common.Loader;
+import com.tokopedia.media.common.common.ToasterActivityLifecycle;
 import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -68,8 +73,7 @@ import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.timber.LoggerActivityLifecycleCallbacks;
-import com.tokopedia.tkpd.timber.TimberWrapper;
-import com.tokopedia.tkpd.utils.CacheApiWhiteList;
+import com.tokopedia.tkpd.utils.NewRelicConstants;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
@@ -85,9 +89,14 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.crypto.SecretKey;
+
 import kotlin.Pair;
+import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
 import static android.os.Process.killProcess;
@@ -114,7 +123,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
-    private static final String ENABLE_SEQ_AB_TESTING_ASYNC = "android_exec_seq_ab_testing_async";
+    private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_customerapp_log_config_scalyr";
+    private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_new_relic";
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -141,9 +151,11 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
         registerActivityLifecycleCallbacks();
         checkAppSignatureAsync();
+
+        Loader.init(this);
     }
 
-    private void checkAppSignatureAsync(){
+    private void checkAppSignatureAsync() {
         WeaveInterface checkAppSignatureWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -151,7 +163,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 if (!checkAppSignature()) {
                     killProcess(android.os.Process.myPid());
                 }
-                if (!checkPackageName()){
+                if (!checkPackageName()) {
                     killProcess(android.os.Process.myPid());
                 }
                 return true;
@@ -160,10 +172,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, this);
     }
 
-    private boolean checkPackageName(){
+    private boolean checkPackageName() {
         boolean packageNameValid = this.getPackageName().equals(getOriginalPackageApp());
         if (!packageNameValid) {
-            Timber.w("P1#APP_SIGNATURE_FAILED#'packageName=%s'" , this.getPackageName());
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("packageName", this.getPackageName());
+            ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
         }
         return packageNameValid;
     }
@@ -189,20 +203,28 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             byte[] rawCertNative = getJniBytes();
             // handle if the library is failing
             if (rawCertNative == null) {
-                Timber.w("P1#APP_SIGNATURE_FAILED#'rawCertNative==null'");
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("rawCertNative", "null");
+                ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
                 return true;
             } else if (rawCertJava == null) {
-                Timber.w("P1#APP_SIGNATURE_FAILED#'rawCertJava==null'");
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("rawCertJava", "null");
+                ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
                 return true;
             } else {
                 signatureValid = getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
             }
             if (!signatureValid) {
-                Timber.w("P1#APP_SIGNATURE_FAILED#'certJava!=certNative'");
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("certJava", "!=certNative");
+                ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
             }
             return signatureValid;
         } catch (PackageManager.NameNotFoundException e) {
-            Timber.w("P1#APP_SIGNATURE_FAILED#'PackageManager.NameNotFoundException'");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "PackageManager.NameNotFoundException");
+            ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
             return false;
         }
     }
@@ -295,7 +317,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
-
+        registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
     }
 
 
@@ -346,8 +368,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     @NotNull
     private Boolean executePreCreateSequence() {
-        initReact();
-
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
         FpmLogger.init(ConsumerMainApplication.this);
         return true;
@@ -371,6 +391,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     /**
      * cannot reference BuildConfig of an app.
+     *
      * @return
      */
     @NonNull
@@ -387,11 +408,10 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         MoengageInteractor.INSTANCE.setInAppListener(ConsumerMainApplication.this);
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(ConsumerMainApplication.this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
-        initCacheApi();
         createCustomSoundNotificationChannel();
         MoengageInteractor.INSTANCE.setMessageListener(this);
 
-        TimberWrapper.init(ConsumerMainApplication.this);
+        initLogManager();
         DevMonitoring devMonitoring = new DevMonitoring(ConsumerMainApplication.this);
         devMonitoring.initCrashMonitoring();
         devMonitoring.initANRWatcher();
@@ -402,6 +422,85 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(gratificationSubscriber);
         getAmplificationPushData();
         return true;
+    }
+
+    private void initLogManager() {
+        LogManager.init(ConsumerMainApplication.this, new LoggerProxy() {
+            final AESEncryptorECB encryptor = new AESEncryptorECB();
+            final SecretKey secretKey = encryptor.generateKey(NewRelicConstants.ENCRYPTION_KEY);
+
+            @Override
+            public Function1<String, String> getDecrypt() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptor.decrypt(s, secretKey);
+                    }
+                };
+            }
+
+            @Override
+            public Function1<String, String> getEncrypt() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptor.encrypt(s, secretKey);
+                    }
+                };
+            }
+
+            @NotNull
+            @Override
+            public String getVersionName() {
+                return GlobalConfig.RAW_VERSION_NAME;
+            }
+
+            @Override
+            public int getVersionCode() {
+                return GlobalConfig.VERSION_CODE;
+            }
+
+            @NotNull
+            @Override
+            public String getScalyrToken() {
+                return Keys.getAUTH_SCALYR_API_KEY();
+            }
+
+            @NotNull
+            @Override
+            public String getNewRelicToken() {
+                return Keys.getAUTH_NEW_RELIC_API_KEY();
+            }
+
+            @NotNull
+            @Override
+            public String getNewRelicUserId() {
+                return Keys.getAUTH_NEW_RELIC_USER_ID();
+            }
+
+            @Override
+            public boolean isDebug() {
+                return GlobalConfig.DEBUG;
+            }
+
+            @NotNull
+            @Override
+            public String getUserId() {
+                return getUserSession().getUserId();
+            }
+
+            @NotNull
+            @Override
+            public String getScalyrConfig() {
+                return remoteConfig.getString(REMOTE_CONFIG_SCALYR_KEY_LOG);
+            }
+
+            @NotNull
+            @Override
+            public String getNewRelicConfig() {
+                return remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
+            }
+        });
     }
 
     private void getAmplificationPushData() {
@@ -415,8 +514,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             try {
                 AmplificationDataSource.invoke(ConsumerMainApplication.this);
             } catch (Exception e) {
-                Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
-                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data=''");
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("type", "exception");
+                messageMap.put("err", Log.getStackTraceString
+                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+                messageMap.put("data", "");
+                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
             }
         }
     }
@@ -563,17 +666,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         } else {
             return false;
         }
-    }
-
-    private void initReact() {
-        SoLoader.init(ConsumerMainApplication.this, false);
-    }
-
-    private void initCacheApi() {
-        CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
-        new CacheApiWhiteListUseCase(this).executeSync(CacheApiWhiteListUseCase.createParams(
-                CacheApiWhiteList.getWhiteList(),
-                String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 
     public int getCurrentVersion(Context context) {
