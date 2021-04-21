@@ -15,6 +15,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.hamcrest.CoreMatchers
+import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -96,6 +98,18 @@ class SellerSeamlessViewModelTest {
         verify { observerLoginToken.onChanged(Success(mockLoginToken.loginToken)) }
         val result = viewModel.loginTokenResponse.value as Success<LoginToken>
         assert(result.data == mockLoginToken.loginToken)
+    }
+
+    @Test
+    fun `login seamless - fail token empty`() {
+        val mockResponseAes = ""
+
+        coEvery { AESUtils.encryptSeamless(code.toByteArray()) } returns mockResponseAes
+
+        viewModel.loginSeamless(code)
+
+        /* Then */
+        MatcherAssert.assertThat(viewModel.loginTokenResponse.value, CoreMatchers.instanceOf(Fail::class.java))
     }
 
     @Test

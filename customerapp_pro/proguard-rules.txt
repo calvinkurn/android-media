@@ -254,3 +254,8 @@
 -keep class **.HanselDialog.*{*;}
 -keep class * implements io.hansel.**.* {*;}
 -keep class * extends io.hansel.**.* {*;}
+
+# data visor
+-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
+-keepclasseswithmembers class * { native <methods>; }
+-keep class com.datavisor.vangogh.** { *; }
