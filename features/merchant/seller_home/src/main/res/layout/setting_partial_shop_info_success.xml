@@ -21,7 +21,8 @@
 
     <include
         android:id="@+id/shopOperationalHour"
-        layout="@layout/settings_partial_shop_operational_hour" />
+        layout="@layout/settings_partial_shop_operational_hour"
+        android:visibility="gone" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
