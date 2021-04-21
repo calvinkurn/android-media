@@ -144,6 +144,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl1"
                 android:ellipsize="end"
                 android:lines="2"
                 android:textColor="@color/Unify_Static_White"
