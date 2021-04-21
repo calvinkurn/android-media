@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -170,6 +171,15 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     buttonContinue.isEnabled = true
                     textFieldPhone.setError(false)
                     clearMessageFieldPhone()
+                }
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                super.afterTextChanged(s)
+                s.toString()?.let {
+                    if (it.isNotEmpty() && it.first().toString() == "0") {
+                        textFieldPhone.textFieldInput.setText(it.drop(1))
+                    }
                 }
             }
         })
@@ -418,7 +428,6 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             return fragment
         }
 
-        fun isValidPhone(phone: String): Boolean = Patterns.PHONE.matcher(phone).matches() &&
-                phone.length >= 6
+        fun isValidPhone(phone: String): Boolean = Patterns.PHONE.matcher(phone).matches() && phone.length >= 6
     }
 }
