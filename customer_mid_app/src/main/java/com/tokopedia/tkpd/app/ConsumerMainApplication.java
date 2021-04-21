@@ -57,6 +57,8 @@ import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
 import com.tokopedia.moengage_wrapper.util.NotificationBroadcast;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.media.common.Loader;
+import com.tokopedia.media.common.common.ToasterActivityLifecycle;
 import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -149,6 +151,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
         registerActivityLifecycleCallbacks();
         checkAppSignatureAsync();
+
+        Loader.init(this);
     }
 
     private void checkAppSignatureAsync() {
@@ -313,7 +317,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
-
+        registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
     }
 
 
@@ -364,7 +368,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     @NotNull
     private Boolean executePreCreateSequence() {
-
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
         FpmLogger.init(ConsumerMainApplication.this);
         return true;

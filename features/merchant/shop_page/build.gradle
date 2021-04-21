@@ -23,6 +23,7 @@ android {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.playWidget)
     implementation project(rootProject.ext.libraries.tkpddesign)

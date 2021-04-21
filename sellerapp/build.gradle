@@ -237,7 +237,6 @@ dependencies {
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.features.homecredit)
     implementation project(rootProject.ext.libraries.imageuploader)
-    implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.weaver)
@@ -263,6 +262,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.withdraw)
+    implementation project(rootProject.ext.features.mediaCommon)
 
     implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.loginregister)

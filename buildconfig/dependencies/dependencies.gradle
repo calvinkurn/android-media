@@ -117,6 +117,7 @@ ext {
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.5'
+    unifyAccordionVersion = '1.1.2'
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -132,7 +133,8 @@ ext {
             loggingInterceptor      : "com.squareup.okhttp3:logging-interceptor:${okHttpVersion}",
             glide                   : "com.github.bumptech.glide:glide:${glideVersion}",
             retrofitKotlinCoroutine : "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2",
-            glideProcessor          : "com.github.bumptech.glide:compiler:${glideVersion}"
+            glideProcessor          : "com.github.bumptech.glide:compiler:${glideVersion}",
+            glideOkhttp             : "com.github.bumptech.glide:okhttp3-integration:${glideVersion}"
     ]
 
     dbDependencies = [
@@ -353,6 +355,7 @@ ext {
             iconNotification: "com.tokopedia.unify.compositions:icon_notification:${unifyIconNotificationVersion}@aar",
             sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar",
             carousel        : "com.tokopedia.unify.compositions:carousel:${unifyCarouselVersion}@aar",
+            accordion       : "com.tokopedia.unify.compositions:accordion:${unifyAccordionVersion}@aar",
             icons           : "com.tokopedia.unify:icons:${unifyIconsVersion}@aar"
     ]
 }
