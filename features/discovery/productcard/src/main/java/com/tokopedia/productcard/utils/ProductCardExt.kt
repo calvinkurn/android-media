@@ -18,7 +18,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
@@ -28,10 +27,6 @@ import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
-import kotlinx.android.synthetic.main.product_card_grid_layout.view.progressBarStock
-import kotlinx.android.synthetic.main.product_card_grid_layout.view.textViewStockLabel
-import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 
 internal val View.isVisible: Boolean
     get() = visibility == View.VISIBLE
@@ -322,7 +317,7 @@ internal fun renderStockBar(progressBarStock: ProgressBarUnify?, textViewStock: 
 
 private fun renderStockPercentage(progressBarStock: ProgressBarUnify?, productCardModel: ProductCardModel) {
     progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-        progressBarStock.setProgressIcon(icon = null)
+        it.setProgressIcon(icon = null)
         if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
             it.setProgressIcon(
                     icon = ContextCompat.getDrawable(it.context, R.drawable.product_card_ic_fire_filled),
@@ -338,7 +333,13 @@ private fun renderStockLabel(textViewStockLabel: Typography?, productCardModel: 
     textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
         it.text = productCardModel.stockBarLabel
 
-        val color = when {
+        val color = getStockLabelColor(productCardModel, it)
+        it.setTextColor(color)
+    }
+}
+
+private fun getStockLabelColor(productCardModel: ProductCardModel, it: Typography) =
+        when {
             productCardModel.stockBarLabelColor.isNotEmpty() ->
                 safeParseColor(
                         productCardModel.stockBarLabelColor,
@@ -347,7 +348,3 @@ private fun renderStockLabel(textViewStockLabel: Typography?, productCardModel: 
             else ->
                 MethodChecker.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
         }
-
-        it.setTextColor(color)
-    }
-}
