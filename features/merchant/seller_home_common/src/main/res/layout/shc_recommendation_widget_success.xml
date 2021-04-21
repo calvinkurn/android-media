@@ -38,13 +38,29 @@
         app:typographyWeight="bold"
         tools:text="Performa toko" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/tickerShcRecommendation"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcRecommendationTitle"
+        app:tickerShapeType="loose"
+        tools:visibility="visible" />
+
     <com.tokopedia.gm.common.widget.ShopLevelView
         android:id="@+id/slvShcShopLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
-        app:layout_constraintTop_toBottomOf="@+id/tvShcRecommendationTitle" />
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tickerShcRecommendation" />
 
     <com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
         android:id="@+id/sspShcShopScoreProgress"
