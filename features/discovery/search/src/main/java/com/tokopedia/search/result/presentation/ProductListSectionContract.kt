@@ -124,7 +124,7 @@ interface ProductListSectionContract {
         fun onProductClick(item: ProductItemDataView?, adapterPosition: Int)
         val quickFilterOptionList: List<Option>
         fun getProductCount(mapParameter: Map<String, String>?)
-        fun openFilterPage(searchParameter: Map<String, Any>)
+        fun openFilterPage(searchParameter: Map<String, Any>?)
         val isBottomSheetFilterEnabled: Boolean
         fun onBottomSheetFilterDismissed()
         fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
