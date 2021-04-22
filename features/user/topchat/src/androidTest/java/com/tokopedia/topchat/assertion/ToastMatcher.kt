@@ -40,8 +40,14 @@ class ToastMatcher(private val maxFailures: Int) : TypeSafeMatcher<Root>() {
          * ToastMatcher.onToast("Toast Text")
          * ToastMatcher.onToast("Toast Text", 3)
         */
-        fun onToast(text: String, maxRetries: Int = DEFAULT_MAX_FAILURES): ViewInteraction? = onView(withText(text)).inRoot(isToast(maxRetries))
-        fun onToast(textId: Int, maxRetries: Int = DEFAULT_MAX_FAILURES): ViewInteraction? = onView(withText(textId)).inRoot(isToast(maxRetries))
+        fun onToast(text: String, maxRetries: Int = DEFAULT_MAX_FAILURES): ViewInteraction? {
+            return onView(withText(text)).inRoot(isToast(maxRetries))
+        }
+
+        fun onToast(textId: Int, maxRetries: Int = DEFAULT_MAX_FAILURES): ViewInteraction? {
+            return onView(withText(textId)).inRoot(isToast(maxRetries))
+        }
+
         private fun isToast(maxRetries: Int = DEFAULT_MAX_FAILURES): Matcher<Root> {
             return ToastMatcher(maxRetries)
         }
