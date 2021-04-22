@@ -115,6 +115,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private val snapHelper: SnapHelper = LinearSnapHelper()
 
+    private var permissionRetryCounter: Int = 0
+
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
     override fun createAdapterInstance(): BaseListAdapter<Property, PropertyAdapterTypeFactory> =
@@ -1182,9 +1184,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 fusedLocationClient,
                 requireActivity().applicationContext)
 
-        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
-                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                requireActivity().getString(R.string.hotel_destination_need_permission))
+        if(permissionRetryCounter < PERMISSION_MAX_RETRY){
+            permissionRetryCounter++
+            locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
+                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                    requireActivity().getString(R.string.hotel_destination_need_permission))
+        }else{
+            permissionRetryCounter = 0
+        }
     }
 
     private fun showDialogEnableGPS() {
@@ -1333,6 +1340,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         private const val PREFERENCES_NAME = "hotel_search_map_preferences"
         private const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
+
+        private const val PERMISSION_MAX_RETRY = 3
 
         fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchMapFragment =
                 HotelSearchMapFragment().also {
