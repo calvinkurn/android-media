@@ -467,7 +467,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 listener = this,
                 trackingListener = this,
                 freeShippingTracker = freeShippingTracker,
-                operationalHourTracker = shopOperationalTracker,
+                shopOperationalTracker = shopOperationalTracker,
                 userSession = userSession
             )
         }
