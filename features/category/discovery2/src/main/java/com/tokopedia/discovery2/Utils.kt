@@ -76,7 +76,7 @@ class Utils {
                 //Added temp fix for disco to handled in invlaid url from backend
 
                 try {
-                    val newUrl = uri?.getQueryParameter(dimension)?.replace("[^-?0-9]+".toRegex(), " ")
+                    val newUrl = uri?.getQueryParameter(dimension)?.replace("[^-?0-9]+".toRegex(), " ")?.replace("?", "")
                     val parts = newUrl?.trim()?.split(" ")
                     return parts?.get(0)?.toInt()
                 } catch (e: Exception) {
