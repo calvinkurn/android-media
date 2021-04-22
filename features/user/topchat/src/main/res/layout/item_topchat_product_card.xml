@@ -405,9 +405,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:unifyButtonSize="small"
-                app:unifyButtonType="transaction"
+                app:unifyButtonType="main"
                 app:unifyButtonVariant="ghost"
-                tools:visibility="gone" />
+                tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
