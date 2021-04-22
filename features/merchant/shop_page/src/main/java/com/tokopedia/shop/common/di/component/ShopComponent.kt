@@ -21,7 +21,7 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCa
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
+import com.tokopedia.shop.common.domain.GetShopReputationUseCase
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

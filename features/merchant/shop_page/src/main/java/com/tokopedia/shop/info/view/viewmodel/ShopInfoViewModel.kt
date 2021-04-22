@@ -8,7 +8,7 @@ import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_INFO_SOURCE
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
+import com.tokopedia.shop.common.domain.GetShopReputationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.info.data.model.ShopStatisticsResp
