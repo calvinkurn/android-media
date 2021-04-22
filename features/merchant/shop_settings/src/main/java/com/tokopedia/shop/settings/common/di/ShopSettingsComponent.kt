@@ -9,7 +9,6 @@ import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopEditBasicInfoFrag
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddEditFragment
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesAddEditFragment
-import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNoteBuyerViewFragment
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesListFragment
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesReorderFragment
 import dagger.Component
@@ -34,7 +33,6 @@ interface ShopSettingsComponent {
     fun inject(shopEditScheduleActivity: ShopEditScheduleActivity)
     fun inject(shopSettingsNotesFragment: ShopSettingsNotesListFragment)
     fun inject(shopSettingsNotesFragment: ShopSettingsNotesReorderFragment)
-    fun inject(shopSettingsNoteBuyerViewFragment: ShopSettingsNoteBuyerViewFragment)
 
     fun inject(fragment: ShopSettingsNotesAddEditFragment)
     fun inject(fragment: ShopSettingsEtalaseAddEditFragment)

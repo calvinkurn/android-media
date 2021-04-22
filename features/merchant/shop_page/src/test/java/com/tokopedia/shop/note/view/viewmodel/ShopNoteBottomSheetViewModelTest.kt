@@ -1,12 +1,11 @@
-package com.tokopedia.shop_settings.viewmodel.shopnotebuyerview
+package com.tokopedia.shop.note.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase
-import com.tokopedia.shop.settings.notes.view.viewmodel.ShopSettingsNoteBuyerViewViewModel
-import com.tokopedia.shop_settings.common.util.LiveDataUtil.observeAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.util.LiveDataUtil.observeAwaitValue
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.TestCase
@@ -17,7 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class ShopSettingsNoteBuyerViewViewModelTest {
+class ShopNoteBottomSheetViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -28,14 +27,14 @@ class ShopSettingsNoteBuyerViewViewModelTest {
     @RelaxedMockK
     lateinit var getShopNotesByShopIdUseCase: GetShopNotesByShopIdUseCase
 
-    private lateinit var shopEditBasicInfoViewModel: ShopSettingsNoteBuyerViewViewModel
+    private lateinit var shopEditBasicInfoViewModel: ShopNoteBottomSheetViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        shopEditBasicInfoViewModel = ShopSettingsNoteBuyerViewViewModel(
-                getShopNotesByShopIdUseCase,
-                coroutineTestRule.dispatchers
+        shopEditBasicInfoViewModel = ShopNoteBottomSheetViewModel(
+                coroutineTestRule.dispatchers,
+                getShopNotesByShopIdUseCase
         )
     }
 

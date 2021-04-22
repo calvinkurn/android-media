@@ -9,7 +9,6 @@
     <string name="shop_settings_add_etalase">Tambah Etalase</string>
 
     <string name="shop_settings_shop_status">Status Toko</string>
-    <string name="toolbar_title_shop_note">Catatan Toko</string>
 
     <string name="shop_slogan_hint">Tulis Slogan Toko</string>
     <string name="shop_desc_hint">Tulis Deskripsi Toko</string>
@@ -153,7 +152,4 @@
     <string name="label_power_merchant">Power Merchant</string>
     <string name="label_official_store">Official Store</string>
     <string name="power_merchant">Power Merchant</string>
-
-    <!-- Content Description -->
-    <string name="content_description_icon_chevron">Icon Chevron</string>
 </resources>

@@ -15,15 +15,10 @@ import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
-import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 /**
  * @author by furqan on 21/03/18.
@@ -62,19 +57,4 @@ class ShopSettingsModule {
     fun provideCoroutineDispatchers(): CoroutineDispatchers {
         return CoroutineDispatchersProvider
     }
-
-    @ShopSettingsScope
-    @Named(GQLQueryNamedConstant.SHOP_NOTES_BY_SHOP_ID)
-    @Provides
-    fun getGqlQueryShopNotesByShopId(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_get_shop_notes_by_shop_id)
-    }
-
-    @ShopSettingsScope
-    @Provides
-    fun provideGetShopNotesByShopIdUseCase(graphqlUseCase: MultiRequestGraphqlUseCase?,
-                                           @Named(GQLQueryNamedConstant.SHOP_NOTES_BY_SHOP_ID) gqlQuery: String?): GetShopNotesByShopIdUseCase {
-        return GetShopNotesByShopIdUseCase(gqlQuery!!, graphqlUseCase!!)
-    }
-
 }

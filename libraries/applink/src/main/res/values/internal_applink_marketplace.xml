@@ -80,7 +80,6 @@
     <string name="path_shop_settings_etalase" translatable="false">/shop-settings-etalase</string>
     <string name="path_shop_settings_etalase_add" translatable="false">/shop-settings-etalase/add</string>
     <string name="path_shop_settings_notes" translatable="false">/shop-settings-notes</string>
-    <string name="path_shop_settings_notes_buyer_view" translatable="false">/shop-settings-notes-buyer-view/.*\\/</string>
     <string name="path_shop_setting_shipping" translatable="false">/shop-settings-shipping</string>
     <string name="path_shop_setting_cod_activation" translatable="false">/shop-settings-cod</string>
     <string name="path_shop_score_detail" translatable="false">/shop-score-detail</string>
