@@ -75,7 +75,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
             }
             vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
 
-            if (item?.products?.size == 2) {
+            if (item?.products?.size != null && item?.products?.size > 1) {
                 vh.productParentOne.show()
                 item?.products?.get(1)?.imageURL?.let {
                     if (it.isNotEmpty()) {
