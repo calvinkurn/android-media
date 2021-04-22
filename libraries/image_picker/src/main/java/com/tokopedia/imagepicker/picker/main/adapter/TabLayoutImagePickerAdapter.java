@@ -39,31 +39,13 @@ public class TabLayoutImagePickerAdapter {
             switch (tabTypeDefItem) {
                 case TYPE_GALLERY:
                     tab.setText(context.getString(R.string.gallery));
-                    unselectTab(tab);
                     tabLayout.addTab(tab);
                     break;
                 case TYPE_CAMERA:
                     tab.setText(context.getString(R.string.camera));
-                    unselectTab(tab);
-                    tabLayout.addTab(tab);
-                    break;
-                case TYPE_INSTAGRAM:
-                    tab.setText(context.getString(R.string.instagram));
-                    unselectTab(tab);
                     tabLayout.addTab(tab);
                     break;
             }
         }
-    }
-
-    public void selectTab(int position) {
-        TabLayout.Tab tab = tabLayout.getTabAt(position);
-        if (tabLayout.getSelectedTabPosition() != position) {
-            tab.select();
-        }
-    }
-
-    public void unselectTab(TabLayout.Tab tab) {
-
     }
 }
