@@ -87,7 +87,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
     private fun getIsShopOfficialRequest(shopId: Int): GraphqlRequest {
         val params = GqlGetIsShopOsUseCase.createParams(shopId)
         return createGraphqlRequest<GetIsShopOfficialStore.Response>(
-                mapQuery[GQLQueryNamedConstant.GET_IS_OFFICIAL].orEmpty(),
+                GqlGetIsShopOsUseCase.QUERY,
                 params.parameters
         )
     }
@@ -95,7 +95,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
     private fun getIsShopPowerMerchantRequest(shopId: Int): GraphqlRequest {
         val params = GqlGetIsShopPmUseCase.createParams(shopId)
         return createGraphqlRequest<GetIsShopPowerMerchant.Response>(
-                mapQuery[GQLQueryNamedConstant.GET_IS_POWER_MERCHANT].orEmpty(),
+                GqlGetIsShopPmUseCase.QUERY,
                 params.parameters
         )
     }

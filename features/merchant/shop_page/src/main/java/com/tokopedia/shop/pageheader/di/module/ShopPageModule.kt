@@ -37,20 +37,6 @@ class ShopPageModule {
 
     @ShopPageScope
     @Provides
-    @Named(GQLQueryNamedConstant.GET_IS_OFFICIAL)
-    fun provideGqlQueryGetIsOfficial(): String {
-        return GqlQueryConstant.QUERY_GET_IS_OFFICIAL
-    }
-
-    @ShopPageScope
-    @Provides
-    @Named(GQLQueryNamedConstant.GET_IS_POWER_MERCHANT)
-    fun provideGqlQueryGetIsPowerMerchant(): String {
-        return GqlQueryConstant.QUERY_GET_IS_POWER_MERCHANT
-    }
-
-    @ShopPageScope
-    @Provides
     @Named(ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST)
     fun provideGqlQueryShopFeedWhitelist(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(
@@ -63,15 +49,11 @@ class ShopPageModule {
     @Provides
     @Named(GQLQueryNamedConstant.SHOP_PAGE_P1_QUERIES)
     fun provideShopPageP1Queries(
-            @Named(GQLQueryNamedConstant.GET_IS_OFFICIAL) queryGetIsOfficial: String,
-            @Named(GQLQueryNamedConstant.GET_IS_POWER_MERCHANT) queryGetIsPowerMerchant: String,
             @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT) queryShopInfoTopContent: String,
             @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS) queryShopInfoCoreAssets: String,
             @Named(ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST) queryShopFeedWhitelist: String
     ): Map<String, String> {
         return mapOf(
-                GQLQueryNamedConstant.GET_IS_OFFICIAL to queryGetIsOfficial,
-                GQLQueryNamedConstant.GET_IS_POWER_MERCHANT to queryGetIsPowerMerchant,
                 GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT to queryShopInfoTopContent,
                 GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS to queryShopInfoCoreAssets,
                 ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST to queryShopFeedWhitelist
