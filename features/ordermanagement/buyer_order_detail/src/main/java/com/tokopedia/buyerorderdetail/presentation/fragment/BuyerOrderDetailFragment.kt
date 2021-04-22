@@ -14,10 +14,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ActionButtonsViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.BuyProtectionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SecondaryActionButtonBottomSheet
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.BuyProtectionUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.ThickDividerUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.*
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_buyer_order_detail.*
 import java.util.*
@@ -47,6 +44,12 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
                     deadline = Calendar.getInstance(TimeZone.getDefault()).apply {
                         add(Calendar.SECOND, 15)
                     }.timeInMillis
+            ),
+            courierDriverInfoUiModel = CourierDriverInfoUiModel(
+                    photoUrl = "https://static.wikia.nocookie.net/nickelodeon-movies/images/7/7e/Patrick_Star.png",
+                    name = "Patrick Star",
+                    phoneNumber = "081234567890",
+                    plateNumber = "B 1234 XYZ"
             ))
 
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
@@ -109,9 +112,24 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
 
     private fun setupRecyclerView() {
         rvBuyerOrderDetail.adapter = adapter
+        addCourierDriverInfoSection()
+        addBuyProtectionSection()
+        addActionButtonsSection()
+    }
+
+    private fun addCourierDriverInfoSection() {
+        adapter.addElement(ThinDashedDividerUiModel())
+        adapter.addElement(mockModel.courierDriverInfoUiModel)
+        adapter.addElement(ThinDashedDividerUiModel())
+    }
+
+    private fun addBuyProtectionSection() {
         adapter.addElement(ThickDividerUiModel())
         adapter.addElement(mockModel.buyProtectionUiModel)
         adapter.addElement(ThickDividerUiModel())
+    }
+
+    private fun addActionButtonsSection() {
         adapter.addElement(mockModel.actionButtons)
     }
 
