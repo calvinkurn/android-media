@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.FrameLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,15 +23,14 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.adapter.MerchantCouponItemDecoration
 import com.tokopedia.tokopoints.view.customview.MerchantRewardToolbar
+import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
-import com.tokopedia.tokopoints.view.model.merchantcoupon.ProductCategoriesFilterItem
-import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeFragmentNew
 import com.tokopedia.tokopoints.view.util.*
 import kotlinx.android.synthetic.main.tp_layout_merchat_coupon_list.*
 import javax.inject.Inject
 
-class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitoringListener, SwipeRefreshLayout.OnRefreshListener, AdapterCallback {
+class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitoringListener, SwipeRefreshLayout.OnRefreshListener, AdapterCallback, View.OnClickListener {
 
     @Inject
     lateinit var factory: ViewModelFactory
@@ -47,6 +45,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
     private lateinit var appBarLayout: View
     private var statusBarBgView: View? = null
     private var categoryId: String = ""
+    private var serverErrorView: ServerErrorView? = null
 
     override fun getScreenName(): String {
         return AnalyticsTrackerUtil.ScreenKeys.MERCHANT_COUPONLIST_SCREEN_NAME
@@ -80,6 +79,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
         initViews(view)
         initVar()
         initObserver()
+        view?.findViewById<View>(R.id.text_failed_action).setOnClickListener(this)
         merchantRewardToolbar?.setTitle(R.string.tp_kupon_toko)
 
         mViewModel.couponData.value = Loading()
@@ -98,7 +98,16 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
         addListObserver()
     }
 
+    override fun onClick(source: View) {
+        if (source.id == R.id.text_failed_action) {
+            showLoader()
+            mCouponAdapter.loadData(1)
+        }
+    }
+
     private fun initViews(view: View) {
+
+        serverErrorView = view.findViewById(R.id.server_error_view)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             appBarLayout.outlineProvider = null
@@ -209,7 +218,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
     fun getStatusBarHeight(context: Context?): Int {
         var height = 0
         val resId = requireContext().resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resId > 0 && context!=null) {
+        if (resId > 0 && context != null) {
             height = context.resources.getDimensionPixelSize(resId)
         }
         return height

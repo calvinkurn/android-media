@@ -38,6 +38,7 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
     inner class CouponListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         var ivShopIcon: AppCompatImageView = view.findViewById(R.id.iv_shop_icon)
+        var ivShopChevron: AppCompatImageView = view.findViewById(R.id.iv_shop_arrow)
         var ivCouponOne: ImageUnify = view.findViewById(R.id.iv_coupon1)
         var ivCouponTwo: ImageUnify = view.findViewById(R.id.iv_coupon2)
         var tvShopName = view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_shop_name)
@@ -80,9 +81,11 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
         vh.tvDealsCouponTwo.text = item?.products?.get(1)?.benefitLabel
 
         vh.tvShopName.setOnClickListener {
-            sendTopadsClick(vh.itemView.context, item?.AdInfo)
-            RouteManager.route(vh.itemView.context, item?.shopInfo?.appLink)
-            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_SHOP_NAME)
+            shopClickListener(vh, item)
+        }
+
+        vh.ivShopChevron.setOnClickListener {
+            shopClickListener(vh, item)
         }
 
         vh.ivCouponOne.setOnClickListener {
@@ -102,6 +105,12 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
         }
     }
 
+    private fun shopClickListener(vh: CouponListViewHolder, item: CatalogMVCWithProductsListItem?) {
+        sendTopadsClick(vh.itemView.context, item?.AdInfo)
+        RouteManager.route(vh.itemView.context, item?.shopInfo?.appLink)
+        sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_SHOP_NAME)
+    }
+
     private fun sendTopadsClick(context: Context, adInfo: AdInfo?) {
         val check = adInfo?.let { isEventTriggered(context, 1, it) }
         if (check != null && !check) {
@@ -119,8 +128,8 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
     }
 
     private fun sendTopadsImpression(context: Context, adInfo: AdInfo?) {
-        val check = adInfo?.let { isEventTriggered(context,0, it) }
-        if (check!=null && !check) {
+        val check = adInfo?.let { isEventTriggered(context, 0, it) }
+        if (check != null && !check) {
             eventSet.add(adInfo?.AdViewUrl)
             setPersistentData(context, eventSet)
             TopAdsUrlHitter(packageName).hitImpressionUrl(
@@ -133,7 +142,7 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
         }
     }
 
-    fun setPersistentData(context: Context,eventSet : HashSet<String?>){
+    fun setPersistentData(context: Context, eventSet: HashSet<String?>) {
         val persistentAdsData = PersistentAdsData(context)
         persistentAdsData.setAdsSet(eventSet)
     }

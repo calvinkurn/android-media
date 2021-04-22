@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.merchantcoupon
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopoints.view.model.merchantcoupon.MerchantCouponResponse
 import com.tokopedia.tokopoints.view.util.ErrorMessage
@@ -26,7 +27,7 @@ class MerchantCouponViewModel @Inject constructor(private val usecase: MerchantC
     fun merchantCouponData(page: Int) {
         launchCatchError(block = {
             usecase.params = MerchantCouponUsecase.createParams(page,category)
-            val data = usecase.executeOnBackground()
+            val data = usecase.executeOnBackground().getSuccessData<MerchantCouponResponse>()
             if (data != null) {
                 couponData.value = Success(MerchantCouponData(data, firstSetup))
             } else throw NullPointerException()

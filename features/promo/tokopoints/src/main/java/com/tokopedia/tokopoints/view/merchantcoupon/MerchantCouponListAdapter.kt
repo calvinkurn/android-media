@@ -31,6 +31,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
     inner class CouponListViewHolder(view: View) : BaseVH(view) {
 
         var ivShopIcon: AppCompatImageView = view.findViewById(R.id.iv_shop_icon)
+        var ivShopChevron: AppCompatImageView = view.findViewById(R.id.iv_shop_arrow)
         var ivCouponOne: ImageUnify = view.findViewById(R.id.iv_coupon1)
         var ivCouponTwo: ImageUnify = view.findViewById(R.id.iv_coupon2)
         var tvShopName = view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_shop_name)
@@ -83,9 +84,11 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
 
 
         vh.tvShopName.setOnClickListener {
-            sendTopadsClick(vh.itemView.context, item?.AdInfo)
-            RouteManager.route(vh.itemView.context, item?.shopInfo?.appLink)
-            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_SHOP_NAME)
+            shopClickListener(vh, item)
+        }
+
+        vh.ivShopChevron.setOnClickListener {
+            shopClickListener(vh, item)
         }
 
         vh.ivCouponOne.setOnClickListener {
@@ -119,6 +122,12 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
         loadCompletedWithError()
     }
 
+    fun shopClickListener(vh: CouponListViewHolder, item: CatalogMVCWithProductsListItem?) {
+        sendTopadsClick(vh.itemView.context, item?.AdInfo)
+        RouteManager.route(vh.itemView.context, item?.shopInfo?.appLink)
+        sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_SHOP_NAME)
+    }
+
     fun sendCouponClickEvent(shopName: String?, eventAction: String) {
         AnalyticsTrackerUtil.sendEvent(
                 AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -135,7 +144,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
     }
 
     private fun sendTopadsClick(context: Context, adInfo: AdInfo?) {
-        val check = adInfo?.let { isEventTriggered(context,1, it) }
+        val check = adInfo?.let { isEventTriggered(context, 1, it) }
         if (check != null && !check) {
             TopAdsUrlHitter(context).hitClickUrl(
                     this::class.java.simpleName,
@@ -149,7 +158,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
     }
 
     private fun sendTopadsImpression(context: Context, adInfo: AdInfo?) {
-        val check = adInfo?.let { isEventTriggered(context,0, it) }
+        val check = adInfo?.let { isEventTriggered(context, 0, it) }
         if (check != null && !check) {
             TopAdsUrlHitter(SectionMerchantCouponAdapter.packageName).hitImpressionUrl(
                     context,
