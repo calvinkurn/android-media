@@ -485,7 +485,6 @@ class HotelBookingFragment : HotelBaseFragment() {
                     promoData.title,
                     promoData.description)
             booking_pay_now_promo_ticker.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
-            trackingHotelUtil.hotelApplyPromo(context, promoCode, HOTEL_BOOKING_SCREEN_NAME)
         }
 
         if(hotelCart.property.isDirectPayment){
