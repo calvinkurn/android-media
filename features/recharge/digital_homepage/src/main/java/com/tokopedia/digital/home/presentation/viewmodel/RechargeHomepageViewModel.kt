@@ -69,6 +69,8 @@ class RechargeHomepageViewModel @Inject constructor(
                 ?: listOf()
 
         if (calledSectionIds.contains(requestIDs.firstOrNull() ?: 0)) return
+        calledSectionIds.add(requestIDs.firstOrNull() ?: 0)
+
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
                     RechargeHomepageQueries.SECTION_QUERY,
@@ -87,7 +89,6 @@ class RechargeHomepageViewModel @Inject constructor(
                 localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(localRechargeHomepageSections, data)
                 mutableRechargeHomepageSections.value = localRechargeHomepageSections
             }
-            calledSectionIds.add(requestIDs.firstOrNull() ?: 0)
         }) {
             // Because error occured, remove sections
             withContext(dispatcher.main) {
@@ -97,7 +98,6 @@ class RechargeHomepageViewModel @Inject constructor(
                 )
                 mutableRechargeHomepageSections.value = localRechargeHomepageSections
             }
-            calledSectionIds.add(requestIDs.firstOrNull() ?: 0)
         }
     }
 
