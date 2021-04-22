@@ -12,7 +12,7 @@ import com.tokopedia.cart.view.uimodel.CartLoadingHolderData
 class CartLoadingViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
     companion object {
-        val LAYOUT = R.layout.loading_layout
+        val LAYOUT = com.tokopedia.baselist.R.layout.loading_layout
     }
 
     fun bind(element: CartLoadingHolderData) {
