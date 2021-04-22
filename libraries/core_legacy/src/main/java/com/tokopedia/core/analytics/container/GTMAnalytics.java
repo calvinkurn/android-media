@@ -1081,7 +1081,9 @@ public class GTMAnalytics extends ContextAnalytics {
                     it.remove();
                 }
             }
-            Log.e("NEWRELIC", NewRelic.recordBreadcrumb(eventName, map) +" <-- is success");
+            if(GlobalConfig.isSellerApp()){
+                NewRelic.recordBreadcrumb(eventName, map);
+            }
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);
         } catch (Exception ex) {
