@@ -52,21 +52,6 @@ object Keys {
             }
 
     @JvmStatic
-    fun Context.getGoogleGeoApiKey(): String {
-        return when (GlobalConfig.APPLICATION_TYPE) {
-            GlobalConfig.CONSUMER_APPLICATION -> {
-                getString(R.string.google_goe_api_key_ma)
-            }
-            GlobalConfig.SELLER_APPLICATION -> {
-                getString(R.string.google_goe_api_key_sa)
-            }
-            else -> {
-                getString(R.string.google_goe_api_key_pro)
-            }
-        }
-    }
-
-    @JvmStatic
     fun Context.getMoengageKey(): String {
         return when (GlobalConfig.APPLICATION_TYPE) {
             GlobalConfig.CONSUMER_APPLICATION -> {
