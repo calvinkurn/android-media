@@ -7,16 +7,16 @@
     android:layout_marginTop="@dimen/spacing_lvl4"
     android:layout_marginEnd="@dimen/spacing_lvl4">
 
-    <com.tokopedia.iconunify.IconUnify
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icBuyerOrderDetailBuyProtectionBadge"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
-        app:icon_name="BADGE_VERIFIED"
         app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailBuyProtectionLabel"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_buy_protection" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBuyerOrderDetailBuyProtectionLabel"
@@ -36,6 +36,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
+        app:timer_unify_single_remainingHours="0"
+        app:timer_unify_single_remainingMinutes="0"
+        app:timer_unify_single_remainingSeconds="0"
+        app:timer_unify_single_showClockIcon="true"
+        app:timer_unify_single_type="auto"
+        app:timer_unify_single_variant="informative"
         app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailBuyProtectionLabel"
         app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailBuyProtectionSeeMore"
         app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailBuyProtectionLabel"
