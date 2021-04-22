@@ -725,6 +725,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         var isWidgetHasError = false
         val newWidgetFromCache = widgets.first().isFromCache
+        if (isNewLazyLoad) {
+            startHomeLayoutRenderMonitoring()
+            stopPltMonitoringIfNotCompleted(fromCache = newWidgetFromCache)
+        }
         val newWidgets = if (adapter.data.isEmpty()) {
             widgets as List<BaseWidgetUiModel<BaseDataUiModel>>
         } else {
