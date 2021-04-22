@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.validator.tag.TagSetupValidator
 import com.tokopedia.play.broadcaster.ui.validator.title.TitleSetupValidator
@@ -21,6 +22,7 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatchers,
         private val setupDataStore: PlayBroadcastSetupDataStore,
         private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
+        private val setChannelTagsUseCase: SetChannelTagsUseCase,
 ) : ViewModel(), TitleSetupValidator, TagSetupValidator {
 
     val observableRecommendedTagsModel: LiveData<List<PlayTagUiModel>>
@@ -39,6 +41,14 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
                 )
             }
         }
+        addSource(_observableRecommendedTags) {
+            value = it.map { tag ->
+                PlayTagUiModel(
+                        tag = tag,
+                        isChosen = addedTags.contains(tag)
+                )
+            }
+        }
     }
 
     private val _observableUploadEvent = MutableLiveData<Event<NetworkResult<Unit>>>()
@@ -49,9 +59,6 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
 
     init {
         getRecommendedTags()
-
-        addedTags.addAll(getAddedTags())
-        refreshAddedTags()
     }
 
     override fun isTitleValid(title: String): Boolean {
@@ -100,8 +107,11 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
     }
 
     private suspend fun uploadTags(tags: Set<String>) = withContext(dispatcher.io) {
-        delay(2500)
-        Unit
+        val isSuccess = setChannelTagsUseCase.apply {
+            setParams(hydraConfigStore.getChannelId(), addedTags.toList())
+        }.executeOnBackground().recommendedTags.success
+
+        if (!isSuccess) error("Set Channel Tag Failed")
     }
 
     private suspend fun uploadTitle() = withContext(dispatcher.io) {
@@ -121,14 +131,16 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
                 setChannelId(hydraConfigStore.getChannelId())
             }.executeOnBackground()
 
-            _observableRecommendedTags.value = channelTags.recommendedTags.tags.toSet()
-
-            _observableRecommendedTagsModel
+//            _observableRecommendedTags.value = channelTags.recommendedTags.tags.toSet()
+            _observableRecommendedTags.value = setOf(
+                    "Baju",
+                    "Review",
+                    "Tas",
+                    "Hiburan",
+                    "Produk",
+                    "Fashion",
+                    "Topi",
+            )
         }
     }
-
-    private fun getAddedTags() = setOf(
-            "Style",
-            "Trending",
-    )
 }
