@@ -19,7 +19,7 @@ private const val TAG = "MainParentScreenshotTesting"
 /**
  * Created by devarafikry on 12/04/21.
  */
-class HomeScreenshotTesting {
+class MainParentScreenshotTest {
     val KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION"
     val KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING"
 

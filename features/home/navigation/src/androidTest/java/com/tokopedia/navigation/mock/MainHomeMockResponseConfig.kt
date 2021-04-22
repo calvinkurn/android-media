@@ -12,11 +12,12 @@ class MainHomeMockResponseConfig: MockModelConfig() {
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY = "dynamicHomeChannel"
         const val KEY_QUERY_DYNAMIC_POSITION = "dynamicPosition"
         const val KEY_QUERY_DYNAMIC_POSITION_ICON = "homeIcon"
+        const val KEY_QUERY_FLOATING_EGG = "gamiFloating"
     }
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
-                KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,
-                getRawString(context, R.raw.response_mock_data_dynamic_home_channel_only),
+                KEY_QUERY_FLOATING_EGG,
+                getRawString(context, R.raw.response_mock_data_home_egg),
                 FIND_BY_CONTAINS)
 
         addMockResponse(
@@ -27,6 +28,11 @@ class MainHomeMockResponseConfig: MockModelConfig() {
         addMockResponse(
                 KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_2,
                 getRawString(context, R.raw.response_mock_data_dynamic_home_channel_atf_2),
+                FIND_BY_CONTAINS)
+
+        addMockResponse(
+                KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,
+                getRawString(context, R.raw.response_mock_data_dynamic_home_channel_only),
                 FIND_BY_CONTAINS)
 
         addMockResponse(
