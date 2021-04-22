@@ -86,7 +86,7 @@ class DeactivationViewModelTest {
     }
 
     @Test
-    fun testGetPMCancellationQuestionnaireDataSuccess() {
+    fun testGetPMCancellationRateQuestionnaireDataSuccess() {
         val shopId = "1"
         val questionTitle = "Question A"
         val questionType = PMCancellationQuestionnaireQuestionModel.TYPE_RATE
@@ -106,14 +106,8 @@ class DeactivationViewModelTest {
 
         viewModel.getPMCancellationQuestionnaireData(shopId)
 
-        val numOfQuestions = questionnaireList.result.data.questionList.size
-        val listQuestion = questionnaireList.result.data.questionList.mapIndexed { index, q ->
-            return@mapIndexed when (q.questionType) {
-                PMCancellationQuestionnaireQuestionModel.TYPE_MULTIPLE_OPTION -> {
-                    createMultipleOptionQuestion(q, index != numOfQuestions.minus(1))
-                }
-                else -> QuestionnaireUiModel.QuestionnaireRatingUiModel(q.question)
-            }
+        val listQuestion = questionnaireList.result.data.questionList.map { q ->
+            return@map QuestionnaireUiModel.QuestionnaireRatingUiModel(q.question)
         }
 
         val expected = Success(DeactivationQuestionnaireUiModel(
@@ -123,7 +117,46 @@ class DeactivationViewModelTest {
         val actual = viewModel.pmCancellationQuestionnaireData
                 .observeAwaitValue() as? Success<DeactivationQuestionnaireUiModel>
 
-        assertEquals(expected, actual)
+        assertCancellationQuestionnaireData(expected, actual)
+    }
+
+    @Test
+    fun testGetPMCancellationMultipleOptionQuestionnaireDataSuccess() {
+        val shopId = "1"
+
+        val pmOsStatus = GoldGetPmOsStatus()
+        every {
+            getShopStatusUseCase.createObservable(any())
+        } returns Observable.just(pmOsStatus)
+
+        val optionTitle = "Question A"
+        val questionTitle = "Question B"
+        val questionType = "multi_answer_question"
+
+        val options = mutableListOf(Option(value = optionTitle))
+        val question = Question(question = questionTitle, questionType = questionType, option = options)
+        val questionnaireData = QuestionnaireData(data = Data(mutableListOf(question)))
+
+        val questionnaireList = GoldCancellationsQuestionaire(questionnaireData)
+        every {
+            getGoldCancellationsQuestionaireUseCase.createObservable(any())
+        } returns Observable.just(questionnaireList)
+
+        viewModel.getPMCancellationQuestionnaireData(shopId)
+
+        val numOfQuestions = questionnaireList.result.data.questionList.size
+        val listQuestion = questionnaireList.result.data.questionList.mapIndexed { index, q ->
+            return@mapIndexed createMultipleOptionQuestion(q, index != numOfQuestions.minus(1))
+        }
+
+        val expected = Success(DeactivationQuestionnaireUiModel(
+                expiredDate = pmOsStatus.result.data.powerMerchant.expiredTime,
+                listQuestion = listQuestion
+        ))
+        val actual = viewModel.pmCancellationQuestionnaireData
+                .observeAwaitValue() as? Success<DeactivationQuestionnaireUiModel>
+
+        assertCancellationQuestionnaireData(expected, actual)
     }
 
     @Test
@@ -187,6 +220,36 @@ class DeactivationViewModelTest {
                 },
                 showItemDivider = showItemDivider
         )
+    }
+
+    private fun assertCancellationQuestionnaireData(
+            expected: Success<DeactivationQuestionnaireUiModel>,
+            actual: Success<DeactivationQuestionnaireUiModel>?
+    ) {
+        val expectedResult = expected.data.listQuestion
+        val actualResult = actual?.data?.listQuestion.orEmpty()
+
+        actualResult.forEachIndexed { index, actualQuestion ->
+            val expectedQuestion = expectedResult[index]
+
+            when {
+                actualQuestion is QuestionnaireUiModel.QuestionnaireRatingUiModel && expectedQuestion is QuestionnaireUiModel.QuestionnaireRatingUiModel -> {
+                    assertEquals(expectedQuestion.question, actualQuestion.question)
+                    assertEquals(expectedQuestion.type, actualQuestion.type)
+                }
+                actualQuestion is QuestionnaireUiModel.QuestionnaireMultipleOptionUiModel && expectedQuestion is QuestionnaireUiModel.QuestionnaireMultipleOptionUiModel -> {
+                    assertEquals(expectedQuestion.question, actualQuestion.question)
+                    assertEquals(expectedQuestion.type, actualQuestion.type)
+                    assertEquals(expectedQuestion.showItemDivider, actualQuestion.showItemDivider)
+
+                    actualQuestion.options.forEachIndexed { i, actualOption ->
+                        val expectedOption = expectedQuestion.options[i]
+                        assertEquals(expectedOption.text, actualOption.text)
+                        assertEquals(expectedOption.isChecked, actualOption.isChecked)
+                    }
+                }
+            }
+        }
     }
 
     private fun <T> LiveData<T>.observeAwaitValue(): T? {

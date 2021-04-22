@@ -527,7 +527,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun fetchPmActiveState() {
-        mViewModel.getPmActiveData()
+        mViewModel.getPmActiveStateData()
     }
 
     private fun renderPmActiveState(data: PMActiveDataUiModel) {
