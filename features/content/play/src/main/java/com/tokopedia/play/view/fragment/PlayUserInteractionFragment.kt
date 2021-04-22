@@ -419,12 +419,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun initAnalytic() {
         productAnalyticHelper = ProductAnalyticHelper(analytic)
-
-        /**
-         * Todo:
-         * handle scroll di product sheet & featured product
-         * bikin functionnya jadi onImpressed aja, biar apa, biar rapi lah
-         */
     }
 
     private fun setupView(view: View) {
