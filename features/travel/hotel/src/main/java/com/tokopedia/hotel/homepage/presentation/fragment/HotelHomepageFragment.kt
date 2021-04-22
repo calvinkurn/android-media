@@ -750,7 +750,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun isABTestHotelRevamp(): Boolean = (RemoteConfigInstance.getInstance().abTestPlatform
-            .getString(HOTEL_AB_TEST_KEY, HOTEL_AB_TEST_NEW_VARIANT)
+            .getString(HOTEL_AB_TEST_KEY, HOTEL_AB_TEST_OLD_VARIANT)
             == HOTEL_AB_TEST_NEW_VARIANT)
 
     companion object {
