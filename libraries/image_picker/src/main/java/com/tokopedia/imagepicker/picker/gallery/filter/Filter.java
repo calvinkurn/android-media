@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.imagepicker.picker.gallery.entity.IncapableCause;
 import com.tokopedia.imagepicker.picker.gallery.internal.entity.Item;
-import com.tokopedia.imagepicker.picker.gallery.model.MimeType;
+import com.tokopedia.imagepicker.common.model.MimeType;
 
 import java.util.Set;
 

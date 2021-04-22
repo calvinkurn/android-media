@@ -84,6 +84,8 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToPrintAwb
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToSomOrderDetail
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
+import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
+import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
 import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
@@ -252,6 +254,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var tabActive: String = ""
     private var canDisplayOrderData = false
     private var canMultiAcceptOrder = false
+    private var somOrderHasCancellationRequestDialog: SomOrderHasRequestCancellationDialog? = null
     private var somListBulkProcessOrderBottomSheet: SomListBulkProcessOrderBottomSheet? = null
     private var somListLoadTimeMonitoring: SomListLoadTimeMonitoring? = null
     private var bulkAcceptOrderDialog: SomListBulkAcceptOrderDialog? = null
@@ -262,6 +265,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var menu: Menu? = null
     private var filterDate = ""
     private var somFilterBottomSheet: SomFilterBottomSheet? = null
+    private var pendingAction: SomPendingAction? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + masterJob
@@ -313,6 +317,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         observeEditAwb()
         observeBulkAcceptOrder()
         observeBulkAcceptOrderStatus()
+        observeValidateOrder()
         observeIsAdminEligible()
     }
 
@@ -372,6 +377,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        getSwipeRefreshLayout(view)?.isRefreshing = viewModel.isRefreshingOrder()
         when (requestCode) {
             REQUEST_DETAIL -> handleSomDetailActivityResult(resultCode, data)
             REQUEST_CONFIRM_SHIPPING -> handleSomConfirmShippingActivityResult(resultCode, data)
@@ -568,7 +574,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onOrderClicked(order: SomListOrderUiModel) {
         selectedOrderId = order.orderId
-        goToSomOrderDetail(this, order)
+        goToSomOrderDetail(this, order.orderId)
         SomAnalytics.eventClickOrderCard(order.orderStatusId, order.status)
     }
 
@@ -576,27 +582,54 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         goToTrackingPage(context, orderId, url)
     }
 
-    override fun onConfirmShippingButtonClicked(orderId: String) {
-        selectedOrderId = orderId
-        goToConfirmShippingPage(this, orderId)
+    override fun onConfirmShippingButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean) {
+        getSwipeRefreshLayout(view)?.isRefreshing = true
+        if (!skipValidateOrder) {
+            pendingAction = SomPendingAction(actionName, orderId) {
+                selectedOrderId = orderId
+                goToConfirmShippingPage(this, orderId)
+            }
+            viewModel.validateOrders(listOf(orderId))
+        } else {
+            selectedOrderId = orderId
+            goToConfirmShippingPage(this, orderId)
+        }
     }
 
-    override fun onAcceptOrderButtonClicked(orderId: String) {
-        val invoice = getOrderBy(orderId)
-        viewModel.acceptOrder(orderId, invoice)
+    override fun onAcceptOrderButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean) {
+        getSwipeRefreshLayout(view)?.isRefreshing = true
+        if (!skipValidateOrder) {
+            pendingAction = SomPendingAction(actionName, orderId) {
+                val invoice = getOrderBy(orderId)
+                viewModel.acceptOrder(orderId, invoice)
+            }
+            viewModel.validateOrders(listOf(orderId))
+        } else {
+            val invoice = getOrderBy(orderId)
+            viewModel.acceptOrder(orderId, invoice)
+        }
     }
 
-    override fun onRequestPickupButtonClicked(orderId: String) {
-        selectedOrderId = orderId
-        goToRequestPickupPage(this, orderId)
+    override fun onRequestPickupButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean) {
+        getSwipeRefreshLayout(view)?.isRefreshing = true
+        if (!skipValidateOrder) {
+            pendingAction = SomPendingAction(actionName, orderId) {
+                selectedOrderId = orderId
+                goToRequestPickupPage(this, orderId)
+            }
+            viewModel.validateOrders(listOf(orderId))
+        } else {
+            selectedOrderId = orderId
+            goToRequestPickupPage(this, orderId)
+        }
     }
 
     override fun onRespondToCancellationButtonClicked(order: SomListOrderUiModel) {
         selectedOrderId = order.orderId
         SomOrderRequestCancelBottomSheet().apply {
             setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
-                override fun onAcceptOrder() {
-                    onAcceptOrderButtonClicked(selectedOrderId)
+                override fun onAcceptOrder(actionName: String) {
+                    onAcceptOrderButtonClicked(actionName, selectedOrderId, true)
                 }
 
                 override fun onRejectOrder(reasonBuyer: String) {
@@ -992,8 +1025,18 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         })
     }
 
+    private fun observeValidateOrder() {
+        viewModel.validateOrderResult.observe(viewLifecycleOwner, Observer { result ->
+            getSwipeRefreshLayout(view)?.isRefreshing = viewModel.isRefreshingOrder()
+            when (result) {
+                is Success -> onSuccessValidateOrder(result.data)
+                is Fail -> onFailedValidateOrder()
+            }
+        })
+    }
+
     private fun observeIsAdminEligible() {
-        viewModel.isOrderManageEligible.observe(viewLifecycleOwner) { result ->
+        viewModel.isOrderManageEligible.observe(viewLifecycleOwner, Observer { result ->
             when(result) {
                 is Success -> {
                     result.data.let { (isSomListEligible, isMultiAcceptEligible) ->
@@ -1011,7 +1054,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     showGlobalError(result.throwable)
                 }
             }
-        }
+        })
     }
 
     private fun showOnProgressAcceptAllOrderDialog(orderCount: Int) {
@@ -2079,6 +2122,29 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         val view = view
         if (view != null && context != null) {
             KeyboardHandler.DropKeyboard(context, view)
+        }
+    }
+
+    private fun onFailedValidateOrder() {
+        showToasterError(view, getString(R.string.som_error_validate_order), SomConsts.ACTION_OK, canRetry = false)
+    }
+
+    private fun onSuccessValidateOrder(valid: Boolean) {
+        val pendingAction = pendingAction ?: return
+        if (valid) {
+            pendingAction.action.invoke()
+        } else {
+            context?.let { context ->
+                val somOrderHasCancellationRequestDialog = somOrderHasCancellationRequestDialog ?: SomOrderHasRequestCancellationDialog(context)
+                this.somOrderHasCancellationRequestDialog = somOrderHasCancellationRequestDialog
+                somOrderHasCancellationRequestDialog.apply {
+                    setupActionButton(pendingAction.actionName, pendingAction.action)
+                    setupGoToOrderDetailButton {
+                        goToSomOrderDetail(this@SomListFragment, pendingAction.orderId)
+                    }
+                    show()
+                }
+            }
         }
     }
 

@@ -84,7 +84,7 @@ class DataViewMapper @Inject constructor(
                 )
             } else {
                 item = CommonDataView(
-                        title = CurrencyFormatUtil.convertPriceValueToIdrFormat(wallet.rawCashBalance, false),
+                        title = renderOvoBalance(wallet),
                         body = getString(context, R.string.account_title_points_item) + " " + wallet.pointBalance.toEmptyStringIfNull(),
                         applink = wallet.applink.toEmptyStringIfNull(),
                         urlIcon = AccountConstants.Url.OVO_ICON,
@@ -93,6 +93,10 @@ class DataViewMapper @Inject constructor(
             }
         }
         return item
+    }
+
+    private fun renderOvoBalance(wallet: WalletModel): String {
+        return wallet.cashBalance.toEmptyStringIfNull()
     }
 
     fun mapSaldo(context: Context?, balance: Balance): CommonDataView {

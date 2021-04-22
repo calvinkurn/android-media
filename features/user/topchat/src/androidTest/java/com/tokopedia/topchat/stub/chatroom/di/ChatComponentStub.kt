@@ -9,6 +9,7 @@ import com.tokopedia.topchat.chatroom.service.NotificationChatService
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.fragment.StickerFragment
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
+import com.tokopedia.topchat.stub.chatroom.view.service.UploadImageChatServiceStub
 import dagger.Component
 
 @ChatScope
@@ -24,4 +25,5 @@ import dagger.Component
 )
 interface ChatComponentStub: ChatComponent {
     fun inject(topchatRoomTest: TopchatRoomTest)
+    fun inject(service: UploadImageChatServiceStub)
 }

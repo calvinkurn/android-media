@@ -146,4 +146,6 @@ const val CATEGORY_TREE_OPTION_SELECTED = "click category inside category tree"
 const val BOTTOM_NAV  = "bottom nav"
 const val DISCOVERY_DEFAULT_PAGE_TYPE  = "general"
 const val PAGE_SOURCE = "pageSource"
+const val CLICK_REMIND_ME = "click remind me"
+const val CLICK_CANCEL_REMIND_ME = "click cancel remind me"
 

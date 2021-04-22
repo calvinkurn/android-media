@@ -164,6 +164,9 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (stepperModel?.redirectionToSummary == true) {
+            btn_next?.text = getString(R.string.topads_common_save_butt)
+        }
         context?.let {
             sortProductList = ProductSortSheetList.newInstance()
             filterSheetProductList = ProductFilterSheetList.newInstance()

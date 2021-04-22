@@ -34,7 +34,7 @@ class EditKeywordItemViewHolder(val view: View,
                 view.keywordType.text = BROAD_TYPE
             }
             if (it.priceBid == "0") {
-                view.keywordBudget.text = minBid.toString()
+                view.keywordBudget.text = minBid
             } else
                 view.keywordBudget.text = "Rp " + it.priceBid
             if (added.isNotEmpty() && added.size > adapterPosition && adapterPosition != RecyclerView.NO_POSITION) {
@@ -47,7 +47,8 @@ class EditKeywordItemViewHolder(val view: View,
                 }
             }
             view.setOnClickListener {
-                actionClick?.invoke(adapterPosition)
+                if (adapterPosition != RecyclerView.NO_POSITION)
+                    actionClick?.invoke(adapterPosition)
             }
         }
     }

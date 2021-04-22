@@ -124,6 +124,8 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     }
 
     fun getLabelProductItem(productId: String): String {
+        if (!::adapter.isInitialized) return ""
+
         var label = ""
         var itemTitle = ""
 
@@ -145,6 +147,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
     fun selectProductFromFavNumber(productId: String) {
         val label = getLabelProductItem(productId)
+        if (!::adapter.isInitialized) return
         for (i in adapter.data.indices) {
             if (adapter.data[i] is TelcoProduct) {
                 val itemProduct = adapter.data[i] as TelcoProduct

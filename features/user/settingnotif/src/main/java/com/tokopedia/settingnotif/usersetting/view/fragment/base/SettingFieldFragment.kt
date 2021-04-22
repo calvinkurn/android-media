@@ -204,7 +204,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun setupRecyclerView(view: View?) {
-        getRecyclerView(view).also {
+        getRecyclerView(view)?.also {
             if (it is VerticalRecyclerView) {
                 it.clearItemDecoration()
                 it.addItemDecoration(NotifSettingDividerDecoration(context))

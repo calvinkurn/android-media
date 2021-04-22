@@ -49,7 +49,10 @@ class RechargeHomepageActivity : BaseSimpleActivity(), HasComponent<RechargeHome
     }
 
     override fun onBackPressed() {
-        (fragment as com.tokopedia.digital.home.presentation.fragment.RechargeHomepageFragment).onBackPressed()
+        if(fragment != null){
+            val rechargeFragment = (fragment as com.tokopedia.digital.home.presentation.fragment.RechargeHomepageFragment)
+            rechargeFragment.onBackPressed()
+        }
         super.onBackPressed()
     }
 

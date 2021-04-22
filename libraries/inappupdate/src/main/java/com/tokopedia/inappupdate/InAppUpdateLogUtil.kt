@@ -2,7 +2,8 @@ package com.tokopedia.inappupdate
 
 import android.content.Context
 import android.content.pm.PackageManager
-import timber.log.Timber
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import java.util.*
 
 /**
@@ -18,24 +19,23 @@ object InAppUpdateLogUtil {
 
     fun logStatusCheck(context: Context, status: String, availableVersionCode: Int?, updateAvailability: Int?,
                        updateAllowed: Boolean?, clientVersionStalenessDays: Int?, updatePriority:Int?, totalBytesToDownload: Long?) {
-        val messageBuilder = StringBuilder()
-        messageBuilder.append(status)
-        messageBuilder.append(";avail_ver_code=$availableVersionCode")
-        messageBuilder.append(";update_availability=$updateAvailability")
-        messageBuilder.append(";update_allowed=$updateAllowed")
-        messageBuilder.append(";staleness_days=$clientVersionStalenessDays")
-        messageBuilder.append(";update_prio=$updatePriority")
-        messageBuilder.append(";dl_size=${getSizeInMB(totalBytesToDownload ?: 0)}")
-        messageBuilder.append(";installer_pkg=${getInstallerPackageName(context)}")
-        Timber.w("P1#IN_APP_UPDATE_CHECK#$messageBuilder")
+        ServerLogger.log(Priority.P1, "IN_APP_UPDATE_CHECK", mapOf("type" to status,
+                "avail_ver_code" to availableVersionCode.toString(),
+                "update_availability" to updateAvailability?.toString().orEmpty(),
+                "update_allowed" to updateAllowed?.toString().orEmpty(),
+                "staleness_days" to clientVersionStalenessDays?.toString().orEmpty(),
+                "update_prio" to updatePriority?.toString().orEmpty(),
+                "dl_size" to getSizeInMB(totalBytesToDownload ?: 0),
+                "installer_pkg" to getInstallerPackageName(context)
+        ))
     }
 
     fun logStatusDownload(type:String, value: String) {
-        Timber.w("P1#IN_APP_UPDATE_STAT#$type;status=$LOG_UPDATE_STATUS_OK;value='$value'")
+        ServerLogger.log(Priority.P1, "IN_APP_UPDATE_STAT", mapOf("type" to type, "status" to LOG_UPDATE_STATUS_OK, "value" to value))
     }
 
     fun logStatusFailure(type:String, err: String) {
-        Timber.w("P1#IN_APP_UPDATE_STAT#$type;status=$LOG_UPDATE_STATUS_ERROR;value='$err'")
+        ServerLogger.log(Priority.P1, "IN_APP_UPDATE_STAT", mapOf("type" to type, "status" to LOG_UPDATE_STATUS_ERROR, "value" to err))
     }
 
     private fun getInstallerPackageName(context: Context):String {

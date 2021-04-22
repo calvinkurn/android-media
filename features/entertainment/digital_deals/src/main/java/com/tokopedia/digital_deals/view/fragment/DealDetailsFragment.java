@@ -479,7 +479,6 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
 
     public void onPrepareOptionsMenu(final Menu menu) {
-        hideShareButton();
         appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
             MenuItem item = menu.findItem(com.tokopedia.digital_deals.R.id.action_menu_share);
 
@@ -514,14 +513,6 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         return mPresenter.onOptionMenuClick(id);
-    }
-
-    @Override
-    public void hideShareButton() {
-        if(mMenu!=null) {
-            MenuItem item = mMenu.findItem(com.tokopedia.digital_deals.R.id.action_menu_share);
-            item.setVisible(false);
-        }
     }
 
     @Override

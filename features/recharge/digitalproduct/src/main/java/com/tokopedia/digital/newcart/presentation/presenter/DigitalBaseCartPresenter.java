@@ -119,11 +119,14 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             getView().showFullPageLoading();
             getView().startPerfomanceMonitoringTrace();
             if (getView().getCartPassData().isFromPDP() || getView().getCartPassData().getNeedGetCart()) {
-                RequestParams requestParams = digitalGetCartUseCase.createRequestParams(
-                        getView().getCartPassData().getCategoryId(),
-                        userSession.getUserId(),
-                        userSession.getDeviceId());
-                digitalGetCartUseCase.execute(requestParams, getSubscriberCart(false));
+                if (getView().getCartPassData().getCategoryId() != null) {
+                    RequestParams requestParams = digitalGetCartUseCase.createRequestParams(
+                            getView().getCartPassData().getCategoryId(),
+                            userSession.getUserId(),
+                            userSession.getDeviceId());
+                    digitalGetCartUseCase.execute(requestParams, getSubscriberCart(false));
+                } else
+                    getView().closeViewWithMessageAlert(getView().getString(R.string.digital_transaction_failed_title));
             } else {
                 RequestParams requestParams = digitalAddToCartUseCase.createRequestParams(
                         getRequestBodyAtcDigital(), getView().getIdemPotencyKey());

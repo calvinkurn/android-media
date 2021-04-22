@@ -296,6 +296,7 @@ class SearchProductFirstPageGqlUseCase(
                             banner_image_url
                             banner_link_url
                             banner_applink_url
+                            identifier
                             product {
                                 id
                                 name

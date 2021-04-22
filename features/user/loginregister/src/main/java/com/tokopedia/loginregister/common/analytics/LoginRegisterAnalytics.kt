@@ -16,11 +16,12 @@ import com.tokopedia.linker.model.UserData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.collections.HashMap
 
 import com.tokopedia.iris.util.*
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 
 /**
  * @author by nisie on 10/2/18.
@@ -34,9 +35,8 @@ class LoginRegisterAnalytics @Inject constructor(
 ) {
 
     fun trackScreen(activity: Activity, screenName: String) {
-        Timber.w("P2#FINGERPRINT#screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
-                + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
-                + " | " + Build.TAGS)
+        val screenNameMessage =  " $screenName | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}"
+        ServerLogger.log(Priority.P2, "FINGERPRINT", mapOf("screenName" to screenNameMessage))
 
         val hashMap = mutableMapOf<String, String>()
         hashMap[KEY_SESSION_IRIS] = irisSession.getSessionId()
@@ -546,7 +546,7 @@ class LoginRegisterAnalytics @Inject constructor(
         ))
     }
 
-    fun eventSuccessRegisterEmail(context: Context?, userId: Int, name: String, email: String) {
+    fun eventSuccessRegisterEmail(context: Context?, userId: String, name: String, email: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,
                 CATEGORY_REGISTER,
@@ -554,7 +554,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 LABEL_EMAIL
         ))
 
-        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), "Email")
+        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId, "Email")
         sendBranchRegisterEvent(email)
 
     }

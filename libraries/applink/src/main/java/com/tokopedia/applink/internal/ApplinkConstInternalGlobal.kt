@@ -79,6 +79,8 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/add-name-register
     @JvmField
     val ADD_NAME_REGISTER = "$INTERNAL_GLOBAL/add-name-register"
+    @JvmField
+    val ADD_NAME_REGISTER_CLEAN_VIEW = "$INTERNAL_GLOBAL/add-name-register/clean-view"
 
     /**
      * ForgotPasswordAcitivity
@@ -311,6 +313,9 @@ object ApplinkConstInternalGlobal {
     val IMAGE_EDITOR = "$INTERNAL_GLOBAL/image-editor"
 
     @JvmField
+    val VIDEO_PICKER = "$INTERNAL_GLOBAL/video-picker"
+
+    @JvmField
     val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?title={title}&url={url}"
 
     // PhoneVerificationProfileActivity
@@ -438,10 +443,9 @@ object ApplinkConstInternalGlobal {
      **/
     @JvmField
     val LOGOUT = "$INTERNAL_GLOBAL/logout"
-    @JvmField
-    val PARAM_IS_RETURN_HOME = "return_to_home"
-    @JvmField
-    val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
+    /** for param logout */
+    const val PARAM_IS_RETURN_HOME = "return_to_home"
+    const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
 
     /**
      * TermPrivacyActivity
@@ -534,6 +538,11 @@ object ApplinkConstInternalGlobal {
     //SeamlessActivity
     @JvmField
     val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
+
+    //Image Quality Setting Activity
+    // tokopedia-android-internal://global/media-quality-setting
+    @JvmField
+    val MEDIA_QUALITY_SETTING = "${INTERNAL_GLOBAL}/media-quality-setting"
 
     //FeedbackPageActivity
     @JvmField

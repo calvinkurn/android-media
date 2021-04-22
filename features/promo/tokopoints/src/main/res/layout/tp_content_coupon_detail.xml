@@ -4,7 +4,7 @@
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <ScrollView
@@ -16,13 +16,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:orientation="vertical">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="vertical"
                 app:elevation="@dimen/dp_0">
 
@@ -54,7 +54,7 @@
                     android:ellipsize="end"
                     android:lineSpacingExtra="@dimen/sp_6"
                     android:maxLines="2"
-                    android:textColor="@color/clr_f531353b"
+                    android:textColor="@color/Unify_N700_96"
                     app:typographyType="heading_3"
                     app:typographyWeight="bold"
                     tool:text="Top Up E-Money Lebih Cepat dan Dapat Cashback hingga Rp10.000" />
@@ -83,7 +83,7 @@
                         android:layout_marginStart="@dimen/tp_margin_small"
                         android:layout_marginLeft="@dimen/tp_margin_small"
                         android:text="@string/points_saya"
-                        android:textColor="@color/clr_ae31353b"
+                        android:textColor="@color/Unify_N700_68"
                         app:layout_constraintBottom_toBottomOf="@+id/img_time"
                         app:layout_constraintLeft_toRightOf="@+id/img_time"
                         app:layout_constraintTop_toTopOf="@+id/img_time"
@@ -114,7 +114,7 @@
                         android:layout_marginStart="@dimen/tp_margin_xsmall"
                         android:layout_marginLeft="@dimen/tp_margin_xsmall"
                         android:background="@color/transparent"
-                        android:textColor="@color/clr_ae31353b"
+                        android:textColor="@color/Unify_N700_68"
                         app:layout_constraintBottom_toBottomOf="@id/img_time"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/img_time"
@@ -140,7 +140,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/tp_margin_small"
                         android:layout_marginLeft="@dimen/tp_margin_small"
-                        android:textColor="@color/clr_ae31353b"
+                        android:textColor="@color/Unify_N700_68"
                         app:layout_constraintBottom_toBottomOf="@+id/iv_rp"
                         app:layout_constraintLeft_toRightOf="@+id/iv_rp"
                         app:layout_constraintTop_toTopOf="@+id/iv_rp"
@@ -154,7 +154,7 @@
                         android:layout_marginStart="@dimen/tp_margin_xsmall"
                         android:layout_marginLeft="@dimen/tp_margin_xsmall"
                         android:background="@color/transparent"
-                        android:textColor="@color/clr_ae31353b"
+                        android:textColor="@color/Unify_N700_68"
                         app:layout_constraintBottom_toBottomOf="@id/iv_rp"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/iv_rp"
@@ -175,7 +175,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_8"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/bg_label_grey_tokopoints"
+                    android:background="@color/Unify_N50"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -187,7 +187,7 @@
                     android:layout_marginTop="@dimen/dp_16"
                     android:lineSpacingExtra="@dimen/sp_6"
                     android:text="@string/tnc_coupon_catalog"
-                    android:textColor="@color/clr_f531353b"
+                    android:textColor="@color/Unify_N700_96"
                     app:layout_constraintLeft_toLeftOf="parent"
                     android:layout_marginStart="@dimen/dp_16"
                     app:layout_constraintTop_toBottomOf="@+id/top_separator"
@@ -210,7 +210,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_2"
                     android:layout_margin="@dimen/dp_16"
-                    android:background="@color/bg_label_grey_tokopoints"
+                    android:background="@color/Unify_N50"
                     app:layout_constraintLeft_toLeftOf="@+id/tnc_content"
                     app:layout_constraintRight_toRightOf="@+id/tnc_content"
                     app:layout_constraintTop_toBottomOf="@+id/tnc_content" />
@@ -222,7 +222,7 @@
                     android:layout_marginTop="@dimen/dp_16"
                     android:lineSpacingExtra="@dimen/sp_6"
                     android:text="@string/how_to_use_coupon_catalog"
-                    android:textColor="@color/clr_f531353b"
+                    android:textColor="@color/Unify_N700_96"
                     app:layout_constraintLeft_toLeftOf="parent"
                     android:layout_marginStart="@dimen/dp_16"
                     app:layout_constraintTop_toBottomOf="@+id/mid_separator"

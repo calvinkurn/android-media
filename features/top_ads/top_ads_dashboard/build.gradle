@@ -35,7 +35,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.calendar
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.url

@@ -162,6 +162,8 @@
     <string name="title_app_review_setting">Review Aplikasi</string>
     <string name="label_wallet_activation">Aktivasi TokoCash</string>
 
+    <string name="title_pm_card">Pengaturan Power Merchant</string>
+    <string name="desc_pm_card">Kelola toko dengan fitur eksklusif</string>
 
     <string name="msg_has_no_shop">Mulai dengan Tokopedia!</string>
     <string name="msg_desc_has_no_shop">Buka Toko di Tokopedia, Sekarang! <b>Mudah, Aman,</b> dan
@@ -233,6 +235,22 @@
 
     <string name="feedback_form">Feedback Form</string>
 
+    <string name="image_quality_setting_screen">Kualitas Gambar</string>
+    <string name="image_quality_setting_title">Atur kualitas gambar yang kamu lihat</string>
+    <string name="image_quality_setting_subtitle">Pilihanmu akan menentukan kejelasan gambar yang kamu lihat di berbagai halaman Tokopedia.</string>
+
+    <string name="image_quality_low_title">Rendah</string>
+    <string name="image_quality_low_subtitle">Dapat mempermudah proses muat gambar, berlaku di semua jaringan HP.</string>
+    <string name="image_quality_low_toast">Kualitas rendah berhasil dipilih.</string>
+
+    <string name="image_quality_high_title">Tinggi</string>
+    <string name="image_quality_high_subtitle">Dapat meningkatkan kejelasan gambar, berlaku di semua jaringan HP.</string>
+    <string name="image_quality_high_toast">Kualitas tinggi berhasil dipilih.</string>
+
+    <string name="image_quality_auto_title">Otomatis (direkomendasikan)</string>
+    <string name="image_quality_auto_subtitle">Kualitas gambar otomatis diturunkan jika jaringan HP kamu lebih rendah dari 4G.</string>
+    <string name="image_quality_auto_toast">Pengaturan otomatis berhasil dipilih.</string>
+
     <!--CONTENT DESC-->
     <string name="content_desc_tv_add_product_title">text tambah produk</string>
 
@@ -241,5 +259,13 @@
     <string name="title_uoh_1">Menunggu Pembayaran</string>
     <string name="title_uoh_3">Semua Transaksi</string>
     <string name="e_ticket_desc">Cek tiket dan voucher siap pakai</string>
+  
+    <string name="text_description_add_name_bottom_sheet">Nama asli akan mempermudah proses verifikasi jika akunmu bermasalah. Akunmu jadi makin aman, deh!</string>
+    <string name="text_title_add_name_bottom_sheet">Ubah nama akun jadi nama asli</string>
+    <string name="text_button_add_name_bottom_sheet">Ubah Nama Akun</string>
+    <string name="desc_image_profile_completed">image_profile_completed</string>
+    <string name="desc_image_tokopoint">image_tokopoint</string>
+    <string name="desc_image_voucher">image_voucher</string>
+    <string name="desc_image_tokomember">image_tokomember</string>
 
 </resources>

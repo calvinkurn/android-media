@@ -44,7 +44,8 @@ class GetOccCartMapper @Inject constructor() {
                 mapPrompt(data.prompt),
                 mapOccRevamp(data.revamp),
                 data.errorCode,
-                data.popUpMessage)
+                data.popUpMessage,
+                mapOccRemoveProfile(data.removeProfile))
     }
 
     private fun generateShopShipment(shopShipments: List<OccShopShipment>): ArrayList<ShopShipment> {
@@ -301,5 +302,10 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapOccRevamp(revamp: OccRevampResponse): OccRevampData {
         return OccRevampData(revamp.isEnable, revamp.totalProfile, revamp.changeTemplateText)
+    }
+
+    private fun mapOccRemoveProfile(removeProfileResponse: OccRemoveProfileResponse): OccRemoveProfileData {
+        return OccRemoveProfileData(removeProfileResponse.enable, removeProfileResponse.type,
+                OccRemoveProfileMessageData(removeProfileResponse.message.title, removeProfileResponse.message.description))
     }
 }

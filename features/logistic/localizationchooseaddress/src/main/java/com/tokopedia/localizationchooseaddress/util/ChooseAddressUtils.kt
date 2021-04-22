@@ -67,8 +67,7 @@ object ChooseAddressUtils {
      * it mean data has same. no need action from host
      */
     fun isLocalizingAddressHasUpdated(context: Context, localizingAddressStateData: LocalCacheModel): Boolean {
-        val chooseAddressPref = ChooseAddressSharePref(context)
-        val latestChooseAddressData = chooseAddressPref.getLocalCacheData()
+        val latestChooseAddressData = getLocalizingAddressData(context)
         var validate = false
         if (latestChooseAddressData != null) {
             if (latestChooseAddressData.address_id != localizingAddressStateData.address_id) validate = true
@@ -95,9 +94,11 @@ object ChooseAddressUtils {
     }
 
     fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String, postalCode: String) {
-        val chooseAddressPref = ChooseAddressSharePref(context)
-        val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, label, postalCode)
-        chooseAddressPref.setLocalCache(localData)
+        if (isRollOutUser(context)) {
+            val chooseAddressPref = ChooseAddressSharePref(context)
+            val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, label, postalCode)
+            chooseAddressPref.setLocalCache(localData)
+        }
     }
 
     /**

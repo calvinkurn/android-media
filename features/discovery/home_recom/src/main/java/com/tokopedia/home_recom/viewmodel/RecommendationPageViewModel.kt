@@ -16,9 +16,12 @@ import com.tokopedia.home_recom.util.Response
 import com.tokopedia.home_recom.util.mapDataModel
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -27,6 +30,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import rx.Subscriber
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
@@ -50,8 +54,14 @@ open class RecommendationPageViewModel @Inject constructor(
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val getPrimaryProductUseCase: GetPrimaryProductUseCase,
         private val addToCartUseCase: AddToCartUseCase,
+        private val getTopadsIsAdsUseCase: GetTopadsIsAdsUseCase,
         private val dispatcher: RecommendationDispatcher
 ) : BaseViewModel(dispatcher.getMainDispatcher()) {
+
+    companion object {
+        const val PARAM_TXSC = "txsc"
+        const val PARAM_JOB_TIMEOUT = 1000L
+    }
     /**
      * public variable
      */
@@ -107,6 +117,7 @@ open class RecommendationPageViewModel @Inject constructor(
                         listVisitable.addAll(recommendationMappingWidget)
                     }
                     _recommendationListLiveData.postValue(listVisitable)
+                    getProductTopadsStatus(productId, queryParam)
                 } else {
                     _recommendationListLiveData.postValue(listOf(RecommendationErrorDataModel(TimeoutException())))
                 }
@@ -117,13 +128,51 @@ open class RecommendationPageViewModel @Inject constructor(
         }
     }
 
+    fun getProductTopadsStatus(
+            productId: String,
+            queryParam: String) {
+        if (queryParam.contains(PARAM_TXSC)) {
+            launchCatchError(coroutineContext, block = {
+                var adsStatus = TopadsIsAdsQuery()
+                val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
+                    getTopadsIsAdsUseCase.setParams(
+                            productId = productId,
+                            productKey = "",
+                            shopDomain = "",
+                            urlParam = queryParam,
+                            pageName = ""
+                    )
+                    adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
+                    val dataList = recommendationListLiveData.value as MutableList
+                    val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
+                    val errorCode = adsStatus.data.status.error_code
+                    if (errorCode >= 200 && errorCode <= 300) {
+                        (productRecom as? ProductInfoDataModel)?.productDetailData?.let {
+                            val topadsProduct = adsStatus.data.productList[0]
+                            it.isTopads = topadsProduct.isCharge
+                            it.clickUrl = topadsProduct.clickUrl
+                            it.trackerImageUrl = topadsProduct.product.image.m_url
+
+                            val itemIndex = dataList.indexOf(productRecom)
+                            dataList[itemIndex] = productRecom
+
+                            _recommendationListLiveData.postValue(dataList)
+                        }
+                    }
+                }
+            }) {
+                it.printStackTrace()
+            }
+        }
+    }
+
     /**
      * [addWishlist] is the void for handling adding wishlist item
      * @param model the recommendation item product is clicked
      * @param callback the callback for handling [added or removed, throwable] to UI
      */
     fun addWishlist(productId: String, wishlistUrl: String, isTopAds: Boolean, callback: ((Boolean, Throwable?) -> Unit)){
-        if(isTopAds){
+        if(isTopAds && wishlistUrl.isNotEmpty()){
             val params = RequestParams.create()
             params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, wishlistUrl)
             topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {

@@ -4,35 +4,15 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.ProductCardModel.Companion.FIRE_HEIGHT
-import com.tokopedia.productcard.ProductCardModel.Companion.FIRE_WIDTH
-import com.tokopedia.productcard.ProductCardModel.Companion.WORDING_SEGERA_HABIS
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
-import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonAddToCart
-import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonNotify
-import kotlinx.android.synthetic.main.product_card_list_layout.view.cardViewProductCard
-import kotlinx.android.synthetic.main.product_card_list_layout.view.constraintLayoutProductCard
-import kotlinx.android.synthetic.main.product_card_list_layout.view.imageProduct
-import kotlinx.android.synthetic.main.product_card_list_layout.view.imageThreeDots
-import kotlinx.android.synthetic.main.product_card_list_layout.view.labelBestSeller
-import kotlinx.android.synthetic.main.product_card_list_layout.view.labelCampaignBackground
-import kotlinx.android.synthetic.main.product_card_list_layout.view.labelProductStatus
-import kotlinx.android.synthetic.main.product_card_list_layout.view.progressBarStock
-import kotlinx.android.synthetic.main.product_card_list_layout.view.textTopAds
-import kotlinx.android.synthetic.main.product_card_list_layout.view.textViewLabelCampaign
-import kotlinx.android.synthetic.main.product_card_list_layout.view.textViewStockLabel
 
 class ProductCardListView: BaseCustomView, IProductCardView {
 
@@ -63,10 +43,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
-        renderProductCardContent(productCardModel)
+        renderProductCardContent(productCardModel, isWideContent = true)
 
-        renderStockPercentage(productCardModel)
-        renderStockLabel(productCardModel)
+        renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
@@ -115,34 +94,6 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonNotify?.setOnClickListener(notifyMeClickListener)
     }
 
-    private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
-        progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
-                progressBarStock.setProgressIcon(
-                        icon = ContextCompat.getDrawable(context, R.drawable.ic_fire_filled),
-                        width = context.resources.getDimension(FIRE_WIDTH).toInt(),
-                        height = context.resources.getDimension(FIRE_HEIGHT).toInt())
-            }
-            progressBarStock.progressBarColorType = ProgressBarUnify.COLOR_RED
-            progressBarStock.setValue(productCardModel.stockBarPercentage, true)
-        }
-    }
-
-    private fun View.renderStockLabel(productCardModel: ProductCardModel) {
-        textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            textViewStockLabel.text = productCardModel.stockBarLabel
-            if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
-                    textViewStockLabel.setTextColor(MethodChecker.getColor(context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_R600))
-            } else if (productCardModel.stockBarLabelColor.isNotEmpty()) {
-                textViewStockLabel.setTextColor(safeParseColor(productCardModel.stockBarLabelColor))
-            } else {
-                textViewStockLabel.setTextColor(MethodChecker.getColor(context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            }
-        }
-    }
-
     private fun setAddToCartButtonText(productCardModel: ProductCardModel) {
         if (productCardModel.addToCardText.isNotEmpty())
             buttonAddToCart?.text = productCardModel.addToCardText
@@ -170,10 +121,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         imageProduct?.layoutParams = layoutParams
     }
 
-
     override fun recycle() {
-        imageProduct?.glideClear(context)
-        imageFreeOngkirPromo?.glideClear(context)
+        imageProduct?.glideClear()
+        imageFreeOngkirPromo?.glideClear()
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots

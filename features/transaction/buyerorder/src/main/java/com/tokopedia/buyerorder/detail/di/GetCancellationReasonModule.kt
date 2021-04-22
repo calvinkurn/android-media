@@ -1,7 +1,7 @@
 package com.tokopedia.buyerorder.detail.di
 
-import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
-import com.tokopedia.buyerorder.common.BuyerProductionDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.buyerorder.detail.data.instantcancellation.BuyerInstantCancelData
 import com.tokopedia.buyerorder.detail.data.requestcancel.BuyerRequestCancelData
@@ -32,7 +32,7 @@ class GetCancellationReasonModule {
 
     @OrderListModuleScope
     @Provides
-    fun provideBuyerDispatcherProvider(): BuyerDispatcherProvider = BuyerProductionDispatcherProvider()
+    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @OrderListModuleScope
     @Provides

@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.uimodel
 
+import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.PlaySource
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
@@ -15,5 +16,6 @@ data class PiPInfoUiModel(
         val channelType: PlayChannelType,
         val videoPlayer: PlayVideoPlayerUiModel.General,
         val videoStream: PlayVideoStreamUiModel,
-        val stopOnClose: Boolean
+        val stopOnClose: Boolean,
+        val pipMode: PiPMode
 )

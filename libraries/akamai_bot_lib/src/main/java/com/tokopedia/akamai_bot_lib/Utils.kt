@@ -4,7 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import com.akamai.botman.CYFMonitor
-import timber.log.Timber
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -28,6 +29,8 @@ fun getSensorData() = CYFMonitor.getSensorData()
 val registeredGqlFunctions = mapOf(
         "login_token" to "login",
         "register" to "register",
+        "login_token_v2" to "login",
+        "register_v2" to "register",
         "OTPValidate" to "otp",
         "OTPRequest" to "otp",
         "richieSubmitWithdrawal" to "ttwdl",
@@ -121,7 +124,12 @@ fun <E> setExpire(
         val currentValue = getValue.invoke()
         val valueChanged = currentValue?.equals(previousValue)?:false
         if (valueChanged) {
-            Timber.w("P1#AKAMAI_SENSOR_SAME#shared_pref;expired='true';value_changed='$valueChanged';expired_time='${savedTime+sdValidTime}';current_time='$currTime'")
+            ServerLogger.log(Priority.P1, "AKAMAI_SENSOR_SAME", mapOf("type" to "shared_pref",
+                    "expired" to "true",
+                    "value_changed" to valueChanged.toString(),
+                    "expired_time" to (savedTime+sdValidTime).toString(),
+                    "current_time" to currTime.toString()
+            ))
         }
         return getValue.invoke()
     } else {

@@ -242,21 +242,6 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_TICKER)
         }
 
-        fun eventClickShopMiniShopInfo(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel, userId: String) {
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_SHOP_INFO_MINI, "${ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER} : ${productInfo?.basic?.shopID}")
-            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
-                    ?: ""
-            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = productInfo?.shopTypeString
-                    ?: ""
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SHOP_INFO_MINI)
-        }
-
         fun eventClickWholesale(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?) {
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
@@ -738,20 +723,6 @@ object DynamicProductDetailTracking {
                     ?: ""
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEE_ALL_ULASAN)
-        }
-
-        fun eventClickReviewOnMostHelpfulReview(productInfo: DynamicProductInfoP1?,
-                                                componentTrackDataModel: ComponentTrackDataModel,
-                                                reviewId: String?) {
-            val productId = productInfo?.basic?.productID ?: ""
-
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_IMAGE_MOST_HELPFULL_REVIEW,
-                    "product_id: $productId - review_id : $reviewId"
-            )
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_IMAGE_MOST_HELPFULL_REVIEW)
         }
 
         fun eventRecommendationClick(product: RecommendationItem, chipValue: String, isComparison: Boolean, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String,

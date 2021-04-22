@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kyc_centralized.R
-import com.tokopedia.kyc_centralized.util.AppDispatcherProvider
-import com.tokopedia.kyc_centralized.util.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
@@ -58,7 +58,7 @@ class UserIdentificationCommonModule {
 
     @UserIdentificationCommonScope
     @Provides
-    fun provideMainDispatcher(): DispatcherProvider {
-        return AppDispatcherProvider()
+    fun provideMainDispatcher(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
     }
 }

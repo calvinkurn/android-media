@@ -393,14 +393,14 @@ class ShopHomeViewModel @Inject constructor(
         return addToCartUseCase.createObservable(requestParams).toBlocking().first()
     }
 
-    private fun submitAddProductToCartOcc(shopId: String, product: ShopHomeProductUiModel?): AddToCartDataModel {
+    private fun submitAddProductToCartOcc(shopId: String, product: ShopHomeProductUiModel): AddToCartDataModel {
         val requestParams = RequestParams.create().apply {
             putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
-                    productId = product?.id ?: "",
+                    productId = product.id ?: "",
                     shopId = shopId,
-                    quantity = product?.minimumOrder.toString(),
-                    productName = product?.name ?: "",
-                    price = product?.displayedPrice ?: "",
+                    quantity = product.minimumOrder.toString(),
+                    productName = product.name ?: "",
+                    price = product.displayedPrice ?: "",
                     userId = userId
             ))
         }

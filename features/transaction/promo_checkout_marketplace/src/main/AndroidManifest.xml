@@ -10,7 +10,7 @@
             android:label="@string/promo_checkout_marketplace_module_title_activity_promo_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />

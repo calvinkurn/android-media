@@ -723,6 +723,88 @@ public class SearchTracking {
         );
     }
 
+    public static void trackImpressionInspirationCarouselChips(
+            TrackingQueue trackingQueue,
+            String type,
+            String keyword,
+            String chipsValue,
+            String userId,
+            List<Object> list
+    ) {
+        HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+                EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_INSPIRATION_CAROUSEL_CHIPS_PRODUCT,
+                EVENT_LABEL, type + " - " + keyword + " - " + chipsValue,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                USER_ID, userId,
+                BUSINESS_UNIT, SEARCH,
+                ECOMMERCE, DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "impressions", DataLayer.listOf(
+                                list.toArray(new Object[list.size()])
+                        )
+                )
+        );
+
+        trackingQueue.putEETracking(
+                map
+        );
+    }
+
+    public static void trackEventClickInspirationCarouselChipsProduct(
+            String type,
+            String keyword,
+            String chipsValue,
+            String userId,
+            List<Object> products
+    ) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
+                        EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_CHIPS_PRODUCT,
+                        EVENT_LABEL, type + " - " + keyword + " - " + chipsValue,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                        USER_ID, userId,
+                        BUSINESS_UNIT, SEARCH,
+                        ECOMMERCE, DataLayer.mapOf("click",
+                                DataLayer.mapOf(
+                                        "actionField", DataLayer.mapOf("list", "/search - carousel chips"),
+                                        "products", DataLayer.listOf(
+                                                products.toArray(new Object[products.size()])
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    public static void trackEventClickInspirationCarouselChipsSeeAll(String type, String keyword, String chipsValue, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.SEARCH_RESULT,
+                        EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_CHIPS_LIHAT_SEMUA,
+                        EVENT_LABEL, type + " - " + keyword + " - " + chipsValue,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                        USER_ID, userId,
+                        BUSINESS_UNIT, SEARCH
+                )
+        );
+    }
+
+    public static void trackEventClickInspirationCarouselChipsVariant(String type, String keyword, String chipsValue, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.SEARCH_RESULT,
+                        EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_CHIPS_VARIANT,
+                        EVENT_LABEL, type + " - " + keyword + " - " + chipsValue,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                        USER_ID, userId,
+                        BUSINESS_UNIT, SEARCH
+                )
+        );
+    }
+
     public static void trackEventImpressionBroadMatch(TrackingQueue trackingQueue, String keyword, String alternativeKeyword, String userId, List<Object> broadMatchItems) {
         HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
