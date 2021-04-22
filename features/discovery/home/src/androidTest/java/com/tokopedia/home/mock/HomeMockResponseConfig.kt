@@ -15,7 +15,6 @@ class HomeMockResponseConfig: MockModelConfig() {
         const val KEY_QUERY_DYNAMIC_POSITION = "dynamicPosition"
         const val KEY_QUERY_DYNAMIC_POSITION_ICON = "homeIcon"
         const val KEY_QUERY_DYNAMIC_POSITION_TICKER = "homeTicker"
-        const val KEY_QUERY_DYNAMIC_HOME_POPULAR_KEYWORD = "PopularKeywords"
         const val KEY_QUERY_DYNAMIC_HOME_SUCCESS_OCC = "add_to_cart_occ"
         const val KEY_CONTAINS_WIDGET_TAB = "widget_tab"
         const val KEY_CONTAINS_WIDGET_GRID = "widget_grid"
@@ -25,6 +24,8 @@ class HomeMockResponseConfig: MockModelConfig() {
         const val KEY_CONTAINS_RECHARGE = "rechargeRecommendation"
         const val KEY_CONTAINS_RECHARGE_BU_WIDGET = "getBUWidget"
         const val KEY_CONTAINS_SALAM = "salamWidget"
+        const val KEY_CONTAINS_POPULAR_KEYWORDS = "PopularKeywords"
+        const val KEY_CONTAINS_RECOMMENDATION_TAB = "getRecommendation"
     }
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
@@ -68,9 +69,9 @@ class HomeMockResponseConfig: MockModelConfig() {
                 FIND_BY_CONTAINS)
 
         addMockResponse(
-                KEY_QUERY_DYNAMIC_HOME_POPULAR_KEYWORD,
+                KEY_CONTAINS_POPULAR_KEYWORDS,
                 getRawString(context, R.raw.response_mock_data_dynamic_home_popular_keyword),
-                FIND_BY_QUERY_NAME)
+                FIND_BY_CONTAINS)
 
         addMockResponse(
                 KEY_QUERY_DYNAMIC_HOME_SUCCESS_OCC,
@@ -111,6 +112,12 @@ class HomeMockResponseConfig: MockModelConfig() {
         addMockResponse(
                 KEY_CONTAINS_RECHARGE_BU_WIDGET,
                 getRawString(context, R.raw.response_mock_data_recharge_bu_widget),
+                FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+                KEY_CONTAINS_RECOMMENDATION_TAB,
+                getRawString(context, R.raw.response_mock_data_dynamic_home_recom_feed_tab),
                 FIND_BY_CONTAINS
         )
 

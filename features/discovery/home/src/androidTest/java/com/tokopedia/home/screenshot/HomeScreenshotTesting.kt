@@ -1,20 +1,21 @@
 package com.tokopedia.home.screenshot
 
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.component.waitForData
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
+import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.findViewHolderAndScreenshot
-import com.tokopedia.test.application.espresso_component.CommonActions.screenShotFullRecyclerView
 import com.tokopedia.test.application.espresso_component.CommonActions.takeScreenShotVisibleViewInScreen
 import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import kotlinx.coroutines.cancelChildren
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,7 +46,6 @@ class HomeScreenshotTesting {
 
     @Test
     fun screenShotVisibleView() {
-        val homeRv = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         waitForData()
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             takeScreenShotVisibleViewInScreen(
@@ -58,148 +58,81 @@ class HomeScreenshotTesting {
     }
 
     @Test
-    fun screenShotFullRecyclerView() {
-        val homeRv = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
-        val adapter = homeRv.adapter as? HomeRecycleAdapter
+    fun screenShotEachViewholders() {
         waitForData()
-        screenShotFullRecyclerView(
-                R.id.home_fragment_recycler_view,
-                0,
-                adapter!!.itemCount,
-                fileName("full")
-        )
-//        findViewAndScreenShot()
+        turnOffAnimation()
+        doScreenshotForEachViewholder()
         activityRule.activity.finishAndRemoveTask()
     }
 
-    private fun screenShotEachViewholders() {
-        findViewHolderAndScreenshot(
-                recyclerViewId = R.id.home_fragment_recycler_view,
-                position = 0,
-                fileName = fileName(),
-                fileNamePostFix = "Header",
-                shouldDelay = true
-        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Lego 6 Image",
-//                shouldDelay = true
-//        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Lego 4 Image",
-//                shouldDelay = true
-//        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Lego 3 Image",
-//                shouldDelay = true
-//        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Lego 1x2 Banner",
-//                shouldDelay = true
-//        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Lego 4 Auto",
-//                shouldDelay = true
-//        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Lego 6 Auto",
-//                shouldDelay = true
-//        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Recommendation List Carousel",
-//                shouldDelay = true
-//        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Product Highlight",
-//                shouldDelay = true
-//        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Category Widget",
-//                shouldDelay = true
-//        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Left Carousel",
-//                shouldDelay = true
-//        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Top Carousel",
-//                shouldDelay = true
-//        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Dg Bills",
-//                shouldDelay = true
-//        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Home Widget 2",
-//                shouldDelay = true
-//        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Popular Keyword",
-//                shouldDelay = true
-//        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Salam Todo",
-//                shouldDelay = true
-//        )
-//        findViewHolderAndScreenshot(
-//                recyclerViewId = R.id.home_fragment_recycler_view,
-//                position = 0,
-//                fileName = fileName(),
-//                fileNamePostFix = "Home Widget",
-//                shouldDelay = true
-//        )
-        activityRule.activity.finishAndRemoveTask()
+    private fun turnOffAnimation() {
+        val homeRv = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+
+        //turn off slider banner
+        (homeRv.findViewHolderForAdapterPosition(3) as? BannerComponentViewHolder)?.coroutineContext?.cancelChildren()
+    }
+
+    private fun doScreenshotForEachViewholder() {
+        screenshotHomeViewholdersAtPosition(0, "Header")
+        screenshotHomeViewholdersAtPosition(1, "Ticker")
+        screenshotHomeViewholdersAtPosition(2, "ATF 1 - Icon")
+        screenshotHomeViewholdersAtPosition(3, "ATF 2 - Banner Carousel")
+        screenshotHomeViewholdersAtPosition(4, "ATF 3 - Icon")
+        screenshotHomeViewholdersAtPosition(5, "ATF 4 - Lego 4 Image")
+        screenshotHomeViewholdersAtPosition(6, "Lego 6 Image")
+        screenshotHomeViewholdersAtPosition(7, "Lego 4 Image")
+        screenshotHomeViewholdersAtPosition(8, "Lego 3 Image")
+        screenshotHomeViewholdersAtPosition(9, "1x2 Banner")
+        screenshotHomeViewholdersAtPosition(10, "4 Banner Auto")
+        screenshotHomeViewholdersAtPosition(11, "6 Image Auto")
+        screenshotHomeViewholdersAtPosition(12, "Recommendation List Carousel")
+        screenshotHomeViewholdersAtPosition(13, "Product Highlight")
+        screenshotHomeViewholdersAtPosition(14, "Category Widget")
+        screenshotHomeViewholdersAtPosition(15, "Left Carousel")
+        screenshotHomeViewholdersAtPosition(16, "Top Carousel")
+        screenshotHomeViewholdersAtPosition(17, "Dg Bills")
+        screenshotHomeViewholdersAtPosition(18, "Home Widget 2")
+        screenshotHomeViewholdersAtPosition(19, "Popular Keyword")
+        screenshotHomeViewholdersAtPosition(20, "Salam Todo")
+        screenshotHomeViewholdersAtPosition(21, "Home Widget")
+        screenshotHomeViewholdersAtPosition(22, "Home recommendation section")
+    }
+
+    private fun screenshotHomeViewholdersAtPosition(
+            position: Int,
+            fileNamePostFix: String
+    ) {
+        val recyclerViewId = R.id.home_fragment_recycler_view
+        doActivityTest(position) {
+            findViewHolderAndScreenshot(
+                    recyclerViewId = recyclerViewId,
+                    position = position,
+                    fileName = fileName(),
+                    fileNamePostFix = fileNamePostFix
+            )
+        }
     }
 
     private fun fileName(suffix: String? = null): String {
-        val prefix = "screenshot-home"
+        val prefix = TAG
         suffix?.let {
             return "$prefix-$suffix"
         }
         return prefix
+    }
+
+    private fun doActivityTest(position: Int, action: (viewHolder: RecyclerView.ViewHolder)-> Unit) {
+        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+        scrollHomeRecyclerViewToPosition(homeRecyclerView, position)
+        Thread.sleep(5000)
+        val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(position)
+        viewHolder?.let {
+            action.invoke(viewHolder)
+        }
+    }
+
+    private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
+        val layoutManager = homeRecyclerView.layoutManager as LinearLayoutManager
+        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset   (position, 400) }
     }
 }
