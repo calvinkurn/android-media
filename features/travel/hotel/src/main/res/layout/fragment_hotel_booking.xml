@@ -540,7 +540,8 @@
                     android:layout_height="@dimen/layout_lvl6"
                     android:text="@string/hotel_booking_button"
                     app:unifyButtonSize="large"
-                    app:unifyButtonType="transaction" />
+                    app:unifyButtonType="main"
+                    app:unifyButtonVariant="filled"/>
 
             </LinearLayout>
 

@@ -3,23 +3,17 @@
     <string name="choose_image">Pilih Gambar</string>
     <string name="gallery">Gallery</string>
     <string name="camera">Camera</string>
-    <string name="instagram">Instagram</string>
+    <string name="ip_label_cancel">Batal</string>
     <string name="album_name_all">Semua Media</string>
     <string name="label_primary">Utama</string>
-    <string name="please_grant_external_storage_permission_in_settings">Untuk dapat menggunakan fitur ini, silakan mengaktifkan \"Read external Storage Permission\" di Pengaturan.</string>
-    <string name="OK">OK</string>
     <string name="image_under_x_resolution">Gambar di bawah %1$d pixel</string>
-    <string name="video_under_resolution">Resolusi video %1$s terlalu kecil</string>
-    <string name="take_picture">Ambil Gambar</string>
     <string name="edit_image">Edit Gambar</string>
     <string name="downloading_images">Mengunduh Gambar</string>
     <string name="crop">Crop</string>
     <string name="rotate">Rotasi</string>
     <string name="watermark">Watermark</string>
-    <string name="instagram_label_login">Instagram Login</string>
     <string name="crop_and_rotate">Edit</string>
     <string name="cancel">Batal</string>
-    <string name="exit">Keluar</string>
     <string name="image_edit_backpressed_title">Hasil edit gambar akan hilang jika anda kembali ke halaman sebelumnya.</string>
     <string name="brightness">Brightness</string>
     <string name="contrast">Contrast</string>
@@ -35,12 +29,10 @@
     <string name="ratio_9_16">9:16</string>
     <string name="reset">Reset</string>
     <string name="default_contrast">1</string>
-    <string name="pressed_once_more_to_exit">Tekan sekali lagi untuk keluar</string>
     <string name="image_not_found">Gambar tidak ditemukan</string>
     <string name="video_not_found">Video tidak ditemukan</string>
     <string name="min_value_rotate">-45°</string>
     <string name="max_value_rotate">45°</string>
-    <string name="gif">gif</string>
     <string name="max_no_of_image_reached">Anda sudah mencapai batas maksimal jumlah gambar.</string>
     <string name="max_file_size_reached">Ukuran gambar terlalu besar</string>
     <string name="max_video_size_reached">Ukuran video terlalu besar</string>
@@ -49,8 +41,6 @@
     <string name="label_return">Kembali</string>
     <string name="use_image">Gunakan</string>
     <string name="retake_image">Ulangi</string>
-    <string name="instagram_label_not_logged_in">Anda belum terhubung dengan akun instagram.</string>
-    <string name="instagram_label_login_ig">Login</string>
     <string name="image_picker_label_cancel">Batal</string>
     <string name="change_to_primary">Jadikan Gambar Utama</string>
     <string name="recorder">Video</string>
@@ -62,13 +52,9 @@
     <string name="vidpick_menu_video_picker">Pilih Video</string>
     <string name="vidpick_menu_recorder">Recorder</string>
     <string name="vidpick_title">Tambah Video</string>
-    <string name="vidpick_error_message">Terjadi Kesalahan. Silahkan coba lagi.</string>
     <string name="vidpick_btn_back">Kembali</string>
     <string name="vidpick_btn_delete">Hapus Rekaman</string>
-    <string name="vidpick_progress_loader">Loading…</string>
-    <string name="vidpick_permission">Aplikasi ini membutuhkan izin untuk menambah video. Anda bisa memberikan izin melalui pengaturan.</string>
-    <string name="vidpick_permission_denied">Maaf, anda harus mengizinkan akses.</string>
 
-    <string name="cp_title_update_post">Update Post</string>
-    <string name="cp_message_update_choosen_video">Video sebelumnya akan diganti dengan video yang dipilih</string>
+    <string name="ip_title_update_post">Update Post</string>
+    <string name="ip_message_update_choosen_video">Video sebelumnya akan diganti dengan video yang dipilih</string>
 </resources>
