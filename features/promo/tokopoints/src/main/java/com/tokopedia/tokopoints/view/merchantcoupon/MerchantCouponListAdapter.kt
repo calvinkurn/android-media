@@ -27,8 +27,7 @@ import kotlin.collections.HashMap
 
 class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback: AdapterCallback) : BaseAdapter<CatalogMVCWithProductsListItem>(callback) {
     private var mRecyclerView: RecyclerView? = null
-    private val adEventMap = mapOf<Int, String>()
-    private var adCount = 0
+    private var flagUrlChange = false
 
     inner class CouponListViewHolder(view: View) : BaseVH(view) {
 
@@ -66,24 +65,34 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
             }
         }
 
-        if (item?.products?.size != 0) {
-            vh.productParentTwo.show()
-            item?.products?.get(0)?.imageURL?.let {
-                if (it.isNotEmpty()) {
-                    vh.ivCouponOne.setImageUrl(it, 1f)
+        if (item?.products?.size != null && item?.products?.size > 0) {
+            if (item?.products?.size == 1) {
+                flagUrlChange = false
+                vh.productParentTwo.show()
+                item?.products?.get(0)?.imageURL?.let {
+                    if (it.isNotEmpty()) {
+                        vh.ivCouponTwo.setImageUrl(it, 1f)
+                    }
                 }
+                vh.tvDealsCouponTwo.text = item?.products?.get(0)?.benefitLabel
             }
-            vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
 
-            if (item?.products?.size != null && item?.products?.size > 1) {
-                vh.productParentOne.show()
+            if (item?.products?.size > 1) {
+                flagUrlChange = true
+                vh.productParentTwo.show()
                 item?.products?.get(1)?.imageURL?.let {
                     if (it.isNotEmpty()) {
-                        vh.ivCouponTwo.loadImage(it)
+                        vh.ivCouponTwo.setImageUrl(it, 1f)
                     }
                 }
                 vh.tvDealsCouponTwo.text = item?.products?.get(1)?.benefitLabel
-
+                vh.productParentOne.show()
+                item?.products?.get(0)?.imageURL?.let {
+                    if (it.isNotEmpty()) {
+                        vh.ivCouponOne.loadImage(it)
+                    }
+                }
+                vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
             }
         }
 
@@ -103,17 +112,21 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
 
         vh.ivCouponOne.setOnClickListener {
             RouteManager.route(vh.itemView.context, item?.products?.get(0)?.redirectAppLink)
-            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_PRODUCT_CARD)
+            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_PRODUCT_CARD, vh, item?.AdInfo)
         }
 
         vh.ivCouponTwo.setOnClickListener {
-            RouteManager.route(vh.itemView.context, item?.products?.get(1)?.redirectAppLink)
-            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_PRODUCT_CARD)
+            var couponIndex = 0
+            if (flagUrlChange) {
+                couponIndex = 1
+            }
+            RouteManager.route(vh.itemView.context, item?.products?.get(couponIndex)?.redirectAppLink)
+            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_PRODUCT_CARD, vh, item?.AdInfo)
         }
 
         vh.itemView.setOnClickListener {
             item?.shopInfo?.id?.let { it1 -> it.context.startActivity(TransParentActivity.getIntent(it.context, it1, 0)) }
-            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE)
+            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE, vh, item?.AdInfo)
         }
 
     }
@@ -133,12 +146,12 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
     }
 
     fun shopClickListener(vh: CouponListViewHolder, item: CatalogMVCWithProductsListItem?) {
-        sendTopadsClick(vh.itemView.context, item?.AdInfo)
         RouteManager.route(vh.itemView.context, item?.shopInfo?.appLink)
-        sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_SHOP_NAME)
+        sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_SHOP_NAME, vh, item?.AdInfo)
     }
 
-    fun sendCouponClickEvent(shopName: String?, eventAction: String) {
+    fun sendCouponClickEvent(shopName: String?, eventAction: String, vh: CouponListViewHolder, adInfo: AdInfo?) {
+        sendTopadsClick(vh.itemView.context, adInfo)
         AnalyticsTrackerUtil.sendEvent(
                 AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                 AnalyticsTrackerUtil.CategoryKeys.KUPON_TOKO,

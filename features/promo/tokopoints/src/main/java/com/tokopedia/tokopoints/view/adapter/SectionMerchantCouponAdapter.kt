@@ -24,6 +24,7 @@ import java.util.Arrays
 class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProductsListItem>) : RecyclerView.Adapter<SectionMerchantCouponAdapter.CouponListViewHolder>() {
 
     val eventSet = HashSet<String?>()
+    var flagUrlChange = false
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CouponListViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.tp_layout_mvc_item_section, parent, false)
         return CouponListViewHolder(view)
@@ -65,23 +66,34 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
             }
         }
 
-        if (item?.products?.size != 0) {
-            vh.productParentTwo.show()
-            item?.products?.get(0)?.imageURL?.let {
-                if (it.isNotEmpty()) {
-                    vh.ivCouponOne.loadImage(it)
+        if (item?.products?.size != null && item?.products?.size > 0) {
+            if (item?.products?.size == 1) {
+                flagUrlChange = false
+                vh.productParentTwo.show()
+                item?.products?.get(0)?.imageURL?.let {
+                    if (it.isNotEmpty()) {
+                        vh.ivCouponTwo.setImageUrl(it, 1f)
+                    }
                 }
+                vh.tvDealsCouponTwo.text = item?.products?.get(0)?.benefitLabel
             }
-            vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
 
-            if (item?.products?.size != null && item?.products?.size > 1) {
-                vh.productParentOne.show()
+            if (item?.products?.size > 1) {
+                flagUrlChange = true
+                vh.productParentTwo.show()
                 item?.products?.get(1)?.imageURL?.let {
                     if (it.isNotEmpty()) {
-                        vh.ivCouponTwo.loadImage(it)
+                        vh.ivCouponTwo.setImageUrl(it, 1f)
                     }
-                    vh.tvDealsCouponTwo.text = item?.products?.get(1)?.benefitLabel
                 }
+                vh.tvDealsCouponTwo.text = item?.products?.get(1)?.benefitLabel
+                vh.productParentOne.show()
+                item?.products?.get(0)?.imageURL?.let {
+                    if (it.isNotEmpty()) {
+                        vh.ivCouponOne.loadImage(it)
+                    }
+                }
+                vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
             }
         }
 
@@ -99,26 +111,29 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
         }
 
         vh.ivCouponOne.setOnClickListener {
-            RouteManager.route(vh.itemView.context, item?.products?.get(0)?.redirectAppLink)
-            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_PRODUCT_CARD)
+            RouteManager.route(vh.itemView.context, item?.products?.get(1)?.redirectAppLink)
+            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_PRODUCT_CARD, vh, item?.AdInfo)
         }
 
         vh.ivCouponTwo.setOnClickListener {
-            RouteManager.route(vh.itemView.context, item?.products?.get(1)?.redirectAppLink)
-            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_PRODUCT_CARD)
+            var couponIndex = 0
+            if (flagUrlChange) {
+                couponIndex = 1
+            }
+            RouteManager.route(vh.itemView.context, item?.products?.get(couponIndex)?.redirectAppLink)
+            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_PRODUCT_CARD, vh, item?.AdInfo)
         }
 
         vh.itemView.setOnClickListener {
             item?.shopInfo?.id?.let { it1 -> it.context.startActivity(TransParentActivity.getIntent(it.context, it1, 0)) }
-            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE)
+            sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE, vh, item?.AdInfo)
 
         }
     }
 
     private fun shopClickListener(vh: CouponListViewHolder, item: CatalogMVCWithProductsListItem?) {
-        sendTopadsClick(vh.itemView.context, item?.AdInfo)
         RouteManager.route(vh.itemView.context, item?.shopInfo?.appLink)
-        sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_SHOP_NAME)
+        sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_SHOP_NAME, vh, item?.AdInfo)
     }
 
     private fun sendTopadsClick(context: Context, adInfo: AdInfo?) {
@@ -157,7 +172,8 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
         persistentAdsData.setAdsSet(eventSet)
     }
 
-    private fun sendCouponClickEvent(shopName: String?, eventAction: String) {
+    private fun sendCouponClickEvent(shopName: String?, eventAction: String, vh: CouponListViewHolder, adInfo: AdInfo?) {
+        sendTopadsClick(vh.itemView.context, adInfo)
         AnalyticsTrackerUtil.sendEvent(
                 AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
