@@ -34,7 +34,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
 
         val GOLD_PM_GRADE_BENEFIT_INFO_QUERY = """
             query goldGetPMGradeBenefitInfo(${'$'}shop_id: Int!){
-                goldGetPMGradeBenefitInfo(shop_id: ${'$'}shop_id, source: "goldmerchant", lang: "id", device: "", fields: []){
+                goldGetPMGradeBenefitInfo(shop_id: ${'$'}shop_id, source: "goldmerchant", lang: "id", device: "android", fields: []){
                         next_monthly_refresh_date
                         current_pm_grade {
                           grade_name
@@ -100,7 +100,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
 
         val RECOMMENDATION_TOOLS_QUERY = """
             query valuePropositionGetRecommendationTools(${'$'}shopID: Int!){
-              valuePropositionGetRecommendationTools(shopID: ${'$'}shopID, source:"goldmerchant") {
+              valuePropositionGetRecommendationTools(shopID: ${'$'}shopID, source:"android-shopscore-ui") {
                  recommendation_tools {
                   title
                   text

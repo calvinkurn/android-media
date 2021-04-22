@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
-import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -29,7 +28,8 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.NO_GRADE_SCORE
 import com.tokopedia.shop.score.common.ShopScoreConstant.OPEN_TOKOPEDIA_SELLER_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_SUCCESS_RATE_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_NEW_SELLER
-import com.tokopedia.shop.score.common.ShopScoreConstant.PATTER_DATE_TEXT
+import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_TEXT
+import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_PERIOD_DATE
 import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_IDENTIFIER
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.READ_TIPS_MORE_INFO_URL
@@ -401,7 +401,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     }
 
     private fun mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): SectionPotentialPMBenefitUiModel {
-        return SectionPotentialPMBenefitUiModel(potentialPMBenefitList = mapToItemPotentialBenefit(), transitionEndDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTER_DATE_TEXT))
+        return SectionPotentialPMBenefitUiModel(potentialPMBenefitList = mapToItemPotentialBenefit(),
+                transitionEndDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT))
     }
 
     private fun mapToSectionPeriodDetailPerformanceUiModel(shopScoreTooltipResponse: ShopLevelTooltipResponse.ShopLevel.Result?): PeriodDetailPerformanceUiModel {
@@ -410,7 +411,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     }
 
     private fun mapToTransitionPeriodReliefUiModel(endDate: String): TransitionPeriodReliefUiModel {
-        return TransitionPeriodReliefUiModel(dateTransitionPeriodRelief = endDate.formatDate(PATTER_DATE_TEXT), iconTransitionPeriodRelief = IC_SELLER_ANNOUNCE)
+        return TransitionPeriodReliefUiModel(dateTransitionPeriodRelief = endDate.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT), iconTransitionPeriodRelief = IC_SELLER_ANNOUNCE)
     }
 
     private fun mapToItemRecommendationPMUiModel(recommendationTools: List<GetRecommendationToolsResponse.ValuePropositionGetRecommendationTools.RecommendationTool>?): SectionShopRecommendationUiModel {
@@ -782,7 +783,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     private fun mapToItemCurrentStatusRMUiModel(potentialPmGrade: GoldPMGradeBenefitInfoResponse.GoldGetPMGradeBenefitInfo.PotentialPmGrade?, shopInfoPeriodUiModel: ShopInfoPeriodUiModel)
             : ItemStatusRMUiModel {
         //only regular merchant & eligible
-        val updateDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTER_DATE_TEXT)
+        val updateDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT)
         val statusPM = potentialPmGrade?.gradeName.orEmpty()
         val badgePM = potentialPmGrade?.imageBadgeUrl.orEmpty()
         val backgroundPM = when (statusPM.toLowerCase(Locale.getDefault())) {

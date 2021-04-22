@@ -4,9 +4,9 @@ import androidx.annotation.ColorRes
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
 
 data class ItemPenaltyUiModel(val statusPenalty: String = "",
-                              val periodDate: String = "",
-                              val statusDate: String = "",
-                              val transactionPenalty: String = "",
+                              val endDate: String = "",
+                              val startDate: String = "",
+                              val typePenalty: String = "",
                               val descPenalty: String = "",
                               @ColorRes val colorPenalty: Int? = null
 ) : BasePenaltyPage {

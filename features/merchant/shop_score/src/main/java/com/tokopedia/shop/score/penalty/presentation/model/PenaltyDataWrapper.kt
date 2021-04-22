@@ -3,5 +3,6 @@ package com.tokopedia.shop.score.penalty.presentation.model
 data class PenaltyDataWrapper(
         var cardShopPenaltyUiModel: ItemCardShopPenaltyUiModel? = null,
         var itemDetailPenaltyFilterUiModel: ItemDetailPenaltyFilterUiModel? = null,
-        var itemPenaltyUiModel: List<ItemPenaltyUiModel> = listOf()
+        var itemPenaltyUiModel: Triple<List<ItemPenaltyUiModel>, Boolean, Boolean> = Triple(listOf(), false, false),
+        var penaltyFilterList: List<PenaltyFilterUiModel>? = listOf()
 )

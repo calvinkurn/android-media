@@ -44,9 +44,7 @@ object ShopScoreConstant {
     const val BG_GREEN_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_green_timer@3x.png"
     const val BG_ORANGE_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_orange_timer@3x.png"
 
-    const val PM_INACTIVE = "inactive"
     const val SUPPOSED_INACTIVE_TEXT = "nonaktif"
-    const val PM_ACTIVE = "active"
     const val PM_IDLE = "idle"
     const val UP_POTENTIAL_PM = "naik"
     const val STILL_POTENTIAL_PM = "tetap"
@@ -69,6 +67,8 @@ object ShopScoreConstant {
 
     const val SORT_LATEST = "Paling Baru"
     const val SORT_OLDEST = "Paling Lama"
+    const val SORT_LATEST_VALUE = 0
+    const val SORT_OLDEST_VALUE = 1
 
     const val TITLE_SORT = "Urutkan"
     const val TITLE_TYPE_PENALTY = "Jenis Pelanggaran"
@@ -83,7 +83,6 @@ object ShopScoreConstant {
     const val DELIVERY_REFUSED = "Pengiriman ditolak"
 
     const val TRANSITION_PERIOD = "transition_period"
-    const val COMMUNICATION_PERIOD = "communication_period"
     const val END_PERIOD = "final"
 
     const val ONE_MONTH = 1
@@ -95,7 +94,10 @@ object ShopScoreConstant {
     const val SYSTEM_PENALTY_HELP_URL = "https://www.tokopedia.com/help/article/bagaimana-sistem-penalti-pengurangan-reputasi-toko"
     const val HELP_URL = "https://www.tokopedia.com/help"
 
-    const val PATTER_DATE_TEXT = "dd MMMM yyyy"
+    const val PATTERN_DATE_TEXT = "dd MMMM yyyy"
 
     const val SHOP_INFO_URL = "https://seller.tokopedia.com/shop-score-info"
+
+    const val PATTERN_PENALTY_DATE_PARAM = "yyyy-MM-dd"
+    const val PATTERN_PERIOD_DATE = "yyyy-MM-dd HH:mm:ss"
 }

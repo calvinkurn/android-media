@@ -8,11 +8,11 @@ data class PenaltyFilterUiModel(
         val isDividerVisible: Boolean = false,
         var chipsFilerList: List<ChipsFilterPenaltyUiModel> = listOf()
 ): BaseFilterPenaltyPage {
+
     data class ChipsFilterPenaltyUiModel(
         var title: String = "",
-        // temporary
-        val value: String = "",
-        var isSelected: Boolean = false
+        var isSelected: Boolean = false,
+        var value: Int = 0
     )
 
     override fun type(typeFactory: FilterPenaltyAdapterFactory): Int {

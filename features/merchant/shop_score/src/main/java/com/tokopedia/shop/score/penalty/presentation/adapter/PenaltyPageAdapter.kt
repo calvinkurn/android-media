@@ -2,10 +2,10 @@ package com.tokopedia.shop.score.penalty.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.shop.score.penalty.presentation.model.BasePenaltyPage
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemShopPerformanceErrorUiModel
 
 class PenaltyPageAdapter(penaltyPageAdapterFactory: PenaltyPageAdapterFactory):
         BaseListAdapter<Visitable<*>, PenaltyPageAdapterFactory>(penaltyPageAdapterFactory) {
@@ -26,4 +26,24 @@ class PenaltyPageAdapter(penaltyPageAdapterFactory: PenaltyPageAdapterFactory):
         notifyDataSetChanged()
     }
 
+    fun setPenaltyLoading() {
+        if (visitables.getOrNull(firstIndex) is LoadingMoreModel){
+            visitables.add(loadingMoreModel)
+            notifyItemInserted(firstIndex)
+        }
+    }
+
+    fun setEmptyStatePenalty() {
+        if (visitables.getOrNull(firstIndex) !is EmptyModel) {
+            visitables.add(EmptyModel())
+            notifyItemInserted(firstIndex)
+        }
+    }
+
+    fun removePenaltyNotFound() {
+        if (visitables.getOrNull(lastIndex) is EmptyModel) {
+            visitables.removeAt(lastIndex)
+            notifyItemRemoved(lastIndex)
+        }
+    }
 }
