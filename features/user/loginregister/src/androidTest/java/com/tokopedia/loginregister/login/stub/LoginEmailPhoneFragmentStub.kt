@@ -2,11 +2,12 @@ package com.tokopedia.loginregister.login.stub
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
+import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
 import com.tokopedia.loginregister.login.dagger.DaggerMockLoginComponent
 import com.tokopedia.loginregister.login.dagger.MockLoginQueryModule
 import com.tokopedia.loginregister.login.dagger.MockLoginUseCaseModule
-import com.tokopedia.loginregister.login.dagger.MockLoginmodule
+import com.tokopedia.loginregister.login.di.LoginModule
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -43,13 +44,18 @@ class LoginEmailPhoneFragmentStub : LoginEmailPhoneFragment(){
 
     override fun initInjector() {
         DaggerMockLoginComponent.builder()
-                .loginRegisterComponent(DaggerLoginRegisterComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build())
+                .loginRegisterComponent(DaggerLoginRegisterComponent.builder()
+                        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                        .build())
                 .mockLoginQueryModule(MockLoginQueryModule())
                 .mockLoginUseCaseModule(MockLoginUseCaseModule())
-                .mockLoginmodule(MockLoginmodule())
+                .loginModule(object: LoginModule(){
+                    override fun provideCryptographyUtils(): Cryptography? {
+                        return MockCryptography()
+                    }
+                })
                 .build()
                 .inject(this)
-        presenter.attachView(this, this)
     }
 
     companion object {

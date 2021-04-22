@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -33,8 +32,7 @@ class TabsItemViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolde
                 val itemData = it.data?.get(0)
                 positionForParentAdapter = itemData?.positionForParentItem ?: -1
                 itemData?.let { item ->
-                    tabImageView.loadImage(item.backgroundImage
-                            ?: "")
+                    tabImageView.loadImage(item.backgroundImage ?: "")
                     item.name?.let { name ->
                         setTabText(name)
                     }
