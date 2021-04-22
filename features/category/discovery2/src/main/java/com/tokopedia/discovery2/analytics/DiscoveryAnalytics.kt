@@ -131,7 +131,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 KEY_ID to "0_0_$channelId",
                 KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$CHANNEL",
                 KEY_CREATIVE to " - $isAutoPlay",
-                KEY_POSITION to channelPositionInList
+                KEY_POSITION to "$channelPositionInList - "
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                 EVENT_PROMO_CLICK to mapOf(
@@ -247,7 +247,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 KEY_ID to "0_0_$channelId",
                 KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$CHANNEL",
                 KEY_CREATIVE to " - $isAutoPlay",
-                KEY_POSITION to channelPositionInList
+                KEY_POSITION to "$channelPositionInList - "
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                 EVENT_PROMO_VIEW to mapOf(
