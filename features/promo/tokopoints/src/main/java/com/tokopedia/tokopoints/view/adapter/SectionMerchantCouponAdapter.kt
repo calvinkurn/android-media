@@ -61,15 +61,22 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
             }
         }
 
-        item?.products?.get(0)?.imageURL?.let {
-            if (it.isNotEmpty()) {
-                vh.ivCouponOne.loadImage(it)
+        if (item?.products?.size != 0) {
+            item?.products?.get(0)?.imageURL?.let {
+                if (it.isNotEmpty()) {
+                    vh.ivCouponOne.loadImage(it)
+                }
             }
-        }
 
-        item?.products?.get(1)?.imageURL?.let {
-            if (it.isNotEmpty()) {
-                vh.ivCouponTwo.loadImage(it)
+            vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
+
+            if (item?.products?.size == 2) {
+                item?.products?.get(1)?.imageURL?.let {
+                    if (it.isNotEmpty()) {
+                        vh.ivCouponTwo.loadImage(it)
+                    }
+                    vh.tvDealsCouponTwo.text = item?.products?.get(1)?.benefitLabel
+                }
             }
         }
 
@@ -77,8 +84,6 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
         vh.tvCashBackTitle.text = item?.title
         vh.tvCashBackValue.text = item?.maximumBenefitAmountStr
         vh.tvCouponCount.text = item?.subtitle
-        vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
-        vh.tvDealsCouponTwo.text = item?.products?.get(1)?.benefitLabel
 
         vh.tvShopName.setOnClickListener {
             shopClickListener(vh, item)

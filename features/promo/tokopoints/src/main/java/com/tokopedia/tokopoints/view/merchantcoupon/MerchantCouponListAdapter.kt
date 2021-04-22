@@ -62,15 +62,22 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
             }
         }
 
-        item?.products?.get(0)?.imageURL?.let {
-            if (it.isNotEmpty()) {
-                vh.ivCouponOne.setImageUrl(it, 1f)
+        if (item?.products?.size != 0) {
+            item?.products?.get(0)?.imageURL?.let {
+                if (it.isNotEmpty()) {
+                    vh.ivCouponOne.setImageUrl(it, 1f)
+                }
             }
-        }
+            vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
 
-        item?.products?.get(1)?.imageURL?.let {
-            if (it.isNotEmpty()) {
-                vh.ivCouponTwo.loadImage(it)
+            if (item?.products?.size == 2) {
+                item?.products?.get(1)?.imageURL?.let {
+                    if (it.isNotEmpty()) {
+                        vh.ivCouponTwo.loadImage(it)
+                    }
+                }
+                vh.tvDealsCouponTwo.text = item?.products?.get(1)?.benefitLabel
+
             }
         }
 
@@ -79,9 +86,6 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
         vh.tvCashBackTitle.text = item?.title
         vh.tvCashBackValue.text = item?.maximumBenefitAmountStr
         vh.tvCouponCount.text = item?.subtitle
-        vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
-        vh.tvDealsCouponTwo.text = item?.products?.get(1)?.benefitLabel
-
 
         vh.tvShopName.setOnClickListener {
             shopClickListener(vh, item)
