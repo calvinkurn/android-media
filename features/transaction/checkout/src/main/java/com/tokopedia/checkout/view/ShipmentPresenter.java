@@ -410,11 +410,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequests) {
-            if (dataCheckoutRequest.shopProducts != null) {
+            if (dataCheckoutRequest.getShopProducts() != null) {
                 boolean foundItem = false;
-                for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
-                    if (shopProductCheckoutRequest != null && shopProductCheckoutRequest.cartString.equalsIgnoreCase(cartString) && shopProductCheckoutRequest.productData != null) {
-                        for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
+                for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.getShopProducts()) {
+                    if (shopProductCheckoutRequest != null && shopProductCheckoutRequest.getCartString().equalsIgnoreCase(cartString) && shopProductCheckoutRequest.getProductData() != null) {
+                        for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.getProductData()) {
                             productDataCheckoutRequest.setShippingDuration(shippingDuration);
                             productDataCheckoutRequest.setShippingPrice(shippingPrice);
                             productDataCheckoutRequest.setCourier(courierName);
@@ -453,12 +453,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
                 if (shipmentCartItemModel != null) {
                     for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequests) {
-                        if (dataCheckoutRequest.shopProducts != null) {
-                            for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
-                                if (shopProductCheckoutRequest != null && shopProductCheckoutRequest.cartString.equalsIgnoreCase(shipmentCartItemModel.getCartString()) &&
-                                        shopProductCheckoutRequest.productData != null) {
+                        if (dataCheckoutRequest.getShopProducts() != null) {
+                            for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.getShopProducts()) {
+                                if (shopProductCheckoutRequest != null && shopProductCheckoutRequest.getCartString().equalsIgnoreCase(shipmentCartItemModel.getCartString()) &&
+                                        shopProductCheckoutRequest.getProductData() != null) {
                                     for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                                        for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
+                                        for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.getProductData()) {
                                             if (productDataCheckoutRequest.getProductId() == cartItemModel.getProductId()) {
                                                 productDataCheckoutRequest.setPromoCode(cartItemModel.getAnalyticsProductCheckoutData().getPromoCode());
                                                 productDataCheckoutRequest.setPromoDetails(cartItemModel.getAnalyticsProductCheckoutData().getPromoDetails());
@@ -605,7 +605,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
 
-        if (checkoutRequest != null && checkoutRequest.data != null && checkoutRequest.data.size() > 0) {
+        if (checkoutRequest != null && checkoutRequest.getData() != null && checkoutRequest.getData().size() > 0) {
             // Get additional param for trade in analytics
             String deviceModel = "";
             long devicePrice = 0L;
@@ -963,11 +963,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             enhancedECommerceActionField.setOption(option);
 
             EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
-            for (DataCheckoutRequest dataCheckoutRequest : checkoutRequest.data) {
+            for (DataCheckoutRequest dataCheckoutRequest : checkoutRequest.getData()) {
                 if (dataCheckoutRequest != null) {
-                    for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
+                    for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.getShopProducts()) {
                         if (shopProductCheckoutRequest != null) {
-                            for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
+                            for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.getProductData()) {
                                 if (productDataCheckoutRequest != null) {
                                     EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
                                             new EnhancedECommerceProductCartMapData();
@@ -987,7 +987,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     enhancedECommerceProductCartMapData.setDimension45(String.valueOf(productDataCheckoutRequest.getCartId()));
                                     enhancedECommerceProductCartMapData.setDimension53(productDataCheckoutRequest.isDiscountedPrice());
                                     enhancedECommerceProductCartMapData.setDimension54(getFulfillmentStatus(shopProductCheckoutRequest.getShopId()));
-                                    enhancedECommerceProductCartMapData.setDimension12(shopProductCheckoutRequest.shippingInfo.analyticsDataShippingCourierPrice != null ? shopProductCheckoutRequest.shippingInfo.analyticsDataShippingCourierPrice : "");
+                                    enhancedECommerceProductCartMapData.setDimension12(shopProductCheckoutRequest.getShippingInfo().getAnalyticsDataShippingCourierPrice() != null ? shopProductCheckoutRequest.getShippingInfo().getAnalyticsDataShippingCourierPrice() : "");
                                     enhancedECommerceProductCartMapData.setWarehouseId(productDataCheckoutRequest.getWarehouseId() != null ? productDataCheckoutRequest.getWarehouseId() : "");
                                     enhancedECommerceProductCartMapData.setProductWeight(productDataCheckoutRequest.getProductWeight() != null ? productDataCheckoutRequest.getProductWeight() : "");
                                     enhancedECommerceProductCartMapData.setPromoCode(productDataCheckoutRequest.getPromoCode() != null ? productDataCheckoutRequest.getPromoCode() : "");
@@ -999,7 +999,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     enhancedECommerceProductCartMapData.setShippingPrice(productDataCheckoutRequest.getShippingPrice() != null ? productDataCheckoutRequest.getShippingPrice() : "");
                                     enhancedECommerceProductCartMapData.setCodFlag(productDataCheckoutRequest.getCodFlag() != null ? productDataCheckoutRequest.getCodFlag() : "");
                                     enhancedECommerceProductCartMapData.setTokopediaCornerFlag(productDataCheckoutRequest.getTokopediaCornerFlag() != null ? productDataCheckoutRequest.getTokopediaCornerFlag() : "");
-                                    enhancedECommerceProductCartMapData.setIsFulfillment(productDataCheckoutRequest.getIsFulfillment() != null ? productDataCheckoutRequest.getIsFulfillment() : "");
+                                    enhancedECommerceProductCartMapData.setIsFulfillment(productDataCheckoutRequest.isFulfillment() != null ? productDataCheckoutRequest.isFulfillment() : "");
                                     if (productDataCheckoutRequest.isFreeShippingExtra()) {
                                         enhancedECommerceProductCartMapData.setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA);
                                     } else if (productDataCheckoutRequest.isFreeShipping()) {
@@ -1225,26 +1225,26 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             egoldData.setEgoldAmount(egoldAttributeModel.getBuyEgoldValue());
         }
 
-        CheckoutRequest.Builder builder = new CheckoutRequest.Builder()
-                .isDonation(isDonation)
-                .data(analyticsDataCheckoutRequests != null ? analyticsDataCheckoutRequests : dataCheckoutRequestList)
-                .egoldData(egoldData);
+        CheckoutRequest checkoutRequest = new CheckoutRequest();
+        checkoutRequest.setDonation(isDonation);
+        checkoutRequest.setData(analyticsDataCheckoutRequests != null ? analyticsDataCheckoutRequests : dataCheckoutRequestList);
+        checkoutRequest.setEgoldData(egoldData);
 
         if (cornerData != null) {
-            builder.cornerData(cornerData);
+            checkoutRequest.setCornerData(cornerData);
         }
 
         // Set promo global request data
         if (validateUsePromoRevampUiModel != null) {
             // Clear data first
-            builder.promos(null);
-            builder.promoCodes(null);
+            checkoutRequest.setPromos(null);
+            checkoutRequest.setPromoCodes(null);
 
             // Then set the data promo global
             PromoUiModel promoUiModel = validateUsePromoRevampUiModel.getPromoUiModel();
             if (promoUiModel.getCodes().size() > 0 && !promoUiModel.getMessageUiModel().getState().equals("red")) {
                 ArrayList<String> codes = new ArrayList<>(promoUiModel.getCodes());
-                builder.promoCodes(codes);
+                checkoutRequest.setPromoCodes(codes);
 
                 List<PromoRequest> promoRequests = new ArrayList<>();
                 for (String promoCode : promoUiModel.getCodes()) {
@@ -1254,30 +1254,30 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                     promoRequests.add(promoRequest);
                 }
-                builder.promos(promoRequests);
+                checkoutRequest.setPromos(promoRequests);
 
             }
 
-            builder.hasPromoStacking(true);
+            checkoutRequest.setHasPromoStacking(true);
         }
 
         if (leasingId != null && !leasingId.isEmpty()) {
-            builder.setLeasingId(Integer.parseInt(leasingId));
+            checkoutRequest.setLeasingId(Integer.parseInt(leasingId));
         }
 
-        return builder.build();
+        return checkoutRequest;
     }
 
     private void setCheckoutRequestPromoData(List<DataCheckoutRequest> dataCheckoutRequestList) {
         // Clear data first
         for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequestList) {
-            if (dataCheckoutRequest.shopProducts != null && dataCheckoutRequest.shopProducts.size() > 0) {
-                for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
-                    if (shopProductCheckoutRequest.promoCodes != null) {
-                        shopProductCheckoutRequest.promoCodes.clear();
+            if (dataCheckoutRequest.getShopProducts() != null && dataCheckoutRequest.getShopProducts().size() > 0) {
+                for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.getShopProducts()) {
+                    if (shopProductCheckoutRequest.getPromoCodes() != null) {
+                        shopProductCheckoutRequest.getPromoCodes().clear();
                     }
-                    if (shopProductCheckoutRequest.promos != null) {
-                        shopProductCheckoutRequest.promos.clear();
+                    if (shopProductCheckoutRequest.getPromos() != null) {
+                        shopProductCheckoutRequest.getPromos().clear();
                     }
                 }
             }
@@ -1285,30 +1285,30 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         // Then set the data promo merchant & logistic
         for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequestList) {
-            if (dataCheckoutRequest.shopProducts != null && dataCheckoutRequest.shopProducts.size() > 0) {
-                for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
+            if (dataCheckoutRequest.getShopProducts() != null && dataCheckoutRequest.getShopProducts().size() > 0) {
+                for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.getShopProducts()) {
                     for (PromoCheckoutVoucherOrdersItemUiModel voucherOrder : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
-                        if (shopProductCheckoutRequest.cartString.equals(voucherOrder.getUniqueId())) {
-                            if (shopProductCheckoutRequest.promoCodes != null &&
-                                    shopProductCheckoutRequest.promoCodes.size() > 0 &&
-                                    !shopProductCheckoutRequest.promoCodes.contains(voucherOrder.getCode())) {
+                        if (shopProductCheckoutRequest.getCartString().equals(voucherOrder.getUniqueId())) {
+                            if (shopProductCheckoutRequest.getPromoCodes() != null &&
+                                    shopProductCheckoutRequest.getPromoCodes().size() > 0 &&
+                                    !shopProductCheckoutRequest.getPromoCodes().contains(voucherOrder.getCode())) {
                                 // This section logic's seems to be invalid, since promo will always be cleared on previous logic
-                                shopProductCheckoutRequest.promoCodes.add(voucherOrder.getCode());
+                                shopProductCheckoutRequest.getPromoCodes().add(voucherOrder.getCode());
                             } else {
                                 ArrayList<String> codes = new ArrayList<>();
                                 codes.add(voucherOrder.getCode());
-                                shopProductCheckoutRequest.promoCodes = codes;
+                                shopProductCheckoutRequest.setPromoCodes(codes);
                             }
 
                             if (voucherOrder.getCode().length() > 0 && voucherOrder.getType().length() > 0) {
-                                if (shopProductCheckoutRequest.promos != null && shopProductCheckoutRequest.promos.size() > 0 &&
-                                        !hasInsertPromo(shopProductCheckoutRequest.promos, voucherOrder.getCode())) {
+                                if (shopProductCheckoutRequest.getPromos() != null && shopProductCheckoutRequest.getPromos().size() > 0 &&
+                                        !hasInsertPromo(shopProductCheckoutRequest.getPromos(), voucherOrder.getCode())) {
                                     // This section logic's seems to be invalid, since promo will always be cleared on previous logic
                                     PromoRequest promoRequest = new PromoRequest();
                                     promoRequest.setCode(voucherOrder.getCode());
                                     promoRequest.setType(voucherOrder.getType());
 
-                                    shopProductCheckoutRequest.promos.add(promoRequest);
+                                    shopProductCheckoutRequest.getPromos().add(promoRequest);
                                 } else {
                                     PromoRequest promoRequest = new PromoRequest();
                                     promoRequest.setCode(voucherOrder.getCode());
@@ -1317,7 +1317,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     List<PromoRequest> promoRequests = new ArrayList<>();
                                     promoRequests.add(promoRequest);
 
-                                    shopProductCheckoutRequest.promos = promoRequests;
+                                    shopProductCheckoutRequest.setPromos(promoRequests);
                                 }
                             }
                         }

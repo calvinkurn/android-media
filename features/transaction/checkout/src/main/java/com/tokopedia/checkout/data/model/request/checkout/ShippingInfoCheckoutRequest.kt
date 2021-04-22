@@ -22,6 +22,5 @@ data class ShippingInfoCheckoutRequest(
         var ut: String? = null,
         @SerializedName("rates_feature")
         var ratesFeature: RatesFeature? = null,
-        @JvmField
         var analyticsDataShippingCourierPrice: String? = null,
 ) : Parcelable

@@ -16,7 +16,6 @@ data class CheckoutRequest(
         var isDonation: Int = 0,
         @SerializedName("egold_data")
         var egoldData: EgoldData? = null,
-        @JvmField
         @SerializedName("data")
         var data: List<DataCheckoutRequest>? = null,
         @SerializedName("tokopedia_corner_data")

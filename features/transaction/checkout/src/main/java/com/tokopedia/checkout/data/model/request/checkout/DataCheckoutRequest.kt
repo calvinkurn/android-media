@@ -9,7 +9,6 @@ import java.util.*
 data class DataCheckoutRequest(
         @SerializedName("address_id")
         var addressId: String? = null,
-        @JvmField
         @SerializedName("shop_products")
         var shopProducts: List<ShopProductCheckoutRequest>? = ArrayList()
 ) : Parcelable
