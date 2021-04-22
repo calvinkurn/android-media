@@ -3,29 +3,34 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
+import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
+import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
+import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class OtherMenuViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
     private val getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase,
+    private val getShopOperationalUseCase: GetShopOperationalUseCase,
     private val userSession: UserSessionInterface,
     private val remoteConfig: FirebaseRemoteConfigImpl
 ): BaseViewModel(dispatcher.main) {
@@ -40,6 +45,7 @@ class OtherMenuViewModel @Inject constructor(
     private val _isToasterAlreadyShown = NonNullLiveData(false)
     private val _isStatusBarInitialState = MutableLiveData<Boolean>().apply { value = true }
     private val _isFreeShippingActive = MutableLiveData<Boolean>()
+    private val _shopOperational = MutableLiveData<Result<ShopOperationalUiModel>>()
 
     val settingShopInfoLiveData: LiveData<Result<SettingShopInfoUiModel>>
         get() = _settingShopInfoLiveData
@@ -49,6 +55,8 @@ class OtherMenuViewModel @Inject constructor(
         get() = _isToasterAlreadyShown
     val isFreeShippingActive: LiveData<Boolean>
         get() = _isFreeShippingActive
+    val shopOperational: LiveData<Result<ShopOperationalUiModel>>
+        get() = _shopOperational
 
     fun getAllSettingShopInfo(isToasterRetry: Boolean = false) {
         if (isToasterRetry) {
@@ -78,6 +86,15 @@ class OtherMenuViewModel @Inject constructor(
 
             _isFreeShippingActive.value = isFreeShippingActive
         }){}
+    }
+
+    fun getShopOperational() {
+        launchCatchError(block = {
+            val data = getShopOperationalUseCase.executeOnBackground()
+            _shopOperational.value = Success(data)
+        }) {
+            _shopOperational.value = Fail(it)
+        }
     }
 
     private fun getAllShopInfoData() {

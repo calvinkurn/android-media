@@ -10,6 +10,7 @@ object DigitalCheckoutQueries {
         query (${'$'}categoryId: Int!) {
           rechargeGetCart(CategoryID: ${'$'}categoryId) {
             id
+            product_id
             user_id
             client_number
             title

@@ -10,8 +10,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider;
-import com.tokopedia.common.travel.utils.TravelProductionDispatcherProvider;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
@@ -240,8 +240,8 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public TravelDispatcherProvider provideDispatcherProvider() {
-        return new TravelProductionDispatcherProvider();
+    public CoroutineDispatchers provideDispatcherProvider() {
+        return CoroutineDispatchersProvider.INSTANCE;
     }
 
 }

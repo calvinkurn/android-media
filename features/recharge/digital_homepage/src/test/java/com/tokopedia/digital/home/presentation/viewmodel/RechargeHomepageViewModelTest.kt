@@ -1,7 +1,7 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.digital.home.RechargeHomepageTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.digital.home.model.RechargeHomepageSectionAction
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
@@ -50,7 +50,7 @@ class RechargeHomepageViewModelTest {
 
         rechargeHomepageViewModel = RechargeHomepageViewModel(
                 graphqlRepository,
-                RechargeHomepageTestDispatchersProvider()
+                CoroutineTestDispatchersProvider
         )
     }
 

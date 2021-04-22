@@ -1,5 +1,6 @@
 package com.tokopedia.chat_common.data
 
+
 /**
  * @author by yfsx on 08/05/18.
  */

@@ -6,6 +6,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler.PagingHandlerModel
 import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCaseWithCoroutine
@@ -26,13 +27,13 @@ import javax.inject.Inject
 
 class FavoriteViewModel
 @Inject constructor(
-        private val dispatcherProvider: FavoriteDispatcherProvider,
+        private val dispatcherProvider: CoroutineDispatchers,
         private val getInitialDataPageUseCase: GetInitialDataPageUseCaseWithCoroutine,
         private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
         private val getAllDataFavoriteUseCase: GetAllDataFavoriteUseCaseWithCoroutine,
         private val getFavoriteShopUseCaseWithCoroutine: GetFavoriteShopUseCaseWithCoroutine,
         private val pagingHandler: PagingHandler
-): BaseViewModel(dispatcherProvider.ui()) {
+): BaseViewModel(dispatcherProvider.main) {
 
     /**
      * Refresh and loading
@@ -137,7 +138,7 @@ class FavoriteViewModel
     fun loadInitialData() {
         launchCatchError(block = {
             _refresh.value = true
-            val dataFavorite = withContext(dispatcherProvider.io()) {
+            val dataFavorite = withContext(dispatcherProvider.io) {
                 getInitialDataPageUseCase.executeOnBackground()
             }
             _refresh.value = false
@@ -153,7 +154,7 @@ class FavoriteViewModel
     fun addFavoriteShop(view: View, shopItem: TopAdsShopItem) {
         val params = ToggleFavouriteShopUseCase.createRequestParam(shopItem.shopId);
         launchCatchError(block = {
-            val isValid = withContext(dispatcherProvider.io()) {
+            val isValid = withContext(dispatcherProvider.io) {
                 toggleFavouriteShopUseCase.createObservable(params).toBlocking().single()
             }
             view.clearAnimation()
@@ -186,7 +187,7 @@ class FavoriteViewModel
         getFavoriteShopUseCaseWithCoroutine.requestParams = params
 
         launchCatchError(block =  {
-            val favoriteShop = withContext(dispatcherProvider.io()) {
+            val favoriteShop = withContext(dispatcherProvider.io) {
                 getFavoriteShopUseCaseWithCoroutine.executeOnBackground()
             }
 
@@ -207,7 +208,7 @@ class FavoriteViewModel
     fun refreshAllDataFavoritePage() {
         _refresh.value = true
         launchCatchError(block = {
-            val dataFavorite = withContext(dispatcherProvider.io()) {
+            val dataFavorite = withContext(dispatcherProvider.io) {
                 getAllDataFavoriteUseCase.executeOnBackground()
             }
             val elements = ArrayList<Visitable<*>>(emptyList())

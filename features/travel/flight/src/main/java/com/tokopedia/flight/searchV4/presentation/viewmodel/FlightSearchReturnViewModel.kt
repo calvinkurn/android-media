@@ -3,7 +3,7 @@ package com.tokopedia.flight.searchV4.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.searchV4.domain.FlightComboKeyUseCase
@@ -22,8 +22,8 @@ class FlightSearchReturnViewModel @Inject constructor(private val flightSearchJo
                                                       private val flightComboKeyUseCase: FlightComboKeyUseCase,
                                                       private val flightAnalytics: FlightAnalytics,
                                                       private val userSessionInterface: UserSessionInterface,
-                                                      private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+                                                      private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     lateinit var priceModel: FlightPriceModel
     var selectedReturnJourney: FlightJourneyModel? = null
@@ -44,7 +44,7 @@ class FlightSearchReturnViewModel @Inject constructor(private val flightSearchJo
     }
 
     fun getDepartureJourneyDetail() {
-        launchCatchError(context = dispatcherProvider.ui(), block = {
+        launchCatchError(context = dispatcherProvider.main, block = {
             mutableDepartureJourney.postValue(flightSearchJouneyByIdUseCase.execute(selectedFlightDepartureId))
         }) {
             it.printStackTrace()
@@ -65,7 +65,7 @@ class FlightSearchReturnViewModel @Inject constructor(private val flightSearchJo
         }
 
         journeyModel?.let {
-            launchCatchError(context = dispatcherProvider.ui(), block = {
+            launchCatchError(context = dispatcherProvider.main, block = {
                 val departureJourney = if (mutableDepartureJourney.value != null) {
                     mutableDepartureJourney.value!!
                 } else {
@@ -91,7 +91,7 @@ class FlightSearchReturnViewModel @Inject constructor(private val flightSearchJo
 
     fun onFlightSearchSelectFromDetail(flightSearchPassData: FlightSearchPassDataModel,
                                        selectedId: String) {
-        launchCatchError(context = dispatcherProvider.ui(), block = {
+        launchCatchError(context = dispatcherProvider.main, block = {
             val departureJourney = if (mutableDepartureJourney.value != null) {
                 mutableDepartureJourney.value!!
             } else {

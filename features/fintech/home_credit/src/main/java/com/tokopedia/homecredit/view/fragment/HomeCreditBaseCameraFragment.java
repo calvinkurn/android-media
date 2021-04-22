@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.otaliastudios.cameraview.CameraException;
@@ -120,12 +121,13 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     }
 
     private void setUIFlashCamera(int flashEnum) {
+        int colorWhite = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White);
         if (flashEnum == Flash.AUTO.ordinal()) {
             flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash));
         } else if (flashEnum == Flash.ON.ordinal()) {
-            flashControl.setImage(IconUnify.FLASH_ON, null, null, null, null);
+            flashControl.setImage(IconUnify.FLASH_ON, colorWhite, colorWhite, colorWhite, colorWhite);
         } else if (flashEnum == Flash.OFF.ordinal()) {
-            flashControl.setImage(IconUnify.FLASH_OFF, null, null, null, null);
+            flashControl.setImage(IconUnify.FLASH_OFF, colorWhite, colorWhite, colorWhite, colorWhite);
         }
     }
 

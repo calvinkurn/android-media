@@ -24,5 +24,5 @@ fun InitialStateData.convertRecentViewSearchToVisitableList(): MutableList<Visit
         )
         childList.add(model)
     }
-    return arrayListOf(RecentViewViewModel(childList))
+    return arrayListOf(RecentViewDataView(childList))
 }

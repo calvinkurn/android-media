@@ -30,6 +30,7 @@ public class ProductDataView implements Parcelable {
     private int defaultView;
     private RelatedDataView relatedDataView;
     private String totalDataText = "";
+    private BannerDataView bannerDataView = new BannerDataView();
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -180,6 +181,14 @@ public class ProductDataView implements Parcelable {
 
     public RelatedDataView getRelatedDataView() {
         return this.relatedDataView;
+    }
+
+    public void setBannerDataView(BannerDataView bannerDataView) {
+        this.bannerDataView = bannerDataView;
+    }
+
+    public BannerDataView getBannerDataView() {
+        return this.bannerDataView;
     }
 
     @Override

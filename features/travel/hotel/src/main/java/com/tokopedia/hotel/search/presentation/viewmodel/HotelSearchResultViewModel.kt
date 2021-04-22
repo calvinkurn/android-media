@@ -7,7 +7,7 @@ import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.*
@@ -20,10 +20,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HotelSearchResultViewModel @Inject constructor(
-        private val dispatcher: TravelDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val searchPropertyUseCase: SearchPropertyUseCase,
         private val travelTickerUseCase: TravelTickerCoroutineUseCase)
-    : BaseViewModel(dispatcher.io()) {
+    : BaseViewModel(dispatcher.io) {
 
     val searchParam: SearchParam = SearchParam()
 
@@ -87,7 +87,7 @@ class HotelSearchResultViewModel @Inject constructor(
         isFilter = searchParam.filters.isNotEmpty()
 
         launch {
-            liveSearchResult.value = searchPropertyUseCase.execute(searchQuery, searchParam)
+            liveSearchResult.postValue(searchPropertyUseCase.execute(searchQuery, searchParam))
         }
     }
 
@@ -154,7 +154,7 @@ class HotelSearchResultViewModel @Inject constructor(
     }
 
     fun fetchTickerData() {
-        launch(dispatcher.ui()) {
+        launch(dispatcher.main) {
             val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.HOTEL, TravelTickerHotelPage.SEARCH_LIST)
             mutableTickerData.postValue(tickerData)
         }

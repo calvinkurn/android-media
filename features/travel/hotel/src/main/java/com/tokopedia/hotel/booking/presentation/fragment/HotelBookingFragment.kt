@@ -44,6 +44,8 @@ import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_CHECKOUT
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
@@ -55,6 +57,7 @@ import com.tokopedia.travel.passenger.presentation.activity.TravelContactDataAct
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
 import com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -186,9 +189,9 @@ class HotelBookingFragment : HotelBaseFragment() {
         showLoadingBar()
 
         bookingViewModel.fetchTickerData()
-        bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
-        bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
-        bookingViewModel.getTokopointsSumCoupon(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_tokopoints_sum_coupon))
+        bookingViewModel.getCartData(HotelGqlQuery.GET_CART, hotelBookingPageModel.cartId)
+        bookingViewModel.getContactList(TravelPassengerGqlQuery.CONTACT_LIST)
+        bookingViewModel.getTokopointsSumCoupon(HotelGqlQuery.TOKOPOINTS_SUM_COUPON)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -367,10 +370,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
             if (!property.isDirectPayment) {
                 tv_booking_room_info_pay_at_hotel.visibility = View.VISIBLE
-                var payAtHotelString = if (property.rooms.first().isCCRequired) SpannableString(getString(R.string.hotel_booking_pay_at_hotel_cc_required_label))
-                else SpannableString(getString(R.string.hotel_booking_pay_at_hotel_label))
-                payAtHotelString.setSpan(StyleSpan(Typeface.BOLD), 1, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                tv_booking_room_info_pay_at_hotel.text = payAtHotelString
+                tv_booking_room_info_pay_at_hotel.text = property.isDirectPaymentString
             }
 
             tv_booking_room_info_occupancy.text = cart.roomContent
@@ -669,7 +669,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     promoCode = hotelBookingPageModel.promoCode,
                     specialRequest = hotelBookingPageModel.roomRequest
             )
-            bookingViewModel.checkoutCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_checkout), hotelCheckoutParam)
+            bookingViewModel.checkoutCart(HotelGqlMutation.CHECKOUT, hotelCheckoutParam)
         } else {
             progressDialog.dismiss()
         }
@@ -706,7 +706,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     override fun onErrorRetryClicked() {
-        bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
+        bookingViewModel.getCartData(HotelGqlQuery.GET_CART, hotelBookingPageModel.cartId)
     }
 
     private fun getCancelVoucherQuery(): String = PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER

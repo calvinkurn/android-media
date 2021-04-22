@@ -7,8 +7,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.seller.action.common.analytics.SellerActionAnalytics
 import com.tokopedia.seller.action.common.analytics.SellerActionAnalyticsImpl
-import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcher
-import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.seller.action.common.presentation.presenter.SellerActionPresenter
 import com.tokopedia.seller.action.common.provider.SellerActionProvider
 import com.tokopedia.seller.action.common.provider.SellerActionProviderImpl
@@ -29,7 +29,7 @@ class SellerActionModule {
 
     @SellerActionScope
     @Provides
-    fun provideDispatchers(): SellerActionDispatcherProvider = SellerActionDispatcher
+    fun provideDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @SellerActionScope
     @Provides
@@ -50,7 +50,7 @@ class SellerActionModule {
     @SellerActionScope
     @Provides
     fun providePresenter(sliceMainOrderListUseCase: SliceMainOrderListUseCase,
-                         dispatcher: SellerActionDispatcherProvider,
+                         dispatcher: CoroutineDispatchers,
                          provider: SellerActionProvider): SellerActionPresenter = SellerActionPresenter(sliceMainOrderListUseCase, dispatcher, provider)
 
 }
