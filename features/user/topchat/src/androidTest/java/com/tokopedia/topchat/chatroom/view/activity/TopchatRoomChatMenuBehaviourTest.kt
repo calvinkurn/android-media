@@ -1,16 +1,22 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.assertion.ToastMatcher
+import com.tokopedia.topchat.assertion.withItemCount
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.matchers.isKeyboardShown
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.greaterThan
 import org.junit.Test
+
 
 class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
@@ -248,6 +254,43 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         onView(withId(R.id.rv_topchat_attachment_menu)).check(
                 matches(withTotalItem(4))
         )
+    }
+
+    @Test
+    fun test_msg_sent_successfully() {
+        //Given
+        setupGivenReplyBoxContent()
+
+        //When
+        val count = activityTestRule.activity.findViewById<RecyclerView>(R.id.recycler_view).adapter?.itemCount?: 0
+        onView(withId(R.id.new_comment)).perform(clearText())
+        onView(withId(R.id.new_comment)).perform(typeText("Test"))
+        onView(withId(R.id.send_but)).perform(click())
+
+        //Then
+        onView(withId(R.id.recycler_view)).check(withItemCount(greaterThan(count)))
+        onView(withId(R.id.new_comment)).check(matches(withText("")))
+        onView(withText("Test")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun test_msg_sent_error_empty_text() {
+        //Given
+        setupGivenReplyBoxContent()
+
+        //When
+        onView(withId(R.id.new_comment)).perform(clearText())
+        onView(withId(R.id.send_but)).perform(click())
+
+        //Then
+        ToastMatcher.onToast(R.string.topchat_desc_empty_text_box)
+    }
+
+    private fun setupGivenReplyBoxContent() {
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        inflateTestFragment()
     }
 
 }
