@@ -14,17 +14,12 @@ import com.tokopedia.gm.common.data.source.cloud.GMCommonCloudDataSource
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
-import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
-import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.GQL_PRODUCT_LIST
 import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor
 import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCase
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource
@@ -59,7 +54,6 @@ import okhttp3.OkHttpClient
 import okhttp3.OkHttpClient.Builder
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import javax.inject.Named
 
 @Module(includes = [ShopProductViewModelModule::class])
 class ShopProductModule {
@@ -67,71 +61,6 @@ class ShopProductModule {
     @Provides
     fun getNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return context as NetworkRouter
-    }
-
-    @Provides
-    @Named(ShopCommonParamApiConstant.QUERY_STAMP_PROGRESS)
-    fun provideQueryStampProgress(@ShopPageContext context: Context): String {
-        return """
-            query membershipStampProgress(${'$'}shopId: Int!){
-              membershipStampProgress(shopID:${'$'}shopId) {
-                isUserRegistered
-                isShown
-                program {
-                  id
-                  cardID
-                  sectionID
-                  quests {
-                    id
-                    title
-                    iconURL
-                    questUserID
-                    status
-                    taskID
-                    currentProgress
-                    targetProgress
-                    actionButton {
-                      text
-                      isShown
-                    }
-                  }
-                }
-                infoMessage {
-                  title
-                  cta {
-                    text
-                    url
-                    appLink
-                  }
-                }
-              }
-              }
-        """.trimIndent()
-    }
-
-    @Provides
-    @Named(ShopCommonParamApiConstant.QUERY_CLAIM_MEMBERSHIP)
-    fun provideQueryClaimBenefit(@ShopPageContext context: Context): String {
-        return """
-            mutation membershipClaimBenefit(${'$'}questUserId:Int!){
-              membershipClaimBenefit(questUserID:${'$'}questUserId ){
-                title
-                subTitle
-                resultStatus{
-                  code
-                  message
-                  reason
-                }
-              }
-            }
-        """.trimIndent()
-    }
-
-    @ShopProductScope
-    @Provides
-    fun provideGetMembershipUseCase(@Named(ShopCommonParamApiConstant.QUERY_STAMP_PROGRESS) gqlQuery: String,
-                                    gqlUseCase: MultiRequestGraphqlUseCase): GetMembershipUseCase {
-        return GetMembershipUseCase(gqlQuery!!, gqlUseCase!!)
     }
 
     @ShopProductScope
@@ -144,69 +73,6 @@ class ShopProductModule {
     @Provides
     fun provideGraphqlGetShopFeaturedProductUseCaseNew(gqlRepository: GraphqlRepository): GraphqlUseCase<ShopFeaturedProduct.Response> {
         return GraphqlUseCase(gqlRepository)
-    }
-
-    @ShopProductScope
-    @Provides
-    @Named(GQL_PRODUCT_LIST)
-    fun provideProductListQuery(@ShopPageContext context: Context): String {
-        return """
-            query GetProductList(${'$'}shopId:String!,${'$'}filter:ProductListFilter!){
-              GetProductList(shopID:${'$'}shopId, filter:${'$'}filter){
-                status
-                errors
-                totalData
-                links{
-                  self
-                  next
-                  prev
-                }
-                data{
-                  product_id
-                  condition
-                  name
-                  name_encoded
-                  position
-                  product_url
-                  status
-                  stock
-                  minimum_order
-                  cashback {
-                    cashback
-                    cashback_amount
-                  }
-                  price{
-                    currency_id
-                    currency_text
-                    value
-                    value_idr
-                    text
-                    text_idr
-                    identifier
-                  }
-                  flag{
-                    is_variant
-                    is_featured
-                    is_preorder
-                    with_stock
-                    is_freereturn
-                  }
-                  primary_image{
-                    original
-                    thumbnail
-                    resize300
-                  }
-                }
-              }
-            }
-        """.trimIndent()
-    }
-
-    @ShopProductScope
-    @Provides
-    fun provideClaimBenefitMembershipUseCase(@Named(ShopCommonParamApiConstant.QUERY_CLAIM_MEMBERSHIP) gqlQuery: String,
-                                             gqlUseCase: MultiRequestGraphqlUseCase): ClaimBenefitMembershipUseCase {
-        return ClaimBenefitMembershipUseCase(gqlQuery!!, gqlUseCase!!)
     }
 
     @Provides

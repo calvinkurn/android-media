@@ -11,7 +11,8 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class ShopFavouriteModule {
+class
+ShopFavouriteModule {
     @ShopFavouriteScope
     @Provides
     fun provideUserSessionInterface(@ShopPageContext context: Context?): UserSessionInterface {
