@@ -145,7 +145,7 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
     }
 
     private fun observeRecommendedTags() {
-        viewModel.observableRecommendedTags.observe(viewLifecycleOwner, Observer {
+        viewModel.observableRecommendedTagsModel.observe(viewLifecycleOwner, Observer {
             tagRecommendationListView.setTags(it.toList())
         })
     }

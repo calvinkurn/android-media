@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.validator.tag.TagSetupValidator
 import com.tokopedia.play.broadcaster.ui.validator.title.TitleSetupValidator
@@ -19,17 +20,19 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         private val hydraConfigStore: HydraConfigStore,
         private val dispatcher: CoroutineDispatchers,
         private val setupDataStore: PlayBroadcastSetupDataStore,
+        private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
 ) : ViewModel(), TitleSetupValidator, TagSetupValidator {
 
-    val observableRecommendedTags: LiveData<List<PlayTagUiModel>>
-        get() = _observableRecommendedTags
+    val observableRecommendedTagsModel: LiveData<List<PlayTagUiModel>>
+        get() = _observableRecommendedTagsModel
     val observableUploadEvent: LiveData<Event<NetworkResult<Unit>>>
         get() = _observableUploadEvent
 
     private val _observableAddedTags = MutableLiveData<Set<String>>()
-    private val _observableRecommendedTags = MediatorLiveData<List<PlayTagUiModel>>().apply {
+    private val _observableRecommendedTags = MutableLiveData<Set<String>>()
+    private val _observableRecommendedTagsModel = MediatorLiveData<List<PlayTagUiModel>>().apply {
         addSource(_observableAddedTags) {
-            value = recommendedTags.map { tag ->
+            value = _observableRecommendedTags.value.orEmpty().map { tag ->
                 PlayTagUiModel(
                         tag = tag,
                         isChosen = it.contains(tag)
@@ -42,10 +45,11 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
 
     private val validTagRegex = Regex("[a-zA-Z0-9 ]+")
 
-    private val recommendedTags = getRecommendedTags()
     private val addedTags = mutableSetOf<String>()
 
     init {
+        getRecommendedTags()
+
         addedTags.addAll(getAddedTags())
         refreshAddedTags()
     }
@@ -111,18 +115,17 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
     /**
      * Mock data
      */
-    private fun getRecommendedTags() = setOf(
-            "Review",
-            "Sneakers",
-            "Hipster",
-            "Style",
-            "Modis",
-            "Retro",
-            "Modern",
-            "Minimalis",
-            "Modis",
-            "Trending",
-    )
+    private fun getRecommendedTags() {
+        viewModelScope.launch {
+            val channelTags = getRecommendedChannelTagsUseCase.apply {
+                setChannelId(hydraConfigStore.getChannelId())
+            }.executeOnBackground()
+
+            _observableRecommendedTags.value = channelTags.recommendedTags.tags.toSet()
+
+            _observableRecommendedTagsModel
+        }
+    }
 
     private fun getAddedTags() = setOf(
             "Style",
