@@ -1,4 +1,4 @@
-package com.tokopedia.shop.pageheader.di.module;
+package com.tokopedia.shop.pageheader.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -26,28 +26,13 @@ class ShopPageModule {
     @ShopPageScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context);
+        return UserSession(context)
     }
 
     @ShopPageScope
     @Provides
     fun provideGetBroadcasterShopConfigUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): GetBroadcasterShopConfigUseCase {
         return GetBroadcasterShopConfigUseCase(graphqlUseCase)
-    }
-
-    @ShopPageScope
-    @Provides
-    @Named(ShopPageHeaderConstant.SHOP_PAGE_GET_HOME_TYPE)
-    fun getShopPageHomeTypeQuery(@ApplicationContext context: Context): String {
-        return """
-            query shopPageGetHomeType(${'$'}shopID: Int!){
-              shopPageGetHomeType(
-                shopID: ${'$'}shopID
-              ){
-                shopHomeType 
-              }
-            }
-        """.trimIndent()
     }
 
     @ShopPageScope
@@ -81,7 +66,6 @@ class ShopPageModule {
             @Named(GQLQueryNamedConstant.GET_IS_OFFICIAL) queryGetIsOfficial: String,
             @Named(GQLQueryNamedConstant.GET_IS_POWER_MERCHANT) queryGetIsPowerMerchant: String,
             @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT) queryShopInfoTopContent: String,
-            @Named(ShopPageHeaderConstant.SHOP_PAGE_GET_HOME_TYPE) queryShopHomeType: String,
             @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS) queryShopInfoCoreAssets: String,
             @Named(ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST) queryShopFeedWhitelist: String
     ): Map<String, String> {
@@ -89,7 +73,6 @@ class ShopPageModule {
                 GQLQueryNamedConstant.GET_IS_OFFICIAL to queryGetIsOfficial,
                 GQLQueryNamedConstant.GET_IS_POWER_MERCHANT to queryGetIsPowerMerchant,
                 GQLQueryNamedConstant.SHOP_INFO_FOR_TOP_CONTENT to queryShopInfoTopContent,
-                ShopPageHeaderConstant.SHOP_PAGE_GET_HOME_TYPE to queryShopHomeType,
                 GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS to queryShopInfoCoreAssets,
                 ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST to queryShopFeedWhitelist
         )

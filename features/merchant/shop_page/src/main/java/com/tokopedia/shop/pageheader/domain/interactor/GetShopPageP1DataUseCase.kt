@@ -116,7 +116,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
     private fun getShopInfoHomeTypeDataRequest(shopId: Int): GraphqlRequest {
         val params = GqlShopPageGetHomeType.createParams(shopId)
         return createGraphqlRequest<ShopPageGetHomeType.Response>(
-                mapQuery[ShopPageHeaderConstant.SHOP_PAGE_GET_HOME_TYPE].orEmpty(),
+                GqlShopPageGetHomeType.QUERY,
                 params.parameters
         )
     }
