@@ -85,6 +85,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
         private const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
+        private const val ERROR_GET_SHOP_OPERATIONAL_HOUR = "Error when get operational hour in other setting."
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -327,7 +328,13 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         otherMenuViewModel.shopOperational.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> otherMenuViewHolder?.showOperationalHourLayout(it.data)
-                is Fail -> otherMenuViewHolder?.onErrorGetSettingShopInfoData()
+                is Fail -> {
+                    otherMenuViewHolder?.onErrorGetSettingShopInfoData()
+                    SellerHomeErrorHandler.logExceptionToCrashlytics(
+                        it.throwable,
+                        ERROR_GET_SHOP_OPERATIONAL_HOUR
+                    )
+                }
             }
         })
     }
