@@ -268,7 +268,6 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
                 .findViewById<RecyclerView>(R.id.recycler_view)
                 .adapter?.itemCount?: 0
 
-        onView(withId(R.id.new_comment)).perform(clearText())
         onView(withId(R.id.new_comment)).perform(typeText("Test"))
         onView(withId(R.id.send_but)).perform(click())
 
@@ -291,7 +290,6 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         inflateTestFragment()
 
         //When
-        onView(withId(R.id.new_comment)).perform(clearText())
         onView(withId(R.id.send_but)).perform(click())
 
         //Then
