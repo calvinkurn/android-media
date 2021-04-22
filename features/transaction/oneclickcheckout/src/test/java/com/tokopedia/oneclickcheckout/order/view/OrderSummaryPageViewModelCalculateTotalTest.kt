@@ -748,14 +748,26 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total With Promos`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(
-                summaries = listOf(SummariesItemUiModel(type = SummariesUiModel.TYPE_DISCOUNT, details = listOf(
-                        DetailsItemUiModel(type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT, amount = helper.logisticPromo.benefitAmount),
-                        DetailsItemUiModel(type = SummariesUiModel.TYPE_PRODUCT_DISCOUNT, amount = 500)
-                )), SummariesItemUiModel(type = SummariesUiModel.TYPE_CASHBACK, details = listOf(
-                        DetailsItemUiModel(description = "cashback", amountStr = "Rp1000")
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(
+                additionalInfoUiModel = AdditionalInfoUiModel(
+                        usageSummariesUiModel = arrayListOf(
+                                UsageSummariesUiModel(
+                                        desc = "Dapat Cashback Senilai",
+                                        type = "cashback",
+                                        amountStr = "Rp1.000.000",
+                                        amount = 1000000,
+                                        currencyDetailStr = "(20.000 TokoPoints)"
+                                )
+                        )
+                ),
+                benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(
+                        summaries = listOf(SummariesItemUiModel(type = SummariesUiModel.TYPE_DISCOUNT, details = listOf(
+                                DetailsItemUiModel(type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT, amount = helper.logisticPromo.benefitAmount),
+                                DetailsItemUiModel(type = SummariesUiModel.TYPE_PRODUCT_DISCOUNT, amount = 500)
+                        )), SummariesItemUiModel(type = SummariesUiModel.TYPE_CASHBACK, details = listOf(
+                                DetailsItemUiModel(description = "cashback", amountStr = "Rp1000")
+                        )))
                 )))
-        )))
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
@@ -775,9 +787,29 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1100.0, 1000.0, 2000.0, 100.0, 0.0, 1500, 500, 0, listOf(
-                "cashback" to "Rp1000"
-        )), OccButtonState.NORMAL), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(
+                OrderTotal(
+                        OrderCost(
+                                1100.0,
+                                1000.0,
+                                2000.0,
+                                100.0,
+                                0.0,
+                                1500,
+                                500,
+                                0,
+                                listOf(
+                                        OrderCostCashbackData(
+                                                description = "Dapat Cashback Senilai",
+                                                amountStr = "Rp1.000.000",
+                                                currencyDetailStr = "(20.000 TokoPoints)"
+                                        )
+                                )
+                        ),
+                        OccButtonState.NORMAL
+                ),
+                orderSummaryPageViewModel.orderTotal.value
+        )
     }
 
     @Test

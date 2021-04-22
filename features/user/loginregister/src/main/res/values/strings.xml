@@ -199,6 +199,7 @@
     <string name="error_maximal_name">Nama terlalu panjang</string>
     <string name="error_minimal_phone">Nomor ponsel terlalu pendek, minimum 8 angka</string>
     <string name="error_minimal_password">Kata sandi terlalu pendek, minimum 8 karakter</string>
+    <string name="error_maximal_password">Kata sandi terlalu panjang, maksimum 32 karakter</string>
     <string name="minimal_8_character">minimum 8 karakter</string>
     <string name="please_click_this_button_to_continue">Silahkan klik tombol ini untuk melanjutkan</string>
     <string name="to_verify_sms">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui SMS ke</string>
@@ -415,4 +416,10 @@
     <string name="ovo_register_account_title">Mau sekalian daftar OVO?</string>
     <string name="content_desc_ovo_success">OvoSuccess</string>
     <string name="external_account_success_btn_text">Mulai Belanja</string>
+    <string name="desc_banner_register">banner_register</string>
+  
+    <string name="text_term_and_privacy_1">Dengan mendaftar, saya menyetujui </string>
+    <string name="text_term_and_privacy_2"> serta </string>
+    <string name="text_term_condition">Syarat dan Ketentuan</string>
+    <string name="text_privacy_policy">Kebijakan Privasi</string>
 </resources>

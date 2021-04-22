@@ -52,6 +52,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_catalog_detail_page.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -77,6 +78,8 @@ class CatalogDetailPageFragment : Fragment(),
     private var catalogPageRecyclerView: NestedRecyclerView? = null
     private var shimmerLayout : ScrollView? = null
     private var mBottomSheetBehavior : BottomSheetBehavior<FrameLayout>? = null
+
+    private lateinit var userSession: UserSession
 
     private val catalogAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { CatalogDetailAdapterFactoryImpl(this) }
 
@@ -121,6 +124,7 @@ class CatalogDetailPageFragment : Fragment(),
             catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
             catalogDetailPageViewModel.getProductCatalog(catalogId)
             showShimmer()
+            userSession = UserSession(observer)
         }
 
         setupRecyclerView(view)
@@ -152,6 +156,14 @@ class CatalogDetailPageFragment : Fragment(),
                 }
                 else if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     isBottomSheetOpen = true
+                }else if (newState == BottomSheetBehavior.STATE_DRAGGING){
+                    if(!isBottomSheetOpen){
+                        CatalogDetailAnalytics.sendEvent(
+                                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                                CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
+                                catalogId,userSession.userId)
+                    }
                 }
             }
         })
@@ -296,6 +308,11 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun onProductImageClick(catalogImage: CatalogImage, position: Int) {
         showImage(position)
+        CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.EventKeys.EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_CATALOG_IMAGE,
+                catalogId,userSession.userId)
     }
 
     override fun onViewMoreSpecificationsClick() {
@@ -303,7 +320,7 @@ class CatalogDetailPageFragment : Fragment(),
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
-                catalogId)
+                catalogId,userSession.userId)
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.SPECIFICATION)
     }
 
@@ -316,6 +333,11 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun onViewMoreDescriptionClick() {
+        CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_MORE_DESCRIPTION,
+                catalogId,userSession.userId)
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.DESCRIPTION)
     }
 

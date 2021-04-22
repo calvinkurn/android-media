@@ -1,10 +1,10 @@
 package com.tokopedia.search.result.presentation.view.listener
 
-import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel
+import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 
 interface TopAdsImageViewListener {
 
-    fun onTopAdsImageViewImpressed(className: String?, searchTopAdsImageViewModel: SearchProductTopAdsImageViewModel)
+    fun onTopAdsImageViewImpressed(className: String?, searchTopAdsImageDataView: SearchProductTopAdsImageDataView)
 
-    fun onTopAdsImageViewClick(searchTopAdsImageViewModel: SearchProductTopAdsImageViewModel)
+    fun onTopAdsImageViewClick(searchTopAdsImageDataView: SearchProductTopAdsImageDataView)
 }

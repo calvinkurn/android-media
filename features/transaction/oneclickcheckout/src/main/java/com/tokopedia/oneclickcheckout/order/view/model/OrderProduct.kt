@@ -14,6 +14,7 @@ data class OrderProduct(
         var originalPrice: String = "",
         var discountedPercentage: Float = 0f,
         var isFreeOngkir: Boolean = false,
+        var isFreeOngkirExtra: Boolean = false,
         var freeOngkirImg: String = "",
         var weight: Int = 0,
         var quantity: QuantityUiModel = QuantityUiModel(),

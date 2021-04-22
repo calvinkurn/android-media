@@ -2,6 +2,8 @@ package com.tokopedia.loginregister.common.di;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
@@ -11,7 +13,6 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.iris.util.IrisSession;
-import com.tokopedia.loginregister.common.DispatcherProvider;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics;
@@ -20,7 +21,6 @@ import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
@@ -92,7 +92,6 @@ public class LoginRegisterModule {
         });
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
         builder.addInterceptor(new ErrorResponseInterceptor(TkpdV4ResponseError.class));
-        builder.addInterceptor(new RiskAnalyticsInterceptor(context));
         builder.addInterceptor(new AkamaiBotInterceptor(context));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -133,19 +132,7 @@ public class LoginRegisterModule {
 
     @LoginRegisterScope
     @Provides
-    DispatcherProvider provideDispatcherProvider() {
-        return new DispatcherProvider() {
-            @NotNull
-            @Override
-            public CoroutineDispatcher io() {
-                return Dispatchers.getIO();
-            }
-
-            @NotNull
-            @Override
-            public CoroutineDispatcher ui() {
-                return Dispatchers.getMain();
-            }
-        };
+    CoroutineDispatchers provideCoroutineDispatchers() {
+        return CoroutineDispatchersProvider.INSTANCE;
     }
 }

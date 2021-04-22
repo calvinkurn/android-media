@@ -2,5 +2,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" >
     <size
         android:width="@dimen/play_dp_1"/>
-    <solid android:color="@color/Neutral_N400" />
+    <solid android:color="@color/Unify_N400" />
 </shape>

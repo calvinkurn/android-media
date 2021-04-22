@@ -63,7 +63,9 @@ data class VariantChildCommon(
 
         @SerializedName("warehouseInfo")
         @Expose
-        val warehouseInfo: WarehouseInfoVariant? = null
+        val warehouseInfo: WarehouseInfoVariant? = null,
+
+        val thematicCampaign: ThematicCampaign? = null
 ) {
     fun getFinalMinOrder(): Int = if (campaign?.isActive == true) campaign.minOrder
             ?: 0 else stock?.minimumOrder ?: 0
@@ -206,7 +208,13 @@ data class Campaign(
 
         @SerializedName("hideGimmick")
         @Expose
-        val hideGimmick: Boolean? = null
+        val hideGimmick: Boolean? = null,
+
+        @SerializedName("campaignIdentifier")
+        val campaignIdentifier: Int = 0,
+
+        @SerializedName("background")
+        val background: String = ""
 ) {
     val getStockPercentageInt: Int = stockSoldPercentage?.toInt() ?: 0
 
@@ -214,6 +222,12 @@ data class Campaign(
         get() = isActive == true && (campaignID?.isNotEmpty() == true)
 }
 
+data class ThematicCampaign (
+        val campaignName: String? = "",
+        val icon: String? = "",
+        val background: String? = "",
+        val additionalInfo: String? = ""
+)
 
 data class VariantStock(
         @SerializedName("stock")

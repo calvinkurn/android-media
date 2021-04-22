@@ -14,14 +14,17 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_PROFILE
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_REWARD_SECTION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOGGLE_ON_GEOLOCATION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOKOPOINTS
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_IMPRESSION_PRODUCT_RECOMMENDATION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_VIEW_OVO_HOMEPAGE
+import com.tokopedia.home_account.AccountConstants.Analytics.BusinessUnit.USER_PLATFORM_UNIT
 import com.tokopedia.home_account.AccountConstants.Analytics.CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.CURRENCY_CODE
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_ACCOUNT_BUYER
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_ACCOUNT_PAGE_BUYER
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_HOMEPAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_OVO_HOMEPAGE
+import com.tokopedia.home_account.AccountConstants.Analytics.CurrentSite.TOKOPEDIA_MARKETPLACE_SITE
 import com.tokopedia.home_account.AccountConstants.Analytics.DATA_ATTRIBUTION
 import com.tokopedia.home_account.AccountConstants.Analytics.DATA_BRAND
 import com.tokopedia.home_account.AccountConstants.Analytics.DATA_CATEGORY
@@ -34,8 +37,11 @@ import com.tokopedia.home_account.AccountConstants.Analytics.DATA_VARIAN
 import com.tokopedia.home_account.AccountConstants.Analytics.ECOMMERCE
 import com.tokopedia.home_account.AccountConstants.Analytics.EVENT
 import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_ACTION
+import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_BUSINESS_UNIT
 import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_CATEGORY
+import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_CURRENT_SITE
 import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_LABEL
+import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_USER_ID
 import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_CLICK_ACCOUNT
 import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_CLICK_HOME_PAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_PRODUCT_CLICK
@@ -56,6 +62,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_GET_TO_
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_IMAGE_QUALITY
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_INSTANT_BUY
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_INSTANT_PAYMENT
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_IP
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_LIST_ADDRESS
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_MEMBER
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_MEMBER_STORE
@@ -91,7 +98,7 @@ import java.util.*
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class HomeAccountAnalytics(val context: Context, val userSessionInterface: UserSessionInterface) {
+class HomeAccountAnalytics(val context: Context, val userSession: UserSessionInterface) {
 
     fun eventClickSetting(item: String?) {
         val analytics: Analytics = TrackApp.getInstance().gtm
@@ -226,272 +233,409 @@ class HomeAccountAnalytics(val context: Context, val userSessionInterface: UserS
 
     fun eventClickProfile() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_PROFILE,
                 LABEL_EMPTY
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+
     }
 
     fun eventViewOvoHomepage() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_OVO_HOMEPAGE,
                 ACTION_VIEW_OVO_HOMEPAGE,
                 LABEL_EMPTY
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickBalance() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_BALANCE,
                 LABEL_EMPTY
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun eventClickTokopoints() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_TOKOPOINTS,
+                LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickOnMoreMemberOption() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_ON_MORE_OPTION,
                 LABEL_MEMBER
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickRewardMemberStore() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_REWARD_SECTION,
                 LABEL_MEMBER_STORE
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickRewardTopQuest() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_REWARD_SECTION,
                 LABEL_TOP_QUEST
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickRewardMyCoupon() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_REWARD_SECTION,
                 LABEL_MY_COUPON
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickAccountSettingListAddress() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_ACCOUNT_SETTING_SECTION,
                 LABEL_LIST_ADDRESS
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickAccountSettingBankAccount() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_ACCOUNT_SETTING_SECTION,
                 LABEL_BANK_ACCOUNT
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickAccountSettingInstantPayment() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_ACCOUNT_SETTING_SECTION,
                 LABEL_INSTANT_PAYMENT
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickAccountSettingInstantBuy() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_ACCOUNT_SETTING_SECTION,
                 LABEL_INSTANT_BUY
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickAccountSettingAccountSecurity() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_ACCOUNT_SETTING_SECTION,
                 LABEL_ACCOUNT_SECURITY
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickAccountSettingNotification() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_ACCOUNT_SETTING_SECTION,
                 LABEL_NOTIFICATION
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickOnMoreAppSettingOption() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_ON_MORE_OPTION,
                 LABEL_APP_SETTING
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
-    fun eventClickAppSettingShake(enable : Boolean) {
+    fun eventClickAppSettingShake(enable: Boolean) {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_APP_SETTING_SECTION,
                 String.format("%s - %s", LABEL_SHAKE, if (enable) LABEL_ENABLE else LABEL_DISABLE)
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
-    fun eventClickAppSettingGeolocation(enable : Boolean) {
+    fun eventClickAppSettingGeolocation(enable: Boolean) {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_APP_SETTING_SECTION,
                 String.format("%s - %s", LABEL_GEOLOCATION, if (enable) LABEL_ENABLE else LABEL_DISABLE)
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
-    fun eventClickAppSettingSafeMode(enable : Boolean) {
+    fun eventClickAppSettingSafeMode(enable: Boolean) {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_APP_SETTING_SECTION,
                 String.format("%s - %s", LABEL_SAFE_MODE, if (enable) LABEL_ENABLE else LABEL_DISABLE)
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
 
     fun eventClickAppSettingStickerTokopedia() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_APP_SETTING_SECTION,
                 LABEL_STICKER_TOKOPEDIA
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickAppSettingImageQuality() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_APP_SETTING_SECTION,
                 LABEL_IMAGE_QUALITY
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickAppSettingCleanCache() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_APP_SETTING_SECTION,
                 LABEL_CLEAN_CACHE
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickAppSettingViewMode() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_APP_SETTING_SECTION,
                 LABEL_VIEW_MODE
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickOnMoreAboutTokopediaOption() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_ON_MORE_OPTION,
                 LABEL_ABOUT_TOKOPEDIA
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickGetToKnowAboutTokopedia() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
                 LABEL_GET_TO_KNOW_TOKOPEDIA
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickTermsAndConditionsAboutTokopedia() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
                 LABEL_TERMS_AND_CONDITIONS
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickPrivacyPolicyAboutTokopedia() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
                 LABEL_PRIVACY_POLICY
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun eventClickIpAboutTokopedia() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
+                LABEL_IP
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickReviewAboutTokopedia() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
                 LABEL_REVIEW_THIS_APP
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 
     fun eventClickLogout() {
         val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_LOGOUT,
                 LABEL_EMPTY
-        ))
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 }

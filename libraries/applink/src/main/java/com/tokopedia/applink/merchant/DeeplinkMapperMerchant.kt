@@ -5,6 +5,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -22,10 +23,14 @@ object DeeplinkMapperMerchant {
     private const val ACTION_REVIEW = "review"
     private const val PRODUCT_SEGMENT = "product"
     private const val FEED_SEGMENT = "feed"
+    private const val FOLLOWER_LIST_SEGMENT = "follower"
+    private const val SHOP_PAGE_SETTING_SEGMENT = "settings"
     private const val SHOP_PAGE_SEGMENT_SIZE = 1
     private const val SHOP_REVIEW_SEGMENT_SIZE = 2
     private const val SHOP_PRODUCT_SEGMENT_SIZE = 2
     private const val SHOP_FEED_SEGMENT_SIZE = 2
+    private const val SHOP_FOLLOWER_LIST_SEGMENT_SIZE = 2
+    private const val SHOP_PAGE_SETTING_WITH_SHOP_ID_SEGMENT_SIZE = 2
     private const val PARAM_PRODUCT_ID = "productId"
     private const val PARAM_SELLER_TAB = "tab"
     private const val SELLER_CENTER_URL = "https://seller.tokopedia.com/edu/"
@@ -63,6 +68,13 @@ object DeeplinkMapperMerchant {
         if (deeplink.startsWith(ApplinkConst.SELLER_REVIEW)) {
             val productId = Uri.parse(deeplink).getQueryParameter(PARAM_PRODUCT_ID)
             return Uri.parse(ApplinkConstInternalMarketplace.SELLER_REVIEW_DETAIL).buildUpon().appendQueryParameter(PARAM_PRODUCT_ID, productId).build().toString()
+        }
+        return deeplink
+    }
+
+    fun getRegisteredNavigationReviewReminder(deeplink: String): String {
+        if (deeplink.startsWith(ApplinkConst.REVIEW_REMINDER)) {
+            return Uri.parse(ApplinkConstInternalMarketplace.REVIEW_REMINDER).toString()
         }
         return deeplink
     }
@@ -278,6 +290,49 @@ object DeeplinkMapperMerchant {
         return deeplink
     }
 
+    fun isShopFollowerListDeeplink(deeplink: String): Boolean {
+        val uri = Uri.parse(deeplink)
+        return deeplink.startsWithPattern(ApplinkConst.SHOP_FOLLOWER_LIST) && uri.lastPathSegment == FOLLOWER_LIST_SEGMENT
+    }
+
+    fun getRegisteredNavigationShopFollowerList(deeplink: String): String {
+        if (deeplink.startsWithPattern(ApplinkConst.SHOP_FOLLOWER_LIST)) {
+            val segments = Uri.parse(deeplink).pathSegments
+            val shopId = segments[0]
+            return if (segments.size == SHOP_FOLLOWER_LIST_SEGMENT_SIZE) {
+                UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST_WITH_SHOP_ID, shopId)
+            } else {
+                deeplink
+            }
+        }
+        return deeplink
+    }
+
+    fun getRegisteredNavigationShopPageSettingCustomerApp(deeplink: String): String {
+        if (deeplink.startsWithPattern(ApplinkConst.SHOP_SETTINGS_CUSTOMER_APP)) {
+            val segments = Uri.parse(deeplink).pathSegments
+            val shopId = segments[0]
+            return if (segments.size == SHOP_PAGE_SETTING_WITH_SHOP_ID_SEGMENT_SIZE) {
+                UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID, shopId)
+            } else {
+                deeplink
+            }
+        }
+        return deeplink
+    }
+
+    fun getRegisteredNavigationShopPageSettingSellerApp(deeplink: String): String {
+        if (deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_SETTINGS_SELLER_APP)) {
+            val segments = Uri.parse(deeplink).pathSegments
+            return if (segments.size == SHOP_PAGE_SETTING_WITH_SHOP_ID_SEGMENT_SIZE) {
+                UriUtil.buildUri(ApplinkConstInternalSellerapp.MENU_SETTING)
+            } else {
+                deeplink
+            }
+        }
+        return deeplink
+    }
+
     fun isProductDetailPageDeeplink(deeplink: String): Boolean {
         val uri = Uri.parse(deeplink)
         return deeplink.startsWithPattern(ApplinkConst.PRODUCT_INFO) && uri.pathSegments.size == 1 && uri.lastPathSegment.toIntOrZero() != 0
@@ -303,5 +358,15 @@ object DeeplinkMapperMerchant {
 
     fun getRegisteredSellerCenter(): String {
         return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, SELLER_CENTER_URL)
+    }
+
+    fun isShopPageSettingCustomerApp(deeplink: String): Boolean {
+        val uri = Uri.parse(deeplink)
+        return deeplink.startsWithPattern(ApplinkConst.SHOP_SETTINGS_CUSTOMER_APP) && uri.lastPathSegment == SHOP_PAGE_SETTING_SEGMENT
+    }
+
+    fun isShopPageSettingSellerApp(deeplink: String): Boolean {
+        val uri = Uri.parse(deeplink)
+        return deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_SETTINGS_SELLER_APP) && uri.lastPathSegment == SHOP_PAGE_SETTING_SEGMENT
     }
 }

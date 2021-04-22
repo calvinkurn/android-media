@@ -60,7 +60,7 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
             val dataItem = DataItem()
             val labelsGroupList = arrayListOf<LabelsGroup>()
             it.labelGroupList.forEach {
-                labelsGroupList.add(LabelsGroup(it.position, it.title, it.type))
+                labelsGroupList.add(LabelsGroup(it.position, it.title, it.type, it.imageUrl))
             }
             dataItem.id = it.productId.toString()
             dataItem.productId = it.productId.toString()

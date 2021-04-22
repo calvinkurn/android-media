@@ -59,9 +59,9 @@ data class ProductMiniSocialProofDataModel(
 
     private fun firstPositionData(type: ProductMiniSocialProofItemType): ProductMiniSocialProofItemDataModel {
         return when {
-            paymentVerifiedCount != 0 -> ProductMiniSocialProofItemDataModel(PAYMENT_VERIFIED, paymentVerifiedCount.toString(), paymentVerifiedCount.productThousandFormatted(), type)
-            wishlistCount != 0 -> ProductMiniSocialProofItemDataModel(WISHLIST, wishlistCount.toString(), wishlistCount.productThousandFormatted(), type)
-            viewCount != 0 -> ProductMiniSocialProofItemDataModel(VIEW_COUNT, viewCount.toString(), viewCount.productThousandFormatted(), type)
+            paymentVerifiedCount != 0 -> ProductMiniSocialProofItemDataModel(PAYMENT_VERIFIED, paymentVerifiedCount.productThousandFormatted(), type)
+            wishlistCount != 0 -> ProductMiniSocialProofItemDataModel(WISHLIST, wishlistCount.productThousandFormatted(), type)
+            viewCount != 0 -> ProductMiniSocialProofItemDataModel(VIEW_COUNT, viewCount.productThousandFormatted(), type)
             else -> ProductMiniSocialProofItemDataModel(type = type)
         }
     }
@@ -82,7 +82,7 @@ data class ProductMiniSocialProofDataModel(
             return
         }
         val socialProofBuilder = mutableListOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofText))
-        appendChipIfNotZero(rating, RATING, socialProofBuilder)
+        appendChipIfNotZero(ratingCount.toFloat(), RATING, socialProofBuilder, rating.toString())
         appendChipIfNotZero(buyerPhotosCount.toFloat(), BUYER_PHOTOS, socialProofBuilder)
         appendChipIfNotZero(talkCount.toFloat(), TALK, socialProofBuilder)
         socialProofData = socialProofBuilder.take(4)
@@ -92,9 +92,13 @@ data class ProductMiniSocialProofDataModel(
         return socialProofData
     }
 
-    private fun appendChipIfNotZero(count: Float?, type: String, list: MutableList<ProductMiniSocialProofItemDataModel>): MutableList<ProductMiniSocialProofItemDataModel> {
+    private fun appendChipIfNotZero(count: Float?, type: String, list: MutableList<ProductMiniSocialProofItemDataModel>, ratingTitle: String = ""): MutableList<ProductMiniSocialProofItemDataModel> {
         if(count != 0F) {
-            list.add(ProductMiniSocialProofItemDataModel(type, count.toString(), count?.productThousandFormatted() ?: "", ProductMiniSocialProofItemType.ProductMiniSocialProofChip))
+            if(type == RATING) {
+                list.add(ProductMiniSocialProofItemDataModel(type,count?.productThousandFormatted() ?: "", ProductMiniSocialProofItemType.ProductMiniSocialProofChip, ratingTitle))
+            } else {
+                list.add(ProductMiniSocialProofItemDataModel(type, count?.productThousandFormatted() ?: "", ProductMiniSocialProofItemType.ProductMiniSocialProofChip))
+            }
         }
         return list
     }

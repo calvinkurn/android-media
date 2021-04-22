@@ -3,10 +3,12 @@ package com.tokopedia.entertainment.pdp.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -16,9 +18,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkContentPosition
-import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.*
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
@@ -55,12 +55,16 @@ import com.tokopedia.entertainment.pdp.viewmodel.EventPDPTicketViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.ent_ticket_adapter_item.view.*
 import kotlinx.android.synthetic.main.ent_ticket_listing_activity.*
 import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.*
+import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.view.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageTypeFactory>(),
         OnBindItemTicketListener, OnCoachmarkListener {
@@ -302,6 +306,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         viewModel.recommendationTicketModel.observe(viewLifecycleOwner, Observer {
             it?.run {
                 renderRecommendationList(this)
+                if(!getLocalCache()) showCoachMark(this)
             }
         })
 
@@ -322,11 +327,13 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         viewModel.verifyResponse.observe(viewLifecycleOwner, Observer {
             metaDataResponse = it.eventVerify.metadata
             gatewayCode = it.eventVerify.gatewayCode
-            if (userSession.isLoggedIn) {
-                startActivity(EventCheckoutActivity.createIntent(context!!, urlPDP, metaDataResponse, idPackageActive, gatewayCode))
-            } else {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN)
+            context?.let {
+                if (userSession.isLoggedIn) {
+                    startActivity(EventCheckoutActivity.createIntent(it, urlPDP, metaDataResponse, idPackageActive, gatewayCode))
+                } else {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                            REQUEST_CODE_LOGIN)
+                }
             }
         })
 
@@ -366,29 +373,59 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
     }
 
-    override fun showCoachMark(view: View, height: Int) {
-        val coachMark = CoachMarkBuilder().build().apply {
-            enableSkip = true
-        }
-        coachMark.setHighlightMargin(marginTop = height)
-        coachMark.show(
-                activity,
-                EventPDPTicketFragment::class.java.simpleName,
-                getCoachMarkItems(view)
-        )
-        localCacheHandler.apply {
-            putBoolean(SHOW_COACH_MARK_KEY, true)
-            applyEditor()
-        }
+    fun showCoachMark(listRecom: List<EventPDPTicketModel>) {
+        Handler().postDelayed(
+                {
+                    context?.let {
+                        val coachMark = CoachMark2(it)
+                        coachMark.apply {
+                            showCoachMark(ArrayList(getCoachmarkItem(listRecom)), null, 0)
+                            setStepListener(object : CoachMark2.OnStepListener{
+                                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                                    if(currentIndex == 1){
+                                        val position = tgEventTicketRecommendationTitle.y
+                                        scroll_ticket_pdp.smoothScrollTo(0, position.toInt())
+                                    }
+                                }
+                            })
+                        }
+                    }
+                    localCacheHandler.apply {
+                        putBoolean(SHOW_COACH_MARK_KEY, true)
+                        applyEditor()
+                    }
+                }, COACH_MARK_START_DELAY)
     }
 
-    private fun getCoachMarkItems(view: View): ArrayList<CoachMarkItem> {
-        return arrayListOf(CoachMarkItem(
-                view,
-                getString(R.string.ent_home_coachmark_title),
-                getString(R.string.ent_home_coachmark_subtitle),
-                CoachMarkContentPosition.BOTTOM
-        ))
+    fun getCoachmarkItem(listRecom: List<EventPDPTicketModel>): List<CoachMark2Item> {
+        val coachmarkList: MutableList<CoachMark2Item> = mutableListOf()
+        activity?.let { _activity ->
+            if (isAdded) {
+                checkAvailableCoachmark()?.let {
+                    coachmarkList.add(0,
+                            CoachMark2Item(
+                                    it,
+                                    getString(R.string.ent_home_coachmark_title),
+                                    getString(R.string.ent_home_coachmark_subtitle),
+                                    CoachMark2.POSITION_BOTTOM
+                            )
+                    )
+                }
+                if (listRecom.isNotEmpty()) {
+                    rvEventRecommendationList.findViewHolderForAdapterPosition(0)?.itemView?.let {
+                        coachmarkList.add(if(checkAvailableCoachmark() != null) 1 else 0,
+                                CoachMark2Item(
+                                        it,
+                                        getString(R.string.ent_home_coachmark_title_recom),
+                                        getString(R.string.ent_home_coachmark_subtitle_recom),
+                                        CoachMark2.POSITION_TOP
+                                )
+                        )
+                    }
+                }
+            }
+        }
+        return coachmarkList
     }
 
     override fun clickRecommendation(list: List<String>) {
@@ -438,6 +475,23 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         rvEventRecommendationList.hide()
     }
 
+    private fun getLayoutCoachmark(id: Int): View?{
+        return recycler_viewParent.findViewHolderForAdapterPosition(0)?.itemView?.
+        findViewById<RecyclerView>(R.id.rv_event_parent_ticket)?.
+        findViewHolderForAdapterPosition(0)?.itemView?.
+        findViewById<Typography>(id)
+    }
+
+    private fun checkAvailableCoachmark():View? {
+        return when{
+            getLayoutCoachmark(R.id.txtPilih_ticket)!=null -> getLayoutCoachmark(R.id.txtPilih_ticket)
+            getLayoutCoachmark(R.id.txtHabis_ticket)!=null -> getLayoutCoachmark(R.id.txtHabis_ticket)
+            getLayoutCoachmark(R.id.txtNotStarted)!=null -> getLayoutCoachmark(R.id.txtNotStarted)
+            getLayoutCoachmark(R.id.txtAlreadyEnd)!=null -> getLayoutCoachmark(R.id.txtAlreadyEnd)
+            else -> null
+        }
+    }
+
     companion object {
         fun newInstance(url: String, selectedDate: String, startDate: String, endDate: String) = EventPDPTicketFragment().also {
             it.arguments = Bundle().apply {
@@ -458,7 +512,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
         const val PREFERENCES_NAME = "event_ticket_preferences"
         const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_event_ticket"
-        private const val COACH_MARK_START_DELAY = 1000L
+        private const val COACH_MARK_START_DELAY = 200L
     }
 
 }

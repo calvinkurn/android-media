@@ -948,6 +948,10 @@ class AddEditProductPreviewFragment :
                     showEmptyVariantState(isVariantEmpty)
                     showProductStatus(result.data)
                     handleSetCashBackResult()
+
+                    // set temporary price when first loaded
+                    SharedPreferencesUtil.setPriceWhenLoaded(requireActivity(), result.data.price)
+
                     // continue to PLT monitoring render
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()

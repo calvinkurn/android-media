@@ -31,7 +31,9 @@ data class OrderProfileAddress(
         val phone: String = "",
         val longitude: String = "",
         val latitude: String = "",
-        val postalCode: String = ""
+        val postalCode: String = "",
+        val state: Int = 0,
+        val stateDetail: String = ""
 )
 
 data class OrderProfileShipment(

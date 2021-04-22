@@ -5,6 +5,24 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+    <View
+        android:id="@+id/recom_divider_1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/Unify_N0"
+        />
+    <View
+        android:id="@+id/recom_divider_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/Unify_N50"
+        />
+    <View
+        android:id="@+id/recom_divider_3"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/Unify_N0"
+        />
     <com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
         android:id="@+id/tab_layout_home_feeds"
         android:layout_width="match_parent"

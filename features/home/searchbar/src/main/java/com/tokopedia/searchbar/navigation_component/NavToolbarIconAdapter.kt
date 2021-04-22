@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
@@ -135,6 +137,11 @@ internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
         model?.let { return iconConfig.iconList.indexOf(model) }
         return null
     }
+    fun getInboxIconPosition(): Int? {
+        val model = iconConfig.iconList.find { it.id == IconList.ID_INBOX }
+        model?.let { return iconConfig.iconList.indexOf(model) }
+        return null
+    }
 }
 
 internal abstract class IconHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -153,9 +160,19 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             unwrappedDrawable?.let {
                 val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
                 if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
-                    DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                    if (iconToolbar.imageRes != IconList.ID_INBOX) {
+                        DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                    } else {
+                        val unifyColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                        unwrappedDrawable.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
+                    }
                 } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
-                    DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                    if (iconToolbar.imageRes != IconList.ID_INBOX) {
+                        DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                    } else {
+                        val unifyColor = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
+                        unwrappedDrawable.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
+                    }
                 }
                 iconImage.imageDrawable = wrappedDrawable
             }

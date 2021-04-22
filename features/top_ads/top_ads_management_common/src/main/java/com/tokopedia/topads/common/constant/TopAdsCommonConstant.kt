@@ -18,6 +18,10 @@ object TopAdsCommonConstant {
     const val TOPADS_AUTOADS_BUDGET_UPDATED = "budget_updated"
     const val PARAM_PRODUK_IKLAN = 1
     const val PARAM_AUTOADS_BUDGET = 1
+    const val ERROR_TOO_MANY_REQUEST = "TOO_MANY_REQUESTS"
+    const val ERROR_INVALID_ITEM_ID = "INVALID_ITEM_ID"
+    const val ERROR_INVALID_KEYWORD = "INVALID_KEYWORD_TAG"
+    const val EROOR_GROUP_NAME_EXIST = "GRUP_NAME_ALREADY_EXIST"
     var TOPADS_GRAPHQL_TA_URL = when (TokopediaUrl.getInstance().TYPE) {
         Env.STAGING -> "https://gql-staging.tokopedia.com/graphql/ta"
         else -> "https://gql.tokopedia.com/graphql/ta"

@@ -16,6 +16,12 @@ object Keys {
     val AUTH_TRADE_IN_API_KEY_MA = decodeKey(TRADE_IN_API_KEY_MA)
 
     @JvmStatic
+    val AUTH_NEW_RELIC_API_KEY = decodeKey(NEW_RELIC_API_KEY)
+
+    @JvmStatic
+    val AUTH_NEW_RELIC_USER_ID = decodeKey(NEW_RELIC_USER_ID)
+
+    @JvmStatic
     val AUTH_SCALYR_API_KEY
         get() =
             when (GlobalConfig.APPLICATION_TYPE) {
@@ -44,21 +50,6 @@ object Keys {
                     AUTH_GOOGLE_YOUTUBE_API_KEY_PRO
                 }
             }
-
-    @JvmStatic
-    fun Context.getGoogleGeoApiKey(): String {
-        return when (GlobalConfig.APPLICATION_TYPE) {
-            GlobalConfig.CONSUMER_APPLICATION -> {
-                getString(R.string.google_goe_api_key_ma)
-            }
-            GlobalConfig.SELLER_APPLICATION -> {
-                getString(R.string.google_goe_api_key_sa)
-            }
-            else -> {
-                getString(R.string.google_goe_api_key_pro)
-            }
-        }
-    }
 
     @JvmStatic
     fun Context.getMoengageKey(): String {

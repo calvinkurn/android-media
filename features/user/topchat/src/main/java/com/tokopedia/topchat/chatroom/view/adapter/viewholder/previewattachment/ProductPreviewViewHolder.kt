@@ -1,24 +1,18 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment
 
-import android.content.res.Resources
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.ColorDrawableGenerator
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
+import com.tokopedia.unifycomponents.toPx
 
 class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: AttachmentItemPreviewListener)
     : AttachmentPreviewViewHolder<SendableProductPreview>(itemView, attachmentItemPreviewListener) {
@@ -41,7 +35,9 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
     override fun bind(model: SendableProductPreview) {
         val productPreview = model.productPreview
 
-        ImageHandler.loadImageRounded(productImage?.context, productImage, productPreview.imageUrl, toDp(3))
+        ImageHandler.loadImageRounded(
+                productImage?.context, productImage, productPreview.imageUrl, 3.toPx().toFloat()
+        )
         productName?.text = productPreview.name
         productPrice?.text = productPreview.price
 
@@ -49,7 +45,9 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
 
         if (model.hasColorVariant()) {
             productColorVariant.show()
-            val backgroundDrawable = getBackgroundDrawable(productPreview.colorHexVariant)
+            val backgroundDrawable = ColorDrawableGenerator.generate(
+                    itemView.context, productPreview.colorHexVariant
+            )
             productColorVariantHex?.background = backgroundDrawable
             productColorVariantValue?.text = productPreview.colorVariant
         } else {
@@ -61,33 +59,6 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
             productSizeVariantValue?.text = productPreview.sizeVariant
         }
         super.bind(model)
-    }
-
-    private fun getBackgroundDrawable(hexColor: String): Drawable? {
-        val backgroundDrawable = ContextCompat.getDrawable(itemView.context, com.tokopedia.chat_common.R.drawable.topchat_circle_color_variant_indicator)
-
-        if (isWhiteColor(hexColor)) {
-            applyStrokeTo(backgroundDrawable)
-            return backgroundDrawable
-        }
-
-        backgroundDrawable?.colorFilter = PorterDuffColorFilter(Color.parseColor(hexColor), PorterDuff.Mode.SRC_ATOP)
-        return backgroundDrawable
-    }
-
-    private fun isWhiteColor(hexColor: String): Boolean {
-        return hexColor == "#ffffff" || hexColor == "#fff"
-    }
-
-    private fun applyStrokeTo(backgroundDrawable: Drawable?) {
-        if (backgroundDrawable is GradientDrawable) {
-            val strokeWidth = toDp(1)
-            backgroundDrawable.setStroke(strokeWidth.toInt(), MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
-        }
-    }
-
-    private fun toDp(number: Int): Float {
-        return number * Resources.getSystem().displayMetrics.density + 0.5f
     }
 
     companion object {

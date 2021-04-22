@@ -57,7 +57,6 @@ dependencies {
     implementation project(rootProject.ext.features.catalog)
     implementation project(rootProject.ext.features.kategori)
     implementation project(rootProject.ext.features.categoryLevels)
-    implementation project(rootProject.ext.features.hotlist)
     implementation project(rootProject.ext.features.findNative)
     //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
 
@@ -151,4 +150,10 @@ dependencies {
     implementation project(rootProject.ext.features.promoCheckoutMarketplace)
     implementation project(rootProject.ext.features.buyerorder)
     implementation project(rootProject.ext.features.snapshot)
+
+    //Order Management
+    implementation project(rootProject.ext.features.ordermanagementhistory)
+
+    //Library
+    implementation project(rootProject.ext.libraries.imagePicker)
 }

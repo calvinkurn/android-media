@@ -3,11 +3,11 @@ package com.tokopedia.product.viewmodel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
-import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesModel
-import com.tokopedia.product.detail.estimasiongkir.data.model.v3.ServiceModel
-import com.tokopedia.product.detail.estimasiongkir.data.model.v3.ServiceProduct
-import com.tokopedia.product.detail.estimasiongkir.view.viewmodel.RatesEstimationDetailViewModel
+import com.tokopedia.product.estimasiongkir.data.model.v3.RatesEstimationModel
+import com.tokopedia.product.estimasiongkir.data.model.v3.RatesModel
+import com.tokopedia.product.estimasiongkir.data.model.v3.ServiceModel
+import com.tokopedia.product.estimasiongkir.data.model.v3.ServiceProduct
+import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationDetailViewModel
 import com.tokopedia.product.util.BaseProductViewModelTest
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Success

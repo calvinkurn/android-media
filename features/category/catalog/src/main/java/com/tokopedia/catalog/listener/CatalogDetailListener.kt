@@ -2,6 +2,7 @@ package com.tokopedia.catalog.listener
 
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.catalog.model.raw.CatalogImage
+import com.tokopedia.user.session.UserSession
 
 interface CatalogDetailListener {
 

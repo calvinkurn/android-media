@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.reputationhistory.util;
 
-import com.db.williamchart.util.GoldMerchantDateUtils;
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 
 import java.text.DateFormat;

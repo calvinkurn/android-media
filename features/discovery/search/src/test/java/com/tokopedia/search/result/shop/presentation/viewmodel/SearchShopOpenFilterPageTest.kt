@@ -9,7 +9,7 @@ import com.tokopedia.search.result.stubExecute
 import com.tokopedia.search.shouldBe
 import org.junit.Test
 
-internal class SearchShopOpenFilterPageTest: SearchShopViewModelTestFixtures() {
+internal class SearchShopOpenFilterPageTest: SearchShopDataViewTestFixtures() {
 
     @Test
     fun `Open Filter Page successfully`() {

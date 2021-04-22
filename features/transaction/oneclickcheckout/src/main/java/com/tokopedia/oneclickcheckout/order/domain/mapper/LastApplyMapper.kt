@@ -79,13 +79,14 @@ object LastApplyMapper {
                 val listUsageSummaries = ArrayList<LastApplyUsageSummariesUiModel>()
                 val responseListUsageSummaries = responseAdditionalInfo.listUsageSummaries
                         ?: emptyList()
-                for ((desc, type, amountStr, amount) in responseListUsageSummaries) {
+                for ((desc, type, amountStr, amount, currencyDetailsStr) in responseListUsageSummaries) {
                     if (desc != null && type != null && amountStr != null && amount != null) {
                         val lastApplyUsageSummariesUiModel = LastApplyUsageSummariesUiModel()
                         lastApplyUsageSummariesUiModel.description = desc
                         lastApplyUsageSummariesUiModel.type = type
                         lastApplyUsageSummariesUiModel.amountStr = amountStr
                         lastApplyUsageSummariesUiModel.amount = amount
+                        lastApplyUsageSummariesUiModel.currencyDetailsStr = currencyDetailsStr
                         listUsageSummaries.add(lastApplyUsageSummariesUiModel)
                     }
                 }

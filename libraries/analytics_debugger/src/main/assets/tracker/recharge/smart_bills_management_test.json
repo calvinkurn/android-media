@@ -106,6 +106,26 @@
       "userId": "{{.*}}",
       "businessUnit": "top up and tagihan",
       "sessionIris": "{{.*}}"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - smart bill management",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickSmartBill",
+      "userId": "{{.*}}",
+      "eventAction": "click pelajari selengkapnya",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - smart bill management",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickSmartBill",
+      "userId": "{{.*}}",
+      "eventAction": "click on tooltip icon",
+      "sessionIris": "{{.*}}",
+      "eventLabel": ""
     }
   ]
 }

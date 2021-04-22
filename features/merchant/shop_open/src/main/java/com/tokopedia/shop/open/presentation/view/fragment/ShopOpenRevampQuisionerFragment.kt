@@ -49,6 +49,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
 class ShopOpenRevampQuisionerFragment :
@@ -187,7 +188,7 @@ class ShopOpenRevampQuisionerFragment :
     private fun setupToolbarActions(view: View?) {
         header = view?.findViewById<HeaderUnify>(R.id.toolbar_questioner)?.apply {
             actionText = getString(R.string.button_label_skip)
-            transparentMode = fragmentNavigationInterface?.isDarkModeOn() == true
+            transparentMode = context.isDarkMode()
             isShowShadow = false
             setNavigationOnClickListener {
                 shopOpenRevampTracking?.clickBackButtonFromSurveyPage()
@@ -201,7 +202,7 @@ class ShopOpenRevampQuisionerFragment :
     }
 
     private fun observeSurveyData() {
-        viewModel.getSurveyDataResponse.observe(this, Observer {
+        viewModel.getSurveyDataResponse.observe(viewLifecycleOwner, Observer {
             EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
@@ -226,7 +227,7 @@ class ShopOpenRevampQuisionerFragment :
     }
 
     private fun observeSendSurveyResult() {
-        viewModel.sendSurveyDataResponse.observe(this, Observer {
+        viewModel.sendSurveyDataResponse.observe(viewLifecycleOwner, Observer {
             EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
@@ -255,7 +256,7 @@ class ShopOpenRevampQuisionerFragment :
     }
 
     private fun observeSaveShipmentLocationData() {
-        viewModel.saveShopShipmentLocationResponse.observe(this, Observer {
+        viewModel.saveShopShipmentLocationResponse.observe(viewLifecycleOwner, Observer {
             EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {

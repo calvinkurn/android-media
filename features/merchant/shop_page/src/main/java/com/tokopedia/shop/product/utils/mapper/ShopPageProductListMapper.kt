@@ -20,7 +20,6 @@ import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel.Companion.THRESHOLD_VIEW_COUNT
 import java.text.NumberFormat
-import kotlin.math.roundToInt
 
 object ShopPageProductListMapper {
 
@@ -57,7 +56,7 @@ object ShopPageProductListMapper {
                     it.imageUrl = primaryImage.original
                     it.imageUrl300 = primaryImage.resize300
                     it.totalReview = stats.reviewCount.toString()
-                    it.rating = (stats.rating.toDouble() / 20).roundToInt().toDouble()
+                    it.rating = stats.rating.toDouble() / 20
                     if (cashback.cashbackPercent > 0) {
                         it.cashback = cashback.cashbackPercent.toDouble()
                     }
@@ -95,7 +94,8 @@ object ShopPageProductListMapper {
         return LabelGroupUiModel(
                 position = labelGroup.position,
                 title = labelGroup.title,
-                type = labelGroup.type
+                type = labelGroup.type,
+                url = labelGroup.url
         )
     }
 
@@ -158,7 +158,7 @@ object ShopPageProductListMapper {
         return merchantVoucherResponse.map { MerchantVoucherViewModel(it) }
     }
 
-    fun mapToProductCardModel(shopProductUiModel: ShopProductUiModel): ProductCardModel {
+    fun mapToProductCardModel(shopProductUiModel: ShopProductUiModel, isWideContent: Boolean): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
         } catch (ignored: Exception) {
@@ -179,8 +179,7 @@ object ShopPageProductListMapper {
                 discountPercentage = discountPercentage.takeIf { !shopProductUiModel.hideGimmick } ?: "",
                 slashedPrice = shopProductUiModel.originalPrice.orEmpty().takeIf { !shopProductUiModel.hideGimmick } ?: "",
                 formattedPrice = shopProductUiModel.displayedPrice ?: "",
-                ratingCount = shopProductUiModel.rating.toInt(),
-                reviewCount = totalReview,
+                countSoldRating = if (shopProductUiModel.rating != 0.0) shopProductUiModel.rating.toString() else "",
                 freeOngkir = freeOngkirObject,
                 labelGroupList = shopProductUiModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
@@ -188,7 +187,8 @@ object ShopPageProductListMapper {
                 hasThreeDots = true,
                 pdpViewCount = shopProductUiModel.pdpViewCount,
                 stockBarLabel = shopProductUiModel.stockLabel,
-                stockBarPercentage = shopProductUiModel.stockBarPercentage
+                stockBarPercentage = shopProductUiModel.stockBarPercentage,
+                isWideContent = isWideContent
         )
     }
 
@@ -214,7 +214,8 @@ object ShopPageProductListMapper {
         return ProductCardModel.LabelGroup(
                 position = labelGroupUiModel.position,
                 title = labelGroupUiModel.title,
-                type = labelGroupUiModel.type
+                type = labelGroupUiModel.type,
+                imageUrl = labelGroupUiModel.url
         )
     }
 }

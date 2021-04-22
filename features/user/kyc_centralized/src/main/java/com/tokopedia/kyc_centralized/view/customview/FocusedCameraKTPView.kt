@@ -5,9 +5,10 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
-import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kyc_centralized.R
 import com.tokopedia.user_identification_common.KYCConstant
 
 /**
@@ -36,52 +37,34 @@ class FocusedCameraKTPView : View {
         mSemiBlackPaint?.strokeWidth = CONST_STROKE_WIDTH.toFloat()
         mWhitePaint = Paint()
         mWhitePaint?.style = Paint.Style.STROKE
-        mWhitePaint?.color = Color.WHITE
+        mWhitePaint?.color = MethodChecker.getColor(context, R.color.kyc_dms_border_camera)
         mWhitePaint?.strokeWidth = CONST_STROKE_WIDTH.toFloat()
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         mPath.reset()
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mPath.addRect(left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
-                    (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
-                    right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
-                    (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
-                    Path.Direction.CW)
-        } else {
-            mPath.addRoundRect(
-                    left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
-                    (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
-                    right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
-                    (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
-                    CONST_RADIUS.toFloat(),
-                    CONST_RADIUS.toFloat(),
-                    Path.Direction.CW
-            )
-        }
+        mPath.addRoundRect(
+                left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
+                (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
+                right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
+                (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
+                CONST_RADIUS.toFloat(),
+                CONST_RADIUS.toFloat(),
+                Path.Direction.CW
+        )
         mPath.fillType = Path.FillType.INVERSE_EVEN_ODD
         mSemiBlackPaint?.let { canvas.drawPath(mPath, it) }
         canvas.clipPath(mPath)
         canvas.drawColor(Color.parseColor(KYCConstant.KYC_OVERLAY_COLOR))
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mWhitePaint?.let {
-                canvas.drawRect(left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
-                        (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
-                        right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
-                        (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
-                        it)
-            }
-        } else {
-            mWhitePaint?.let {
-                canvas.drawRoundRect(left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
-                        (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
-                        right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
-                        (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
-                        CONST_RADIUS.toFloat(),
-                        CONST_RADIUS.toFloat(),
-                        it)
-            }
+        mWhitePaint?.let {
+            canvas.drawRoundRect(left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
+                    (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
+                    right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
+                    (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
+                    CONST_RADIUS.toFloat(),
+                    CONST_RADIUS.toFloat(),
+                    it)
         }
     }
 

@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.incentive_ovo_tnc_bottom_sheet.view.*
 
 object IncentiveOvoBottomSheetBuilder {
 
-    private const val THANK_YOU_BOTTOMSHEET_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/ovo_incentive_bottom_sheet_image.png"
+    private const val THANK_YOU_BOTTOMSHEET_IMAGE_URL = "https://images.tokopedia.net/img/android/review/review_incentive_submitted_resize.png"
     private const val ADD_RATING_URL = "https://ecs7.tokopedia.net/android/others/ic_add_rating_incentive_tnc.png"
     private const val ADD_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/ic_add_photo_incentive_tnc.png"
     private const val ADD_REVIEW_URL = "https://ecs7.tokopedia.net/android/others/ic_add_review_incentive_tnc.png"
@@ -74,8 +74,8 @@ object IncentiveOvoBottomSheetBuilder {
                 val defaultTitle = context?.getString(R.string.review_create_thank_you_title) ?: ""
                 bottomSheet.setShowListener {
                     CreateReviewTracking.eventViewThankYouBottomSheet(defaultTitle, productRevIncentiveOvoDomain?.productrevIncentiveOvo != null)
+                    incentiveOvoSubmittedImage?.loadImage(THANK_YOU_BOTTOMSHEET_IMAGE_URL)
                 }
-                incentiveOvoSubmittedImage?.loadImage(THANK_YOU_BOTTOMSHEET_IMAGE_URL)
                 incentiveOvoSubmittedTitle?.text = defaultTitle
                 incentiveOvoSubmittedSubtitle?.text = context.getString(R.string.review_create_thank_you_subtitle, amount)
                 productRevIncentiveOvoDomain?.productrevIncentiveOvo?.let {

@@ -6,7 +6,10 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
@@ -27,11 +30,17 @@ class PromoListItemViewHolder(private val view: View,
                               private val listener: PromoCheckoutActionListener
 ) : AbstractViewHolder<PromoListItemUiModel>(view) {
 
+    private val containerConstraintPromoCheckout by lazy {
+        view.findViewById<ConstraintLayout>(R.id.container_constraint_promo_checkout)
+    }
     private val containerImagePromoItem by lazy {
         view.findViewById<FlexboxLayout>(R.id.container_image_promo_item)
     }
     private val labelPromoItemTitle by lazy {
         view.findViewById<Typography>(R.id.label_promo_item_title)
+    }
+    private val labelPromoItemTitleInfo by lazy {
+        view.findViewById<Typography>(R.id.label_promo_item_title_info)
     }
     private val labelPromoItemSubTitle by lazy {
         view.findViewById<Typography>(R.id.label_promo_item_sub_title)
@@ -77,11 +86,11 @@ class PromoListItemViewHolder(private val view: View,
             if (hasNonBlankUrl) {
                 containerImagePromoItem.show()
             } else {
-                labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_12).toInt(), 0)
+                labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(), 0)
                 containerImagePromoItem.gone()
             }
         } else {
-            labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_12).toInt(), 0)
+            labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(), 0)
             containerImagePromoItem.gone()
         }
 
@@ -93,6 +102,9 @@ class PromoListItemViewHolder(private val view: View,
             labelPromoCodeValue.gone()
             labelPromoCodeInfo.gone()
         }
+
+        // set tokopoints/ovopoints cashback info
+        renderPromoInfo(element)
 
         labelPromoItemTitle.text = element.uiData.title
         formatSubTitle(element)
@@ -109,10 +121,63 @@ class PromoListItemViewHolder(private val view: View,
 
         cardPromoItem.setOnClickListener {
             if (adapterPosition != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled && !element.uiState.isDisabled) {
-                listener.onClickPromoListItem(element)
+                listener.onClickPromoListItem(element, adapterPosition)
             }
         }
 
+    }
+
+    private fun renderPromoInfo(element: PromoListItemUiModel) {
+        if (element.uiData.currencyDetailStr.isNotEmpty()) {
+            labelPromoItemTitleInfo.text = element.uiData.currencyDetailStr
+
+            val params = labelPromoItemTitle.layoutParams
+            params.width = ViewGroup.LayoutParams.WRAP_CONTENT
+            labelPromoItemTitle.layoutParams = params
+            labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(), 0)
+
+            // set tokopoints info layout for dynamic position
+            val constraintSet = ConstraintSet().apply {
+                clone(containerConstraintPromoCheckout)
+            }
+            if (labelPromoItemTitleInfo.lineCount > 1) {
+                constraintSet.connect(
+                        R.id.label_promo_item_title_info,
+                        ConstraintSet.TOP,
+                        R.id.label_promo_item_title,
+                        ConstraintSet.BOTTOM
+                )
+                constraintSet.connect(
+                        R.id.label_promo_item_title_info,
+                        ConstraintSet.LEFT,
+                        R.id.label_promo_item_title,
+                        ConstraintSet.LEFT
+                )
+            } else {
+                constraintSet.connect(
+                        R.id.label_promo_item_title_info,
+                        ConstraintSet.TOP,
+                        R.id.label_promo_item_title,
+                        ConstraintSet.TOP
+                )
+                constraintSet.connect(
+                        R.id.label_promo_item_title_info,
+                        ConstraintSet.LEFT,
+                        R.id.label_promo_item_title,
+                        ConstraintSet.RIGHT
+                )
+            }
+            constraintSet.applyTo(containerConstraintPromoCheckout)
+
+            labelPromoItemTitleInfo.show()
+        } else {
+            val params = labelPromoItemTitle.layoutParams
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT
+            labelPromoItemTitle.layoutParams = params
+            labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_12).toInt(), 0)
+
+            labelPromoItemTitleInfo.gone()
+        }
     }
 
     private fun renderEnablePromoItem(element: PromoListItemUiModel) {
@@ -136,6 +201,7 @@ class PromoListItemViewHolder(private val view: View,
         }
 
         labelPromoItemTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        labelPromoItemTitleInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         labelPromoCodeInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         labelPromoCodeValue.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         labelPromoItemErrorMessage.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
@@ -164,6 +230,7 @@ class PromoListItemViewHolder(private val view: View,
 
         val disabledColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
         labelPromoItemTitle.setTextColor(disabledColor)
+        labelPromoItemTitleInfo.setTextColor(disabledColor)
         labelPromoCodeInfo.setTextColor(disabledColor)
         labelPromoCodeValue.setTextColor(disabledColor)
         labelPromoItemErrorMessage.setTextColor(disabledColor)

@@ -1,5 +1,5 @@
-query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
-  get_home_recommendation{
+query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!, $location:String!){
+  get_home_recommendation(location: $location){
     recommendation_product(recomID:$recomID, count:$count, page:$page, type:"banner,banner_ads,position"){
       pageName
       product{
@@ -40,6 +40,7 @@ query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
             type
             title
             position
+            url
           }
           badges{
             title

@@ -2,784 +2,741 @@
   {
     "data": {
       "pdpGetLayout": {
-        "name": "test custom layout",
-        "pdpSession": "{\"sid\":1990266,\"sd\":\"merchandise\",\"ci\":1808,\"pid\":1060686573,\"cp\":{},\"pr\":64900,\"mo\":1,\"pn\":\"[Tokopedia 11th] - Kaos Ulang Tahun Nih Ye - L\",\"st\":28,\"cn\":\"new\",\"li\":4,\"v\":1,\"vd\":{\"1060957408\":{\"cp\":{},\"s\":6,\"ib\":true},\"1060957409\":{\"cp\":{},\"s\":13,\"ib\":true},\"1060957411\":{\"cp\":{},\"s\":11,\"ib\":true}},\"pi\":1060957410,\"ps\":\"ACTIVE\"}",
         "basicInfo": {
-          "alias": "tokopedia-11th-kaos-ulang-tahun-nih-ye-l",
-          "shopName": "Tokopedia Merchandise",
-          "productID": "1060957410",
-          "shopID": "1990266",
-          "minOrder": 1,
-          "maxOrder": 0,
-          "weight": 100,
-          "weightUnit": "GRAM",
-          "condition": "NEW",
-          "status": "ACTIVE",
-          "url": "https://www.tokopedia.com/merchandise/tokopedia-11th-kaos-ulang-tahun-nih-ye-l",
-          "sku": "",
-          "gtin": "",
-          "isMustInsurance": false,
-          "needPrescription": false,
+          "blacklistMessage": {
+            "button": "",
+            "description": "",
+            "title": "",
+            "url": ""
+          },
           "catalogID": "0",
-          "isLeasing": false,
+          "category": {
+            "breadcrumbURL": "https://www.tokopedia.com/p/fashion-pria/atasan-pria/kaos-pria",
+            "detail": [
+              {
+                "breadcrumbURL": "https://www.tokopedia.com/p/fashion-pria",
+                "id": "1759",
+                "isAdult": false,
+                "name": "Fashion Pria"
+              },
+              {
+                "breadcrumbURL": "https://www.tokopedia.com/p/fashion-pria/atasan-pria",
+                "id": "1784",
+                "isAdult": false,
+                "name": "Atasan Pria"
+              },
+              {
+                "breadcrumbURL": "https://www.tokopedia.com/p/fashion-pria/atasan-pria/kaos-pria",
+                "id": "1808",
+                "isAdult": false,
+                "name": "Kaos Pria"
+              }
+            ],
+            "id": "1808",
+            "isAdult": false,
+            "lastUpdateCategory": "30/07/2020 21:57:43",
+            "name": "Kaos Pria",
+            "title": "Kaos Pria"
+          },
           "isBlacklisted": false,
+          "isLeasing": false,
+          "maxOrder": 0,
           "menu": {
             "id": "25696784",
             "name": "TOKOPEDIA 11",
             "url": "https://www.tokopedia.com/merchandise/etalase/tokopedia-11"
           },
-          "category": {
-            "id": "1808",
-            "name": "Kaos Pria",
-            "title": "Kaos Pria",
-            "breadcrumbURL": "https://www.tokopedia.com/p/fashion-pria/atasan-pria/kaos-pria",
-            "isAdult": false,
-            "lastUpdateCategory": "30/07/2020 21:57:43",
-            "detail": [
-              {
-                "id": "1759",
-                "name": "Fashion Pria",
-                "breadcrumbURL": "https://www.tokopedia.com/p/fashion-pria",
-                "isAdult": false
-              },
-              {
-                "id": "1784",
-                "name": "Atasan Pria",
-                "breadcrumbURL": "https://www.tokopedia.com/p/fashion-pria/atasan-pria",
-                "isAdult": false
-              },
-              {
-                "id": "1808",
-                "name": "Kaos Pria",
-                "breadcrumbURL": "https://www.tokopedia.com/p/fashion-pria/atasan-pria/kaos-pria",
-                "isAdult": false
-              }
-            ]
-          },
-          "blacklistMessage": {
-            "title": "",
-            "description": "",
-            "button": "",
-            "url": ""
-          },
-          "txStats": {
-            "transactionSuccess": "42",
-            "transactionReject": "0",
-            "countSold": "42",
-            "paymentVerified": "42",
-            "itemSoldPaymentVerified": "42"
-          },
+          "minOrder": 1,
+          "needPrescription": false,
+          "productID": "1060957410",
+          "shopID": "1990266",
+          "shopName": "Tokopedia Merchandise Screenshot Test",
+          "sku": "",
           "stats": {
-            "countReview": "24",
-            "countTalk": "0",
+            "countReview": "10000",
+            "countTalk": "1",
             "rating": 4.9
-          }
+          },
+          "status": "ACTIVE",
+          "txStats": {
+            "countSold": "85",
+            "itemSoldPaymentVerified": "85",
+            "paymentVerified": "83",
+            "transactionReject": "0",
+            "transactionSuccess": "83"
+          },
+          "url": "https://www.tokopedia.com/merchandise/tokopedia-11th-kaos-ulang-tahun-nih-ye-l",
+          "weight": 100,
+          "weightUnit": "GRAM"
         },
         "components": [
           {
-            "name": "product_snapshot",
-            "type": "product_snapshot",
             "data": [
               {}
-            ]
+            ],
+            "name": "product_snapshot",
+            "type": "product_snapshot"
           },
           {
-            "name": "product_media",
-            "type": "product_media",
             "data": [
               {
                 "media": [
                   {
+                    "URL300": "https://images.tokopedia.net/img/cache/300/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
+                    "URLOriginal": "https://images.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
+                    "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
+                    "description": "",
+                    "isAutoplay": false,
                     "type": "image",
-                    "URLOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
-                    "URLThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
-                    "URL300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
-                    "description": "",
-                    "videoURLAndroid": "",
-                    "videoURLIOS": "",
-                    "isAutoplay": false
+                    "videoURLAndroid": ""
                   },
                   {
+                    "URL300": "https://images.tokopedia.net/img/cache/300/product-1/2020/8/11/16620763/16620763_48bb6ddd-b7e0-400a-8067-cb4af78dd636_1000_1000",
+                    "URLOriginal": "https://images.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_48bb6ddd-b7e0-400a-8067-cb4af78dd636_1000_1000",
+                    "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_48bb6ddd-b7e0-400a-8067-cb4af78dd636_1000_1000",
+                    "description": "",
+                    "isAutoplay": false,
                     "type": "image",
-                    "URLOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_48bb6ddd-b7e0-400a-8067-cb4af78dd636_1000_1000",
-                    "URLThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_48bb6ddd-b7e0-400a-8067-cb4af78dd636_1000_1000",
-                    "URL300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/11/16620763/16620763_48bb6ddd-b7e0-400a-8067-cb4af78dd636_1000_1000",
-                    "description": "",
-                    "videoURLAndroid": "",
-                    "videoURLIOS": "",
-                    "isAutoplay": false
+                    "videoURLAndroid": ""
                   },
                   {
+                    "URL300": "https://images.tokopedia.net/img/cache/300/product-1/2020/8/11/16620763/16620763_96117057-93dc-41d8-b65d-a8d9d21bede6_1000_1000",
+                    "URLOriginal": "https://images.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_96117057-93dc-41d8-b65d-a8d9d21bede6_1000_1000",
+                    "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_96117057-93dc-41d8-b65d-a8d9d21bede6_1000_1000",
+                    "description": "",
+                    "isAutoplay": false,
                     "type": "image",
-                    "URLOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_96117057-93dc-41d8-b65d-a8d9d21bede6_1000_1000",
-                    "URLThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_96117057-93dc-41d8-b65d-a8d9d21bede6_1000_1000",
-                    "URL300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/11/16620763/16620763_96117057-93dc-41d8-b65d-a8d9d21bede6_1000_1000",
-                    "description": "",
-                    "videoURLAndroid": "",
-                    "videoURLIOS": "",
-                    "isAutoplay": false
+                    "videoURLAndroid": ""
                   },
                   {
+                    "URL300": "https://images.tokopedia.net/img/cache/300/product-1/2020/8/11/16620763/16620763_bfcab6da-2745-4008-a55b-d77cadcdb180_1000_1000",
+                    "URLOriginal": "https://images.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_bfcab6da-2745-4008-a55b-d77cadcdb180_1000_1000",
+                    "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_bfcab6da-2745-4008-a55b-d77cadcdb180_1000_1000",
+                    "description": "",
+                    "isAutoplay": false,
                     "type": "image",
-                    "URLOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_bfcab6da-2745-4008-a55b-d77cadcdb180_1000_1000",
-                    "URLThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_bfcab6da-2745-4008-a55b-d77cadcdb180_1000_1000",
-                    "URL300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/11/16620763/16620763_bfcab6da-2745-4008-a55b-d77cadcdb180_1000_1000",
-                    "description": "",
-                    "videoURLAndroid": "",
-                    "videoURLIOS": "",
-                    "isAutoplay": false
-                  }
-                ],
-                "pictures": [
-                  {
-                    "picID": "3374891789",
-                    "description": "",
-                    "filePath": "product-1/2020/8/11/16620763",
-                    "fileName": "16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
-                    "width": 1000,
-                    "height": 1000,
-                    "isFromIG": false,
-                    "urlOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
-                    "urlThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
-                    "url300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
-                    "Status": 2
-                  },
-                  {
-                    "picID": "3413193039",
-                    "description": "",
-                    "filePath": "product-1/2020/8/11/16620763",
-                    "fileName": "16620763_48bb6ddd-b7e0-400a-8067-cb4af78dd636_1000_1000",
-                    "width": 1000,
-                    "height": 1000,
-                    "isFromIG": false,
-                    "urlOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_48bb6ddd-b7e0-400a-8067-cb4af78dd636_1000_1000",
-                    "urlThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_48bb6ddd-b7e0-400a-8067-cb4af78dd636_1000_1000",
-                    "url300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/11/16620763/16620763_48bb6ddd-b7e0-400a-8067-cb4af78dd636_1000_1000",
-                    "Status": 1
-                  },
-                  {
-                    "picID": "3413193040",
-                    "description": "",
-                    "filePath": "product-1/2020/8/11/16620763",
-                    "fileName": "16620763_96117057-93dc-41d8-b65d-a8d9d21bede6_1000_1000",
-                    "width": 1000,
-                    "height": 1000,
-                    "isFromIG": false,
-                    "urlOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_96117057-93dc-41d8-b65d-a8d9d21bede6_1000_1000",
-                    "urlThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_96117057-93dc-41d8-b65d-a8d9d21bede6_1000_1000",
-                    "url300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/11/16620763/16620763_96117057-93dc-41d8-b65d-a8d9d21bede6_1000_1000",
-                    "Status": 1
-                  },
-                  {
-                    "picID": "3413193041",
-                    "description": "",
-                    "filePath": "product-1/2020/8/11/16620763",
-                    "fileName": "16620763_bfcab6da-2745-4008-a55b-d77cadcdb180_1000_1000",
-                    "width": 1000,
-                    "height": 1000,
-                    "isFromIG": false,
-                    "urlOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_bfcab6da-2745-4008-a55b-d77cadcdb180_1000_1000",
-                    "urlThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_bfcab6da-2745-4008-a55b-d77cadcdb180_1000_1000",
-                    "url300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/11/16620763/16620763_bfcab6da-2745-4008-a55b-d77cadcdb180_1000_1000",
-                    "Status": 1
+                    "videoURLAndroid": ""
                   }
                 ],
                 "videos": []
               }
-            ]
+            ],
+            "name": "product_media",
+            "type": "product_media"
           },
           {
+            "data": [],
             "name": "ticker_info",
-            "type": "ticker_info",
-            "data": []
+            "type": "ticker_info"
           },
           {
-            "name": "product_content",
-            "type": "product_content",
+            "data": [],
+            "name": "upcoming_deals",
+            "type": "teaser"
+          },
+          {
             "data": [
               {
-                "name": "[Tokopedia 11th] - Kaos Ulang Tahun Nih Ye - L",
-                "price": {
-                  "value": 64900,
-                  "currency": "IDR",
-                  "lastUpdateUnix": "1597301358"
-                },
                 "campaign": {
+                  "appLinks": "",
+                  "background": "",
                   "campaignID": "0",
+                  "campaignIdentifier": 0,
                   "campaignType": "0",
                   "campaignTypeName": "",
-                  "percentageAmount": 0,
-                  "originalPrice": 0,
                   "discountedPrice": 0,
-                  "stock": 0,
-                  "stockSoldPercentage": 0,
-                  "threshold": 0,
-                  "startDate": "",
                   "endDate": "",
                   "endDateUnix": "0",
-                  "appLinks": "",
-                  "isAppsOnly": false,
-                  "isActive": false,
                   "hideGimmick": false,
+                  "isActive": false,
+                  "isAppsOnly": false,
                   "isCheckImei": false,
-                  "isUsingOvo": false
+                  "isUsingOvo": false,
+                  "originalPrice": 0,
+                  "paymentInfoWording": "",
+                  "percentageAmount": 0,
+                  "startDate": "",
+                  "stock": 0,
+                  "stockSoldPercentage": 0,
+                  "threshold": 0
+                },
+                "isCOD": false,
+                "isCashback": {
+                  "percentage": 0
+                },
+                "isOS": true,
+                "isPowerMerchant": true,
+                "isTradeIn": false,
+                "isWishlist": false,
+                "name": "[Tokopedia 11th] - Kaos Ulang Tahun Nih Ye - L",
+                "preorder": {
+                  "duration": 0,
+                  "isActive": false,
+                  "preorderInDays": 0
+                },
+                "price": {
+                  "value": 64900
                 },
                 "stock": {
+                  "stockWording": "Stok tinggal &lt;20, beli segera!",
                   "useStock": false,
-                  "value": "28",
-                  "stockWording": "Stok terbatas &lt;50"
+                  "value": "13"
+                },
+                "thematicCampaign": {
+                  "additionalInfo": "",
+                  "background": "",
+                  "campaignName": "",
+                  "icon": ""
                 },
                 "variant": {
                   "isVariant": true,
                   "parentID": "1060686573"
                 },
-                "wholesale": [],
-                "isCashback": {
-                  "percentage": 0
-                },
-                "isFreeOngkir": {
-                  "isActive": true,
-                  "imageURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
-                },
-                "preorder": {
-                  "duration": 0,
-                  "timeUnit": "UNKNOWN",
-                  "isActive": false
-                },
-                "isTradeIn": false,
-                "isOS": true,
-                "isPowerMerchant": true,
-                "isWishlist": false,
-                "isCOD": false
+                "wholesale": []
               }
-            ]
+            ],
+            "name": "product_content",
+            "type": "product_content"
           },
           {
+            "data": [],
             "name": "social_proof_mini",
-            "type": "social_proof_mini",
-            "data": []
+            "type": "social_proof_mini"
           },
           {
-            "name": "review",
-            "type": "review",
-            "data": []
+            "data": [],
+            "name": "mvc",
+            "type": "mvc"
           },
           {
-            "name": "variant_options",
-            "type": "variant",
             "data": [
               {
-                "errorCode": 0,
-                "parentID": "1060686573",
-                "defaultChild": "1060957408",
-                "sizeChart": "",
-                "variants": [
-                  {
-                    "productVariantID": "19261110",
-                    "variantID": "29",
-                    "name": "ukuran",
-                    "identifier": "size",
-                    "option": [
-                      {
-                        "productVariantOptionID": "61436278",
-                        "variantUnitValueID": "455",
-                        "value": "S",
-                        "hex": "",
-                        "picture": {
-                          "url": "",
-                          "url200": ""
-                        }
-                      },
-                      {
-                        "productVariantOptionID": "61436279",
-                        "variantUnitValueID": "456",
-                        "value": "M",
-                        "hex": "",
-                        "picture": {
-                          "url": "",
-                          "url200": ""
-                        }
-                      },
-                      {
-                        "productVariantOptionID": "61436280",
-                        "variantUnitValueID": "457",
-                        "value": "L",
-                        "hex": "",
-                        "picture": {
-                          "url": "",
-                          "url200": ""
-                        }
-                      },
-                      {
-                        "productVariantOptionID": "61436281",
-                        "variantUnitValueID": "458",
-                        "value": "XL",
-                        "hex": "",
-                        "picture": {
-                          "url": "",
-                          "url200": ""
-                        }
-                      }
-                    ]
-                  }
-                ],
                 "children": [
                   {
-                    "productID": "1060957408",
-                    "price": 64900,
-                    "priceFmt": "Rp 64.900",
-                    "sku": "",
+                    "campaignInfo": {
+                      "appLinks": "",
+                      "background": "",
+                      "campaignID": "0",
+                      "campaignIdentifier": 0,
+                      "campaignType": "0",
+                      "campaignTypeName": "",
+                      "discountPercentage": 0,
+                      "discountPrice": 0,
+                      "endDateUnix": "0",
+                      "hideGimmick": false,
+                      "isActive": true,
+                      "isAppsOnly": false,
+                      "isCheckImei": false,
+                      "isUsingOvo": false,
+                      "minOrder": 0,
+                      "originalPrice": 0,
+                      "startDate": "",
+                      "stock": 200,
+                      "stockSoldPercentage": 0
+                    },
+                    "isCOD": false,
+                    "isWishlist": false,
                     "optionID": [
                       61436278
                     ],
-                    "productName": "[Tokopedia 11th] - Kaos Ulang Tahun Nih Ye - S",
-                    "productURL": "https://www.tokopedia.com/merchandise/tokopedia-11th-kaos-ulang-tahun-nih-ye-s",
                     "picture": {
-                      "url": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
-                      "url200": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000"
+                      "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
+                      "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000"
                     },
+                    "price": 64900,
+                    "priceFmt": "Rp 0",
+                    "productID": "1060957408",
+                    "productName": "[Tokopedia 11th] - asdadas",
+                    "productURL": "https://www.tokopedia.com/merchandise/tokopedia-11th-kaos-ulang-tahun-nih-ye-s",
+                    "sku": "",
                     "stock": {
-                      "stock": "6",
                       "isBuyable": true,
-                      "stockWording": "Stok <b>tersisa &lt;10,</b> beli segera!",
-                      "stockWordingHTML": "Stok <b>tersisa &lt;10,</b> beli segera!",
-                      "minimumOrder": "1"
+                      "minimumOrder": "1",
+                      "stock": "99",
+                      "stockWording": "<b style='color:red'>Stok terakhir,</b> beli sekarang!",
+                      "stockWordingHTML": "<b style='color:red'>Stok terakhir,</b> beli sekarang!"
                     },
-                    "isCOD": false,
-                    "isWishlist": false,
-                    "campaignInfo": {
-                      "campaignID": "0",
-                      "campaignType": "0",
-                      "campaignTypeName": "",
-                      "discountPercentage": 0,
-                      "originalPrice": 0,
-                      "discountPrice": 0,
-                      "stock": 0,
-                      "stockSoldPercentage": 0,
-                      "startDate": "",
-                      "endDateUnix": "0",
-                      "appLinks": "",
-                      "isAppsOnly": false,
-                      "isActive": false,
-                      "hideGimmick": false,
-                      "isCheckImei": false,
-                      "isUsingOvo": false,
-                      "minOrder": 0
+                    "thematicCampaign": {
+                      "additionalInfo": "",
+                      "background": "",
+                      "campaignName": "",
+                      "icon": ""
                     }
                   },
                   {
-                    "productID": "1060957409",
-                    "price": 64900,
-                    "priceFmt": "Rp 64.900",
-                    "sku": "",
+                    "campaignInfo": {
+                      "appLinks": "",
+                      "background": "",
+                      "campaignID": "0",
+                      "campaignIdentifier": 0,
+                      "campaignType": "0",
+                      "campaignTypeName": "",
+                      "discountPercentage": 0,
+                      "discountPrice": 0,
+                      "endDateUnix": "0",
+                      "hideGimmick": false,
+                      "isActive": false,
+                      "isAppsOnly": false,
+                      "isCheckImei": false,
+                      "isUsingOvo": false,
+                      "minOrder": 0,
+                      "originalPrice": 0,
+                      "startDate": "",
+                      "stock": 0,
+                      "stockSoldPercentage": 0
+                    },
+                    "isCOD": false,
+                    "isWishlist": false,
                     "optionID": [
                       61436279
                     ],
+                    "picture": {
+                      "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
+                      "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000"
+                    },
+                    "price": 64900,
+                    "priceFmt": "Rp 0",
+                    "productID": "1060957409",
                     "productName": "[Tokopedia 11th] - Kaos Ulang Tahun Nih Ye - M",
                     "productURL": "https://www.tokopedia.com/merchandise/tokopedia-11th-kaos-ulang-tahun-nih-ye-m",
-                    "picture": {
-                      "url": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
-                      "url200": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000"
-                    },
+                    "sku": "",
                     "stock": {
-                      "stock": "13",
-                      "isBuyable": true,
-                      "stockWording": "Stok tinggal &lt;20, beli segera!",
-                      "stockWordingHTML": "Stok tinggal &lt;20, beli segera!",
-                      "minimumOrder": "1"
+                      "isBuyable": false,
+                      "minimumOrder": "1",
+                      "stock": "0",
+                      "stockWording": "",
+                      "stockWordingHTML": ""
                     },
-                    "isCOD": false,
-                    "isWishlist": false,
-                    "campaignInfo": {
-                      "campaignID": "0",
-                      "campaignType": "0",
-                      "campaignTypeName": "",
-                      "discountPercentage": 0,
-                      "originalPrice": 0,
-                      "discountPrice": 0,
-                      "stock": 0,
-                      "stockSoldPercentage": 0,
-                      "startDate": "",
-                      "endDateUnix": "0",
-                      "appLinks": "",
-                      "isAppsOnly": false,
-                      "isActive": false,
-                      "hideGimmick": false,
-                      "isCheckImei": false,
-                      "isUsingOvo": false,
-                      "minOrder": 0
+                    "thematicCampaign": {
+                      "additionalInfo": "",
+                      "background": "",
+                      "campaignName": "",
+                      "icon": ""
                     }
                   },
                   {
-                    "productID": "1060957410",
-                    "price": 64900,
-                    "priceFmt": "Rp 64.900",
-                    "sku": "",
+                    "campaignInfo": {
+                      "appLinks": "",
+                      "background": "",
+                      "campaignID": "0",
+                      "campaignIdentifier": 0,
+                      "campaignType": "0",
+                      "campaignTypeName": "",
+                      "discountPercentage": 0,
+                      "discountPrice": 0,
+                      "endDateUnix": "0",
+                      "hideGimmick": false,
+                      "isActive": false,
+                      "isAppsOnly": false,
+                      "isCheckImei": false,
+                      "isUsingOvo": false,
+                      "minOrder": 0,
+                      "originalPrice": 0,
+                      "startDate": "",
+                      "stock": 0,
+                      "stockSoldPercentage": 0
+                    },
+                    "isCOD": false,
+                    "isWishlist": false,
                     "optionID": [
                       61436280
                     ],
-                    "productName": "[Tokopedia 11th] - Kaos Ulang Tahun Nih Ye - L",
-                    "productURL": "https://www.tokopedia.com/merchandise/tokopedia-11th-kaos-ulang-tahun-nih-ye-l",
                     "picture": {
-                      "url": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
-                      "url200": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000"
+                      "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
+                      "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000"
                     },
+                    "price": 64900,
+                    "priceFmt": "Rp 0",
+                    "productID": "1060957410",
+                    "productName": "[Tokopedia 11th] - Screenshot Test",
+                    "productURL": "https://www.tokopedia.com/merchandise/tokopedia-11th-kaos-ulang-tahun-nih-ye-l",
+                    "sku": "",
                     "stock": {
-                      "stock": "28",
                       "isBuyable": true,
-                      "stockWording": "Stok terbatas &lt;50",
-                      "stockWordingHTML": "Stok terbatas &lt;50",
-                      "minimumOrder": "1"
+                      "minimumOrder": "1",
+                      "stock": "13",
+                      "stockWording": "Stok tinggal &lt;20, beli segera!",
+                      "stockWordingHTML": "Stok tinggal &lt;20, beli segera!"
                     },
-                    "isCOD": false,
-                    "isWishlist": false,
-                    "campaignInfo": {
-                      "campaignID": "0",
-                      "campaignType": "0",
-                      "campaignTypeName": "",
-                      "discountPercentage": 0,
-                      "originalPrice": 0,
-                      "discountPrice": 0,
-                      "stock": 0,
-                      "stockSoldPercentage": 0,
-                      "startDate": "",
-                      "endDateUnix": "0",
-                      "appLinks": "",
-                      "isAppsOnly": false,
-                      "isActive": false,
-                      "hideGimmick": false,
-                      "isCheckImei": false,
-                      "isUsingOvo": false,
-                      "minOrder": 0
+                    "thematicCampaign": {
+                      "additionalInfo": "",
+                      "background": "",
+                      "campaignName": "",
+                      "icon": ""
                     }
                   },
                   {
-                    "productID": "1060957411",
-                    "price": 64900,
-                    "priceFmt": "Rp 64.900",
-                    "sku": "",
+                    "campaignInfo": {
+                      "appLinks": "",
+                      "background": "",
+                      "campaignID": "0",
+                      "campaignIdentifier": 0,
+                      "campaignType": "0",
+                      "campaignTypeName": "",
+                      "discountPercentage": 0,
+                      "discountPrice": 0,
+                      "endDateUnix": "0",
+                      "hideGimmick": false,
+                      "isActive": false,
+                      "isAppsOnly": false,
+                      "isCheckImei": false,
+                      "isUsingOvo": false,
+                      "minOrder": 0,
+                      "originalPrice": 0,
+                      "startDate": "",
+                      "stock": 0,
+                      "stockSoldPercentage": 0
+                    },
+                    "isCOD": false,
+                    "isWishlist": false,
                     "optionID": [
                       61436281
                     ],
+                    "picture": {
+                      "url": "https://images.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
+                      "url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000"
+                    },
+                    "price": 64900,
+                    "priceFmt": "Rp 0",
+                    "productID": "1060957411",
                     "productName": "[Tokopedia 11th] - Kaos Ulang Tahun Nih Ye - XL",
                     "productURL": "https://www.tokopedia.com/merchandise/tokopedia-11th-kaos-ulang-tahun-nih-ye-xl",
-                    "picture": {
-                      "url": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000",
-                      "url200": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/11/16620763/16620763_cc92bd87-a8f5-4b4b-8d2a-5a9d93a52543_1000_1000"
-                    },
+                    "sku": "",
                     "stock": {
-                      "stock": "11",
-                      "isBuyable": true,
-                      "stockWording": "Stok tinggal &lt;20, beli segera!",
-                      "stockWordingHTML": "Stok tinggal &lt;20, beli segera!",
-                      "minimumOrder": "1"
+                      "isBuyable": false,
+                      "minimumOrder": "1",
+                      "stock": "0",
+                      "stockWording": "",
+                      "stockWordingHTML": ""
                     },
-                    "isCOD": false,
-                    "isWishlist": false,
-                    "campaignInfo": {
-                      "campaignID": "0",
-                      "campaignType": "0",
-                      "campaignTypeName": "",
-                      "discountPercentage": 0,
-                      "originalPrice": 0,
-                      "discountPrice": 0,
-                      "stock": 0,
-                      "stockSoldPercentage": 0,
-                      "startDate": "",
-                      "endDateUnix": "0",
-                      "appLinks": "",
-                      "isAppsOnly": false,
-                      "isActive": false,
-                      "hideGimmick": false,
-                      "isCheckImei": false,
-                      "isUsingOvo": false,
-                      "minOrder": 0
+                    "thematicCampaign": {
+                      "additionalInfo": "",
+                      "background": "",
+                      "campaignName": "",
+                      "icon": ""
                     }
                   }
-                ]
-              }
-            ]
-          },
-          {
-            "name": "product_detail",
-            "type": "product_detail",
-            "data": [
-              {
-                "content": [
+                ],
+                "defaultChild": "1060957408",
+                "errorCode": 0,
+                "parentID": "1060686573",
+                "sizeChart": "",
+                "variants": [
                   {
-                    "title": "Kondisi",
-                    "subtitle": "Baru",
-                    "applink": "",
-                    "showAtFront": true
-                  },
-                  {
-                    "title": "Total Stok",
-                    "subtitle": "28",
-                    "applink": "",
-                    "showAtFront": true
-                  },
-                  {
-                    "title": "Min. Pemesanan",
-                    "subtitle": "1 Buah",
-                    "applink": "",
-                    "showAtFront": true
-                  },
-                  {
-                    "title": "Kategori",
-                    "subtitle": "Kaos Pria",
-                    "applink": "https://www.tokopedia.com/p/fashion-pria/atasan-pria/kaos-pria",
-                    "showAtFront": false
-                  },
-                  {
-                    "title": "Etalase",
-                    "subtitle": "TOKOPEDIA 11",
-                    "applink": "https://www.tokopedia.com/merchandise/etalase/tokopedia-11",
-                    "showAtFront": false
-                  },
-                  {
-                    "title": "Deskripsi",
-                    "subtitle": "Hi Toppers,\n\nSelamat Ulang Tahun Tokopedia! Yuk bareng-bareng rayakan ulang tahun bareng Tokopedia! Kini hadir merchandise eksklusif khusus ulang tahun tokopedia yang ke- 11. Dengan desain yang unik, kaos ini bisa Toppers jadikan hadiah ulang tahun untuk yang tersayang loh! Tunggu apa lagi? Serbu sekarang!\n\n#Tokopedia11th\n\nMaterial : Cotton\nSize :\nS= 50 x 68 cm\nM= 52 x 70 cm \nL=54 × 72 cm \nXL= 56 x 74 cm \n",
-                    "applink": "",
-                    "showAtFront": true
+                    "identifier": "size",
+                    "name": "ukuran",
+                    "option": [
+                      {
+                        "hex": "",
+                        "picture": {
+                          "url": "",
+                          "url100": ""
+                        },
+                        "productVariantOptionID": "61436278",
+                        "value": "S",
+                        "variantUnitValueID": "455"
+                      },
+                      {
+                        "hex": "",
+                        "picture": {
+                          "url": "",
+                          "url100": ""
+                        },
+                        "productVariantOptionID": "61436279",
+                        "value": "M",
+                        "variantUnitValueID": "456"
+                      },
+                      {
+                        "hex": "",
+                        "picture": {
+                          "url": "",
+                          "url100": ""
+                        },
+                        "productVariantOptionID": "61436280",
+                        "value": "L",
+                        "variantUnitValueID": "457"
+                      },
+                      {
+                        "hex": "",
+                        "picture": {
+                          "url": "",
+                          "url100": ""
+                        },
+                        "productVariantOptionID": "61436281",
+                        "value": "XL",
+                        "variantUnitValueID": "458"
+                      }
+                    ],
+                    "productVariantID": "19261110",
+                    "variantID": "29"
                   }
                 ]
               }
-            ]
+            ],
+            "name": "variant_options",
+            "type": "variant"
           },
           {
+            "data": [],
             "name": "shop_credibility",
-            "type": "shop_credibility",
-            "data": []
+            "type": "shop_credibility"
           },
           {
-            "name": "shop_voucher",
-            "type": "shop_voucher",
-            "data": []
-          },
-          {
-            "name": "social_proof",
-            "type": "social_proof",
-            "data": []
-          },
-          {
-            "name": "upcoming_deals",
-            "type": "teaser",
-            "data": []
-          },
-          {
-            "name": "social_proof_pv",
-            "type": "social_proof",
-            "data": []
-          },
-          {
-            "name": "value_prop",
-            "type": "value_prop",
-            "data": []
-          },
-          {
-            "name": "cod",
-            "type": "custom_info",
-            "data": []
-          },
-          {
-            "name": "palugada",
-            "type": "custom_info",
-            "data": []
-          },
-          {
-            "name": "obat_keras",
-            "type": "custom_info",
-            "data": []
-          },
-          {
-            "name": "variant",
-            "type": "info",
             "data": [
               {
-                "icon": "",
-                "title": "Varian Produk",
-                "isApplink": true,
-                "applink": "",
-                "content": []
-              }
-            ]
-          },
-          {
-            "name": "wholesale",
-            "type": "info",
-            "data": [
-              {
-                "icon": "",
-                "title": "Harga Grosir",
-                "isApplink": true,
-                "applink": "",
-                "content": []
-              }
-            ]
-          },
-          {
-            "name": "installment",
-            "type": "info",
-            "data": [
-              {
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/Paylater_Cicilan@3x.png",
-                "title": "Paylater & Cicilan",
-                "isApplink": true,
-                "applink": "",
-                "content": []
-              }
-            ]
-          },
-          {
-            "name": "shipping",
-            "type": "info",
-            "data": [
-              {
-                "icon": "",
-                "title": "Kurir",
-                "isApplink": true,
-                "applink": "",
-                "content": []
-              }
-            ]
-          },
-          {
-            "name": "tradein",
-            "type": "info",
-            "data": [
-              {
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icTradeinBlue_3x.png",
-                "title": "Beli dengan Tukar Tambah",
-                "isApplink": true,
-                "applink": "",
-                "content": []
-              }
-            ]
-          },
-          {
-            "name": "fulfillment",
-            "type": "info",
-            "data": [
-              {
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icFulfillment_3x.png",
-                "title": "Dilayani oleh Tokopedia",
-                "isApplink": false,
-                "applink": "",
-                "content": []
-              }
-            ]
-          },
-          {
-            "name": "protection",
-            "type": "info",
-            "data": [
-              {
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icProtection_3x.png",
-                "title": "Proteksi Gadget",
-                "isApplink": false,
-                "applink": "",
-                "content": []
-              }
-            ]
-          },
-          {
-            "name": "order_prio",
-            "type": "info",
-            "data": [
-              {
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icOrderprio_3x.png",
-                "title": "Order Prioritas",
-                "isApplink": false,
-                "applink": "",
-                "content": []
-              }
-            ]
-          },
-          {
-            "name": "byme",
-            "type": "info",
-            "data": [
-              {
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icBymeColor_3x.png",
-                "title": "Rekomendasi dapat komisi",
-                "isApplink": true,
-                "applink": "",
-                "content": []
-              }
-            ]
-          },
-          {
-            "name": "product_info",
-            "type": "product_info",
-            "data": [
-              {
-                "row": "top",
                 "content": [
                   {
-                    "title": "Berat",
-                    "subtitle": "100 Gram",
-                    "applink": ""
-                  },
-                  {
-                    "title": "Kondisi",
+                    "applink": "",
+                    "isAnnotation": false,
+                    "showAtFront": true,
                     "subtitle": "Baru",
-                    "applink": ""
+                    "title": "Kondisi"
                   },
                   {
-                    "title": "Pemesanan Min",
+                    "applink": "",
+                    "isAnnotation": false,
+                    "showAtFront": false,
+                    "subtitle": "100 Gram",
+                    "title": "Berat"
+                  },
+                  {
+                    "applink": "",
+                    "isAnnotation": false,
+                    "showAtFront": true,
+                    "subtitle": "14",
+                    "title": "Total Stok"
+                  },
+                  {
+                    "applink": "",
+                    "isAnnotation": false,
+                    "showAtFront": true,
                     "subtitle": "1 Buah",
-                    "applink": ""
+                    "title": "Min. Pemesanan"
                   },
                   {
-                    "title": "Kategori",
+                    "applink": "tokopedia://category/1808",
+                    "isAnnotation": false,
+                    "showAtFront": false,
                     "subtitle": "Kaos Pria",
-                    "applink": "https://www.tokopedia.com/p/fashion-pria/atasan-pria/kaos-pria"
+                    "title": "Kategori"
                   },
                   {
-                    "title": "Etalase",
+                    "applink": "https://www.tokopedia.com/merchandise/etalase/tokopedia-11",
+                    "isAnnotation": false,
+                    "showAtFront": true,
                     "subtitle": "TOKOPEDIA 11",
-                    "applink": "https://www.tokopedia.com/merchandise/etalase/tokopedia-11"
-                  }
-                ]
-              },
-              {
-                "row": "bottom",
-                "content": [
+                    "title": "Etalase"
+                  },
                   {
-                    "title": "Deskripsi",
+                    "applink": "",
+                    "isAnnotation": false,
+                    "showAtFront": true,
                     "subtitle": "Hi Toppers,\n\nSelamat Ulang Tahun Tokopedia! Yuk bareng-bareng rayakan ulang tahun bareng Tokopedia! Kini hadir merchandise eksklusif khusus ulang tahun tokopedia yang ke- 11. Dengan desain yang unik, kaos ini bisa Toppers jadikan hadiah ulang tahun untuk yang tersayang loh! Tunggu apa lagi? Serbu sekarang!\n\n#Tokopedia11th\n\nMaterial : Cotton\nSize :\nS= 50 x 68 cm\nM= 52 x 70 cm \nL=54 × 72 cm \nXL= 56 x 74 cm \n",
-                    "applink": ""
+                    "title": "Deskripsi"
                   }
                 ]
               }
-            ]
+            ],
+            "name": "product_detail",
+            "type": "product_detail"
           },
           {
-            "name": "shop_info",
-            "type": "shop_info",
-            "data": []
+            "data": [],
+            "name": "shipment",
+            "type": "shipment"
           },
           {
-            "name": "most_helpful_review",
-            "type": "most_helpful_review",
-            "data": []
+            "data": [],
+            "name": "review",
+            "type": "review"
           },
           {
+            "data": [],
+            "name": "social_proof",
+            "type": "social_proof"
+          },
+          {
+            "data": [],
+            "name": "social_proof_pv",
+            "type": "social_proof"
+          },
+          {
+            "data": [],
+            "name": "value_prop",
+            "type": "value_prop"
+          },
+          {
+            "data": [
+              {
+                "applink": "https://www.tokopedia.com/simulasi-cicilan/paylater?category=Kaos+Pria&price=64900.000000&productURL=https%3A%2F%2Fwww.tokopedia.com%2Fmerchandise%2Ftokopedia-11th-kaos-ulang-tahun-nih-ye-l",
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+                "isApplink": true,
+                "title": "Paylater & Cicilan"
+              }
+            ],
+            "name": "installment_paylater",
+            "type": "info"
+          },
+          {
+            "data": [],
+            "name": "cod",
+            "type": "custom_info"
+          },
+          {
+            "data": [],
+            "name": "palugada",
+            "type": "custom_info"
+          },
+          {
+            "data": [],
+            "name": "obat_keras",
+            "type": "custom_info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "",
+                "isApplink": true,
+                "title": "Varian Produk"
+              }
+            ],
+            "name": "variant",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "https://www.tokopedia.com/blog/peringatan-ketentuan-adopsi-hewan/",
+                "description": "Baca ketentuannya dulu sebelum bertransaksi.",
+                "icon": "https://images.tokopedia.net/img/pdp/info/icon/FeaturesServices_Pet@3x.png",
+                "isApplink": true,
+                "separator": "top",
+                "title": "Mau adopsi hewan ini?"
+              }
+            ],
+            "name": "pet_disclaimer",
+            "type": "custom_info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "",
+                "isApplink": true,
+                "title": "Harga Grosir"
+              }
+            ],
+            "name": "wholesale",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+                "isApplink": true,
+                "title": "Paylater & Cicilan"
+              }
+            ],
+            "name": "installment",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "",
+                "isApplink": true,
+                "title": "Kurir"
+              }
+            ],
+            "name": "shipping",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/Tradein@3x.png",
+                "isApplink": true,
+                "title": "Beli dengan Tukar Tambah"
+              }
+            ],
+            "name": "tradein",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-tokocabang@3x.png",
+                "isApplink": false,
+                "title": "Dilayani oleh Tokopedia"
+              }
+            ],
+            "name": "fulfillment",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-protection@3x.png",
+                "isApplink": false,
+                "title": "Proteksi Gadget"
+              }
+            ],
+            "name": "protection",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-orderprio@3x.png",
+                "isApplink": false,
+                "title": "Order Prioritas"
+              }
+            ],
+            "name": "order_prio",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icBymeColor_3x.png",
+                "isApplink": true,
+                "title": "Rekomendasi dapat komisi"
+              }
+            ],
+            "name": "byme",
+            "type": "info"
+          },
+          {
+            "data": [],
             "name": "discussion_faq",
-            "type": "discussion_faq",
-            "data": []
+            "type": "discussion_faq"
           },
           {
-            "name": "tdn_topads",
-            "type": "banner_ads",
-            "data": []
-          },
-          {
+            "data": [],
             "name": "pdp_5",
-            "type": "product_list",
-            "data": []
+            "type": "product_list"
           }
-        ]
+        ],
+        "name": "test custom layout",
+        "pdpSession": "{\"sid\":1990266,\"sd\":\"merchandise\",\"ci\":1808,\"pid\":1060686573,\"cp\":{},\"pr\":64900,\"mo\":1,\"pn\":\"[Tokopedia 11th] - Kaos Ulang Tahun Nih Ye - L\",\"st\":13,\"cn\":\"new\",\"li\":4,\"w\":0.1,\"ifo\":true,\"v\":1,\"vd\":{\"1060957408\":{\"cp\":{},\"s\":1,\"ib\":true,\"whid\":5931369},\"1060957409\":{\"cp\":{},\"whid\":5931369},\"1060957410\":{\"cp\":{},\"s\":13,\"ib\":true,\"whid\":5931369},\"1060957411\":{\"cp\":{},\"whid\":5931369}},\"pi\":1060957410,\"ps\":\"ACTIVE\"}"
       }
     }
   }

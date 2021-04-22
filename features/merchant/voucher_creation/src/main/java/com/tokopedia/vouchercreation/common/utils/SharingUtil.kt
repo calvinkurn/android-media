@@ -35,23 +35,20 @@ annotation class SocmedPackage {
 
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(SocmedClass.INSTAGRAM, SocmedClass.WHATSAPP, SocmedClass.LINE, SocmedClass.TWITTER, SocmedClass.FACEBOOK)
+@StringDef(SocmedClass.WHATSAPP, SocmedClass.FACEBOOK)
 annotation class SocmedClass {
     companion object {
         const val WHATSAPP = "com.whatsapp.ContactPicker"
         const val FACEBOOK = "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias"
-        const val LINE = "jp.naver.line.android.activity.selectchat.SelectChatActivityLaunchActivity"
-        const val TWITTER = "com.twitter.composer.ComposerShareActivity"
-        const val INSTAGRAM = "com.instagram.share.handleractivity.ShareHandlerActivity"
     }
 }
 
 enum class Socmed(@SocmedPackage val packageString: String,
                   @SocmedClass val classString: String) {
-    INSTAGRAM(SocmedPackage.INSTAGRAM, SocmedClass.INSTAGRAM),
+    INSTAGRAM(SocmedPackage.INSTAGRAM, ""),
+    LINE(SocmedPackage.LINE, ""),
+    TWITTER(SocmedPackage.TWITTER, ""),
     WHATSAPP(SocmedPackage.WHATSAPP, SocmedClass.WHATSAPP),
-    LINE(SocmedPackage.LINE, SocmedClass.LINE),
-    TWITTER(SocmedPackage.TWITTER, SocmedClass.TWITTER),
     FACEBOOK(SocmedPackage.FACEBOOK, SocmedClass.FACEBOOK)
 }
 
@@ -110,7 +107,7 @@ object SharingUtil {
                             Socmed.INSTAGRAM -> {
                                 shareInstagramFeed(context, contentUri)
                             }
-                            Socmed.TWITTER -> {
+                            Socmed.TWITTER, Socmed.LINE -> {
                                 goToSocialMedia(socmed.packageString, context, contentUri, messageString)
                             }
                             else -> {

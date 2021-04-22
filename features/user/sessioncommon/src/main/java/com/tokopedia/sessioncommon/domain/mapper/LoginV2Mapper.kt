@@ -30,16 +30,19 @@ class LoginV2Mapper(val userSession: UserSessionInterface) {
             }
         } else if (shouldGoToActivationPage(loginTokenPojo)) {
             onGoToActivationPage(MessageErrorException(loginTokenPojo.loginToken.errors[0].message))
-        } else if (loginTokenPojo.loginToken.popupError.header.isNotEmpty() &&
-                loginTokenPojo.loginToken.popupError.body.isNotEmpty() &&
-                loginTokenPojo.loginToken.popupError.action.isNotEmpty()) {
-            onShowPopupError(loginTokenPojo)
-        } else if (loginTokenPojo.loginToken.errors.isNotEmpty()) {
-            onErrorLoginToken(MessageErrorException(loginTokenPojo.loginToken.errors[0].message))
-        } else if (errors.isNotEmpty()) {
-            onErrorLoginToken(MessageErrorException(errors[0].message))
         } else {
-            onErrorLoginToken(Throwable())
+            removeUserSessionToken()
+            if (loginTokenPojo.loginToken.popupError.header.isNotEmpty() &&
+                    loginTokenPojo.loginToken.popupError.body.isNotEmpty() &&
+                    loginTokenPojo.loginToken.popupError.action.isNotEmpty()) {
+                onShowPopupError(loginTokenPojo)
+            } else if (loginTokenPojo.loginToken.errors.isNotEmpty()) {
+                onErrorLoginToken(MessageErrorException(loginTokenPojo.loginToken.errors[0].message))
+            } else if (errors.isNotEmpty()) {
+                onErrorLoginToken(MessageErrorException(errors[0].message))
+            } else {
+                onErrorLoginToken(Throwable())
+            }
         }
 
     }
@@ -56,5 +59,9 @@ class LoginV2Mapper(val userSession: UserSessionInterface) {
                     tokenType,
                     EncoderDecoder.Encrypt(refreshToken, userSession.refreshTokenIV))
         }
+    }
+
+    private fun removeUserSessionToken() {
+        userSession.setToken(null, null, null)
     }
 }

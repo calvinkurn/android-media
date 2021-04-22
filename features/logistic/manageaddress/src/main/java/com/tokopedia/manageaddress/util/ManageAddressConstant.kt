@@ -2,9 +2,8 @@ package com.tokopedia.manageaddress.util
 
 object ManageAddressConstant {
     const val DEFAULT_ERROR_MESSAGE = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi"
-    const val DEFAULT_LOCAL_ERROR_MESSAGE = "Terjadi kesalahan. Ulangi beberapa saat lagi"
 
-    const val LABEL_LAINNYA = "Lainnya"
+    const val LABEL_LAINNYA = "Pilihan Lainnya"
 
     const val SUCCESS = "success"
 
@@ -24,4 +23,5 @@ object ManageAddressConstant {
     const val EXTRA_WAREHOUSE_DATA = "EXTRA_WAREHOUSE_DATA"
     const val EXTRA_LONG = "EXTRA_LONG"
     const val EXTRA_LAT = "EXTRA_LAT"
+    const val EXTRA_IS_LOCALIZATION = "EXTRA_IS_LOCALIZATION"
 }

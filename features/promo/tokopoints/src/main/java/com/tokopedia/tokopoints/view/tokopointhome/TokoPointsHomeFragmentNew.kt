@@ -132,10 +132,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         layoutParams.topMargin = statusBarHeight
         tokoPointToolbar!!.layoutParams = layoutParams
         val imageEggLp = view?.findViewById<AppCompatImageView>(R.id.img_egg)?.layoutParams as? RelativeLayout.LayoutParams
-        imageEggLp?.topMargin = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_top_margin_big_image)).toInt()
+        imageEggLp?.topMargin = (statusBarHeight + requireActivity().resources.getDimension(R.dimen.tp_top_margin_big_image)).toInt()
         view?.findViewById<AppCompatImageView>(R.id.img_egg)?.layoutParams = imageEggLp
         val imageBigLp = view?.findViewById<ImageView>(R.id.img_bg_header)?.layoutParams as? RelativeLayout.LayoutParams
-        imageBigLp?.height = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_home_top_bg_height) + cardheight).toInt()
+        imageBigLp?.height = (statusBarHeight + requireActivity().resources.getDimension(R.dimen.tp_home_top_bg_height) + cardheight).toInt()
         view?.findViewById<ImageView>(R.id.img_bg_header)?.layoutParams = imageBigLp
     }
 
@@ -154,7 +154,9 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             if (flags != null) {
                 coordinatorLayout?.systemUiVisibility = flags
             }
-            activity?.window?.statusBarColor = Color.WHITE
+            if (context != null) {
+                activity?.window?.statusBarColor = androidx.core.content.ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            }
         }
         if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
             setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true)
@@ -260,7 +262,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         if (data != null && data.resultStatus?.code == "200") {
             val bundle = Bundle()
             bundle.putParcelable(RewardIntroFragment.INTRO_KEY, data)
-            startActivity(RewardIntroActivity.getCallingIntent(context!!, bundle))
+            startActivity(RewardIntroActivity.getCallingIntent(requireContext(), bundle))
             activity?.finish()
         } else
             return
@@ -452,11 +454,11 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     override fun getAppContext(): Context {
-        return activity!!
+        return requireActivity()
     }
 
     override fun getActivityContext(): Context {
-        return activity!!
+        return requireActivity()
     }
 
     override fun onAttach(context: Context) {

@@ -11,5 +11,7 @@ class LabelGroup (
         @SerializedName("title")
         val title: String = "",
         @SerializedName("position")
-        val position: String = ""
+        val position: String = "",
+        @SerializedName("url")
+        val imageUrl: String = ""
 )

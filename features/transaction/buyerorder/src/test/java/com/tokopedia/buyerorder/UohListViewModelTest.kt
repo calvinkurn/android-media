@@ -12,6 +12,7 @@ import com.tokopedia.buyerorder.unifiedhistory.list.domain.*
 import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -34,7 +35,7 @@ class UohListViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = BuyerTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var uohListViewModel: UohListViewModel
     private var listOrderHistory = listOf<UohListOrder.Data.UohOrders.Order>()
     private var listRecommendation = listOf<RecommendationWidget>()

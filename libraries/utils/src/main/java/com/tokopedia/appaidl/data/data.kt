@@ -22,9 +22,5 @@ fun componentTargetName(): String {
 * to validate the source service.
 * */
 fun tagDefault(): String {
-    return if (GlobalConfig.isSellerApp()) {
-        "$SELLER_APP.AIDL_ACTION"
-    } else {
-        "$CUSTOMER_APP.AIDL_ACTION"
-    }
+    return if (GlobalConfig.isSellerApp()) SELLER_APP else CUSTOMER_APP
 }

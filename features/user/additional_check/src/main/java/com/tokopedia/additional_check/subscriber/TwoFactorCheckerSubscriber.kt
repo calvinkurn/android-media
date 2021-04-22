@@ -32,14 +32,14 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     var remoteConfig: FirebaseRemoteConfigImpl? = null
 
     private val exceptionPage = listOf(
-            "ConsumerSplashScreen", "AddPinActivity", "AddPhoneActivity", "TwoFactorActivity",
+            "ConsumerSplashScreen", "AddPinActivity", "AddPinFrom2FAActivity", "AddPhoneActivity", "TwoFactorActivity",
             "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
             "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
             "RegisterEmailActivity", "AddNameRegisterPhoneActivity", "SmartLockActivity", "OvoRegisterInitialActivity", "OvoFinalPageActivity"
     )
 
     private val exceptionPageSeller = listOf(
-            "SplashScreenActivity", "AddPinActivity", "AddPhoneActivity", "TwoFactorActivity",
+            "SplashScreenActivity", "AddPinActivity", "AddPinFrom2FAActivity", "AddPhoneActivity", "TwoFactorActivity",
             "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
             "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
             "RegisterEmailActivity", "ChooseAccountActivity", "SmartLockActivity" , "ShopOpenRevampActivity" , "PinpointMapActivity"

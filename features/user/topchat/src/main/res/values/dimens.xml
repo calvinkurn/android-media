@@ -47,6 +47,7 @@
     <dimen name="dp_topchat_13">13dp</dimen>
     <dimen name="dp_topchat_14">14dp</dimen>
     <dimen name="dp_topchat_15">15dp</dimen>
+    <dimen name="dp_topchat_16">16dp</dimen>
     <dimen name="dp_topchat_18">18dp</dimen>
     <dimen name="dp_topchat_19">19dp</dimen>
     <dimen name="dp_topchat_20">20dp</dimen>

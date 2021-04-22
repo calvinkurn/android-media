@@ -2,6 +2,7 @@ package com.tokopedia.play.view.pip
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -84,8 +85,14 @@ class PlayViewerPiPView : ConstraintLayout {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        mVideoPlayer.resume()
-        mVideoPlayer.mute(false)
+        val pipInfo = mPiPInfo
+        if (pipInfo != null) {
+            mVideoPlayer.playUri(
+                    uri = Uri.parse(pipInfo.videoPlayer.params.videoUrl),
+                    bufferControl = pipInfo.videoPlayer.params.buffer
+            )
+            mVideoPlayer.mute(false)
+        }
 
         timePipAttached = System.currentTimeMillis()
     }
@@ -111,13 +118,13 @@ class PlayViewerPiPView : ConstraintLayout {
     fun setPiPInfo(pipInfo: PiPInfoUiModel) {
         mPiPInfo = pipInfo
 
-        pvVideo.resizeMode = if (!pipInfo.videoOrientation.isHorizontal) {
+        pvVideo.resizeMode = if (!pipInfo.videoStream.orientation.isHorizontal) {
             AspectRatioFrameLayout.RESIZE_MODE_ZOOM
         } else AspectRatioFrameLayout.RESIZE_MODE_FIT
 
         setBackgroundColor(
                 MethodChecker.getColor(rootView.context,
-                        if (pipInfo.videoOrientation.isHorizontal) com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                        if (pipInfo.videoStream.orientation.isHorizontal) com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
                         else R.color.transparent
                 )
         )

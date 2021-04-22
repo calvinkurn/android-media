@@ -19,7 +19,6 @@ import com.tokopedia.topads.common.data.internal.ParamObject.SORT
 import com.tokopedia.topads.common.data.internal.ParamObject.START_DATE
 import com.tokopedia.topads.common.data.internal.ParamObject.STATUS
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
-import com.tokopedia.topads.common.domain.usecase.GetTopadsGroupListQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*

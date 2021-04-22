@@ -1,15 +1,16 @@
 package com.tokopedia.topads.edit.usecase
 
-import android.content.Context
 import android.os.Bundle
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.common.network.data.model.RequestType
+import com.tokopedia.common.network.data.model.RestRequest
+import com.tokopedia.common.network.domain.RestRequestUseCase
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.response.*
-import com.tokopedia.topads.common.di.ActivityContext
-import com.tokopedia.topads.edit.R
+import com.tokopedia.topads.edit.data.raw.MANAGE_GROUP
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.ACTION_ADD
@@ -35,6 +36,7 @@ import com.tokopedia.topads.edit.utils.Constants.POSITIVE_PHRASE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_SPECIFIC
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
 import com.tokopedia.topads.edit.utils.Constants.PUBLISHED
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -43,32 +45,17 @@ import javax.inject.Inject
  * Created by Pika on 24/5/20.
  */
 
-class TopAdsCreateUseCase @Inject constructor(@ActivityContext
-                                              val context: Context?, graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<FinalAdResponse>(graphqlRepository) {
+@GqlQuery("ManageGroupAdsQuery", MANAGE_GROUP)
+class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterface) : RestRequestUseCase() {
 
-    private fun getQuery(): String {
-        return GraphqlHelper.loadRawString(context?.resources, R.raw.query_ads_edit_activated_ads)
-    }
 
-    fun setParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>) {
+    fun setParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>): RequestParams {
 
+        val param = RequestParams.create()
         val variable: HashMap<String, Any> = HashMap()
         variable[INPUT] = convertToParam(dataProduct, dataKeyword, dataGroup)
-        setRequestParams(variable)
-
-    }
-
-    private val cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy
-            .Builder(CacheType.CLOUD_THEN_CACHE).build()
-
-    fun executeQuerySafeMode(onSuccess: (FinalAdResponse) -> Unit, onError: (Throwable) -> Unit) {
-        setTypeClass(FinalAdResponse::class.java)
-        setGraphqlQuery(getQuery())
-        setCacheStrategy(cacheStrategy)
-        execute({
-            onSuccess(it)
-
-        }, onError)
+        param.putAll(variable)
+        return param
     }
 
     private fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>): TopadsManageGroupAdsInput {
@@ -220,5 +207,21 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
         else
             input.keywordOperation = keywordList
         return input
+    }
+
+    override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
+        val tempRequest = ArrayList<RestRequest>()
+        val token = object : TypeToken<DataResponse<FinalAdResponse>>() {}.type
+        val query = ManageGroupAdsQuery.GQL_QUERY
+        val request = GraphqlRequest(query, FinalAdResponse::class.java, requestParams?.parameters)
+        val headers = HashMap<String, String>()
+        headers["Content-Type"] = "application/json"
+        val restReferralRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
+                .setBody(request)
+                .setHeaders(headers)
+                .setRequestType(RequestType.POST)
+                .build()
+        tempRequest.add(restReferralRequest)
+        return tempRequest
     }
 }

@@ -10,10 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.onTabSelected
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
@@ -63,8 +60,9 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         BottomSheetNavigator(childFragmentManager)
     }
 
-    private val productPrice: Int by lazy {
-        arguments?.getInt(PRODUCT_PRICE) ?: 0
+    private val productPrice: Long by lazy {
+        val price = arguments?.getString(PRODUCT_PRICE)
+        price.toDoubleOrZero().toLong()
     }
     private val productUrl: String by lazy {
         arguments?.getString(PARAM_PRODUCT_URL) ?: ""
@@ -108,7 +106,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         parentDataGroup.visible()
         when (paymentMode) {
             is PayLater -> payLaterViewModel.getPayLaterSimulationData(productPrice)
-            is CreditCard -> creditCardViewModel.getCreditCardSimulationData(productPrice.toFloat())
+            is CreditCard -> creditCardViewModel.getCreditCardSimulationData(productPrice)
         }
     }
 
@@ -159,11 +157,13 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private fun renderTabAndViewPager() {
-        setUpTabLayout()
-        if (pagerAdapter == null)
-            pagerAdapter = PayLaterPagerAdapter(context!!, childFragmentManager, 0)
-        pagerAdapter?.setList(getFragments())
-        payLaterViewPager.adapter = pagerAdapter
+        context?.let {
+            setUpTabLayout()
+            if (pagerAdapter == null)
+                pagerAdapter = PayLaterPagerAdapter(it, childFragmentManager, 0)
+            pagerAdapter?.setList(getFragments())
+            payLaterViewPager.adapter = pagerAdapter
+        }
     }
 
     private fun setUpTabLayout() {
@@ -218,7 +218,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     override fun onCheckedChanged(modeButton: CompoundButton, isChecked: Boolean) {
         if (isChecked) {
             paymentMode = CreditCard
-            creditCardViewModel.getCreditCardSimulationData(productPrice.toFloat())
+            getSimulationProductInfo()
         } else {
             paymentMode = PayLater
         }
@@ -235,7 +235,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         }
     }
 
-    fun hideDataGroup() {
+    private fun hideDataGroup() {
         parentDataGroup.gone()
         modeSwitcher.gone()
         daftarGroup.gone()

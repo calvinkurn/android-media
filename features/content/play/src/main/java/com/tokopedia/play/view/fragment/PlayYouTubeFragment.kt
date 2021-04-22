@@ -53,7 +53,7 @@ class PlayYouTubeFragment @Inject constructor(
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
     private val orientationListener: PlayOrientationListener
-        get() = requireParentFragment() as PlayOrientationListener
+        get() = requireActivity() as PlayOrientationListener
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)

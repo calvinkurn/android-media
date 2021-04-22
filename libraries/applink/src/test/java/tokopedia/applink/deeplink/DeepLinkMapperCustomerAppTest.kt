@@ -460,7 +460,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check login appLink then should return tokopedia internal login in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.LOGIN, "")
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/login"
+        assertEqualsDeepLinkMapper(ApplinkConst.LOGIN, expectedDeepLink)
     }
 
     @Test
@@ -567,7 +568,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check register appLink then should return empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.REGISTER, "")
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/init-register"
+        assertEqualsDeepLinkMapper(ApplinkConst.REGISTER, expectedDeepLink)
     }
 
     @Test
@@ -1512,4 +1514,19 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val appLink = UriUtil.buildUri(ApplinkConst.SNAPSHOT_ORDER+"/1234/7890")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
+
+    @Test
+    fun `check shop follower list appLink then should return tokopedia internal shop follower list in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-page/1479278/shop-favourites"
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_FOLLOWER_LIST, "1479278")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop setting appLink then should return tokopedia internal shop setting in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-page/1479278/settings"
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_SETTINGS_CUSTOMER_APP, "1479278")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
 }

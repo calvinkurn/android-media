@@ -5,10 +5,13 @@ import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import rx.Completable;
@@ -60,7 +63,12 @@ public class AppsflyerEventValidation {
             validateContentType(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_TYPE)));
             validateContent(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT)));
         } catch (Exception e) {
-            logging("error;reason=exception_validatePurchase;data='"+eventValue+"';ex='"+ Log.getStackTraceString(e)+"'");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "error");
+            messageMap.put("reason", "exception_validatePurchase");
+            messageMap.put("data", String.valueOf(eventValue));
+            messageMap.put("ex", Log.getStackTraceString(e));
+            logging(messageMap);
         }
     }
 
@@ -73,23 +81,43 @@ public class AppsflyerEventValidation {
             validateContentType(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT_TYPE)));
             validateContent(eventName, String.valueOf(eventValue.get(AFInAppEventParameterName.CONTENT)));
         } catch (Exception e) {
-            logging("error;reason=exception_validateAddToCart;data='"+eventValue+"'ex='"+ Log.getStackTraceString(e) +"'");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "error");
+            messageMap.put("reason", "exception_validateAddToCart");
+            messageMap.put("data", String.valueOf(eventValue));
+            messageMap.put("ex", Log.getStackTraceString(e));
+            logging(messageMap);
         }
     }
 
     private void validatePaymentId(String paymentId, String orderID) {
         if (TextUtils.isEmpty(paymentId)) {
-            logging("validation;reason=paymentId_blank;eventName='';data='"+orderID+"'");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "paymentId_blank");
+            messageMap.put("eventName", "");
+            messageMap.put("data", orderID);
+            logging(messageMap);
         }
         if (TextUtils.isEmpty(orderID)) {
-            logging("validation;reason=orderId_blank;eventName='';data='"+ paymentId+"'");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "orderId_blank");
+            messageMap.put("eventName", "");
+            messageMap.put("data", paymentId);
+            logging(messageMap);
         }
     }
 
     private void validateRevenue(String revenuePrice) {
         double price = convertToDouble(revenuePrice, "revenue");
         if (price < 0) {
-            logging("validation;reason=revenue_blank;eventName='';data='"+revenuePrice+"'");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "revenue_blank");
+            messageMap.put("eventName", "");
+            messageMap.put("data", revenuePrice);
+            logging(messageMap);
         }
     }
 
@@ -97,47 +125,87 @@ public class AppsflyerEventValidation {
     private void validateShipping(String shippingPrice) {
         double price = convertToDouble(shippingPrice, "shippingPrice");
         if (price < 0) {
-            logging("validation;reason=shippingPrice_blank;eventName='';data='"+shippingPrice+"'");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "shippingPrice_blank");
+            messageMap.put("eventName", "");
+            messageMap.put("data", shippingPrice);
+            logging(messageMap);
         }
     }
 
 
     private void exceptionStringToDouble(String ex, String type) {
-        logging("error;reason=exceptionStringToDouble;data='"+type+"';err='"+ex+"'");
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "error");
+        messageMap.put("reason", "exceptionStringToDouble");
+        messageMap.put("data", type);
+        messageMap.put("err", ex);
+        logging(messageMap);
     }
 
     private void validateQuantity(String eventName, String quantity) {
         if (convertToDouble(quantity, eventName + " quantity") <= 0) {
-            logging("validation;reason=quantity_is_0;eventName='"+eventName+"';data='"+quantity+"'");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "quantity_is_0");
+            messageMap.put("eventName", eventName);
+            messageMap.put("data", quantity);
+            logging(messageMap);
         }
     }
 
     private void validateContentId(String eventName, String ids) {
         if (TextUtils.isEmpty(ids)) {
-            logging("validation;reason=ContentId_blank;eventName='"+eventName+"';data=''");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "ContentId_blank");
+            messageMap.put("eventName", eventName);
+            messageMap.put("data", "");
+            logging(messageMap);
         }
     }
 
     private void validateCurrency(String eventName,String currency) {
         if (!VALUE_IDR.equals(currency)) {
-            logging("validation;reason=currency_invalid;eventName='"+ eventName+"';data='"+ currency+"'");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "currency_invalid");
+            messageMap.put("eventName", eventName);
+            messageMap.put("data", currency);
+            logging(messageMap);
         }
     }
 
     private void validateCategory(String eventName, String category) {
         if (TextUtils.isEmpty(category)) {
-            logging("validation;reason=category_blank;eventName='"+eventName+"';data=''");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "category_blank");
+            messageMap.put("eventName", eventName);
+            messageMap.put("data", "");
+            logging(messageMap);
         }
     }
 
     private void validateProductList(String productList) {
         if (TextUtils.isEmpty(productList)) {
-            logging("validation;reason=product_list_blank;eventName='';data=''");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "product_list_blank");
+            messageMap.put("eventName", "");
+            messageMap.put("data", "");
+            logging(messageMap);
         } else {
             try {
                 JSONArray productarray = new JSONArray(productList);
                 if (productarray.length() < 1) {
-                    logging("validation;reason=product_array_invalid;eventName='';data='"+ productList+"'");
+                    Map<String, String> messageMap = new HashMap<>();
+                    messageMap.put("type", "validation");
+                    messageMap.put("reason", "product_array_invalid");
+                    messageMap.put("eventName", "");
+                    messageMap.put("data", productList);
+                    logging(messageMap);
                 }
             } catch (JSONException e) {
                 //logging("error;reason=productList_array_exception;eventName='';data='$productList'");
@@ -148,15 +216,30 @@ public class AppsflyerEventValidation {
 
     private void validateProductCategory(String productCategory) {
         if (TextUtils.isEmpty(productCategory)) {
-            logging("validation;reason=ProductCategory_blank;eventName='';data=''");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "ProductCategory_blank");
+            messageMap.put("eventName", "");
+            messageMap.put("data", "");
+            logging(messageMap);
         } else {
             try {
                 JSONArray productCatList = new JSONArray(productCategory);
                 if (productCatList.length() < 1) {
-                    logging("validation;reason=productCategory_array_invalid;eventName='';data='"+productCategory+"'");
+                    Map<String, String> messageMap = new HashMap<>();
+                    messageMap.put("type", "validation");
+                    messageMap.put("reason", "productCategory_array_invalid");
+                    messageMap.put("eventName", "");
+                    messageMap.put("data", productCategory);
+                    logging(messageMap);
                 }
             } catch (JSONException e) {
-                logging("error;reason=productCategory_array_exception;eventName='';data='" + productCategory+"'");
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("type", "error");
+                messageMap.put("reason", "productCategory_array_exception");
+                messageMap.put("eventName", "");
+                messageMap.put("data", productCategory);
+                logging(messageMap);
             }
 
         }
@@ -164,21 +247,41 @@ public class AppsflyerEventValidation {
 
     private void validateContentType(String eventName, String contentType) {
         if (!AF_VALUE_PRODUCTTYPE.equals(contentType)) {
-            logging("validation;reason=contentType_invalid;eventName='"+eventName+"';data='"+ contentType+"'");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "contentType_invalid");
+            messageMap.put("eventName", eventName);
+            messageMap.put("data", contentType);
+            logging(messageMap);
         }
     }
 
     private void validateContent(String eventName, String content) {
         if (TextUtils.isEmpty(content)) {
-            logging("validation;reason=content_array_blank;eventName='"+eventName+"'data=''");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "content_array_blank");
+            messageMap.put("eventName", eventName);
+            messageMap.put("data", "");
+            logging(messageMap);
         } else {
             try {
                 JSONArray contentarray = new JSONArray(content);
                 if (contentarray.length() < 1) {
-                    logging("validation;reason=content_array_invalid;eventName='"+eventName+"';data='"+content+"'");
+                    Map<String, String> messageMap = new HashMap<>();
+                    messageMap.put("type", "validation");
+                    messageMap.put("reason", "content_array_invalid");
+                    messageMap.put("eventName", eventName);
+                    messageMap.put("data", content);
+                    logging(messageMap);
                 }
             } catch (JSONException e) {
-                logging("error;reason=content_array_exception;eventName='"+eventName+"';data='"+content+"'");
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("type", "error");
+                messageMap.put("reason", "content_array_exception");
+                messageMap.put("eventName", eventName);
+                messageMap.put("data", content);
+                logging(messageMap);
             }
 
         }
@@ -196,7 +299,7 @@ public class AppsflyerEventValidation {
         return result;
     }
 
-    private void logging(String log) {
-        Timber.w(TAG + log);
+    private void logging(Map<String, String> messageMap) {
+        ServerLogger.log(Priority.P2, "APPSFLYER_VALIDATION", messageMap);
     }
 }

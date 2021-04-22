@@ -32,4 +32,8 @@ data class AnnouncementWidgetUiModel(
     override fun copy(): BaseWidgetUiModel<AnnouncementDataUiModel> {
         return AnnouncementWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<AnnouncementDataUiModel>): Boolean {
+        return dataKey != other.dataKey
+    }
 }

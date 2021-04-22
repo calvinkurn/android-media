@@ -39,7 +39,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_flight_order_detail_insurance" />
+                app:srcCompat="@drawable/ic_flight_order_detail_web_check_in" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tgFlightOrderTopButtonTopText"
@@ -65,14 +65,14 @@
                 app:typographyType="body_3"
                 tools:text="Check-in lebih awal lewat website." />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/ivFlightOrderTopButtonRightIcon"
                 android:layout_width="@dimen/layout_lvl3"
                 android:layout_height="@dimen/layout_lvl3"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_system_action_arrow_right_grayscale_24" />
+                app:icon_name="CHEVRON_RIGHT" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -98,7 +98,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_flight_order_detail_insurance" />
+                app:srcCompat="@drawable/ic_flight_order_detail_cancellation" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tgFlightOrderBottomButtonTopText"
@@ -124,14 +124,14 @@
                 app:typographyType="body_3"
                 tools:text="Check-in lebih awal lewat website." />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/ivFlightOrderBottomButtonRightIcon"
                 android:layout_width="@dimen/layout_lvl3"
                 android:layout_height="@dimen/layout_lvl3"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_system_action_arrow_right_grayscale_24" />
+                app:icon_name="CHEVRON_RIGHT" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

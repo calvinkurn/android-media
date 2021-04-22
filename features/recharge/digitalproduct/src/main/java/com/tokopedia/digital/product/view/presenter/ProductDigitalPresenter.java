@@ -178,7 +178,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
     }
 
     private void onError(Throwable e) {
-        handleCategoryError(e);
+        getView().showSnackBar(handleCategoryToaster(e));
         getView().onBuyButtonLoading(false);
     }
 
@@ -230,6 +230,20 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                 getView().sendOpenScreenEventTracking(productDigitalData.getCategoryData());
             }
         };
+    }
+
+    private String handleCategoryToaster(Throwable e) {
+        if (e instanceof UnknownHostException || e instanceof ConnectException) {
+            return ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL;
+        } else if (e instanceof SocketTimeoutException) {
+            return ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
+        } else if (e instanceof ResponseErrorException
+                || e instanceof ResponseDataNullException
+                || e instanceof HttpErrorException) {
+            return e.getMessage();
+        } else {
+            return ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
+        }
     }
 
     private void handleCategoryError(Throwable e) {

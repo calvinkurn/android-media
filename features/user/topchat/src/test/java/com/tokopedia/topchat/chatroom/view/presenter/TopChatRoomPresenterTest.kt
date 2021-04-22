@@ -15,18 +15,20 @@ import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.ReplyChatViewModel
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
+import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
@@ -36,6 +38,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
+import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastListener
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exImageUploadId
@@ -64,7 +67,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseTypingString
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_EXCEED_SIZE_LIMIT
@@ -168,9 +171,12 @@ class TopChatRoomPresenterTest {
     private lateinit var chatBackgroundUseCase: ChatBackgroundUseCase
 
     @RelaxedMockK
+    private lateinit var replyChatGQLUseCase: ReplyChatGQLUseCase
+
+    @RelaxedMockK
     private lateinit var sharedPref: SharedPreferences
 
-    private val dispatchers: TopchatCoroutineContextProvider = TopchatTestCoroutineContextDispatcher()
+    private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
     @RelaxedMockK
     private lateinit var webSocket: WebSocket
@@ -179,7 +185,13 @@ class TopChatRoomPresenterTest {
     private lateinit var view: TopChatContract.View
 
     @RelaxedMockK
+    private lateinit var uploadImageBroadcastListener : UploadImageBroadcastListener
+
+    @RelaxedMockK
     private lateinit var sendAbleProductPreview: SendablePreview
+
+    @RelaxedMockK
+    private lateinit var remoteConfig: RemoteConfig
 
     @SpyK
     private var topChatRoomWebSocketMessageMapper = TopChatRoomWebSocketMessageMapper()
@@ -310,7 +322,8 @@ class TopChatRoomPresenterTest {
                         chatToggleBlockChat,
                         chatBackgroundUseCase,
                         sharedPref,
-                        dispatchers
+                        dispatchers,
+                        remoteConfig
                 )
         )
         presenter.attachView(view)
@@ -562,6 +575,9 @@ class TopChatRoomPresenterTest {
     fun `on success upload image and sent through websocket`() {
         // Given
         every {
+            remoteConfig.getBoolean(any())
+        } returns false
+        every {
             ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
         } returns Pair(true, IMAGE_VALID)
         every {
@@ -598,6 +614,9 @@ class TopChatRoomPresenterTest {
         // Given
         val slot = slot<Subscriber<ReplyChatViewModel>>()
         every {
+            remoteConfig.getBoolean(any())
+        } returns false
+        every {
             ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
         } returns Pair(true, IMAGE_VALID)
         every {
@@ -630,9 +649,47 @@ class TopChatRoomPresenterTest {
     }
 
     @Test
+    fun `on success upload image with service`() {
+        val chatReply = mockk<ChatReplyPojo>()
+        every {
+            remoteConfig.getBoolean(any())
+        } returns true
+        every {
+            ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
+        } returns Pair(true, IMAGE_VALID)
+        every {
+            compressImageUseCase.compressImage(imageUploadViewModel.imageUrl!!)
+        } returns Observable.just(imageUploadViewModel.imageUrl)
+        every {
+            uploadImageUseCase.upload(imageUploadViewModel, captureLambda(), any())
+        } answers {
+            val onSuccess = lambda<(String, ImageUploadViewModel) -> Unit>()
+            onSuccess.invoke(exImageUploadId, imageUploadViewModel)
+        }
+        coEvery {
+            replyChatGQLUseCase.replyMessage(any(), any(), any(), any())
+        } returns chatReply
+
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+        websocketServer.onNext(wsOpen)
+        websocketServer.onCompleted()
+        presenter.startCompressImages(imageUploadViewModel)
+
+        // Then
+        verify(exactly = 1) { view.addDummyMessage(imageUploadViewModel) }
+    }
+
+    @Test
     fun `on error upload image`() {
         // Given
         val errorUploadImage = Throwable()
+        every {
+            remoteConfig.getBoolean(any())
+        } returns false
         every {
             ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
         } returns Pair(true, IMAGE_VALID)

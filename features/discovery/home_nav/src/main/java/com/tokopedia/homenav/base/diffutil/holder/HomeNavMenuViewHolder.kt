@@ -48,7 +48,7 @@ class HomeNavMenuViewHolder(
                 )
                 itemView.menu_notification.visibility = View.VISIBLE
             } else {
-                itemView.menu_notification_typography.text = element.notifCount
+                itemView.menu_notification_typography.setNotification(element.notifCount, NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
                 itemView.menu_notification_typography.visibility = View.VISIBLE
             }
         } else {

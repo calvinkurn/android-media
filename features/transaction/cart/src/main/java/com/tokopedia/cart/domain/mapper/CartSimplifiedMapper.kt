@@ -10,7 +10,6 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_SHOW
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_SHOWMORE
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
@@ -69,12 +68,43 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartListData.isAllSelected = cartDataListResponse.isGlobalCheckboxState
         cartListData.isShowOnboarding = false
         cartListData.shoppingSummaryData = mapShoppingSummaryData(cartDataListResponse.shoppingSummary)
+        cartListData.promoSummaryData = mapPromoSummaryData(cartDataListResponse.promoSummary)
         cartListData.outOfServiceData = mapOutOfServiceData(cartDataListResponse.outOfService)
-        cartListData.abTestButton = ABTestButton(cartDataListResponse.abTestButton.enable)
+        cartListData.localizationChooseAddressData = mapLocalizationChooseAddressData(cartDataListResponse.localizationChooseAddress)
+        cartListData.popUpMessage = cartDataListResponse.popUpMessage
 
         mapPromoAnalytics(cartDataListResponse.promo.lastApplyPromo.lastApplyPromoData, cartListData.shopGroupAvailableDataList)
 
         return cartListData
+    }
+
+    private fun mapLocalizationChooseAddressData(data: LocalizationChooseAddress): LocalizationChooseAddressData {
+        return LocalizationChooseAddressData(
+                addressId = data.addressId,
+                addressName = data.addressName,
+                address = data.addressName,
+                postalCode = data.postalCode,
+                phone = data.phone,
+                receiverName = data.receiverName,
+                status = data.status,
+                country = data.country,
+                provinceId = data.provinceId,
+                provinceName = data.provinceName,
+                cityId = data.cityId,
+                cityName = data.cityName,
+                districtId = data.districtId,
+                districtName = data.districtName,
+                address2 = data.address2,
+                latitude = data.latitude,
+                longitude = data.longitude,
+                cornerId = data.cornerId,
+                isCorner = data.isCorner,
+                isPrimary = data.isPrimary,
+                buyerStoreCode = data.buyerStoreCode,
+                type = data.type,
+                state = data.state,
+                stateDetail = data.stateDetail
+        )
     }
 
     private fun mapActionAvailableGroupData(actions: List<Action>): List<ActionData> {
@@ -127,6 +157,20 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         }
     }
 
+    private fun mapPromoSummaryData(promoSummary: PromoSummary): PromoSummaryData =
+            PromoSummaryData(
+                    title = promoSummary.title,
+                    details = promoSummary.details.map {
+                        PromoSummaryDetailData(
+                                description = it.description,
+                                type = it.type,
+                                amountStr = it.amountStr,
+                                amount = it.amount,
+                                currencyDetailStr = it.currencyDetailStr
+                        )
+                    }.toMutableList()
+            )
+
     private fun mapTickerData(tickers: List<Ticker>): TickerData {
         val ticker = tickers[0]
         return TickerData(ticker.id, ticker.message, ticker.page)
@@ -163,14 +207,20 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                     else if (availableGroup.shop.goldMerchant.isGoldBadge) availableGroup.shop.goldMerchant.goldMerchantLogoUrl
                     else ""
             it.isFulfillment = availableGroup.isFulFillment
-            it.fulfillmentName = availableGroup.shipmentInformation.shopLocation
+            it.fulfillmentName = if (availableGroup.isFulFillment) cartDataListResponse.tokoCabangInfo.message else availableGroup.shipmentInformation.shopLocation
+            it.fulfillmentBadgeUrl = cartDataListResponse.tokoCabangInfo.badgeUrl
             it.isHasPromoList = availableGroup.hasPromoList
             it.cartString = availableGroup.cartString
             it.promoCodes = availableGroup.promoCodes
             it.cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, it, cartDataListResponse, false, actionsData, 0, "")
 
             it.preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
-            it.freeShippingBadgeUrl = if (availableGroup.shipmentInformation.freeShipping.eligible) availableGroup.shipmentInformation.freeShipping.badgeUrl else ""
+            it.isFreeShippingExtra = availableGroup.shipmentInformation.freeShippingExtra.eligible
+            it.freeShippingBadgeUrl = when {
+                availableGroup.shipmentInformation.freeShippingExtra.eligible -> availableGroup.shipmentInformation.freeShippingExtra.badgeUrl
+                availableGroup.shipmentInformation.freeShipping.eligible -> availableGroup.shipmentInformation.freeShipping.badgeUrl
+                else -> ""
+            }
             it.incidentInfo = availableGroup.shop.shopAlertMessage
             it.estimatedTimeArrival = availableGroup.shipmentInformation.estimation
             it
@@ -327,10 +377,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                     else ""
             it.isCheckboxState = cartDetail.isCheckboxState
             it.priceOriginal = cartDetail.product.productOriginalPrice
-            if (cartDetail.product.freeShipping.eligible && cartDetail.product.freeShipping.badgeUrl.isNotBlank()) {
-                it.isFreeShipping = true
-                it.freeShippingBadgeUrl = cartDetail.product.freeShipping.badgeUrl
-            }
+            it.isFreeShippingExtra = cartDetail.product.freeShippingExtra.eligible
+            it.isFreeShipping = cartDetail.product.freeShipping.eligible
             it.variant = cartDetail.product.variantDescriptionDetail.variantNames.joinToString(", ")
             it.productInformation = cartDetail.product.productInformation
             it.warningMessage = cartDetail.product.productWarningMessage

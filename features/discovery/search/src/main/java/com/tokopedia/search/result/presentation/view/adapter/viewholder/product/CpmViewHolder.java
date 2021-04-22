@@ -6,13 +6,13 @@ import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.search.R;
-import com.tokopedia.search.result.presentation.model.CpmViewModel;
+import com.tokopedia.search.result.presentation.model.CpmDataView;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
-public class CpmViewHolder extends AbstractViewHolder<CpmViewModel> {
+public class CpmViewHolder extends AbstractViewHolder<CpmDataView> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_product_top_ads_banner_layout;
@@ -39,11 +39,11 @@ public class CpmViewHolder extends AbstractViewHolder<CpmViewModel> {
     }
 
     @Override
-    public void bind(final CpmViewModel element) {
+    public void bind(final CpmDataView element) {
         bindAdsBannerView(element);
     }
 
-    private void bindAdsBannerView(final CpmViewModel element) {
+    private void bindAdsBannerView(final CpmDataView element) {
         adsBannerView.displayAds(element.getCpmModel());
     }
 }

@@ -1,5 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.shop.settings">
 
     <application>
@@ -7,7 +6,6 @@
             android:name=".basicinfo.view.activity.ShopSettingsInfoActivity"
             android:label="@string/shop_settings_info"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -40,28 +38,11 @@
         </activity>
 
         <activity
-            android:name=".etalase.view.activity.ShopSettingsEtalaseActivity"
-            android:label="@string/shop_settings_manage_etalase"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" >
-            <intent-filter >
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
-                    android:pathPattern="@string/path_shop_settings_etalase"/>
-            </intent-filter >
-        </activity>
-
-        <activity
             android:name=".notes.view.activity.ShopSettingsNotesActivity"
             android:label="@string/shop_settings_manage_notes"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
-            <intent-filter >
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -73,7 +54,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".notes.view.activity.ShopSettingNotesAddEditActivity"
+        <activity android:name=".notes.view.activity.ShopSettingsNotesAddEditActivity"
             android:label="@string/shop_settings_add_note"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait"/>
@@ -82,7 +63,7 @@
             android:label="@string/shop_settings_add_etalase"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
-            <intent-filter >
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />

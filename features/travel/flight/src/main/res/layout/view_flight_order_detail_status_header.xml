@@ -54,14 +54,14 @@
         app:typographyWeight="bold"
         tools:text="IVR/20170713/XVII/VII" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ivFlightOrderInvoiceCopy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tgFlightOrderStatus"
-        app:srcCompat="@drawable/ic_flight_copy" />
+        app:icon_name="COPY"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
@@ -161,14 +161,16 @@
         app:typographyType="body_3"
         app:typographyWeight="bold" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ivFlightOrderLabelDetailPayment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderLabelDetailPayment"
         app:layout_constraintLeft_toRightOf="@id/tgFlightOrderLabelDetailPayment"
         app:layout_constraintTop_toTopOf="@id/tgFlightOrderLabelDetailPayment"
-        app:srcCompat="@drawable/ic_system_action_arrow_down_normal_24" />
+        app:icon_name="CHEVRON_DOWN"
+        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_color_night_enable="@color/Unify_G500"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

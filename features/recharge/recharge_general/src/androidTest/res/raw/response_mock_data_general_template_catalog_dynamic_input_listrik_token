@@ -1,0 +1,208 @@
+[{
+  "data": {
+    "rechargeCatalogDynamicInput": {
+      "needEnquiry": true,
+      "isShowingProduct": true,
+      "dynamicFields": [
+        {
+          "param_name": "",
+          "name": "client_number",
+          "text": "No. Meter/ID Pel",
+          "style": "input_numeric",
+          "placeholder": "",
+          "help": "No. Meter atau Id Pelanggan adalah nomor yang tertera pada kartu pelanggan",
+          "data_collections": [],
+          "validations": []
+        },
+        {
+          "param_name": "product",
+          "name": "product_id",
+          "text": "Nominal",
+          "style": "select_dropdown",
+          "placeholder": "",
+          "help": "",
+          "data_collections": [
+            {
+              "name": "",
+              "products": [
+                {
+                  "id": "182",
+                  "attributes": {
+                    "price": "Rp 22.750",
+                    "price_plain": 22750,
+                    "promo": null,
+                    "desc": "Rp 20.000",
+                    "detail": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "detail_compact": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "info": "",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 3,
+                    "product_labels": [],
+                    "product_descriptions": [],
+                    "hide_from_subscription": false
+                  }
+                },
+                {
+                  "id": "173",
+                  "attributes": {
+                    "price": "Rp 52.750",
+                    "price_plain": 52750,
+                    "promo": null,
+                    "desc": "Rp 50.000",
+                    "detail": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "detail_compact": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "info": "",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 3,
+                    "product_labels": [],
+                    "product_descriptions": [],
+                    "hide_from_subscription": false
+                  }
+                },
+                {
+                  "id": "174",
+                  "attributes": {
+                    "price": "Rp 102.750",
+                    "price_plain": 102750,
+                    "promo": null,
+                    "desc": "Rp 100.000",
+                    "detail": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "detail_compact": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "info": "",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 3,
+                    "product_labels": [],
+                    "product_descriptions": [],
+                    "hide_from_subscription": false
+                  }
+                },
+                {
+                  "id": "176",
+                  "attributes": {
+                    "price": "Rp 202.750",
+                    "price_plain": 202750,
+                    "promo": null,
+                    "desc": "Rp 200.000",
+                    "detail": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "detail_compact": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "info": "",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 3,
+                    "product_labels": [],
+                    "product_descriptions": [],
+                    "hide_from_subscription": false
+                  }
+                },
+                {
+                  "id": "178",
+                  "attributes": {
+                    "price": "Rp 502.750",
+                    "price_plain": 502750,
+                    "promo": null,
+                    "desc": "Rp 500.000",
+                    "detail": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "detail_compact": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "info": "",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 3,
+                    "product_labels": [],
+                    "product_descriptions": [],
+                    "hide_from_subscription": false
+                  }
+                },
+                {
+                  "id": "179",
+                  "attributes": {
+                    "price": "Rp 1.002.750",
+                    "price_plain": 1002750,
+                    "promo": null,
+                    "desc": "Rp 1.000.000",
+                    "detail": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "detail_compact": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "info": "",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 3,
+                    "product_labels": [],
+                    "product_descriptions": [],
+                    "hide_from_subscription": false
+                  }
+                },
+                {
+                  "id": "751",
+                  "attributes": {
+                    "price": "Rp 5.002.750",
+                    "price_plain": 5002750,
+                    "promo": null,
+                    "desc": "Rp 5.000.000",
+                    "detail": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "detail_compact": "1. Produk Listrik PLN tidak tersedia pada <b> jam<i> cut off/maintenance (23.00 - 01.00). </b> </i> <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "info": "",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 3,
+                    "product_labels": [],
+                    "product_descriptions": [],
+                    "hide_from_subscription": false
+                  }
+                },
+                {
+                  "id": "2225",
+                  "attributes": {
+                    "price": "Rp 10.002.750",
+                    "price_plain": 10002750,
+                    "promo": null,
+                    "desc": "Rp 10.000.000",
+                    "detail": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "detail_compact": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "info": "",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 3,
+                    "product_labels": [],
+                    "product_descriptions": [],
+                    "hide_from_subscription": false
+                  }
+                },
+                {
+                  "id": "2226",
+                  "attributes": {
+                    "price": "Rp 50.002.750",
+                    "price_plain": 50002750,
+                    "promo": null,
+                    "desc": "Rp 50.000.000",
+                    "detail": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "detail_compact": "1. Transaksi Produk Listrik PLN yang dilakukan pukul 23:00-00.59 WIB akan <b>mulai diproses pada pukul 01.00 WIB</b> sesuai kebijakan pihak PLN <br/> 2. Proses verifikasi transaksi <b>maksimal 2x24 jam hari kerja.</b><br>3. Harap cek <b>limit kWh </b> anda sebelum membeli token listrik",
+                    "info": "",
+                    "detail_url": "",
+                    "detail_url_text": "",
+                    "category_id": 3,
+                    "product_labels": [],
+                    "product_descriptions": [],
+                    "hide_from_subscription": false
+                  }
+                }
+              ]
+            }
+          ],
+          "validations": []
+        },
+        {
+          "param_name": "enquiry",
+          "name": "enquiry_result",
+          "text": "Lanjut",
+          "style": "enquiry",
+          "placeholder": "",
+          "help": "",
+          "data_collections": [],
+          "validations": []
+        }
+      ]
+    }
+  }
+}]

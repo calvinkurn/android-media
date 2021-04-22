@@ -176,6 +176,34 @@ class SmartBillsAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
+    fun clickToolTip(){
+        val map = TrackAppUtils.gtmData(
+                Event.CLICK_SMART_BILLS,
+                CATEGORY_SMART_BILLS,
+                Action.CLICK_TOOL_TIP,
+                "")
+        map[Key.USER_ID] = userId
+        map.putAll(mapOf(
+                Key.CURRENT_SITE to CURRENT_SITE_VALUE,
+                Key.BUSINESS_UNIT to BUSINESS_UNIT_RECHARGE_VALUE
+        ))
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun clickMoreLearn(){
+        val map = TrackAppUtils.gtmData(
+                Event.CLICK_SMART_BILLS,
+                CATEGORY_SMART_BILLS,
+                Action.CLICK_MORE_LEARN,
+                "")
+        map[Key.USER_ID] = userId
+        map.putAll(mapOf(
+                Key.CURRENT_SITE to CURRENT_SITE_VALUE,
+                Key.BUSINESS_UNIT to BUSINESS_UNIT_RECHARGE_VALUE
+        ))
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
     private fun createEcommerceProducts(bills: List<RechargeBills>): List<Map<String, Any>> {
         with (EnhanceEccomerce) {
             return bills.map {
@@ -199,6 +227,7 @@ class SmartBillsAnalytics {
         const val SCREEN_NAME_DETAIL = "/detail-sbm-page"
         const val CURRENT_SITE_VALUE = "tokopediaDigitalRecharge"
         const val BUSINESS_UNIT_VALUE = "top up and tagihan"
+        const val BUSINESS_UNIT_RECHARGE_VALUE = "recharge"
         const val CURRENCY_CODE_VALUE = "IDR"
         const val LIST_VALUE = "/smartbill"
         const val STEP_VALUE = "1"

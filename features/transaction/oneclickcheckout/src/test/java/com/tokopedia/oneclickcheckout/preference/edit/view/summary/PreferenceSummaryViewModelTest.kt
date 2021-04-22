@@ -11,6 +11,8 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.create.FakeCreatePr
 import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.FakeDeletePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.get.GetPreferenceByIdUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -30,6 +32,7 @@ class PreferenceSummaryViewModelTest {
     private val createPreferenceUseCase = FakeCreatePreferenceUseCase()
     private val deletePreferenceUseCase = FakeDeletePreferenceUseCase()
     private val updatePreferenceUseCase: UpdatePreferenceUseCase = mockk()
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper = mockk()
 
     private lateinit var preferenceSummaryViewModel: PreferenceSummaryViewModel
 
@@ -116,7 +119,9 @@ class PreferenceSummaryViewModelTest {
 
     @Test
     fun `Create Preference Success`() {
-        preferenceSummaryViewModel.createPreference(0, 0, "", "", true, 0)
+        every { chosenAddressRequestHelper.getChosenAddress() } returns ChosenAddress()
+
+        preferenceSummaryViewModel.createPreference(0, 0, "", "", true, 0, AddressModel(), false)
 
         assertEquals(OccState.Loading, preferenceSummaryViewModel.editResult.value)
 
@@ -129,7 +134,9 @@ class PreferenceSummaryViewModelTest {
     fun `Create Preference Failed`() {
         val response = Throwable()
 
-        preferenceSummaryViewModel.createPreference(0, 0, "", "", true, 0)
+        every { chosenAddressRequestHelper.getChosenAddress() } returns ChosenAddress()
+
+        preferenceSummaryViewModel.createPreference(0, 0, "", "", true, 0, AddressModel(), false)
 
         assertEquals(OccState.Loading, preferenceSummaryViewModel.editResult.value)
 
@@ -147,7 +154,7 @@ class PreferenceSummaryViewModelTest {
             (secondArg() as ((String) -> Unit)).invoke(successMessage)
         }
 
-        preferenceSummaryViewModel.updatePreference(0, 0, 0, "", "", true, 0)
+        preferenceSummaryViewModel.updatePreference(0, 0, 0, "", "", true, 0, AddressModel(), false)
 
         assertEquals(OccState.Success(successMessage), preferenceSummaryViewModel.editResult.value)
     }
@@ -162,7 +169,7 @@ class PreferenceSummaryViewModelTest {
             (thirdArg() as ((Throwable) -> Unit)).invoke(response)
         }
 
-        preferenceSummaryViewModel.updatePreference(0, 0, 0, "", "", true, 0)
+        preferenceSummaryViewModel.updatePreference(0, 0, 0, "", "", true, 0, AddressModel(), false)
 
         assertEquals(OccState.Failed(Failure(response)), preferenceSummaryViewModel.editResult.value)
     }
@@ -177,7 +184,7 @@ class PreferenceSummaryViewModelTest {
             (thirdArg() as ((Throwable) -> Unit)).invoke(response)
         }
 
-        preferenceSummaryViewModel.updatePreference(0, 0, 0, "", "", true, 0)
+        preferenceSummaryViewModel.updatePreference(0, 0, 0, "", "", true, 0, AddressModel(), false)
 
         //consume failure
         (preferenceSummaryViewModel.editResult.value as OccState.Failed).getFailure()

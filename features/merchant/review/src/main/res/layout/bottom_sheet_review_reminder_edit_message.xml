@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_title_edit_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:text="@string/review_reminder_edit_message_title"
+        app:layout_constraintBottom_toTopOf="@id/text_subtitle_edit_message"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:typographyType="heading_4" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        app:labelTitle="@string/review_reminder_bottom_sheet_edit_message_label"
+        app:labelType="general_light_grey"
+        app:layout_constraintBottom_toBottomOf="@id/text_title_edit_message"
+        app:layout_constraintLeft_toRightOf="@id/text_title_edit_message"
+        app:layout_constraintTop_toTopOf="@id/text_title_edit_message" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_subtitle_edit_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/review_reminder_edit_message_subtitle"
+        app:layout_constraintBottom_toTopOf="@id/textarea_edit_message"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifycomponents.TextAreaUnify
+        android:id="@+id/textarea_edit_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_40"
+        app:layout_constraintBottom_toTopOf="@id/layout_add_buyer"
+        app:text_area_clearable="false"
+        app:text_area_counter="200"
+        app:text_area_label="@string/review_reminder_bottom_sheet_edit_message_hint_label" />
+
+    <LinearLayout
+        android:id="@+id/layout_add_buyer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/footer_edit_message"
+        app:layout_constraintLeft_toLeftOf="parent">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_4"
+            app:icon_color_light_enable="@color/Unify_G500"
+            app:icon_name="ADD_CIRCLE" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/review_reminder_edit_message_add_buyer"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_4"
+        android:alpha="0.2"
+        android:contentDescription="@string/review_reminder_content_description_top_shadow"
+        android:scaleY="-1"
+        android:src="@drawable/top_bar_shadow"
+        app:layout_constraintBottom_toTopOf="@id/footer_edit_message" />
+
+    <LinearLayout
+        android:id="@+id/footer_edit_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/button_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/review_reminder_edit_message_button_save"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

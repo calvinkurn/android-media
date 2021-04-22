@@ -54,7 +54,7 @@ public class Product implements Parcelable {
     private String productPreOrderInfo;
     private TradeInInfoData tradeInInfoData;
     private boolean freeShipping;
-    private String freeShippingBadgeUrl;
+    private boolean freeShippingExtra;
     private boolean showTicker;
     private String tickerMessage;
     private String variant;
@@ -383,12 +383,12 @@ public class Product implements Parcelable {
         this.freeShipping = freeShipping;
     }
 
-    public String getFreeShippingBadgeUrl() {
-        return freeShippingBadgeUrl;
+    public boolean isFreeShippingExtra() {
+        return freeShippingExtra;
     }
 
-    public void setFreeShippingBadgeUrl(String freeShippingBadgeUrl) {
-        this.freeShippingBadgeUrl = freeShippingBadgeUrl;
+    public void setFreeShippingExtra(boolean freeShippingExtra) {
+        this.freeShippingExtra = freeShippingExtra;
     }
 
     public boolean isShowTicker() {
@@ -480,7 +480,7 @@ public class Product implements Parcelable {
         dest.writeString(productPreOrderInfo);
         dest.writeParcelable(tradeInInfoData, flags);
         dest.writeByte((byte) (freeShipping ? 1 : 0));
-        dest.writeString(freeShippingBadgeUrl);
+        dest.writeByte((byte) (freeShippingExtra ? 1 : 0));
         dest.writeByte((byte) (showTicker ? 1 : 0));
         dest.writeString(tickerMessage);
         dest.writeString(variant);
@@ -529,7 +529,7 @@ public class Product implements Parcelable {
         productPreOrderInfo = in.readString();
         tradeInInfoData = in.readParcelable(TradeInInfoData.class.getClassLoader());
         freeShipping = in.readByte() != 0;
-        freeShippingBadgeUrl = in.readString();
+        freeShippingExtra = in.readByte() != 0;
         showTicker = in.readByte() != 0;
         tickerMessage = in.readString();
         variant = in.readString();

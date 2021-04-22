@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.R
 import com.tokopedia.search.result.shop.presentation.listener.ShopListener
-import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopDataView
 import com.tokopedia.shopwidget.shopcard.ShopCardListener
 import com.tokopedia.shopwidget.shopcard.ShopCardModel
 import kotlinx.android.synthetic.main.search_result_shop_card.view.*
@@ -12,56 +12,56 @@ import kotlinx.android.synthetic.main.search_result_shop_card.view.*
 internal class ShopItemViewHolder(
     itemView: View,
     private val shopListener: ShopListener
-) : AbstractViewHolder<ShopViewModel.ShopItem>(itemView) {
+) : AbstractViewHolder<ShopDataView.ShopItem>(itemView) {
 
     companion object {
         @JvmField
         val LAYOUT = R.layout.search_result_shop_card
     }
 
-    override fun bind(shopViewItem: ShopViewModel.ShopItem?) {
-        if(shopViewItem == null) return
+    override fun bind(shopDataViewItem: ShopDataView.ShopItem?) {
+        if(shopDataViewItem == null) return
 
         itemView.shopCardView?.setShopCardModel(
                 ShopCardModel(
-                        id = shopViewItem.id,
-                        name = shopViewItem.name,
-                        domain = shopViewItem.domain,
-                        url = shopViewItem.url,
-                        applink = shopViewItem.applink,
-                        image = shopViewItem.image,
-                        image300 = shopViewItem.image300,
-                        description = shopViewItem.description,
-                        tagLine = shopViewItem.tagLine,
-                        location = shopViewItem.location,
-                        totalTransaction = shopViewItem.totalTransaction,
-                        totalFavorite = shopViewItem.totalFavorite,
-                        goldShop = shopViewItem.goldShop,
-                        isOwner = shopViewItem.isOwner,
-                        rateSpeed = shopViewItem.rateSpeed,
-                        rateAccuracy = shopViewItem.rateAccuracy,
-                        rateService = shopViewItem.rateService,
-                        status = shopViewItem.status,
-                        productList = shopViewItem.productList.mapToShopCardProductList(),
-                        voucher = shopViewItem.voucher.mapToShopCardVoucher(),
-                        lucky = shopViewItem.lucky,
-                        reputationImageUri = shopViewItem.reputationImageUri,
-                        reputationScore = shopViewItem.reputationScore,
-                        isOfficial = shopViewItem.isOfficial,
-                        gaKey = shopViewItem.gaKey,
-                        isRecommendation = shopViewItem.isRecommendation
+                        id = shopDataViewItem.id,
+                        name = shopDataViewItem.name,
+                        domain = shopDataViewItem.domain,
+                        url = shopDataViewItem.url,
+                        applink = shopDataViewItem.applink,
+                        image = shopDataViewItem.image,
+                        image300 = shopDataViewItem.image300,
+                        description = shopDataViewItem.description,
+                        tagLine = shopDataViewItem.tagLine,
+                        location = shopDataViewItem.location,
+                        totalTransaction = shopDataViewItem.totalTransaction,
+                        totalFavorite = shopDataViewItem.totalFavorite,
+                        goldShop = shopDataViewItem.goldShop,
+                        isOwner = shopDataViewItem.isOwner,
+                        rateSpeed = shopDataViewItem.rateSpeed,
+                        rateAccuracy = shopDataViewItem.rateAccuracy,
+                        rateService = shopDataViewItem.rateService,
+                        status = shopDataViewItem.status,
+                        productList = shopDataViewItem.productList.mapToShopCardProductList(),
+                        voucher = shopDataViewItem.voucher.mapToShopCardVoucher(),
+                        lucky = shopDataViewItem.lucky,
+                        reputationImageUri = shopDataViewItem.reputationImageUri,
+                        reputationScore = shopDataViewItem.reputationScore,
+                        isOfficial = shopDataViewItem.isOfficial,
+                        gaKey = shopDataViewItem.gaKey,
+                        isRecommendation = shopDataViewItem.isRecommendation
                 ),
                 object : ShopCardListener {
                     override fun onItemImpressed() { }
 
                     override fun onItemClicked() {
-                        shopListener.onItemClicked(shopViewItem)
+                        shopListener.onItemClicked(shopDataViewItem)
                     }
 
                     override fun onProductItemImpressed(productPreviewIndex: Int) { }
 
                     override fun onProductItemClicked(productPreviewIndex: Int) {
-                        val productItem = shopViewItem.productList.getOrNull(productPreviewIndex) ?: return
+                        val productItem = shopDataViewItem.productList.getOrNull(productPreviewIndex) ?: return
 
                         shopListener.onProductItemClicked(productItem)
                     }
@@ -69,7 +69,7 @@ internal class ShopItemViewHolder(
         )
     }
 
-    private fun List<ShopViewModel.ShopItem.ShopItemProduct>.mapToShopCardProductList() =
+    private fun List<ShopDataView.ShopItem.ShopItemProduct>.mapToShopCardProductList() =
             map {
                 ShopCardModel.ShopItemProduct(
                         id = it.id,
@@ -83,7 +83,7 @@ internal class ShopItemViewHolder(
                 )
             }
 
-    private fun ShopViewModel.ShopItem.ShopItemVoucher.mapToShopCardVoucher() =
+    private fun ShopDataView.ShopItem.ShopItemVoucher.mapToShopCardVoucher() =
             ShopCardModel.ShopItemVoucher(
                     freeShipping = freeShipping,
                     cashback = ShopCardModel.ShopItemVoucherCashback(

@@ -16,4 +16,5 @@ data class RecommendationWidget(
         val prevPage: Int = 0,
         val hasNext: Boolean = false,
         val pageName: String = "",
-        val recommendationFilterChips: List<RecommendationFilterChipsEntity.RecommendationFilterChip> = listOf())
+        val recommendationFilterChips: List<RecommendationFilterChipsEntity.RecommendationFilterChip> = listOf()
+)

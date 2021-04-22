@@ -18,6 +18,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.gson
     implementation project(rootProject.ext.libraries.track)
+
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

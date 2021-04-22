@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -24,6 +25,7 @@ import com.tokopedia.digital.home.di.RechargeHomepageComponent
 import com.tokopedia.digital.home.model.RechargeHomepageSectionModel
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
+import com.tokopedia.digital.home.model.RechargeTickerHomepageModel
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomeSectionDecoration
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapter
@@ -71,6 +73,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     private var sliceOpenApp: Boolean = false
 
     lateinit var homeComponentsData: List<RechargeHomepageSections.Section>
+    var tickerList: RechargeTickerHomepageModel = RechargeTickerHomepageModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.view_recharge_home, container, false)
@@ -157,10 +160,6 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         }
 
-        if (Build.VERSION.SDK_INT >= 19) {
-            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
-
         if (Build.VERSION.SDK_INT >= 21) {
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             activity?.window?.statusBarColor = Color.TRANSPARENT
@@ -221,13 +220,19 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         viewModel.rechargeHomepageSections.observe(viewLifecycleOwner, Observer {
             hideLoading()
+            renderList(it)
+        })
 
-            val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(it)
-            val homeComponentIDs: List<Int> = mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
-                homeComponent.visitableId()?.toInt()
+        viewModel.rechargeTickerHomepageModel.observe(viewLifecycleOwner, Observer { tickerListResult ->
+            when (tickerListResult) {
+                is Success -> {
+                    viewModel.rechargeHomepageSections.value?.let {
+                        tickerList = tickerListResult.data
+                        renderList(it)
+                    }
+                }
+                is Fail -> tickerList =  RechargeTickerHomepageModel()
             }
-            homeComponentsData = it.filter { section -> section.id.toIntOrZero() in homeComponentIDs }
-            adapter.renderList(mappedData)
         })
     }
 
@@ -237,6 +242,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         viewModel.getRechargeHomepageSectionSkeleton(
                 viewModel.createRechargeHomepageSectionSkeletonParams(platformId, enablePersonalize),
                 swipe_refresh_layout.isRefreshing
+        )
+
+        viewModel.getTickerHomepageSection(
+                viewModel.createRechargeHomepageTickerParams(listOf(), platformId)
         )
     }
 
@@ -368,7 +377,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             (it is RechargeHomepageSectionModel && it.visitableId().equals(sectionID)) ||
                     (it is HomeComponentVisitable && it.visitableId().equals(sectionID))
         }
-        if (index >= 0) {
+        if (index >= 0 && index < adapter.data.size) {
             recycler_view.post {
                 adapter.apply {
                     data.removeAt(index)
@@ -394,6 +403,15 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
                     requireContext(), platformId, enablePersonalize,
                     sectionIds, viewModel.getSearchBarPlaceholder()))
         }
+    }
+
+    private fun renderList(sections: List<RechargeHomepageSections.Section>){
+        val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(sections, tickerList)
+        val homeComponentIDs: List<Int> = mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
+            homeComponent.visitableId()?.toInt()
+        }
+        homeComponentsData = sections.filter { section -> section.id.toIntOrZero() in homeComponentIDs }
+        adapter.renderList(mappedData)
     }
 
     fun onBackPressed() {

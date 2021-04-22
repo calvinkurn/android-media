@@ -69,6 +69,25 @@
     <string name="error_product_price_less_than_min_limit">Harga kurang dari batas min. Rp100</string>
     <string name="error_product_price_exceeding_max_limit">Harga melebihi batas maks. Rp100 juta</string>
 
+    <!-- add edit product price recommendation -->
+    <string name="title_price_recommendation">Rekomendasi Harga Pasar</string>
+    <string name="title_price_recommendation_bottom_sheet">Rekomendasi harga pasar</string>
+    <string name="label_price_recommendation_description">Harga rata-rata %1s - %2s</string>
+    <string name="label_price_recommendation_apply">Terapkan</string>
+    <string name="label_price_recommendation_next">Pelajari Selengkapnya</string>
+    <string-array name="array_price_recommendation_content_titles">
+        <item>Didapat dari analisis sistem Tokopedia pada produk serupa di Tokopedia</item>
+        <item>Harga yang ditampilkan adalah harga paling kompetitif</item>
+        <item>Rekomendasi harga selalu di-update setiap hari</item>
+        <item>Fitur rekomendasi harga ini tidak wajib kamu gunakan pada setiap produkmu</item>
+    </string-array>
+    <string-array name="array_price_recommendation_content_descriptions">
+        <item>Sistem algoritma dirancang untuk bisa memilah produk yang sejenis untuk ditentukan harganya.</item>
+        <item>Rekomendasi harga ini ada supaya dapat memaksimalkan penjualan Seller.</item>
+        <item>Jadi, harga produkmu tidak akan tertinggal oleh produk lain yang serupa.</item>
+        <item>Tenang, kamu akan tetap bisa memasang harga produk yang kamu inginkan, kok.</item>
+    </string-array>
+
     <!-- add edit product price bottomsheet   -->
     <string name="bulk_edit_price_bottomsheet_helper">Kamu bisa atur harga masing-masing di aplikasi Tokopedia Seller atau ubah semua secara sekaligus dengan mengisi harga di bawah</string>
     <string name="action_bulk_edit_price">Ganti</string>

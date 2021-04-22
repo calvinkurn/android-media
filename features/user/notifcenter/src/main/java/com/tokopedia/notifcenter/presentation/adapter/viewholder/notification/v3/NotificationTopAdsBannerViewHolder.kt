@@ -9,6 +9,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
+import com.tokopedia.unifycomponents.toPx
 
 class NotificationTopAdsBannerViewHolder constructor(
         itemView: View?
@@ -43,7 +44,7 @@ class NotificationTopAdsBannerViewHolder constructor(
     }
 
     private fun bindAd(element: NotificationTopAdsBannerUiModel) {
-        adView?.loadImage(element.ad)
+        adView?.loadImage(element.ad, 8.toPx())
     }
 
     private fun hitTopAdsImpression(viewUrl: String) {

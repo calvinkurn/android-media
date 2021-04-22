@@ -94,7 +94,7 @@ class CatalogSpecsAndDetailFragment : Fragment() {
                     val lineView = View(context)
                     val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                     lineView.minimumHeight = 2
-                    lineView.setBackgroundColor(MethodChecker.getColor(context, R.color.catalog_grey_line))
+                    lineView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
                     if(specs.specificationsRow.size - 1 == index){
                         params.setMargins(0, resources.getDimensionPixelOffset(R.dimen.dp_8), 0, resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.unify_space_24))
                     }else {

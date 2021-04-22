@@ -62,6 +62,7 @@ class OrderSummaryPageActivityTest {
             assertProductCard(
                     shopName = "tokocgk",
                     shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
                     hasShopBadge = true,
                     productName = "Product1",
                     productPrice = "Rp100.000",
@@ -205,7 +206,7 @@ class OrderSummaryPageActivityTest {
             clickBboTicker()
 
             assertShipment(
-                    shippingName = context.getString(R.string.lbl_osp_free_shipping),
+                    shippingName = "Pengiriman Bebas Ongkir",
                     shippingDuration = "Durasi 4-6 hari",
                     shippingPrice = context.getString(R.string.lbl_osp_free_shipping_only_price),
                     hasPromo = false

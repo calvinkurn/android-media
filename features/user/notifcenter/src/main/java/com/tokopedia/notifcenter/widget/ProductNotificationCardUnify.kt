@@ -49,7 +49,7 @@ class ProductNotificationCardUnify(
      * Same color if dark mode
      */
     private var color: Int = MethodChecker.getColor(
-            context, com.tokopedia.unifyprinciples.R.color.light_N700_68
+            context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68
     )
     private var colorString = "#" + Integer.toHexString(color)
 

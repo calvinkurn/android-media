@@ -17,13 +17,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.Menus
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
+import com.tokopedia.shop.settings.common.view.adapter.viewholder.MenuViewHolder
+import com.tokopedia.shop.settings.common.view.bottomsheet.MenuBottomSheet
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
-import com.tokopedia.shop.settings.notes.view.activity.ShopSettingNotesAddEditActivity
+import com.tokopedia.shop.settings.notes.view.activity.ShopSettingsNotesAddEditActivity
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteAdapter
 import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteFactory
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListPresenter
@@ -47,6 +48,8 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
     private var shopNoteModels: ArrayList<ShopNoteUiModel>? = null
     private var shopNoteAdapter: ShopNoteAdapter? = null
     private var progressDialog: ProgressDialog? = null
+    private var addNoteBottomSheet: MenuBottomSheet? = null
+    private var iconMoreBottomSheet: MenuBottomSheet? = null
     private var shopNoteIdToDelete: String? = null
     private var needReload: Boolean = false
 
@@ -57,10 +60,12 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
     }
 
     override fun initInjector() {
-        DaggerShopSettingsComponent.builder()
-                .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+        activity?.let {
+            DaggerShopSettingsComponent.builder()
+                    .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
+                    .build()
+                    .inject(this)
+        }
         shopSettingNoteListPresenter.attachView(this)
     }
 
@@ -71,17 +76,19 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
         super.onCreate(savedInstanceState)
-        GraphqlClient.init(context!!)
+        context?.let {
+            GraphqlClient.init(it)
+        }
         shopSettingNoteListPresenter.getShopNotes()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (shopNoteModels == null) {
-            menu!!.clear()
+            menu.clear()
         } else if (shopNoteModels!!.size == 0 || getNonTermsCount(shopNoteModels!!) < MIN_DATA_TO_REORDER) {
-            inflater!!.inflate(R.menu.menu_shop_note_list_no_data, menu)
+            inflater.inflate(R.menu.menu_shop_note_list_no_data, menu)
         } else {
-            inflater!!.inflate(R.menu.menu_shop_note_list, menu)
+            inflater.inflate(R.menu.menu_shop_note_list, menu)
         }
     }
 
@@ -97,7 +104,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         KeyboardHandler.DropKeyboard(context, view)
-        if (item!!.itemId == R.id.menu_add) {
+        if (item.itemId == R.id.menu_add) {
             onAddNoteButtonClicked()
             return true
         } else if (item.itemId == R.id.menu_reorder) {
@@ -111,22 +118,29 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
     }
 
     private fun onAddNoteButtonClicked() {
-        val menus = Menus(context!!)
-        menus.setItemMenuList(resources.getStringArray(R.array.shop_note_type))
-        menus.setOnItemMenuClickListener { _, pos ->
-            if (pos == 0) {
-                goToAddNote(false)
-            } else {
-                goToAddNote(true)
-            }
-            menus.dismiss()
+        context?.let {
+            val itemList = arrayListOf<String>()
+            itemList.addAll(resources.getStringArray(R.array.shop_note_type))
+            addNoteBottomSheet = MenuBottomSheet.newInstance(itemList)
+            addNoteBottomSheet?.setListener(object : MenuViewHolder.ItemMenuListener {
+                override fun onItemMenuClicked(text: String, position: Int) {
+                    if (position == 0) {
+                        goToAddNote(false)
+                    } else {
+                        goToAddNote(true)
+                    }
+                    addNoteBottomSheet?.dismiss()
+                }
+                override fun itemMenuSize(): Int = itemList.size
+            })
+            addNoteBottomSheet?.showHeader = false
+            addNoteBottomSheet?.show(childFragmentManager, "menu_bottom_sheet")
         }
-        menus.show()
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
-        emptyModel.iconRes = com.tokopedia.design.R.drawable.ic_empty_state
+        emptyModel.iconRes = R.drawable.ic_tree_empty_state
         emptyModel.title = getString(R.string.shop_has_no_notes)
         emptyModel.content = getString(R.string.shop_notes_info)
         emptyModel.buttonTitleRes = R.string.add_note
@@ -156,9 +170,11 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
     }
 
     private fun goToEditNote(shopNoteUiModel: ShopNoteUiModel) {
-        val intent = ShopSettingNotesAddEditActivity.createIntent(context!!,
-                shopNoteUiModel.terms, true, shopNoteUiModel)
-        startActivityForResult(intent, REQUEST_CODE_EDIT_NOTE)
+        context?.let {
+            val intent = ShopSettingsNotesAddEditActivity.createIntent(it,
+                    shopNoteUiModel.terms, true, shopNoteUiModel)
+            startActivityForResult(intent, REQUEST_CODE_EDIT_NOTE)
+        }
     }
 
     private fun goToAddNote(isTerms: Boolean) {
@@ -177,9 +193,11 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
                 return
             }
         }
-        val intent = ShopSettingNotesAddEditActivity.createIntent(context!!,
-                isTerms, false, ShopNoteUiModel())
-        startActivityForResult(intent, REQUEST_CODE_ADD_NOTE)
+        context?.let {
+            val intent = ShopSettingsNotesAddEditActivity.createIntent(it,
+                    isTerms, false, ShopNoteUiModel())
+            startActivityForResult(intent, REQUEST_CODE_ADD_NOTE)
+        }
     }
 
     override fun getAdapterTypeFactory(): ShopNoteFactory {
@@ -187,40 +205,43 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
     }
 
     override fun onIconMoreClicked(shopNoteUiModel: ShopNoteUiModel) {
-        val menus = Menus(context!!)
-        menus.setItemMenuList(resources.getStringArray(R.array.shop_note_menu_more))
-        menus.setActionText(getString(com.tokopedia.abstraction.R.string.close))
-        menus.setOnActionClickListener { menus.dismiss() }
-        menus.setOnItemMenuClickListener { _, pos ->
-            if (pos == 0) {
-                goToEditNote(shopNoteUiModel)
-            } else {
-                activity?.let { it ->
-                    Dialog(it, Dialog.Type.PROMINANCE).apply {
-                        setTitle(getString(R.string.title_dialog_delete_shop_note))
-                        setDesc(getString(R.string.desc_dialog_delete_shop_note, shopNoteUiModel.title))
-                        setBtnOk(getString(R.string.action_delete))
-                        setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
-                        setOnOkClickListener {
-                            shopNoteIdToDelete = shopNoteUiModel.id
-                            showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
-                            shopSettingNoteListPresenter.deleteShopNote(shopNoteIdToDelete!!)
-                            dismiss()
+        val itemList = arrayListOf<String>()
+        itemList.addAll(resources.getStringArray(R.array.shop_note_menu_more))
+        iconMoreBottomSheet = MenuBottomSheet.newInstance(itemList)
+        iconMoreBottomSheet?.setListener(object : MenuViewHolder.ItemMenuListener {
+            override fun onItemMenuClicked(text: String, position: Int) {
+                if (position == 0) {
+                    goToEditNote(shopNoteUiModel)
+                } else {
+                    activity?.let { it ->
+                        DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                            setTitle(getString(R.string.title_dialog_delete_shop_note))
+                            setDescription(getString(R.string.desc_dialog_delete_shop_note, text))
+                            setPrimaryCTAText(getString(R.string.action_delete))
+                            setSecondaryCTAText(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
+                            setPrimaryCTAClickListener {
+                                shopNoteIdToDelete = shopNoteUiModel.id
+                                showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
+                                shopSettingNoteListPresenter.deleteShopNote(shopNoteIdToDelete!!)
+                                dismiss()
+                            }
+                            setSecondaryCTAClickListener { dismiss() }
+                            show()
                         }
-                        setOnCancelClickListener { dismiss() }
-                        show()
                     }
                 }
+                iconMoreBottomSheet?.dismiss()
             }
-            menus.dismiss()
-        }
-        menus.show()
+            override fun itemMenuSize(): Int = itemList.size
+        })
+        iconMoreBottomSheet?.showHeader = false
+        iconMoreBottomSheet?.show(childFragmentManager, "menu_bottom_sheet")
     }
 
     override fun onSuccessGetShopNotes(shopNoteModels: ArrayList<ShopNoteUiModel>) {
         this.shopNoteModels = shopNoteModels
         renderList(shopNoteModels, false)
-        activity!!.invalidateOptionsMenu()
+        activity?.invalidateOptionsMenu()
     }
 
     override fun onErrorGetShopNotes(throwable: Throwable) {

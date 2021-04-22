@@ -224,6 +224,7 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_CAMPAIGN_ID = "dimension104"
         const val DEFAULT_VALUE_NONE_OTHER = "none/other"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
         const val RECOMMENDATION_ATTRIBUTION = "recommendation"
     }
 }

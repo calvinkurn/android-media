@@ -19,11 +19,11 @@
     </style>
 
     <style name="ErrorTextAppearance">
-        <item name="android:textColor">@color/pink_property</item>
+        <item name="android:textColor">@color/Unify_R500</item>
     </style>
 
     <style name="HelperTextAppearance">
-        <item name="android:textColor">@color/light_secondary</item>
+        <item name="android:textColor">@color/Unify_N700</item>
     </style>
 
     <style name="DialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
@@ -33,8 +33,8 @@
     </style>
 
     <style name="TextInputLayouts">
-        <item name="colorControlNormal">@color/hotel_grey_200</item>
-        <item name="colorControlActivated">@color/hotel_color_active_rail</item>
+        <item name="colorControlNormal">@color/Unify_N700_96 </item>
+        <item name="colorControlActivated">@color/Unify_G500</item>
     </style>
 
     <style name="TextInputLayoutHintText" parent="TextAppearance.Design.Hint">
@@ -45,7 +45,7 @@
     <style name="hotelPdpCollapsingToolbarLayoutTitleColor" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">18sp</item>
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textColor">@color/Neutral_N700_96</item>
+        <item name="android:textColor">@color/Unify_N700_96</item>
     </style>
 
     <style name="hotelPdpExpandedToolbarLayoutTitleColor" parent="@android:style/TextAppearance.Medium">

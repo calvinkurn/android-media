@@ -9,6 +9,7 @@ import com.tokopedia.fakeresponse.presentation.fragments.FakeResponseFragment
 
 class FakeResponseActivity : BaseActivity() {
 
+
     lateinit var fm: FrameLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

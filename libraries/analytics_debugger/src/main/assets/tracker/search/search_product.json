@@ -6,7 +6,7 @@
       "event": "clickSearch",
       "eventCategory": "{{top nav|top nav - .+}}",
       "eventAction": "general search",
-      "eventLabel": "{{.+|.+|\\d|.+|.+|.+}}",
+      "eventLabel": "{{.+|.+|\\d|.+|.+|.+|.+}}",
       "currentSite": "tokopediamarketplace",
       "userId": "{{.+}}",
       "businessUnit": "search",
@@ -33,7 +33,7 @@
           "index": "{{\\d*.\\d*}}",
           "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
           "dimension40": "/searchproduct - topads productlist",
-          "dimension83": "{{bebas ongkir|none / other}}"
+          "dimension83": "{{bebas ongkir extra|bebas ongkir|none / other}}"
         }
       ]
     },
@@ -57,7 +57,7 @@
           "index": "{{\\d*.\\d*}}",
           "dimension40": "{{/searchproduct - organic|/searchproduct - organic ads}}",
           "dimension61": "{{.+}}",
-          "dimension83": "{{bebas ongkir|none / other}}",
+          "dimension83": "{{bebas ongkir extra|bebas ongkir|none / other}}",
           "dimension87": "search result",
           "dimension88": "search - product",
           "dimension90": "{{.*}}",
@@ -83,7 +83,7 @@
           "index": "{{\\d*.\\d*}}",
           "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
           "dimension40": "{{.*}}",
-          "dimension83": "{{bebas ongkir|none / other}}"
+          "dimension83": "{{bebas ongkir extra|bebas ongkir|none / other}}"
         }
       ]
     },
@@ -108,7 +108,7 @@
           "index": "{{\\d*.\\d*}}",
           "dimension40": "{{/searchproduct - organic|/searchproduct - organic ads}}",
           "dimension61": "{{.+}}",
-          "dimension83": "{{bebas ongkir|none / other}}",
+          "dimension83": "{{bebas ongkir extra|bebas ongkir|none / other}}",
           "dimension87": "search result",
           "dimension88": "search - product",
           "dimension90": "{{.*}}",

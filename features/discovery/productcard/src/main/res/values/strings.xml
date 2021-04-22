@@ -21,6 +21,7 @@
     <string name="content_desc_imageProduct">image produk</string>
     <string name="content_desc_textTopAds">text topads</string>
     <string name="content_desc_imageThreeDots">button threedots</string>
+    <string name="content_desc_fulfillment">image fulfillment</string>
     <string name="content_desc_imageShopBadge">image badge toko</string>
     <string name="content_desc_imageFreeOngkirPromo">image bebas ongkir</string>
     <string name="content_desc_imageRemoveFromWishlist">button hapus wishlist</string>
@@ -28,4 +29,7 @@
     <string name="content_desc_notifyMe">button Ingatkan Saya</string>
     <string name="content_desc_imageRating">image rating</string>
     <string name="content_desc_imageWishlist">image wishlist</string>
+    <string name="content_desc_imageBanner">image banner</string>
+    <string name="content_desc_imagePDPView">image terlihat</string>
+    <string name="content_desc_imageShopRating">image rating</string>
 </resources>

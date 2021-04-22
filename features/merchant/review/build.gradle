@@ -57,7 +57,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePreviewSlider)
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.mediauploader)
+    implementation project(rootProject.ext.features.mediauploader)
     implementation project(rootProject.ext.features.sellerMigrationCommon)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -104,7 +104,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
     compileOnly rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
 
     implementation rootProject.ext.unifyDependencies.coach_mark
@@ -116,6 +115,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.icons
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor

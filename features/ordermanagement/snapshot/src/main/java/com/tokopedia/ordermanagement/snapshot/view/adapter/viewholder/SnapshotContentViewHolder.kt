@@ -168,7 +168,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
             shopBadge.visible()
         }
 
-        shopName.text = dataObject.shopSummary.shopName
+        shopName.text = MethodChecker.fromHtml(dataObject.shopSummary.shopName)
 
         val condition = when {
             dataObject.orderDetail.condition == KONDISI_BARU -> {

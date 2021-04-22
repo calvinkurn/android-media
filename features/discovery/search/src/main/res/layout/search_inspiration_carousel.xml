@@ -58,7 +58,42 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/inspirationCarouselTitle"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        tools:visibility="visible" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/inspirationCarouselChipsList"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inspirationCarouselOptionList"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_height="@dimen/dp_32"
+        tools:visibility="visible"/>
+
+    <include
+        android:id="@+id/inspirationCarouselChipsShimmeringView"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inspirationCarouselChipsList"
+        app:layout_constraintEnd_toEndOf="parent"
+        layout="@layout/search_shimmering_carousel_product_card" />
+
+    <com.tokopedia.carouselproductcard.CarouselProductCardView
+        android:id="@+id/inspirationCarouselChipsContent"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_14"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inspirationCarouselChipsShimmeringView"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/viewSeparatorBottom"
@@ -66,7 +101,7 @@
         android:layout_height="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_11"
         android:background="@color/Unify_N50"
-        app:layout_constraintTop_toBottomOf="@id/inspirationCarouselOptionList"
+        app:layout_constraintTop_toBottomOf="@id/inspirationCarouselChipsContent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 

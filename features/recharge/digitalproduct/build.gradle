@@ -69,9 +69,6 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
-        exclude group: "com.android.support"
-    }
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 

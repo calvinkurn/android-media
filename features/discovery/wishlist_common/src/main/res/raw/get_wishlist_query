@@ -1,5 +1,5 @@
-query wishlist($page: Int, $count: Int, $filter: WishlistFilter){
-  wishlist(page: $page, count: $count, filter: $filter){
+query wishlist($page: Int, $count: Int, $filter: WishlistFilter, $additionalParams: WishlistAdditionalParams){
+  wishlist(page: $page, count: $count, filter: $filter, additionalParams: $additionalParams){
       has_next_page
       total_data
       items {
@@ -17,6 +17,10 @@ query wishlist($page: Int, $count: Int, $filter: WishlistFilter){
         rating
         review_count
         free_ongkir {
+          is_active
+          image_url
+        }
+        free_ongkir_extra {
           is_active
           image_url
         }

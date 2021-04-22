@@ -144,7 +144,7 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
         val spannableString = SpannableString(tryNowStr)
         val startIndex = 0
         val endIndex = spannableString.length
-        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)
+        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {

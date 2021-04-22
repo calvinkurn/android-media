@@ -157,7 +157,11 @@ class ResourceDownloadManager private constructor() {
             URL_NOT_INITIALIZED_MESSAGE
         }
 
-        val customUrl = getResourceUrl(resourceType)
+        val customUrl =
+                if (resourceType.remoteFileCompleteUrl.isEmpty())
+                    getResourceUrl(resourceType)
+                else
+                    resourceType.remoteFileCompleteUrl
         var task = pollForIdleTask()
         task = task ?: getNewDownloadTaskInstance()
 
@@ -289,6 +293,7 @@ class ResourceDownloadManager private constructor() {
         completedTask.deferredImageView?.let {
             if (it.get() != null) {
                 it.get()?.mRemoteFileName = ""
+                it.get()?.mCompleteUrl = ""
                 startDecoding(completedTask)
             } else {
                 handler.obtainMessage(TASK_COMPLETED, completedTask).sendToTarget()

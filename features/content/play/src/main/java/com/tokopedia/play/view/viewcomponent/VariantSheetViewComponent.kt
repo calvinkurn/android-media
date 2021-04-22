@@ -21,7 +21,7 @@ import com.tokopedia.play.ui.variantsheet.adapter.VariantAdapter
 import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantItemDecoration
 import com.tokopedia.play.view.custom.TopShadowOutlineProvider
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -59,7 +59,7 @@ class VariantSheetViewComponent(
     private val globalErrorContainer: ScrollView = findViewById(R.id.global_error_variant_container)
     private val globalError: GlobalError = findViewById(R.id.global_error_variant)
 
-    private val imageRadius = resources.getDimensionPixelSize(R.dimen.play_product_line_image_radius).toFloat()
+    private val imageRadius = resources.getDimensionPixelSize(R.dimen.play_product_image_radius).toFloat()
     private val toasterMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
@@ -126,7 +126,7 @@ class VariantSheetViewComponent(
             if (selectedProduct != null) {
                 val stock = selectedProduct.stock
 
-                val product = ProductLineUiModel(
+                val product = PlayProductUiModel.Product(
                         id = selectedProduct.productId.toString(),
                         shopId = variantSheetUiModel?.product?.shopId.toEmptyStringIfNull(),
                         imageUrl = selectedProduct.picture?.original ?: "",
@@ -136,12 +136,12 @@ class VariantSheetViewComponent(
                         price = if (selectedProduct.campaign?.isActive == true) {
                             DiscountedPrice(
                                     originalPrice = selectedProduct.campaign?.originalPriceFmt.toEmptyStringIfNull(),
-                                    discountedPriceNumber = selectedProduct.campaign?.discountedPrice?.toLong()?:0L,
+                                    discountedPriceNumber = selectedProduct.campaign?.discountedPrice?.toDouble()?:0.0,
                                     discountPercent = selectedProduct.campaign?.discountedPercentage?.toInt()?:0,
                                     discountedPrice = selectedProduct.campaign?.discountedPriceFmt.toEmptyStringIfNull()
                             )
                         } else {
-                            OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), selectedProduct.price.toLong())
+                            OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), selectedProduct.price.toDouble())
                         },
                         minQty = variantSheetUiModel?.product?.minQty.orZero(),
                         isFreeShipping = variantSheetUiModel?.product?.isFreeShipping ?: false,
@@ -233,7 +233,7 @@ class VariantSheetViewComponent(
         ).show()
     }
 
-    private fun setProduct(product: ProductLineUiModel) {
+    private fun setProduct(product: PlayProductUiModel.Product) {
         ivProductImage.loadImageRounded(product.imageUrl, imageRadius)
         tvProductTitle.text = product.title
 
@@ -296,7 +296,7 @@ class VariantSheetViewComponent(
 
     interface Listener {
         fun onCloseButtonClicked(view: VariantSheetViewComponent)
-        fun onAddToCartClicked(view: VariantSheetViewComponent, productModel: ProductLineUiModel)
-        fun onBuyClicked(view: VariantSheetViewComponent, productModel: ProductLineUiModel)
+        fun onAddToCartClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product)
+        fun onBuyClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product)
     }
 }

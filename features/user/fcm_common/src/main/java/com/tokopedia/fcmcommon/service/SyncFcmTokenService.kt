@@ -13,7 +13,6 @@ import javax.inject.Inject
 
 class SyncFcmTokenService : JobIntentService(), FirebaseMessagingManager.SyncListener {
 
-
     @Inject
     lateinit var fcmManager: FirebaseMessagingManager
 
@@ -42,7 +41,8 @@ class SyncFcmTokenService : JobIntentService(), FirebaseMessagingManager.SyncLis
     override fun onError(exception: Exception?) {}
 
     companion object {
-        const val JOB_ID = 91219
+        private const val JOB_ID = 91219
+
         fun startService(context: Context) {
             // https://issuetracker.google.com/issues/112157099
             try {

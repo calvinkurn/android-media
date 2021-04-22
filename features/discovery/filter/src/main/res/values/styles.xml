@@ -3,7 +3,7 @@
     <style name="BottomSheetFilterStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:background">@color/white</item>
+        <item name="android:background">@color/Unify_N0</item>
         <item name="behavior_hideable">true</item>
         <item name="layout_behavior">com.tokopedia.filter.widget.UserLockBottomSheetBehavior</item>
     </style>

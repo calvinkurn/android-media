@@ -5,17 +5,12 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.GQL_CHECK_WISHLIST
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class GQLCheckWishlistUseCase @Inject constructor(
-        @Named(GQL_CHECK_WISHLIST)
-        private var gqlQuery: String,
         private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<List<CheckWishlistResult>>() {
 
@@ -30,9 +25,18 @@ class GQLCheckWishlistUseCase @Inject constructor(
         }
     }
 
+    private val query = """
+            query CheckWishList(${'$'}productID:String!){
+              checkWishlist(productID:${'$'}productID){
+                product_id
+                is_wishlist
+              }
+            }
+        """.trimIndent()
+
     var params: RequestParams = RequestParams.EMPTY
     val request by lazy {
-        GraphqlRequest(gqlQuery, CheckWishlistResult.Response::class.java, params.parameters)
+        GraphqlRequest(query, CheckWishlistResult.Response::class.java, params.parameters)
     }
 
     override suspend fun executeOnBackground(): List<CheckWishlistResult> {

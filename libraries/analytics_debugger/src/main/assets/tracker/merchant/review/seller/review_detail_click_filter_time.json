@@ -3,6 +3,18 @@
   "mode": "exact",
   "query": [
     {
+      "networkSpeed": "{{.*}}",
+      "clientId": "{{.*}}",
+      "productId": "{{.*}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "appsflyerId": "{{.*}}",
+      "shopId": "{{.*}}",
+      "screenName": "review detail page",
+      "event": "openScreen",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
       "event" : "clickReview",
       "eventCategory" : "review detail page",
       "eventAction" : "click - time filter",

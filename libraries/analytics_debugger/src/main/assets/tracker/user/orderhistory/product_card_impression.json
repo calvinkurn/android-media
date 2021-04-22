@@ -1,0 +1,27 @@
+{
+  "readme": "#EE1 - Product impression from chat order history",
+  "mode": "subset",
+  "query": [
+    {
+      "eventCategory": "chat detail",
+      "item_list": "/chat - buy again",
+      "event": "view_item_list",
+      "userId": "{{.*}}",
+      "eventAction": "view on product history order",
+      "eventLabel": "buyer",
+      "sessionIris": "{{.+}}",
+      "items": [
+        {
+          "item_id": "{{.+}}",
+          "price": "{{.+}}",
+          "dimension40": "/chat - buy again",
+          "index": "{{.+}}",
+          "item_name": "{{.+}}",
+          "item_brand": "{{.+}}",
+          "item_variant": "{{.+}}",
+          "item_category": "{{.+}}"
+        }
+      ]
+    }
+  ]
+}

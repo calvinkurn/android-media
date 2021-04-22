@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseC
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
@@ -30,7 +29,6 @@ public class BaseReputationService {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
         tkpdOkHttpBuilder.addInterceptor(new TkpdAuthInterceptor(context, networkRouter, userSession));
         tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor(networkRouter, userSession));
-        tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
 
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)

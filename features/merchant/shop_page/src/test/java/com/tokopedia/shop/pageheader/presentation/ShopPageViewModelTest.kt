@@ -7,6 +7,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
@@ -96,9 +97,6 @@ class ShopPageViewModelTest {
     lateinit var updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>
 
     @RelaxedMockK
-    lateinit var firebaseRemoteConfig: RemoteConfig
-
-    @RelaxedMockK
     lateinit var context: Context
 
     private val testCoroutineDispatcherProvider by lazy {
@@ -108,6 +106,8 @@ class ShopPageViewModelTest {
     private lateinit var shopPageViewModel : ShopPageViewModel
 
     private val SAMPLE_SHOP_ID = "123"
+
+    private val addressWidgetData: LocalCacheModel = LocalCacheModel()
 
     @Before
     fun setup() {
@@ -127,7 +127,6 @@ class ShopPageViewModelTest {
                 shopRequestUnmoderateUseCase,
                 getFollowStatusUseCase,
                 updateFollowStatusUseCase,
-                firebaseRemoteConfig,
                 testCoroutineDispatcherProvider
         )
     }
@@ -165,7 +164,8 @@ class ShopPageViewModelTest {
                 ShopProductFilterParameter(),
                 "",
                 "",
-                false
+                false,
+                addressWidgetData
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
@@ -176,10 +176,6 @@ class ShopPageViewModelTest {
 
     @Test
     fun `check whether shopPageP1Data value is Success if isRefresh and cache remote config true`() {
-        coEvery { firebaseRemoteConfig.getBoolean(
-                DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST,
-                any()
-        ) } returns true
         coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1()
         coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
                 data = listOf(ShopProduct(),ShopProduct())
@@ -192,7 +188,8 @@ class ShopPageViewModelTest {
                 ShopProductFilterParameter(),
                 "",
                 "",
-                true
+                true,
+                addressWidgetData
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
@@ -210,7 +207,8 @@ class ShopPageViewModelTest {
                 ShopProductFilterParameter(),
                 "",
                 "",
-                true
+                true,
+                addressWidgetData
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
@@ -227,7 +225,8 @@ class ShopPageViewModelTest {
                 ShopProductFilterParameter(),
                 "",
                 "",
-                true
+                true,
+                addressWidgetData
         )
         assertTrue(shopPageViewModel.shopPageP1Data.value != null)
     }

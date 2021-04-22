@@ -25,6 +25,7 @@ object AddToCartBaseAnalytics {
     const val VALUE_CURRENCY = "IDR"
 
     const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+    const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir ekstra"
     const val VALUE_NONE_OTHER = "none / other"
 
     fun sendEETracking(data: MutableMap<String, Any>) {

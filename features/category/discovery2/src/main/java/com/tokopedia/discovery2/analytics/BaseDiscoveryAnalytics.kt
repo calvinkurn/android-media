@@ -28,6 +28,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackPlayWidgetLihatSemuaClick(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int) {}
     open fun trackPlayWidgetOverLayClick(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
     open fun trackPlayWidgetOverLayImpression(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
+    open fun trackPlayWidgetReminderClick(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, channelId: String, isRemindMe: Boolean){}
     open fun trackCategoryNavigationClick(categoryItem: DataItem?, position: Int) {}
     open fun trackClickVideo(videoUrl: String, videoName: String, videoPlayedTime: String) {}
     open fun trackBackClick() {}
@@ -72,7 +73,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackClickExpandNavigationAccordion(categoryId: String?) {}
     open fun trackClickCollapseNavigationAccordion(categoryId: String?) {}
     open fun trackClickCategoryOption(categoryId: String?) {}
-    open fun trackNotifyClick(componentsItems: ComponentsItem, isLogin: Boolean) {}
+    open fun trackNotifyClick(componentsItems: ComponentsItem, isLogin: Boolean, userID: String?) {}
     open fun trackCategoryTreeDropDownClick(userLoggedIn: Boolean) {}
     open fun trackCategoryOptionClick(userLoggedIn: Boolean, childCatID: String, applink: String?, catDepth: Int, childCatName: String) {}
     open fun trackCategoryTreeCloseClick(userLoggedIn: Boolean) {}

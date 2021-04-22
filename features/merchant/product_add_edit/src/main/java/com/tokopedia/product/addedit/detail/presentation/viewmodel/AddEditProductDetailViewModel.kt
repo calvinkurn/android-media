@@ -3,13 +3,16 @@ package com.tokopedia.product.addedit.detail.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggestedPriceGet
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.PriceSuggestionSuggestedPriceGetUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
@@ -36,13 +39,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import java.math.BigInteger
 import javax.inject.Inject
 
+@FlowPreview
 class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
@@ -50,13 +54,12 @@ class AddEditProductDetailViewModel @Inject constructor(
         private val validateProductUseCase: ValidateProductUseCase,
         private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
         private val annotationCategoryUseCase: AnnotationCategoryUseCase,
+        private val priceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase,
         private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher) {
 
     var isEditing = false
-
     var isAdding = false
-
     var isDrafting = false
 
     var isReloadingShowCase = false
@@ -86,6 +89,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
 
     var isProductNameChanged = false
+    private val mProductNameInputLiveData = MutableLiveData<String>()
     private val mIsProductNameInputError = MutableLiveData<Boolean>()
     val isProductNameInputError: LiveData<Boolean>
         get() = mIsProductNameInputError
@@ -125,6 +129,17 @@ class AddEditProductDetailViewModel @Inject constructor(
     val isProductSkuInputError: LiveData<Boolean>
         get() = mIsProductSkuInputError
     var productSkuMessage: String = ""
+
+    init {
+        launch {
+            mProductNameInputLiveData.asFlow()
+                    .debounce(DEBOUNCE_DELAY_MILLIS)
+                    .distinctUntilChanged()
+                    .collect {
+                        validateProductNameInput(it)
+                    }
+        }
+    }
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
         addSource(mIsProductPhotoError) {
@@ -183,6 +198,10 @@ class AddEditProductDetailViewModel @Inject constructor(
     val specificationText: LiveData<String>
         get() = mSpecificationText
 
+    private val mProductPriceRecommendation = MutableLiveData<PriceSuggestionSuggestedPriceGet>()
+    val productPriceRecommendation: LiveData<PriceSuggestionSuggestedPriceGet>
+        get() = mProductPriceRecommendation
+
     private fun isInputValid(): Boolean {
 
         // by default the product photos are never empty
@@ -224,6 +243,11 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun validateProductPhotoInput(productPhotoCount: Int) {
         mIsProductPhotoError.value = productPhotoCount == 0
+    }
+
+    fun setProductNameInput(string: String) {
+        isProductNameChanged = true
+        mProductNameInputLiveData.value = string
     }
 
     fun validateProductNameInput(productNameInput: String) {
@@ -586,5 +610,18 @@ class AddEditProductDetailViewModel @Inject constructor(
                 result
             }
         }
+    }
+
+    fun getProductPriceRecommendation() {
+        launchCatchError(block = {
+            val response = withContext(Dispatchers.IO) {
+                priceSuggestionSuggestedPriceGetUseCase.setParamsProductId(productInputModel.productId)
+                priceSuggestionSuggestedPriceGetUseCase.executeOnBackground()
+            }
+            mProductPriceRecommendation.value = response.priceSuggestionSuggestedPriceGet
+        }, onError = {
+            // log error
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+        })
     }
 }

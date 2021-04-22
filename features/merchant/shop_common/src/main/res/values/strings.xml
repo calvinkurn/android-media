@@ -4,6 +4,11 @@
     <string name="bs_membership_desc">Jangan lupa dipake loh kuponnya. Bisa dicek di halaman Kupon Saya</string>
     <string name="bs_button_txt">Cek Kupon Saya</string>
     <string name="merchant_shop_common_follow_label">Follow</string>
+    <string name="shop_page_showcase_product_count_text">%1$s Produk</string>
+    <string name="shop_page_showcase_npl_text">Rilisan Spesial</string>
+    <string name="shop_page_showcase_thematic_text">Promo</string>
+    <string name="shop_page_showcase_setting_text">Atur Etalase</string>
+    <string name="shop_page_showcase_reorder_text">Susun</string>
 
     // Admin Revamp
     <string name="admin_no_permission_title">Kamu tidak punya izin untuk mengakses halaman %s</string>
@@ -19,4 +24,8 @@
     <string name="membership_stamp_5">Stamp 5 Image</string>
     <string name="follow_button_npl_etalase">Follow Button</string>
     <string name="membership_success">Membership Success</string>
+    <string name="move_the_item">Move The Item</string>
+    <string name="settings_of_the_item">Settings Of The Item</string>
+    <string name="show_bottomsheet">Show BottomSheet</string>
+    <string name="close_icon">Close BottomSheet</string>
 </resources>

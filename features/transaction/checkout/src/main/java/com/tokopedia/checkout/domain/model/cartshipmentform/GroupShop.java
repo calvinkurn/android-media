@@ -31,6 +31,7 @@ public class GroupShop implements Parcelable {
     private boolean isFulfillment;
     private int fulfillmentId;
     private String fulfillmentName;
+    private String fulfillmentBadgeUrl;
 
     private boolean isLeasingProduct;
     private int bookingFee;
@@ -142,6 +143,14 @@ public class GroupShop implements Parcelable {
         this.fulfillmentName = fulfillmentName;
     }
 
+    public String getFulfillmentBadgeUrl() {
+        return fulfillmentBadgeUrl;
+    }
+
+    public void setFulfillmentBadgeUrl(String fulfillmentBadgeUrl) {
+        this.fulfillmentBadgeUrl = fulfillmentBadgeUrl;
+    }
+
     public String getCartString() { return cartString; }
 
     public void setCartString(String cartString) { this.cartString = cartString; }
@@ -201,6 +210,7 @@ public class GroupShop implements Parcelable {
         dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
         dest.writeInt(this.fulfillmentId);
         dest.writeString(this.fulfillmentName);
+        dest.writeString(this.fulfillmentBadgeUrl);
         dest.writeString(cartString);
         dest.writeByte(this.hasPromoList ? (byte) 1 : (byte) 0);
         dest.writeByte(this.saveStateFlag ? (byte) 1 : (byte) 0);
@@ -224,6 +234,7 @@ public class GroupShop implements Parcelable {
         this.isFulfillment = in.readByte() != 0;
         this.fulfillmentId = in.readInt();
         this.fulfillmentName = in.readString();
+        this.fulfillmentBadgeUrl = in.readString();
         this.cartString = in.readString();
         this.hasPromoList = in.readByte() != 0;
         this.saveStateFlag = in.readByte() != 0;

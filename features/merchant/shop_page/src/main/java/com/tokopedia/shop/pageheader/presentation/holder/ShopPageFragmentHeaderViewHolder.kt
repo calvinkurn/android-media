@@ -3,22 +3,28 @@ package com.tokopedia.shop.pageheader.presentation.holder
 import android.content.Context
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.cardview.widget.CardView
+import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadIcon
+import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
@@ -33,13 +39,15 @@ import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoder
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
 
 class ShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
                                        private val shopPageTracking: ShopPageTrackingBuyer?,
                                        private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
-                                       private val context: Context) {
+                                       private val context: Context,
+                                       private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener) {
     private var isShopFavorite = false
     private val shopPageProfileBadgeView: AppCompatImageView
         get() = view.shop_page_main_profile_badge.takeIf {
@@ -57,10 +65,24 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         get() = view.shop_page_follow_unfollow_button.takeIf {
             isUsingNewNavigation()
         } ?: view.shop_page_follow_unfollow_button_old
+    private val chooseAddressWidget: ChooseAddressWidget?
+        get() = view.choose_address_widget
     private var coachMark: CoachMark2? = null
+
+    private val playSgcWidgetContainer = view.findViewById<CardView>(R.id.play_sgc_widget_container)
+    private val playSgcLetsTryLiveTypography = view.findViewById<Typography>(R.id.play_sgc_lets_try_live)
+    private val playSgcBtnStartLiveLottieAnimationView = view.findViewById<LottieAnimationView>(R.id.play_sgc_btn_start_live)
 
     companion object {
         private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
+    }
+
+    fun updateChooseAddressWidget(){
+        chooseAddressWidget?.updateWidget()
+    }
+
+    fun hideChooseAddressWidget(){
+        chooseAddressWidget?.hide()
     }
 
     fun bind(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean, remoteConfig: RemoteConfig) {
@@ -78,7 +100,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             view.shop_page_main_profile_location.hide()
             view.shop_page_main_profile_location.text = shopLocation
         }
-        ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopPageHeaderDataModel.avatar)
+        view.shop_page_main_profile_image.loadImageCircle(shopPageHeaderDataModel.avatar)
         if (isMyShop) {
             view.shop_page_main_profile_background.setOnClickListener {
                 listener.onShopCoverClicked(
@@ -95,9 +117,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             }
         }
         TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_name, MethodChecker.fromHtml(shopPageHeaderDataModel.shopName).toString(), view.shop_page_main_profile_name.context.getString(R.string.content_desc_shop_page_main_profile_name))
-        if (isMyShop) {
-            setupSgcPlayWidget(shopPageHeaderDataModel)
-        }
+        if (isMyShop) setupSgcPlayWidget(shopPageHeaderDataModel)
 
         if (shopPageHeaderDataModel.isFreeOngkir)
             showLabelFreeOngkir(remoteConfig)
@@ -119,12 +139,119 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
+    fun setupChooseAddressWidget(remoteConfig: RemoteConfig, isMyShop: Boolean) {
+        chooseAddressWidget?.apply {
+            val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
+            val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
+                    ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
+                    true
+            )
+            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop) {
+                show()
+                bindChooseAddress(chooseAddressWidgetListener)
+                view.choosee_address_widget_bottom_shadow?.show()
+            } else {
+                view.choosee_address_widget_bottom_shadow?.hide()
+                hide()
+            }
+        }
+    }
+
+    fun showCoachMark(
+            followStatusData: FollowStatus?,
+            shopId: String,
+            userId: String
+    ){
+        val coachMarkList = arrayListOf<CoachMark2Item>().apply {
+            getShopFollowButtonCoachMarkItem(followStatusData)?.let{
+                add(it)
+            }
+            getChooseAddressWidgetCoachMarkItem()?.let{
+                add(it)
+            }
+        }
+        if(coachMarkList.isNotEmpty()){
+            coachMark = CoachMark2(context)
+            coachMark?.isOutsideTouchable = true
+            coachMark?.setStepListener(object : CoachMark2.OnStepListener {
+                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                    checkCoachMarkImpression(
+                            onCoachMarkFollowButtonImpressed = {
+                                listener.saveFirstTimeVisit()
+                                shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
+                            },
+                            onCoachMarkChooseAddressWidgetImpressed = {
+                                ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
+                            }
+                    )
+                }
+            })
+            coachMark?.showCoachMark(coachMarkList)
+            checkCoachMarkImpression(
+                    onCoachMarkFollowButtonImpressed = {
+                        listener.saveFirstTimeVisit()
+                        shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
+                    },
+                    onCoachMarkChooseAddressWidgetImpressed = {
+                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
+                    }
+            )
+        }
+    }
+
+    private fun checkCoachMarkImpression(
+            onCoachMarkFollowButtonImpressed: () -> Unit,
+            onCoachMarkChooseAddressWidgetImpressed: () -> Unit
+    ) {
+        coachMark?.coachMarkItem?.getOrNull(coachMark?.currentIndex.orZero())?.let {
+            when (it.anchorView.id) {
+                followButton.id -> {
+                    onCoachMarkFollowButtonImpressed.invoke()
+                }
+                chooseAddressWidget?.id -> {
+                    onCoachMarkChooseAddressWidgetImpressed.invoke()
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun getShopFollowButtonCoachMarkItem(
+            followStatusData: FollowStatus?
+    ): CoachMark2Item? {
+        val coachMarkText = followStatusData?.followButton?.coachmarkText.orEmpty()
+        return if (!coachMarkText.isBlank() && listener.isFirstTimeVisit() == false) {
+            CoachMark2Item(
+                    anchorView = followButton,
+                    title = "",
+                    description = MethodChecker.fromHtml(coachMarkText)
+            )
+        } else {
+            null
+        }
+    }
+
+    private fun getChooseAddressWidgetCoachMarkItem(): CoachMark2Item? {
+        val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(view.context)
+        return if (isNeedToShowCoachMark == true && chooseAddressWidget?.isShown == true) {
+            chooseAddressWidget?.let {
+                CoachMark2Item(
+                        it,
+                        view.context?.getString(R.string.shop_page_choose_address_widget_coachmark_title).orEmpty(),
+                        view.context?.getString(R.string.shop_page_choose_address_widget_coachmark_description).orEmpty()
+                )
+            }
+        } else {
+            null
+        }
+    }
+
     fun setupFollowButton(isMyShop: Boolean){
         if (isMyShop) {
             hideFollowButton()
         } else {
             showFollowButton()
-            view.play_seller_widget_container.visibility = View.GONE
+            playSgcWidgetContainer.visibility = View.GONE
             followButton.isLoading = true
         }
     }
@@ -144,22 +271,25 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    private fun setupTextContentSgcWidget(){
-        if(view.shop_page_sgc_title.text.isBlank()) {
-            val text = context.getString(R.string.shop_page_play_widget_title)
-            view.shop_page_sgc_title.text = MethodChecker.fromHtml(text)
+    private fun setupSgcPlayWidget(dataModel: ShopPageHeaderDataModel) {
+        if (allowLiveStreaming(dataModel)) {
+            playSgcWidgetContainer.show()
+            setupTextContentSgcWidget()
+            setLottieAnimationFromUrl(context.getString(R.string.shop_page_lottie_sgc_url))
+            shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = dataModel.shopId)
+            playSgcBtnStartLiveLottieAnimationView.setOnClickListener {
+                shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = dataModel.shopId)
+                listener.onStartLiveStreamingClicked()
+            }
+        } else {
+            playSgcWidgetContainer.hide()
         }
     }
 
-    private fun setupSgcPlayWidget(shopPageHeaderDataModel: ShopPageHeaderDataModel){
-        view.play_seller_widget_container.visibility = if(shopPageHeaderDataModel.broadcaster.streamAllowed && GlobalConfig.isSellerApp()) View.VISIBLE else View.GONE
-        setupTextContentSgcWidget()
-        setLottieAnimationFromUrl(context.getString(R.string.shop_page_lottie_sgc_url))
-        if(shopPageHeaderDataModel.broadcaster.streamAllowed) shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
-        view.container_lottie?.setOnClickListener {
-            shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
-            listener.onStartLiveStreamingClicked()
-        }
+    private fun allowLiveStreaming(dataModel: ShopPageHeaderDataModel) = dataModel.broadcaster.streamAllowed && GlobalConfig.isSellerApp()
+
+    private fun setupTextContentSgcWidget() {
+        if (playSgcLetsTryLiveTypography.text.isBlank()) playSgcLetsTryLiveTypography.text = MethodChecker.fromHtml(context.getString(R.string.shop_page_play_widget_title))
     }
 
     fun setShopName(shopName: String) {
@@ -215,7 +345,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.tickerShopStatus.show()
         view.tickerShopStatus.tickerTitle = MethodChecker.fromHtml(shopPageHeaderDataModel.statusTitle).toString()
         view.tickerShopStatus.setHtmlDescription(
-                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED) {
+                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED && isMyShop) {
                     generateShopModerateTickerDescription(shopPageHeaderDataModel.statusMessage)
                 } else {
                     shopPageHeaderDataModel.statusMessage
@@ -304,7 +434,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         followStatus?.let {
             followButton.text = it.followButton?.buttonLabel
             val voucherUrl = it.followButton?.voucherIconURL
-            val coachMarkText = it.followButton?.coachmarkText
             if (!voucherUrl.isNullOrBlank()) {
                 followButton.loadLeftDrawable(
                         context = context,
@@ -314,11 +443,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                 shopPageTracking?.impressionVoucherFollowUnfollowShop(shopId, userId)
             } else {
                 removeCompoundDrawableFollowButton()
-            }
-            if (!coachMarkText.isNullOrBlank() && listener.isFirstTimeVisit() == false) {
-                setCoachMark(coachMarkText)
-                listener.saveFirstTimeVisit()
-                shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
             }
         }
         changeColorButton()
@@ -339,22 +463,9 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    private fun setCoachMark(description: String) {
-        val coachMarkItem = ArrayList<CoachMark2Item>()
-        coachMarkItem.add(
-                CoachMark2Item(
-                        anchorView = followButton,
-                        title = "",
-                        description = MethodChecker.fromHtml(description)
-                )
-        )
-        coachMark = CoachMark2(context)
-        coachMark?.showCoachMark(coachMarkItem)
-    }
-
     fun showShopReputationBadges(shopBadge: ShopBadge) {
         view.image_view_shop_reputation_badge.show()
-        ImageHandler.LoadImage(view.image_view_shop_reputation_badge, shopBadge.badgeHD)
+        view.image_view_shop_reputation_badge.loadIcon(shopBadge.badgeHD)
     }
 
     private fun displayGoldenShop() {
@@ -364,22 +475,16 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     private fun displayOfficial() {
         shopPageProfileBadgeView.visibility = View.VISIBLE
-        shopPageProfileBadgeView.setImageResource(com.tokopedia.design.R.drawable.ic_badge_shop_official)
+        shopPageProfileBadgeView.setImageResource(R.drawable.shop_page_ic_badge_shop_official)
     }
 
     /**
      * Fetch the animation from http URL and play the animation
      */
     private fun setLottieAnimationFromUrl(animationUrl: String) {
-        context?.let {
-            val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
-
-            lottieCompositionLottieTask.addListener { result ->
-                view.lottie?.setComposition(result)
-                view.lottie?.playAnimation()
-            }
-
-            lottieCompositionLottieTask.addFailureListener { }
+        LottieCompositionFactory.fromUrl(context, animationUrl).addListener { result ->
+            playSgcBtnStartLiveLottieAnimationView.setComposition(result)
+            playSgcBtnStartLiveLottieAnimationView.playAnimation()
         }
     }
 
@@ -394,21 +499,5 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     fun setLoadingFollowButton(isLoading: Boolean) {
         followButton.isLoading = isLoading
     }
-
-    interface ShopPageFragmentViewHolderListener {
-        fun onFollowerTextClicked(shopFavourited: Boolean)
-        fun setFollowStatus(isFollowing: Boolean)
-        fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean)
-        fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence)
-        fun openShopInfo()
-        fun onStartLiveStreamingClicked()
-        fun saveFirstTimeVisit()
-        fun isFirstTimeVisit(): Boolean?
-        fun onSendRequestOpenModerate(optionValue : String)
-        fun onCompleteSendRequestOpenModerate()
-        fun onCompleteCheckRequestModerateStatus(moderateStatusResult : ShopModerateRequestResult)
-        fun setShopUnmoderateRequestBottomSheet(bottomSheet: ShopRequestUnmoderateBottomSheet)
-    }
-
 
 }

@@ -19,6 +19,7 @@ import com.tokopedia.shop.open.common.ScreenNameTracker
 import com.tokopedia.shop.open.listener.FragmentNavigationInterface
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.fragment_shop_open_revamp_finish.*
 
 class ShopOpenRevampSplashScreenFragment : Fragment() {
@@ -84,7 +85,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
 
     private fun setupToolbarActions(view: View?) {
         view?.findViewById<HeaderUnify>(R.id.toolbar_splash_screen)?.apply {
-            transparentMode = fragmentNavigationInterface?.isDarkModeOn() == true
+            transparentMode = context.isDarkMode()
             isShowShadow = false
             setNavigationOnClickListener {
                 activity?.finish()

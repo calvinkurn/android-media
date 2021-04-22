@@ -24,7 +24,7 @@
         android:layout_width="@dimen/unify_space_24"
         android:layout_height="@dimen/unify_space_24"
         android:layout_marginEnd="@dimen/unify_space_24"
-        app:icon_color_light_enable="@color/category_expanded_icon"
+        app:icon_color_light_enable="@color/Unify_N400"
         app:icon_name = "CHEVRON_DOWN"
         app:icon_enable_state="true"
         app:layout_constraintBottom_toBottomOf="parent"

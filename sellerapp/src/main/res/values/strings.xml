@@ -97,8 +97,6 @@
     <string name="label_title_draft_product">Draft Produk</string>
     <string name="label_title_category_picker">Pilih Kategori</string>
 
-    <string name="vidpick_app_name">Video Recorder</string>
-
     <!-- Review   -->
     <string name="review_text">Ulasan</string>
     <string name="title_review_reply">Balas Ulasan</string>
@@ -111,6 +109,7 @@
     <string name="welcome_text_1">Ini adalah aplikasi khusus untuk berjualan di Tokopedia.</string>
     <string name="welcome_text_2">Yuk mulai kelola tokomu di Tokopedia, mudah &amp; gratis!</string>
     <string name="title_activity_shop_transaction_new">Penjualan</string>
+    <string name="set_date">Atur Tanggal</string>
 
     <!-- Product Detail -->
     <string name="title_activity_product_detail">Rincian Produk</string>
@@ -121,5 +120,10 @@
     <string name="label_product_desc">Deskripsi Produk</string>
     <string name="label_image_preview_pdp">Gambar produk</string>
     <string name="gallery_top_bar_title">Foto dari Pembeli</string>
+
+    <!-- Order Management History   -->
+    <string name="transaction_title_activity_order_history">Detail Status</string>
+
+    <string name="review_reminder_title">Pengingat Ulasan</string>
 
 </resources>

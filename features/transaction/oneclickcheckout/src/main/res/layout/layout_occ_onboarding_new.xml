@@ -16,10 +16,10 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_new_occ_onboarding"
             android:layout_width="@dimen/dp_60"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
+            android:layout_height="@dimen/dp_48"
             android:layout_gravity="center"
-            android:scaleType="centerInside"
+            android:layout_marginStart="@dimen/dp_16"
+            android:scaleType="fitCenter"
             app:unify_image_corner_radius="0"
             app:unify_image_type="rect" />
 
@@ -39,5 +39,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/Unify_N50"/>
+        android:background="@color/Unify_N50" />
 </LinearLayout>

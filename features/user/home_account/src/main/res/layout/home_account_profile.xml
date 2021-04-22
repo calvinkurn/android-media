@@ -19,12 +19,24 @@
         android:id="@+id/account_user_item_profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/home_account_dp_20"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         app:layout_constraintStart_toEndOf="@+id/account_user_item_profile_avatar"
         app:layout_constraintTop_toTopOf="@+id/account_user_item_profile_avatar"
         app:typographyWeight="bold"
         android:lineHeight="22dp"
-        tools:text="Babang Nico" />
+        tools:text="Babang Nico"
+        tools:targetApi="p" />
+  
+      <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/account_user_item_profile_icon_warning_name"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_R500"
+        app:icon_name="WARNING"
+        app:layout_constraintLeft_toRightOf="@id/account_user_item_profile_name"
+        app:layout_constraintTop_toTopOf="@id/account_user_item_profile_name"
+        app:layout_constraintBottom_toBottomOf="@id/account_user_item_profile_name" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:textColor="@color/Unify_N700_96"
@@ -38,26 +50,33 @@
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="@+id/account_user_item_profile_name"
         app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_name"
-        tools:text="082242454504" />
+        tools:text="082242454504"
+        tools:targetApi="p" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/fontSize_lvl2"
         android:id="@+id/account_user_item_profile_email"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/home_account_dp_2"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:lineHeight="18dp"
-        app:typographyType="body_3"
+        android:textColor="@color/Unify_N700_96"
+        android:textSize="@dimen/fontSize_lvl2"
+        app:layout_constraintEnd_toStartOf="@+id/account_user_item_profile_edit"
         app:layout_constraintStart_toStartOf="@+id/account_user_item_profile_phone"
         app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_phone"
-        tools:text="yoris.prayogo@tokopedia.com" />
+        app:typographyType="body_3"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:lines="1"
+        tools:text="yoris.prayogo@tokopedia.com"
+        tools:targetApi="p" />
 
     <com.tokopedia.iconunify.IconUnify
         app:icon_color_night_enable="@color/home_account_icon_dark"
         app:icon_name="EDIT"
         android:id="@+id/account_user_item_profile_edit"
-        android:layout_marginRight="@dimen/home_account_dp_6"
+        android:layout_marginEnd="@dimen/home_account_dp_6"
         android:layout_width="@dimen/home_account_dp_28"
         android:layout_height="@dimen/home_account_dp_28"
         app:layout_constraintBottom_toBottomOf="@+id/account_user_item_profile_email"

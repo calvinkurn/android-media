@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view.subscriber
 
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.cart.view.ICartListView
@@ -31,6 +32,10 @@ class UpdateCartAndValidateUseSubscriber(private val view: ICartListView?,
     }
 
     override fun onError(e: Throwable) {
+        if (e is AkamaiErrorException) {
+            presenter?.doClearAllPromo()
+            view?.showToastMessageRed(e)
+        }
         view?.renderPromoCheckoutButtonActiveDefault(emptyList())
     }
 }

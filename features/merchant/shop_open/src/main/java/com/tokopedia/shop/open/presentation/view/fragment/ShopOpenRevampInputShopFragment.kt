@@ -48,6 +48,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
@@ -208,7 +209,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
 
     private fun setupToolbarActions(view: View?) {
         view?.findViewById<HeaderUnify>(R.id.toolbar_input_shop)?.apply {
-            transparentMode = fragmentNavigationInterface?.isDarkModeOn() == true
+            transparentMode = context.isDarkMode()
             isShowShadow = false
             setNavigationOnClickListener {
                 shopOpenRevampTracking?.clickBackButtonFromInputShopPage()
@@ -229,7 +230,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     }
 
     private fun observeShopNameValidationData() {
-        viewModel.checkShopNameResponse.observe(this, Observer {
+        viewModel.checkShopNameResponse.observe(viewLifecycleOwner, Observer {
             EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
@@ -269,7 +270,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     }
 
     private fun observeDomainNameValidationData() {
-        viewModel.checkDomainNameResponse.observe(this, Observer {
+        viewModel.checkDomainNameResponse.observe(viewLifecycleOwner, Observer {
             EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
@@ -302,7 +303,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     }
 
     private fun observeCreateShopData() {
-        viewModel.createShopOpenResponse.observe(this, Observer {
+        viewModel.createShopOpenResponse.observe(viewLifecycleOwner, Observer {
             EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
@@ -352,7 +353,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     }
 
     private fun observeDomainShopNameSuggestions() {
-        viewModel.domainShopNameSuggestionsResponse.observe(this, Observer {
+        viewModel.domainShopNameSuggestionsResponse.observe(viewLifecycleOwner, Observer {
             EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {

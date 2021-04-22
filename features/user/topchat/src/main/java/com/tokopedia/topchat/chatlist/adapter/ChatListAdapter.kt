@@ -62,6 +62,13 @@ class ChatListAdapter constructor(
         diff.dispatchUpdatesTo(this)
     }
 
+    fun deleteItem(msgId: String) {
+        val itemPosition = findChatWithMsgId(msgId)
+        if (itemPosition == RecyclerView.NO_POSITION) return
+        list.removeAt(itemPosition)
+        notifyItemRemoved(itemPosition)
+    }
+
     fun deleteItem(position: Int, emptyModel: Visitable<*>?) {
         if (position == -1) return
         data.removeAt(position)
@@ -210,6 +217,18 @@ class ChatListAdapter constructor(
         return finalIndex
     }
 
+    fun findChat(newChat: IncomingChatWebSocketModel): Int {
+        return list.indexOfFirst { chat ->
+            return@indexOfFirst chat is ItemChatListPojo && chat.msgId == newChat.messageId
+        }
+    }
+
+    private fun findChatWithMsgId(msgId: String): Int {
+        return list.indexOfFirst { item ->
+            item is ItemChatListPojo && item.msgId == msgId
+        }
+    }
+
     private fun getItemPosition(element: ItemChatListPojo, previouslyKnownPosition: Int): Int {
         val chatItem = visitables.getOrNull(previouslyKnownPosition)
         return if (chatItem != null && chatItem == element) {
@@ -231,7 +250,8 @@ class ChatListAdapter constructor(
             if (this is ItemChatListPojo) {
                 if (
                         attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
-                        readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+                        readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD &&
+                        shouldUpdateReadStatus
                 ) {
                     listener.increaseNotificationCounter()
                 }
@@ -245,12 +265,6 @@ class ChatListAdapter constructor(
                 attributes?.isReplyByTopbot = newChat.contact?.isAutoReply ?: false
                 attributes?.label = ""
             }
-        }
-    }
-
-    fun findChat(newChat: IncomingChatWebSocketModel): Int {
-        return list.indexOfFirst { chat ->
-            return@indexOfFirst chat is ItemChatListPojo && chat.msgId == newChat.messageId
         }
     }
 

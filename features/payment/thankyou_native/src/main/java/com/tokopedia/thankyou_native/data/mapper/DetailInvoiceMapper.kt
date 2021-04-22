@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.THANK_STACKED_CASHBACK_TITLE
 
 class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
@@ -48,15 +49,13 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
     }
 
     private fun addTotalFee() {
-        var totalFee: String? = null
-        thanksPageData.paymentItems?.filter {
-            it.itemName == PaymentItemKey.SERVICE_FEE
-        }?.forEach {
-            totalFee = it.amountStr
+        val totalFee = TotalFee(thanksPageData.orderAmountStr, arrayListOf())
+        thanksPageData.feeDetailList?.forEach {
+            val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.amount, false)
+            totalFee.feeDetailList.add(FeeDetail(it.name, formattedAmountStr))
         }
-        totalFee?.let {
-            visitableList.add(TotalFee(thanksPageData.orderAmountStr, totalFee.toString()))
-        }
+        if (totalFee.feeDetailList.isNotEmpty())
+            visitableList.add(totalFee)
     }
 
     private fun addPaymentInfo() {
@@ -76,18 +75,37 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
     }
 
     private fun addCashBackEarned() {
-        val cashBackMapList = arrayListOf<CashBackMap>()
+        var cashBackMapList = arrayListOf<CashBackMap>()
+        var isCashBackOVOPoint = false
         thanksPageData.paymentDeductions?.forEach {
             when (it.itemName) {
-                PaymentDeductionKey.CASH_BACK_OVO_POINT -> cashBackMapList.add(CashBackMap(it.itemDesc, it.amountStr))
-                PaymentDeductionKey.POTENTIAL_CASH_BACK -> cashBackMapList.add(CashBackMap(it.itemDesc, it.amountStr, true))
+                PaymentDeductionKey.CASH_BACK_OVO_POINT -> {
+                    isCashBackOVOPoint = true
+                    cashBackMapList.add(CashBackMap(it.itemDesc,
+                            it.amountStr, null))
+                }
+                PaymentDeductionKey.POTENTIAL_CASH_BACK -> cashBackMapList.add(CashBackMap(it.itemDesc,
+                        it.amountStr, null, isBBICashBack = true))
+                PaymentDeductionKey.CASHBACK_STACKED -> {
+                    val cashBackMap = CashBackMap(THANK_STACKED_CASHBACK_TITLE, it.amountStr,
+                            it.itemDesc, isBBICashBack = false, isStackedCashBack = true)
+                    if(cashBackMapList.size>0){
+                        val tempCashBackList = arrayListOf<CashBackMap>()
+                        tempCashBackList.add(cashBackMap)
+                        tempCashBackList.addAll(cashBackMapList)
+                        cashBackMapList = tempCashBackList
+                    }else{
+                        cashBackMapList.add(cashBackMap)
+                    }
+                }
             }
         }
         if (cashBackMapList.isNotEmpty()) {
-            val cashBackEarned = CashBackEarned(cashBackMapList)
+            val cashBackEarned = CashBackEarned(cashBackMapList, isCashBackOVOPoint)
             visitableList.add(cashBackEarned)
         }
     }
+
 
     private fun createShopsSummery(thanksPageData: ThanksPageData) {
         if (thanksPageData.shopOrder.isNotEmpty())
@@ -159,5 +177,8 @@ object PaymentDeductionKey {
     const val REWARDS_POINT = "rewards_point"
     const val CASH_BACK_OVO_POINT = "cashback"
     const val POTENTIAL_CASH_BACK = "potential_cashback"
+    const val CASHBACK_STACKED = "cashback_stacked"
+
+    const val THANK_STACKED_CASHBACK_TITLE = "Dapat cashback senilai"
 }
 

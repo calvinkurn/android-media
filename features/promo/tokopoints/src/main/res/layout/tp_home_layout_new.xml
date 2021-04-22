@@ -40,7 +40,7 @@
                 android:id="@+id/status_bar_bg"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
-                android:background="@color/green_600"
+                android:background="@color/Unify_G500"
                 android:visibility="visible"
                 android:alpha="0"
                 app:layout_anchor="@id/list"

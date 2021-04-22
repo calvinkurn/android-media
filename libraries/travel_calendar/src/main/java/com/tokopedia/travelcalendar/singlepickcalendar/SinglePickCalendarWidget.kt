@@ -4,35 +4,33 @@ import android.app.Application
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ProgressBar
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
-import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.travelcalendar.*
+import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.travelcalendar.viewmodel.TravelHolidayCalendarViewModel
-import com.tokopedia.unifycomponents.bottomsheet.RoundedBottomSheetDialogFragment
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.dialog_calendar_single_pick.calendar_unify
+import kotlinx.android.synthetic.main.dialog_calendar_single_pick.loading_progress_bar
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-class SinglePickCalendarWidget : RoundedBottomSheetDialogFragment() {
+open class SinglePickCalendarWidget : BottomSheetUnify() {
+    lateinit var calendar: CalendarPickerView
 
-    private lateinit var calendarUnify: UnifyCalendar
-    private lateinit var loadingProgressBar: ProgressBar
     private lateinit var listenerCalendar: ActionListener
 
-    private lateinit var btnClose: ImageButton
     private lateinit var holidayCalendarViewModel: TravelHolidayCalendarViewModel
 
-    lateinit var minDate: Date
-    lateinit var maxDate: Date
-    lateinit var selectedDate: Date
+    var minDate: Date = Date()
+    var maxDate: Date = Date()
+    var selectedDate: Date = Date()
+
+    var isFirstTime: Boolean = true
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -40,6 +38,14 @@ class SinglePickCalendarWidget : RoundedBottomSheetDialogFragment() {
     override
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setTitle(SelectionRangeCalendarWidget.CALENDAR_TITLE)
+        isFullpage = true
+        showCloseIcon = true
+        setCloseClickListener { this.dismissAllowingStateLoss() }
+
+        val childView = View.inflate(context, R.layout.dialog_calendar_single_pick, null)
+        setChild(childView)
 
         initInjector()
 
@@ -71,45 +77,42 @@ class SinglePickCalendarWidget : RoundedBottomSheetDialogFragment() {
         }
     }
 
-    fun initInjector() {
+    private fun initInjector() {
         val component = TravelCalendarComponentInstance
                 .getComponent(activity?.application as Application)
         component.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.dialog_calendar_single_pick, container, false)
-        btnClose = view.findViewById(R.id.btn_close)
-        loadingProgressBar = view.findViewById(R.id.loading_progress_bar)
-        calendarUnify = view.findViewById(R.id.calendar_unify)
-        return view
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loadingProgressBar.visibility = View.VISIBLE
+        loading_progress_bar.visibility = View.VISIBLE
         holidayCalendarViewModel.getCalendarHoliday()
         holidayCalendarViewModel.holidayCalendarData.observe(this, androidx.lifecycle.Observer {
-            loadingProgressBar.visibility = View.GONE
+            loading_progress_bar.visibility = View.GONE
             it?.let {
-                renderSinglePickCalendar(it)
+                if (isFirstTime) {
+                    renderSinglePickCalendar(it)
+                    isFirstTime = false
+                }
             }
         })
 
-        btnClose.setOnClickListener { dismissAllowingStateLoss() }
     }
 
     open fun renderSinglePickCalendar(holidayArrayList: ArrayList<Legend>) {
-        val calendar = calendarUnify.calendarPickerView
+        calendar = calendar_unify.calendarPickerView as CalendarPickerView
 
-        calendar?.init(minDate, maxDate, holidayArrayList)
+        val nextYear = Calendar.getInstance()
+        nextYear.add(Calendar.YEAR,1)
+
+        calendar?.init(minDate, nextYear.time, holidayArrayList)
                 ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
                 ?.withSelectedDate(selectedDate)
 
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
-                if (listenerCalendar != null) {
+                if (::listenerCalendar.isInitialized) {
                     listenerCalendar?.onDateSelected(date)
 
                     GlobalScope.launch {
@@ -134,10 +137,9 @@ class SinglePickCalendarWidget : RoundedBottomSheetDialogFragment() {
     }
 
     companion object {
-
-        private const val MIN_DATE = "min_date"
-        private const val MAX_DATE = "max_date"
-        private const val SELECTED_DATE = "selected_date"
+        const val MIN_DATE = "min_date"
+        const val MAX_DATE = "max_date"
+        const val SELECTED_DATE = "selected_date"
 
         fun newInstance(minDateString: String, maxDateString: String,
                         selectedDate: String): SinglePickCalendarWidget =

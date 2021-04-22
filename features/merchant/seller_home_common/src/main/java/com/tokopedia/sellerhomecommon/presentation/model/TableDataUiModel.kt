@@ -12,10 +12,11 @@ data class TableDataUiModel(
         override val dataKey: String = "",
         override var error: String = "",
         val dataSet: List<TablePageUiModel> = emptyList(),
-        override var isFromCache: Boolean = false
+        override var isFromCache: Boolean = false,
+        override val showWidget: Boolean = false
 ) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {
-        return !isFromCache && dataSet.all { it.rows.isEmpty() }
+        return dataSet.all { it.rows.isEmpty() }
     }
 }
 

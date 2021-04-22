@@ -11,7 +11,7 @@ import io.mockk.CapturingSlot
 import io.mockk.slot
 import org.junit.Test
 
-internal class SearchShopRequestShopCountTest : SearchShopViewModelTestFixtures() {
+internal class SearchShopRequestShopCountTest : SearchShopDataViewTestFixtures() {
 
     private val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true)
     @Test

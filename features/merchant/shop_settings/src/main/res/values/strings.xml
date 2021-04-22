@@ -142,4 +142,14 @@
     <string name="error_validation_shop_name_empty">Oops, nama toko harus kamu isi.</string>
     <string name="error_validation_shop_domain_empty">Oops, domain toko harus kamu isi.</string>
     <string name="shop_settings_basic_info_title">Informasi Toko</string>
+
+    <string name="label_open">Buka</string>
+    <string name="label_cancel">Batal</string>
+    <string name="label_close">Tutup</string>
+    <string name="label_save">Simpan</string>
+    <string name="tokopedia_domain" translatable="false">www.tokopedia.com</string>
+    <string name="label_regular_merchant">Regular Merchant</string>
+    <string name="label_power_merchant">Power Merchant</string>
+    <string name="label_official_store">Official Store</string>
+    <string name="power_merchant">Power Merchant</string>
 </resources>

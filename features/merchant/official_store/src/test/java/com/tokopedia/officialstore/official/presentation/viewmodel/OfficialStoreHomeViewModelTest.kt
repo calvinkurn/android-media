@@ -2,7 +2,7 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
-import com.tokopedia.officialstore.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
@@ -84,7 +84,7 @@ class OfficialStoreHomeViewModelTest {
                 addWishListUseCase,
                 topAdsWishlishedUseCase,
                 removeWishListUseCase,
-                TestDispatcherProvider()
+                CoroutineTestDispatchersProvider
         )
     }
 
@@ -106,7 +106,7 @@ class OfficialStoreHomeViewModelTest {
             onGetDynamicChannel_thenReturn(osDynamicChannel)
             onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
-            viewModel.loadFirstData(category)
+            viewModel.loadFirstData(category, "")
 
             val expectedOSBanners = Success(osBanners)
             val expectedOSBenefits = Success(osBenefits)
@@ -133,7 +133,7 @@ class OfficialStoreHomeViewModelTest {
             onGetOfficialStoreData_thenReturn(error)
             onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
-            viewModel.loadFirstData(category)
+            viewModel.loadFirstData(category, "")
             val expectedError = Fail(NullPointerException())
 
             verifyLiveDataValueError(expectedError)
@@ -397,7 +397,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun onSetupDynamicChannelParams_thenCompleteWith(channelType: String) {
-        coEvery { getOfficialStoreDynamicChannelUseCase.setupParams(channelType) } returns Unit
+        coEvery { getOfficialStoreDynamicChannelUseCase.setupParams(channelType, "") } returns Unit
     }
 
     private fun verifyOfficialStoreBannersEquals(
@@ -495,7 +495,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun verifyDynamicChannelParamsEquals(channelType: String) {
-        coVerify { getOfficialStoreDynamicChannelUseCase.setupParams(channelType) }
+        coVerify { getOfficialStoreDynamicChannelUseCase.setupParams(channelType, "") }
     }
 
 

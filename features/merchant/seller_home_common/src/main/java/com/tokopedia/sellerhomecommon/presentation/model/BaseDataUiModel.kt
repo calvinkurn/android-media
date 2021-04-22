@@ -8,6 +8,7 @@ interface BaseDataUiModel {
     val dataKey: String
     var error: String
     var isFromCache: Boolean
+    val showWidget: Boolean
 
     fun shouldRemove(): Boolean
 }

@@ -20,8 +20,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/specification_iv"
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_20"
+            android:layout_width="@dimen/unify_space_24"
+            android:layout_height="@dimen/unify_space_24"
             tools:src="@tools:sample/avatars"
             tools:ignore="ContentDescription"
             />
