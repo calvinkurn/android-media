@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.requestpickup.data.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -117,7 +116,7 @@ data class SomConfirmReqPickup (
                                     @SerializedName("today")
                                     val today: List<Today> = listOf(),
                                     @SerializedName("tommorow")
-                                    val tommorow: List<Tommorow> = listOf()
+                                    val tomorrow: List<Tomorrow> = listOf()
                             ) : Parcelable {
 
                                 @Parcelize
@@ -131,13 +130,13 @@ data class SomConfirmReqPickup (
                                 ): Parcelable
 
                                 @Parcelize
-                                data class Tommorow(
+                                data class Tomorrow(
                                         @SerializedName("key")
-                                        val keyTommorow: String = "",
+                                        val keyTomorrow: String = "",
                                         @SerializedName("start")
-                                        val startToday: String = "",
+                                        val startTomorrow: String = "",
                                         @SerializedName("end")
-                                        val endToday : String = ""
+                                        val endTomorrow : String = ""
                                 ): Parcelable
                             }
                     }

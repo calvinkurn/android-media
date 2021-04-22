@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
@@ -19,13 +20,12 @@ import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.Utils
-import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickup
-import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickupParam
-import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
-import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickupParam
+import com.tokopedia.sellerorder.requestpickup.data.model.*
 import com.tokopedia.sellerorder.requestpickup.di.SomConfirmReqPickupComponent
 import com.tokopedia.sellerorder.requestpickup.presentation.adapter.SomConfirmReqPickupCourierNotesAdapter
+import com.tokopedia.sellerorder.requestpickup.presentation.adapter.SomConfirmSchedulePickupAdapter
 import com.tokopedia.sellerorder.requestpickup.presentation.viewmodel.SomConfirmReqPickupViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,7 +36,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-11-12.
  */
-class SomConfirmReqPickupFragment : BaseDaggerFragment() {
+class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePickupAdapter.SomConfirmSchedulePickupAdapterListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -44,6 +44,10 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
     private var confirmReqPickupResponse = SomConfirmReqPickup.Data.MpLogisticPreShipInfo()
     private var processReqPickupResponse = SomProcessReqPickup.Data.MpLogisticRequestPickup()
     private lateinit var confirmReqPickupCourierNotesAdapter: SomConfirmReqPickupCourierNotesAdapter
+
+    private var bottomSheetSchedulePickup: BottomSheetUnify? = null
+    private var bottomSheetSchedulePickupAdapter = SomConfirmSchedulePickupAdapter(this)
+    private var rvSchedulePickup: RecyclerView? = null
 
     private val somConfirmRequestPickupViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomConfirmReqPickupViewModel::class.java]
@@ -165,7 +169,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
             rv_courier_notes?.visibility = View.GONE
         }
 
-        if (confirmReqPickupResponse.dataSuccess.schedule_time.today.isNotEmpty() && confirmReqPickupResponse.dataSuccess.schedule_time.tommorow.isNotEmpty()) {
+        if (confirmReqPickupResponse.dataSuccess.schedule_time.today.isNotEmpty() && confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow.isNotEmpty()) {
             rl_schedule_pickup?.visibility = View.VISIBLE
             pickup_now?.centerText = true
             pickup_schedule?.centerText = true
@@ -182,6 +186,10 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
                 setActiveChips(pickup_schedule, pickup_now)
                 btn_arrow?.visibility = View.VISIBLE
                 divider_schedule?.visibility = View.VISIBLE
+                btn_arrow.setOnClickListener {
+                    //bottomSheetFeatureInfoAdapter.setData()
+                    openBottomSheetSchedulePickup()
+                }
             }
 
 
@@ -196,8 +204,41 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun openBottomSheetSchedulePickup() {
+        bottomSheetSchedulePickup = BottomSheetUnify()
+        val viewBottomSheetSchedulePickup = View.inflate(context, R.layout.bottomsheet_schedule_pickup, null).apply {
+            rvSchedulePickup = findViewById(R.id.rv_schedule_pickup)
+
+            rvSchedulePickup?.apply {
+                layoutManager = LinearLayoutManager(this.context)
+                adapter = bottomSheetSchedulePickupAdapter
+            }
+        }
+
+        bottomSheetSchedulePickup?.apply {
+            setTitle(getString(R.string.som_request_pickup_bottomsheet_title))
+            setCloseClickListener { dismiss() }
+            setCloseClickListener { viewBottomSheetSchedulePickup }
+            setOnDismissListener { dismiss() }
+        }
+
+        childFragmentManager.let {
+            bottomSheetSchedulePickup?.show(it, "show")
+        }
+    }
+
+
+
     private fun setActiveChips(selected: ChipsUnify?, deselected: ChipsUnify?) {
         selected?.chipType = ChipsUnify.TYPE_SELECTED
         deselected?.chipType = ChipsUnify.TYPE_NORMAL
+    }
+
+    override fun onSchedulePickupTodayClicked(today: Today) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSchedulePickupTomorrowClicked(tomorrow: Tomorrow) {
+        TODO("Not yet implemented")
     }
 }
