@@ -8,11 +8,14 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import com.google.firebase.appindexing.AndroidAppUri;
+import com.tokopedia.analyticsdebugger.AnalyticsSource;
+import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -91,17 +94,18 @@ public class DeeplinkUTMUtils {
                         maps.containsKey(AppEventTracking.GTM.UTM_CAMPAIGN));
     }
 
-    public static Campaign convertUrlCampaign(Activity activity, Uri uri1) {
+    public static Campaign convertUrlCampaign(Activity activity, Uri uri1, boolean isOriginalUrlAmp) {
         Map<String, String> maps = splitQuery(uri1);
         Campaign campaign = new Campaign();
-
 
         Uri referrerUri = getReferrer(activity);
 
         boolean isAmpUri = (maps != null && "true".equalsIgnoreCase(maps.get(KEY_AMP)));
 
-        //iuf valida campaign and amp is false
-        if (uri1 != null && isValidCampaignUrl(uri1) && !isAmpUri) {
+        if (isOriginalUrlAmp) {
+            campaign = createAmpOrganicCampaign(maps);
+        } else if (uri1 != null && isValidCampaignUrl(uri1) && !isAmpUri) {
+            //iuf valida campaign and amp is false
             campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
                     maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
             campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
@@ -126,24 +130,7 @@ public class DeeplinkUTMUtils {
                 if (host == null) host = "";
 
                 if (host.contains("tokopedia-com.cdn.ampproject.org")) {
-
-                    campaign.setUtmSource("amp");
-                    campaign.setUtmMedium("organic");
-                    campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
-
-                    campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
-                    campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_TERM) : "");
-                    if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
-                        campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
-                    }
-                    campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
-                            maps.get(AppEventTracking.GTM.X_CLID) : "");
-                    campaign.setXAtttribute(maps.get(AppEventTracking.GTM.X_ATTR) != null ?
-                            maps.get(AppEventTracking.GTM.X_ATTR) : "");
-
+                    campaign = createAmpOrganicCampaign(maps);
                 } else if (host.contains("www.google")) {
 
                     campaign.setUtmSource("google.com");
@@ -261,7 +248,16 @@ public class DeeplinkUTMUtils {
                 }
             }
         }
-
+        if (GlobalConfig.isAllowDebuggingTools() && activity != null) {
+            Map<String, Object> map = new HashMap<>(campaign.getCampaign());
+            map.put("url", uri1.toString());
+            map.put("has_amp_in_original_url", isOriginalUrlAmp);
+            if (referrerUri!= null) {
+                map.put("referrer", referrerUri.toString());
+                map.put("referrer_host", referrerUri.getHost());
+            }
+            GtmLogger.getInstance(activity).save("campaignTrack (not sent, Detail only)", map, AnalyticsSource.GTM);
+        }
         return campaign;
     }
 
@@ -283,6 +279,27 @@ public class DeeplinkUTMUtils {
             campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
         }
 
+        return campaign;
+    }
+
+    private static Campaign createAmpOrganicCampaign(Map<String, String> maps) {
+        Campaign campaign = new Campaign();
+        campaign.setUtmSource("amp");
+        campaign.setUtmMedium("organic");
+        campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
+                maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
+
+        campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
+                maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
+        campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
+                maps.get(AppEventTracking.GTM.UTM_TERM) : "");
+        if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))) {
+            campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID));
+        }
+        campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
+                maps.get(AppEventTracking.GTM.X_CLID) : "");
+        campaign.setXAtttribute(maps.get(AppEventTracking.GTM.X_ATTR) != null ?
+                maps.get(AppEventTracking.GTM.X_ATTR) : "");
         return campaign;
     }
 
