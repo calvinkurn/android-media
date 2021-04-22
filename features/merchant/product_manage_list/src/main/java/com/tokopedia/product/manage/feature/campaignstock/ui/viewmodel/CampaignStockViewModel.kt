@@ -189,7 +189,7 @@ class CampaignStockViewModel @Inject constructor(
         )
     }
 
-    private suspend fun editProductStock(nonVariantStock: Int, isUpdateStatusSuccess: Boolean = true): Success<UpdateCampaignStockResult> {
+    private suspend fun editProductStock(nonVariantStock: Int, isUpdateStatusSuccess: Boolean): Success<UpdateCampaignStockResult> {
         return withContext(dispatchers.io) {
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
                 shopId,
