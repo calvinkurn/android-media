@@ -185,7 +185,7 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
 
     private fun getReview(review: String?): Spanned {
         return if (MethodChecker.fromHtml(review).length > MAX_CHAR) {
-            val moreDescription = "<font color=#'${Integer.toHexString(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))}'>Selengkapnya</font>"
+            val moreDescription = "<font color='#${Integer.toHexString(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400) + 0x00ffffff)}'>Selengkapnya</font>"
             val subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR)
             MethodChecker
                     .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
