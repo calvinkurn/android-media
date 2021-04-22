@@ -81,6 +81,7 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
+import com.tokopedia.navigation_common.listener.MainParentStateListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
@@ -126,7 +127,10 @@ public class MainParentActivity extends BaseActivity implements
         RefreshNotificationListener,
         MainParentStatusBarListener,
         HomePerformanceMonitoringListener,
-        OfficialStorePerformanceMonitoringListener, IBottomClickListener {
+        OfficialStorePerformanceMonitoringListener,
+        IBottomClickListener,
+        MainParentStateListener
+{
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -204,6 +208,8 @@ public class MainParentActivity extends BaseActivity implements
 
     private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
     private PageLoadTimePerformanceCallback officialStorePageLoadTimePerformanceCallback;
+
+    private boolean isNewNavigation;
 
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
@@ -606,6 +612,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        validateNavigationRollence();
         // if user is downloading the update (in app update feature),
         // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
@@ -1187,6 +1194,11 @@ public class MainParentActivity extends BaseActivity implements
         scrollToTop(fragment); // enable feature scroll to top for home & feed
     }
 
+    @Override
+    public boolean isNavigationRevamp() {
+        return isNewNavigation;
+    }
+
     public void populateBottomNavigationView() {
         menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f));
         menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f));
@@ -1210,5 +1222,18 @@ public class MainParentActivity extends BaseActivity implements
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private void validateNavigationRollence() {
+        String rollanceNavType = RemoteConfigInstance.getInstance().getABTestPlatform().getString(ROLLANCE_EXP_NAME, ROLLANCE_VARIANT_OLD);
+        boolean isNavRevamp = rollanceNavType.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP);
+        if (this.isNewNavigation != isNavRevamp) {
+            updateNavigationComponent();
+            this.isNewNavigation = isNavRevamp;
+        }
+    }
+
+    private void updateNavigationComponent() {
+        populateBottomNavigationView();
     }
 }

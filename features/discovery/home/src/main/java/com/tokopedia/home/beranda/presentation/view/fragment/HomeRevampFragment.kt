@@ -344,7 +344,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun isNavRevamp(): Boolean {
         return try {
-            getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_REVAMP
+            return (context as? MainParentStateListener)?.isNavigationRevamp?:false
         } catch (e: Exception) {
             e.printStackTrace()
             false
