@@ -92,11 +92,13 @@
             tools:text="Arthurshopbless" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_coupon1"
             android:layout_width="@dimen/dp_64"
             android:layout_height="@dimen/dp_64"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_4"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@id/container_coupon2"
             app:layout_constraintTop_toBottomOf="@id/dashed_divider">
 
@@ -133,6 +135,7 @@
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_24"
             app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/dashed_divider">
 
             <com.tokopedia.unifycomponents.ImageUnify

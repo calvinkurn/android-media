@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
@@ -34,6 +36,8 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
         var ivShopChevron: AppCompatImageView = view.findViewById(R.id.iv_shop_arrow)
         var ivCouponOne: ImageUnify = view.findViewById(R.id.iv_coupon1)
         var ivCouponTwo: ImageUnify = view.findViewById(R.id.iv_coupon2)
+        var productParentOne: ConstraintLayout = view.findViewById(R.id.container_coupon1)
+        var productParentTwo: ConstraintLayout = view.findViewById(R.id.container_coupon2)
         var tvShopName = view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_shop_name)
         var tvCashBackTitle = view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_cashback_title)
         var tvCashBackValue = view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_cashback_value)
@@ -63,6 +67,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
         }
 
         if (item?.products?.size != 0) {
+            vh.productParentTwo.show()
             item?.products?.get(0)?.imageURL?.let {
                 if (it.isNotEmpty()) {
                     vh.ivCouponOne.setImageUrl(it, 1f)
@@ -71,6 +76,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
             vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
 
             if (item?.products?.size == 2) {
+                vh.productParentOne.show()
                 item?.products?.get(1)?.imageURL?.let {
                     if (it.isNotEmpty()) {
                         vh.ivCouponTwo.loadImage(it)
