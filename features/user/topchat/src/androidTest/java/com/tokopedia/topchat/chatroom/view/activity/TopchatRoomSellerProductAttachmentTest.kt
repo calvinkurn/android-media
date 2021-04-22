@@ -4,6 +4,7 @@ import android.view.Gravity
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseSellerTopchatRoomTest
@@ -343,7 +344,27 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         assertHeaderRightMsgBubbleBlueDotVisibility(0, not(isDisplayed()))
     }
 
-    // TODO: Add test is fulfillment / tokocabang view
+    @Test
+    fun tokocabang_status_on_product_card() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment.setFulFillment(
+                0, true
+        )
+        inflateTestFragment()
+
+        // Then
+        assertTokoCabangVisibility(
+                R.id.recycler_view, 1, isDisplayed()
+        )
+        onView(
+                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                        1, R.id.tp_seller_fullfilment
+                )
+        ).check(matches(withText("Dilayani TokoCabang")))
+    }
+
     // TODO: Add test is not fulfillment / tokocabang view
     // TODO: Add test update stock with variant product
 

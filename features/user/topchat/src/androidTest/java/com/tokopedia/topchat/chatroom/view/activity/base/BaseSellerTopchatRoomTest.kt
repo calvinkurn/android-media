@@ -136,6 +136,18 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
         ).perform(ViewActions.click())
     }
 
+    protected fun assertTokoCabangVisibility(
+            recyclerViewId: Int,
+            productCardPosition: Int,
+            viewMatcher: Matcher<in View>
+    ) {
+        onView(
+                withRecyclerView(recyclerViewId).atPositionOnView(
+                        productCardPosition, R.id.ll_seller_fullfilment
+                )
+        ).check(matches(viewMatcher))
+    }
+
     protected fun createSuccessUpdateStockIntentResult(
             productId: String,
             stock: Int,
@@ -173,12 +185,28 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
                 attachment.attributes, ProductAttachmentAttributes::class.java
         )
         if (isCampaign) {
+            product.productProfile.campaignId = 1000L
             product.productProfile.dropPercentage = "50"
             product.productProfile.priceBefore = "Rp 10.000.000"
         } else {
             product.productProfile.dropPercentage = ""
             product.productProfile.priceBefore = ""
+            product.productProfile.campaignId = 0
         }
+        attachment.attributes = gson.toJson(product)
+        return this
+    }
+
+    protected fun ChatAttachmentResponse.setFulFillment(
+            attachmentIndex: Int,
+            isFulFillment: Boolean
+    ): ChatAttachmentResponse {
+        val attachment = chatAttachments.list[attachmentIndex]
+        val product = gson.fromJson(
+                attachment.attributes, ProductAttachmentAttributes::class.java
+        )
+        product.productProfile.isFulFillment = isFulFillment
+        product.productProfile.urlTokocabang = "Rp 10.000.000"
         attachment.attributes = gson.toJson(product)
         return this
     }
