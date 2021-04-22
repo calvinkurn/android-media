@@ -32,7 +32,7 @@ import kotlin.coroutines.CoroutineContext
 
 private const val TDN_SEARCH_INVENTORY_ID = "2"
 private const val TDN_SEARCH_ITEM_COUNT = 4
-private const val TDN_SEARCH_DIMENSION = 5
+private const val TDN_SEARCH_DIMENSION = 3
 
 class SearchProductTDNFirstPageGqlUseCase(
         private val graphqlUseCase: GraphqlUseCase,
