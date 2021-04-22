@@ -31,7 +31,7 @@ class QueryListUseCase @Inject constructor(
                 }
 
                 return CassavaQuery(
-                        mode = QueryMode.EXACT,
+                        mode = QueryMode.SUBSET,
                         readme = it.journeyName,
                         query = cassavaRegexList
                 )
