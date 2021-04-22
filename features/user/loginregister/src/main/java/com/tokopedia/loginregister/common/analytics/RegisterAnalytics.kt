@@ -428,8 +428,8 @@ class RegisterAnalytics @Inject constructor() {
 
     fun trackErrorRegister(errorMessage: String, loginMethod: String) {
         when (loginMethod) {
-            UserSessionInterface.LOGIN_METHOD_EMAIL -> onErrorRegisterEmail()
-            UserSessionInterface.LOGIN_METHOD_PHONE -> onErrorRegisterPhone()
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> onErrorRegisterEmail(errorMessage)
+            UserSessionInterface.LOGIN_METHOD_PHONE -> onErrorRegisterPhone(errorMessage)
             UserSessionInterface.LOGIN_METHOD_GOOGLE -> onErrorRegisterGoogle(errorMessage)
             UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onErrorRegisterFacebook(errorMessage)
         }
@@ -453,12 +453,22 @@ class RegisterAnalytics @Inject constructor() {
         ))
     }
 
-    private fun onErrorRegisterPhone() {
-
+    private fun onErrorRegisterPhone(errorMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
+                LABEL_FAILED + errorMessage
+        ))
     }
 
-    private fun onErrorRegisterEmail() {
-
+    private fun onErrorRegisterEmail(errorMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
+                LABEL_FAILED + errorMessage
+        ))
     }
 
     fun trackSuccessRegister(
