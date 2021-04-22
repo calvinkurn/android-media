@@ -20,7 +20,7 @@ val Map<BottomInsetsType, BottomInsetsState>.isAnyBottomSheetsShown: Boolean
     get() = this[BottomInsetsType.VariantSheet]?.isShown == true ||
             this[BottomInsetsType.ProductSheet]?.isShown == true
 
-val Map<BottomInsetsType, BottomInsetsState>.isProductBottomSheetsShown: Boolean
+val Map<BottomInsetsType, BottomInsetsState>.isProductSheetsShown: Boolean
     get() = this[BottomInsetsType.ProductSheet]?.isShown == true
 
 val View.isFullAlpha: Boolean

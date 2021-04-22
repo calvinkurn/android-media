@@ -21,7 +21,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.extensions.isProductBottomSheetsShown
+import com.tokopedia.play.extensions.isProductSheetsShown
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.type.BottomInsetsState
@@ -464,6 +464,6 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private fun trackImpressedProduct(products: List<Pair<PlayProductUiModel.Product, Int>> = productSheetView.getVisibleProducts()) {
-        if (playViewModel.bottomInsets.isProductBottomSheetsShown) productAnalyticHelper.trackImpressedProducts(products)
+        if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products)
     }
 }
