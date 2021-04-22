@@ -345,5 +345,6 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
 
     // TODO: Add test is fulfillment / tokocabang view
     // TODO: Add test is not fulfillment / tokocabang view
+    // TODO: Add test update stock with variant product
 
 }

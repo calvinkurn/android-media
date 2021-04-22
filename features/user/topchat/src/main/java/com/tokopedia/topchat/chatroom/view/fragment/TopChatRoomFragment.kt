@@ -73,6 +73,7 @@ import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -1078,14 +1079,20 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun onReturnFromUpdateStock(data: Intent?, resultCode: Int) {
         if (resultCode == RESULT_OK && data != null) {
             val productId = data.getStringExtra(ProductManageCommonConstant.EXTRA_PRODUCT_ID)
-            val stockCount = data.getIntExtra(
+            var stockCount = data.getIntExtra(
                     ProductManageCommonConstant.EXTRA_UPDATED_STOCK, 0
             )
-            val status = data.getStringExtra(
+            var status = data.getStringExtra(
                     ProductManageCommonConstant.EXTRA_UPDATED_STATUS
             ) ?: return
-            val productName = data.getStringExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME)
+            var productName = data.getStringExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME)
             val updateProductResult = presenter.onGoingStockUpdate[productId] ?: return
+            val variantResult = getVariantResultUpdateStock(data, productId)
+            variantResult?.let {
+                stockCount = variantResult.stockCount
+                status = variantResult.status.name
+                productName = "$productName - ${variantResult.productName}"
+            }
             showToasterMsgFromUpdateStock(productName, status)
             adapter.updateProductStock(updateProductResult, stockCount, status)
             presenter.onGoingStockUpdate.remove(productId)
@@ -1093,6 +1100,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             val errorMsg = data?.extras?.getString(EXTRA_UPDATE_MESSAGE) ?: return
             showToasterError(errorMsg)
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun getVariantResultUpdateStock(
+            data: Intent, productId: String?
+    ): UpdateCampaignVariantResult? {
+        val resultMap = data.getSerializableExtra(
+                ProductManageCommonConstant.EXTRA_UPDATE_VARIANTS_MAP
+        )
+        val variantMap = resultMap as? HashMap<String, UpdateCampaignVariantResult>
+        return variantMap?.get(productId)
     }
 
     private fun showToasterMsgFromUpdateStock(productName: String?, status: String) {
