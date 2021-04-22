@@ -29,8 +29,8 @@ class CatalogVideosAdapter (val list : ArrayList<VideoComponentData>, private va
             itemView.video_thumbnail_iv.setOnClickListener {
                 catalogDetailListener.playVideo(model,adapterPosition)
             }
-            model.videoId?.let {
-                itemView.video_thumbnail_iv.loadImageWithoutPlaceholder(model.thumbnailUrl)
+            model.thumbnail?.let {
+                itemView.video_thumbnail_iv.loadImageWithoutPlaceholder(model.thumbnail)
             }
         }
     }

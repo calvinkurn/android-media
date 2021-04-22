@@ -21,6 +21,8 @@ data class ComponentData(
         val type: String?,
         @SerializedName("videoId")
         val videoId : String?,
+        @SerializedName("thumbnail")
+        val thumbnail : String?,
         @SerializedName("title")
         val title : String?,
         @SerializedName("author")
@@ -55,9 +57,6 @@ data class VideoComponentData(
         val url : String?,
         val type : String?,
         val videoId : String?,
+        val thumbnail : String?,
         val title : String?,
-        val author : String?) : Parcelable {
-
-    val thumbnailUrl: String
-        get() = "https://img.youtube.com/vi/$videoId/1.jpg"
-}
+        val author : String?) : Parcelable

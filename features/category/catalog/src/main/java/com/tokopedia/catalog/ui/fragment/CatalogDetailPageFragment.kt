@@ -335,13 +335,14 @@ class CatalogDetailPageFragment : Fragment(),
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                     == YouTubeInitializationResult.SUCCESS) {
                 catalogVideo.url?.let {videoUrl ->
-                    startActivity(CatalogYoutubePlayerActivity.createIntent(it, listOf(videoUrl) , position))
+                    // Sending only one video so selectedIndex to be 0 always
+                    startActivity(CatalogYoutubePlayerActivity.createIntent(it, listOf(videoUrl) , 0))
                 }
             } else {
                 // Handle if user didn't have any apps to open Youtube * Usually rooted phone
                 try {
                     startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse(CatalogConstant.URL_YOUTUBE + catalogVideo.url)))
+                            Uri.parse(CatalogConstant.URL_YOUTUBE + catalogVideo.videoId)))
                 } catch (e: Throwable) {
                 }
             }

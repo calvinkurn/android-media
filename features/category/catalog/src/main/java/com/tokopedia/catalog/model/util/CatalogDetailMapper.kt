@@ -37,7 +37,7 @@ object CatalogDetailMapper {
                     val videoArray = arrayListOf<VideoComponentData>()
                     crudeVideoData?.forEachIndexed { _, componentData ->
                         videoArray.add(VideoComponentData(componentData.url,
-                                componentData.type,componentData.videoId,componentData.title,componentData.author))
+                                componentData.type,componentData.videoId,componentData.thumbnail,componentData.title,componentData.author))
                     }
                     listOfComponents.add(CatalogVideoDataModel(name = component.name, type = component.type , videosList = videoArray ))
                 }
