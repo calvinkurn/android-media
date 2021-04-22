@@ -6,19 +6,23 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
+import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 
 /**
  * @author by nisie on 10/1/18.
  */
-class LoginActivity : BaseSimpleActivity() {
+class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent> {
 
     companion object {
 
@@ -83,6 +87,10 @@ class LoginActivity : BaseSimpleActivity() {
         return LoginEmailPhoneFragment.createInstance(bundle)
     }
 
+    override fun getComponent(): LoginRegisterComponent {
+        return DaggerLoginRegisterComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
+    }
+
     override fun onBackPressed() {
         if (supportFragmentManager.findFragmentById(R.id.parent_view) is LoginEmailPhoneContract.View) {
             (supportFragmentManager.findFragmentById(R.id
@@ -112,5 +120,4 @@ class LoginActivity : BaseSimpleActivity() {
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
     }
-
 }
