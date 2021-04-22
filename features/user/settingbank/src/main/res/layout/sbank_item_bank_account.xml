@@ -75,7 +75,7 @@
         android:paddingEnd="@dimen/unify_space_4"
         android:paddingBottom="@dimen/unify_space_2"
         android:text="@string/sbank_verification_in_progress"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/tickerBankAccount"
         app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount"
