@@ -232,7 +232,7 @@
                 android:layout_height="@dimen/dp_topchat_20"
                 android:layout_gravity="center_vertical"
                 android:contentDescription="@null"
-                android:scaleType="fitCenter"
+                android:scaleType="fitStart"
                 android:visibility="gone"
                 tools:src="@drawable/ic_close_default"
                 tools:visibility="visible" />
