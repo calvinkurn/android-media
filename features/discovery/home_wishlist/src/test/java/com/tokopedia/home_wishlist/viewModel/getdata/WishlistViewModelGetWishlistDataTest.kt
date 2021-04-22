@@ -232,19 +232,20 @@ class WishlistViewModelGetWishlistDataTest {
         wishlistViewModel.getWishlistData()
 
 
-        // Expect wishlistLiveData has 21 items (20 wishlist data + 1 recommendation widget)
-        Assert.assertEquals(21, wishlistViewModel.wishlistLiveData.value!!.size)
+        // Expect wishlistLiveData has 21 items (20 wishlist data + 1 recommendation widget + 1 topads item)
+        Assert.assertEquals(22, wishlistViewModel.wishlistLiveData.value!!.size)
 
         // Expect last product recommendation widget is showed
+        val lastIndex = wishlistViewModel.wishlistLiveData.value!!.size-1
         Assert.assertEquals(RecommendationCarouselDataModel::class.java,
-                wishlistViewModel.wishlistLiveData.value!![20].javaClass)
+                wishlistViewModel.wishlistLiveData.value!![lastIndex].javaClass)
 
 
         wishlistViewModel.onProductClick(0, wishlistViewModel.wishlistLiveData.value!!.size, 0)
         Assert.assertTrue(wishlistViewModel.productClickActionData.value != null)
 
         wishlistViewModel.onPDPActivityResultForWishlist(0, true)
-        Assert.assertTrue((wishlistViewModel.wishlistLiveData.value!![20] as RecommendationCarouselDataModel).list[0].recommendationItem.isWishlist)
+        Assert.assertTrue((wishlistViewModel.wishlistLiveData.value!![lastIndex] as RecommendationCarouselDataModel).list[0].recommendationItem.isWishlist)
 
 
         Assert.assertEquals(wishlistViewModel.getUserId(), mockUserId)
@@ -285,12 +286,13 @@ class WishlistViewModelGetWishlistDataTest {
         // View model get wishlist data
         wishlistViewModel.getWishlistData()
 
-        // Expect wishlistLiveData has 21 items (20 wishlist data + 1 recommendation widget)
-        Assert.assertEquals(21, wishlistViewModel.wishlistLiveData.value!!.size)
+        // Expect wishlistLiveData has 21 items (20 wishlist data + 1 recommendation widget + 1 topads item)
+        Assert.assertEquals(22, wishlistViewModel.wishlistLiveData.value!!.size)
 
         // Expect every last row, product recommendation widget is showed
+        val lastIndex = wishlistViewModel.wishlistLiveData.value!!.size-1
         Assert.assertEquals(RecommendationCarouselDataModel::class.java,
-                wishlistViewModel.wishlistLiveData.value!![20].javaClass)
+                wishlistViewModel.wishlistLiveData.value!![lastIndex].javaClass)
 
 
         Assert.assertTrue(wishlistViewModel.productClickActionData.value == null)
@@ -336,18 +338,18 @@ class WishlistViewModelGetWishlistDataTest {
         // View model get wishlist data
         wishlistViewModel.getWishlistData()
 
-        // Expect wishlistLiveData has 21 items (20 wishlist data + 1 recommendation widget)
-        Assert.assertEquals(21, wishlistViewModel.wishlistLiveData.value!!.size)
+        // Expect wishlistLiveData has 21 items (20 wishlist data + 1 recommendation widget + 1 topads item)
+        Assert.assertEquals(22, wishlistViewModel.wishlistLiveData.value!!.size)
 
         // Expect every last row, product recommendation widget is showed
+        val lastIndex = wishlistViewModel.wishlistLiveData.value!!.size-1
         Assert.assertEquals(RecommendationCarouselDataModel::class.java,
-                wishlistViewModel.wishlistLiveData.value!![20].javaClass)
+                wishlistViewModel.wishlistLiveData.value!![lastIndex].javaClass)
 
 
         Assert.assertTrue(wishlistViewModel.productClickActionData.value == null)
 
         wishlistViewModel.onPDPActivityResultForWishlist(0, true)
-        val lastIndex = wishlistViewModel.wishlistLiveData.value!!.size-1
         Assert.assertTrue(!(wishlistViewModel.wishlistLiveData.value!![lastIndex] as RecommendationCarouselDataModel).list[0].recommendationItem.isWishlist)
 
 
