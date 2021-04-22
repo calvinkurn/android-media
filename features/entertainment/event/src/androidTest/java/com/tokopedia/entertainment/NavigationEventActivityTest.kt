@@ -87,7 +87,7 @@ class NavigationEventActivityTest {
     }
 
     @Test
-    fun validateHomeEvent() {
+    fun validateNavigationHomePDPEvent() {
         Thread.sleep(5000)
         //HOME
 
