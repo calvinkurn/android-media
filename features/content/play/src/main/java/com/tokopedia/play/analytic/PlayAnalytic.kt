@@ -16,19 +16,21 @@ class PlayAnalytic(
         private val userSession: UserSessionInterface,
         private val trackingQueue: TrackingQueue,
 ) {
-    
+    val channelId: String
+        get() = mChannelId
+
     private val userId: String 
         get() = userSession.userId
     
-    private var channelId: String = ""
-    private var channelType: PlayChannelType = PlayChannelType.Unknown
-    private val sessionId: String = generateSwipeSession()
-    private var sourceType = ""
+    private var mChannelId: String = ""
+    private var mChannelType: PlayChannelType = PlayChannelType.Unknown
+    private val mSessionId: String = generateSwipeSession()
+    private var mSourceType = ""
 
     fun sendScreen(channelId: String, channelType: PlayChannelType, sourceType: String = "") {
-        this.channelId = channelId
-        this.channelType = channelType
-        if (sourceType.isNotEmpty() && sourceType.isNotBlank()) this.sourceType = sourceType
+        this.mChannelId = channelId
+        this.mChannelType = channelType
+        if (sourceType.isNotEmpty() && sourceType.isNotBlank()) this.mSourceType = sourceType
         TrackApp.getInstance().gtm.sendScreenAuthenticated("/${KEY_TRACK_SCREEN_NAME}/$channelId/${channelType.value}")
     }
 
@@ -41,7 +43,7 @@ class PlayAnalytic(
                         KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "swipe channel",
-                        KEY_EVENT_LABEL to "$sessionId - $channelId - ${channelType.value} - $sourceType",
+                        KEY_EVENT_LABEL to "$mSessionId - $mChannelId - ${mChannelType.value} - $mSourceType",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_USER_ID to userId,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
@@ -54,7 +56,7 @@ class PlayAnalytic(
                 KEY_TRACK_CLICK_BACK,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "leave room",
-                "$channelId - $duration - ${channelType.value}"
+                "$mChannelId - $duration - ${mChannelType.value}"
         )
     }
 
@@ -63,7 +65,7 @@ class PlayAnalytic(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK - shop",
-                "$shopId - $channelId - ${channelType.value}"
+                "$shopId - $mChannelId - ${mChannelType.value}"
         )
     }
 
@@ -72,7 +74,7 @@ class PlayAnalytic(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK $action shop",
-                "$channelId - $shopId - ${channelType.value}"
+                "$mChannelId - $shopId - ${mChannelType.value}"
         )
     }
 
@@ -82,8 +84,8 @@ class PlayAnalytic(
                         KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "$KEY_TRACK_CLICK watch area",
-                        KEY_EVENT_LABEL to "$channelId - ${channelType.value} - ${screenOrientation.value}",
-                        KEY_SCREEN_NAME to "/${KEY_TRACK_SCREEN_NAME}/$channelId/${channelType.value}",
+                        KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value} - ${screenOrientation.value}",
+                        KEY_SCREEN_NAME to "/${KEY_TRACK_SCREEN_NAME}/$mChannelId/${mChannelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
@@ -98,7 +100,7 @@ class PlayAnalytic(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK on admin pinned message",
-                "$channelId - $message - $appLink - ${channelType.value}"
+                "$mChannelId - $message - $appLink - ${mChannelType.value}"
         )
     }
 
@@ -108,7 +110,7 @@ class PlayAnalytic(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK $action",
-                "$channelId - ${channelType.value}"
+                "$mChannelId - ${mChannelType.value}"
         )
     }
 
@@ -129,7 +131,7 @@ class PlayAnalytic(
                 KEY_TRACK_VIEW_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "error state",
-                "$channelId - $errorMessage - ${channelType.value}"
+                "$mChannelId - $errorMessage - ${mChannelType.value}"
         )
     }
 
@@ -138,7 +140,7 @@ class PlayAnalytic(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK on quick reply component",
-                channelId
+                mChannelId
         )
     }
 
@@ -147,7 +149,7 @@ class PlayAnalytic(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK on button send",
-                channelId
+                mChannelId
         )
     }
 
@@ -156,7 +158,7 @@ class PlayAnalytic(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK watch mode option",
-                "$channelId - ${channelType.value}"
+                "$mChannelId - ${mChannelType.value}"
         )
     }
 
@@ -165,7 +167,7 @@ class PlayAnalytic(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK on play button video",
-                "$channelId - ${channelType.value}"
+                "$mChannelId - ${mChannelType.value}"
         )
     }
 
@@ -174,7 +176,7 @@ class PlayAnalytic(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK cart icon",
-                "$channelId - ${channelType.value}"
+                "$mChannelId - ${mChannelType.value}"
         )
     }
 
@@ -185,7 +187,7 @@ class PlayAnalytic(
                             "productView",
                             KEY_TRACK_GROUP_CHAT_ROOM,
                             "view product",
-                            "$channelId - ${listOfProducts[0].id} - ${channelType.value} - product in bottom sheet"
+                            "$mChannelId - ${listOfProducts[0].id} - ${mChannelType.value} - product in bottom sheet"
                     ),
                     hashMapOf<String, Any>(
                             "ecommerce" to hashMapOf(
@@ -204,7 +206,7 @@ class PlayAnalytic(
                         "productClick",
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_TRACK_CLICK,
-                        "$channelId - ${product.id} - ${channelType.value} - product in bottom sheet"
+                        "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet"
                 ),
                 hashMapOf<String, Any>(
                         "ecommerce" to hashMapOf(
@@ -222,7 +224,7 @@ class PlayAnalytic(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "scroll merchant voucher",
-                "$channelId - $lastPositionViewed"
+                "$mChannelId - $lastPositionViewed"
         )
     }
 
@@ -257,7 +259,7 @@ class PlayAnalytic(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK lihat in message ticker",
-                "$channelId - ${channelType.value}"
+                "$mChannelId - ${mChannelType.value}"
         )
     }
 
@@ -270,8 +272,8 @@ class PlayAnalytic(
                         KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "buffer",
-                        KEY_EVENT_LABEL to "$bufferCount - $bufferDurationInSecond - $channelId - ${channelType.value}",
-                        KEY_SCREEN_NAME to "/${KEY_TRACK_SCREEN_NAME}/$channelId/${channelType.value}",
+                        KEY_EVENT_LABEL to "$bufferCount - $bufferDurationInSecond - $mChannelId - ${mChannelType.value}",
+                        KEY_SCREEN_NAME to "/${KEY_TRACK_SCREEN_NAME}/$mChannelId/${mChannelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
@@ -290,8 +292,8 @@ class PlayAnalytic(
                         KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "$KEY_TRACK_CLICK full screen to landscape",
-                        KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                        KEY_SCREEN_NAME to "/${KEY_TRACK_SCREEN_NAME}/$channelId/${channelType.value}",
+                        KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value}",
+                        KEY_SCREEN_NAME to "/${KEY_TRACK_SCREEN_NAME}/$mChannelId/${mChannelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
@@ -310,8 +312,8 @@ class PlayAnalytic(
                         KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "rotate phone to full screen",
-                        KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                        KEY_SCREEN_NAME to "/${KEY_TRACK_SCREEN_NAME}/$channelId/${channelType.value}",
+                        KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value}",
+                        KEY_SCREEN_NAME to "/${KEY_TRACK_SCREEN_NAME}/$mChannelId/${mChannelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_CLIENT_ID to TrackApp.getInstance().gtm.cachedClientIDString,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
@@ -330,7 +332,7 @@ class PlayAnalytic(
                         KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "click on button share link",
-                        KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
+                        KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_USER_ID to userId,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
@@ -344,7 +346,7 @@ class PlayAnalytic(
                         KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "impression on merchant voucher",
-                        KEY_EVENT_LABEL to "$channelId - ${voucher.id}- ${channelType.value}",
+                        KEY_EVENT_LABEL to "$mChannelId - ${voucher.id} - ${mChannelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
@@ -359,7 +361,7 @@ class PlayAnalytic(
                         KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "click on merchant voucher",
-                        KEY_EVENT_LABEL to "$channelId - ${voucher.id} - ${channelType.value}",
+                        KEY_EVENT_LABEL to "$mChannelId - ${voucher.id} - ${mChannelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
@@ -375,7 +377,7 @@ class PlayAnalytic(
                         KEY_EVENT to "productView",
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "view on featured product",
-                        KEY_EVENT_LABEL to "$channelId - ${featuredProduct.id} - ${channelType.value} - featured product tagging",
+                        KEY_EVENT_LABEL to "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
@@ -396,7 +398,7 @@ class PlayAnalytic(
                         "productClick",
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_TRACK_CLICK,
-                        "$channelId - ${featuredProduct.id} - ${channelType.value} - featured product tagging"
+                        "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging"
                 ),
                 hashMapOf(
                         "ecommerce" to hashMapOf(
@@ -422,7 +424,7 @@ class PlayAnalytic(
                         KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "impression on private voucher",
-                        KEY_EVENT_LABEL to "$channelId - $voucherId - ${channelType.value}",
+                        KEY_EVENT_LABEL to "$mChannelId - $voucherId - ${mChannelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
@@ -437,7 +439,7 @@ class PlayAnalytic(
                         KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "click copy on private voucher",
-                        KEY_EVENT_LABEL to "$channelId - ${voucher.id} - ${channelType.value}",
+                        KEY_EVENT_LABEL to "$mChannelId - ${voucher.id} - ${mChannelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
@@ -452,7 +454,7 @@ class PlayAnalytic(
                         KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "click product pinned message",
-                        KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
+                        KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
@@ -500,7 +502,7 @@ class PlayAnalytic(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK buy in bottom sheet with varian",
-                "$channelId - $productId - ${channelType.value}"
+                "$mChannelId - $productId - ${mChannelType.value}"
         )
     }
 
@@ -509,7 +511,7 @@ class PlayAnalytic(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK atc in bottom sheet with varian",
-                "$channelId - $productId - ${channelType.value}"
+                "$mChannelId - $productId - ${mChannelType.value}"
         )
     }
 
@@ -521,7 +523,7 @@ class PlayAnalytic(
                         KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "$KEY_TRACK_CLICK buy in bottom sheet",
-                        "$channelId - ${product.id} - ${channelType.value}"
+                        "$mChannelId - ${product.id} - ${mChannelType.value}"
                 ),
                 hashMapOf(
                         "ecommerce" to hashMapOf(
@@ -542,7 +544,7 @@ class PlayAnalytic(
                         KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "$KEY_TRACK_CLICK atc in bottom sheet",
-                        "$channelId - ${product.id} - ${channelType.value}"
+                        "$mChannelId - ${product.id} - ${mChannelType.value}"
                 ),
                 hashMapOf(
                         "ecommerce" to hashMapOf(
@@ -563,7 +565,7 @@ class PlayAnalytic(
                         KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "$KEY_TRACK_CLICK atc in varian page",
-                        "$channelId - ${product.id} - ${channelType.value}"
+                        "$mChannelId - ${product.id} - ${mChannelType.value}"
                 ),
                 hashMapOf(
                         "ecommerce" to hashMapOf(
@@ -584,7 +586,7 @@ class PlayAnalytic(
                         KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "$KEY_TRACK_CLICK beli in varian page",
-                        "$channelId - ${product.id} - ${channelType.value}"
+                        "$mChannelId - ${product.id} - ${mChannelType.value}"
                 ),
                 hashMapOf<String, Any>(
                         "ecommerce" to hashMapOf(
