@@ -365,7 +365,22 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         ).check(matches(withText("Dilayani TokoCabang")))
     }
 
-    // TODO: Add test is not fulfillment / tokocabang view
+    @Test
+    fun tokocabang_status_on_product_card_disabled() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment.setFulFillment(
+                0, false
+        )
+        inflateTestFragment()
+
+        // Then
+        assertTokoCabangVisibility(
+                R.id.recycler_view, 1, not(isDisplayed())
+        )
+    }
+
     // TODO: Add test update stock with variant product
 
 }
