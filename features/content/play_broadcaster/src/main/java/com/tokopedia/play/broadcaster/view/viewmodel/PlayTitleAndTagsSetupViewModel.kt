@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
@@ -21,6 +22,7 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         private val hydraConfigStore: HydraConfigStore,
         private val dispatcher: CoroutineDispatchers,
         private val setupDataStore: PlayBroadcastSetupDataStore,
+        private val getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase,
         private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
         private val setChannelTagsUseCase: SetChannelTagsUseCase,
 ) : ViewModel(), TitleSetupValidator, TagSetupValidator {
@@ -58,7 +60,7 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
     private val addedTags = mutableSetOf<String>()
 
     init {
-        getRecommendedTags()
+        getTags()
     }
 
     override fun isTitleValid(title: String): Boolean {
@@ -125,22 +127,41 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
     /**
      * Mock data
      */
-    private fun getRecommendedTags() {
+    private fun getTags() {
         viewModelScope.launch {
-            val channelTags = getRecommendedChannelTagsUseCase.apply {
-                setChannelId(hydraConfigStore.getChannelId())
-            }.executeOnBackground()
+            val addedTags = async {
+                try { getAddedTags() } catch (e: Throwable) { emptyList() }
+            }
+            val recommendedTags = async {
+                try { getRecommendedTags() } catch (e: Throwable) { emptyList() }
+            }
+
+            _observableRecommendedTags.value = (addedTags.await() + recommendedTags.await()).toSet()
+        }
+    }
+
+    private suspend fun getRecommendedTags(): List<String> = withContext(dispatcher.io) {
+        val recommendedTags = getRecommendedChannelTagsUseCase.apply {
+            setChannelId(hydraConfigStore.getChannelId())
+        }.executeOnBackground()
 
 //            _observableRecommendedTags.value = channelTags.recommendedTags.tags.toSet()
-            _observableRecommendedTags.value = setOf(
-                    "Baju",
-                    "Review",
-                    "Tas",
-                    "Hiburan",
-                    "Produk",
-                    "Fashion",
-                    "Topi",
-            )
-        }
+        listOf(
+                "Baju",
+                "Review",
+                "Tas",
+                "Hiburan",
+                "Produk",
+                "Fashion",
+                "Topi",
+        )
+    }
+
+    private suspend fun getAddedTags(): List<String> = withContext(dispatcher.io) {
+        val addedTags = getAddedChannelTagsUseCase.apply {
+            setChannelId(hydraConfigStore.getChannelId())
+        }.executeOnBackground()
+
+        return@withContext addedTags.recommendedTags.tags
     }
 }
