@@ -14,6 +14,7 @@ class AddEditProductUrlConstants {
         const val ACTION_URL_USE_VARIANT = "https://seller.tokopedia.com/edu/fitur-varian"
         val ACTION_URL_DELETE_PRODUCTS = ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
         val ACTION_URL_USE_PROMOTION = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
+        val ACTION_URL_USE_PROMOTION_WEB = "https://seller.tokopedia.com/promo"
 
         const val URL_PRODUCT_LIMITATION_EDU = "http://seller.tokopedia.com/edu/kuota-produk"
 

@@ -8,7 +8,7 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationActionItemModel
 import com.tokopedia.unifyprinciples.Typography
 
-class ProductLimitationItemViewHolder(itemView: View, private val itemOnClick: (String) -> Unit) :
+class ProductLimitationItemViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
 
     private val tvTitle: Typography = itemView.findViewById(R.id.tv_title)
@@ -21,8 +21,11 @@ class ProductLimitationItemViewHolder(itemView: View, private val itemOnClick: (
         tvTitle.text = data.title
         tvDescription.text = data.description
         tvAction.text = data.actionText
+    }
+
+    fun setOnClickListener(itemOnClick: (Int) -> Unit) {
         tvAction.setOnClickListener {
-            itemOnClick.invoke(data.actionUrl)
+            itemOnClick.invoke(adapterPosition)
         }
     }
 }

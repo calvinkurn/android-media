@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.productlimitation.presentation.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
@@ -13,7 +14,7 @@ class ProductLimitationItemAdapter: RecyclerView.Adapter<ProductLimitationItemVi
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductLimitationItemViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_product_limitation, parent, false)
-        return ProductLimitationItemViewHolder(rootView, itemOnClick)
+        return setupViewHolder(rootView)
     }
 
     override fun getItemCount(): Int {
@@ -23,6 +24,15 @@ class ProductLimitationItemAdapter: RecyclerView.Adapter<ProductLimitationItemVi
     override fun onBindViewHolder(holder: ProductLimitationItemViewHolder, position: Int) {
         val item = items[position]
         holder.bindData(item)
+    }
+
+    private fun setupViewHolder(rootView: View): ProductLimitationItemViewHolder {
+        return ProductLimitationItemViewHolder(rootView).apply {
+            setOnClickListener { position ->
+                val actionUrl = items[position].actionUrl
+                itemOnClick.invoke(actionUrl)
+            }
+        }
     }
 
     fun getData(): List<ProductLimitationActionItemModel> {
