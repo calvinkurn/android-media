@@ -388,6 +388,28 @@ abstract class TopchatRoomTest {
         assertSrwLoadingVisibility(not(isDisplayed()))
     }
 
+    protected fun assertHeaderRightMsgBubbleVisibility(
+            position: Int, visibilityMatcher: Matcher<in View>
+    ) {
+        onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
+                position, R.id.tvRole
+        )).check(matches(visibilityMatcher))
+    }
+
+    protected fun assertHeaderRightMsgBubbleText(position: Int, msg: String) {
+        onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
+                position, R.id.tvRole
+        )).check(matches(withText(msg)))
+    }
+
+    protected fun assertHeaderRightMsgBubbleBlueDotVisibility(
+            position: Int, visibilityMatcher: Matcher<in View>
+    ) {
+        onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
+                position, R.id.img_sr_blue_dot
+        )).check(matches(visibilityMatcher))
+    }
+
     protected fun generateTemplateResponse(
             enable: Boolean = true,
             success: Boolean = true,

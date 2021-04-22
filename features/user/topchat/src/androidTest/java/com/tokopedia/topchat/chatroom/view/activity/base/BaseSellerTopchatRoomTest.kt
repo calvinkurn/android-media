@@ -26,6 +26,10 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
 
     private val gson = Gson()
 
+    protected var sellerSmartReply = GetExistingChatPojo()
+    protected var sellerTopBot = GetExistingChatPojo()
+    protected var sellerAutoReply = GetExistingChatPojo()
+    protected var sellerSourceInbox = GetExistingChatPojo()
     protected var sellerProductChatReplies = GetExistingChatPojo()
     protected var sellerProductCarouselChatReplies = GetExistingChatPojo()
     protected var sellerBroadcastProductCarouselChatReplies = GetExistingChatPojo()
@@ -50,6 +54,22 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
 
     override fun setupResponse() {
         super.setupResponse()
+        sellerSmartReply = AndroidFileUtil.parse(
+                "seller/success_chat_reply_smart_reply.json",
+                GetExistingChatPojo::class.java
+        )
+        sellerTopBot = AndroidFileUtil.parse(
+                "seller/success_chat_reply_topbot.json",
+                GetExistingChatPojo::class.java
+        )
+        sellerAutoReply = AndroidFileUtil.parse(
+                "seller/success_chat_reply_auto_reply.json",
+                GetExistingChatPojo::class.java
+        )
+        sellerSourceInbox = AndroidFileUtil.parse(
+                "seller/success_chat_reply_source_inbox.json",
+                GetExistingChatPojo::class.java
+        )
         sellerProductChatReplies = AndroidFileUtil.parse(
                 "seller/success_get_chat_first_page_as_seller.json",
                 GetExistingChatPojo::class.java
@@ -116,6 +136,18 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
         ).perform(ViewActions.click())
     }
 
+    protected fun assertTokoCabangVisibility(
+            recyclerViewId: Int,
+            productCardPosition: Int,
+            viewMatcher: Matcher<in View>
+    ) {
+        onView(
+                withRecyclerView(recyclerViewId).atPositionOnView(
+                        productCardPosition, R.id.ll_seller_fullfilment
+                )
+        ).check(matches(viewMatcher))
+    }
+
     protected fun createSuccessUpdateStockIntentResult(
             productId: String,
             stock: Int,
@@ -153,12 +185,28 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
                 attachment.attributes, ProductAttachmentAttributes::class.java
         )
         if (isCampaign) {
+            product.productProfile.campaignId = 1000L
             product.productProfile.dropPercentage = "50"
             product.productProfile.priceBefore = "Rp 10.000.000"
         } else {
             product.productProfile.dropPercentage = ""
             product.productProfile.priceBefore = ""
+            product.productProfile.campaignId = 0
         }
+        attachment.attributes = gson.toJson(product)
+        return this
+    }
+
+    protected fun ChatAttachmentResponse.setFulFillment(
+            attachmentIndex: Int,
+            isFulFillment: Boolean
+    ): ChatAttachmentResponse {
+        val attachment = chatAttachments.list[attachmentIndex]
+        val product = gson.fromJson(
+                attachment.attributes, ProductAttachmentAttributes::class.java
+        )
+        product.productProfile.isFulFillment = isFulFillment
+        product.productProfile.urlTokocabang = "Rp 10.000.000"
         attachment.attributes = gson.toJson(product)
         return this
     }

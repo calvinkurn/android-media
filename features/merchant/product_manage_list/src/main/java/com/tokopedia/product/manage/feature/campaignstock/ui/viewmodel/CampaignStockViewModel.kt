@@ -16,13 +16,11 @@ import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductMa
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationData
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.CampaignStockAllocationUseCase
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.OtherCampaignStockDataUseCase
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.NonVariantStockAllocationResult
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.StockAllocationResult
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.UpdateCampaignStockResult
-import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.VariantStockAllocationResult
+import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.*
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
@@ -254,11 +252,12 @@ class CampaignStockViewModel @Inject constructor(
                     val totalStock = countVariantStock() + campaignReservedStock
 
                     Success(UpdateCampaignStockResult(
-                        productId,
-                        productName,
-                        totalStock,
-                        status,
-                        true
+                            productId,
+                            productName,
+                            totalStock,
+                            status,
+                            true,
+                            variantsMap = getMappedVariantsResult()
                     ))
                 }
 
@@ -289,12 +288,13 @@ class CampaignStockViewModel @Inject constructor(
                 val totalStock = countVariantStock() + campaignReservedStock
 
                 Success(UpdateCampaignStockResult(
-                    productId,
-                    productName,
-                    totalStock,
-                    status,
-                    editStockResponse.productUpdateV3Data.isSuccess,
-                    editStockResponse.productUpdateV3Data.header.errorMessage.firstOrNull()
+                        productId,
+                        productName,
+                        totalStock,
+                        status,
+                        editStockResponse.productUpdateV3Data.isSuccess,
+                        editStockResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
+                        variantsMap = getMappedVariantsResult()
                 ))
             }
         }
@@ -314,11 +314,12 @@ class CampaignStockViewModel @Inject constructor(
                 editStockUseCase.execute(requestParams)
 
                 Success(UpdateCampaignStockResult(
-                    productId,
-                    campaignProductName,
-                    totalStock,
-                    status,
-                    true
+                        productId,
+                        campaignProductName,
+                        totalStock,
+                        status,
+                        true,
+                        variantsMap = getMappedVariantsResult()
                 ))
             }
         }
@@ -445,5 +446,13 @@ class CampaignStockViewModel @Inject constructor(
             }
         }
         return false
+    }
+
+    private fun EditVariantResult.getMappedVariantsResult(): HashMap<String, UpdateCampaignVariantResult> {
+        val variantResultMap = variants.associateBy(
+                {it.id},
+                {UpdateCampaignVariantResult(it.status, it.stock, it.name)}
+        )
+        return HashMap(variantResultMap)
     }
 }

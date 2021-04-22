@@ -625,6 +625,15 @@ class PlayViewModel @Inject constructor(
                             source = LikeSource.UserAction
                     )
             )
+        } else {
+            _observableLikeInfo.value = likeInfo.copy(
+                    status = PlayLikeStatusInfoUiModel(
+                            totalLike = likeInfo.status.totalLike,
+                            totalLikeFormatted = likeInfo.status.totalLikeFormatted,
+                            isLiked = shouldLike,
+                            source = LikeSource.UserAction
+                    )
+            )
         }
     }
 

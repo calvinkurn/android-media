@@ -305,7 +305,7 @@ class PlayBroadcastViewModel @Inject constructor(
         isLiveStarted = true
     }
 
-    private fun reconnectLiveStream() {
+    private fun reconnectLiveStream(resume: Boolean = false) {
         sendLivePusherState(PlayLivePusherState.Connecting)
         scope.launch {
             val err = getChannelDetail()
@@ -313,7 +313,7 @@ class PlayBroadcastViewModel @Inject constructor(
                 val channelInfo = (_observableChannelInfo.value as NetworkResult.Success).data
                 when (channelInfo.status) {
                     PlayChannelStatusType.Pause,
-                    PlayChannelStatusType.Live -> livePusher.resume()
+                    PlayChannelStatusType.Live -> if (resume) livePusher.resume() else livePusher.reconnect()
                     else -> stopLiveStream(shouldNavigate = true)
                 }
             } else {
@@ -334,7 +334,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun continueLiveStream() {
-        if (isLiveStarted) reconnectLiveStream()
+        if (isLiveStarted) reconnectLiveStream(resume = true)
         else startLiveStream()
     }
 

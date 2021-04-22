@@ -67,11 +67,11 @@ class ProductProfile {
     val isPreOrder: Boolean = false
     @SerializedName("campaign_id")
     @Expose
-    val campaignId: Long = 0
-    @SerializedName("is_fullfilment")
+    var campaignId: Long = 0
+    @SerializedName("is_fulfillment")
     @Expose
-    val isFullFilment: Boolean = false
-    @SerializedName("c")
+    var isFulFillment: Boolean = false
+    @SerializedName("icon_tokocabang")
     @Expose
-    val urlTokocabang: String = ""
+    var urlTokocabang: String = ""
 }
