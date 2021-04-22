@@ -72,15 +72,13 @@ class EditKeywordSortSheet : BottomSheetUnify() {
 
     private fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int) {
         val clickedItem = this.getItemAtPosition(position) as ListItemUnify
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            when (choiceMode) {
-                ListView.CHOICE_MODE_SINGLE -> {
-                    items.filter {
-                        it.listRightRadiobtn?.isChecked ?: false
-                    }.filterNot { it == clickedItem }.onEach { it.listRightRadiobtn?.isChecked = false }
+        when (choiceMode) {
+            ListView.CHOICE_MODE_SINGLE -> {
+                items.filter {
+                    it.listRightRadiobtn?.isChecked ?: false
+                }.filterNot { it == clickedItem }.onEach { it.listRightRadiobtn?.isChecked = false }
 
-                    clickedItem.listRightRadiobtn?.isChecked = true
-                }
+                clickedItem.listRightRadiobtn?.isChecked = true
             }
         }
     }

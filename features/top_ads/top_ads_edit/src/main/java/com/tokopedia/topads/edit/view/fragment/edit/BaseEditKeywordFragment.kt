@@ -22,16 +22,20 @@ import com.tokopedia.topads.edit.utils.Constants.POSITIVE_CREATE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_KEYWORD_ALL
+import com.tokopedia.topads.edit.utils.Constants.STRATEGIES
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
+import com.tokopedia.topads.edit.view.sheet.AutoBidSelectionSheet
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.topads_edit_keyword_base_layout.*
 
 private const val CLICK_KATA_KUNCI_POSITIF = "click - kata kunci positif"
 private const val CLICK_KATA_KUNCI_NEGATIF = "click - kata kunci negatif"
+
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
     private var buttonStateCallback: SaveButtonStateCallBack? = null
     private var btnState = true
+    private var autoBidSelectionSheet: AutoBidSelectionSheet? = null
     var positivekeywordsAll: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     var negativekeywordsAll: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
 
@@ -62,6 +66,28 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             neg_keyword.chipType = ChipsUnify.TYPE_SELECTED
             keyword.chipType = ChipsUnify.TYPE_NORMAL
             view_pager.currentItem = POSITION1
+        }
+        autobid_layout.setOnClickListener {
+            autoBidSelectionSheet = AutoBidSelectionSheet.newInstance()
+            autoBidSelectionSheet?.setChecked(autobid_selection.text.toString())
+            autoBidSelectionSheet?.show(childFragmentManager, "")
+            autoBidSelectionSheet?.onItemClick = { autoBidState ->
+                handleAutoBidState(autoBidState)
+            }
+        }
+    }
+
+    private fun handleAutoBidState(autoBidState: String) {
+        if (autoBidState.isNotEmpty()) {
+            autobid_selection.text = "Otomatis"
+            keyword_grp.visibility = View.GONE
+            autobid_ticker.visibility = View.VISIBLE
+            view_pager.visibility = View.GONE
+        } else {
+            keyword_grp.visibility = View.VISIBLE
+            autobid_selection.text = "Manual"
+            autobid_ticker.visibility = View.GONE
+            view_pager.visibility = View.VISIBLE
         }
     }
 
@@ -116,6 +142,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         var deletedKeywordsPos: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
         var addedKeywordsPos: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
         var editedKeywordsPos: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
+        var strategies: ArrayList<String>? = arrayListOf()
 
         if (fragments?.get(0) is EditKeywordsFragment) {
             val bundle: Bundle = (fragments[0] as EditKeywordsFragment).sendData()
@@ -131,18 +158,25 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             negativekeywordsAll = bundle.getParcelableArrayList(NEGATIVE_KEYWORD_ALL)
 
         }
+        strategies?.clear()
+        if(autobid_selection.text == "Otomatis") {
+            strategies?.add("auto_bid")
+        } else {
+            strategies?.add("")
+        }
         dataMap[POSITIVE_CREATE] = addedKeywordsPos
         dataMap[POSITIVE_DELETE] = deletedKeywordsPos
         dataMap[POSITIVE_EDIT] = editedKeywordsPos
         dataMap[NEGATIVE_KEYWORDS_ADDED] = dataNegativeAdded
         dataMap[NEGATIVE_KEYWORDS_DELETED] = dataNegativeDeleted
+        dataMap[STRATEGIES] = strategies
         return dataMap
     }
 
     fun getKeywordNameItems(): ArrayList<KeywordDataModel>? {
         var items: ArrayList<KeywordDataModel>? = arrayListOf()
         val fragments = (view_pager?.adapter as KeywordEditPagerAdapter?)?.list
-        if(fragments?.get(0) is EditKeywordsFragment) {
+        if (fragments?.get(0) is EditKeywordsFragment) {
             positivekeywordsAll?.forEach {
                 var model = KeywordDataModel()
                 model.keywordName = it.tag
@@ -151,7 +185,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
                 items?.add(model)
             }
         }
-        if(fragments?.get(1) is EditNegativeKeywordsFragment) {
+        if (fragments?.get(1) is EditNegativeKeywordsFragment) {
             negativekeywordsAll?.forEach {
                 var model = KeywordDataModel()
                 model.keywordName = it.tag

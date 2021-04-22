@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <LinearLayout
-        android:id="@+id/keyword_grp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/autobid_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
@@ -14,9 +14,88 @@
         android:layout_marginTop="@dimen/dp_22"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/autobid_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_autobid_setting_icon" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/autobid_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/autobid_list_step"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            app:layout_constraintStart_toEndOf="@+id/autobid_icon"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/autobid_selection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:text="@string/autobid_manual"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            app:layout_constraintEnd_toStartOf="@+id/autobid_arrow"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/autobid_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/topads_ic_arrow" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/autobid_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tickerType="announcement"
+        app:tickerShapeType="loose"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        app:closeButtonVisibility="gone"
+        android:visibility="gone"
+        app:titleText="@string/autobid_otomatis_ticker_title"
+        app:descriptionText="@string/autobid_otomatis_ticker_desc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/autobid_layout"/>
+
+    <LinearLayout
+        android:id="@+id/keyword_grp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/autobid_ticker">
 
         <com.tokopedia.unifycomponents.ChipsUnify
             android:id="@+id/keyword"

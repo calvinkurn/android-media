@@ -128,6 +128,60 @@
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintTop_toBottomOf="@id/product" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/autobid_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_30"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/product">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/autobid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/autobid_list_step"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/autoBidState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/autobid"
+        app:typographyType="body_2"
+        android:text="@string/autobid_otomatis" />
+
+    <com.tokopedia.unifycomponents.UnifyImageButton
+        android:id="@+id/goToAutobid"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:unifyImageButtonVariant="image"
+        app:layout_constraintTop_toTopOf="@+id/autobid"
+        app:srcCompat="@drawable/topads_create_pen" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider3"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/autobid_layout" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/keyword_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider3">
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/keyword"
         android:layout_width="wrap_content"
@@ -135,7 +189,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/topads_common_label_top_ads_keyword"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider2"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
@@ -158,12 +212,22 @@
         app:layout_constraintTop_toTopOf="@id/keyword"
         app:srcCompat="@drawable/topads_create_pen" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/divider3"
+        android:id="@+id/divider4"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_2"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/keyword" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/keyword_layout" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/budget_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider4">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/budget"
@@ -172,7 +236,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/biaya_per_klik"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider3"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
@@ -195,12 +259,16 @@
         app:unifyImageButtonVariant="image"
         app:srcCompat="@drawable/topads_create_pen" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/divider4"
+        android:id="@+id/divider5"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_2"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/budget" />
+        app:layout_constraintTop_toBottomOf="@id/budget_layout" />
+
+
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_submit"

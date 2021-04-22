@@ -46,6 +46,13 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
     override fun bind(item: GroupItemsItemModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
         item.let {
 
+            if(item.data.strategies.isNotEmpty() && item.data.strategies[0].isNotEmpty()) {
+                view.img_key.visibility = View.GONE
+                view.key_count.visibility = View.GONE
+            } else {
+                view.img_key.visibility = View.VISIBLE
+                view.key_count.visibility = View.VISIBLE
+            }
             view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_folder))
             view.img_total.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_total))
             view.img_key.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_key))

@@ -16,6 +16,7 @@ interface CreateAdsComponent {
     fun inject(keywordAdsListFragment: KeywordAdsListFragment)
     fun inject(budgetingAdsFragment: BudgetingAdsFragment)
     fun inject(summaryAdsFragment: SummaryAdsFragment)
+    fun inject(autoBidSelectionFragment: AutoBidSelectionFragment)
     fun inject(adCreationChooserFragment: AdCreationChooserFragment)
     fun inject(creationOnboardingFragScreen: CreationOnboardingFragScreen)
     fun inject(creationOnboardingFragScreen: CreationOnboardingFragScreen2)

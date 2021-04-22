@@ -137,8 +137,8 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         tab_layout?.addNewTab(PRODUK_NAME)
         tab_layout?.addNewTab(KATA_KUNCI)
         tab_layout?.addNewTab(ATUR_NAME)
-        tab_layout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TAB_POSITION, 2) ?: 2)?.select()
-        view_pager.currentItem = bundle?.getInt(TAB_POSITION, 2) ?: 2
+        tab_layout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TAB_POSITION, 1) ?: 2)?.select()
+        view_pager.currentItem = bundle?.getInt(TAB_POSITION, 1) ?: 2
         tab_layout?.getUnifyTabLayout()?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(p0: TabLayout.Tab?) {
                 //do nothing

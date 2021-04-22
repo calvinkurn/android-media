@@ -66,6 +66,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private var input = InputCreateGroup()
     var keyword = KeywordsItem()
     var group = Group()
+    private var autoBidState: MutableList<String> = mutableListOf()
     private var keywordsList: MutableList<KeywordsItem> = mutableListOf()
     private var adsItemsList: MutableList<AdsItem> = mutableListOf()
     private var selectedProductIds: MutableList<String> = mutableListOf()
@@ -156,6 +157,24 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if(stepperModel?.autoBidState?.isEmpty() == true) {
+            keyword_layout.visibility = View.VISIBLE
+            budget_layout.visibility = View.VISIBLE
+            autobid_layout.visibility = View.GONE
+            divider2.visibility = View.GONE
+            divider3.visibility = View.VISIBLE
+            divider4.visibility = View.VISIBLE
+        } else {
+            keyword_layout.visibility = View.GONE
+            budget_layout.visibility = View.GONE
+            autobid_layout.visibility = View.VISIBLE
+            divider3.visibility = View.GONE
+            divider4.visibility = View.GONE
+
+            goToAutobid.setOnClickListener {
+                stepperListener?.getToFragment(2, stepperModel)
+            }
+        }
         btn_submit.setOnClickListener {
             if (groupInput?.textFieldInput?.text?.isNotEmpty() == true) {
                 loading?.visibility = View.VISIBLE
@@ -354,6 +373,12 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             }
             input.group.ads = adsItemsList
         }
+
+        stepperModel?.autoBidState?.let {
+            autoBidState.clear()
+            autoBidState.add(it)
+        }
+        input.strategies = autoBidState
 
         map[INPUT] = input
         return map

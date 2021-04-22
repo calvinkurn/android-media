@@ -36,10 +36,12 @@ import com.tokopedia.topads.edit.utils.Constants.POSITIVE_PHRASE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_SPECIFIC
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
 import com.tokopedia.topads.edit.utils.Constants.PUBLISHED
+import com.tokopedia.topads.edit.utils.Constants.STRATEGIES
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * Created by Pika on 24/5/20.
@@ -60,6 +62,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
 
     private fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>): TopadsManageGroupAdsInput {
 //
+        val strategy = dataKeyword[STRATEGIES] as ArrayList<String>?
         val groupName = dataGroup[GROUP_NAME] as? String
         val priceBidGroup = dataGroup[Constants.PRICE_BID] as? Int
         val dailyBudgetGroup = dataGroup[Constants.DAILY_BUDGET] as? Int
@@ -95,6 +98,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         group?.status = PUBLISHED
         group?.scheduleStart = ""
         group?.scheduleEnd = ""
+        group?.strategies = strategy
         if (isBudgetLimited == true) {
             group?.dailyBudget = 0.0
         } else

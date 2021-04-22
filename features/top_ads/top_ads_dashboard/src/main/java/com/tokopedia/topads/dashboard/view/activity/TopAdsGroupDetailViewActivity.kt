@@ -55,6 +55,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private var priceSpent: String? = ""
     private var groupStatus: String? = ""
     private var groupName: String? = ""
+    private var autoBidStatus: String = ""
 
     override fun getLayoutId(): Int {
         return R.layout.topads_dash_fragment_group_detail_view_layout
@@ -97,9 +98,13 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         val list: MutableList<FragmentTabItem> = mutableListOf()
         tab_layout?.getUnifyTabLayout()?.removeAllTabs()
         tab_layout?.addNewTab(PRODUK)
-        tab_layout?.addNewTab(KATA_KUNCI)
-        tab_layout?.addNewTab(NEG_KATA_KUNCI)
-        tab_layout?.customTabMode = TabLayout.MODE_FIXED
+        if(autoBidStatus.isEmpty()) {
+            tab_layout?.addNewTab(KATA_KUNCI)
+            tab_layout?.addNewTab(NEG_KATA_KUNCI)
+            tab_layout?.customTabMode = TabLayout.MODE_FIXED
+        } else {
+            tab_layout?.customTabMode = TabLayout.MODE_SCROLLABLE
+        }
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)
         bundle.putString(GROUP_NAME, groupName)
@@ -166,6 +171,9 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         groupName = data.groupName
         groupTotal = data.groupTotal.toInt()
         priceDaily = data.priceDaily
+        if(data.strategies.isNotEmpty()) {
+            autoBidStatus = data.strategies[0]
+        }
         budgetPerClick.text = "Rp " + data.priceBid
         group_name.text = groupName
         btn_switch.setOnCheckedChangeListener(null)

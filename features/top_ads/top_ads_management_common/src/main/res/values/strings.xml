@@ -13,6 +13,7 @@
     <string name="pantau_terus_performa_iklan_produkmu_di_dashboard_topads">Pantau terus performa iklan produkmu di\nDashboard TopAds</string>
     <string name="tambah_kredit_topads_agar_iklanmu_nselalu_tampil_dan_lebih_bersaing">Tambah kredit TopAds agar iklanmu\nselalu tampil dan lebih bersaing</string>
     <string name="tip_memilih_produk">Tip memilih produk</string>
+    <string name="tip_autobid_selection">Kapan Pakai Atur Otomatis?</string>
     <string name="topads_produk_tooltip_text">Tips memilih produk.</string>
     <string name="lanjutkan">Lanjutkan</string>
     <string name="_0_produk">0 produk dipilih</string>
@@ -152,6 +153,19 @@
     <string name="topads_common_error_invalid_keyword">Kata kunci hanya bisa diisi dengan huruf dan angka.</string>
     <string name="topads_common_error_group_name_exist">Nama grup iklan sudah digunakan. Coba tulis nama lain, ya.</string>
 
+
+    <string name="autobid_otomatis">Otomatis</string>
+    <string name="autobid_manual">Manual</string>
+    <string name="autobid_list_step">Pengaturan Iklan</string>
+    <string name="autobid_selection_tip_1">Saat kamu bingung menentukan biaya iklan\n dan kata kunci yang tepat.</string>
+    <string name="autobid_selection_tip_2">Saat kamu tidak sempat mengatur biaya\n iklan dan kata kunci secara berkala.</string>
+    <string name="autobid_selection_tip_3">Saat kamu belum dapat memaksimalkan\n penjualan dengan pengaturan iklan manual.</string>
+    <string name="autobid_otomatis_title">Atur Otomatis</string>
+    <string name="autobid_manual_title">Atur Manual</string>
+    <string name="autobid_otomatis_desc">TopAds akan bantu kamu mengatur biaya iklan dan \n kata kunci yang dapat memaksimalkan penjualan.</string>
+    <string name="autobid_manual_desc">TopAds akan bantu kamu mengatur biaya iklan dan \n kata kunci yang dapat memaksimalkan penjualan.</string>
+    <string name="autobid_otomatis_ticker_title">Kata kunci dan biaya iklan otomatis</string>
+    <string name="autobid_otomatis_ticker_desc">Kata kunci dan biaya iklan otomatis</string>
 
     <string-array name="sort_product_list_array">
         <item>Terlaris</item>

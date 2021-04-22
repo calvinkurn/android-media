@@ -25,6 +25,8 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     protected StepperModel stepperModel;
     private RoundCornerProgressBar progressStepper;
     protected int currentPosition = 1;
+    protected int oldcurrentPosition = -1;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,7 +90,12 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     }
 
     private void decrementPage() {
-        currentPosition--;
+        if(oldcurrentPosition>0) {
+            currentPosition = oldcurrentPosition;
+            oldcurrentPosition = -1;
+        } else {
+            currentPosition--;
+        }
         progressStepper.setProgress(currentPosition);
         setupFragment(null);
         updateToolbarTitle();
@@ -96,6 +103,7 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
 
     public void getToFragment(int pos, StepperModel stepperModel) {
         this.stepperModel = stepperModel;
+        oldcurrentPosition = currentPosition;
         currentPosition = pos;
         progressStepper.setProgress(currentPosition);
         setupFragment(null);
@@ -104,6 +112,7 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
 
     @Override
     public void onBackPressed() {
+//        getSupportFragmentManager().popBackStackImmediate();
         onBackEvent();
     }
 
