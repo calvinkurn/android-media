@@ -18,18 +18,16 @@ class ProductAnalyticHelper(
     }
 
     fun sendImpressedBottomSheetProducts() {
-        analytic.impressBottomSheetProducts(
-                products = impressedProducts.distinctBy { it.first.id }
-        )
+        analytic.impressBottomSheetProducts(getFinalProducts())
         clear()
     }
 
     fun sendImpressedFeaturedProducts() {
-        analytic.impressFeaturedProducts(
-                products = impressedProducts.distinctBy { it.first.id }
-        )
+        analytic.impressFeaturedProducts(getFinalProducts())
         clear()
     }
+
+    private fun getFinalProducts() = impressedProducts.distinctBy { it.first.id }
 
     private fun clear() {
         impressedProducts.clear()
