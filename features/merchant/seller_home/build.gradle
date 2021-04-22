@@ -126,6 +126,8 @@ dependencies {
         transitive = true
     }
     implementation rootProject.ext.dbDependencies.sqliteFramework
+
+    androidTestImplementation project(rootProject.ext.features.loginregister)
 }
 
 project.ext {
