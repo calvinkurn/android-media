@@ -615,6 +615,17 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         postalCode = _selectedAddressItem?.postalCode
                 )
             }
+        } else if (isFromCheckoutChangeAddress == true) {
+            viewModel.setStateChosenAddress(
+                    status = _selectedAddressItem?.addressStatus,
+                    addressId = _selectedAddressItem?.id,
+                    receiverName = _selectedAddressItem?.recipientName,
+                    addressName = _selectedAddressItem?.addressName,
+                    latitude = _selectedAddressItem?.latitude,
+                    longitude = _selectedAddressItem?.longitude,
+                    districtId = _selectedAddressItem?.destinationDistrictId,
+                    postalCode = _selectedAddressItem?.postalCode
+            )
         }
     }
 
