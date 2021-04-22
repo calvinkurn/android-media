@@ -302,7 +302,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/unify_space_4"
-                android:text="Dilayani TokoCabang"
+                android:text="@string/title_topchat_dilayani_tokocabang"
                 android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_3"
                 tools:visibility="visible" />
