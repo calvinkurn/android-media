@@ -6,7 +6,7 @@
     <string name="x_media">%1$d media</string>
     <string name="x_videos">%1$d video</string>
     <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
-    <string name="cp_continue">Lanjutkan</string>
+    <string name="ip_continue">Lanjutkan</string>
     <string name="save">Simpan</string>
 
 </resources>
