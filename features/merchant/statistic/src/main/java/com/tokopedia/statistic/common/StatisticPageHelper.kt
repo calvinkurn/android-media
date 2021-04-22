@@ -63,12 +63,12 @@ object StatisticPageHelper {
 
     private fun getShopDateFilters(context: Context, userSession: UserSessionInterface): List<DateFilterItem> {
         return if (getRegularMerchantStatus(userSession)) {
-            listOf(getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_6, Const.DAY_0, DateFilterItem.TYPE_LAST_7_DAYS, true))
+            listOf(getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true))
         } else {
             listOf(
-                    getDateRangeItemToday(context),
-                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_6, Const.DAY_0, DateFilterItem.TYPE_LAST_7_DAYS, true),
-                    getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_29, Const.DAY_0, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
+                    getDateRangeItemToday(context, true),
+                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, false),
+                    getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
                     DateFilterItem.Divider,
                     getDateFilterPerDay(context),
                     getDateFilterPerWeek(context, false),
@@ -93,10 +93,10 @@ object StatisticPageHelper {
         }
     }
 
-    private fun getDateRangeItemToday(context: Context): DateFilterItem {
+    private fun getDateRangeItemToday(context: Context, isSelected: Boolean): DateFilterItem {
         val label = context.getString(R.string.stc_today_real_time)
         val today = Date()
-        return DateFilterItem.Click(label, today, today, false, DateFilterItem.TYPE_TODAY)
+        return DateFilterItem.Click(label, today, today, isSelected, DateFilterItem.TYPE_TODAY)
     }
 
     private fun getDateFilterItemClick(context: Context, lastNDaysLabel: Int, startPastDays: Int, endPastDays: Int, type: Int, isSelected: Boolean = false, showBottomBorder: Boolean = true): DateFilterItem.Click {

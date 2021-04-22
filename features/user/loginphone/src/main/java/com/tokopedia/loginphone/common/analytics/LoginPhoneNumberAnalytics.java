@@ -5,10 +5,14 @@ import android.os.Build;
 
 import javax.inject.Inject;
 
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
-import timber.log.Timber;
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * @author by nisie on 1/5/18.
@@ -56,12 +60,16 @@ public class LoginPhoneNumberAnalytics {
         static final String PHONE = "phone";
         static final String TOKOCASH = "Tokocash";
         static final String LOGIN_SUCCESS = "login success";
+        static final String REGISTER_SUCCESS = "register success";
     }
 
     public void sendScreen(Activity activity, String screenName) {
-        Timber.w("P2#FINGERPRINT#screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
+        String screenNameMessage = screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
                 + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
-                + " | " + Build.TAGS);
+                + " | " + Build.TAGS;
+        Map<String, String> screenNameMap = new HashMap<>();
+        screenNameMap.put("screenName", screenNameMessage);
+        ServerLogger.log(Priority.P2, "FINGERPRINT", screenNameMap);
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 
@@ -89,12 +97,12 @@ public class LoginPhoneNumberAnalytics {
                 Label.LOGIN_SUCCESS));
     }
 
-    public void eventSuccessLoginPhoneNumberFBSmartRegister() {
+    public void eventSuccessFbPhoneNumber() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_REGISTER,
                 Category.REGISTER_PAGE,
                 Action.CLICK_ON_BUTTON_FACEBOOK,
-                Label.LOGIN_SUCCESS));
+                Label.REGISTER_SUCCESS));
     }
 
     public void trackVerifyOtpClick(String mode) {

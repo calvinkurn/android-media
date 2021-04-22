@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/play_widget_light_gray">
+        android:background="@color/play_widget_dms_light_gray">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/play_widget_thumbnail"
@@ -133,7 +133,7 @@
             android:id="@+id/play_widget_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/play_widget_info_container_white"
+            android:background="@color/play_widget_dms_info_container"
             android:orientation="vertical"
             android:paddingTop="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -147,7 +147,7 @@
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:lines="2"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/fontSize_lvl3"
                 tools:text="Google Assistant Google Assistant" />
@@ -161,7 +161,7 @@
                 android:layout_marginBottom="@dimen/spacing_lvl2"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/fontSize_lvl2"
                 app:layout_constraintBottom_toBottomOf="parent"

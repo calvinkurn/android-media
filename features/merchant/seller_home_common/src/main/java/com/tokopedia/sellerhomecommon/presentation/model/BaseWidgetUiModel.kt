@@ -25,6 +25,7 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     var isFromCache: Boolean
     var emptyState: WidgetEmptyStateUiModel
     fun copy(): BaseWidgetUiModel<T>
+    fun needToRefreshData(other: BaseWidgetUiModel<T>): Boolean
 }
 
 data class WidgetEmptyStateUiModel(

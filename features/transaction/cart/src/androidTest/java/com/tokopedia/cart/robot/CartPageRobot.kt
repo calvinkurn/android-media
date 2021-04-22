@@ -33,7 +33,6 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
@@ -119,7 +118,6 @@ class CartPageRobot {
                 Assert.assertEquals(cartListData?.shopGroupAvailableDataList?.get(shopIndex)?.fulfillmentName
                         ?: "", view.findViewById<Typography>(R.id.tv_fulfill_district).text)
                 Assert.assertEquals(View.VISIBLE, view.findViewById<ImageView>(R.id.img_shop_badge).visibility)
-                Assert.assertEquals(View.VISIBLE, view.findViewById<Label>(R.id.label_fulfillment).visibility)
                 Assert.assertEquals(View.VISIBLE, view.findViewById<ImageUnify>(R.id.img_free_shipping).visibility)
                 Assert.assertEquals(View.VISIBLE, view.findViewById<RecyclerView>(R.id.rv_cart_item).visibility)
                 Assert.assertTrue(view.findViewById<CheckBox>(R.id.cb_select_shop).isChecked)
@@ -159,6 +157,18 @@ class CartPageRobot {
             }
         }
         childRecyclerView.contentDescription = tempStoreDesc
+    }
+
+    fun assertCartShopViewHolderOnPosition(position: Int, func: CartShopViewHolderRobot.() -> Unit) {
+        onView(withId(R.id.rv_cart)).perform(RecyclerViewActions.actionOnItemAtPosition<CartShopViewHolder>(position, object : ViewAction {
+            override fun getDescription(): String = "performing assertion action on CartShopViewHolder position $position"
+
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun perform(uiController: UiController?, view: View) {
+                CartShopViewHolderRobot(view).apply(func)
+            }
+        }))
     }
 
     fun clickPromoButton() {

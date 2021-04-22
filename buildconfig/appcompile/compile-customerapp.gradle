@@ -4,6 +4,7 @@ includeDynamicFeatureIfEnabled("customerapp")
 include "features:common:developer_options"
 include "features:common:developer_options_noop"
 include "features:common:nps"
+include "features:common:internal_review"
 include "features:common:resources_common"
 include "features:common:qr_scanner"
 include "features:category:catalog"
@@ -11,7 +12,6 @@ include "features:category:common_tradein"
 include "features:category:common_category"
 include "features:category:kategori"
 include "features:category:category_levels"
-include "features:discovery2:hotlist"
 include "features:category:find_native"
 
 include "features:content:affiliate"
@@ -116,6 +116,11 @@ include "features:logistic:logisticCommon"
 include "features:logistic:logisticcart"
 include "features:logistic:manageaddress"
 include "features:logistic:editshipping"
+include "features:logistic:localizationchooseaddress"
+
+include "features:media:mediauploader"
+include "features:media:media-common"
+include "features:media:medialoader"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:power_merchant_subscribe"
@@ -154,6 +159,7 @@ include "features:operational:csat_rating"
 include "features:ovop2p"
 
 include "features:ordermanagement:snapshot"
+include "features:ordermanagement:orderhistory"
 
 include "features:payment:common_payment"
 include "features:payment:payment"
@@ -209,7 +215,7 @@ include "features:user:loginregister"
 include "features:user:logout"
 include "features:user:managename"
 include "features:user:managepassword"
-include 'features:user:notif-troubleshooter'
+include "features:user:notif-troubleshooter"
 include "features:user:notifcenter"
 include "features:user:onboarding"
 include "features:user:otp"
@@ -238,7 +244,6 @@ include "features:user:fcm_common"
 
 include "tkpdcore"
 include "tkpddesign"
-include "tkpdseller"
 include "tkpdabstraction"
 
 include 'testapp-features:user:logintestapp'

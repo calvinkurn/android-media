@@ -3,19 +3,18 @@ ext {
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
             authentication          : "com.tokopedia.authentication:authentication:1.0.19",
-            cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
-            cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.3",
-            globalconfig            : "com.tokopedia.config:global_config:1.0.11",
-            url                     : "com.tokopedia.url:url:1.0.7",
-            network                 : "com.tokopedia.network:network:1.1.14",
+            cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24.5",
+            globalconfig            : "com.tokopedia.config:global_config:1.0.14",
+            url                     : "com.tokopedia.url:url:1.0.10",
+            network                 : "com.tokopedia.network:network:1.1.16",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
-            usersession             : "com.tokopedia.user.session:user_session:1.0.29",
+            usersession             : "com.tokopedia.user.session:user_session:1.0.35",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.6",
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.6",
-            betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.6",
+            betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.9",
             chuckNoOp               : "com.tokopedia.chuckernoop:chucker_no_op:0.0.1",
-            akamaiBMP               : "AkamaiBMP:AkamaiBMP:2.1.2",
-            fakeresponse            : "com.tokopedia.fakeresponse:fakeresponse:0.0.7",
+            akamaiBMP               : "AkamaiBMP:AkamaiBMP:3.1.0@aar",
+            fakeresponse            : "com.tokopedia.fakeresponse:fakeresponse:0.0.10",
             fakeresponseNoOp        : "com.tokopedia.fakeresponse:fakeresponse_no_op:0.0.6",
             analyticAnnotation      : "com.tokopedia.analytic:annotation:0.0.3",
             analyticParam           : "com.tokopedia.analytic:param:0.0.3",
@@ -24,7 +23,7 @@ ext {
             analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.2",
             gqlquery_annotation     : "com.tokopedia.gql_query_annotation:gqlquery_annotation:0.0.21",
             gqlquery_annotation_processor       : "com.tokopedia.gqlquery_annotation_processor:gqlquery_annotation_processor:0.0.21",
-            lint                    : "com.tokopedia.library:lint:0.0.11"
+            lint                    : "com.tokopedia.library:lint:0.0.13"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -73,12 +72,11 @@ ext {
             liveness_lib            : ":libraries:liveness_lib",
             locationmanager         : ":libraries:locationmanager",
             logger                  : ":libraries:logger",
-            mediauploader           : ":libraries:mediauploader",
             mpAndroidChart          : "com.github.PhilJay:MPAndroidChart:v3.1.0",
             oms                     : ":libraries:oms",
+            pocNewRelic             : ":libraries:poc_new_relic",
             productPhotoAdapter     : ":libraries:product_photo_adapter",
             pushNotification        : ":libraries:push_notification",
-            reactNative             : ":libraries:react_native",
             remoteConfig            : ":libraries:remote_config",
             remoteResourceRequest   : ":libraries:remoteresourcerequest",
             shakeDetect             : ":libraries:shake_detect",
@@ -89,7 +87,6 @@ ext {
             trackingOptimizer       : ":libraries:tracking_optimizer",
             travelCalendar          : ":libraries:travel_calendar",
             twitterShare            : ":libraries:twitter_share",
-            videoRecorder           : ":libraries:video_recorder",
             videoUploader           : ":libraries:videouploader",
             weaver                  : ":libraries:weaver",
             workManagerUtil         : ":libraries:work_manager_util",

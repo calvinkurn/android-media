@@ -62,6 +62,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import kotlin.Unit;
+import timber.log.Timber;
 
 
 public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment
@@ -102,8 +103,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     protected EmptyStateUnify emptyState;
 
-    private static final String DIGITAL_CART_FAILED_TRANSACTION_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/ic_digital_checkout_failed_transaction.png";
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         DeviceInfo.getAdsIdSuspend(requireContext(), null);
@@ -123,9 +122,12 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //if user don't keep activities
         if (savedInstanceState != null) {
             checkoutDataParameterBuilder = saveInstanceCacheManager.get(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER,
                     CheckoutDataParameter.Builder.class, null);
+            cartPassData.setNeedGetCart(true);
         }
         setupView(view);
         presenter.attachView(this);
@@ -228,7 +230,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void onInputPriceByUserFilled(long paymentAmount) {
         checkoutHolderView.renderCheckout(paymentAmount);
         checkoutDataParameterBuilder.transactionAmount(paymentAmount);
-        presenter.updateTotalPriceWithFintechAmount(mybillEgold.isChecked(), paymentAmount);
+        presenter.updateTotalPriceWithFintechAmount(isEgoldChecked(), paymentAmount);
     }
 
     @Override
@@ -425,16 +427,19 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public String getIdemPotencyKey() {
+        if (cartPassData.getIdemPotencyKey() == null) return "";
         return cartPassData.getIdemPotencyKey();
     }
 
     @Override
     public String getClientNumber() {
+        if (cartPassData.getClientNumber() == null) return "";
         return cartPassData.getClientNumber();
     }
 
     @Override
     public long getOrderId() {
+        if (cartPassData.getOrderId() == null) return 0L;
         String orderIdString = cartPassData.getOrderId();
         try {
             return TextUtils.isEmpty(orderIdString) ? 0L : Long.parseLong(orderIdString);
@@ -445,21 +450,25 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public String getZoneId() {
+        if (cartPassData.getZoneId() == null) return "";
         return cartPassData.getZoneId();
     }
 
     @Override
     public HashMap<String, String> getFields() {
+        if (cartPassData.getFields() == null) return new HashMap<>();
         return cartPassData.getFields();
     }
 
     @Override
     public boolean isInstantCheckout() {
+        if (cartPassData.getInstantCheckout() == null) return false;
         return cartPassData.getInstantCheckout().equals("1");
     }
 
     @Override
     public int getProductId() {
+        if (cartPassData.getProductId() == null) return 0;
         String productIdString = cartPassData.getProductId();
         try {
             return TextUtils.isEmpty(productIdString) ? 0 : Integer.parseInt(productIdString);
@@ -470,7 +479,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void closeViewWithMessageAlert(String message) {
-        if (cartPassData.isFromPDP()) {
+        if (cartPassData == null || cartPassData.isFromPDP()) {
             Intent intent = new Intent();
             intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message);
             getActivity().setResult(Activity.RESULT_OK, intent);
@@ -482,36 +491,40 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void showError(String message) {
-        String errorDesc = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
-        String errorTitle = getString(R.string.digital_transaction_failed_title);
+        try {
+            if (emptyState != null) {
+                String errorDesc = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
+                String errorTitle = getString(R.string.digital_transaction_failed_title);
 
-        if(message == null || message.isEmpty()){
-            emptyState.setImageUrl(DIGITAL_CART_FAILED_TRANSACTION_IMAGE_URL);
-        } else {
-            if (message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL) || message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION) || message.equals(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)) {
-                errorDesc = message;
-                errorTitle = getString(com.tokopedia.globalerror.R.string.noConnectionAction);
-                emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection));
-            }
-            else if(message.equals(ErrorNetMessage.MESSAGE_ERROR_SERVER) || message.equals(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)){
-                errorDesc = getString(com.tokopedia.globalerror.R.string.error500Desc);
-                errorTitle = getString(com.tokopedia.globalerror.R.string.error500Title);
-                emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500));
-            }
-            else {
-                errorDesc = message;
-                emptyState.setImageUrl(DIGITAL_CART_FAILED_TRANSACTION_IMAGE_URL);
-            }
+                if (message == null || message.isEmpty()) {
+                    emptyState.setImageUrl(getString(R.string.digital_image_url_failed_transaction));
+                } else {
+                    if (message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL) || message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION) || message.equals(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)) {
+                        errorDesc = message;
+                        errorTitle = getString(com.tokopedia.globalerror.R.string.noConnectionAction);
+                        emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection));
+                    } else if (message.equals(ErrorNetMessage.MESSAGE_ERROR_SERVER) || message.equals(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)) {
+                        errorDesc = getString(com.tokopedia.globalerror.R.string.error500Desc);
+                        errorTitle = getString(com.tokopedia.globalerror.R.string.error500Title);
+                        emptyState.setImageDrawable(getResources().getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500));
+                    } else {
+                        errorDesc = message;
+                        emptyState.setImageUrl(getString(R.string.digital_image_url_failed_transaction));
+                    }
+                }
+                emptyState.setDescription(errorDesc);
+                emptyState.setTitle(errorTitle);
+                emptyState.setPrimaryCTAText(getString(R.string.digital_empty_state_checkout_btn));
+                emptyState.setPrimaryCTAClickListener(() -> {
+                    emptyState.setVisibility(View.GONE);
+                    presenter.onViewCreated();
+                    return Unit.INSTANCE;
+                });
+                emptyState.setVisibility(View.VISIBLE);
+            } else showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        } catch (Exception e) {
+            Timber.e("P2#OLD_CHECKOUT_DG#EMPTY_STATE#%s", message);
         }
-        emptyState.setDescription(errorDesc);
-        emptyState.setTitle(errorTitle);
-        emptyState.setPrimaryCTAText(getString(R.string.digital_empty_state_checkout_btn));
-        emptyState.setPrimaryCTAClickListener(() -> {
-            emptyState.setVisibility(View.GONE);
-            presenter.onViewCreated();
-            return Unit.INSTANCE;
-        });
-        emptyState.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -577,12 +590,14 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public Boolean isEgoldChecked() {
-        return mybillEgold.isChecked();
+        if (mybillEgold != null) {
+            return mybillEgold.isChecked();
+        } else return false;
     }
 
     @Override
     public void renderMyBillsEgoldView(FintechProduct fintechProduct) {
-        if (fintechProduct != null) {
+        if (fintechProduct != null && mybillEgold != null) {
             mybillEgold.setOnCheckedChangeListener((compoundButton, isChecked) -> {
                 presenter.onEgoldCheckedListener(isChecked, inputPriceHolderView.getPriceInput());
             });
@@ -604,7 +619,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             }
             mybillEgold.setVisibility(View.VISIBLE);
         } else {
-            mybillEgold.setVisibility(View.GONE);
+            if (mybillEgold != null) mybillEgold.setVisibility(View.GONE);
         }
     }
 
@@ -636,7 +651,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
 
     public void updateTotalPriceWithFintechAmount() {
-        if (mybillEgold.getVisibility() == View.VISIBLE) {
+        if (mybillEgold != null && mybillEgold.getVisibility() == View.VISIBLE) {
             presenter.updateTotalPriceWithFintechAmount(mybillEgold.isChecked(), inputPriceHolderView.getPriceInput());
         }
     }

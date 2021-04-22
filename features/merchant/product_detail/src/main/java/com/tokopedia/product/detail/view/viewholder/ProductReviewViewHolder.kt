@@ -24,7 +24,6 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     companion object {
         const val MAX_LINES_REVIEW_DESCRIPTION = 3
-        const val IS_NEW_VIEW_HOLDER = true
         val LAYOUT = R.layout.item_dynamic_review
     }
 
@@ -49,6 +48,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             reviewData?.let { review ->
                 setReviewStars(review)
                 setReviewAuthor(reviewData)
+                setReviewVariant(review)
                 setReviewDescription(review)
                 return
             }
@@ -98,7 +98,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             if (imageReviews.isNotEmpty()) {
                 image_review_list.apply {
                     adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllLastItemImageReview,
-                            componentTrackDataModel, IS_NEW_VIEW_HOLDER)
+                            componentTrackDataModel)
                     show()
                     layoutManager = GridLayoutManager(context, 5)
                 }
@@ -119,6 +119,17 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         view.txt_date_user_pdp.apply {
             text = HtmlLinkHelper(context, context.getString(R.string.review_author, reviewData.user.fullName)).spannedString
             show()
+        }
+    }
+
+    private fun setReviewVariant(review: Review) {
+        if (review.variant.variantTitle.isNotEmpty()) {
+            view.txt_variant_review_pdp.apply {
+                show()
+                text = review.variant.variantTitle
+            }
+        } else {
+            view.txt_variant_review_pdp.hide()
         }
     }
 

@@ -7,6 +7,8 @@ import android.animation.ValueAnimator
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -17,10 +19,10 @@ class OnboardingViewComponent(
         @IdRes idRes: Int
 ) : ViewComponent(container, idRes) {
 
+    private val animatorSet = AnimatorSet()
+
     fun showAnimated() {
         show()
-
-        val animatorSet = AnimatorSet()
 
         val fadeInAnimation = ObjectAnimator.ofFloat(rootView, View.ALPHA, INVISIBLE_ALPHA, VISIBLE_ALPHA).apply {
             duration = FADE_IN_DURATION
@@ -55,6 +57,12 @@ class OnboardingViewComponent(
                 }
                 .start()
 
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        animatorSet.cancel()
+        animatorSet.removeAllListeners()
     }
 
     companion object {

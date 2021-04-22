@@ -14,6 +14,16 @@
       "sessionIris": "{{.*}}"
     },
     {
+      "businessUnit": "play",
+      "eventCategory": "groupchat room",
+      "currentSite": "{{.*}}",
+      "event": "clickGroupChat",
+      "userId": "{{.*}}",
+      "eventAction": "swipe channel",
+      "eventLabel": "{{.+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
       "eventAction": "leave room",
       "event": "clickBack",
       "eventCategory": "groupchat room",
@@ -190,7 +200,7 @@
           "item_name": "{{.*}}",
           "item_brand": "{{.*}}",
           "item_category": "{{.*}}",
-          "price": "{{\\d+.\\d+}}",
+          "price": "{{.*}}",
           "item_variant": "{{.*}}",
           "index": "{{\\d+(.\\d+)?}}"
         }
@@ -273,13 +283,6 @@
       "sessionIris": "{{.*}}"
     },
     {
-      "eventAction": "click product pinned message",
-      "event": "clickGroupChat",
-      "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+}}",
-      "sessionIris": "{{.*}}"
-    },
-    {
       "eventAction": "buffer",
       "event": "viewGroupChat",
       "eventCategory": "groupchat room",
@@ -317,6 +320,100 @@
     },
     {
       "eventAction": "click on button share link",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "impression on merchant voucher",
+      "event": "viewGroupChatIris",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click on merchant voucher",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "view on featured product",
+      "event": "view_item_list",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod) - featured product tagging}}",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "price": "{{\\d+.\\d+}}",
+          "item_variant": "{{.*}}",
+          "index": "{{\\d+(.\\d+)?}}"
+        }
+      ],
+      "item_list": "/groupchat - featured product",
+      "currentSite": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click",
+      "event": "select_content",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod) - featured product tagging}}",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_category": "{{.*}}",
+          "price": "{{\\d+.\\d+}}",
+          "item_variant": "{{.*}}",
+          "index": "{{\\d+(.\\d+)?}}"
+        }
+      ],
+      "item_list": "/groupchat - featured product",
+      "currentSite": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click copy on private voucher",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "impression on private voucher",
+      "event": "viewGroupChatIris",
+      "eventCategory": "groupchat room",
+      "eventLabel": "{{\\d+ - \\d+ - (live|vod)}}",
+      "sessionIris": "{{.*}}",
+      "currentSite": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click product pinned message",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
       "eventLabel": "{{\\d+ - (live|vod)}}",

@@ -268,7 +268,7 @@
     <string name="title_layanan">Layanan</string>
     <string name="label_manage_address">Daftar Alamat</string>
     <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
-    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
+    <string name="title_activity_search_address">Kota atau kecamatan</string>
 
     <!-- Seller Menu -->
     <string name="title_seller_menu">Toko Saya</string>
@@ -277,4 +277,9 @@
     
     <!-- Dynamic feature seller action -->
     <string name="path_seller_action">/seller-action</string>
+
+    <!-- image picker -->
+    <string name="vidpick_app_name">Video Recorder</string>
+    <string name="album">Album</string>
+    <string name="edit_image">Edit Gambar</string>
 </resources>

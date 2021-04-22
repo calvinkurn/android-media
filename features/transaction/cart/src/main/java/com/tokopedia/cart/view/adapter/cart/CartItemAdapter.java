@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tokopedia.cart.databinding.HolderItemCartNewBinding;
 import com.tokopedia.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.cart.view.uimodel.CartItemHolderData;
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder;
@@ -43,9 +44,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(CartItemViewHolder.Companion.getTYPE_VIEW_ITEM_CART(), parent, false);
-        return new CartItemViewHolder(view, compositeSubscription, actionListener);
+        HolderItemCartNewBinding binding = HolderItemCartNewBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new CartItemViewHolder(binding, compositeSubscription, actionListener);
     }
 
     @Override

@@ -90,9 +90,13 @@ import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.list.data.PaymentData;
 import com.tokopedia.dialog.DialogUnify;
+import com.tokopedia.iconunify.IconUnify;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.view.DoubleTextView;
@@ -114,6 +118,7 @@ import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTAN
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_BODY_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_TITLE_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerUtils.formatTitleHtml;
+import static com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE;
 
 public class MarketPlaceDetailFragment extends BaseDaggerFragment implements RefreshHandler.OnRefreshHandlerListener, OrderListDetailContract.View {
 
@@ -151,6 +156,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     public static final int REQUEST_CANCEL_ORDER = 101;
     public static final int INSTANT_CANCEL_BUYER_REQUEST = 100;
+    public static final int CANCEL_ORDER_DISABLE = 102;
     public static final int TEXT_SIZE_MEDIUM = 12;
     public static final int TEXT_SIZE_LARGE = 14;
     @Inject
@@ -773,7 +779,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         for (ActionButton actionButton : actionButtons) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
-            TextView textView = new TextView(getContext());
+            Typography textView = new Typography(getContext());
             textView.setText(actionButton.getLabel());
             textView.setPadding(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
             textView.setTypeface(Typeface.DEFAULT_BOLD);
@@ -812,7 +818,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             actionBtnLayout.addView(textView);
             if (!stickyButtonAdded) {
                 //Cant add the same textview as it has a parent already so making a new instance of the textview and adding it for the sticky
-                TextView stickyTextView = new TextView(getContext());
+                Typography stickyTextView = new Typography(getContext());
                 stickyTextView.setText(actionButton.getLabel());
                 stickyTextView.setPadding(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
                 stickyTextView.setTypeface(Typeface.DEFAULT_BOLD);
@@ -913,66 +919,53 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     startActivityForResult(buyerReqCancelIntent, REQUEST_CANCEL_ORDER);
 
                 } else {
-                    if (getContext() != null) {
-                        DialogUnify dialogUnify = new DialogUnify(getContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
-                        View childView = LayoutInflater.from(getContext()).inflate(com.tokopedia.buyerorder.R.layout.dialog_seller_finish, null);
-                        TextView title = childView.findViewById(R.id.tv_title_dialog);
-                        TextView desc = childView.findViewById(R.id.tv_desc_dialog);
+                    // dialog finish order --> now bottomsheet
+                    if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
+                        if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai") && getArguments() != null) {
+                            BottomSheetUnify bottomSheetFinishOrder = new BottomSheetUnify();
+                            View bottomSheetView = View.inflate(getContext(), R.layout.bottomsheet_finish_order_uoh, null);
 
-                        title.setText(actionButton.getActionButtonPopUp().getTitle());
-                        desc.setText(actionButton.getActionButtonPopUp().getBody());
+                            IconUnify iconFinish1 = bottomSheetView.findViewById(R.id.ic_finish_detail_1);
+                            iconFinish1.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_bound_icon));
 
-                        if (actionButton.getActionButtonPopUp().getActionButtonList() != null && actionButton.getActionButtonPopUp().getActionButtonList().size() > 0) {
-                            TextView btnOk = childView.findViewById(R.id.btn_ok_dialog);
-                            TextView btnCancel = childView.findViewById(R.id.btn_cancel_dialog);
+                            IconUnify iconFinish2 = bottomSheetView.findViewById(R.id.ic_finish_detail_2);
+                            iconFinish2.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_bound_icon));
 
-                            btnOk.setText(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel());
-                            btnOk.setOnClickListener(view1 -> {
-                                if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
-                                    if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai") && getArguments() != null) {
-                                        String actionStatus = "";
-                                        if (!status.status().isEmpty() && Integer.parseInt(status.status()) < 600) {
-                                            actionStatus = ACTION_FINISH_ORDER;
-                                        }
-
-                                        presenter.finishOrderGql(
-                                                GraphqlHelper.loadRawString(getView().getResources(), R.raw.uoh_finish_order),
-                                                getArguments().getString(KEY_ORDER_ID),
-                                                actionStatus,
-                                                userSessionInterface.getUserId());
-                                        dialogUnify.dismiss();
-                                    } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain") && getArguments() != null) {
-                                        Intent newIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, getArguments().getString(KEY_ORDER_ID)));
-                                        startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
-                                        dialogUnify.dismiss();
-                                    } else {
-                                        if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri().contains("askseller")) {
-                                            orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER_CANCELATION, status.status());
-                                            startSellerAndAddInvoice();
-                                        } else
-                                            RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
-                                    }
-                                } else {
-                                    dialogUnify.dismiss();
+                            UnifyButton finishBtn = bottomSheetView.findViewById(R.id.btn_finish_order);
+                            finishBtn.setOnClickListener(view13 -> {
+                                String actionStatus = "";
+                                if (!status.status().isEmpty() && Integer.parseInt(status.status()) < 600) {
+                                    actionStatus = ACTION_FINISH_ORDER;
                                 }
+
+                                presenter.finishOrderGql(
+                                        GraphqlHelper.loadRawString(getView().getResources(), R.raw.uoh_finish_order),
+                                        getArguments().getString(KEY_ORDER_ID),
+                                        actionStatus,
+                                        userSessionInterface.getUserId());
+                                bottomSheetFinishOrder.dismiss();
+
                             });
 
-                            btnCancel.setText(actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel());
-                            btnCancel.setOnClickListener(view12 -> {
-                                if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri())) {
-                                    RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri());
-                                } else {
-                                    if (actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel().equalsIgnoreCase("Kembali")) {
-                                        orderListAnalytics.sendActionButtonClickEvent(CLICK_KEMBALI, status.status());
-                                    }
-                                    dialogUnify.dismiss();
-                                }
+                            UnifyButton komplainBtn = bottomSheetView.findViewById(R.id.btn_ajukan_komplain);
+                            komplainBtn.setOnClickListener(view14 -> {
+                                Intent newIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, getArguments().getString(KEY_ORDER_ID)));
+                                startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
+                                bottomSheetFinishOrder.dismiss();
                             });
+
+                            bottomSheetFinishOrder.setChild(bottomSheetView);
+                            bottomSheetFinishOrder.setTitle(FINISH_ORDER_BOTTOMSHEET_TITLE);
+                            bottomSheetFinishOrder.setCloseClickListener(view8 -> {
+                                bottomSheetFinishOrder.dismiss();
+                                return Unit.INSTANCE;
+                            });
+                            bottomSheetFinishOrder.show(getChildFragmentManager(), getString(R.string.show_bottomsheet));
+
+                        } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain") && getArguments() != null) {
+                            Intent newIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, getArguments().getString(KEY_ORDER_ID)));
+                            startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
                         }
-
-                        dialogUnify.setUnlockVersion();
-                        dialogUnify.setChild(childView);
-                        dialogUnify.show();
                     }
                 }
             } else if (!TextUtils.isEmpty(actionButton.getUri())) {
@@ -1114,6 +1107,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 if (result != 0) {
                     finishOrderDetail();
                 }
+            } else if (resultCode == CANCEL_ORDER_DISABLE) {
+                finishOrderDetail();
             }
             orderListAnalytics.sendActionButtonClickEvent(CLICK_SUBMIT_CANCELATION, statusValue.getText().toString() + "-" + reason);
         }
@@ -1243,7 +1238,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
         SpannableStringBuilder completeLabelShop = new SpannableStringBuilder();
         completeLabelShop.append(labelShop);
-        completeLabelShop.append(shopName);
+        completeLabelShop.append(MethodChecker.fromHtml(shopName));
         completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         shopInformationTitle.setText(completeLabelShop);
 

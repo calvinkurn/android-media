@@ -53,6 +53,7 @@ internal class GetRecommendationUseCaseRequest {
                             position
                             title
                             type
+                            url
                         }
                         badges {
                           title
@@ -74,6 +75,10 @@ internal class GetRecommendationUseCaseRequest {
                         recommendationType
                         stock
                         isTopads
+                        specificationLabels {
+                            key
+                            value
+                        }
                       }
                     }
                   }
@@ -120,6 +125,12 @@ internal class GetRecommendationUseCaseRequest {
                               title
                               color
                           }
+                          labelgroup{
+                            position
+                            title
+                            type
+                            url
+                          }
                           badges {
                               title
                               imageUrl
@@ -130,12 +141,20 @@ internal class GetRecommendationUseCaseRequest {
                               quantityMin
                               priceString
                           }
+                          freeOngkir{
+                            isActive
+                            imageUrl
+                          }
                           rating
                           ratingAverage
                           countReview
                           recommendationType
                           stock
                           isTopads
+                          specificationLabels {
+                            key
+                            value
+                        }
                        }
                    }
                  }

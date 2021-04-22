@@ -4,8 +4,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.ProductTagging
 import javax.inject.Inject
 
@@ -13,39 +11,23 @@ import javax.inject.Inject
  * Created by mzennis on 2020-03-06.
  */
 class GetProductTagItemsUseCase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<ProductTagging>(graphqlRepository) {
+        graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<ProductTagging.Response>(graphqlRepository) {
 
-    var params: HashMap<String, Any> = HashMap()
-
-    override suspend fun executeOnBackground(): ProductTagging {
-        require(params.isNotEmpty()) { "please input the channel id" }
-
-        val gqlRequest = GraphqlRequest(query, ProductTagging.Response::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
-        val response = gqlResponse.getData<ProductTagging.Response>(ProductTagging.Response::class.java)
-        if (response?.playGetTagsItem != null) {
-            return response.playGetTagsItem
-        } else {
-            throw MessageErrorException("server error")
-        }
+    init {
+        setGraphqlQuery(query)
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(ProductTagging.Response::class.java)
     }
 
     companion object {
 
-        private const val REQ = "playTagsItemReq"
-        private const val CHANNEL_ID = "channelID"
+        private const val CHANNEL_ID = "channelId"
 
-        private val query = getQuery()
-
-        private fun getQuery() : String {
-            val playTagsItemReq = "\$playTagsItemReq"
-
-            return """
-           query($playTagsItemReq: PlayGetTagsItemReq!){
-              playGetTagsItem(req: $playTagsItemReq){
-                products{
+        private val query = """
+            query(${'$'}channelId: String){
+              playGetTagsItem(req: {channelID:${'$'}channelId}){
+                 products{
                   id: ID
                   name: Name
                   image_url: ImageUrl
@@ -74,18 +56,22 @@ class GetProductTagItemsUseCase @Inject constructor(
                   voucher_image: VoucherImage
                   voucher_image_square: VoucherImageSquare
                   voucher_quota: VoucherQuota
-                  voucher_finish_time: VoucherFinishTime
+                  voucher_finish_time: VoucherFinishTime,
+                  voucher_code: VoucherCode,
+                  is_copyable: IsVoucherCopyable,
+                  is_highlighted: IsHighlighted,
+                  is_private: IsPrivate
+                }
+                config {
+                  peek_product_count
                 }
               }
             }
-            """.trimIndent()
-        }
+        """.trimIndent()
 
         fun createParam(channelId: String): HashMap<String, Any> {
             return hashMapOf(
-                    REQ to hashMapOf(
-                            CHANNEL_ID to channelId
-                    )
+                    CHANNEL_ID to channelId
             )
         }
     }

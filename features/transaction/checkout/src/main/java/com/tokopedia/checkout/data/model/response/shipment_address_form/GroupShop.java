@@ -2,6 +2,7 @@ package com.tokopedia.checkout.data.model.response.shipment_address_form;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,8 @@ public class GroupShop {
     @SerializedName("is_fulfillment_service")
     @Expose
     private boolean isFulfillment;
+    @SerializedName("toko_cabang")
+    private TokoCabangInfo tokoCabangInfo;
     @SerializedName("warehouse")
     @Expose
     private Warehouse warehouse;
@@ -94,6 +97,10 @@ public class GroupShop {
 
     public boolean isFulfillment() {
         return isFulfillment;
+    }
+
+    public TokoCabangInfo getTokoCabangInfo() {
+        return tokoCabangInfo;
     }
 
     public Warehouse getWarehouse() {

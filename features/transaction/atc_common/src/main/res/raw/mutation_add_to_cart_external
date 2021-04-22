@@ -1,5 +1,5 @@
-mutation add_to_cart_external_v2($productID: SuperInteger) {
-      add_to_cart_external_v2(productID: $productID) {
+mutation add_to_cart_external_v2($productID: SuperInteger, $chosen_address: ChosenAddressParam) {
+      add_to_cart_external_v2(productID: $productID, chosen_address: $chosen_address) {
         error_message
         status
         data {
@@ -23,6 +23,7 @@ mutation add_to_cart_external_v2($productID: SuperInteger) {
                 tracker_attribution
                 is_multi_origin
                 is_free_ongkir
+                is_free_ongkir_extra
             }
         }
     }

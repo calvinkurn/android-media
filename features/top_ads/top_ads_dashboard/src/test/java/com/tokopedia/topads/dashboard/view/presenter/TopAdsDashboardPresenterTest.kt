@@ -167,7 +167,7 @@ class TopAdsDashboardPresenterTest {
         val onSuccess: (data: List<GroupListDataItem>) -> Unit = {
             actual = it[0].totalItem
         }
-        every { topAdsGetGroupListUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+        every { topAdsGetGroupListUseCase.execute(any(), any()) } answers {
             onSuccess.invoke(listOf(data))
         }
         presenter.getGroupList("", onSuccess)
@@ -186,13 +186,13 @@ class TopAdsDashboardPresenterTest {
     fun `set product action success`() {
         val expected = "add"
         var actual = ""
-        val onSuccess: (action: String) -> Unit = {
+        val onSuccess: () -> Unit = {
             actual = expected
         }
-        every { topAdsProductActionUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            onSuccess.invoke("")
+        every { topAdsProductActionUseCase.execute(any(), any()) } answers {
+            onSuccess.invoke()
         }
-        presenter.setProductAction(onSuccess, "", listOf(), res, "")
+        presenter.setProductAction(onSuccess, "", listOf(), "")
         Assert.assertEquals(expected, actual)
     }
 
@@ -310,7 +310,7 @@ class TopAdsDashboardPresenterTest {
         val onSuccess: (data: FinalAdResponse.TopadsManageGroupAds) -> Unit = {
             actual = it.keywordResponse.errors?.get(0)?.title ?: "haha"
         }
-        every { topAdsEditUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+        every { topAdsEditUseCase.execute(any(), any()) } answers {
             onSuccess.invoke(data)
         }
         presenter.editBudgetThroughInsight(mutableListOf(), hashMapOf(), onSuccess, {})

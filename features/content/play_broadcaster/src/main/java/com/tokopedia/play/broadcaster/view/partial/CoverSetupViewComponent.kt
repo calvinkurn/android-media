@@ -175,8 +175,8 @@ class CoverSetupViewComponent(
         tvCoverTitleCounter.setTextColor(
                 MethodChecker.getColor(
                         tvCoverTitleCounter.context,
-                        if (!dataSource.isValidCoverTitle(text) && etCoverTitle.hasFocus()) com.tokopedia.unifyprinciples.R.color.Red_R500
-                        else com.tokopedia.unifyprinciples.R.color.Neutral_N0
+                        if (!dataSource.isValidCoverTitle(text) && etCoverTitle.hasFocus()) com.tokopedia.unifyprinciples.R.color.Unify_R500
+                        else com.tokopedia.unifyprinciples.R.color.Unify_Static_White
                 )
         )
     }
@@ -192,9 +192,9 @@ class CoverSetupViewComponent(
         val hasFocus = etCoverTitle.hasFocus()
         etCoverTitle.setTextFieldColor(
                 when {
-                    isValid && hasFocus -> com.tokopedia.unifyprinciples.R.color.Green_G400
-                    !isValid && hasFocus && !isFirstFocus -> com.tokopedia.unifyprinciples.R.color.Red_R500
-                    else -> com.tokopedia.unifyprinciples.R.color.Neutral_N0
+                    isValid && hasFocus -> com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    !isValid && hasFocus && !isFirstFocus -> com.tokopedia.unifyprinciples.R.color.Unify_R500
+                    else -> com.tokopedia.unifyprinciples.R.color.Unify_Static_White
                 }
         )
     }
@@ -243,7 +243,7 @@ class CoverSetupViewComponent(
         val spanBuilder = SpannableStringBuilder(finalText)
         if (spanBuilder.contains(asterisk)) {
             spanBuilder.setSpan(
-                    ForegroundColorSpan(getColor(com.tokopedia.unifyprinciples.R.color.Red_R500)),
+                    ForegroundColorSpan(getColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)),
                     finalText.indexOf(asterisk),
                     finalText.length,
                     Spanned.SPAN_INCLUSIVE_EXCLUSIVE

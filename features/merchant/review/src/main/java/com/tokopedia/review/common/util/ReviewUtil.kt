@@ -1,7 +1,6 @@
 package com.tokopedia.review.common.util
 
 import android.content.Context
-import android.os.Build
 import android.text.Spanned
 import android.util.TypedValue
 import android.widget.ListView
@@ -17,6 +16,7 @@ import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import java.text.SimpleDateFormat
@@ -78,12 +78,11 @@ fun getReviewStar(ratingCount: Int): Int {
     }
 }
 
-fun String.toReviewDescriptionFormatted(maxChar: Int): Spanned {
+fun String.toReviewDescriptionFormatted(maxChar: Int, context: Context): CharSequence? {
     return if (MethodChecker.fromHtml(this).toString().length > maxChar) {
         val subDescription = MethodChecker.fromHtml(this).toString().substring(0, maxChar)
-        MethodChecker
-                .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
-                        + "<font color='#42b549'>Selengkapnya</font>")
+        HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
+                + context.getString(R.string.review_expand)).spannedString
     } else {
         MethodChecker.fromHtml(this)
     }

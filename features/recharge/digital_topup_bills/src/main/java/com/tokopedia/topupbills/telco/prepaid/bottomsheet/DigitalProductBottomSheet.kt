@@ -1,13 +1,16 @@
 package com.tokopedia.topupbills.telco.prepaid.bottomsheet
 
+import android.content.DialogInterface
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.topupbills.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 
 class DigitalProductBottomSheet : BottomSheetUnify() {
@@ -57,7 +60,15 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
                 }
 
                 selectItemBtn.setOnClickListener {
-                    listener.onClickOnProduct()
+                    if (::listener.isInitialized) {
+                        listener.onClickOnProduct()
+                    } else {
+                        activity?.let { it2 ->
+                            Toaster.build(it2.findViewById(android.R.id.content),
+                                    getString(R.string.digital_telco_error_try_again),
+                                    Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                        }
+                    }
                     dismiss()
                 }
             }
@@ -75,8 +86,16 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
         private const val PRICE = "price"
         private const val PROMO_PRICE = "promo_price"
 
-        fun newInstance(title: String, details: String, price: String, promoPrice : String?): DigitalProductBottomSheet {
-            val fragment = DigitalProductBottomSheet()
+        fun newInstance(
+                title: String,
+                details: String,
+                price: String,
+                promoPrice : String?,
+                listener: ActionListener
+        ): DigitalProductBottomSheet {
+            val fragment = DigitalProductBottomSheet().apply {
+                setListener(listener)
+            }
             val bundle = Bundle()
             bundle.putString(DETAILS, details)
             bundle.putString(PRICE, price)

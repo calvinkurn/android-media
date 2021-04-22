@@ -15,7 +15,9 @@ import com.tokopedia.orderhistory.di.OrderHistoryComponent
 import com.tokopedia.orderhistory.di.OrderHistoryContextModule
 import com.tokopedia.orderhistory.view.fragment.OrderHistoryFragment
 
-class OrderHistoryActivity : BaseSimpleActivity(), HasComponent<OrderHistoryComponent> {
+open class OrderHistoryActivity : BaseSimpleActivity(), HasComponent<OrderHistoryComponent> {
+
+    private var orderHistoryComponent: OrderHistoryComponent? = null
 
     override fun getNewFragment(): Fragment? {
         return OrderHistoryFragment.createInstance(getArgument())
@@ -29,11 +31,17 @@ class OrderHistoryActivity : BaseSimpleActivity(), HasComponent<OrderHistoryComp
     }
 
     override fun getComponent(): OrderHistoryComponent {
+        return orderHistoryComponent ?: initializeOrderHistoryComponent()
+    }
+
+    protected open fun initializeOrderHistoryComponent(): OrderHistoryComponent {
         return DaggerOrderHistoryComponent
                 .builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .orderHistoryContextModule(OrderHistoryContextModule(this))
-                .build()
+                .build().also {
+                    orderHistoryComponent = it
+                }
     }
 
     private fun getArgument(): Bundle? {

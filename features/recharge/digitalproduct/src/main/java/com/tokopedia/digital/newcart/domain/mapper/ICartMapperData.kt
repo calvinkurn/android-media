@@ -16,7 +16,7 @@ interface ICartMapperData {
 
     @Throws(MapperDataException::class)
     fun transformCartInfoData(
-            responseCartData: ResponseCartData
+            responseCartData: ResponseCartData?
     ): CartDigitalInfoData
 
     @Throws(MapperDataException::class)

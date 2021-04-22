@@ -73,7 +73,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         }
 
         return PlayShareInfoUiModel(
-                content = fullShareContent,
+                content = htmlTextTransformer.transform(fullShareContent),
                 shouldShow = shareResponse.isShowButton
                         && shareResponse.redirectUrl.isNotBlank()
                         && isActive
@@ -100,7 +100,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     ) = PlayProductTagsUiModel.Incomplete(
             basicInfo = PlayProductTagsBasicInfoUiModel(
                     bottomSheetTitle = configResponse.pinnedProductConfig.bottomSheetTitle,
-                    partnerId = partnerResponse.id.toLongOrZero()
+                    partnerId = partnerResponse.id.toLongOrZero(),
+                    maxFeaturedProducts = DEFAULT_MAX_FEATURED_PRODUCT
             )
     )
 
@@ -158,7 +159,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             statusType = mapStatusType(!configResponse.active || configResponse.freezed),
             bannedModel = mapBannedModel(configResponse.bannedData),
             freezeModel = mapFreezeModel(configResponse.freezeData, title),
-            shouldAutoSwipeOnFreeze = false
+            shouldAutoSwipeOnFreeze = true
     )
 
     private fun mapBannedModel(
@@ -197,6 +198,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     companion object {
         private const val MS_PER_SECOND = 1000
+        private const val DEFAULT_MAX_FEATURED_PRODUCT = 5
     }
 
     data class ExtraParams(

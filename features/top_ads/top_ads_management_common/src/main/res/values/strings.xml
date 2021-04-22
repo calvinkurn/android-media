@@ -75,11 +75,13 @@
     <string name="topads_common_keyword_info_sheet_Sedang">kata kunci dengan pengguna sedang, kompetisi berjalan rata dan cukup ketat.</string>
     <string name="topads_common_keyword_info_sheet_Rendah">kata kunci dengan sedikit pengguna, kompetisi rendah iklanmu berpeluang besar berada di halaman awal</string>
     <string name="topads_common_keyword_competition_high">Tinggi</string>
+    <string name="topads_common_keyword_competition_unknown">Baru</string>
     <string name="topads_common_keyword_competition_moderation">Sedang</string>
     <string name="topads_common_keyword_competition_low">Rendah</string>
     <string name="topads_common_keyword_pencarian">Pencarian</string>
     <string name="topads_common_keyword_competition">Kompetisi</string>
     <string name="topads_common_kata_kunci_dipilih">%d kata kunci dipilih</string>
+    <string name="topads_common_kata_kunci_lihat">%d kata kunci dipilih <![CDATA["<font color='#42b549'><b>Lihat </b></font> ]]></string>
     <string name="topads_common_tip_memilih_kata_kunci">Tip memilih kata kunci</string>
     <string name="topads_empty_tip_memilih_kata_kunci_title">Tips memilih kata kunci</string>
     <string name="topads_common_keyword_empty_title">Belum ada kata kunci dicari</string>
@@ -97,7 +99,7 @@
     <string name="topads_common_selanjutnya">Selanjutnya</string>
     <string name="topads_common_keyword_jenis">Jenis</string>
     <string name="topads_common_keyword_budget">Biaya</string>
-    <string name="topads_common_non_key_budget">Biaya non kata kunci</string>
+    <string name="topads_common_basic_budget">Biaya Iklan Dasar</string>
     <string name="topads_common_error_multiple_50">Biaya harus kelipatan %s</string>
     <string name="sesuaikan_kata_kunci_dengan_nama_produk">Sesuaikan kata kunci dengan nama produk</string>
     <string name="lebih_efektif_dengan_kata_kunci_spesifik">Lebih efektif dengan kata kunci spesifik</string>
@@ -143,6 +145,12 @@
     <string name="topads_common_later">Nanti saja</string>
     <string name="topads_common_out_of_creadit_btn">Top up sekarang</string>
     <string name="topads_common_out_of_credit_subtitle">Tinggal 1 langkah lagi! Isi kredit TopAds untuk mengaktifkan iklan produkmu </string>
+
+    <!-- Error messages -->
+    <string name="topads_common_error_too_many_request">Jumlah maks. kata kunci yang bisa dipilih adalah 50. Coba kurangi dulu, ya.</string>
+    <string name="topads_common_error_invalid_item">Oops, ada produk di iklanmu yang sudah dihapus. Coba cek lagi, ya.</string>
+    <string name="topads_common_error_invalid_keyword">Kata kunci hanya bisa diisi dengan huruf dan angka.</string>
+    <string name="topads_common_error_group_name_exist">Nama grup iklan sudah digunakan. Coba tulis nama lain, ya.</string>
 
 
     <string-array name="sort_product_list_array">

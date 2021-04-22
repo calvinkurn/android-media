@@ -2,12 +2,8 @@ package com.tokopedia.topchat.chatroom.view.custom
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
@@ -22,7 +18,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.config.GlobalConfig
@@ -93,9 +88,6 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private var widthMultiplier = DEFAULT_WIDTH_MULTIPLIER
-    private val white = "#ffffff"
-    private val white2 = "#fff"
-    private val labelEmptyStockColor = "#AD31353B"
     private val bottomMarginOpposite = getOppositeMargin(context).toInt()
 
     constructor(context: Context?) : super(context) {
@@ -297,7 +289,9 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         showVariantLayout()
         if (product.hasColorVariant()) {
             ll_variant_color?.show()
-            val backgroundDrawable = getBackgroundDrawable(product.colorHexVariant)
+            val backgroundDrawable = ColorDrawableGenerator.generate(
+                    context, product.colorHexVariant
+            )
             iv_variant_color?.background = backgroundDrawable
             tv_variant_color?.text = product.colorVariant
         } else {
@@ -427,7 +421,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                 show()
                 setText(R.string.title_topchat_pre_order)
                 unlockFeature = true
-                setLabelType(labelEmptyStockColor)
+                setLabelType(getEmptyStockLabelBg())
             } else {
                 hide()
             }
@@ -440,13 +434,17 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                 show()
                 setText(R.string.title_topchat_empty_stock)
                 unlockFeature = true
-                setLabelType(labelEmptyStockColor)
+                setLabelType(getEmptyStockLabelBg())
             } else {
                 if (!product.isPreOrder) {
                     hide()
                 }
             }
         }
+    }
+
+    private fun getEmptyStockLabelBg(): String {
+        return resources.getString(R.string.topchat_dms_hex_empty_stock_color_bg)
     }
 
     private fun hideFooter() {
@@ -514,30 +512,6 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun showVariantLayout() {
         ll_variant?.show()
-    }
-
-    private fun getBackgroundDrawable(hexColor: String): Drawable? {
-        val backgroundDrawable = MethodChecker.getDrawable(context, com.tokopedia.chat_common.R.drawable.topchat_circle_color_variant_indicator)
-                ?: return null
-
-        if (isWhiteColor(hexColor)) {
-            applyStrokeTo(backgroundDrawable)
-            return backgroundDrawable
-        }
-
-        backgroundDrawable.colorFilter = PorterDuffColorFilter(Color.parseColor(hexColor), PorterDuff.Mode.SRC_ATOP)
-        return backgroundDrawable
-    }
-
-    private fun applyStrokeTo(backgroundDrawable: Drawable) {
-        if (backgroundDrawable is GradientDrawable) {
-            val strokeWidth = 1f.toPx()
-            backgroundDrawable.setStroke(strokeWidth.toInt(), MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
-        }
-    }
-
-    private fun isWhiteColor(hexColor: String): Boolean {
-        return hexColor == white || hexColor == white2
     }
 
     private fun toggleCampaign(visibility: Int) {

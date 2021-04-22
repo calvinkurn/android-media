@@ -23,9 +23,6 @@
 -dontwarn com.viewpagerindicator.LinePageIndicator
 -dontwarn sun.misc.Unsafe
 
-#https://github.com/facebook/react-native/issues/25679
--keep class com.facebook.hermes.unicode.** { *; }
-
 -keep class id.co.veritrans.android.api.**{ *;}
 -keepclassmembers class id.co.veritrans.android.api.**{
  @id.co.veritrans.android.api.** *;
@@ -230,6 +227,8 @@
 -keep class com.tokopedia.discovery2.data.ComponentsItem { *; }
 #agerestriction
 -keep class com.tokopedia.age_restriction.viewmodel.** { *; }
+#topads
+-keep class com.tokopedia.topads.dashboard.view.fragment.** extends androidx.fragment.app.Fragment{}
 
 #Please refer to the link before manipulating this line https://help.branch.io/developers-hub/docs/android-basic-integration#proguard-settings
 -keep class com.google.android.gms.** { *; }
@@ -267,3 +266,8 @@
 -keep class com.newrelic.** { *; }
 -dontwarn com.newrelic.**
 -keepattributes Exceptions, Signature, InnerClasses, LineNumberTable, SourceFile, EnclosingMethod
+
+# data visor
+-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
+-keepclasseswithmembers class * { native <methods>; }
+-keep class com.datavisor.vangogh.** { *; }

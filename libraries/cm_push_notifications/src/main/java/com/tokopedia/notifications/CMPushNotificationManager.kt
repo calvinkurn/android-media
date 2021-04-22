@@ -7,6 +7,8 @@ import android.text.TextUtils
 import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notification.common.PushNotificationApi
 import com.tokopedia.notification.common.utils.NotificationValidationManager
 import com.tokopedia.notifications.common.*
@@ -48,11 +50,11 @@ class CMPushNotificationManager : CoroutineScope {
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig("app_cm_token_capture_foreground_enable", true)
 
     private val isPushEnable: Boolean
-        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_CM_PUSH_ENABLE, false) || BuildConfig.DEBUG
+        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_CM_PUSH_ENABLE, true) || BuildConfig.DEBUG
 
     private val isInAppEnable: Boolean
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_INAPP_ENABLE,
-                false) || BuildConfig.DEBUG
+                true) || BuildConfig.DEBUG
 
     private var aidlApiBundle: Bundle? = null
 
@@ -178,13 +180,16 @@ class CMPushNotificationManager : CoroutineScope {
                 } else if (isPushEnable) {
                     validateAndRenderNotification(bundle)
                 } else if (!(confirmationValue.equals(SOURCE_VALUE) || confirmationValue.equals(FCM_EXTRA_CONFIRMATION_VALUE))){
-                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason='not_cm_source';data='${dataString.
-                    take(CMConstant.TimberTags.MAX_LIMIT)}'")
+                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                            mapOf("type" to "validation", "reason" to "not_cm_source", "data" to dataString.take(CMConstant.TimberTags.MAX_LIMIT)))
                 }
             }
         } catch (e: Exception) {
-            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${dataString.take(CMConstant.TimberTags.MAX_LIMIT)}'")
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception",
+                            "err" to Log.getStackTraceString(e)
+                            .take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to dataString.take(CMConstant.TimberTags.MAX_LIMIT)))
         }
     }
 

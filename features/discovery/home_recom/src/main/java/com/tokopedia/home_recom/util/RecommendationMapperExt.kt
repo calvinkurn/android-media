@@ -177,21 +177,15 @@ fun List<RecommendationFilterChipsEntity.RecommendationFilterChip>.getOption(): 
 }
 
 fun Map<String, String>.isActivated(key: String, value: String): Boolean{
-    return if(key in this.keys){
-        // check if separator #
-        val separator = if(this[key]?.contains("#") == true){
-            "#"
-        } else {
-            null
-        }
+    if(!this.containsKey(key)) return false
+    // check if separator # (241,242,243#10#11) for case city_ids
+    return if(this[key]?.contains("#") == true){
         val values = mutableListOf<String>()
-        separator?.let {
-            values.addAll(this[key]?.split(it) ?: listOf())
-        }
-        if(values.isEmpty()) values.add(value)
-        Timber.tag("LUKAS").e("IsActivated: " + values + " in " + value + " is " + (values.indexOf(value) != -1))
-        values.indexOf(value) != -1
+        // saved to values [(241,242,243), 10, 11]
+        values.addAll(this[key]?.split("#") ?: listOf())
+        // check is inside values
+        values.any { it == value }
     } else {
-        false
+        this[key] == value
     }
 }

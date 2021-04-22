@@ -32,4 +32,8 @@ data class CardWidgetUiModel(
     override fun copy(): BaseWidgetUiModel<CardDataUiModel> {
         return CardWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
     }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<CardDataUiModel>): Boolean {
+        return dataKey != other.dataKey
+    }
 }

@@ -8,7 +8,7 @@ import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.sear
 import com.tokopedia.search.result.stubExecute
 import org.junit.Test
 
-internal class SearchShopHandleViewVisibilityChangedTest: SearchShopViewModelTestFixtures() {
+internal class SearchShopHandleViewVisibilityChangedTest: SearchShopDataViewTestFixtures() {
 
     @Test
     fun `View is visible and added`() {

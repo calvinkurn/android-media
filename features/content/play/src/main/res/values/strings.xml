@@ -34,7 +34,7 @@
     <string name="play_pip_permission_rationale_title">Aktifkan akses Draw over other apps</string>
     <string name="play_pip_permission_rationale_desc">Akses ini dibutuhkan untuk dapat membuka Tokopedia Play dalam mode Picture-in-Picture</string>
     <string name="play_pip_activate">Aktifkan</string>
-    <string name="play_pip_cancel">Batalkan</string>
+    <string name="play_pip_cancel">Abaikan</string>
 
     <!--mock-->
     <string name="play_mock_cart">99+</string>
@@ -51,5 +51,11 @@
 
     <string name="play_buffer_reason_seller_side">Siarannya sedang berkendala, nih.\nTunggu sebentar, ya!</string>
     <string name="play_buffer_reason_waiting">Live streaming akan segera mulai sesaat lagi, ya!</string>
+
+    <string name="play_action_copy">Salin</string>
+    <string name="play_voucher_code_copied">Kode kupon berhasil disalin, gunakan saat transaksi</string>
+
+    <string name="play_action_ok">Oke</string>
+    <string name="play_out_of_stock">Stok habis</string>
 
 </resources>

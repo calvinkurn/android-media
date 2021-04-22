@@ -2,6 +2,7 @@ package com.tokopedia.promotionstarget.presenter
 
 import android.app.Activity
 import android.content.Context
+import android.os.Handler
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.tokopedia.notifications.inApp.CmDialogVisibilityContract
@@ -23,10 +24,12 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.json.JSONObject
+import org.junit.Assert
 import org.spekframework.spek2.Spek
 import java.io.File
 import java.lang.ref.WeakReference
 import kotlin.test.assertFailsWith
+
 
 /*
 * Scenarios/Flows to test
@@ -44,23 +47,36 @@ class GratificationPresenterSpekTest : Spek({
     val gson = Gson()
     lateinit var context: Context
     lateinit var activity: Activity
-    lateinit var dispatcher: CoroutineDispatcher
+    lateinit var dispatcher: TestCoroutineDispatcher
     lateinit var notificationUseCase: NotificationUseCase
     lateinit var tpCouponDetailUseCase: TokopointsCouponDetailUseCase
     lateinit var notificationResponse: GratifNotificationResponse
     lateinit var couponResponse: TokopointsCouponDetailResponse
+    lateinit var visibilityContract: CmDialogVisibilityContract
 
-    beforeEachTest {
+    beforeGroup {
         context = mockk()
-        activity = mockk()
-        dispatcher = TestCoroutineDispatcher()
-        notificationUseCase = mockk()
-        tpCouponDetailUseCase = mockk()
+
+        val slotRunnable = slot<Runnable>()
+        mockkConstructor(Handler::class)
+        every { anyConstructed<Handler>().postAtFrontOfQueue(capture(slotRunnable)) } answers {
+            slotRunnable.captured.run()
+            true
+        }
 
         mockkStatic(GraphqlHelper::class)
         every { GraphqlHelper.loadRawString(any(), any()) } returns ""
         every { GraphqlHelper.loadRawString(context.resources, R.raw.t_promo_gratif_notification) } returns ""
         every { GraphqlHelper.loadRawString(context.resources, R.raw.t_promo_hachiko_coupon) } returns ""
+    }
+
+    beforeEachTest {
+
+        activity = mockk()
+        dispatcher = TestCoroutineDispatcher()
+        notificationUseCase = mockk()
+        tpCouponDetailUseCase = mockk()
+        visibilityContract = mockk()
     }
 
 
@@ -131,14 +147,17 @@ class GratificationPresenterSpekTest : Spek({
                                    isCouponApiDown: Boolean,
                                    bottomSheetDialog: BottomSheetDialog = mockk(),
                                    gratifCallback: GratificationPresenter.GratifPopupCallback = spyk(),
-                                   visibilityContract: CmDialogVisibilityContract = spyk {
-                                       every { isDialogVisible(any()) } returns false
-                                   }, timeout: Long = 0L
-                                   , paymentId: Long = 0L,
+                                   visibilityContract: CmDialogVisibilityContract,
+                                   timeout: Long = 0L,
+                                   paymentId: Long = 0L,
                                    isCouponCodeEmpty: Boolean = false): GratificationPresenter {
         val gratificationPresenter = buildGratifPresenter(visibilityContract)
 
-        setupApiResponse(gratificationPresenter.worker as TestCoroutineDispatcher, timeout, isNotificationApiDown, isCouponApiDown, isCouponCodeEmpty)
+        setupApiResponse(dispatcher = gratificationPresenter.worker as TestCoroutineDispatcher,
+                timeout = timeout,
+                isNotificationApiDown = isNotificationApiDown,
+                isCouponApiDown = isCouponApiDown,
+                isCouponCodeEmpty = isCouponCodeEmpty)
 
         val weakActivity: WeakReference<Activity>? = WeakReference(activity)
 
@@ -167,13 +186,13 @@ class GratificationPresenterSpekTest : Spek({
     }
 
 
-
-
     group("When gratif api is down - fail") {
 
         test("type organic") {
 
-            val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.ORGANIC, true, false)
+            every { visibilityContract.isDialogVisible(activity) } returns false
+
+            val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.ORGANIC, true, false, visibilityContract = visibilityContract)
 
             coVerifyOrder {
 
@@ -193,7 +212,7 @@ class GratificationPresenterSpekTest : Spek({
 
         test("type push") {
             assertFailsWith(Exception::class) {
-                val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.PUSH, true, false)
+                val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.PUSH, true, false, visibilityContract = visibilityContract)
 
                 coVerifyOrder {
 
@@ -218,7 +237,7 @@ class GratificationPresenterSpekTest : Spek({
     group("When coupon api is down - fail") {
         test("type push") {
             assertFailsWith(Exception::class) {
-                val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.PUSH, false, true)
+                val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.PUSH, false, true, visibilityContract = visibilityContract)
 
                 coVerify {
 
@@ -242,7 +261,9 @@ class GratificationPresenterSpekTest : Spek({
         }
 
         test("type organic") {
-            val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.ORGANIC, false, true)
+            every { visibilityContract.isDialogVisible(activity) } returns false
+
+            val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.ORGANIC, false, true, visibilityContract = visibilityContract)
 
             coVerify {
                 gratificationPresenter.worker = dispatcher
@@ -263,20 +284,24 @@ class GratificationPresenterSpekTest : Spek({
     }
 
     group("show gratification dialog - success") {
+
         test("type push") {
+            every { visibilityContract.isDialogVisible(activity) } returns false
+            every { visibilityContract.onDialogShown(activity) } just runs
+            every { activity.isFinishing } returns false
+
             val bottomSheetDialog: BottomSheetDialog = mockk()
-            val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.PUSH, false, false, bottomSheetDialog)
+            val gratificationPresenter = preparePresenterForApiDown(notificationEntryType = NotificationEntryType.PUSH,isNotificationApiDown =  false,isCouponApiDown =  false,bottomSheetDialog= bottomSheetDialog, visibilityContract = visibilityContract)
 
-            verify {
-
-                gratificationPresenter.worker = dispatcher
-                gratificationPresenter.uiWorker = dispatcher
-                gratificationPresenter.notificationUseCase = notificationUseCase
-                gratificationPresenter.tpCouponDetailUseCase = tpCouponDetailUseCase
-
+            Assert.assertEquals(gratificationPresenter.worker,dispatcher)
+            Assert.assertEquals(gratificationPresenter.uiWorker,dispatcher)
+            Assert.assertEquals(gratificationPresenter.notificationUseCase,notificationUseCase)
+            Assert.assertEquals(gratificationPresenter.tpCouponDetailUseCase,tpCouponDetailUseCase)
+            verifyOrder {
                 gratificationPresenter.initSafeJob()
                 gratificationPresenter.initSafeScope()
                 gratificationPresenter.dialogVisibilityContract?.isDialogVisible(activity)
+                gratificationPresenter.dialogVisibilityContract?.onDialogShown(activity)
                 gratificationPresenter.dialogCreator.createGratifDialog(any(), any(), any(), any(), any(), any(), any(),any())
                 gratificationPresenter.dialogVisibilityContract?.onDialogShown(activity)
                 bottomSheetDialog.setOnDismissListener(any())
@@ -285,8 +310,13 @@ class GratificationPresenterSpekTest : Spek({
         }
 
         test("type organic") {
+
+            every { visibilityContract.isDialogVisible(activity) } returns false
+            every { visibilityContract.onDialogShown(activity) } just runs
+            every { activity.isFinishing } returns false
+
             val bottomSheetDialog: BottomSheetDialog = mockk()
-            val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.ORGANIC, false, false, bottomSheetDialog)
+            val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.ORGANIC, false, false, bottomSheetDialog, visibilityContract = visibilityContract)
 
             verify {
 
@@ -331,6 +361,10 @@ class GratificationPresenterSpekTest : Spek({
             }
         }
         test("type push - success") {
+
+            every { visibilityContract.onDialogShown(activity) } just runs
+            every { activity.isFinishing } returns false
+
             val bottomSheetDialog: BottomSheetDialog = mockk()
             val gratifCallback: GratificationPresenter.GratifPopupCallback = spyk()
             val visibilityContract: CmDialogVisibilityContract = spyk()
@@ -368,6 +402,10 @@ class GratificationPresenterSpekTest : Spek({
     group("when api is taking more than 1 second - fail") {
 
         test("thank you page") {
+            every { visibilityContract.isDialogVisible(activity) } returns false
+            every { visibilityContract.onDialogShown(activity) } just runs
+            every { activity.isFinishing } returns false
+
             val gratifCallback: GratificationPresenter.GratifPopupCallback = spyk()
             val bottomSheetDialog: BottomSheetDialog = mockk()
             preparePresenterForApiDown(NotificationEntryType.ORGANIC,
@@ -376,7 +414,8 @@ class GratificationPresenterSpekTest : Spek({
                     bottomSheetDialog = bottomSheetDialog,
                     timeout = 2000L,
                     gratifCallback = gratifCallback,
-                    paymentId = 1L)
+                    paymentId = 1L,
+                    visibilityContract = visibilityContract)
 
             verify {
                 gratifCallback.onIgnored(GratifPopupIngoreType.TIMEOUT)
@@ -387,12 +426,17 @@ class GratificationPresenterSpekTest : Spek({
     group("when coupon code is empty - fail") {
 
         test("type push") {
+            every { visibilityContract.isDialogVisible(activity) } returns false
+            every { visibilityContract.onDialogShown(activity) } just runs
+            every { activity.isFinishing } returns false
+
             val gratifCallback: GratificationPresenter.GratifPopupCallback = spyk()
             val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.PUSH,
                     isNotificationApiDown = false,
                     isCouponApiDown = false,
                     isCouponCodeEmpty = true,
-                    gratifCallback = gratifCallback)
+                    gratifCallback = gratifCallback,
+                    visibilityContract = visibilityContract)
 
             coVerifyOrder {
 
@@ -413,12 +457,17 @@ class GratificationPresenterSpekTest : Spek({
         }
 
         test("type organic") {
+            every { visibilityContract.isDialogVisible(activity) } returns false
+            every { visibilityContract.onDialogShown(activity) } just runs
+            every { activity.isFinishing } returns false
+
             val gratifCallback: GratificationPresenter.GratifPopupCallback = spyk()
             val gratificationPresenter = preparePresenterForApiDown(NotificationEntryType.ORGANIC,
                     isNotificationApiDown = false,
                     isCouponApiDown = false,
                     isCouponCodeEmpty = true,
-                    gratifCallback = gratifCallback)
+                    gratifCallback = gratifCallback,
+                    visibilityContract = visibilityContract)
 
             coVerifyOrder {
 
@@ -435,5 +484,9 @@ class GratificationPresenterSpekTest : Spek({
                 gratifCallback.onIgnored(GratifPopupIngoreType.COUPON_CODE_EMPTY)
             }
         }
+    }
+
+    afterEachTest {
+        dispatcher.cleanupTestCoroutines()
     }
 })

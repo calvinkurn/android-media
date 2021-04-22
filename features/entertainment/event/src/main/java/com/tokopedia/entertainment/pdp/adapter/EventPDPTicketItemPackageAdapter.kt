@@ -35,7 +35,6 @@ class EventPDPTicketItemPackageAdapter(
     private var isRecommendationPackage = false
     private var idPackage = ""
     private var packageName = ""
-    private var heightItemView = 0
     lateinit var eventPDPTracking: EventPDPTracking
 
     inner class EventPDPTicketItemPackageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -81,17 +80,6 @@ class EventPDPTicketItemPackageAdapter(
                 } else {
                     txtisRecommeded.show()
                     showSoldOut(itemView)
-                }
-
-                itemView.post {
-                    if (position == 0) heightItemView += itemView.height.toDp()
-                    if (!onCoachmarkListener.getLocalCache()) {
-                        if (listItemPackage.size == 1 && position == 0) {
-                            onCoachmarkListener.showCoachMark(itemView, 0)
-                        } else if (listItemPackage.size >= 2 && position == 1) {
-                            onCoachmarkListener.showCoachMark(itemView, heightItemView)
-                        }
-                    }
                 }
 
                 quantityEditor.setValue(items.minQty.toInt())
@@ -178,7 +166,6 @@ class EventPDPTicketItemPackageAdapter(
 
         private fun renderForRecommendationPackage(items: PackageItem) {
             with(itemView) {
-
                 onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                     if (!hasFocus) {
                         val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager

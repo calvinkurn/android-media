@@ -55,7 +55,7 @@
         android:id="@+id/border_right"
         android:layout_width="@dimen/dp_1"
         android:layout_height="@dimen/dp_0"
-        android:background="@color/category_border_color"
+        android:background="@color/Unify_N50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -65,7 +65,7 @@
         android:id="@+id/border_bottom"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_1"
-        android:background="@color/category_border_color"
+        android:background="@color/Unify_N50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/category_product_image"

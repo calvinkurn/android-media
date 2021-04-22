@@ -157,10 +157,6 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
                 } else {
                     getLikes();
                 }
-
-                if (!getView().isEnableShareFromArguments()){
-                    getView().hideShareButton();
-                }
             }
         });
     }

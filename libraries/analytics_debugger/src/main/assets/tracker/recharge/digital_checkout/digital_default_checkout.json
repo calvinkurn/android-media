@@ -9,7 +9,7 @@
       "eventLabel": "{{.+ - .+}}",
       "checkout_step": "1",
       "checkout_option": "cart page loaded",
-      "currentSite": "tokopediadigital",
+      "currentSite": "tokopediadigitalRecharge",
       "sessionIris": "{{.+}}",
       "businessUnit": "recharge",
       "userId": "{{.+}}",
@@ -17,7 +17,7 @@
         {
           "cart_id": "{{.+}}",
           "quantity": "{{\\d*.\\d*}}",
-          "category_id": "{{.*}}",
+          "category_id": "{{.+}}",
           "item_id": "{{.+}}",
           "item_name": "{{.+}}",
           "item_brand": "{{.+}}",

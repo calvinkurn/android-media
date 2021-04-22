@@ -5,6 +5,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
 class GetRecommendationTabUseCase(
@@ -26,4 +27,14 @@ class GetRecommendationTabUseCase(
         }
     }
 
+    fun setParams(locationParams: String = "") {
+        val requestParams: RequestParams = RequestParams.EMPTY
+        requestParams.putString(LOCATION, locationParams)
+        graphqlUseCase.setRequestParams(requestParams.parameters)
+    }
+
+    companion object {
+
+        private const val LOCATION = "location"
+    }
 }

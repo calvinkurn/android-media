@@ -30,7 +30,11 @@ class PushDataStore(private val baseNotificationDao: BaseNotificationDao) : IPus
     }
 
     override suspend fun getNotification(): List<BaseNotificationModel> {
-        return baseNotificationDao.getNotification()
+        return try {
+            baseNotificationDao.getNotification()
+        } catch (e: Exception) {
+            arrayListOf()
+        }
     }
 
 }

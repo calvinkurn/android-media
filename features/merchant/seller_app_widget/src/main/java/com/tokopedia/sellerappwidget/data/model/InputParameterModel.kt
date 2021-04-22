@@ -33,5 +33,7 @@ data class InputParameterModel(
         @SerializedName("is_shipping_printed")
         val isShippingPrinted: Int = 0,
         @SerializedName("deadline")
-        val deadline: Int = 0
+        val deadline: Int = 0,
+        @SerializedName("source")
+        val source: String = "widget"
 )

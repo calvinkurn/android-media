@@ -837,7 +837,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     private View.OnClickListener onCityDistrictClick() {
         return view -> {
             sendAnalyticsOnDistrictSelectionClicked();
-            Intent intent = DiscomActivity.newInstance(getActivity(), token);
+            Intent intent = DiscomActivity.newInstance(getActivity(), token, false);
             startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);
         };
     }

@@ -3,61 +3,67 @@ package com.tokopedia.search.result.presentation.view.typefactory;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
-import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
-import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
-import com.tokopedia.search.result.presentation.model.CpmViewModel;
-import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
-import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
-import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
-import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
-import com.tokopedia.search.result.presentation.model.SearchInTokopediaViewModel;
-import com.tokopedia.search.result.presentation.model.SearchProductCountViewModel;
-import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
-import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel;
-import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
-import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
-import com.tokopedia.search.result.presentation.model.TickerViewModel;
+import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView;
+import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView;
+import com.tokopedia.search.result.presentation.model.BannerDataView;
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView;
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView;
+import com.tokopedia.search.result.presentation.model.CpmDataView;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView;
+import com.tokopedia.search.result.presentation.model.GlobalNavDataView;
+import com.tokopedia.search.result.presentation.model.InspirationCardDataView;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView;
+import com.tokopedia.search.result.presentation.model.ProductItemDataView;
+import com.tokopedia.search.result.presentation.model.RecommendationItemDataView;
+import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView;
+import com.tokopedia.search.result.presentation.model.SearchInTokopediaDataView;
+import com.tokopedia.search.result.presentation.model.SearchProductCountDataView;
+import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView;
+import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView;
+import com.tokopedia.search.result.presentation.model.SeparatorDataView;
+import com.tokopedia.search.result.presentation.model.SuggestionDataView;
+import com.tokopedia.search.result.presentation.model.TickerDataView;
 
 public interface ProductListTypeFactory {
-    int type(ProductItemViewModel productItem);
+    int type(ProductItemDataView productItem);
 
-    int type(CpmViewModel cpmViewModel);
+    int type(CpmDataView cpmDataView);
 
-    int type(TickerViewModel tickerViewModel);
+    int type(TickerDataView tickerDataView);
 
-    int type(SuggestionViewModel suggestionViewModel);
+    int type(SuggestionDataView suggestionDataView);
 
-    int type(GlobalNavViewModel globalNavViewModel);
+    int type(GlobalNavDataView globalNavDataView);
 
-    int type(InspirationCarouselViewModel inspirationCarouselViewModel);
+    int type(InspirationCarouselDataView inspirationCarouselDataView);
 
-    int type(RecommendationTitleViewModel titleViewModel);
+    int type(RecommendationTitleDataView titleViewModel);
 
-    int type(RecommendationItemViewModel recommendationItemViewModel);
+    int type(RecommendationItemDataView recommendationItemDataView);
 
-    int type(BannedProductsEmptySearchViewModel bannedProductsEmptySearchViewModel);
+    int type(BannedProductsEmptySearchDataView bannedProductsEmptySearchDataView);
 
-    int type(BannedProductsTickerViewModel bannedProductsTickerViewModel);
+    int type(BannedProductsTickerDataView bannedProductsTickerDataView);
 
-    int type(EmptySearchProductViewModel emptySearchViewModel);
+    int type(EmptySearchProductDataView emptySearchViewModel);
 
-    int type(BroadMatchViewModel broadMatchViewModel);
+    int type(BroadMatchDataView broadMatchDataView);
 
-    int type(InspirationCardViewModel inspirationCardViewModel);
+    int type(InspirationCardDataView inspirationCardDataView);
 
-    int type(SearchProductTitleViewModel searchProductTitleViewModel);
+    int type(SearchProductTitleDataView searchProductTitleDataView);
 
-    int type(SeparatorViewModel separatorViewModel);
+    int type(SeparatorDataView separatorDataView);
 
-    int type(SearchInTokopediaViewModel searchInTokopediaViewModel);
+    int type(SearchInTokopediaDataView searchInTokopediaDataView);
 
-    int type(SearchProductCountViewModel searchProductCountViewModel);
+    int type(SearchProductCountDataView searchProductCountDataView);
 
-    int type(SearchProductTopAdsImageViewModel searchProductTopAdsImageViewModel);
+    int type(SearchProductTopAdsImageDataView searchProductTopAdsImageDataView);
+
+    int type(ChooseAddressDataView chooseAddressDataView);
+
+    int type(BannerDataView bannerDataView);
 
     int getRecyclerViewItem();
 

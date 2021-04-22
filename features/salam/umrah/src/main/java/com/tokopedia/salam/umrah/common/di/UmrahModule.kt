@@ -6,7 +6,8 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
-import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -30,7 +31,7 @@ class UmrahModule {
 
     @UmrahScope
     @Provides
-    fun provideDispatcher(): UmrahDispatchersProvider = UmrahDispatchersProvider()
+    fun provideDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @UmrahScope
     @Provides

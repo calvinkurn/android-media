@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -9,7 +10,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhomecommon.domain.mapper.LayoutMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
-import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -18,30 +18,30 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetLayoutUseCase(
-        private val gqlRepository: GraphqlRepository,
-        private val mapper: LayoutMapper
-) : BaseGqlUseCase<List<BaseWidgetUiModel<*>>>() {
+        gqlRepository: GraphqlRepository,
+        mapper: LayoutMapper,
+        dispatchers: CoroutineDispatchers
+) : CloudAndCacheGraphqlUseCase<GetLayoutResponse, List<BaseWidgetUiModel<*>>>(
+        gqlRepository, mapper, dispatchers, GetLayoutResponse::class.java, QUERY, false) {
+
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
 
     override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
         val gqlRequest = GraphqlRequest(QUERY, GetLayoutResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetLayoutResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetLayoutResponse>()
-            val widgetList: List<WidgetModel> = data.layout?.widget.orEmpty()
-            if (widgetList.isNotEmpty()) {
-                return mapper.mapRemoteModelToUiModel(widgetList, cacheStrategy.type == CacheType.CACHE_ONLY)
-            } else {
-                throw RuntimeException("no widget found")
-            }
+            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
     }
 
     companion object {
-
         private const val KEY_SHOP_ID = "shopID"
         private const val KEY_PAGE = "page"
 

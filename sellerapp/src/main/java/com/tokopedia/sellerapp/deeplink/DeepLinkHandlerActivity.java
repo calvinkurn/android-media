@@ -17,11 +17,9 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
-import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
-import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.sellerapp.SplashScreenActivity;
-import com.tokopedia.sellerapp.applink.SellerappAplinkModule;
-import com.tokopedia.sellerapp.applink.SellerappAplinkModuleLoader;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
@@ -31,7 +29,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.WebViewApplinkModule;
 import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
-import timber.log.Timber;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
@@ -40,8 +39,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
  */
 @DeepLinkHandler({
         TopAdsApplinkModule.class,
-        SellerappAplinkModule.class,
-        LoginRegisterApplinkModule.class,
         WebViewApplinkModule.class,
         HomeCreditAppLinkModule.class
 })
@@ -52,7 +49,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
 @Deprecated
 public class DeepLinkHandlerActivity extends AppCompatActivity {
 
-    private static final String APPLINK_LOG_FORMAT = "P1#WEBVIEW_OPENED#applink;domain='%s';url='%s'";
     private static final String TOKOPEDIA_DOMAIN = "tokopedia";
     private static final String URL_QUERY_PARAM = "url";
 
@@ -60,8 +56,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(
                 new TopAdsApplinkModuleLoader(),
-                new SellerappAplinkModuleLoader(),
-                new LoginRegisterApplinkModuleLoader(),
                 new WebViewApplinkModuleLoader(),
                 new HomeCreditAppLinkModuleLoader()
         );
@@ -150,7 +144,11 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 String domain = urlToLoad.getHost();
                 if(domain != null) {
                     if (!getBaseDomain(domain).equalsIgnoreCase(TOKOPEDIA_DOMAIN)) {
-                        Timber.w(APPLINK_LOG_FORMAT, domain, uri);
+                        Map<String, String> messageMap = new HashMap<>();
+                        messageMap.put("type", "applink");
+                        messageMap.put("domain", domain);
+                        messageMap.put("url", String.valueOf(uri));
+                        ServerLogger.log(Priority.P1, "WEBVIEW_OPENED", messageMap);
                     }
                 }
             }

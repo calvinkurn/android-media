@@ -92,6 +92,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
         exclude group: "com.google.android.gms", module: "play-services-plus"
         exclude group: "com.google.android.gms", module: "play-services-location"
@@ -100,6 +101,8 @@ dependencies {
         exclude group: "com.google.android.gms", module: "play-services-places"
     }
     androidTestImplementation (rootProject.ext.testDependencies.espressoIdlingResource)
+
+    androidTestImplementation project(rootProject.ext.features.loginregister)
 }
 
 project.ext {

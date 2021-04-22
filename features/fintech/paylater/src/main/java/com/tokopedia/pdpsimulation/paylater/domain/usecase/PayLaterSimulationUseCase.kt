@@ -14,7 +14,7 @@ class PayLaterSimulationUseCase @Inject constructor(
 
     fun getSimulationData(
             onSuccess: (PayLaterGetSimulationResponse?) -> Unit,
-            onError: (Throwable) -> Unit, amount: Int,
+            onError: (Throwable) -> Unit, amount: Long,
     ) {
         try {
             this.setTypeClass(PayLaterGetSimulationResponse::class.java)
@@ -32,7 +32,7 @@ class PayLaterSimulationUseCase @Inject constructor(
         }
     }
 
-    private fun getRequestParams(amount: Int): Map<String, Any> {
+    private fun getRequestParams(amount: Long): Map<String, Any> {
         return mapOf(PARAM_PRODUCT_AMOUNT to amount)
     }
 

@@ -125,6 +125,8 @@ public class Product {
     private TradeInInfo tradeInInfo;
     @SerializedName("free_shipping")
     private FreeShipping freeShipping;
+    @SerializedName("free_shipping_extra")
+    private FreeShipping freeShippingExtra;
     @SerializedName("product_ticker")
     @Expose
     private ProductTicker productTicker;
@@ -291,6 +293,10 @@ public class Product {
 
     public FreeShipping getFreeShipping() {
         return freeShipping;
+    }
+
+    public FreeShipping getFreeShippingExtra() {
+        return freeShippingExtra;
     }
 
     public ProductTicker getProductTicker() {

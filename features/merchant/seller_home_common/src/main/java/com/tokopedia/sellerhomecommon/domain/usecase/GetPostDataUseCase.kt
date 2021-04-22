@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -18,19 +19,24 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetPostDataUseCase(
-        private val gqlRepository: GraphqlRepository,
-        private val postMapper: PostMapper
-) : BaseGqlUseCase<List<PostListDataUiModel>>() {
+        gqlRepository: GraphqlRepository,
+        postMapper: PostMapper,
+        dispatchers: CoroutineDispatchers
+) : CloudAndCacheGraphqlUseCase<GetPostDataResponse, List<PostListDataUiModel>>(
+        gqlRepository, postMapper, dispatchers, GetPostDataResponse::class.java, QUERY, false) {
+
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
 
     override suspend fun executeOnBackground(): List<PostListDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetPostDataResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetPostDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetPostDataResponse>()
-            val widgetDataList = data.getPostWidgetData?.data.orEmpty()
-            return postMapper.mapRemoteDataModelToUiDataModel(widgetDataList, cacheStrategy.type == CacheType.CACHE_ONLY)
+            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
@@ -72,6 +78,7 @@ class GetPostDataUseCase(
                   }
                   error
                   errorMsg
+                  showWidget
                 }
               }
             }

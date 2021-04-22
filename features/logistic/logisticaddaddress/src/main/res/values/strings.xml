@@ -60,7 +60,7 @@
     <string name="wait_generate_address">Harap Tunggu . . .</string>
     <string name="hint_gojek_pick_address">Cari Lokasi</string>
 
-    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
+    <string name="title_activity_search_address">Kota atau kecamatan</string>
     <string name="message_advice_search_address">Untuk mempersingkat waktu, isi dengan kecamatan tujuan pengiriman</string>
     <string name="message_search_address_no_result">Tidak menemukan data, harap mencari berdasarkan kota, kabupaten atau kecamatan Anda</string>
 
@@ -105,11 +105,14 @@
     <string name="rationale_need_location">Akses lokasi diperlukan untuk menggunakan fitur ini. Perbolehkan?</string>
     <string name="undetected_location">Lokasi tidak terdeteksi</string>
     <string name="undetected_location_desc">Kami tidak dapat mengakses lokasi Anda. Untuk menggunakan fitur ini silakan aktifkan layanan lokasi Anda.</string>
+    <string name="undetected_location_desc_2">Untuk menggunakan fitur ini silakan aktifkan layanan lokasi perangkat Anda</string>
+    <string name="btn_ok">Ok</string>
+    <string name="btn_lain_kali">Lain Kali</string>
     <string name="activate_location_service">Aktifkan Layanan Lokasi</string>
     <string name="validate_label_alamat">Label Alamat harus diisi</string>
     <string name="validate_nama_penerima">Nama Penerima harus diisi</string>
     <string name="validate_no_ponsel">No. Ponsel harus diisi</string>
-    <string name="validate_no_ponsel_less_char">Nomor Telepon Penerima terlalu pendek, minimum 8 angka.</string>
+    <string name="validate_no_ponsel_less_char">Nomor HP penerima terlalu pendek, min. 9 angka</string>
     <string name="validate_detail_alamat">Detail Alamat harus diisi</string>
     <string name="validate_kota_kecamatan">Kota Kecamatan harus diisi</string>
     <string name="validate_kode_pos">Kode Pos harus diisi</string>
@@ -138,6 +141,8 @@
     <string name="content_desc_receiver_phone">input nomor telepon</string>
     <string name="content_desc_value_location">input lokasi pickup</string>
     <string name="content_desc_save_button">button simpan</string>
+    <string name="lokasi_saat_ini">Lokasi saat ini</string>
+    <string name="toaster_failed_get_district">Oops, alamat gagal dipilih. Silakan coba lagi.</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>
@@ -161,4 +166,9 @@
 
     <string name="toaster_not_avail_shop_loc">Lokasi pinpoint (peta) tidak sesuai dengan kota/kecamatan mu. Harap ulangi pinpoint.</string>
 
+    <string name="txt_phone_helper"> Min. 9 angka</string>
+    <string name="contact_not_found">Kontak tidak ditemukan</string>
+    <string name="rationale_need_contact">Untuk pakai fitur ini, izinkan Tokpedia mengakses kontakmu.</string>
+    <string name="contact_title_coachmark">Pilih no. HP langsung dari kontakmu</string>
+    <string name="contact_desc_coachmark">Jadi lebih mudah menambahkan nomor HP penerima pesanan!</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.tokopedia.logout.view
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -26,7 +27,6 @@ import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.gcm.FCMCacheManager
@@ -38,7 +38,6 @@ import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
 import com.tokopedia.logout.di.module.LogoutModule
 import com.tokopedia.logout.viewmodel.LogoutViewModel
-import com.tokopedia.notification.common.PushNotificationApi
 import com.tokopedia.notifications.CMPushNotificationManager.Companion.instance
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
@@ -165,18 +164,17 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         PersistentCacheManager.instance.delete()
         AppWidgetUtil.sendBroadcastToAppWidget(applicationContext)
         NotificationModHandler.clearCacheAllNotification(applicationContext)
-        CacheApiClearAllUseCase(applicationContext).executeSync()
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         NotificationModHandler(applicationContext).dismissAllActivedNotifications()
         clearWebView()
+        clearLocalChooseAddress()
+        clearOccData()
 
         instance.refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(applicationContext), true)
 
         tetraDebugger?.setUserId("")
         userSession.clearToken()
         userSession.logoutSession()
-
-        PushNotificationApi.bindService(applicationContext)
+        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         if (isReturnToHome) {
             if (GlobalConfig.isSellerApp()) {
@@ -212,6 +210,11 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         stickyPref.edit().clear().apply()
     }
 
+    private fun clearLocalChooseAddress() {
+        val chooseAddressPref = applicationContext.getSharedPreferences(CHOOSE_ADDRESS_PREF, Context.MODE_PRIVATE)
+        chooseAddressPref.edit().clear().apply()
+    }
+
     private fun saveLoginReminderData() {
         getSharedPreferences(STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)?.edit()?.apply {
             putString(KEY_USER_NAME, userSession.name).apply()
@@ -227,17 +230,25 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         logoutLoading?.visibility = View.GONE
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private fun clearWebView() {
-        WebView(applicationContext).clearCache(true)
-        val cookieManager: CookieManager
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            CookieSyncManager.createInstance(this)
-            cookieManager = CookieManager.getInstance()
-            cookieManager.removeAllCookie()
-        } else {
-            cookieManager = CookieManager.getInstance()
-            cookieManager.removeAllCookies {}
-        }
+        try {
+            WebView(applicationContext).clearCache(true)
+            val cookieManager: CookieManager
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                CookieSyncManager.createInstance(this)
+                cookieManager = CookieManager.getInstance()
+                cookieManager.removeAllCookie()
+            } else {
+                cookieManager = CookieManager.getInstance()
+                cookieManager.removeAllCookies {}
+            }
+        } catch (ignored: Exception) {}
+    }
+
+    private fun clearOccData() {
+        val occDataPref = applicationContext.getSharedPreferences(OCC_DATA_PREF, Context.MODE_PRIVATE)
+        occDataPref.edit().clear().apply()
     }
 
     companion object {
@@ -245,5 +256,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         private const val STICKY_LOGIN_REMINDER_PREF = "sticky_login_reminder.pref"
         private const val KEY_USER_NAME = "user_name"
         private const val KEY_PROFILE_PICTURE = "profile_picture"
+        private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
+        private const val OCC_DATA_PREF = "occ_remove_profile_ticker"
     }
 }

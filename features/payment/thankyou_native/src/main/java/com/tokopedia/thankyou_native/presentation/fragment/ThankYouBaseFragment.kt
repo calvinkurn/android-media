@@ -17,6 +17,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.domain.response.DefaultChosenAddressData
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
@@ -117,6 +119,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             getFeatureRecommendationData()
             addRecommendation()
             getTopTickerData()
+            thanksPageDataViewModel.resetAddressToDefault()
         }
     }
 
@@ -204,6 +207,27 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 is Fail -> getTopTickerView()?.gone()
             }
         })
+
+        thanksPageDataViewModel.defaultAddressLiveData.observe(viewLifecycleOwner, Observer {
+            when(it){
+                is Success->{
+                    updateLocalizingAddressData(it.data)
+                }
+                is Fail->{
+                    //do nothing
+                }
+            }
+        })
+    }
+
+    private fun updateLocalizingAddressData(data: DefaultChosenAddressData) {
+        context?.let {
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(it,
+                    data.addressId.toString(), data.cityId.toString(),
+                    data.districtId.toString(),
+                    data.latitude, data.longitude,
+                    "${data.addressName} ${data.receiverName}", data.postalCode)
+        }
     }
 
 

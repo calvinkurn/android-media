@@ -57,20 +57,6 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
         )
     }
 
-    fun eventClickGantiNomor(tradeIn: Boolean) {
-        sendEventCategoryAction(if (tradeIn) EventName.CLICK_TRADEIN else "",
-                EventCategory.COURIER_SELECTION_TRADE_IN,
-                EventAction.CLICK_GANTI_NOMOR
-        )
-    }
-
-    fun eventClickButtonPilihDurasi() {
-        sendEventCategoryAction(EventName.CLICK_TRADEIN,
-                EventCategory.COURIER_SELECTION_TRADE_IN,
-                EventAction.CLICK_BUTTON_PILIH_DURASI
-        )
-    }
-
     fun eventClickKurirTradeIn(label: String?) {
         sendEventCategoryActionLabel(EventName.CLICK_TRADEIN,
                 EventCategory.COURIER_SELECTION_TRADE_IN,
@@ -106,13 +92,6 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
         sendEventCategoryAction(EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_DROP_OFF_TAB
-        )
-    }
-
-    fun eventClickUbahTitikDropoffButton() {
-        sendEventCategoryAction(EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_UBAH_TITIK_DROP_OFF_BUTTON
         )
     }
 

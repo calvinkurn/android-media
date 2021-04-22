@@ -26,7 +26,10 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_WEB_VIEW_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
+import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
+import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 
@@ -36,6 +39,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
         const val SHOP_ID = "EXTRA_SHOP_ID"
         const val SHOP_REF = "EXTRA_SHOP_REF"
         const val PATH_INFO = "info"
+        const val FORCE_NOT_SHOWING_HOME_TAB = "FORCE_NOT_SHOWING_HOME_TAB"
 
         @JvmStatic
         fun createIntent(context: Context, shopId: String, shopRef: String) = Intent(context, ShopPageActivity::class.java)
@@ -69,14 +73,17 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
     }
 
     override fun getNewFragment(): Fragment? {
-        return ShopPageFragment.createInstance()
+        return if(ShopUtil.isUsingNewShopPageHeader(this))
+            NewShopPageFragment.createInstance()
+        else
+            ShopPageFragment.createInstance()
     }
 
     override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
 
     override fun onBackPressed() {
         super.onBackPressed()
-        (fragment as? ShopPageFragment)?.onBackPressed()
+        (fragment as? InterfaceShopPageHeader)?.onBackPressed()
     }
 
     fun stopShopHeaderPerformanceMonitoring() {

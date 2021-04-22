@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/Unify_N0"/>
+    <item android:drawable="@color/play_dms_bottom_sheet_background"/>
     <item
         android:bottom="@dimen/play_variant_sheet_header_separator_height_minus"
         android:left="@dimen/play_variant_sheet_header_separator_height_minus"
         android:right="@dimen/play_variant_sheet_header_separator_height_minus">
         <shape>
             <stroke android:width="@dimen/play_variant_sheet_header_separator_height"
-                android:color="@color/Unify_N700_20"/>
+                android:color="@color/play_dms_variant_sheet_divider"/>
         </shape>
     </item>
 </layer-list>

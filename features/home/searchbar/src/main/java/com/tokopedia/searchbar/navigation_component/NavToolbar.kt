@@ -366,6 +366,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
+    //this needed to enable coachmark on homepage
+    fun getInboxIconView(): View? {
+        val globalNavPosition = navIconAdapter?.getInboxIconPosition()
+        globalNavPosition?.let {
+            val viewholder = rv_icon_list.findViewHolderForAdapterPosition(it)
+            return viewholder?.itemView
+        }
+        return null
+    }
+
     internal fun setBackgroundAlpha(alpha: Float) {
         navToolbar?.let {
             val drawable = it.background

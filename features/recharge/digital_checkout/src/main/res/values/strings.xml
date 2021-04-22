@@ -8,11 +8,12 @@
     <string name="digital_cart_detail_close_label">Tutup</string>
 
     <string name="digital_checkout_total_payment_label">Total Tagihan</string>
-    <string name="digital_cart_checkout_pay_label">Pilih Pembayaran</string>
+    <string name="digital_cart_checkout_pay_label_cta">Pilih Pembayaran</string>
     <string name="digital_cart_hint_input_price">Nominal Pembayaran</string>
     <string name="digital_cart_prepend_text_input_price">Rp</string>
 
     <string name="digital_cart_login_message">Silakan login terlebih dahulu</string>
+    <string name="digital_cart_default_error_img_url">https://images.tokopedia.net/img/android/res/singleDpi/ic_digital_checkout_failed_transaction.png</string>
 
     <string name="digital_cart_generate_token_checkout">%1$s_%2$s</string>
 
@@ -31,4 +32,5 @@
     <string name="digital_checkout_empty_state_title">Oops, gagal melanjutkan pembayaran</string>
     <string name="digital_checkout_empty_state_btn">Coba Lagi</string>
     <string name="digital_checkout_promo_title">Makin hemat pakai promo</string>
+    <string name="digital_checkout_summary_title">Ringkasan Pembayaran</string>
 </resources>

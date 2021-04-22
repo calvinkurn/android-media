@@ -55,6 +55,8 @@ public interface IProductDigitalView extends IBaseView {
 
     void showSnackBarCallbackCloseView(String message);
 
+    void showSnackBar(String message);
+
     boolean isUserLoggedIn();
 
     void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData);

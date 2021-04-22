@@ -34,6 +34,11 @@ class QuickReplyViewComponent(
         quickReplyAdapter.setQuickReply(quickReply.quickReplyList)
     }
 
+    fun showIfNotEmpty() {
+        if (quickReplyAdapter.itemCount == 0) hide()
+        else show()
+    }
+
     interface Listener {
 
         fun onQuickReplyClicked(view: QuickReplyViewComponent, replyString: String)

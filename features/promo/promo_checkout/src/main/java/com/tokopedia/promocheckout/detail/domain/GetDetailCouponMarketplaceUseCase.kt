@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
+import com.tokopedia.promocheckout.util.PromoCheckoutQuery
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.util.*
@@ -23,8 +24,7 @@ class GetDetailCouponMarketplaceUseCase(val resources: Resources)
         variables[INPUT_CODE] = requestParams?.getString(INPUT_CODE, "") ?: ""
         variables[API_VERSION] = "2.0.0"
 
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_detail_marketplace), DataPromoCheckoutDetail::class.java, variables)
+        val graphqlRequest = GraphqlRequest(PromoCheckoutQuery.promoCheckoutDetailMarketPlace(), DataPromoCheckoutDetail::class.java, variables)
         clearRequest()
         addRequest(graphqlRequest)
 

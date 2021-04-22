@@ -8,10 +8,8 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -52,16 +50,21 @@ import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
 import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitMeasured
+import com.tokopedia.play_common.util.extension.changeConstraint
 import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -77,7 +80,7 @@ import javax.inject.Inject
  */
 class PlayUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
-        private val dispatchers: CoroutineDispatcherProvider,
+        private val dispatchers: CoroutineDispatchers,
         private val pipAnalytic: PlayPiPAnalytic,
         private val analytic: PlayAnalytic
 ) :
@@ -93,7 +96,9 @@ class PlayUserInteractionFragment @Inject constructor(
         VideoSettingsViewComponent.Listener,
         ImmersiveBoxViewComponent.Listener,
         PlayButtonViewComponent.Listener,
-        PiPViewComponent.Listener
+        PiPViewComponent.Listener,
+        ProductFeaturedViewComponent.Listener,
+        PinnedVoucherViewComponent.Listener
 {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.main + job)
@@ -108,12 +113,13 @@ class PlayUserInteractionFragment @Inject constructor(
     private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
     private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.view_chat_list) }
     private val pinnedView by viewComponentOrNull { PinnedViewComponent(it, R.id.view_pinned, this) }
+    private val pinnedVoucherView by viewComponentOrNull { PinnedVoucherViewComponent(it, R.id.view_pinned_voucher, this) }
+    private val productFeaturedView by viewComponentOrNull { ProductFeaturedViewComponent(it, this) }
     private val videoSettingsView by viewComponent { VideoSettingsViewComponent(it, R.id.view_video_settings, this) }
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
-    private val onboardingView by viewComponentOrNull { OnboardingViewComponent(it, R.id.iv_onboarding) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -150,7 +156,8 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private var hasBeenOpened = false
+    private var isOpened = false
+    private var portraitInsets: WindowInsets? = null
 
     private var videoBoundsProvider: VideoBoundsProvider? = null
     private var dynamicLayoutManager: DynamicLayoutManager? = null
@@ -200,6 +207,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
+        isOpened = false
         analytic.getTrackingQueue().sendAll()
     }
 
@@ -226,7 +234,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        hasBeenOpened = true
+        isOpened = true
         invalidateSystemUiVisibility()
     }
 
@@ -239,6 +247,8 @@ class PlayUserInteractionFragment @Inject constructor(
         videoBoundsProvider = null
         dynamicLayoutManager = null
         chatListHeightManager = null
+
+        cancelAllAnimations()
 
         super.onDestroyView()
         job.cancelChildren()
@@ -318,13 +328,7 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     override fun onPinnedMessageActionClicked(view: PinnedViewComponent, applink: String, message: String) {
         analytic.clickPinnedMessage(message, applink)
-        openPageByApplink(applink)
-
-        playViewModel.requestPiPBrowsingPage()
-    }
-
-    override fun onPinnedProductActionClicked(view: PinnedViewComponent) {
-        doClickPinnedProduct()
+        openPageByApplink(applink, pipMode = true)
     }
 
     /**
@@ -366,6 +370,38 @@ class PlayUserInteractionFragment @Inject constructor(
                 shopId = playViewModel.partnerId,
                 channelType = playViewModel.channelType
         )
+    }
+
+    /**
+     * Product Featured View Component Listener
+     */
+    override fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
+        analytic.impressionFeaturedProduct(product, position)
+    }
+
+    override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
+        viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, position))
+        analytic.clickFeaturedProduct(product, position)
+    }
+
+    override fun onSeeMoreClicked(view: ProductFeaturedViewComponent) {
+        openProductSheet()
+        analytic.clickFeaturedProductSeeMore()
+    }
+
+    /**
+     * Pinned Voucher View Component Listener
+     */
+    override fun onVoucherImpressed(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel, position: Int) {
+        analytic.impressionHighlightedVoucher(voucher)
+    }
+
+    override fun onVoucherClicked(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel) {
+        if (voucher.code.isBlank() || voucher.code.isEmpty()) return
+
+        copyToClipboard(content = voucher.code)
+        doShowToaster(message = getString(R.string.play_voucher_code_copied), actionText = getString(R.string.play_action_ok))
+        analytic.clickHighlightedVoucher(voucher)
     }
     //endregion
 
@@ -413,7 +449,9 @@ class PlayUserInteractionFragment @Inject constructor(
             try {
                 val layoutParams = spaceSize.rootView.layoutParams as ViewGroup.MarginLayoutParams
                 val initialBottomMargin = layoutParams.bottomMargin
-                val insets = activity?.window?.decorView?.rootWindowInsets
+                val rootInsets = activity?.window?.decorView?.rootWindowInsets
+                if (portraitInsets == null && orientation.isPortrait) portraitInsets = rootInsets
+                val insets = if (orientation.isPortrait) portraitInsets else rootInsets
                 if (insets != null) {
                     layoutParams.updateMargins(top = insets.systemWindowInsetTop, bottom = initialBottomMargin + insets.systemWindowInsetBottom)
                     initialBottomMargin
@@ -422,7 +460,8 @@ class PlayUserInteractionFragment @Inject constructor(
         } else 0
 
         spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, recordedMargin ->
-            if (!hasBeenOpened && (insets.systemWindowInsetTop == 0 || insets.systemWindowInsetBottom == 0)) return@doOnApplyWindowInsets
+            val skipTop = !isOpened && insets.systemWindowInsetTop == 0
+            val skipBottom = !isOpened && insets.systemWindowInsetBottom == 0
 
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
 
@@ -434,13 +473,13 @@ class PlayUserInteractionFragment @Inject constructor(
             var isMarginChanged = false
 
             val newTopMargin = insets.systemWindowInsetTop
-            if (marginLayoutParams.topMargin != newTopMargin) {
+            if (marginLayoutParams.topMargin != newTopMargin && !skipTop) {
                 marginLayoutParams.updateMargins(top = newTopMargin)
                 isMarginChanged = true
             }
 
             val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
-            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+            if (marginLayoutParams.bottomMargin != newBottomMargin && !skipBottom) {
                 marginLayoutParams.updateMargins(bottom = newBottomMargin)
                 isMarginChanged = true
             }
@@ -464,7 +503,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun setupObserve() {
         observeVideoMeta()
         observeVideoProperty()
-        observeOnboarding()
         observeChannelInfo()
         observeQuickReply()
         observeToolbarInfo()
@@ -477,6 +515,7 @@ class PlayUserInteractionFragment @Inject constructor(
         observeBottomInsetsState()
         observeStatusInfo()
         observeShareInfo()
+        observeProductContent()
 
         observeLoggedInInteractionEvent()
     }
@@ -599,8 +638,10 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observePinned() {
-        playViewModel.observablePinned.observe(viewLifecycleOwner, DistinctObserver {
+        playViewModel.observablePinned.observe(viewLifecycleOwner, Observer {
             pinnedViewOnStateChanged(pinnedModel = it)
+            productFeaturedViewOnStateChanged(pinnedModel = it)
+            quickReplyViewOnStateChanged(pinnedModel = it)
         })
     }
 
@@ -641,6 +682,7 @@ class PlayUserInteractionFragment @Inject constructor(
             quickReplyViewOnStateChanged(bottomInsets = map)
             chatListViewOnStateChanged(bottomInsets = map)
             pinnedViewOnStateChanged(bottomInsets = map)
+            productFeaturedViewOnStateChanged(bottomInsets = map)
             videoSettingsViewOnStateChanged(bottomInsets = map)
             immersiveBoxViewOnStateChanged(bottomInsets = map)
             pipViewOnStateChanged(bottomInsets = map)
@@ -670,7 +712,8 @@ class PlayUserInteractionFragment @Inject constructor(
                 toolbarViewOnStateChanged(isFreezeOrBanned = true)
                 statsInfoViewOnStateChanged(isFreezeOrBanned = true)
                 pipViewOnStateChanged(isFreezeOrBanned = true)
-                pinnedViewOnStateChanged()
+                pinnedViewOnStateChanged(isFreezeOrBanned = true)
+                productFeaturedViewOnStateChanged(isFreezeOrBanned = true)
 
                 /**
                  * Non view component
@@ -697,9 +740,20 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observeOnboarding() {
-        playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
-            if (!orientation.isLandscape) onboardingView?.showAnimated()
+    private fun observeProductContent() {
+        playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, DistinctObserver {
+            when (it) {
+                is PlayResult.Loading -> {
+                    if (it.showPlaceholder) {
+                        pinnedVoucherView?.showPlaceholder()
+                        productFeaturedView?.showPlaceholder()
+                    }
+                }
+                is PlayResult.Failure -> {
+                    pinnedVoucherView?.hide()
+                    productFeaturedView?.hide()
+                }
+            }
         })
     }
     //endregion
@@ -785,6 +839,14 @@ class PlayUserInteractionFragment @Inject constructor(
         toolbarView.setFollowStatus(action == PartnerFollowAction.Follow)
     }
 
+    //TODO("This action is duplicated with the one in PlayBottomSheetFragment, find a way to prevent duplication")
+    private fun doOpenProductDetail(product: PlayProductUiModel.Product, position: Int) {
+        if (product.applink != null && product.applink.isNotEmpty()) {
+            analytic.clickProduct(product, position)
+            openPageByApplink(product.applink, pipMode = true)
+        }
+    }
+
     private fun handleVideoHorizontalImmersive(shouldImmersive: Boolean) {
         if (shouldImmersive) {
             videoSettingsView.fadeOut()
@@ -806,9 +868,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun openShopPage(partnerId: Long) {
         analytic.clickShop(partnerId.toString())
-        openPageByApplink(ApplinkConst.SHOP, partnerId.toString())
-
-        playViewModel.requestPiPBrowsingPage()
+        openPageByApplink(ApplinkConst.SHOP, partnerId.toString(), pipMode = true)
     }
 
     private fun openProfilePage(partnerId: Long) {
@@ -821,10 +881,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun doClickLike(shouldLike: Boolean) {
         viewModel.doInteractionEvent(InteractionEvent.Like(shouldLike))
-    }
-
-    private fun doClickPinnedProduct() {
-        viewModel.doInteractionEvent(InteractionEvent.ClickPinnedProduct)
     }
 
     private fun doClickFollow(partnerId: Long, followAction: PartnerFollowAction) {
@@ -851,7 +907,7 @@ class PlayUserInteractionFragment @Inject constructor(
         when (event) {
             InteractionEvent.CartPage -> openPageByApplink(ApplinkConst.CART)
             InteractionEvent.SendChat -> shouldComposeChat()
-            InteractionEvent.ClickPinnedProduct -> openProductSheet()
+            is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
             is InteractionEvent.Like -> doLikeUnlike(event.shouldLike)
             is InteractionEvent.Follow -> doActionFollowPartner(event.partnerId, event.partnerAction)
         }
@@ -877,7 +933,17 @@ class PlayUserInteractionFragment @Inject constructor(
         openPageByApplink(ApplinkConst.LOGIN, requestCode = REQUEST_CODE_LOGIN)
     }
 
-    private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
+    private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false, pipMode: Boolean = false) {
+        if (pipMode && !playViewModel.isFreezeOrBanned) {
+            playViewModel.requestPiPBrowsingPage(
+                    OpenApplinkUiModel(applink = applink, params = params.toList(), requestCode, shouldFinish)
+            )
+        } else {
+            openApplink(applink, *params, requestCode = requestCode, shouldFinish = shouldFinish)
+        }
+    }
+
+    private fun openApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
         if (requestCode == null) {
             RouteManager.route(context, applink, *params)
         } else {
@@ -906,8 +972,8 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openProductSheet() {
-        analytic.clickPinnedProduct()
         playViewModel.onShowProductSheet(productSheetMaxHeight)
+        sendTrackerImpressionBottomSheetProduct()
     }
 
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
@@ -979,6 +1045,14 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun showLinkCopiedToaster() {
+        doShowToaster(message = getString(R.string.play_link_copied))
+    }
+
+    private fun doShowToaster(
+            toasterType: Int = Toaster.TYPE_NORMAL,
+            actionText: String = "",
+            message: String,
+    ) {
         if (toasterBottomMargin == 0) {
             val likeAreaBottomMargin = (likeView.clickAreaView.layoutParams as? ViewGroup.MarginLayoutParams)?.bottomMargin?:0
             toasterBottomMargin = likeView.clickAreaView.height + likeAreaBottomMargin
@@ -986,14 +1060,29 @@ class PlayUserInteractionFragment @Inject constructor(
         Toaster.toasterCustomBottomHeight = toasterBottomMargin
         Toaster.build(
                 container,
-                getString(R.string.play_link_copied),
-                type = Toaster.TYPE_NORMAL).show()
+                message,
+                type = toasterType,
+                actionText = actionText
+        ).show()
     }
 
     private fun doAutoSwipe() {
         scope.launch {
             delay(AUTO_SWIPE_DELAY)
             playNavigation.navigateToNextPage()
+        }
+    }
+
+    private fun sendTrackerImpressionBottomSheetProduct() {
+        val playResult = playViewModel.observableProductSheetContent.value
+        if (playResult is PlayResult.Success) {
+            val productTag = playResult.data
+            if (productTag.productList.first() is PlayProductUiModel.Product) {
+                with(analytic) { impressionProductList(productTag.productList.filterIsInstance<PlayProductUiModel.Product>()) }
+            }
+            if (productTag.voucherList.isNotEmpty()) {
+                analytic.impressionPrivateVoucher(productTag.voucherList.filterIsInstance<MerchantVoucherUiModel>())
+            }
         }
     }
 
@@ -1009,7 +1098,7 @@ class PlayUserInteractionFragment @Inject constructor(
         when (state) {
             PlayViewerVideoState.Pause -> playButtonView.showPlayButton()
             PlayViewerVideoState.End -> {
-                if (playViewModel.bottomInsets.isAnyShown) playButtonView.showRepeatButton()
+                if (playViewModel.bottomInsets.isAnyShown || !playNavigation.canNavigateNextPage()) playButtonView.showRepeatButton()
                 else doAutoSwipe()
             }
             else -> playButtonView.hide()
@@ -1032,7 +1121,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun chatListViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
     ) {
         if (channelType.isLive && !bottomInsets.isAnyBottomSheetsShown) chatListView?.show() else chatListView?.hide()
     }
@@ -1066,13 +1155,42 @@ class PlayUserInteractionFragment @Inject constructor(
                 else pinnedView?.hide()
             }
             is PlayPinnedUiModel.PinnedProduct -> {
-                pinnedView?.setPinnedProduct(pinnedModel)
-
-                if (!bottomInsets.isAnyShown) pinnedView?.show()
-                else pinnedView?.hide()
+                pinnedView?.hide()
             }
             PlayPinnedUiModel.NoPinned -> {
                 pinnedView?.hide()
+            }
+        }
+    }
+
+    private fun productFeaturedViewOnStateChanged(
+            pinnedModel: PlayPinnedUiModel? = playViewModel.observablePinned.value,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
+    ) {
+        if (isFreezeOrBanned) {
+            pinnedVoucherView?.hide()
+            productFeaturedView?.hide()
+            return
+        }
+
+        when (pinnedModel) {
+            is PlayPinnedUiModel.PinnedProduct -> {
+                if (pinnedModel.productTags is PlayProductTagsUiModel.Complete) {
+                    pinnedVoucherView?.setVoucher(pinnedModel.productTags.voucherList)
+                    productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList, pinnedModel.productTags.basicInfo.maxFeaturedProducts)
+                }
+
+                if (!bottomInsets.isAnyShown) {
+                    pinnedVoucherView?.showIfNotEmpty()
+                    productFeaturedView?.showIfNotEmpty()
+                } else {
+                    pinnedVoucherView?.hide()
+                    productFeaturedView?.hide()
+                }
+            } else -> {
+                pinnedVoucherView?.hide()
+                productFeaturedView?.hide()
             }
         }
     }
@@ -1129,14 +1247,36 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun quickReplyViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+            pinnedModel: PlayPinnedUiModel? = playViewModel.observablePinned.value
     ) {
         if (channelType.isLive &&
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.Keyboard]?.isShown == true) {
-            quickReplyView?.show()
+            quickReplyView?.showIfNotEmpty()
         } else quickReplyView?.hide()
+
+        val quickReplyViewId = quickReplyView?.id ?: return
+        when (pinnedModel) {
+            is PlayPinnedUiModel.PinnedProduct -> {
+                val pinnedVoucherViewId = pinnedVoucherView?.id
+                if (pinnedVoucherViewId != null) {
+                    view?.changeConstraint {
+                        connect(quickReplyViewId, ConstraintSet.BOTTOM, R.id.view_topmost_like, ConstraintSet.TOP)
+                    }
+                }
+            }
+            is PlayPinnedUiModel.PinnedMessage -> {
+                val sendChatViewId = sendChatView?.id
+                if (sendChatViewId != null) {
+                    view?.changeConstraint {
+                        connect(quickReplyViewId, ConstraintSet.BOTTOM, sendChatViewId, ConstraintSet.TOP)
+                    }
+                }
+            }
+            else -> {}
+        }
     }
 
     private fun immersiveBoxViewOnStateChanged(

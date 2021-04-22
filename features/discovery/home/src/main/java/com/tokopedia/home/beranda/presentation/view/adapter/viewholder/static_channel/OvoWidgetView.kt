@@ -18,13 +18,11 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.common.utils.HexValidator
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
@@ -40,6 +38,7 @@ import com.tokopedia.home.util.ViewUtils
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import kotlin.math.roundToInt
@@ -67,6 +66,10 @@ class OvoWidgetView: FrameLayout {
         private const val CDN_URL = "https://ecs7.tokopedia.net/img/android/"
         private const val BG_CONTAINER_URL = CDN_URL + "bg_product_fintech_tokopoint_normal/" +
                 "drawable-xhdpi/bg_product_fintech_tokopoint_normal.png"
+        private const val TYPE_BBO = "BBO"
+        private const val TYPE_COUPON = "Coupon"
+        private const val TYPE_REWARDS = "Rewards"
+        private const val TYPE_TOKOPOINTS = "TokoPoints"
     }
 
     init {
@@ -143,6 +146,7 @@ class OvoWidgetView: FrameLayout {
         tvBalanceTokocash.setTextColor(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
 
         if (element.homeHeaderWalletActionData == null && element.isWalletDataError) {
+            // error state wallet -> get use case error
             tokoCashHolder.setOnClickListener {
                 tokocashProgressBar.visibility = View.VISIBLE
                 listener?.onRefreshTokoCashButtonClicked()
@@ -156,6 +160,7 @@ class OvoWidgetView: FrameLayout {
             tvBalanceTokocash.visibility = View.GONE
             tokocashProgressBar.visibility = View.GONE
         } else if (element.homeHeaderWalletActionData == null && !element.isWalletDataError) {
+            // error state wallet -> data null
             tvActionTokocash.visibility = View.GONE
             tvTitleTokocash.visibility = View.GONE
             tvBalanceTokocash.visibility = View.GONE
@@ -165,6 +170,7 @@ class OvoWidgetView: FrameLayout {
             val homeHeaderWalletAction = element.homeHeaderWalletActionData
 
             homeHeaderWalletAction?.let {homeHeaderWalletAction ->
+                // OVO = applink static, title = cashBalance, tracker different
                 if (!TextUtils.isEmpty(homeHeaderWalletAction.walletType) && homeHeaderWalletAction.walletType == WALLET_TYPE) {
                     tokocashProgressBar.visibility = View.GONE
                     tvActionTokocash.text = homeHeaderWalletAction.labelActionButton
@@ -172,6 +178,7 @@ class OvoWidgetView: FrameLayout {
                     tvActionTokocash.setOnClickListener { goToOvoAppLink(homeHeaderWalletAction.isLinked, homeHeaderWalletAction.appLinkActionButton) }
                     tokoCashHolder.setOnClickListener { goToOvoAppLink(homeHeaderWalletAction.isLinked, homeHeaderWalletAction.appLinkBalance) }
 
+                    //check user is linked to new balance or not (from tokocash)
                     if (homeHeaderWalletAction.isLinked) {
 
                         tvTitleTokocash.text = homeHeaderWalletAction.cashBalance
@@ -179,6 +186,7 @@ class OvoWidgetView: FrameLayout {
                         tvBalanceTokocash.visibility = View.VISIBLE
                         tvActionTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.VISIBLE else View.GONE
                         tvTitleTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.GONE else View.VISIBLE
+
                         if (homeHeaderWalletAction.isShowTopup) {
                             tvBalanceTokocash.setTextColor(itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
                             tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_topup_ovo)
@@ -202,6 +210,8 @@ class OvoWidgetView: FrameLayout {
                         tvTitleTokocash.visibility = View.VISIBLE
                     }
                 } else {
+                    // if not OVO = applink -> depends on BE, title = labelTitle, tracker different
+
                     tokocashProgressBar.visibility = View.GONE
                     tvTitleTokocash.text = homeHeaderWalletAction.labelTitle
                     tvActionTokocash.text = homeHeaderWalletAction.labelActionButton
@@ -240,8 +250,6 @@ class OvoWidgetView: FrameLayout {
                                     listener?.actionInfoPendingCashBackTokocash(it, homeHeaderWalletAction.appLinkActionButton)
                                 }
                             }
-                        } else {
-//                            listener?.onRequestPendingCashBack()
                         }
                     }
                 }
@@ -260,6 +268,7 @@ class OvoWidgetView: FrameLayout {
         ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_green_24)
         mTextCouponCount.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         if (element.tokopointsDrawerHomeData == null && element.isTokoPointDataError) {
+            // error state tokokpoint -> use case tokopoint error
             tokoPointHolder.setOnClickListener {
                 tokopointProgressBarLayout.visibility = View.VISIBLE
                 listener?.onRefreshTokoPointButtonClicked()
@@ -277,6 +286,7 @@ class OvoWidgetView: FrameLayout {
             ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_normal_24)
             tvBalanceTokoPoint.visibility = View.GONE
         } else if (element.tokopointsDrawerHomeData == null && !element.isTokoPointDataError) {
+            // error state tokopoint -> response null
             tokoPointHolder.setOnClickListener(null)
             tokopointProgressBarLayout.visibility = View.VISIBLE
             tokopointActionContainer.visibility = View.GONE
@@ -288,7 +298,7 @@ class OvoWidgetView: FrameLayout {
             tvBalanceTokoPoint.visibility = View.VISIBLE
             mTextCouponCount.visibility = View.VISIBLE
 
-            ImageHandler.loadImageAndCache(ivLogoTokoPoint, element.tokopointsDrawerHomeData?.iconImageURL)
+            ivLogoTokoPoint.loadIcon(element.tokopointsDrawerHomeData?.iconImageURL)
             mTextCouponCount.setTypeface(mTextCouponCount.typeface, Typeface.BOLD)
             element.tokopointsDrawerHomeData?.sectionContent?.let { sectionContent ->
                 if (sectionContent.isNotEmpty()) {
@@ -306,7 +316,6 @@ class OvoWidgetView: FrameLayout {
 
             tokoPointHolder.setOnClickListener {
                 if (element.tokopointsDrawerHomeData != null) {
-                    OvoWidgetTracking.eventUserProfileTokopoints()
                     element.tokopointsDrawerHomeData?.let {tokopointsDrawerHomeData->
                         listener?.actionTokoPointClicked(
                                 tokopointsDrawerHomeData.redirectAppLink,
@@ -316,14 +325,19 @@ class OvoWidgetView: FrameLayout {
                                 else
                                     tokopointsDrawerHomeData.mainPageTitle
                         )
-                        if(tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
-                                tokopointsDrawerHomeData.sectionContent.first().textAttributes?.text?.contains(BEBAS_ONGKIR_TYPE, ignoreCase = true) == true){
-                            OvoWidgetTracking.sendBebasOngkir(listener?.userId ?: "0")
-                        } else if (tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
-                                tokopointsDrawerHomeData.redirectAppLink.contains(KUPON_SAYA_URL_PATH)) {
-                            OvoWidgetTracking.sendClickOnTokopointsNewCouponTracker()
-                        } else {
-                            OvoWidgetTracking.sendTokopointTrackerClick()
+                        when (tokopointsDrawerHomeData.type) {
+                            TYPE_BBO -> {
+                                OvoWidgetTracking.sendClickOnBBOBalanceWidgetTracker(true, listener?.userId ?: "0")
+                            }
+                            TYPE_COUPON -> {
+                                OvoWidgetTracking.sendClickOnCouponBalanceWidgetTracker(true, listener?.userId?:"")
+                            }
+                            TYPE_REWARDS -> {
+                                OvoWidgetTracking.sendClickOnRewardsBalanceWidgetTracker(true, listener?.userId?:"")
+                            }
+                            TYPE_TOKOPOINTS -> {
+                                OvoWidgetTracking.sendClickOnTokopointsBalanceWidgetTracker(true, listener?.userId?:"")
+                            }
                         }
                     }
                 }
@@ -374,7 +388,7 @@ class OvoWidgetView: FrameLayout {
             tvBalanceTokoPoint.visibility = View.VISIBLE
             mTextCouponCount.visibility = View.VISIBLE
 
-            ImageHandler.loadImageAndCache(ivLogoTokoPoint, element.tokopointsDrawerBBOHomeData?.iconImageURL)
+            ivLogoTokoPoint.loadIcon(element.tokopointsDrawerBBOHomeData?.iconImageURL)
             mTextCouponCount.setTypeface(mTextCouponCount.typeface, Typeface.BOLD)
             element.tokopointsDrawerBBOHomeData?.sectionContent?.let { sectionContent ->
                 if (sectionContent.isNotEmpty()) {
@@ -392,7 +406,6 @@ class OvoWidgetView: FrameLayout {
 
             bebasOngkirContainer.setOnClickListener {
                 if (element.tokopointsDrawerBBOHomeData != null) {
-                    OvoWidgetTracking.eventUserProfileTokopoints()
                     element.tokopointsDrawerBBOHomeData?.let {tokopointsDrawerHomeData->
                         listener?.actionTokoPointClicked(
                                 tokopointsDrawerHomeData.redirectAppLink,
@@ -402,7 +415,7 @@ class OvoWidgetView: FrameLayout {
                                 else
                                     tokopointsDrawerHomeData.mainPageTitle
                         )
-                        OvoWidgetTracking.sendBebasOngkir(listener?.userId ?: "0")
+                        OvoWidgetTracking.sendClickOnBBOBalanceWidgetTracker(true, listener?.userId?:"")
                     }
                 }
             }
@@ -465,7 +478,7 @@ class OvoWidgetView: FrameLayout {
                 }
                 walletAnalytics.eventClickActivationOvoHomepage()
             } else {
-                OvoWidgetTracking.eventOvo()
+                OvoWidgetTracking.sendClickOnOVOBalanceWidgetTracker(true, listener?.userId?:"")
             }
             val intentBalanceWallet = RouteManager.getIntent(context, applinkString)
             context.startActivity(intentBalanceWallet)

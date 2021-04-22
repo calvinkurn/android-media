@@ -25,15 +25,17 @@
             app:typographyType="heading_4"
             app:typographyWeight="bold" />
 
-        <View
+        <ImageView
             android:id="@+id/offerLabel"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="@dimen/unify_space_0"
-            android:background="@drawable/bg_credit_card_installment_interest"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/bg_credit_card_installment_interest"
             app:layout_constraintBottom_toBottomOf="@id/tvSubtitleSimulation"
             app:layout_constraintEnd_toEndOf="@id/tvSubtitleSimulation"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvSubtitleSimulation" />
+            app:layout_constraintTop_toTopOf="@+id/tvSubtitleSimulation"
+            android:contentDescription="0% Label" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSubtitleSimulation"

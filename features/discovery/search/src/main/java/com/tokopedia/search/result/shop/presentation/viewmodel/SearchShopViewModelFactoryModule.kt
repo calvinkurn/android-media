@@ -3,15 +3,15 @@ package com.tokopedia.search.result.shop.presentation.viewmodel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterCoroutineUseCaseModule
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.domain.usecase.SearchShopUseCaseModule
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
-import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
+import com.tokopedia.search.result.shop.presentation.model.ShopDataView
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -40,19 +40,19 @@ internal class SearchShopViewModelFactoryModule(
             getDynamicFilterUseCase: daggerLazy<UseCase<DynamicFilterModel>>,
             @Named(SearchConstant.SearchShop.GET_SHOP_COUNT_USE_CASE)
             getShopCountUseCase: daggerLazy<UseCase<Int>>,
-            shopCpmViewModelMapper: daggerLazy<Mapper<SearchShopModel, ShopCpmViewModel>>,
-            shopViewModelMapper: daggerLazy<Mapper<SearchShopModel, ShopViewModel>>,
+            shopCpmDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopCpmDataView>>,
+            shopDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopDataView>>,
             userSession: daggerLazy<UserSessionInterface>
     ): ViewModelProvider.Factory {
         return SearchShopViewModelFactory(
-                ProductionDispatcherProvider(),
+                CoroutineDispatchersProvider,
                 searchParameter,
                 searchShopFirstPageUseCase,
                 searchShopLoadMoreUseCase,
                 getDynamicFilterUseCase,
                 getShopCountUseCase,
-                shopCpmViewModelMapper,
-                shopViewModelMapper,
+                shopCpmDataViewMapper,
+                shopDataViewMapper,
                 userSession
         )
     }

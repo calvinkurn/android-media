@@ -3,10 +3,8 @@
     package="com.tokopedia.topads.dashboard.sellerapp">
 
     <dist:module
+        dist:onDemand="false"
         dist:title="@string/title_module_top_ads_dashboard">
-        <dist:delivery>
-            <dist:install-time/>
-        </dist:delivery>
         <dist:fusing dist:include="true" />
     </dist:module>
 

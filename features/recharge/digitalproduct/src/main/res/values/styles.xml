@@ -2,7 +2,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="DigitalCheckboxAndRadioButton">
         <item name="colorControlNormal">#bdbdbd</item>
-        <item name="colorControlActivated">@color/colorPrimary</item>
-        <item name="colorControlHighlight">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/Unify_G400_96</item>
+        <item name="colorControlHighlight">@color/Unify_G400_96</item>
     </style>
 </resources>

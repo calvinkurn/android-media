@@ -370,6 +370,9 @@ data class DataItem(
         @SerializedName("play_id")
         var playWidgetPlayID: String? = null,
 
+        @SerializedName("campaign_code")
+        var campaignCode: String? = null,
+
         var shopAdsClickURL: String? = "",
 
         var shopAdsViewURL: String? = "",

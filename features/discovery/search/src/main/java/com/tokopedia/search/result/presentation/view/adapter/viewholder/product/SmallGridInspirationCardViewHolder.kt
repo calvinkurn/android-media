@@ -6,12 +6,12 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel
-import com.tokopedia.search.result.presentation.model.InspirationCardViewModel
+import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
+import com.tokopedia.search.result.presentation.model.InspirationCardDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.InspirationCardOptionAdapter
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.utils.ChipSpacingItemDecoration
@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.search_result_product_small_grid_inspirati
 class SmallGridInspirationCardViewHolder(
         itemView: View,
         private val inspirationCardListener: InspirationCardListener
-) : AbstractViewHolder<InspirationCardViewModel>(itemView) {
+) : AbstractViewHolder<InspirationCardDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -31,7 +31,7 @@ class SmallGridInspirationCardViewHolder(
         val LAYOUT = R.layout.search_result_product_small_grid_inspiration_card_layout
     }
 
-    override fun bind(element: InspirationCardViewModel) {
+    override fun bind(element: InspirationCardDataView) {
         val isCurated = element.type == SearchConstant.InspirationCard.TYPE_CURATED
         setBaseLayout(isCurated)
         if (isCurated) {
@@ -51,8 +51,8 @@ class SmallGridInspirationCardViewHolder(
         }
     }
 
-    private fun setCuratedLayout(element: InspirationCardViewModel) {
-        val option = element.options.firstOrNull() ?: return
+    private fun setCuratedLayout(element: InspirationCardDataView) {
+        val option = element.optionData.firstOrNull() ?: return
 
         bindCuratedBackground()
         bindCuratedIcon(option)
@@ -68,36 +68,36 @@ class SmallGridInspirationCardViewHolder(
         else itemView.inspirationCardCuratedBackground?.visibility = View.GONE
     }
 
-    private fun bindCuratedIcon(element: InspirationCardOptionViewModel) {
+    private fun bindCuratedIcon(element: InspirationCardOptionDataView) {
         itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon?.shouldShowWithAction(element.img.isNotEmpty()) {
-            ImageHandler.loadImageFitCenter(itemView.context, itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon, element.img)
+            itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon?.loadImageFitCenter(element.img)
         }
     }
 
-    private fun bindCuratedTitle(element: InspirationCardOptionViewModel) {
+    private fun bindCuratedTitle(element: InspirationCardOptionDataView) {
         itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedTitle?.shouldShowWithAction(element.text.isNotEmpty()) {
             itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedTitle?.text = element.text
         }
     }
 
-    private fun bindCuratedListener(element: InspirationCardOptionViewModel) {
+    private fun bindCuratedListener(element: InspirationCardOptionDataView) {
         itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedButton?.setOnClickListener {
             inspirationCardListener.onInspirationCardOptionClicked(element)
         }
     }
 
-    private fun setDefaultLayout(element: InspirationCardViewModel) {
+    private fun setDefaultLayout(element: InspirationCardDataView) {
         bindTitle(element)
         bindContent(element)
     }
 
-    private fun bindTitle(element: InspirationCardViewModel) {
+    private fun bindTitle(element: InspirationCardDataView) {
         itemView.smallGridCardViewInspirationCard?.inspirationCardTitle?.shouldShowWithAction(element.title.isNotEmpty()) {
             itemView.smallGridCardViewInspirationCard?.inspirationCardTitle?.text = element.title
         }
     }
 
-    private fun bindContent(element: InspirationCardViewModel) {
+    private fun bindContent(element: InspirationCardDataView) {
         val spacingItemDecoration = ChipSpacingItemDecoration(
                 itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
                 itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
@@ -105,7 +105,7 @@ class SmallGridInspirationCardViewHolder(
 
         itemView.smallGridCardViewInspirationCard?.recyclerViewInspirationCardOptionList?.let {
             it.layoutManager = createLayoutManager()
-            it.adapter = createAdapter(element.options)
+            it.adapter = createAdapter(element.optionData)
             if (!element.isRelated())
                 it.addItemDecorationIfNotExists(spacingItemDecoration)
         }
@@ -116,10 +116,10 @@ class SmallGridInspirationCardViewHolder(
     }
 
     private fun createAdapter(
-            inspirationCarouselProductList: List<InspirationCardOptionViewModel>
+            inspirationCarouselProductListData: List<InspirationCardOptionDataView>
     ): RecyclerView.Adapter<RecyclerView.ViewHolder> {
         val inspirationCardOptionAdapter = InspirationCardOptionAdapter(inspirationCardListener)
-        inspirationCardOptionAdapter.setItemList(inspirationCarouselProductList)
+        inspirationCardOptionAdapter.setItemList(inspirationCarouselProductListData)
 
         return inspirationCardOptionAdapter
     }

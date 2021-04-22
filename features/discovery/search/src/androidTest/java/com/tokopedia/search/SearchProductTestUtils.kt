@@ -50,44 +50,49 @@ internal fun RecyclerView?.getProductListAdapter(): ProductListAdapter {
 
 internal fun createProductItemListener(): ProductListener {
     return object: ProductListener {
-        override fun onThreeDotsClick(item: ProductItemViewModel?, adapterPosition: Int) {}
-        override fun onItemClicked(item: ProductItemViewModel?, adapterPosition: Int) {}
-        override fun onProductImpressed(item: ProductItemViewModel?) {}
+        override fun onThreeDotsClick(itemData: ProductItemDataView?, adapterPosition: Int) {}
+        override fun onItemClicked(itemData: ProductItemDataView?, adapterPosition: Int) {}
+        override fun onProductImpressed(itemData: ProductItemDataView?, adapterPosition: Int) {}
     }
 }
 
 internal fun createInspirationCardListener(): InspirationCardListener {
     return object: InspirationCardListener {
-        override fun onInspirationCardOptionClicked(option: InspirationCardOptionViewModel) {}
+        override fun onInspirationCardOptionClicked(optionData: InspirationCardOptionDataView) {}
     }
 }
 
 internal fun createInspirationCarouselListener(): InspirationCarouselListener {
     return object: InspirationCarouselListener {
-        override fun onInspirationCarouselListProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
-        override fun onInspirationCarouselSeeAllClicked(inspirationCarouselViewModelOption: InspirationCarouselViewModel.Option) {}
-        override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
-        override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselViewModel.Option.Product) {}
-        override fun onImpressedInspirationCarouselListProduct(product: InspirationCarouselViewModel.Option.Product) {}
-        override fun onImpressedInspirationCarouselGridProduct(product: InspirationCarouselViewModel.Option.Product) {}
-        override fun onInspirationCarouselGridProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
-        override fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselViewModel.Option) {}
+        override fun onInspirationCarouselListProductClicked(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
+        override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onImpressedInspirationCarouselListProduct(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onImpressedInspirationCarouselGridProduct(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselGridProductClicked(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselDataView.Option) {}
+        override fun onInspirationCarouselChipsProductClicked(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onImpressedInspirationCarouselChipsProduct(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselChipsSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
+        override fun onInspirationCarouselChipsClicked(inspirationCarouselAdapterPosition: Int, inspirationCarouselViewModel: InspirationCarouselDataView, inspirationCarouselOption: InspirationCarouselDataView.Option) {}
+
     }
 }
 
 internal fun createBroadMatchListener(): BroadMatchListener {
     return object: BroadMatchListener {
-        override fun onBroadMatchItemClicked(broadMatchItemViewModel: BroadMatchItemViewModel) {}
-        override fun onBroadMatchSeeMoreClicked(broadMatchViewModel: BroadMatchViewModel) {}
-        override fun onBroadMatchThreeDotsClicked(broadMatchItemViewModel: BroadMatchItemViewModel) {}
-        override fun onBroadMatchItemImpressed(broadMatchItemViewModel: BroadMatchItemViewModel) {}
+        override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {}
+        override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {}
     }
 }
 
 internal fun createGlobalNavListener(): GlobalNavListener {
     return object: GlobalNavListener {
-        override fun onGlobalNavWidgetClicked(item: GlobalNavViewModel.Item?, keyword: String?) {}
-        override fun onGlobalNavWidgetClickSeeAll(globalNavViewModel: GlobalNavViewModel?) {}
+        override fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item?, keyword: String?) {}
+        override fun onGlobalNavWidgetClickSeeAll(globalNavDataView: GlobalNavDataView?) {}
     }
 }
 
@@ -139,33 +144,33 @@ internal fun clickChildViewWithId(id: Int): ViewAction {
 }
 
 internal fun List<Visitable<*>>.getGlobalNavViewModelPosition(): Int {
-    return indexOfFirst { it is GlobalNavViewModel }
+    return indexOfFirst { it is GlobalNavDataView }
 }
 
 internal fun List<Visitable<*>>.getFirstTopAdsProductPosition(): Int {
-    return indexOfFirst { it is ProductItemViewModel && it.isTopAds }
+    return indexOfFirst { it is ProductItemDataView && it.isTopAds }
 }
 
 internal fun List<Visitable<*>>.getFirstOrganicProductPosition(): Int {
-    return indexOfFirst { it is ProductItemViewModel && !it.isTopAds }
+    return indexOfFirst { it is ProductItemDataView && !it.isTopAds }
 }
 
 internal fun List<Visitable<*>>.getEmptySearchProductViewModelPosition(): Int {
-    return indexOfFirst { it is EmptySearchProductViewModel }
+    return indexOfFirst { it is EmptySearchProductDataView }
 }
 
 internal fun List<Visitable<*>>.getRecommendationTitleViewModelPosition(): Int {
-    return indexOfFirst { it is RecommendationTitleViewModel }
+    return indexOfFirst { it is RecommendationTitleDataView }
 }
 
 internal fun List<Visitable<*>>.getRecommendationItemViewModelPosition(): Int {
-    return indexOfFirst { it is RecommendationItemViewModel }
+    return indexOfFirst { it is RecommendationItemDataView }
 }
 
 internal fun List<Visitable<*>>.getSuggestionViewModelPosition(): Int {
-    return indexOfFirst { it is SuggestionViewModel }
+    return indexOfFirst { it is SuggestionDataView }
 }
 
 internal fun List<Visitable<*>>.getBroadMatchViewModelPosition(): Int {
-    return indexOfFirst { it is BroadMatchViewModel }
+    return indexOfFirst { it is BroadMatchDataView }
 }

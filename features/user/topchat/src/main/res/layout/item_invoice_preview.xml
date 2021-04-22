@@ -5,11 +5,9 @@
     android:id="@+id/cl_chat_bubble"
     android:layout_width="@dimen/dp_topchat_240"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/spacing_lvl3"
-    android:layout_marginLeft="@dimen/spacing_lvl3"
-    android:layout_marginTop="@dimen/dp_topchat_6"
-    android:layout_marginBottom="@dimen/dp_topchat_6"
-    android:background="@drawable/bg_topchat_shadow_preview_attachment">
+    android:layout_marginStart="@dimen/dp_topchat_1"
+    android:layout_marginTop="@dimen/unify_space_2"
+    android:layout_marginBottom="@dimen/unify_space_2">
 
     <ImageView
         android:id="@+id/iv_thumbnail"
@@ -72,6 +70,7 @@
         android:layout_marginTop="@dimen/dp_topchat_6"
         android:layout_marginEnd="@dimen/dp_topchat_10"
         android:layout_marginRight="@dimen/dp_topchat_10"
+        android:contentDescription="@string/topchat_desc_close_invoice_preview"
         android:padding="@dimen/dp_topchat_6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

@@ -3,7 +3,6 @@ package com.tokopedia.logisticcart.datamock
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.logisticcart.FileUtils
-import com.tokopedia.logisticcart.cod.model.CodResponse
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 
@@ -42,9 +41,4 @@ internal object DummyProvider {
                     RecipientAddressModel::class.java
             )
 
-    fun getCodSuccess(): CodResponse =
-            Gson().fromJson(
-                    fileUtils.getJsonFromAsset("cod_response.json"),
-                    CodResponse::class.java
-            )
 }

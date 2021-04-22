@@ -76,7 +76,9 @@ class PackageParentViewHolder(view: View,
                         RecyclerView.VERTICAL, false
                 )
             }
-        }
+            if (!onCoachmarkListener.getLocalCache()) {
+                expand_event_pdp_ticket.setExpand(true)
+            } }
     }
 
     companion object {

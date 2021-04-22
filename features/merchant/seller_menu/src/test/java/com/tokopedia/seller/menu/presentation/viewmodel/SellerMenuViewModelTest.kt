@@ -71,7 +71,8 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
             newOrder = 1,
             readyToShip = 2,
             totalUnread = 4,
-            talk = 1
+            talk = 1,
+            inResolution = 1
         )
 
         onGetNotifications_thenReturn(response)
@@ -79,7 +80,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
         viewModel.getNotifications()
 
         val shopOrderUiModel = ShopOrderUiModel(newOrderCount = 1, readyToShip = 2)
-        val expectedResult = NotificationUiModel(inboxTalkUnread = 1, notifCenterTotalUnread = 4, order = shopOrderUiModel)
+        val expectedResult = NotificationUiModel(inboxTalkUnread = 1, notifCenterTotalUnread = 4, order = shopOrderUiModel, resolutionCount = 1)
         val actualResult = (viewModel.sellerMenuNotification.value as Success).data
 
         assertEquals(expectedResult, actualResult)

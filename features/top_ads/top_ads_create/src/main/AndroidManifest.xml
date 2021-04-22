@@ -9,24 +9,6 @@
         tools:replace="android:label">
 
         <activity
-            android:name="com.tokopedia.topads.view.activity.OnboardingActivity"
-            android:label="@string/mulai_beriklan"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_topads"
-                    android:path="@string/path_topads_ad_creation"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name="com.tokopedia.topads.view.activity.StepperActivity"
             android:label="@string/create_group"
             android:screenOrientation="portrait"
@@ -68,14 +50,19 @@
                     android:host="@string/host_topads"
                     android:path="@string/path_topads_ad_chooser"
                     android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_topads"
+                    android:path="@string/path_topads_ad_creation"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name="com.tokopedia.topads.view.activity.KeywordSearchActivity"
+            android:name="com.tokopedia.topads.view.activity.KeywordSuggestionActivity"
+            android:label="@string/add_keyword"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
-
-        </activity>
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="adjustPan" />
     </application>
 </manifest>

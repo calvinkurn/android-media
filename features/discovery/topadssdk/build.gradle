@@ -31,6 +31,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopWidget)
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.libraries.logger)
 
 
     if (rootProject.ext.debugToolsEnabled) {
@@ -63,6 +64,9 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    implementation rootProject.ext.miscDependencies.viewModelKtx
 
     implementation('de.hdodenhof:circleimageview:2.2.0') {
         exclude group: 'com.android.support', module: 'support-annotations'

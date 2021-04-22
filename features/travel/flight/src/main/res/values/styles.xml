@@ -16,7 +16,7 @@
 
     <style name="FlightChips.Info">
         <item name="android:background">@drawable/flight_bg_flight_chip_info</item>
-        <item name="android:textColor">@color/flight_chips_info_text</item>
+        <item name="android:textColor">@color/Unify_B500</item>
     </style>
 
     <style name="CardSuccessStatusStyle">

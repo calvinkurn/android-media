@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -22,7 +23,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@Module (includes = [ProductRestModule::class, AffiliateCommonModule::class])
+@Module (includes = [ProductRestModule::class, RecommendationModule::class, AffiliateCommonModule::class])
 class ProductDetailModule {
 
     @ProductDetailScope
@@ -50,14 +51,6 @@ class ProductDetailModule {
     @ProductDetailScope
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
-
-    @ProductDetailScope
-    @Provides
-    fun provideGetRecommendationUseCase(rawQueries: Map<String, String>,
-                                        graphqlUseCase: GraphqlUseCase,
-                                        userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
-        return GetRecommendationUseCase(rawQueries[QUERY_RECOMMEN_PRODUCT]?:"", graphqlUseCase, userSessionInterface)
-    }
 
     @ProductDetailScope
     @Provides

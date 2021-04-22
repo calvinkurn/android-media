@@ -5,7 +5,7 @@
     {
       "event" : "clickAddProduct",
       "eventCategory" : "draft product page",
-      "eventAction" : "click add product ",
+      "eventAction" : "click add product",
       "eventLabel" : "{{.*}}",
       "shopId" : "{{.+}}"
     }

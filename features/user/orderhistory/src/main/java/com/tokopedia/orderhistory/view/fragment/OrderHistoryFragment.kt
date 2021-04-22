@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -53,8 +52,12 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     var remoteConfig: RemoteConfig? = null
 
     private var recycler: VerticalRecyclerView? = null
-    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelFragmentProvider.get(OrderHistoryViewModel::class.java) }
+    private val viewModelFragmentProvider by lazy {
+        ViewModelProvider(this, viewModelFactory)
+    }
+    private val viewModel by lazy {
+        viewModelFragmentProvider.get(OrderHistoryViewModel::class.java)
+    }
     private lateinit var adapter: OrderHistoryAdapter
     private var shopId: String? = null
 
