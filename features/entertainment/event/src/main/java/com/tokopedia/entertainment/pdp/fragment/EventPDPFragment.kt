@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
@@ -32,8 +31,6 @@ import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
 import com.tokopedia.entertainment.navigation.EventNavigationActivity
-import com.tokopedia.entertainment.pdp.activity.EventPDPActivity
-import com.tokopedia.entertainment.pdp.activity.EventPDPActivity.Companion.EXTRA_URL_PDP
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFacilitiesBottomSheetAdapter
 import com.tokopedia.entertainment.pdp.adapter.EventPDPLocationDetailAdapter
 import com.tokopedia.entertainment.pdp.adapter.EventPDPOpenHourAdapter
@@ -56,7 +53,6 @@ import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventLocationMapper.getLa
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventLocationMapper.getLongitude
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventMediaMapper.mapperMediaPDP
 import com.tokopedia.entertainment.pdp.di.DaggerEventPDPComponent
-import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.listener.OnBindItemListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPViewModel
 import com.tokopedia.entertainment.pdp.widget.WidgetEventPDPCarousel
@@ -535,6 +531,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         const val DEFAULT_PIN = "DEFAULT_PIN"
         const val ENT_PDP_PERFORMANCE = "et_event_pdp"
         const val GMT = "GMT+7"
+        const val EXTRA_URL_PDP = "EXTRA_URL_PDP"
 
         const val REQUEST_CODE_LOGIN_WITH_DATE = 100
         const val REQUEST_CODE_LOGIN_WITHOUT_DATE = 101

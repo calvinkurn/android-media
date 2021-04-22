@@ -7,20 +7,6 @@
         android:allowBackup="true"
         android:supportsRtl="true">
 
-        <activity android:name=".home.activity.HomeEventActivity"
-            android:label="@string/ent_home_page_event_hiburan"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" >
-
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-            </intent-filter>
-        </activity>
-
         <activity android:name=".search.activity.EventSearchActivity"
             android:label="@string/ent_search_title"
             android:screenOrientation="portrait"
@@ -69,20 +55,6 @@
                     android:host="@string/host_event"
                     android:path="@string/path_event_location"
                     android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".pdp.activity.EventPDPActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
-            >
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
             </intent-filter>
         </activity>
 
