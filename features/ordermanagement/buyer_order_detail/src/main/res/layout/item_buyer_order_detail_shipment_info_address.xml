@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
+    android:layout_marginEnd="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailReceiverAddressLabel"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
+        android:text="@string/label_address"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="wrap"
+        app:typographyType="body_3"
+        tools:text="Alamat"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailReceiverNameValue"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailReceiverAddressLabel"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Leonardy" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailReceiverPhoneNumberValue"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailReceiverNameValue"
+        app:typographyType="body_3"
+        tools:text="08123456789" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailReceiverAddressValue"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="4sp"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailReceiverPhoneNumberValue"
+        app:typographyType="body_3"
+        tools:text="Tokopedia Tower, Mailing Room Jl. Letjen S Parman Kav.77 Slipi, Jakarta Barat 14410" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailReceiverAddressNoteValue"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/Unify_N700_68"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailReceiverAddressValue"
+        app:typographyType="body_3"
+        tools:text="Lantai 29" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

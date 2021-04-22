@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
+    android:layout_marginEnd="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailAwbLabel"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
+        android:text="@string/label_awb_number"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toStartOf="@id/icBuyerOrderDetailCopyAwb"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="wrap"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icBuyerOrderDetailCopyAwb"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        app:icon_color_light_enable="@color/Unify_N700_96"
+        app:icon_name="COPY"
+        app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailAwbLabel"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailAwbLabel"
+        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailAwbLabel" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailAwbValue"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailAwbLabel"
+        app:layout_constraintWidth_percent="0.6"
+        app:typographyType="body_3"
+        tools:text="BOOE900142127415" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

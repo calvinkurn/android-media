@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/buyer_order_detail_header_top_margin"
+    android:layout_marginEnd="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailProductDetailLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_product_detail"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icBuyerOrderDetailSeeShopPage"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        app:icon_color_light_enable="@color/Unify_N700_96"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailShopName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailShopName"
+        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailShopName" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailShopName"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:background="@color/Green_G100"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailProductDetailLabel"
+        app:layout_constraintEnd_toStartOf="@id/icBuyerOrderDetailSeeShopPage"
+        app:layout_constraintStart_toEndOf="@id/icBuyerOrderDetailSeeShopBadge"
+        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailProductDetailLabel"
+        app:layout_constraintWidth_max="wrap"
+        app:layout_constraintWidth_percent="0.5"
+        app:typographyType="heading_6"
+        tools:text="Rockerpower Shopz Rockerpower Shopz Rockerpower Shopz Shopz Rockerpower Shopz" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icBuyerOrderDetailSeeShopBadge"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        app:icon_name="BADGE_PM_FILLED"
+        app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailShopName"
+        app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailShopName"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailProductDetailLabel"
+        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailShopName" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

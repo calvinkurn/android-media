@@ -160,6 +160,7 @@ include "features:ovop2p"
 
 include "features:ordermanagement:snapshot"
 include "features:ordermanagement:orderhistory"
+include "features:ordermanagement:buyer_order_detail"
 
 include "features:payment:common_payment"
 include "features:payment:payment"

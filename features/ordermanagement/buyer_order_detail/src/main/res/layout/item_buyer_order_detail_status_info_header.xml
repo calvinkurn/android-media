@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/layout_lvl0"
+    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:layout_marginEnd="@dimen/spacing_lvl4">
+
+    <View
+        android:id="@+id/buyerOrderDetailIndicator"
+        android:layout_width="4dp"
+        android:layout_height="@dimen/layout_lvl0"
+        android:background="@drawable/ic_buyer_order_status_indicator"
+        app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailStatusOrder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailStatusOrder"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailSeeDetail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5"
+        tools:text="Menunggu Konfirmasi" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailSeeDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_see_detail"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_6" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

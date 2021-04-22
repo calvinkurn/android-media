@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="buyer_order_detail_section_top_margin">12dp</dimen>
+    <dimen name="buyer_order_detail_header_top_margin">20dp</dimen>
+    <dimen name="product_thumbnail_size">46dp</dimen>
+</resources>
