@@ -226,10 +226,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
         ) == AbTestPlatform.VARIANT_NEW_INBOX
-        val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
-        ) == AbTestPlatform.NAVIGATION_VARIANT_REVAMP
-        return if (useNewInbox && useNewNav) {
+        return if (useNewInbox) {
             Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
                 appendQueryParameter(ApplinkConst.Inbox.PARAM_PAGE, ApplinkConst.Inbox.VALUE_PAGE_REVIEW)
                 appendQueryParameter(ApplinkConst.Inbox.PARAM_ROLE, ApplinkConst.Inbox.VALUE_ROLE_BUYER)
