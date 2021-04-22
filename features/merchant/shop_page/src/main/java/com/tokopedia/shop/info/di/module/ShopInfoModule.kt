@@ -8,7 +8,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.di.ShopPageContext
-import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase
+import com.tokopedia.shop.info.domain.usecase.GetShopNotesByShopIdUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.shop.info.data.GQLQueryStringConst
@@ -43,13 +43,6 @@ class ShopInfoModule {
     }
 
     @ShopInfoScope
-    @Named(GQLQueryNamedConstant.SHOP_NOTES_BY_SHOP_ID)
-    @Provides
-    fun getGqlQueryShopNotesByShopId(@ShopPageContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_get_shop_notes_by_shop_id)
-    }
-
-    @ShopInfoScope
     @IntoMap
     @StringKey(GQLQueryStringConst.GET_SHOP_PACK_SPEED)
     @Provides
@@ -71,13 +64,6 @@ class ShopInfoModule {
     @Provides
     fun getStringQueryShopSatisfaction(@ShopPageContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_get_shop_satisfaction)
-    }
-
-    @ShopInfoScope
-    @Provides
-    fun provideGetShopNotesByShopIdUseCase(graphqlUseCase: MultiRequestGraphqlUseCase?,
-                                           @Named(GQLQueryNamedConstant.SHOP_NOTES_BY_SHOP_ID) gqlQuery: String?): GetShopNotesByShopIdUseCase {
-        return GetShopNotesByShopIdUseCase(gqlQuery!!, graphqlUseCase!!)
     }
 
     @ShopInfoScope

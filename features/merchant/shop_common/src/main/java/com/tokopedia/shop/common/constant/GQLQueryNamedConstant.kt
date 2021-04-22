@@ -15,7 +15,6 @@ object GQLQueryNamedConstant {
 
 
     const val FAVORITE_STATUS_GQL = "favorite_status_gql"
-    const val SHOP_NOTES_BY_SHOP_ID = "shop_notes_by_shop_id"
     const val SHOP_REPUTATION = "shop_reputation"
     const val SHOP_RATING = "shop_rating"
     const val SHOP_SATISFACTION = "shop_satisfaction"
