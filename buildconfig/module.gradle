@@ -106,5 +106,5 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
 
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
-    implementation 'com.newrelic.agent.android:android-agent:5.28.1'
+    implementation rootProject.ext.miscDependencies.newRelic
 }
