@@ -1184,27 +1184,26 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 fusedLocationClient,
                 requireActivity().applicationContext)
 
-        permissionCheckerHelper.checkPermission(this, requireActivity().getString(R.string.hotel_destination_need_permission),
-                object : PermissionCheckerHelper.PermissionCheckListener {
-                    override fun onNeverAskAgain(permissionText: String) {
-                        context?.let {
-                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-                        }
-                    }
-
-                    override fun onPermissionDenied(permissionText: String) {
-                        context?.let {
+        activity?.let {
+            permissionCheckerHelper.checkPermission(it,
+                    PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
                             permissionCheckerHelper.onPermissionDenied(it, permissionText)
                         }
-                    }
 
-                    override fun onPermissionGranted() {
-                        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
-                                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                                requireActivity().getString(R.string.hotel_destination_need_permission))
-                    }
+                        override fun onNeverAskAgain(permissionText: String) {
+                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                        }
 
-                })
+                        override fun onPermissionGranted() {
+                            locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
+                                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                                    requireActivity().getString(R.string.hotel_destination_need_permission))
+                        }
+
+                    })
+        }
 
     }
 
