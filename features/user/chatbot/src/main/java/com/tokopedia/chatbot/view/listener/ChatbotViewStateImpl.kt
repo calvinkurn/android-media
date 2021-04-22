@@ -312,13 +312,17 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun hideHelpfullOptions() {
         var item: HelpFullQuestionsViewModel? = null
+        var index = 0
         for (it in adapter.list) {
             if (it is HelpFullQuestionsViewModel) {
                 item = it
+                index = adapter.list.indexOf(item)
                 break
             }
         }
-        item?.let { hideOptionList(it) }
+        item?.let {
+            it.isSubmited = true
+            adapter.setElement(index, it) }
     }
 
     override fun getAdapter(): ChatbotAdapter {
