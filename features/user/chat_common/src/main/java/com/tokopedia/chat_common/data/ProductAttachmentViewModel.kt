@@ -404,7 +404,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     }
 
     fun isProductCampaign(): Boolean {
-        return hasDiscount
+        return campaignId != 0L
     }
 
     fun getProductSource(): String {
