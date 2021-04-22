@@ -36,7 +36,7 @@ const val LABEL_PRODUCT_STATUS = "status"
 const val LABEL_PRICE = "price"
 const val PDP_APPLINK = "tokopedia://product/"
 const val TIME_DISPLAY_FORMAT = "%1$02d"
-const val DEFAULT_TIME_DATA : Long = 0
+const val DEFAULT_TIME_DATA: Long = 0
 
 class Utils {
 
@@ -69,7 +69,20 @@ class Utils {
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
             val uri = Uri.parse(url)
-            return uri?.getQueryParameter(dimension)?.toInt()
+
+            try {
+                returnVal = uri?.getQueryParameter(dimension)?.toInt()
+            } catch (e: Exception) {
+                try {
+                    val newUrl = uri?.getQueryParameter(dimension)?.replace("[^-?0-9]+".toRegex(), " ")
+                    val parts = newUrl?.trim()?.split(" ")
+                    return parts?.get(0)?.toInt()
+                } catch (e: Exception) {
+                    return 1;
+                }
+            }
+
+            return 1;
         }
 
         fun shareData(context: Context?, shareTxt: String?, productUri: String?) {
@@ -148,12 +161,12 @@ class Utils {
         fun addAddressQueryMap(userAddressData: LocalCacheModel?): MutableMap<String, String> {
             val addressQueryParameterMap = mutableMapOf<String, String>()
             userAddressData?.let {
-                if(it.address_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_ADDRESS_ID] = it.address_id
-                if(it.city_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_CITY_ID] = it.city_id
-                if(it.district_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_DISTRICT_ID] = it.district_id
-                if(it.lat.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LAT] = it.lat
-                if(it.long.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LONG] = it.long
-                if(it.postal_code.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_POST_CODE] = it.postal_code
+                if (it.address_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_ADDRESS_ID] = it.address_id
+                if (it.city_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_CITY_ID] = it.city_id
+                if (it.district_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_DISTRICT_ID] = it.district_id
+                if (it.lat.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LAT] = it.lat
+                if (it.long.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LONG] = it.long
+                if (it.postal_code.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_POST_CODE] = it.postal_code
             }
             return addressQueryParameterMap
         }
@@ -261,9 +274,11 @@ class Utils {
                 }
             }
 
-            if(url.isNullOrEmpty()) return ""
+            if (url.isNullOrEmpty()) return ""
 
-            return if(isAllKeyNullOrEmpty) url else {"$url?$queryString"}
+            return if (isAllKeyNullOrEmpty) url else {
+                "$url?$queryString"
+            }
         }
 
 
