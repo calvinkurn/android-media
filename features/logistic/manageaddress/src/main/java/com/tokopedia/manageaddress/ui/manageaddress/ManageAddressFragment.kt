@@ -493,7 +493,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     _selectedAddressItem = data
                 }
                 isStayOnPageState = true
-                viewModel.setDefaultPeopleAddress(data.id, false, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
+                viewModel.setDefaultPeopleAddress(data.id, false, prevState, data.id.toInt(), ChooseAddressUtils.isRollOutUser(context))
                 bottomSheetLainnya?.dismiss()
             }
             btn_hapus_alamat?.setOnClickListener {
@@ -615,6 +615,17 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         postalCode = _selectedAddressItem?.postalCode
                 )
             }
+        } else if (isFromCheckoutChangeAddress == true) {
+            viewModel.setStateChosenAddress(
+                    status = _selectedAddressItem?.addressStatus,
+                    addressId = _selectedAddressItem?.id,
+                    receiverName = _selectedAddressItem?.recipientName,
+                    addressName = _selectedAddressItem?.addressName,
+                    latitude = _selectedAddressItem?.latitude,
+                    longitude = _selectedAddressItem?.longitude,
+                    districtId = _selectedAddressItem?.destinationDistrictId,
+                    postalCode = _selectedAddressItem?.postalCode
+            )
         }
     }
 
