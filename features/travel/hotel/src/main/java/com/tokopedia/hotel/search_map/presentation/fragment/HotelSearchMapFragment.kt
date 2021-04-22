@@ -1184,14 +1184,28 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 fusedLocationClient,
                 requireActivity().applicationContext)
 
-        if(permissionRetryCounter < PERMISSION_MAX_RETRY){
-            permissionRetryCounter++
-            locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
-                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                    requireActivity().getString(R.string.hotel_destination_need_permission))
-        }else{
-            permissionRetryCounter = 0
-        }
+        permissionCheckerHelper.checkPermission(this, requireActivity().getString(R.string.hotel_destination_need_permission),
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onNeverAskAgain(permissionText: String) {
+                        context?.let {
+                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                        }
+                    }
+
+                    override fun onPermissionDenied(permissionText: String) {
+                        context?.let {
+                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                        }
+                    }
+
+                    override fun onPermissionGranted() {
+                        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
+                                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                                requireActivity().getString(R.string.hotel_destination_need_permission))
+                    }
+
+                })
+
     }
 
     private fun showDialogEnableGPS() {
