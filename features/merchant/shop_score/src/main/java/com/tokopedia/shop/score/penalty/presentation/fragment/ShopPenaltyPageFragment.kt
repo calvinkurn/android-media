@@ -140,7 +140,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         viewModelShopPenalty.setSortTypeFilterData(Pair(sortBy, typeId))
         endlessRecyclerViewScrollListener.resetState()
         penaltyPageAdapter.removePenaltyNotFound()
-        penaltyPageAdapter.showLoading()
+        penaltyPageAdapter.setPenaltyLoading()
     }
 
     private fun List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>?.chipsPenaltyMapToItemSortFilter(): List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper> {
@@ -160,7 +160,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         viewModelShopPenalty.setTypeFilterData(typeId)
         endlessRecyclerViewScrollListener.resetState()
         penaltyPageAdapter.removePenaltyNotFound()
-        penaltyPageAdapter.showLoading()
+        penaltyPageAdapter.setPenaltyLoading()
     }
 
     override fun onSaveCalendarClicked(startDate: Pair<String, String>, endDate: Pair<String, String>) {
@@ -175,7 +175,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         viewModelShopPenalty.setDateFilterData(Pair(startDate.first, endDate.first))
         endlessRecyclerViewScrollListener.resetState()
         penaltyPageAdapter.removePenaltyNotFound()
-        penaltyPageAdapter.showLoading()
+        penaltyPageAdapter.setPenaltyLoading()
     }
 
     override fun onItemPenaltyClick(statusPenalty: String) {
