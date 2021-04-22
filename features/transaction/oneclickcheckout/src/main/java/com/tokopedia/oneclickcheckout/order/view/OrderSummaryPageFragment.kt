@@ -719,8 +719,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     }
                 }
                 // manual scroll first item
-                val firstView = coachMarkItems.first().anchorView
-                firstView.post {
+                val firstView = coachMarkItems.firstOrNull()?.anchorView
+                firstView?.post {
                     val relativeLocation = IntArray(2)
                     ViewHelper.getRelativePositionRec(firstView, scrollview, relativeLocation)
                     scrollview.scrollTo(0, relativeLocation.last())
@@ -792,7 +792,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun forceShowOnboarding(onboarding: OccMainOnboarding?) {
         if (onboarding?.isForceShowCoachMark == true) {
-            showNewOnboarding(onboarding)
+            if (onboarding.coachmarkType == COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE) {
+                showNewOnboarding(onboarding)
+            }
             viewModel.consumeForceShowOnboarding()
         }
     }
@@ -1218,9 +1220,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         globalError?.setActionClickListener {
             refresh()
         }
-        mainContent?.gone()
-        layoutNoAddress?.gone()
-        globalError?.visible()
+        mainContent?.animateGone()
+        layoutNoAddress?.animateGone()
+        globalError?.animateShow()
     }
 
     private fun handleAtcError(atcError: OccGlobalEvent.AtcError) {

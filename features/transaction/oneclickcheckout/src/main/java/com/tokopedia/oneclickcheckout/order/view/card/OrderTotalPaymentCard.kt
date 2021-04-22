@@ -67,9 +67,9 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
                                 val drawable = getIconUnifyDrawable(context, IconUnify.PROTECTION_CHECK, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                                drawable?.setBounds(24.toPx(), 0, 44.toPx(), 20.toPx())
+                                drawable?.setBounds(ICON_BUTTON_LEFT_BOUND.toPx(), ICON_BUTTON_TOP_BOUND, ICON_BUTTON_RIGHT_BOUND.toPx(), ICON_BUTTON_BOTTOM_BOUND.toPx())
                                 setCompoundDrawables(drawable, null, null, null)
-                                compoundDrawablePadding = 4.toPx()
+                                compoundDrawablePadding = ICON_BUTTON_PADDING.toPx()
                                 isEnabled = true
                                 setText(R.string.pay)
                                 groupLoaderPayment?.gone()
@@ -77,9 +77,9 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                             }
                             OccButtonState.DISABLE -> {
                                 val drawable = getIconUnifyDrawable(context, IconUnify.PROTECTION_CHECK)
-                                drawable?.setBounds(24.toPx(), 0, 44.toPx(), 20.toPx())
+                                drawable?.setBounds(ICON_BUTTON_LEFT_BOUND.toPx(), ICON_BUTTON_TOP_BOUND, ICON_BUTTON_RIGHT_BOUND.toPx(), ICON_BUTTON_BOTTOM_BOUND.toPx())
                                 setCompoundDrawables(drawable, null, null, null)
-                                compoundDrawablePadding = 4.toPx()
+                                compoundDrawablePadding = ICON_BUTTON_PADDING.toPx()
                                 isEnabled = false
                                 setText(R.string.pay)
                                 groupLoaderPayment?.gone()
@@ -151,8 +151,10 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
     }
 
     companion object {
-        private const val BUTTON_LOADING_HEIGHT = 48f
-        private const val BUTTON_CHOOSE_PAYMENT_WIDTH = 160f
-        private const val BUTTON_PAY_WIDTH = 140f
+        private const val ICON_BUTTON_LEFT_BOUND = 24
+        private const val ICON_BUTTON_TOP_BOUND = 0
+        private const val ICON_BUTTON_RIGHT_BOUND = 44
+        private const val ICON_BUTTON_BOTTOM_BOUND = 20
+        private const val ICON_BUTTON_PADDING = 4
     }
 }

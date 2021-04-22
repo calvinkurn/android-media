@@ -565,7 +565,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
     private fun setAddressNameMargin(isMainAddress: Boolean) {
         val displayMetrics = tvAddressName?.context?.resources?.displayMetrics ?: return
-        tvAddressName?.setMargin(if (isMainAddress) 8.dpToPx(displayMetrics) else 16.dpToPx(displayMetrics), 12.dpToPx(displayMetrics), 0, 0)
+        tvAddressName?.setMargin(if (isMainAddress) MAIN_ADDRESS_LEFT_MARGIN.dpToPx(displayMetrics) else NOT_MAIN_ADDRESS_LEFT_MARGIN.dpToPx(displayMetrics), ADDRESS_TOP_MARGIN.dpToPx(displayMetrics), ADDRESS_RIGHT_MARGIN, ADDRESS_BOTTOM_MARGIN)
     }
 
     fun showAddressBottomSheet(fragment: OrderSummaryPageFragment, usecase: GetAddressCornerUseCase, addressState: Int) {
@@ -648,6 +648,12 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
     companion object {
         private val BBO_DESCRIPTION_MINIMUM_LIMIT = arrayOf("belum", "min")
+
+        private const val MAIN_ADDRESS_LEFT_MARGIN = 8
+        private const val NOT_MAIN_ADDRESS_LEFT_MARGIN = 16
+        private const val ADDRESS_TOP_MARGIN = 12
+        private const val ADDRESS_RIGHT_MARGIN = 0
+        private const val ADDRESS_BOTTOM_MARGIN = 0
     }
 
     interface OrderPreferenceCardListener {

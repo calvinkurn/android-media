@@ -100,6 +100,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
+    private fun isInvalidAddressState(preference: OrderProfile, addressState: AddressState): Boolean {
+        return preference.address.addressId <= 0 && addressState.errorCode != AddressState.ERROR_CODE_OPEN_ANA
+    }
+
     fun getOccCart(isFullRefresh: Boolean, source: String) {
         getCartJob?.cancel()
         getCartJob = launch(executorDispatchers.immediate) {
@@ -109,7 +113,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             revampData = result.revampData
             orderCart = result.orderCart
             _orderPreference = result.orderPreference
-            orderPreference.value = if (result.throwable == null) OccState.FirstLoad(_orderPreference) else OccState.Failed(Failure(result.throwable))
+            orderPreference.value = if (result.throwable == null && !isInvalidAddressState(result.orderPreference.preference, result.addressState)) {
+                OccState.FirstLoad(_orderPreference)
+            } else {
+                OccState.Failed(Failure(result.throwable))
+            }
             if (isFullRefresh) {
                 _orderShipment = OrderShipment()
                 orderShipment.value = _orderShipment
@@ -125,7 +133,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (orderProduct.productId > 0 && _orderPreference.preference.shipment.serviceId > 0 && _orderPreference.preference.address.addressId > 0) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 getRatesSuspend()
-            } else if (result.throwable == null) {
+            } else if (result.throwable == null && !isInvalidAddressState(result.orderPreference.preference, result.addressState)) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                 sendViewOspEe()
             }

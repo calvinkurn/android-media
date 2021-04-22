@@ -158,6 +158,28 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Get Occ Cart With Invalid Address State`() {
+        // Given
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val address = OrderProfileAddress(addressId = 0)
+        val profile = OrderProfile(shipment = shipment, address = address)
+        val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile, errorCode = "")
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(OccState.Failed(Failure(null)), orderSummaryPageViewModel.orderPreference.value)
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+        verify(inverse = true) {
+            orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
+        }
+        verify(inverse = true) { ratesUseCase.execute(any()) }
+    }
+
+    @Test
     fun `Get Occ Cart Success With Preference`() {
         // Given
         val shipment = OrderProfileShipment(serviceId = 1)

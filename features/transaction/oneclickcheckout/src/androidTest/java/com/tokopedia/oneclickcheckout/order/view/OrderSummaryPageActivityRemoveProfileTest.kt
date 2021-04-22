@@ -3,13 +3,14 @@ package com.tokopedia.oneclickcheckout.order.view
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
 import android.content.Intent
-import android.os.Bundle
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
@@ -247,7 +248,7 @@ class OrderSummaryPageActivityRemoveProfileTest {
             clickAddNewAddress()
 
             cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_RESPONSE_PATH
-            intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, Intent().putExtras(Bundle())))
+            intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, Intent().putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, SaveAddressDataModel())))
 
             clickAddNewAddress()
 
