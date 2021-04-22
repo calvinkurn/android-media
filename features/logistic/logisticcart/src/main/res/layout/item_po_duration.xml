@@ -5,9 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_N0"
-    android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
     android:foreground="?selectableItemBackground"
     tools:ignore="Overdraw">
 
@@ -17,9 +15,11 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:lineSpacingExtra="4sp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
+        app:typographyWeight="reguler"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         tools:text="Barang akan dikirim mulai xx Januari" />
 
     <com.tokopedia.unifycomponents.Label
@@ -30,6 +30,8 @@
         android:layout_marginTop="@dimen/dp_2"
         android:text="@string/tersedia_bayar_di_tempat"
         android:visibility="visible"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         app:labelType="general_light_grey" />
 
     <View

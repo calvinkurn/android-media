@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class PreOrder (
         @SerializedName("header")
         val header: String = "",
-        @SerializedName("Label")
+        @SerializedName("label")
         val label: String = "",
         @SerializedName("display")
         val display: Boolean = false
