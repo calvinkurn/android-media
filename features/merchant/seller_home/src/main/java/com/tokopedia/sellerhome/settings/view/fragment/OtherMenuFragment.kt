@@ -52,6 +52,7 @@ import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
+import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
@@ -99,6 +100,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     lateinit var sellerHomeConfig: SellerHomeRemoteConfig
     @Inject
     lateinit var freeShippingTracker: SettingFreeShippingTracker
+    @Inject
+    lateinit var shopOperationalTracker: SettingShopOperationalTracker
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
 
@@ -457,7 +460,17 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         thematicIllustration = view.findViewById(R.id.iv_other_menu_thematic)
         populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
-        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this, freeShippingTracker, userSession) }
+        context?.let {
+            otherMenuViewHolder = OtherMenuViewHolder(
+                itemView = view,
+                context = it,
+                listener = this,
+                trackingListener = this,
+                freeShippingTracker = freeShippingTracker,
+                operationalHourTracker = shopOperationalTracker,
+                userSession = userSession
+            )
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (isDefaultDarkStatusBar) {
                 activity?.requestStatusBarDark()

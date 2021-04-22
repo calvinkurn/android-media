@@ -26,6 +26,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
+import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -39,6 +40,7 @@ class OtherMenuViewHolder(private val itemView: View,
                           private val listener: Listener,
                           private val trackingListener: SettingTrackingListener,
                           private val freeShippingTracker: SettingFreeShippingTracker,
+                          private val shopOperationalTracker: SettingShopOperationalTracker,
                           private val userSession: UserSessionInterface) {
 
     companion object {
@@ -176,6 +178,7 @@ class OtherMenuViewHolder(private val itemView: View,
     fun showOperationalHourLayout(shopOperational: ShopOperationalUiModel) {
         itemView.findViewById<View>(R.id.shopOperationalHour).run {
             val timeLabel = shopOperational.timeLabel
+            val shopOperationalStatus = itemView.context.getString(shopOperational.status)
 
             findViewById<Typography>(R.id.textOperationalHour).text = if(timeLabel != null) {
                 context.getString(timeLabel)
@@ -183,7 +186,7 @@ class OtherMenuViewHolder(private val itemView: View,
                 shopOperational.time
             }
             findViewById<Label>(R.id.labelShopStatus).apply {
-                text = itemView.context.getString(shopOperational.status)
+                text = shopOperationalStatus
                 setLabelType(shopOperational.labelType)
             }
             findViewById<ImageView>(R.id.imageOperationalHour).apply {
@@ -192,6 +195,7 @@ class OtherMenuViewHolder(private val itemView: View,
 
             if (shopOperational.hasShopSettingsAccess) {
                 setOnClickListener {
+                    shopOperationalTracker.trackClickShopOperationalHour(shopOperationalStatus)
                     RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
                 }
             }
