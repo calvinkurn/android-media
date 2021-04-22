@@ -115,8 +115,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private val snapHelper: SnapHelper = LinearSnapHelper()
 
-    private var permissionRetryCounter: Int = 0
-
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
     override fun createAdapterInstance(): BaseListAdapter<Property, PropertyAdapterTypeFactory> =
@@ -1202,7 +1200,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                                     requireActivity().getString(R.string.hotel_destination_need_permission))
                         }
 
-                    })
+                    }, getString(R.string.hotel_destination_need_permission))
         }
 
     }
@@ -1353,8 +1351,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         private const val PREFERENCES_NAME = "hotel_search_map_preferences"
         private const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
-
-        private const val PERMISSION_MAX_RETRY = 3
 
         fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchMapFragment =
                 HotelSearchMapFragment().also {
