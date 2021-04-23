@@ -70,7 +70,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
         initPerformanceMonitoring()
         checkIfAppLinkToShopInfo()
         checkIfApplinkRedirectedForMigration()
-        setBackButtonColor()
         super.onCreate(savedInstanceState)
     }
 
@@ -144,18 +143,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
                 }
             }
         }
-    }
-
-    private fun setBackButtonColor() {
-        val backButtonDrawable = ContextCompat.getDrawable(this,com.tokopedia.iconunify.R.drawable.iconunify_arrow_back)
-        // set to dark mode color support
-        val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            backButtonDrawable?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
-        }else{
-            backButtonDrawable?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
-        }
-        supportActionBar?.setHomeAsUpIndicator(backButtonDrawable);
     }
 
     private fun getShopInfoIntent(context: Context): Intent {

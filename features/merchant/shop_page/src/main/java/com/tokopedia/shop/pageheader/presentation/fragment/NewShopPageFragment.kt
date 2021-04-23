@@ -5,8 +5,12 @@ import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.util.Log
@@ -956,6 +960,16 @@ class NewShopPageFragment :
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
                 supportActionBar?.setDisplayShowTitleEnabled(true)
                 setHasOptionsMenu(true)
+
+                // set back button color
+                val backButtonDrawable = ContextCompat.getDrawable(this,com.tokopedia.iconunify.R.drawable.iconunify_arrow_back)
+                val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    backButtonDrawable?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+                }else{
+                    backButtonDrawable?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+                }
+                supportActionBar?.setHomeAsUpIndicator(backButtonDrawable);
             }
         }
         if (isMyShop) {
