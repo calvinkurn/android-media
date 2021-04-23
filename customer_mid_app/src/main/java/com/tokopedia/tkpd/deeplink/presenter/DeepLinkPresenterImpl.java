@@ -34,11 +34,9 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.customer_mid_app.R;
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -61,7 +59,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import rx.Subscriber;
 import timber.log.Timber;
@@ -101,10 +98,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     @Inject
     UserSessionInterface userSession;
-
-    @Inject
-    @Named("productUseCase")
-    GraphqlUseCase<ProductInfo.Response> getProductUseCase;
 
     public DeepLinkPresenterImpl(DeepLinkActivity activity) {
         this.viewListener = activity;
