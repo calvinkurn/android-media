@@ -14,6 +14,7 @@ import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVi
 import com.tokopedia.product.info.usecase.GetProductDetailBottomSheetUseCase
 import com.tokopedia.product.info.util.ProductDetailInfoMapper
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
@@ -21,7 +22,9 @@ import javax.inject.Inject
  * Created by Yehezkiel on 13/10/20
  */
 class BsProductDetailInfoViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                                       private val getProductDetailBottomSheetUseCase: GetProductDetailBottomSheetUseCase)
+                                                       private val getProductDetailBottomSheetUseCase: GetProductDetailBottomSheetUseCase,
+                                                       val userSession: UserSessionInterface
+)
     : BaseViewModel(dispatchers.io) {
 
     companion object {
