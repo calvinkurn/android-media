@@ -1439,7 +1439,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             val boeData = viewModel.getBebasOngkirDataByProductId()
             val ratesData = viewModel.getP2RatesEstimateByProductId()
 
-            trackProductView(viewModel.tradeInParams.isEligible == ProductDetailConstant.ELIGIBLE_TRADE_IN, boeData.imageURL.isNotEmpty())
+            trackProductView(viewModel.tradeInParams.isEligible == ProductDetailConstant.ELIGIBLE_TRADE_IN, boeData.boType)
             viewModel.getDynamicProductInfoP1?.let { p1 ->
                 DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1)
                 DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)
@@ -2409,25 +2409,20 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         }
     }
 
-    private fun trackProductView(isElligible: Boolean, isFreeOngkir: Boolean) {
-        viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
-                val sentBundle = DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(
-                        irisSessionId,
-                        trackerListNamePdp,
-                        productInfo,
-                        viewModel.getShopInfo(),
-                        trackerAttributionPdp,
-                        isElligible,
-                        viewModel.tradeInParams.usedPrice > 0,
-                        viewModel.getMultiOriginByProductId().isFulfillment,
-                        deeplinkUrl,
-                        viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0",
-                        isFreeOngkir
-                )
-                return
-            }
-        }
+    private fun trackProductView(isElligible: Boolean, boType: Int) {
+        DynamicProductDetailTracking.Impression.eventProductView(
+                productInfo = viewModel.getDynamicProductInfoP1,
+                shopInfo = viewModel.getShopInfo(),
+                irisSessionId = irisSessionId,
+                trackerListName = trackerListNamePdp,
+                trackerAttribution = trackerAttributionPdp,
+                isTradeIn = isElligible,
+                isDiagnosed = viewModel.tradeInParams.usedPrice > 0,
+                multiOrigin = viewModel.getMultiOriginByProductId().isFulfillment,
+                deeplinkUrl = deeplinkUrl,
+                isStockAvailable = viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0",
+                boType = boType
+        )
     }
 
     private fun openFtInstallmentBottomSheet(installmentData: FtInstallmentCalculationDataResponse) {
