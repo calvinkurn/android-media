@@ -5,9 +5,11 @@ import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Bitmap
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
@@ -83,8 +85,8 @@ import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
-import com.tokopedia.shop.common.util.ShopUtil.isShouldCheckShopType
 import com.tokopedia.shop.common.util.ShopUtil.isNotRegularMerchant
+import com.tokopedia.shop.common.util.ShopUtil.isShouldCheckShopType
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
@@ -143,6 +145,7 @@ import kotlinx.android.synthetic.main.new_shop_page_main.*
 import kotlinx.android.synthetic.main.shop_page_tab_view.view.*
 import java.io.File
 import javax.inject.Inject
+
 
 class NewShopPageFragment :
         BaseDaggerFragment(),
@@ -597,7 +600,7 @@ class NewShopPageFragment :
         })
 
         shopViewModel?.shopPageShopShareData?.observe(owner, Observer { result ->
-            if(result is Success){
+            if (result is Success) {
                 shopPageHeaderDataModel?.let {
                     it.shopSnippetUrl = result.data.shopSnippetUrl
                     it.shopCoreUrl = result.data.shopCore.url
@@ -962,14 +965,20 @@ class NewShopPageFragment :
                 setHasOptionsMenu(true)
 
                 // set back button color
-                val backButtonDrawable = ContextCompat.getDrawable(this,com.tokopedia.iconunify.R.drawable.iconunify_arrow_back)
-                val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    backButtonDrawable?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
-                }else{
-                    backButtonDrawable?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+                val backButtonDrawable = ContextCompat.getDrawable(this, com.tokopedia.iconunify.R.drawable.iconunify_arrow_back)
+                if (backButtonDrawable != null) {
+                    val bitmap = (backButtonDrawable as BitmapDrawable).bitmap
+                    val bitmapResized = Bitmap.createScaledBitmap(bitmap, 24, 24, false)
+                    val newBackButtonDrawable = BitmapDrawable(resources, bitmapResized)
+
+                    val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        newBackButtonDrawable.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+                    }else{
+                        newBackButtonDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+                    }
+                    supportActionBar?.setHomeAsUpIndicator(backButtonDrawable);
                 }
-                supportActionBar?.setHomeAsUpIndicator(backButtonDrawable);
             }
         }
         if (isMyShop) {
@@ -1280,7 +1289,7 @@ class NewShopPageFragment :
                 }
                 setIcon(it.tabIconInactive)
             }
-            tabLayout.addTab(tab,false)
+            tabLayout.addTab(tab, false)
         }
         viewPagerAdapter?.notifyDataSetChanged()
         tabLayout?.apply {
@@ -1305,40 +1314,40 @@ class NewShopPageFragment :
                 viewPagerAdapter?.handleSelectedTab(tab, false)
             }
 
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    val position = tab.position
-                    viewPager.setCurrentItem(position, false)
-                    tabLayout.getTabAt(position)?.let{
-                        viewPagerAdapter?.handleSelectedTab(it, true)
-                    }
-                    if(isTabClickByUser) {
-                        shopPageTracking?.clickTab(
-                                shopViewModel?.isMyShop(shopId) == true,
-                                listShopPageTabModel[position].tabTitle,
-                                CustomDimensionShopPage.create(
-                                        shopId,
-                                        shopPageHeaderDataModel?.isOfficial ?: false,
-                                        shopPageHeaderDataModel?.isGoldMerchant ?: false
-                                )
-                        )
-                    }
-                    if (isSellerMigrationEnabled(context)) {
-                        if(isMyShop && viewPagerAdapter?.isFragmentObjectExists(FeedShopFragment::class.java) == true){
-                            val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(FeedShopFragment::class.java)
-                            if (position == tabFeedPosition) {
-                                showBottomSheetSellerMigration()
-                            } else {
-                                hideBottomSheetSellerMigration()
-                            }
-                        }else{
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                val position = tab.position
+                viewPager.setCurrentItem(position, false)
+                tabLayout.getTabAt(position)?.let {
+                    viewPagerAdapter?.handleSelectedTab(it, true)
+                }
+                if (isTabClickByUser) {
+                    shopPageTracking?.clickTab(
+                            shopViewModel?.isMyShop(shopId) == true,
+                            listShopPageTabModel[position].tabTitle,
+                            CustomDimensionShopPage.create(
+                                    shopId,
+                                    shopPageHeaderDataModel?.isOfficial ?: false,
+                                    shopPageHeaderDataModel?.isGoldMerchant ?: false
+                            )
+                    )
+                }
+                if (isSellerMigrationEnabled(context)) {
+                    if (isMyShop && viewPagerAdapter?.isFragmentObjectExists(FeedShopFragment::class.java) == true) {
+                        val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(FeedShopFragment::class.java)
+                        if (position == tabFeedPosition) {
+                            showBottomSheetSellerMigration()
+                        } else {
                             hideBottomSheetSellerMigration()
                         }
+                    } else {
+                        hideBottomSheetSellerMigration()
                     }
-                    viewPager?.post {
-                        checkIfShouldShowOrHideScrollToTopButton(position)
-                    }
-                    isTabClickByUser = false
                 }
+                viewPager?.post {
+                    checkIfShouldShowOrHideScrollToTopButton(position)
+                }
+                isTabClickByUser = false
+            }
         })
     }
 
