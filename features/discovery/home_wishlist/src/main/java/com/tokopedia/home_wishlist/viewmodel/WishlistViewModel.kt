@@ -166,7 +166,7 @@ open class WishlistViewModel @Inject constructor(
 
                     // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
                     data.items.size > recommendationPositionInPage -> {
-                        if (data.items.size > newMinItemRegularRule) {
+                        if (data.totalData > newMinItemRegularRule) {
                             wishlistData.value = getTopAdsBannerData(visitableWishlist, currentPage, data.items.map { it.id }, recommendationPositionInPage)
                         } else {
                             wishlistData.value = getTopadsAndRecommendationWishlist(visitableWishlist, currentPage, data.items.map { it.id }, data.items.size)
@@ -203,9 +203,14 @@ open class WishlistViewModel @Inject constructor(
             } else {
                 val newPageVisitableData = removeLoadMore().combineVisitable(data.items.mappingWishlistToVisitable(isInBulkMode.value ?: false))
 
+                if (data.items.size >= recommendationPositionInPage && currentPage % 2 == 0) {
+                    wishlistData.value = getRecommendationWishlist(newPageVisitableData, currentPage, data.items.map { it.id }, recommendationPositionInPage)
+                } else {
+                    wishlistData.value = getTopAdsBannerData(newPageVisitableData, currentPage, data.items.map { it.id }, recommendationPositionInPage)
+                }
+
                 if (!data.hasNextPage) {
                     wishlistState.value = Status.DONE
-                    wishlistData.value = getRecommendationWishlist(newPageVisitableData, currentPage, data.items.map { it.id }, data.items.size)
                 }
 
                 loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(
