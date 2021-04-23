@@ -5,14 +5,12 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
@@ -28,6 +26,7 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.relic.track.NewRelicUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -1103,7 +1102,7 @@ public class GTMAnalytics extends ContextAnalytics {
                 }
             }
             if(GlobalConfig.isSellerApp()){
-                NewRelic.recordBreadcrumb(eventName, map);
+                NewRelicUtil.sendTrack(eventName, map);
             }
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);

@@ -13,6 +13,9 @@ object Keys {
     private val AUTH_GOOGLE_YOUTUBE_API_KEY_SA = decodeKey(GOOGLE_YOUTUBE_API_KEY_SA)
 
     @JvmField
+    val NEW_RELIC = decodeKey(NEW_RELIC_APPLICATION_TOKEN)
+
+    @JvmField
     val AUTH_TRADE_IN_API_KEY_MA = decodeKey(TRADE_IN_API_KEY_MA)
 
     @JvmStatic

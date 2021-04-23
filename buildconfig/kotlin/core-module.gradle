@@ -60,7 +60,6 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
         exclude module: 'support-annotations'
     }
-    implementation rootProject.ext.miscDependencies.newRelic
 
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 }

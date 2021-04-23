@@ -116,5 +116,4 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
 
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
-    implementation rootProject.ext.miscDependencies.newRelic
 }

@@ -22,6 +22,7 @@ import com.tokopedia.logger.LogManager;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
+import com.tokopedia.keys.Keys.NEW_RELIC;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
@@ -48,7 +49,7 @@ public class SplashScreenActivity extends SplashScreen {
     public void onCreate(Bundle savedInstanceState) {
         boolean defaultInteraction = false;
         NewRelic
-                .withApplicationToken("AAf63ea1389b0e576285d1d782cdde48c9fcb385f0-NRMA")
+                .withApplicationToken(NEW_RELIC)
                 .withDefaultInteractions(defaultInteraction)
                 .start(this.getApplication());
         
