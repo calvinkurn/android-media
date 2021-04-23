@@ -82,6 +82,7 @@ open class WishlistViewModel @Inject constructor(
 
     private val recommendationPositionInPage = 4
     private val maxItemInPage = 21
+    private val newMinItemRegularRule = 24
 
     private var keywordSearch: String = ""
 
@@ -165,7 +166,11 @@ open class WishlistViewModel @Inject constructor(
 
                     // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
                     data.items.size > recommendationPositionInPage -> {
-                        wishlistData.value = getTopadsAndRecommendationWishlist(visitableWishlist, currentPage, data.items.map { it.id }, data.items.size)
+                        if (data.items.size > newMinItemRegularRule) {
+                            wishlistData.value = getTopAdsBannerData(visitableWishlist, currentPage, data.items.map { it.id }, recommendationPositionInPage)
+                        } else {
+                            wishlistData.value = getTopadsAndRecommendationWishlist(visitableWishlist, currentPage, data.items.map { it.id }, data.items.size)
+                        }
                     }
                 }
             }
