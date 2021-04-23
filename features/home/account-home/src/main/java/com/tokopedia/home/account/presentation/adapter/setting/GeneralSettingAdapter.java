@@ -122,7 +122,9 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             itemView.setOnClickListener(view -> {
                 if (listener != null){
-                    listener.onItemClicked(settingItems.get(getAdapterPosition()).getId());
+                    if(getAdapterPosition()>=0 && getAdapterPosition() < settingItems.size()) {
+                        listener.onItemClicked(settingItems.get(getAdapterPosition()).getId());
+                    }
                 }
             });
         }
