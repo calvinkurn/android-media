@@ -135,7 +135,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         component.inject(this);
     }
 
-    public void processDeepLinkAction(Activity activity, Uri uriData) {
+    public void processDeepLinkAction(Activity activity, Uri uriData, boolean isAmp) {
 
         Bundle queryParamBundle = RouteManager.getBundleFromAppLinkQueryParams(uriData);
         Bundle defaultBundle = new Bundle();
@@ -288,7 +288,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_DEEP_LINK;
                     break;
             }
-            sendCampaignGTM(activity, uriData.toString(), screenName);
+            sendCampaignGTM(activity, uriData.toString(), screenName, isAmp);
             if (!keepActivityOn && context != null) {
                 context.finish();
             }
@@ -450,8 +450,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     @Override
-    public void sendCampaignGTM(Activity activity, String campaignUri, String screenName) {
-        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri));
+    public void sendCampaignGTM(Activity activity, String campaignUri, String screenName, boolean isAmp) {
+        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri), isAmp);
         campaign.setScreenName(screenName);
         UnifyTracking.eventCampaign(activity, campaign);
 
@@ -804,7 +804,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (map.size() > 0) {
                     if (map.get("link") != null) {
                         String oriUri = map.get("link").toString();
-                        processDeepLinkAction(context, DeeplinkUTMUtils.simplifyUrl(oriUri));
+                        processDeepLinkAction(context, DeeplinkUTMUtils.simplifyUrl(oriUri), false);
                     }
                 }
             }
