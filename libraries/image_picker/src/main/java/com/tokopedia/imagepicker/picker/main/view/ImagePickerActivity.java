@@ -43,7 +43,9 @@ import com.tokopedia.utils.file.cleaner.InternalStorageCleaner;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_IMAGE_PICKER_BUILDER;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.PICKER_RESULT_PATHS;
@@ -302,14 +304,16 @@ public final class ImagePickerActivity extends BaseSimpleActivity
             return;
         }
         int cameraIndex = imagePickerBuilder.getCameraIndex();
-        String[] permissions = null;
+        Set<String> permissions = new HashSet<>();
         if (cameraIndex > -1) {
-            permissions = new String[]{
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        } else {
-            permissions = new String[]{
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            permissions.add(Manifest.permission.CAMERA);
+        }
+        if (imagePickerBuilder.getGalleryIndex() > -1) {
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (imagePickerBuilder.getRecorderIndex() > -1) {
+            permissions.add(Manifest.permission.CAMERA);
+            permissions.add(Manifest.permission.RECORD_AUDIO);
         }
         permissionsToRequest = new ArrayList<>();
         for (String permission : permissions) {

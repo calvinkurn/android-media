@@ -45,10 +45,9 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
     private static final String SAVED_FLASH_INDEX = "saved_flash_index";
     private static final int DURATION_MAX = 60000;
     private static final String VIDEO_EXT = ".mp4";
-    private static final String DIR_PREFIX = "tkpdvideo";
-    private static final String RESULT_DIR = String.format("%s%s/", "Tokopedia/", DIR_PREFIX);
+    private static final String RESULT_DIR = "video/";
 
-    private List<Flash> flashList = new ArrayList<>();
+    private final List<Flash> flashList = new ArrayList<>();
     private int flashIndex = 0;
     private Timer timer;
     private VideoPickerCallback videoCallback;
