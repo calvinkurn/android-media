@@ -265,7 +265,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 ImageHandler.loadImageWithoutPlaceholderAndError(
                         imgFreeShipping, cartShopHolderData.shopGroupAvailableData?.freeShippingBadgeUrl
                 )
-                val contentDescriptionStringResource = if (cartShopHolderData.shopGroupAvailableData.isFreeShippingExtra) {
+                val contentDescriptionStringResource = if (cartShopHolderData.shopGroupAvailableData?.isFreeShippingExtra == true) {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
                 } else {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
