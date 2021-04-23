@@ -35,6 +35,8 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
@@ -133,7 +135,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         component.inject(this);
     }
 
-    public void processDeepLinkAction(Activity activity, Uri uriData) {
+    public void processDeepLinkAction(Activity activity, Uri uriData, boolean isAmp) {
 
         Bundle queryParamBundle = RouteManager.getBundleFromAppLinkQueryParams(uriData);
         Bundle defaultBundle = new Bundle();
@@ -286,7 +288,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_DEEP_LINK;
                     break;
             }
-            sendCampaignGTM(activity, uriData.toString(), screenName);
+            sendCampaignGTM(activity, uriData.toString(), screenName, isAmp);
             if (!keepActivityOn && context != null) {
                 context.finish();
             }
@@ -448,8 +450,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     @Override
-    public void sendCampaignGTM(Activity activity, String campaignUri, String screenName) {
-        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri));
+    public void sendCampaignGTM(Activity activity, String campaignUri, String screenName, boolean isAmp) {
+        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri), isAmp);
         campaign.setScreenName(screenName);
         UnifyTracking.eventCampaign(activity, campaign);
 
@@ -507,7 +509,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     prepareOpenWebView(uriData);
                 }
                 if (e instanceof ResponseV4ErrorException) {
-                    Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#OneSegment;link_segment='%s';uri='%s'", linkSegment.get(0), uriData.toString());
+                    Map<String, String> messageMap = new HashMap<>();
+                    messageMap.put("type", "OneSegment");
+                    messageMap.put("link_segment", linkSegment.get(0));
+                    messageMap.put("uri", uriData.toString());
+                    ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
                 }
             }
 
@@ -556,7 +562,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
                         context.finish();
                     } else {
-                        Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#OneSegment;link_segment='%s';uri='%s'", linkSegment.get(0), uriData.toString());
+                        Map<String, String> messageMap = new HashMap<>();
+                        messageMap.put("type", "OneSegment");
+                        messageMap.put("link_segment", linkSegment.get(0));
+                        messageMap.put("uri", uriData.toString());
+                        ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
                         if (!GlobalConfig.DEBUG) {
                             crashlytics.recordException(new ShopNotFoundException(linkSegment.get(0)));
                         }
@@ -638,8 +648,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     context.finish();
                 }
                 if (e instanceof ResponseV4ErrorException) {
-                    Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#TwoSegments;link_segment='%s';uri='%s'",
-                            linkSegment.get(0) + "/" + linkSegment.get(1), uriData.toString());
+                    Map<String, String> messageMap = new HashMap<>();
+                    messageMap.put("type", "TwoSegments");
+                    messageMap.put("link_segment", linkSegment.get(0) + "/" + linkSegment.get(1));
+                    messageMap.put("uri", uriData.toString());
+                    ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
                 }
             }
 
@@ -667,8 +680,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         productIntent.putExtra("layoutID", layoutTesting);
                         context.startActivity(productIntent);
                     } else {
-                        Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#TwoSegments;link_segment='%s';uri='%s'",
-                                linkSegment.get(0) + "/" + linkSegment.get(1), uriData.toString());
+                        Map<String, String> messageMap = new HashMap<>();
+                        messageMap.put("type", "TwoSegments");
+                        messageMap.put("link_segment", linkSegment.get(0) + "/" + linkSegment.get(1));
+                        messageMap.put("uri", uriData.toString());
+                        ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
                         if (!GlobalConfig.DEBUG) {
                             crashlytics.recordException(new ShopNotFoundException(linkSegment.get(0)));
                             crashlytics.recordException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
@@ -788,7 +804,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (map.size() > 0) {
                     if (map.get("link") != null) {
                         String oriUri = map.get("link").toString();
-                        processDeepLinkAction(context, DeeplinkUTMUtils.simplifyUrl(oriUri));
+                        processDeepLinkAction(context, DeeplinkUTMUtils.simplifyUrl(oriUri), false);
                     }
                 }
             }

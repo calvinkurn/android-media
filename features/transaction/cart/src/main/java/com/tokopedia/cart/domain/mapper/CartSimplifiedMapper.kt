@@ -219,6 +219,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, it, cartDataListResponse, false, actionsData, 0, "")
 
             it.preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
+            it.isFreeShippingExtra = availableGroup.shipmentInformation.freeShippingExtra.eligible
             it.freeShippingBadgeUrl = when {
                 availableGroup.shipmentInformation.freeShippingExtra.eligible -> availableGroup.shipmentInformation.freeShippingExtra.badgeUrl
                 availableGroup.shipmentInformation.freeShipping.eligible -> availableGroup.shipmentInformation.freeShipping.badgeUrl

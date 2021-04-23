@@ -16,6 +16,8 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.logger)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
 
     implementation rootProject.ext.networkDependencies.glide
