@@ -202,7 +202,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         // Then
         val checkoutData = enhancedEcommerceData[EnhancedECommerceCheckout.KEY_CHECKOUT] as Map<*, *>
         val products = checkoutData[KEY_PRODUCT] as List<*>
-        val product = products.first() as MutableMap<*, *>
+        val product = products.firstOrNull() as MutableMap<*, *>
         assertEquals(DEFAULT_VALUE_NONE_OTHER, product["dimension83"])
     }
 
@@ -210,14 +210,14 @@ class ShipmentPresenterEnhancedEcommerceTest {
     fun `WHEN generate enhanced ecommerce data with Bebas Ongkir THEN enhanced ecommerce product data dimension83 should be bebas ongkir`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        val productData = dataCheckoutRequest.shopProducts.first().productData
-        productData.apply {
+        val productData = dataCheckoutRequest.shopProducts?.firstOrNull()?.productData
+        productData?.apply {
             clear()
-            add(ProductDataCheckoutRequest.Builder()
-                    .isFreeShipping(true)
-                    .build())
+            add(ProductDataCheckoutRequest().apply {
+                isFreeShipping = true
+            })
         }
-        dataCheckoutRequest.shopProducts.first().productData = productData
+        dataCheckoutRequest.shopProducts?.firstOrNull()?.productData = productData
         presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
@@ -230,7 +230,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         // Then
         val checkoutData = enhancedEcommerceData[EnhancedECommerceCheckout.KEY_CHECKOUT] as Map<*, *>
         val products = checkoutData[KEY_PRODUCT] as List<*>
-        val product = products.first() as MutableMap<*, *>
+        val product = products.firstOrNull() as MutableMap<*, *>
         assertEquals(VALUE_BEBAS_ONGKIR, product["dimension83"])
     }
 
@@ -238,14 +238,14 @@ class ShipmentPresenterEnhancedEcommerceTest {
     fun `WHEN generate enhanced ecommerce data with Bebas Ongkir Extra THEN enhanced ecommerce product data dimension83 should be bebas ongkir ekstra`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        val productData = dataCheckoutRequest.shopProducts.first().productData
-        productData.apply {
+        val productData = dataCheckoutRequest.shopProducts?.firstOrNull()?.productData
+        productData?.apply {
             clear()
-            add(ProductDataCheckoutRequest.Builder()
-                    .isFreeShippingExtra(true)
-                    .build())
+            add(ProductDataCheckoutRequest().apply {
+                isFreeShippingExtra = true
+            })
         }
-        dataCheckoutRequest.shopProducts.first().productData = productData
+        dataCheckoutRequest.shopProducts?.firstOrNull()?.productData = productData
         presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
@@ -258,7 +258,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         // Then
         val checkoutData = enhancedEcommerceData[EnhancedECommerceCheckout.KEY_CHECKOUT] as Map<*, *>
         val products = checkoutData[KEY_PRODUCT] as List<*>
-        val product = products.first() as MutableMap<*, *>
+        val product = products.firstOrNull() as MutableMap<*, *>
         assertEquals(VALUE_BEBAS_ONGKIR_EXTRA, product["dimension83"])
     }
 
@@ -316,9 +316,9 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val newDataCheckoutRequest = presenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(cartString, shippingDuration, shippingPrice, courierName)
 
         // Then
-        assert(newDataCheckoutRequest.first().shopProducts.first().productData.first().shippingDuration == shippingDuration)
-        assert(newDataCheckoutRequest.first().shopProducts.first().productData.first().shippingPrice == shippingPrice)
-        assert(newDataCheckoutRequest.first().shopProducts.first().productData.first().courier == courierName)
+        assert(newDataCheckoutRequest.firstOrNull()?.shopProducts?.firstOrNull()?.productData?.firstOrNull()?.shippingDuration == shippingDuration)
+        assert(newDataCheckoutRequest.firstOrNull()?.shopProducts?.firstOrNull()?.productData?.firstOrNull()?.shippingPrice == shippingPrice)
+        assert(newDataCheckoutRequest.firstOrNull()?.shopProducts?.firstOrNull()?.productData?.firstOrNull()?.courier == courierName)
     }
 
     @Test
@@ -362,7 +362,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val newDataCheckoutRequest = presenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentCartItemModelList)
 
         // Then
-        assert(newDataCheckoutRequest.first().shopProducts.first().productData.first().promoCode == promoCodes)
-        assert(newDataCheckoutRequest.first().shopProducts.first().productData.first().promoDetails == promoDetails)
+        assert(newDataCheckoutRequest.firstOrNull()?.shopProducts?.firstOrNull()?.productData?.firstOrNull()?.promoCode == promoCodes)
+        assert(newDataCheckoutRequest.firstOrNull()?.shopProducts?.firstOrNull()?.productData?.firstOrNull()?.promoDetails == promoDetails)
     }
 }

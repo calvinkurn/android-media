@@ -22,7 +22,7 @@ data class ShopProductCheckoutRequest(
         @SerializedName("dropship_data")
         var dropshipData: DropshipDataCheckoutRequest? = null,
         @SerializedName("product_data")
-        var productData: List<ProductDataCheckoutRequest>? = null,
+        var productData: ArrayList<ProductDataCheckoutRequest>? = null,
         @SerializedName("fcancel_partial")
         var fcancelPartial: Int = 0,
         @SuppressLint("Invalid Data Type")

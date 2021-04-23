@@ -160,8 +160,8 @@ public class ShipmentDataRequestConverter {
         return result;
     }
 
-    private List<ProductDataCheckoutRequest> convertToProductDataCheckout(ShipmentCartItemModel shipmentCartItemModel) {
-        List<ProductDataCheckoutRequest> productDataList = new ArrayList<>();
+    private ArrayList<ProductDataCheckoutRequest> convertToProductDataCheckout(ShipmentCartItemModel shipmentCartItemModel) {
+        ArrayList<ProductDataCheckoutRequest> productDataList = new ArrayList<>();
         for (CartItemModel cartItem : shipmentCartItemModel.getCartItemModels()) {
             productDataList.add(convertToProductDataCheckout(cartItem, shipmentCartItemModel.getSelectedShipmentDetailData()));
         }
