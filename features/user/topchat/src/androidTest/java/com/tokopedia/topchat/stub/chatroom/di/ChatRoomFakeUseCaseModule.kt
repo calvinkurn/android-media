@@ -13,6 +13,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -217,5 +218,21 @@ class ChatRoomFakeUseCaseModule {
             dispatchers: CoroutineTestDispatchersProvider
     ): ChatBackgroundUseCaseStub {
         return ChatBackgroundUseCaseStub(gqlUseCase, cacheManager, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideChatRoomSettingUseCaseUseCase(
+            stub: GetChatRoomSettingUseCaseStub
+    ): GetChatRoomSettingUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideChatRoomSettingUseCaseaseStub(
+            gqlUseCase: GraphqlUseCaseStub<RoomSettingResponse>
+    ): GetChatRoomSettingUseCaseStub {
+        return GetChatRoomSettingUseCaseStub(gqlUseCase)
     }
 }

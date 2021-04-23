@@ -36,6 +36,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -107,6 +108,9 @@ abstract class TopchatRoomTest {
     protected lateinit var chatBackgroundUseCase: ChatBackgroundUseCaseStub
 
     @Inject
+    protected lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCaseStub
+
+    @Inject
     protected lateinit var websocket: RxWebSocketUtilStub
 
     protected open lateinit var activity: TopChatRoomActivityStub
@@ -125,6 +129,7 @@ abstract class TopchatRoomTest {
     protected var uploadImageReplyResponse = ChatReplyPojo()
     protected var orderProgressResponse = OrderProgressResponse()
     protected var chatBackgroundResponse = ChatBackgroundResponse()
+    protected var chatRoomSettingResponse = RoomSettingResponse()
 
     protected lateinit var chatComponentStub: ChatComponentStub
 
@@ -184,7 +189,7 @@ abstract class TopchatRoomTest {
     }
 
     protected fun setupDefaultResponseWhenFirstOpenChatRoom() {
-        // TODO: Add chat room setting default response
+        getChatRoomSettingUseCase.response = chatRoomSettingResponse
         chatBackgroundUseCase.response = chatBackgroundResponse
         getChatUseCase.response = firstPageChatAsBuyer
         orderProgressUseCase.response = orderProgressResponse
