@@ -14,6 +14,7 @@ import com.google.gson.Gson
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
@@ -31,9 +32,11 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
     protected var sellerAutoReply = GetExistingChatPojo()
     protected var sellerSourceInbox = GetExistingChatPojo()
     protected var sellerProductChatReplies = GetExistingChatPojo()
+    protected var sellerProductVariantChatReplies = GetExistingChatPojo()
     protected var sellerProductCarouselChatReplies = GetExistingChatPojo()
     protected var sellerBroadcastProductCarouselChatReplies = GetExistingChatPojo()
     protected var sellerProductAttachment = ChatAttachmentResponse()
+    protected var sellerProductVariantAttachment = ChatAttachmentResponse()
 
     private val templateChats = listOf(
             "I am seller", "Yes, this product is ready"
@@ -74,6 +77,10 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
                 "seller/success_get_chat_first_page_as_seller.json",
                 GetExistingChatPojo::class.java
         )
+        sellerProductVariantChatReplies = AndroidFileUtil.parse(
+                "seller/get_chatReply_with_product_variant.json",
+                GetExistingChatPojo::class.java
+        )
         sellerProductCarouselChatReplies = AndroidFileUtil.parse(
                 "seller/success_get_chat_first_page_product_carousel_as_seller.json",
                 GetExistingChatPojo::class.java
@@ -85,6 +92,10 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
         )
         sellerProductAttachment = AndroidFileUtil.parse(
                 "seller/success_get_chat_attachments_seller.json",
+                ChatAttachmentResponse::class.java
+        )
+        sellerProductVariantAttachment = AndroidFileUtil.parse(
+                "seller/success_get_chat_attachments_with_product_variant.json",
                 ChatAttachmentResponse::class.java
         )
     }
@@ -152,13 +163,15 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
             productId: String,
             stock: Int,
             status: ProductStatus,
-            productName: String = "Product Testing"
+            productName: String = "Product Testing",
+            variantMap: HashMap<String, UpdateCampaignVariantResult>? = null
     ) {
         val intent = Intent().apply {
             putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_ID, productId)
             putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STOCK, stock)
             putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STATUS, status.name)
             putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME, productName)
+            putExtra(ProductManageCommonConstant.EXTRA_UPDATE_VARIANTS_MAP, variantMap)
         }
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, intent)

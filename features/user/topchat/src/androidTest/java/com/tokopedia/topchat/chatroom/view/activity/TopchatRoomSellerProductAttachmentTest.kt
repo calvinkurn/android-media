@@ -5,6 +5,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseSellerTopchatRoomTest
@@ -381,6 +382,45 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         )
     }
 
-    // TODO: Add test update stock with variant product
+    @Test
+    fun should_update_variant_stock_instead_of_main_stock() {
+        // Given
+        val productName = "Sepatu"
+        val productId = "1261590628"
+        val variantStockResult = 20
+        val variantName = "Biru"
+        val variantResult = UpdateCampaignVariantResult(
+                ProductStatus.ACTIVE, variantStockResult, variantName
+        )
+        val variantMapResult = hashMapOf(
+                productId to variantResult
+        )
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductVariantChatReplies
+        chatAttachmentUseCase.response = sellerProductVariantAttachment
+        createSuccessUpdateStockIntentResult(
+                productId, 55, ProductStatus.ACTIVE, productName, variantMapResult
+        )
+        inflateTestFragment()
+
+        // When
+        clickChangeStockBtn(R.id.recycler_view, 1)
+
+        // Then
+        assertStockCountBtnVisibilityAt(
+                R.id.recycler_view, 1, isDisplayed()
+        )
+        assertStockCountValueAt(
+                R.id.recycler_view, 1, variantStockResult
+        )
+        assertStockCountVisibilityAt(
+                R.id.recycler_view, 1, isDisplayed()
+        )
+        assertSnackbarText(
+                "Stok produk \"$productName - $variantName\" berhasil diubah."
+        )
+    }
+
+    // TODO: Add test update status with variant product
 
 }
