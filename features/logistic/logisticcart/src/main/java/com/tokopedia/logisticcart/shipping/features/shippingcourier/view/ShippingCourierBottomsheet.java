@@ -85,6 +85,7 @@ public class ShippingCourierBottomsheet implements ShippingCourierContract.View,
         if (shippingCourierUiModels != null) {
             bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierUiModels));
         }
+        bundle.putParcelable(ARGUMENT_PRE_ORDER_MODEL, shippingCourierUiModels.get(0).getPreOrderModel());
         bundle.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel);
         bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
     }

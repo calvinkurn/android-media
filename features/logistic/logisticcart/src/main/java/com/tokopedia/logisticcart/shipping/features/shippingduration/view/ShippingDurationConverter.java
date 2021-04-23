@@ -87,7 +87,7 @@ public class ShippingDurationConverter {
             shippingDurationUiModel.setEtaErrorCode(serviceData.getTexts().getErrorCode());
             List<ShippingCourierUiModel> shippingCourierUiModels =
                     convertToShippingCourierViewModel(shippingDurationUiModel,
-                            serviceData.getProducts(), ratesId, blackboxInfo);
+                            serviceData.getProducts(), ratesId, blackboxInfo, convertToPreOrderModel(ratesDetailData.getPreOrder()));
             shippingDurationUiModel.setShippingCourierViewModelList(shippingCourierUiModels);
             if (shippingCourierUiModels.size() > 0) {
                 shippingDurationUiModels.add(shippingDurationUiModel);
@@ -129,11 +129,12 @@ public class ShippingDurationConverter {
     private List<ShippingCourierUiModel> convertToShippingCourierViewModel(ShippingDurationUiModel shippingDurationUiModel,
                                                                            List<ProductData> productDataList,
                                                                            String ratesId,
-                                                                           String blackboxInfo) {
+                                                                           String blackboxInfo,
+                                                                           PreOrderModel preOrderModel) {
         List<ShippingCourierUiModel> shippingCourierUiModels = new ArrayList<>();
         for (ProductData productData : productDataList) {
             addShippingCourierViewModel(shippingDurationUiModel, ratesId,
-                    shippingCourierUiModels, productData, blackboxInfo);
+                    shippingCourierUiModels, productData, blackboxInfo, preOrderModel);
         }
 
         return shippingCourierUiModels;
@@ -142,12 +143,14 @@ public class ShippingDurationConverter {
     private void addShippingCourierViewModel(ShippingDurationUiModel shippingDurationUiModel,
                                              String ratesId,
                                              List<ShippingCourierUiModel> shippingCourierUiModels,
-                                             ProductData productData, String blackboxInfo) {
+                                             ProductData productData, String blackboxInfo,
+                                             PreOrderModel preOrderModel) {
         ShippingCourierUiModel shippingCourierUiModel = new ShippingCourierUiModel();
         shippingCourierUiModel.setProductData(productData);
         shippingCourierUiModel.setBlackboxInfo(blackboxInfo);
         shippingCourierUiModel.setServiceData(shippingDurationUiModel.getServiceData());
         shippingCourierUiModel.setRatesId(ratesId);
+        shippingCourierUiModel.setPreOrderModel(preOrderModel);
         shippingCourierUiModels.add(shippingCourierUiModel);
     }
 
