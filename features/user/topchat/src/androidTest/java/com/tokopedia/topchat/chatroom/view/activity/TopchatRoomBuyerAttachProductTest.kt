@@ -541,6 +541,8 @@ class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
         assertSrwCollapsed()
     }
 
+    // TODO: assert attach product, stock info seller, and tokocabang is not displayed on buyer side
+
     private fun putProductAttachmentIntent(intent: Intent) {
         val productPreviews = listOf(productPreview)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)
