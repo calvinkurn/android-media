@@ -22,5 +22,7 @@
     <string name="recharge_pdp_emoney_product_detail_bottom_sheet_title">Detail Produk</string>
     <string name="recharge_pdp_emoney_product_price_label">Harga</string>
 
+    <string name="recharge_pdp_emoney_error_not_found">Nomor tidak valid</string>
+
     <string name="recharge_pdp_emoney_menu_langganan">Langganan</string>
 </resources>

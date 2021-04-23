@@ -2,6 +2,8 @@ package com.tokopedia.recharge_pdp_emoney.presentation.widget
 
 import android.content.Context
 import android.text.Editable
+import android.text.InputFilter
+import android.text.InputFilter.LengthFilter
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -32,6 +34,7 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
 
         emoneyPdpCardInputNumber.textFieldInput.isClickable = true
         emoneyPdpCardInputNumber.textFieldInput.isFocusable = false
+        emoneyPdpCardInputNumber.textFieldInput.filters = arrayOf<InputFilter>(LengthFilter(16))
         emoneyPdpCardInputNumber.textFieldInput.setOnClickListener { listener?.onClickInputView(getInputString()) }
         emoneyPdpCardInputNumber.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 

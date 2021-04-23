@@ -128,6 +128,14 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             }
         })
 
+        topUpBillsViewModel.favNumberData.observe(viewLifecycleOwner, Observer {
+            if (it is Success) {
+                it.data.favNumberList.firstOrNull()?.let { favNumber ->
+                    renderClientNumber(favNumber)
+                }
+            }
+        })
+
         emoneyPdpViewModel.errorMessage.observe(viewLifecycleOwner, Observer {
             renderErrorMessage(it)
         })
@@ -309,7 +317,9 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun renderClientNumber(item: TopupBillsFavNumberItem) {
-        emoneyPdpInputCardWidget.setNumber(item.clientNumber)
+        var cardNumber = item.clientNumber
+        if (item.clientNumber.length > 16) cardNumber = item.clientNumber.substring(0, 16)
+        emoneyPdpInputCardWidget.setNumber(cardNumber)
     }
 
     private fun renderErrorMessage(message: String) {
@@ -339,7 +349,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     override fun onInputNumberChanged(inputNumber: String) {
         // call be to get operator name
-        emoneyPdpViewModel.getSelectedOperator(inputNumber)
+        emoneyPdpViewModel.getSelectedOperator(inputNumber, getString(R.string.recharge_pdp_emoney_error_not_found))
     }
 
     private fun showFavoriteNumbersPage(favoriteNumbers: List<TopupBillsFavNumberItem>) {

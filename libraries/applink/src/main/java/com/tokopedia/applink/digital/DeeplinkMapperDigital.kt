@@ -40,7 +40,12 @@ object DeeplinkMapperDigital {
         val uri = Uri.parse(deeplink)
         return when {
             deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) -> {
-                if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) getDigitalTemplateNavigation(context, deeplink)
+                if (!uri.getQueryParameter("category_id").isNullOrEmpty() && uri.getQueryParameter("category_id") == "34") {
+                    val remoteConfig = FirebaseRemoteConfigImpl(context)
+                    val getNewEmoneyPage = remoteConfig.getBoolean(REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY, true)
+                    if (getNewEmoneyPage) ApplinkConsInternalDigital.ELECTRONIC_MONEY else
+                        deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
+                } else if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) getDigitalTemplateNavigation(context, deeplink)
                 else if (!uri.getQueryParameter(IS_FROM_WIDGET_PARAM).isNullOrEmpty()) getDigitalCheckoutNavigation(context, deeplink)
                 else deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
             }

@@ -58,7 +58,8 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
                     .operatorId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_OPERATOR_ID))
                     .productId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_PRODUCT_ID))
                     .clientNumber(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_CLIENT_NUMBER))
-                    .menuId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_MENU_ID))
+                    .menuId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_MENU_ID)
+                            ?: DEFAULT_EMONEY_MENU_ID)
                     .isFromWidget(isFromWidget)
                     .isCouponApplied(isCouponApplied)
                     .build()
@@ -150,6 +151,7 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
 
         const val TAG_EMONEY_MENU = "menu_emoney"
         const val PATH_SUBSCRIPTIONS = "subscribe/"
+        const val DEFAULT_EMONEY_MENU_ID = "267"
 
         private val KEY_IS_COUPON_APPLIED_APPLINK = "is_coupon_applied"
         private val EXTRA_RECHARGE_SLICE = "RECHARGE_PRODUCT_EXTRA"

@@ -84,7 +84,7 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         )
     }
 
-    fun getSelectedOperator(inputNumber: String) {
+    fun getSelectedOperator(inputNumber: String, errorNotFoundString: String) {
         try {
             if (catalogPrefixSelect.value is Success) {
                 val operatorSelected = (catalogPrefixSelect.value as Success).data.rechargeCatalogPrefixSelect.prefixes.single {
@@ -95,8 +95,7 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 setErrorMessage(MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT))
             }
         } catch (e: Throwable) {
-//            _errorMessage.postValue()
-            _selectedOperator.value = RechargePrefix(key = "578")
+            setErrorMessage(Throwable(errorNotFoundString))
         }
     }
 
