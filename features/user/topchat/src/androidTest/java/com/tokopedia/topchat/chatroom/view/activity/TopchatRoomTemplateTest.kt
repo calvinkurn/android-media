@@ -51,7 +51,7 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
     }
 
     @Test
-    fun template_chat_send_button_enabled() {
+    fun should_enabled_send_msg_btn_after_choosing_template() {
         // Given
         val templateChats = listOf(
                 "Hi barang ini ready gk?", "Lorem Ipsum"
@@ -73,7 +73,7 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
     }
 
     @Test
-    fun template_chat_send() {
+    fun should_able_to_send_msg_after_choosing_template() {
         // Given
         val templateChats = listOf(
                 "Test"

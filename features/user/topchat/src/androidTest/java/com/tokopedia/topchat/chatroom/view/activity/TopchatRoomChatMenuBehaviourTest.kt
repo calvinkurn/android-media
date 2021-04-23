@@ -257,7 +257,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     }
 
     @Test
-    fun test_msg_sent_successfully() {
+    fun should_able_to_send_msg_after_typing_msg() {
         //Given
         setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsSeller
@@ -283,7 +283,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     }
 
     @Test
-    fun test_msg_sent_error_empty_text() {
+    fun should_not_be_able_to_send_msg_when_msg_is_empty() {
         //Given
         setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsSeller
