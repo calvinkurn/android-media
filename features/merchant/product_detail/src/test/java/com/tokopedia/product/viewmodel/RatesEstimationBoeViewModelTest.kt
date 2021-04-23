@@ -22,7 +22,7 @@ import org.junit.Test
 /**
  * Created by Yehezkiel on 03/03/21
  */
-class RatesEstimateBoeViewModelTest : BaseProductViewModelTest() {
+class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
 
     @RelaxedMockK
     private lateinit var ratesUseCase: GetRatesEstimateUseCase
