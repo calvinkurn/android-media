@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
@@ -962,19 +963,14 @@ class NewShopPageFragment :
                 setHasOptionsMenu(true)
 
                 // set back button color
-                val bitmap = BitmapFactory.decodeResource(resources, com.tokopedia.iconunify.R.drawable.iconunify_arrow_back)
-                if (bitmap != null) {
-                    val bitmapResized = Bitmap.createScaledBitmap(bitmap, 24, 24, false)
-                    val backButtonDrawable = BitmapDrawable(resources, bitmapResized)
-
-                    val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        backButtonDrawable.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
-                    }else{
-                        backButtonDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
-                    }
-                    supportActionBar?.setHomeAsUpIndicator(backButtonDrawable);
+                val drawable = scaledDrawableResources(com.tokopedia.iconunify.R.drawable.iconunify_arrow_back)
+                val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    drawable.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+                }else{
+                    drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
                 }
+                supportActionBar?.setHomeAsUpIndicator(drawable)
             }
         }
         if (isMyShop) {
@@ -982,6 +978,12 @@ class NewShopPageFragment :
         } else {
             displayToolbarBuyer()
         }
+    }
+
+    private fun scaledDrawableResources(id: Int): Drawable {
+        val bmp = BitmapFactory.decodeResource(resources, id)
+        val bmpScaled = Bitmap.createScaledBitmap(bmp, 24, 24, false)
+        return BitmapDrawable(resources, bmpScaled)
     }
 
     private fun displayToolbarSeller() {
