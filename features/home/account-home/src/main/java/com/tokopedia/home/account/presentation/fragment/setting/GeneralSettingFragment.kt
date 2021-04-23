@@ -475,7 +475,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         accessDialog.setBodyText(dialogBodyMsg)
         accessDialog.setPositiveButton(dialogPositiveButton)
         accessDialog.setNegativeButton(dialogNegativeButton)
-        accessDialog.show(activity!!.supportFragmentManager, AccessRequestDialogFragment.TAG)
+        accessDialog.show(requireActivity().supportFragmentManager, AccessRequestDialogFragment.TAG)
     }
 
     override fun refreshSafeSearchOption() {
@@ -502,7 +502,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     override fun onErrorSendNotif(throwable: Throwable) {
         if (view != null) {
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
-            Toaster.showError(view!!, errorMessage, Snackbar.LENGTH_LONG)
+            Toaster.showError(requireView(), errorMessage, Snackbar.LENGTH_LONG)
         }
     }
 
