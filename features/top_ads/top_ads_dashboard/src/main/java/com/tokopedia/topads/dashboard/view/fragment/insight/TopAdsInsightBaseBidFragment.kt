@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
@@ -26,6 +27,7 @@ import com.tokopedia.topads.dashboard.view.adapter.insight.TopadsDailyBudgetReco
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment.Companion.BUDGET_RECOM
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 import kotlinx.android.synthetic.main.topads_dash_recon_daily_budget_list.*
 import javax.inject.Inject
@@ -35,6 +37,9 @@ import javax.inject.Inject
  * Created by Pika on 20/7/20.
  */
 
+const val VIEW_DAILY_RECOMMENDATION_PRODUKS = "view - rekomendasi anggaran - grup iklan"
+const val CLICK_TERAPKAN = "click - terapkan"
+const val EVENT_LABEL_TERAPKAN = "rekomendasi anggaran - potensi klik - atur anggaran"
 class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
     private var dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendation? = null
@@ -42,6 +47,12 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
     private var currentPosition = 0
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private var groupIds = mutableListOf<String>()
+    private var groupNames = mutableListOf<String>()
 
 
     companion object {
@@ -108,6 +119,14 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
     private fun onSuccessDailyBudgetRecom(dailyBudgetRecommendationModel: DailyBudgetRecommendationModel) {
         swipeRefreshLayout.isRefreshing = false
         setAdapterData(dailyBudgetRecommendationModel.topadsGetDailyBudgetRecommendation)
+        groupIds?.clear()
+        groupNames?.clear()
+
+        dailyBudgetRecommendationModel.topadsGetDailyBudgetRecommendation.data.forEach {
+            groupIds?.add(it.groupId)
+            groupNames?.add(it.groupName)
+        }
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightDailyProductEcommerceViewEvent(VIEW_DAILY_RECOMMENDATION_PRODUKS, "", groupIds, groupNames, userSession.userId)
     }
 
     private fun setAdapterData(topadsGetDailyBudgetRecommendation: TopadsGetDailyBudgetRecommendation) {
@@ -147,6 +166,8 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
     private fun onButtonClick(pos: Int) {
         currentPosition = pos
         topAdsDashboardPresenter.getGroupInfo(resources, adapter.items[pos].groupId.toString(), ::onSuccessGroupInfo)
+        val eventLabel = "${adapter.items[pos].groupId} - $EVENT_LABEL_TERAPKAN"
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_TERAPKAN, eventLabel, userSession.userId)
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {

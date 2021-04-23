@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.fragment.insight
 
 import android.os.Bundle
 import android.text.Html
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.INPUT
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_ADD_OPTION
@@ -38,6 +40,7 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 import kotlinx.android.synthetic.main.topads_dash_recom_product_list.*
 import java.util.*
@@ -49,6 +52,9 @@ import kotlin.collections.set
  * Created by Pika on 20/7/20.
  */
 
+const val CLICK_GRUP_AKTIF_IKLANKAN = "click - iklankan - grup iklan aktif"
+const val BUAT_GRUP_IKLANKAN = "click - iklankan - buat grup iklan"
+const val EVENT_LABEL_IKLANKAN = "jumlah pencarian - potensi tampil - rekomendasi biaya - biaya iklan"
 class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: TopadsProductRecomAdapter
@@ -58,6 +64,10 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     var rvRecomProduct: RecyclerView? = null
 
     private val sheet: TopAdsRecomGroupBottomSheet by lazy {
@@ -200,14 +210,18 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGroupList(list: List<GroupListDataItem>) {
+        val selectedProductIds = TextUtils.join("," ,adapter.getSelectedIds())
+        val eventLabel = "$selectedProductIds - $EVENT_LABEL_IKLANKAN"
         sheet.show(childFragmentManager, list)
         sheet.onNewGroup = { groupName ->
             currentGroupName = groupName
             getBidInfo()
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_GRUP_AKTIF_IKLANKAN, eventLabel, userSession.userId)
         }
         sheet.onItemClick = { groupId ->
             getBidInfo()
             currentGroupId = groupId
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(BUAT_GRUP_IKLANKAN, eventLabel, userSession.userId)
         }
 
     }

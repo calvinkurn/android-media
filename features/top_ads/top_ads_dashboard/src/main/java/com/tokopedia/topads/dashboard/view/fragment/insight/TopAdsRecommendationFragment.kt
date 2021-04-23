@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
@@ -24,15 +25,21 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_fragment_recommendation_layout.*
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * Created by Pika on 9/7/20.
  */
 
+const val CLICK_PRODUK_BERPOTENSI = "click - produk berpotensi"
+const val CLICK_ANGARRAN_HARIAN = "click - anggaran harian"
+const val VIEW_RECOMMENDED_PRODUK = "view - rekomendasi produk"
+const val CLICK_IKLANKAN = "click - iklankan"
 class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     private var productRecommendData: ProductRecommendationData? = null
@@ -42,6 +49,8 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private var countProduct = 0
     private var countBid = 0
     private var index = 0
+    var productids = mutableListOf<String>()
+    var productnames = mutableListOf<String>()
 
     companion object {
         const val HEIGHT = "addp_bar_height"
@@ -59,6 +68,9 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
 
     private val topAdsInsightTabAdapter: TopAdsInsightTabAdapter? by lazy {
@@ -101,6 +113,13 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         productRecommendData = productRecommendationModel.topadsGetProductRecommendation.data
         countProduct = productRecommendData?.products?.size ?: 0
         checkAllData()
+        productids?.clear()
+        productnames?.clear()
+        productRecommendationModel.topadsGetProductRecommendation?.data?.products?.forEach {
+            productids?.add(it.productId)
+            productnames?.add(it.productName)
+        }
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightProductEcommerceViewEvent(VIEW_RECOMMENDED_PRODUK, "", productids, productnames, userSession.userId)
     }
 
     private fun checkAllData() {
@@ -130,6 +149,11 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         rvTabInsight.layoutManager = tabLayoutManager
         topAdsInsightTabAdapter?.setListener(object : TopAdsInsightTabAdapter.OnRecyclerTabItemClick {
             override fun onTabItemClick(position: Int) {
+                if(position == 0) {
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_PRODUK_BERPOTENSI, "", userSession.userId)
+                } else if(position == 1){
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_ANGARRAN_HARIAN, "", userSession.userId)
+                }
                 view_pager.currentItem = position
                 if (position == 0 && topAdsInsightTabAdapter?.getTab()?.get(position)?.contains(PRODUK) == true && countProduct != 0) {
                     (activity as TopAdsDashboardActivity?)?.hideButton(false)
@@ -247,6 +271,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
             for (frag in fragments) {
                 when (frag.fragment) {
                     is TopAdsInsightBaseProductFragment -> {
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_IKLANKAN, "", userSession.userId)
                         (frag.fragment as TopAdsInsightBaseProductFragment).openBottomSheet()
                     }
                 }
