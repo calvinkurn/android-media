@@ -335,7 +335,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         orderProductCard?.initView()
                         showMessage(it.data)
                         if (it.data.preference.address.addressId > 0 &&
-                                it.data.preference.shipment.serviceId > 0 &&
                                 it.data.preference.payment.gatewayCode.isNotEmpty()) {
                             showPreferenceCard()
                             newOrderPreferenceCard.setPreference(it.data, viewModel.revampData)
@@ -357,7 +356,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             orderProductCard?.initView()
                             showMessage(it.data)
                             if (it.data.preference.address.addressId > 0 &&
-                                    it.data.preference.shipment.serviceId > 0 &&
                                     it.data.preference.payment.gatewayCode.isNotEmpty()) {
                                 showPreferenceCard()
                                 newOrderPreferenceCard.setPreference(it.data, viewModel.revampData)

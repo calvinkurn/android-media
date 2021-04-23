@@ -83,6 +83,11 @@ class OrderSummaryPageRobot {
         CourierBottomSheetRobot().apply(func)
     }
 
+    fun clickShipmentErrorAction(func: DurationBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.tv_new_shipping_error_message)).perform(scrollTo()).perform(click())
+        DurationBottomSheetRobot().apply(func)
+    }
+
     fun clickInsurance() {
         onView(withId(R.id.cb_insurance)).perform(scrollTo()).perform(click())
     }
@@ -315,6 +320,10 @@ class OrderSummaryPageRobot {
                 assertEquals(View.GONE, view.visibility)
             }
         }
+    }
+
+    fun assertShipmentError(errorMessage: String) {
+        onView(withId(R.id.tv_new_shipping_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(errorMessage)))
     }
 
     fun assertInsurance(isChecked: Boolean) {

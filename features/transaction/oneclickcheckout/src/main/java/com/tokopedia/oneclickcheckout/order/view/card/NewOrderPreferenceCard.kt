@@ -134,7 +134,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private fun showShipping() {
         val shipping = shipment
 
-        if (shipping == null || shipping.serviceName.isNullOrEmpty()) {
+        if (shipping?.serviceName == null) {
             tvShippingDuration?.gone()
             tvShippingDurationEta?.gone()
             btnChangeDuration?.gone()

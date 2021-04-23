@@ -79,9 +79,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `Get Occ Cart Success With No Preference`() {
+    fun `Get Occ Cart Success With No Address`() {
         // Given
-        val response = OrderData()
+        val response = OrderData(errorCode = AddressState.ERROR_CODE_OPEN_ANA)
         every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
 
@@ -91,7 +91,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Then
         assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", isValid = true)), orderSummaryPageViewModel.orderPreference.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
-        verify(exactly = 1) {
+        verify(inverse = true) {
             orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
         }
         verify(inverse = true) { ratesUseCase.execute(any()) }
@@ -100,9 +100,10 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Get Occ Cart Success Twice Should Trigger Analytics Once`() {
         // Given
-        val response = OrderData()
         every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
-        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns helper.orderData
+        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
         orderSummaryPageViewModel.getOccCart(true, "")
@@ -415,6 +416,24 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
+    }
+
+    @Test
+    fun `Update Cart Invalid Shipment`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(address = OrderProfileAddress(addressId = 1)), isValid = true)
+
+        // When
+        orderSummaryPageViewModel.updateCart()
+
+        // Then
+        coVerify {
+            updateCartOccUseCase.executeSuspend(withArg {
+                assertEquals(UpdateCartOccRequest(arrayListOf(UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = "1", spId = 0, shippingId = 0)),
+                        UpdateCartOccProfileRequest(profileId = "0", serviceId = 0, addressId = "1"), skipShippingValidation = true), it)
+            })
+        }
     }
 
     @Test
