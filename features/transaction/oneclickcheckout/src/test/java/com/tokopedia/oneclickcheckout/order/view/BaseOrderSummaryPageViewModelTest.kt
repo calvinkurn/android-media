@@ -3,10 +3,8 @@ package com.tokopedia.oneclickcheckout.order.view
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
@@ -29,9 +27,6 @@ open class BaseOrderSummaryPageViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-//    @get:Rule
-//    val coroutineTestRule = CoroutineTestRule()
-
     @MockK
     lateinit var addToCartOccExternalUseCase: Lazy<AddToCartOccExternalUseCase>
 
@@ -40,12 +35,6 @@ open class BaseOrderSummaryPageViewModelTest {
 
     @MockK(relaxed = true)
     lateinit var ratesUseCase: GetRatesUseCase
-
-    @MockK
-    lateinit var getPreferenceListUseCase: Lazy<GetPreferenceListUseCase>
-
-    @MockK
-    lateinit var getAddressCornerUseCase: Lazy<GetAddressCornerUseCase>
 
     @MockK(relaxed = true)
     lateinit var updateCartOccUseCase: UpdateCartOccUseCase
