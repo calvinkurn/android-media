@@ -2,10 +2,7 @@ package com.tokopedia.product.detail.usecase
 
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.*
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
@@ -106,8 +103,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
                         .isWishlisted == true
             } else {
                 p2Login.isWishlisted = true
-                val error: List<GraphqlError>? = gqlResponse.getError(ProductShopFollowResponse::class.java)
-                errorLogListener?.invoke(MessageErrorException(error?.mapNotNull { it.message }?.joinToString(separator = ", ")))
+                logError(gqlResponse, WishlistStatus::class.java)
             }
 
             if (gqlResponse.getError(TopAdsPdpAffiliateResponse::class.java)?.isNotEmpty() != true) {
@@ -135,8 +131,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
                             ?: 0
                 }
             } else {
-                val error: List<GraphqlError>? = gqlResponse.getError(ProductShopFollowResponse::class.java)
-                errorLogListener?.invoke(MessageErrorException(error?.mapNotNull { it.message }?.joinToString(separator = ", ")))
+                logError(gqlResponse, ProductShopFollowResponse::class.java)
             }
         } catch (t: Throwable) {
             errorLogListener?.invoke(t)
@@ -148,5 +143,10 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
 
     fun setErrorLogListener(setErrorLogListener: OnErrorLog) {
         this.errorLogListener = setErrorLogListener
+    }
+
+    private fun logError(gqlResponse: GraphqlResponse, className: Class<*>) {
+        val error: List<GraphqlError>? = gqlResponse.getError(className)
+        errorLogListener?.invoke(MessageErrorException(error?.mapNotNull { it.message }?.joinToString(separator = ", ")))
     }
 }
