@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
@@ -56,6 +57,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.PostFilterBo
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.EmptyState
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -150,6 +152,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
 
     private var ketupatLottie: KetupatLottieView? = null
+    private var emptyState: EmptyStateUnify? = null
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
     override val coroutineContext: CoroutineContext
@@ -270,6 +273,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             loadAnimationFromUrl()
             setListener(this@SellerHomeFragment)
         }
+        emptyState = findViewById(R.id.empty_state_seller_home)
 
         val sellerHomeLayoutManager = SellerHomeLayoutManager(context, 2).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -772,6 +776,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         setProgressBarVisibility(false)
 
         logToCrashlytics(throwable, ERROR_LAYOUT)
+    }
+
+    private fun showErrorViewByException(throwable: Throwable) = view?.run {
+
     }
 
     private fun showErrorToaster() = view?.run {
