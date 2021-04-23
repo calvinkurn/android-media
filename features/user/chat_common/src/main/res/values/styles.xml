@@ -1,28 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="AttachProductToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="AttachProductToolbarTitle.SansSerif">
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textColor">@color/black_70</item>
-    </style>
-
-    <style name="AttachProductToolbarSubTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="AttachProductToolbarSubTitle.SansSerif" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
-        <item name="android:textSize">12sp</item>
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textColor">@color/black_38</item>
-    </style>
-
     <style name="ChatBotProvideRatingActivityTheme" parent="Theme.White">
-        <item name="colorAccent">@color/green_600</item>
+        <item name="colorAccent">@color/Unify_G600</item>
     </style>
 </resources>

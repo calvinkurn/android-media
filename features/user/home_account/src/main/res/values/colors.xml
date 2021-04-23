@@ -4,10 +4,10 @@
     <color name="home_account_toolbar_navigation_grey_color">@color/Unify_N700</color>
     <color name="home_account_separator_color">@color/Unify_N50</color>
 
-    <color name="vertical_divider_light">#E4EAF3</color>
-    <color name="vertical_divider_dark">#6C727C</color>
+    <color name="vertical_divider_light">@color/light_B100</color>
+    <color name="vertical_divider_dark">@color/dark_N200</color>
 
-    <color name="home_account_icon_dark">#C7CBD2</color>
+    <color name="home_account_icon_dark">@color/dark_N500</color>
   
     <color name="icon_bg_shadow_1">#1031353B</color>
     <color name="icon_bg_shadow_2">#1531353B</color>
