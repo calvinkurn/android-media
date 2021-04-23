@@ -1,7 +1,6 @@
 package com.tokopedia.entertainment.pdp.adapter.viewholder
 
 import android.text.Html
-import android.text.SpannableStringBuilder
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,14 +29,13 @@ class PackageParentViewHolder(
     lateinit var eventPDPTracking: EventPDPTracking
     private var ticketItemGrouplist: MutableList<PackageV3> = mutableListOf()
 
-
     override fun bind(element: EventPDPTicketGroup?) {
         itemView.accordionEventPDPTicket.run {
             accordionData.clear()
             removeAllViews()
             onItemClick = { position, isExpanded ->
                 if (isExpanded) {
-                    val rvTicketItem = itemView.accordionEventPDPTicket.getChildAt(position).findViewById<RecyclerView>(rvId)
+                    val rvTicketItem = itemView.accordionEventPDPTicket.getChildAt(position).findViewById<RecyclerView>(R.id.rv_accordion_expandable)
                     for (i in 0 until rvTicketItem.childCount) {
                         val vh = rvTicketItem.findViewHolderForAdapterPosition(i)
                                 as EventPDPTicketItemPackageAdapter.EventPDPTicketItemPackageViewHolder
@@ -61,19 +59,15 @@ class PackageParentViewHolder(
             : AccordionDataUnify {
         val salesPrice = getRupiahAllowZeroFormat(value.salesPrice.toLong())
         val eventPDPTicketAdapter = EventPDPTicketItemPackageAdapter(onBindItemTicketListener, onCoachmarkListener)
-        val rvEventChildTicket = RecyclerView(view.context)
-        rvEventChildTicket.layoutParams = RecyclerView.LayoutParams(
-                RecyclerView.LayoutParams.MATCH_PARENT,
-                RecyclerView.LayoutParams.WRAP_CONTENT
-        )
-        rvEventChildTicket.id = rvId
-        rvEventChildTicket.apply {
+        val expandableLayout = View.inflate(itemView.context, R.layout.ent_ticket_rv_expandable_item, null)
+        expandableLayout.findViewById<RecyclerView>(R.id.rv_accordion_expandable).apply {
             adapter = eventPDPTicketAdapter
             layoutManager = LinearLayoutManager(
                     context,
                     RecyclerView.VERTICAL, false
             )
         }
+
         eventPDPTicketAdapter.setList(value.packageItems, value.id, value.name, isRecommendation)
         if (!isRecommendation) {
             eventPDPTicketAdapter.eventPDPTracking = eventPDPTracking
@@ -89,7 +83,7 @@ class PackageParentViewHolder(
         return AccordionDataUnify(
                 title = value.name,
                 subtitle = subtitle,
-                expandableView = rvEventChildTicket
+                expandableView = expandableLayout
         )
     }
 
@@ -112,7 +106,5 @@ class PackageParentViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_event_pdp_parent_ticket
-        val rvId = View.generateViewId()
-
     }
 }

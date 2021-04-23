@@ -62,11 +62,9 @@ import com.tokopedia.entertainment.pdp.viewmodel.EventPDPTicketViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.ent_ticket_adapter_item.view.*
 import kotlinx.android.synthetic.main.ent_ticket_listing_activity.*
 import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.*
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.*
-import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.view.*
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket_banner.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
 import java.util.*
@@ -463,7 +461,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         val accordion = rvEventTicketList.findViewHolderForAdapterPosition(0)?.itemView
                 ?.findViewById<AccordionUnify>(R.id.accordionEventPDPTicket)
         return accordion?.getChildAt(0)
-                ?.findViewById<RecyclerView>(PackageParentViewHolder.rvId)
+                ?.findViewById<RecyclerView>(R.id.rv_accordion_expandable)
                 ?.findViewHolderForLayoutPosition(0)?.itemView
                 ?.findViewById<Typography>(id)
     }
