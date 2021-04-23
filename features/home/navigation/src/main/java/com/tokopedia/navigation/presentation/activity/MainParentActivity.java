@@ -229,6 +229,8 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        validateNavigationRollence();
+
         //changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
@@ -265,7 +267,7 @@ public class MainParentActivity extends BaseActivity implements
     private void initInboxAbTest() {
         useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
                 AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-        ).equals(AbTestPlatform.VARIANT_NEW_INBOX) && isRollanceTestingUsingNavigationRevamp();
+        ).equals(AbTestPlatform.VARIANT_NEW_INBOX) && isNewNavigation;
     }
 
     private void installDFonBackground() {
@@ -612,7 +614,6 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        validateNavigationRollence();
         // if user is downloading the update (in app update feature),
         // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
@@ -1151,7 +1152,7 @@ public class MainParentActivity extends BaseActivity implements
         int position = getPositionFragmentByMenu(index);
         this.currentSelectedFragmentPosition = position;
         if (!isFirstNavigationImpression) {
-            if (isRollanceTestingUsingNavigationRevamp()) {
+            if (isNewNavigation) {
                 String pageName = "";
                 if (menu.get(index).getTitle().equals(getResources().getString(R.string.home))) {
                     pageName = "/";
@@ -1203,7 +1204,7 @@ public class MainParentActivity extends BaseActivity implements
         menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f));
         menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f));
         menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, com.tokopedia.unifyprinciples.R.color.Unify_P500, true, 1f, 3f));
-        if (!isRollanceTestingUsingNavigationRevamp()) {
+        if (!isNewNavigation) {
             menu.add(new BottomMenu(R.id.menu_cart, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled, R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f));
             if (userSession.get().isLoggedIn()) {
                 menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun), R.raw.bottom_nav_account, R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f));
@@ -1211,29 +1212,16 @@ public class MainParentActivity extends BaseActivity implements
                 menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun_non_login), null, null, R.drawable.ic_bottom_nav_nonlogin_enabled, null, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f));
             }
         }
-        bottomNavigation.setMenu(menu, isRollanceTestingUsingNavigationRevamp());
+        bottomNavigation.setMenu(menu, isNewNavigation);
         handleAppLinkBottomNavigation();
     }
 
-    private boolean isRollanceTestingUsingNavigationRevamp() {
+    private void validateNavigationRollence() {
         try {
             String rollanceNavType = RemoteConfigInstance.getInstance().getABTestPlatform().getString(ROLLANCE_EXP_NAME, ROLLANCE_VARIANT_OLD);
-            return rollanceNavType.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP);
+            this.isNewNavigation = rollanceNavType.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP);
         } catch (Exception e) {
-            return false;
+            this.isNewNavigation = false;
         }
-    }
-
-    private void validateNavigationRollence() {
-        String rollanceNavType = RemoteConfigInstance.getInstance().getABTestPlatform().getString(ROLLANCE_EXP_NAME, ROLLANCE_VARIANT_OLD);
-        boolean isNavRevamp = rollanceNavType.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP);
-        if (this.isNewNavigation != isNavRevamp) {
-            updateNavigationComponent();
-            this.isNewNavigation = isNavRevamp;
-        }
-    }
-
-    private void updateNavigationComponent() {
-        populateBottomNavigationView();
     }
 }
