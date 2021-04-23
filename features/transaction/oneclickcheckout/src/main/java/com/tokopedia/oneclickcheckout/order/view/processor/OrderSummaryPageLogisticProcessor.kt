@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.google.gson.JsonParser
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
@@ -14,7 +15,6 @@ import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -309,7 +309,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             }
         }
         if (selectedShippingDurationUiModel == null || selectedShippingCourierUiModel == null) {
-            // Recommendation Courier not available, should not happen
+            // Recommendation Courier not available
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE)
             return Triple(
                     OrderShipment(serviceName = profileShipment.serviceName, serviceDuration = profileShipment.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData),

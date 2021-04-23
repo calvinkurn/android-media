@@ -11,6 +11,7 @@ import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
@@ -293,6 +294,16 @@ class FlightHomepageViewModel @Inject constructor(
 
     private fun cloneViewModel(currentHomepageData: FlightHomepageModel): FlightHomepageModel =
             currentHomepageData.clone() as FlightHomepageModel
+
+    fun sendTrackingVideoBannerImpression(travelVideoBannerModel: TravelVideoBannerModel){
+        flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel, FlightAnalytics.Screen.HOMEPAGE,
+                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
+    }
+
+    fun sendTrackingVideoBannerClick(travelVideoBannerModel: TravelVideoBannerModel){
+        flightAnalytics.eventVideoBannerClick(travelVideoBannerModel, FlightAnalytics.Screen.HOMEPAGE,
+                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
+    }
 
     companion object {
         private const val MAX_YEAR_FOR_FLIGHT = 1

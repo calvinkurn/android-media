@@ -9,7 +9,9 @@ data class UpdateCartOccRequest(
         @SerializedName("profile")
         val profile: UpdateCartOccProfileRequest = UpdateCartOccProfileRequest(),
         @SerializedName("chosen_address")
-        var chosenAddress: ChosenAddress? = null
+        var chosenAddress: ChosenAddress? = null,
+        @SerializedName("skip_shipping_validation")
+        val skipShippingValidation: Boolean = false
 )
 
 data class UpdateCartOccCartRequest(

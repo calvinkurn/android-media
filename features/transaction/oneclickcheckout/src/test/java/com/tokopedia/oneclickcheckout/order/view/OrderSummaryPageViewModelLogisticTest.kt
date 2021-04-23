@@ -57,7 +57,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Reload Rates On Invalid Preference`() {
         // Given
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.LOADING)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
@@ -71,10 +71,10 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
-    fun `Reload Rates On Invalid Shipment`() {
+    fun `Reload Rates On Invalid Address`() {
         // Given
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.LOADING)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(shipment = OrderProfileShipment()), isValid = true)
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(address = OrderProfileAddress()), isValid = true)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
 
@@ -287,6 +287,28 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         logisticPromoTickerMessage = "Tersedia bbo",
                         logisticPromoViewModel = helper.logisticPromo,
                         insuranceData = helper.firstCourierSecondDuration.productData.insurance),
+                orderSummaryPageViewModel.orderShipment.value)
+    }
+
+    @Test
+    fun `Get Rates Duration Not Match Revamp With No Recommendation`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(shipment = OrderProfileShipment()), isValid = true)
+        orderSummaryPageViewModel.revampData = OccRevampData(true)
+
+        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+
+        // When
+        orderSummaryPageViewModel.getRates()
+
+        // Then
+        assertEquals(
+                OrderShipment(
+                        serviceName = "",
+                        serviceDuration = "",
+                        serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE,
+                        shippingRecommendationData = helper.shippingRecommendationData,
+                        logisticPromoViewModel = helper.logisticPromo),
                 orderSummaryPageViewModel.orderShipment.value)
     }
 

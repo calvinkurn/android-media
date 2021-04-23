@@ -130,12 +130,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             result.globalEvent?.also {
                 globalEvent.value = it
             }
-            if (orderProduct.productId > 0 && _orderPreference.preference.shipment.serviceId > 0 && _orderPreference.preference.address.addressId > 0) {
+            if (orderProduct.productId > 0 && _orderPreference.preference.address.addressId > 0) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 getRatesSuspend()
             } else if (result.throwable == null && !isInvalidAddressState(result.orderPreference.preference, result.addressState)) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
-                sendViewOspEe()
             }
         }
     }
@@ -158,7 +157,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             delay(DEBOUNCE_TIME)
             if (isActive) {
                 updateCart()
-                if (_orderPreference.isValid && _orderPreference.preference.shipment.serviceId > 0) {
+                if (_orderPreference.isValid && _orderPreference.preference.address.addressId > 0) {
                     getRates()
                 }
             }
@@ -166,7 +165,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun reloadRates() {
-        if (_orderPreference.isValid && _orderPreference.preference.shipment.serviceId > 0 && orderTotal.value.buttonState != OccButtonState.LOADING) {
+        if (_orderPreference.isValid && _orderPreference.preference.address.addressId > 0 && orderTotal.value.buttonState != OccButtonState.LOADING) {
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             debounceJob?.cancel()
             updateCart()
@@ -377,7 +376,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
             param = param.copy(profile = param.profile.copy(
                     addressId = addressModel.id
-            ))
+            ), skipShippingValidation = shouldSkipShippingValidationWhenUpdateCart())
             val chosenAddress = ChosenAddress(
                     addressId = addressModel.id,
                     districtId = addressModel.destinationDistrictId,
@@ -413,6 +412,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun generateUpdateCartParam(): UpdateCartOccRequest? {
         return cartProcessor.generateUpdateCartParam(orderCart, _orderPreference, _orderShipment, _orderPayment)
+    }
+
+    private fun shouldSkipShippingValidationWhenUpdateCart(): Boolean {
+        return cartProcessor.shouldSkipShippingValidationWhenUpdateCart(_orderShipment)
     }
 
     fun updatePreference(preference: ProfilesItemModel) {
@@ -633,7 +636,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     throw Exception()
                 }
                 expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedInstallmentTerm.term.toString())
-                param = param.copy(profile = param.profile.copy(metadata = metadata.toString()))
+                param = param.copy(profile = param.profile.copy(metadata = metadata.toString()),
+                        skipShippingValidation = shouldSkipShippingValidationWhenUpdateCart())
             } catch (e: Exception) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
@@ -667,7 +671,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
             }
-            param = param.copy(profile = param.profile.copy(gatewayCode = gatewayCode, metadata = metadata))
+            param = param.copy(profile = param.profile.copy(gatewayCode = gatewayCode, metadata = metadata),
+                    skipShippingValidation = shouldSkipShippingValidationWhenUpdateCart())
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
@@ -760,7 +765,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val onboarding = _orderPreference.onboarding
         if (onboarding.isForceShowCoachMark) {
             val preference = _orderPreference.preference
-            if (preference.shipment.serviceId > 0 && _orderShipment.isValid()) {
+            if (preference.address.addressId > 0 && _orderShipment.isValid()) {
                 forceShowOnboarding(onboarding)
             }
         }
