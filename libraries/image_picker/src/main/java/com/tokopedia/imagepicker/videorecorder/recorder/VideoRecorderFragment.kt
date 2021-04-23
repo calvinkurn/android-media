@@ -19,8 +19,12 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.R
 import com.tokopedia.imagepicker.common.listener.VideoPickerCallback
 import com.tokopedia.imagepicker.common.state.StateRecorder
+import com.tokopedia.imagepicker.videorecorder.DURATION_MAX
+import com.tokopedia.imagepicker.videorecorder.RESULT_DIR
+import com.tokopedia.imagepicker.videorecorder.VIDEO_EXT
 import com.tokopedia.imagepicker.videorecorder.utils.*
 import com.tokopedia.utils.file.FileUtil
+import com.tokopedia.utils.file.FileUtil.generateUniqueFileName
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import kotlinx.android.synthetic.main.fragment_recorder.*
 import java.util.*
@@ -30,12 +34,10 @@ import java.util.concurrent.TimeUnit
  * Created by isfaaghyth on 04/03/19.
  * github: @isfaaghyth
  */
-class VideoRecorderFragment: TkpdBaseV4Fragment() {
+class VideoRecorderFragment : TkpdBaseV4Fragment() {
 
     companion object {
-        const val RESULT_DIR = "video/"
         const val SAVED_FLASH_INDEX = "saved_flash_index"
-        const val DURATION_MAX = 60000 //1 minute
     }
 
     //flash collection
@@ -156,7 +158,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
             progress.show()
             btnFlip.hide()
             btnFlash.hide()
-            val file = FileUtil.getTokopediaInternalDirectory(RESULT_DIR)
+            val file = FileUtil.getTokopediaInternalDirectory(RESULT_DIR + generateUniqueFileName() + VIDEO_EXT, true)
             cameraView.takeVideo(file, DURATION_MAX)
             //progress and duration countdown
             timer = Timer()

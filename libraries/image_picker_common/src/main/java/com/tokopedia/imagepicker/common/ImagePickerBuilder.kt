@@ -28,7 +28,6 @@ data class ImagePickerBuilder(
     fun getMaximumNoPick() = imagePickerMultipleSelectionBuilder?.maximumNoPick ?: 1
     fun getCameraIndex() = imagePickerTab.indexOf(ImagePickerTab.TYPE_CAMERA)
     fun getGalleryIndex() = imagePickerTab.indexOf(ImagePickerTab.TYPE_GALLERY)
-    fun getRecorderIndex() = imagePickerTab.indexOf(ImagePickerTab.TYPE_RECORDER)
     fun getRatioX() = imageRatioType.getRatioX()
     fun getRatioY() = imageRatioType.getRatioY()
     fun isRecheckSizeAfterResize() = imagePickerEditorBuilder?.recheckSizeAfterResize ?: false
@@ -124,7 +123,6 @@ data class PreviewExtension(
 enum class ImagePickerTab(val value: Int) : Parcelable {
     TYPE_GALLERY(1),
     TYPE_CAMERA(2),
-    TYPE_RECORDER(3);
 }
 
 @Parcelize

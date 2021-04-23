@@ -36,8 +36,6 @@ import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
-import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
-import com.tokopedia.imagepicker.picker.video.VideoRecorderFragment;
 import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner;
 import com.tokopedia.utils.image.ImageProcessingUtil;
@@ -57,7 +55,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         implements ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener,
         ImagePickerCameraFragment.OnImagePickerCameraFragmentListener,
         ImagePickerPresenter.ImagePickerView,
-        ImagePickerPreviewWidget.OnImagePickerThumbnailListWidgetListener, VideoRecorderFragment.VideoPickerCallback {
+        ImagePickerPreviewWidget.OnImagePickerThumbnailListWidgetListener {
 
     public static final String SAVED_SELECTED_TAB = "saved_sel_tab";
     public static final String SAVED_SELECTED_IMAGES = "saved_sel_img";
@@ -310,10 +308,6 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         }
         if (imagePickerBuilder.getGalleryIndex() > -1) {
             permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-        if (imagePickerBuilder.getRecorderIndex() > -1) {
-            permissions.add(Manifest.permission.CAMERA);
-            permissions.add(Manifest.permission.RECORD_AUDIO);
         }
         permissionsToRequest = new ArrayList<>();
         for (String permission : permissions) {
@@ -677,26 +671,6 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         outState.putInt(SAVED_SELECTED_TAB, tabLayout.getSelectedTabPosition());
         outState.putStringArrayList(SAVED_SELECTED_IMAGES, selectedImagePaths);
         outState.putStringArrayList(SAVED_IMAGE_DESCRIPTION, imageDescriptionList);
-    }
-
-    @Override
-    public void onVideoTaken(String filePath) {
-        onImageSelected(filePath, true, null);
-    }
-
-    @Override
-    public void onVideoRecorder(int state) {
-        tabLayout.setClickable(state != StateRecorderType.START);
-    }
-
-    @Override
-    public void onVideoPreviewVisible() {
-        onPreviewCameraViewVisible();
-    }
-
-    @Override
-    public void onVideoRecorderVisible() {
-        onCameraViewVisible();
     }
 
     public void trackOpen() {
