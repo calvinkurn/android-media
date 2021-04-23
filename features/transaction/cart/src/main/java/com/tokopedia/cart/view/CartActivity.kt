@@ -19,6 +19,8 @@ class CartActivity : BaseCheckoutActivity() {
 
     override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
 
+    override fun getToolbarResourceID() = 0
+
     override fun setupBundlePass(extras: Bundle?) {
         val productIdStr = intent?.data?.getQueryParameter(APPLINK_PARAM_PRODUCT_ID) ?: ""
         if (productIdStr.isNotBlank()) {
