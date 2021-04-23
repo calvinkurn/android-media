@@ -80,7 +80,7 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     private fun showClearIcon() {
-        emoneyPdpCardInputNumber.setSecondIcon(R.drawable.ic_system_action_close_grayscale_16)
+        emoneyPdpCardInputNumber.setSecondIcon(com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_16)
         emoneyPdpCardInputNumber.getSecondIcon().show()
     }
 
