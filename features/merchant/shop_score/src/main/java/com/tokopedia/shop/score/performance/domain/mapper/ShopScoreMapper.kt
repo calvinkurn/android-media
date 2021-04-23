@@ -105,7 +105,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             }
             OPEN_TOKOPEDIA_SELLER_KEY -> {
                 with(shopPerformanceDetailUiModel) {
-                    descCalculation = R.string.desc_calculation_open_seller_app
+                    descCalculation = R.string.desc_calculation_open_seller_app_within_90_days
                     descTips = R.string.desc_tips_open_seller_app
                 }
             }

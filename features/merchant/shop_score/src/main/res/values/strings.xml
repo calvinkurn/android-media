@@ -94,8 +94,9 @@
     <string name="desc_calculation_speed_process_order">Waktu yang diperlukan Seller untuk memproses pesanan, dari waktu pesanan masuk hingga resi terkonfirmasi.</string>
     <string name="desc_calculation_review_product">Persentase ulasan dengan bintang 4+ dalam waktu 90 hari dibandingkan dengan total ulasan yang masuk.</string>
     <string name="desc_calculation_total_buyer">Jumlah pembeli unik yang berbelanja dalam waktu 90 hari.</string>
+    <string name="desc_calculation_open_seller_app_within_90_days">Membuka Tokopedia Seller dalam waktu 90 hari.</string>
     <string name="desc_calculation_open_seller_app">Membuka Tokopedia Seller</string>
-    
+
     <string name="total_deduction_point_performance">Pengurangan poin performa sebanyak <![CDATA[<b>%s poin.</b>]]></string>
     <string name="title_due_to_violations">Akibat Pelanggaran</string>
 

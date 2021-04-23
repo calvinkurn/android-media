@@ -176,10 +176,15 @@ class ShopPenaltyViewModel @Inject constructor(
     fun updateSortFilterSelected(titleFilter: String, chipType: String) {
         launchCatchError(block = {
             val updateChipsSelected = chipType == ChipsUnify.TYPE_SELECTED
-            itemSortFilterWrapperList.find { it.title == titleFilter }?.isSelected = updateChipsSelected
-            penaltyFilterUiModel.find { it.title == TITLE_TYPE_PENALTY }?.chipsFilerList?.find {
-                it.title == titleFilter
-            }?.isSelected = updateChipsSelected
+            penaltyFilterUiModel.find { it.title == TITLE_TYPE_PENALTY }?.chipsFilerList?.mapIndexed { index, chipsFilterPenaltyUiModel ->
+                if (chipsFilterPenaltyUiModel.title == titleFilter) {
+                    chipsFilterPenaltyUiModel.isSelected = !updateChipsSelected
+                    itemSortFilterWrapperList.getOrNull(index)?.isSelected = !updateChipsSelected
+                } else {
+                    chipsFilterPenaltyUiModel.isSelected = false
+                    itemSortFilterWrapperList.getOrNull(index)?.isSelected = false
+                }
+            }
             _updateSortFilterSelected.value = Success(itemSortFilterWrapperList)
         }, onError = {
             _updateSortFilterSelected.value = Fail(it)

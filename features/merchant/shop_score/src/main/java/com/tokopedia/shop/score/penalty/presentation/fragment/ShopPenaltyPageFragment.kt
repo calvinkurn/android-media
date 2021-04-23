@@ -251,8 +251,8 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         sortFilterItemList.forEach {
             it.listener = {
                 if (it.type != ChipsUnify.TYPE_DISABLE) {
-                    it.toggle()
                     onChildSortFilterItemClick(it)
+                    it.toggle()
                 }
             }
         }
