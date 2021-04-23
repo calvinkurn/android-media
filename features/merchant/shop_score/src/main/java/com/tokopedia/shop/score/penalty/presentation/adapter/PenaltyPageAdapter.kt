@@ -10,10 +10,6 @@ import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 class PenaltyPageAdapter(penaltyPageAdapterFactory: PenaltyPageAdapterFactory):
         BaseListAdapter<Visitable<*>, PenaltyPageAdapterFactory>(penaltyPageAdapterFactory) {
 
-    companion object {
-        const val PAYLOAD_PENALTY_FILTER = 102
-    }
-
     fun setPenaltyListDetailData(penaltyListUiModel: List<ItemPenaltyUiModel>) {
         val lastIndex = visitables.size
         visitables.addAll(penaltyListUiModel)
@@ -27,16 +23,16 @@ class PenaltyPageAdapter(penaltyPageAdapterFactory: PenaltyPageAdapterFactory):
     }
 
     fun setPenaltyLoading() {
-        if (visitables.getOrNull(firstIndex) is LoadingMoreModel){
+        if (visitables.getOrNull(lastIndex) is LoadingMoreModel){
             visitables.add(loadingMoreModel)
-            notifyItemInserted(firstIndex)
+            notifyItemInserted(lastIndex)
         }
     }
 
     fun setEmptyStatePenalty() {
-        if (visitables.getOrNull(firstIndex) !is EmptyModel) {
+        if (visitables.getOrNull(lastIndex) !is EmptyModel) {
             visitables.add(EmptyModel())
-            notifyItemInserted(firstIndex)
+            notifyItemInserted(lastIndex)
         }
     }
 

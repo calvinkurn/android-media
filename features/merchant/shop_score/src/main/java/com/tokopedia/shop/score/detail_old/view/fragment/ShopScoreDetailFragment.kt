@@ -91,8 +91,7 @@ class ShopScoreDetailFragment : Fragment() {
 
     private fun setupTickerShopScore(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
         ticker_info_shop_score?.apply {
-            showWithCondition(((shopInfoPeriodUiModel.periodType == COMMUNICATION_PERIOD ||
-                    shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD)) && !shopInfoPeriodUiModel.isNewSeller)
+            showWithCondition(shopInfoPeriodUiModel.periodType == COMMUNICATION_PERIOD)
             addOnImpressionListener(tickerImpressHolder) {
                 ShopScoreDetailTracking.impressHereTickerOldShopScoreDetail(viewModel.userSession.userId, getTypeShop())
             }
@@ -103,9 +102,7 @@ class ShopScoreDetailFragment : Fragment() {
                         COMMUNICATION_PERIOD -> {
                             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, GMCommonUrl.SHOP_INTERRUPT_PAGE)
                         }
-                        else -> {
-                            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
-                        }
+                        else -> {}
                     }
                     ShopScoreDetailTracking.clickHereTickerOldShopScoreDetail(viewModel.userSession.userId, getTypeShop())
                 }

@@ -36,6 +36,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingSuccess
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoErrorViewHolder
 import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoViewHolder
+import com.tokopedia.seller.menu.common.view.viewholder.TickerShopScoreViewHolder
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
 import com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
@@ -50,7 +51,7 @@ import kotlinx.android.synthetic.main.fragment_seller_menu.*
 import javax.inject.Inject
 
 class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHolder.ShopInfoListener,
-        ShopInfoErrorViewHolder.ShopInfoErrorListener {
+        ShopInfoErrorViewHolder.ShopInfoErrorListener, TickerShopScoreViewHolder.TickerShopScoreListener {
 
     companion object {
         private const val SCREEN_NAME = "MA - Akun Toko"
@@ -80,6 +81,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private val adapter by lazy {
         SellerMenuAdapter(OtherMenuAdapterTypeFactory(
+                this,
                 this,
                 this,
                 this,
@@ -248,6 +250,13 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             }
             swipeRefreshLayout.isRefreshing = false
         }
+    }
+
+    /***
+     * TickerShopScoreListener
+     */
+    override fun onDescriptionViewClick() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, GMCommonUrl.SHOP_INTERRUPT_PAGE)
     }
 
     private fun observeErrorToaster() {

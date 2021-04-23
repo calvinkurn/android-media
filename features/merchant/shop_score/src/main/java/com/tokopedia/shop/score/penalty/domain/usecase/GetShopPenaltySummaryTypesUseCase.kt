@@ -13,8 +13,8 @@ class GetShopPenaltySummaryTypesUseCase @Inject constructor(
 ) : UseCase<ShopPenaltySummaryTypeWrapper>() {
 
     companion object {
-        const val SHOP_SCORE_PENALTY_TYPES_INPUT = "inputTypes"
-        const val SHOP_SCORE_PENALTY_SUMMARY_INPUT = "inputSummary"
+        const val INPUT_START_DATE = "inputStartDate"
+        const val INPUT_END_DATE = "inputEndDate"
 
         const val INPUT_PARAM = "input"
 
@@ -49,21 +49,21 @@ class GetShopPenaltySummaryTypesUseCase @Inject constructor(
         """.trimIndent()
 
         @JvmStatic
-        fun createParams(shopScorePenaltyTypesParam: ShopScorePenaltyTypesParam, shopScorePenaltySummaryParam: ShopScorePenaltySummaryParam): RequestParams = RequestParams.create().apply {
-            putObject(SHOP_SCORE_PENALTY_TYPES_INPUT, shopScorePenaltyTypesParam)
-            putObject(SHOP_SCORE_PENALTY_SUMMARY_QUERY, shopScorePenaltySummaryParam)
+        fun createParams(startDate: String, endDate: String): RequestParams = RequestParams.create().apply {
+            putString(INPUT_START_DATE, startDate)
+            putString(INPUT_END_DATE, endDate)
         }
     }
 
     var requestParams: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): ShopPenaltySummaryTypeWrapper {
-        val shopScorePenaltyTypesInput = requestParams.getObject(SHOP_SCORE_PENALTY_TYPES_INPUT) as? ShopScorePenaltyTypesParam
-        val shopScorePenaltyParam = mapOf(INPUT_PARAM to shopScorePenaltyTypesInput)
+        val startDate = requestParams.getString(INPUT_START_DATE, "")
+        val endDate = requestParams.getString(INPUT_END_DATE, "")
+        val shopScorePenaltyParam = mapOf(INPUT_PARAM to ShopScorePenaltyTypesParam())
         val shopScorePenaltyRequest = GraphqlRequest(SHOP_SCORE_PENALTY_TYPES_QUERY, ShopScorePenaltyTypesResponse::class.java, shopScorePenaltyParam)
 
-        val shopPenaltySummaryInput = requestParams.getObject(SHOP_SCORE_PENALTY_SUMMARY_INPUT) as? ShopScorePenaltySummaryParam
-        val shopPenaltySummaryParam = mapOf(INPUT_PARAM to shopPenaltySummaryInput)
+        val shopPenaltySummaryParam = mapOf(INPUT_PARAM to ShopScorePenaltySummaryParam(startDate = startDate, endDate = endDate))
         val shopPenaltyRequest = GraphqlRequest(SHOP_SCORE_PENALTY_SUMMARY_QUERY, ShopScorePenaltySummaryResponse::class.java, shopPenaltySummaryParam)
 
         val requests = listOf(shopScorePenaltyRequest, shopPenaltyRequest)

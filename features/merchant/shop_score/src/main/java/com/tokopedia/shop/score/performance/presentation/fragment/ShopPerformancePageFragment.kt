@@ -2,7 +2,6 @@ package com.tokopedia.shop.score.performance.presentation.fragment
 
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.view.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +14,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
@@ -26,7 +24,6 @@ import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponen
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
 import com.tokopedia.shop.score.performance.presentation.activity.ShopPerformanceYoutubeActivity
 import com.tokopedia.shop.score.performance.presentation.adapter.*
-import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetNextUpdatePMSection
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetPerformanceDetail
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetShopTooltipLevel
 import com.tokopedia.shop.score.performance.presentation.bottomsheet.BottomSheetShopTooltipScore
@@ -175,12 +172,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         bottomSheetDetail.show(childFragmentManager)
     }
 
-    /**
-     * ItemStatusPowerMerchantListener
-     */
-    override fun onItemClickedNextUpdatePM() {
-        val bottomSheetNextUpdate = BottomSheetNextUpdatePMSection.newInstance()
-        bottomSheetNextUpdate.show(childFragmentManager)
+    override fun onItemClickedGotoPMPro() {
+        goToPowerMerchantSubscribe()
     }
 
     /**

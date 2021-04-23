@@ -328,20 +328,4 @@
     <string name="kejar_ulasan_label">Kejar Ulasan</string>
     <string name="kejar_ulasan_coach_mark_title">Cek ulasan yang ditandai</string>
     <string name="kejar_ulasan_coach_mark_subtitle">Ulasan yang masuk lewat Kejar Ulasan akan disertai dengan tanda khusus seperti ini, ya!</string>
-
-    <!-- Shop Score & Reputation -->
-    <string name="title_reputation_join_shop_score">Program reputasi akan bergabung ke</string>
-    <string name="title_shop_performance">Performa Toko</string>
-    <string name="start_date_reputation">Mulai dari %s</string>
-    <string name="more_interest_candidate_buyer"><![CDATA[<b>Untuk lebih menarik calon pembeli,</b>]]> berikut perubahan yang akan berlangsung:</string>
-    <string name="more_focus_shop_service">Lebih fokus dengan layanan toko</string>
-    <string name="desc_more_focus_shop_service">Reputasi tidak muncul di halaman toko &amp; produkmu lagi. Namun, pembeli bisa melihat parameter Performa lain yang lebih menjelaskan kualitas layanan tokomu.</string>
-    <string name="title_get_benefit_performance">Dapatkan keuntungan sesuai Performa</string>
-    <string name="desc_get_benefit_performance_pm">Reputasimu dikonversi menjadi grade Power Merchant, ya. &lt;a href="https://www.google.com"&gt;Info Selengkapnya&lt;/a&gt;</string>
-    <string name="desc_get_benefit_performance_rm">Gabung dengan Power Merchant supaya tokomu lebih dipercaya pembeli, yuk! &lt;a href="https://www.google.com"&gt;Info Selengkapnya&lt;/a&gt;</string>
-    <string name="btn_shop_performance">Pelajari Performa Toko</string>
-    <string name="desc_info_reputation_migrate_shop_score">Mulai dari <![CDATA[<b>%s</b>]]></string>
-    <string name="desc_title_card_shop_score">Mulai %s, Reputasi akan digabung dengan Performa Toko untuk lebih menarik pembeli</string>
-    <string name="title_shop_score_ticker">Mulai %s, Reputasi akan dinonaktifkan</string>
-    <string name="desc_shop_score_ticker">Reputasi Toko akan dinonaktifkan dan Performa Toko akan berdasarkan level dan skor.</string>
 </resources>

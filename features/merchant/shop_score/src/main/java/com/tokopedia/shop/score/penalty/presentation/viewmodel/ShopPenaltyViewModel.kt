@@ -95,8 +95,8 @@ class ShopPenaltyViewModel @Inject constructor(
     fun getDataPenalty() {
         launchCatchError(block = {
             val penaltySummaryTypeData = async {
-                getShopPenaltySummaryTypesUseCase.requestParams = GetShopPenaltySummaryTypesUseCase.createParams(ShopScorePenaltyTypesParam(),
-                        ShopScorePenaltySummaryParam(startDate = startDate, endDate = endDate))
+                getShopPenaltySummaryTypesUseCase.requestParams = GetShopPenaltySummaryTypesUseCase.createParams(
+                        startDate, endDate)
                 getShopPenaltySummaryTypesUseCase.executeOnBackground()
             }
 
@@ -116,6 +116,7 @@ class ShopPenaltyViewModel @Inject constructor(
             )
 
             penaltyFilterUiModel = mapperPenalty.penaltyFilterList?.toMutableList() ?: mutableListOf()
+            itemSortFilterWrapperList = penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterUiModel).toMutableList()
             _penaltyPageData.postValue(Success(mapperPenalty))
         }, onError =
         {

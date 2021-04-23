@@ -1,17 +1,13 @@
 package com.tokopedia.review.common.util
 
 import android.content.Context
-import android.graphics.Color
-import android.text.method.LinkMovementMethod
 import android.util.TypedValue
 import android.widget.ListView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.gm.common.constant.START_DATE_TRANSITION_SHOP_SCORE
 import com.tokopedia.kotlin.extensions.relativeDate
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants.ANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
@@ -22,7 +18,6 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
-import com.tokopedia.unifyprinciples.Typography
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.round
@@ -56,14 +51,6 @@ object ReviewUtil {
         val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
         bottomSheet?.dismiss()
         return RouteManager.route(context, webviewUrl)
-    }
-
-    fun getShopScoreDate(context: Context?): String {
-        return if(context == null) {
-            ""
-        } else {
-            FirebaseRemoteConfigImpl(context).getString(START_DATE_TRANSITION_SHOP_SCORE, "")
-        }
     }
 }
 
@@ -213,13 +200,3 @@ val List<SortItemUiModel>.getSortBy: String
     get() {
         return this.firstOrNull { it.isSelected }?.title.orEmpty()
     }
-
-fun Typography.setTextMakeHyperlink(text: String, onClick: () -> Unit) {
-    val htmlString = HtmlLinkHelper(context, text)
-    this.movementMethod =  LinkMovementMethod.getInstance()
-    this.highlightColor = Color.TRANSPARENT
-    this.text = htmlString.spannedString
-    htmlString.urlList.getOrNull(0)?.setOnClickListener {
-        onClick()
-    }
-}

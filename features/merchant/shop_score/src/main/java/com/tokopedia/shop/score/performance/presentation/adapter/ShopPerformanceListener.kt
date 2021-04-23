@@ -35,7 +35,7 @@ interface ItemRecommendationFeatureListener {
 }
 
 interface ItemStatusPowerMerchantListener {
-    fun onItemClickedNextUpdatePM()
+    fun onItemClickedGotoPMPro()
     fun onItemClickedGoToPMActivation()
     fun onViewItemPowerMerchantListener(view: View)
     fun onImpressHeaderPowerMerchantSection()

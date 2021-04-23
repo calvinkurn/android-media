@@ -36,6 +36,7 @@ import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewMo
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.card_shop_score_total_penalty.*
@@ -78,11 +79,11 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     }
 
     private fun setupSwipeRefresh() {
-        appBarPenaltyPage.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+        appBarPenaltyPage?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             swipeToRefresh?.isEnabled = (verticalOffset == 0)
         })
 
-        rvPenaltyPage.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        rvPenaltyPage?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val topRowVerticalPosition = if (recyclerView.childCount == 0) 0 else recyclerView.getChildAt(0).top
                 swipeToRefresh?.isEnabled = topRowVerticalPosition >= 0
@@ -210,11 +211,12 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
                 .setAllCornerSizes(roundedRadius)
                 .build()
 
-        if (element?.totalPenalty?.isZero() == true) {
-            tvCountTotalPenalty?.text = getString(R.string.desc_no_penalty)
-        } else {
-            tvCountTotalPenalty.text = element?.totalPenalty?.toString().orEmpty()
+        if (element?.hasPenalty == true) {
+            tvCountTotalPenalty.text = element.totalPenalty.toString()
             context?.resources?.getDimension(R.dimen.scorePenaltyTextSize)?.let { tvCountTotalPenalty.setTextSize(TypedValue.COMPLEX_UNIT_PX, it) }
+        } else {
+            tvCountTotalPenalty?.text = getString(R.string.desc_no_penalty)
+            tvCountTotalPenalty.setType(Typography.HEADING_3)
         }
         tvTotalPointDeductions?.text = if (element?.deductionPoints?.isLessThanZero() == true) element.deductionPoints.toString() else "-"
     }
@@ -336,7 +338,11 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         val cardPenaltyData = data.cardShopPenaltyUiModel
         setupCardPenalty(cardPenaltyData)
         setupDetailPenaltyFilter(penaltyFilterData)
-        penaltyPageAdapter.setPenaltyData(penaltyList.first)
+        if(penaltyList.first.isNotEmpty()) {
+            penaltyPageAdapter.setPenaltyData(penaltyList.first)
+        } else {
+            penaltyPageAdapter.setEmptyStatePenalty()
+        }
     }
 
     private fun onDateClick() {

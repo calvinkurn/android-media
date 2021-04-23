@@ -2,6 +2,7 @@ package com.tokopedia.shop.score.penalty.domain.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.ON_GOING
@@ -129,7 +130,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
     }
 
     private fun mapToCardShopPenalty(penaltySummary: ShopScorePenaltySummaryResponse.ShopScorePenaltySummary.Result): ItemCardShopPenaltyUiModel {
-        return ItemCardShopPenaltyUiModel(totalPenalty = penaltySummary.penaltyAmount, hasPenalty = penaltySummary.penaltyAmount.isZero(), deductionPoints = penaltySummary.penalty)
+        return ItemCardShopPenaltyUiModel(totalPenalty = penaltySummary.penaltyAmount, hasPenalty = penaltySummary.penaltyAmount.isMoreThanZero(), deductionPoints = penaltySummary.penalty)
     }
 
     private fun mapToDetailPenaltyFilter(penaltyTypes: List<ShopScorePenaltyTypesResponse.ShopScorePenaltyTypes.Result>,
@@ -172,7 +173,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                         colorPenalty = colorTypePenalty
                 ))
             }
-        }, shopScorePenaltyDetailResponse.hasNext, shopScorePenaltyDetailResponse.hasPrev)
+        }, shopScorePenaltyDetailResponse.hasPrev, shopScorePenaltyDetailResponse.hasNext)
     }
 
     private fun mapToPenaltyFilterBottomSheet(penaltyTypes: List<ShopScorePenaltyTypesResponse.ShopScorePenaltyTypes.Result>,
@@ -196,5 +197,17 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                 add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(it.name, isSelected = it.id == typeId, value = it.id))
             }
         }
+    }
+
+    fun mapToSortFilterItemFromPenaltyList(penaltyFilterList: List<PenaltyFilterUiModel>): List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper> {
+        val mapItemSortFilterWrapper = mutableListOf<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>()
+        penaltyFilterList.find { it.title == TITLE_TYPE_PENALTY }?.chipsFilerList?.map {
+            mapItemSortFilterWrapper.add(ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper(
+                    title = it.title,
+                    isSelected = it.isSelected,
+                    idFilter = it.value
+            ))
+        }
+        return mapItemSortFilterWrapper
     }
 }
