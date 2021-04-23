@@ -224,6 +224,7 @@ public class ShipmentDataConverter {
             }
             if (shipmentInformationData.getFreeShippingExtra().getEligible()) {
                 shipmentCartItemModel.setFreeShippingBadgeUrl(shipmentInformationData.getFreeShippingExtra().getBadgeUrl());
+                shipmentCartItemModel.setFreeShippingExtra(true);
             } else if (shipmentInformationData.getFreeShipping().getEligible()) {
                 shipmentCartItemModel.setFreeShippingBadgeUrl(shipmentInformationData.getFreeShipping().getBadgeUrl());
             }

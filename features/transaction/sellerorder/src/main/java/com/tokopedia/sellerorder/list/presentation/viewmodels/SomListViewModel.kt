@@ -36,6 +36,7 @@ class SomListViewModel @Inject constructor(
         somRejectOrderUseCase: SomRejectOrderUseCase,
         somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
         somEditRefNumUseCase: SomEditRefNumUseCase,
+        somValidateOrderUseCase: SomValidateOrderUseCase,
         userSession: UserSessionInterface,
         private val dispatcher: CoroutineDispatchers,
         private val somListGetTickerUseCase: SomListGetTickerUseCase,
@@ -48,7 +49,8 @@ class SomListViewModel @Inject constructor(
         authorizeSomListAccessUseCase: AuthorizeAccessUseCase,
         authorizeMultiAcceptAccessUseCase: AuthorizeAccessUseCase
 ) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
-        somEditRefNumUseCase, somRejectCancelOrderRequest, authorizeSomListAccessUseCase, authorizeMultiAcceptAccessUseCase) {
+        somEditRefNumUseCase, somRejectCancelOrderRequest, somValidateOrderUseCase,
+        authorizeSomListAccessUseCase, authorizeMultiAcceptAccessUseCase) {
 
     companion object {
         private const val MAX_RETRY_GET_ACCEPT_ORDER_STATUS = 20

@@ -1,6 +1,7 @@
 <resources>
 
     <string name="shop_page_label_authorized">Authorized</string>
+    <string name="shop_page_label_new_icon_tab">BARU</string>
 
     <string name="shop_page_label_reputation">Reputasi</string>
     <string name="shop_page_label_product_quality">Kualitas Produk</string>
@@ -55,6 +56,7 @@
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_title_tab_product">Produk</string>
     <string name="new_shop_info_title_tab_product">Product</string>
+    <string name="shop_info_title_tab_showcase">Etalase</string>
     <string name="shop_info_title_tab_home">Home</string>
     <string name="shop_info_title_tab_info">Info</string>
     <string name="shop_info_title_tab_review">Review</string>
@@ -306,6 +308,7 @@
     <string name="shop_page_share_action_more">Lainnya</string>
     <string name="shop_page_share_action_copy_success">Teks berhasil disalin</string>
     <string name="shop_page_share_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
+    <string name="label_close">Tutup</string>
 
     <!-- content description shop page -->
     <string name="content_desc_shop_page_main_profile_image">image gambar toko</string>
@@ -318,5 +321,10 @@
     <string name="content_desc_tvSeeAll">text lihat semua</string>
     <string name="content_desc_button_chat">button chat</string>
     <string name="content_desc_shop_home_get_failed_reload_image">Reload Image</string>
+
+    <!-- shop page showcase tab -->
+    <string name="shop_page_showcase_featured_text">Etalase Unggulan</string>
+    <string name="shop_page_showcase_all_text">Semua Etalase</string>
+    <string name="shop_page_showcase_featured_product_count_text">%1$s Produk</string>
 
 </resources>
