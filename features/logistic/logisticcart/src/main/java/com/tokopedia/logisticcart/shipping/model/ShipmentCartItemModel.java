@@ -27,7 +27,7 @@ public class ShipmentCartItemModel implements Parcelable {
     private List<ShopShipment> shopShipmentList;
 
     // Shop data
-    private int shopId;
+    private long shopId;
     private String shopName;
     private boolean isGoldMerchant;
     private boolean isOfficialStore;
@@ -108,7 +108,7 @@ public class ShipmentCartItemModel implements Parcelable {
         selectedShipmentDetailData = in.readParcelable(ShipmentDetailData.class.getClassLoader());
         shopShipmentList = in.createTypedArrayList(ShopShipment.CREATOR);
         orderNumber = in.readInt();
-        shopId = in.readInt();
+        shopId = in.readLong();
         shopName = in.readString();
         preOrderInfo = in.readString();
         isFreeShippingExtra = in.readByte() != 0;
@@ -164,7 +164,7 @@ public class ShipmentCartItemModel implements Parcelable {
         dest.writeParcelable(selectedShipmentDetailData, flags);
         dest.writeTypedList(shopShipmentList);
         dest.writeInt(orderNumber);
-        dest.writeInt(shopId);
+        dest.writeLong(shopId);
         dest.writeString(shopName);
         dest.writeString(preOrderInfo);
         dest.writeByte((byte) (isFreeShippingExtra ? 1 : 0));
@@ -306,11 +306,11 @@ public class ShipmentCartItemModel implements Parcelable {
         this.errorDescription = errorDescription;
     }
 
-    public int getShopId() {
+    public long getShopId() {
         return shopId;
     }
 
-    public void setShopId(int shopId) {
+    public void setShopId(long shopId) {
         this.shopId = shopId;
     }
 

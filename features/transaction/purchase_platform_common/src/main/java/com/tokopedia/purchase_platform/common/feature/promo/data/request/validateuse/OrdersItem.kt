@@ -13,7 +13,7 @@ data class OrdersItem(
         var shippingId: Int = 0,
 
 		@field:SerializedName("shop_id")
-        var shopId: Int = 0,
+        var shopId: Long = 0,
 
 		@field:SerializedName("codes")
         var codes: MutableList<String> = mutableListOf(),

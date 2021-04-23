@@ -5,8 +5,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Shop(
-        var shopId: Int = 0,
-        var userId: Int = 0,
+        var shopId: Long = 0,
+        var userId: String = "",
         var shopName: String = "",
         var shopImage: String = "",
         var shopUrl: String = "",
@@ -16,16 +16,16 @@ data class Shop(
         var isOfficial: Boolean = false,
         var isFreeReturns: Boolean = false,
         var shopBadge: String = "",
-        var addressId: Int = 0,
+        var addressId: String = "",
         var postalCode: String = "",
         var latitude: String = "",
         var longitude: String = "",
-        var districtId: Int = 0,
+        var districtId: String = "",
         var districtName: String = "",
         var origin: Int = 0,
         var addressStreet: String = "",
-        var provinceId: Int = 0,
-        var cityId: Int = 0,
+        var provinceId: String = "",
+        var cityId: String = "",
         var cityName: String = "",
         var shopAlertMessage: String = ""
 ) : Parcelable

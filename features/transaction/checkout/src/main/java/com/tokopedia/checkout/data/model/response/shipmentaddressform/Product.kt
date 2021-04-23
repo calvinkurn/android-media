@@ -10,6 +10,7 @@ data class Product(
         @SuppressLint("Invalid Data Type")
         @SerializedName("product_id")
         val productId: Long = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("cart_id")
         val cartId: Long = 0,
         @SerializedName("product_name")

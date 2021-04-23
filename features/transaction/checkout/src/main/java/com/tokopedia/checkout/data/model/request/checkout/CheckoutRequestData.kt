@@ -29,7 +29,7 @@ data class CheckoutRequestGqlData(
         @SerializedName("has_promo_stacking")
         var hasPromoStacking: Boolean = false,
         @SerializedName("leasing_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
+        @SuppressLint("Invalid Data Type")
         var leasingId: Int = 0
 )
 
@@ -46,13 +46,13 @@ data class TokopediaCornerGqlData(
         @SerializedName("user_corner_id")
         var userCornerId: String? = null,
         @SerializedName("corner_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
+        @SuppressLint("Invalid Data Type")
         var cornerId: Long = 0
 )
 
 data class CheckoutGqlData(
         @SerializedName("address_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
+        @SuppressLint("Invalid Data Type")
         var addressId: Long = 0,
         @SerializedName("shop_products")
         var shopProducts: List<ShopProductGqlData> = ArrayList()
@@ -60,8 +60,8 @@ data class CheckoutGqlData(
 
 data class ShopProductGqlData(
         @SerializedName("shop_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
-        var shopId: Int = 0,
+        @SuppressLint("Invalid Data Type")
+        var shopId: Long = 0,
         @SerializedName("is_preorder")
         var isPreorder: Int = 0,
         @SerializedName("finsurance")
@@ -77,7 +77,7 @@ data class ShopProductGqlData(
         @SerializedName("fcancel_partial")
         var fcancelPartial: Int = 0,
         @SerializedName("warehouse_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
+        @SuppressLint("Invalid Data Type")
         var warehouseId: Int = 0,
         @SerializedName("promo_codes")
         var promoCodes: List<String> = emptyList(),
@@ -89,10 +89,10 @@ data class ShopProductGqlData(
 
 data class ShippingInfoGqlData(
         @SerializedName("shipping_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
+        @SuppressLint("Invalid Data Type")
         var shippingId: Int = 0,
         @SerializedName("sp_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
+        @SuppressLint("Invalid Data Type")
         var spId: Int = 0,
         @SerializedName("rates_id")
         var ratesId: String? = null,
@@ -125,7 +125,7 @@ data class DropshipGqlData(
 
 data class ProductGqlData(
         @SerializedName("product_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
+        @SuppressLint("Invalid Data Type")
         var productId: Long = 0,
         @SerializedName("is_ppp")
         var isPurchaseProtection: Boolean = false,

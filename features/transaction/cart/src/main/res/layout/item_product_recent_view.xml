@@ -4,5 +4,4 @@
     android:id="@+id/productCardView"
     android:layout_width="@dimen/dp_200"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
     android:clickable="true" />

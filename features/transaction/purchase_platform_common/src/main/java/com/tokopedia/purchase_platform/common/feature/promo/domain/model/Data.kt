@@ -7,9 +7,6 @@ data class Data(
 		@SerializedName("codes")
 		val codes: List<String?>? = null,
 
-		@SerializedName("promo_code_id")
-		val promoCodeId: Int? = null,
-
 		@SerializedName("voucher_orders")
 		val voucherOrders: List<VoucherOrdersItem?>? = null,
 

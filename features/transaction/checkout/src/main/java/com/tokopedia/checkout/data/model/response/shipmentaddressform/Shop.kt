@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class Shop(
         @SerializedName("shop_id")
-        val shopId: Int = 0,
+        val shopId: Long = 0,
         @SerializedName("user_id")
-        val userId: Int = 0,
+        val userId: String = "",
         @SerializedName("shop_name")
         val shopName: String = "",
         @SerializedName("shop_image")
@@ -24,7 +24,7 @@ data class Shop(
         @SerializedName("is_free_returns")
         val isFreeReturns: Int = 0,
         @SerializedName("address_id")
-        val addressId: Int = 0,
+        val addressId: String = "",
         @SerializedName("postal_code")
         val postalCode: String = "",
         @SerializedName("latitude")
@@ -32,7 +32,7 @@ data class Shop(
         @SerializedName("longitude")
         val longitude: String = "",
         @SerializedName("district_id")
-        val districtId: Int = 0,
+        val districtId: String = "",
         @SerializedName("district_name")
         val districtName: String = "",
         @SerializedName("origin")
@@ -40,9 +40,9 @@ data class Shop(
         @SerializedName("address_street")
         val addressStreet: String = "",
         @SerializedName("province_id")
-        val provinceId: Int = 0,
+        val provinceId: String = "",
         @SerializedName("city_id")
-        val cityId: Int = 0,
+        val cityId: String = "",
         @SerializedName("city_name")
         val cityName: String = "",
         @SerializedName("gold_merchant")

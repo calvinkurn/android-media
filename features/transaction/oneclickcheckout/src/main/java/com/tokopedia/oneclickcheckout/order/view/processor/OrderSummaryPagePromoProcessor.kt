@@ -197,7 +197,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val validateUsePromoRequest = lastValidateUsePromoRequest ?: ValidateUsePromoRequest()
 
         val ordersItem = OrdersItem()
-        ordersItem.shopId = orderCart.shop.shopId
+        ordersItem.shopId = orderCart.shop.shopId.toLong()
         ordersItem.uniqueId = orderCart.cartString
 
         ordersItem.productDetails = listOf(ProductDetailsItem(orderCart.product.quantity.orderQuantity, orderCart.product.productId))

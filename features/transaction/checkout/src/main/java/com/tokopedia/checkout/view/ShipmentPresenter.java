@@ -1026,7 +1026,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return null;
     }
 
-    private boolean getFulfillmentStatus(int shopId) {
+    private boolean getFulfillmentStatus(long shopId) {
         for (ShipmentCartItemModel cartItemModel : shipmentCartItemModelList) {
             if (cartItemModel.getShopId() == shopId) {
                 return cartItemModel.isFulfillment();

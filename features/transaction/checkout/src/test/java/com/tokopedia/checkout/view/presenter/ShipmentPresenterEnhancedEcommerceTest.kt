@@ -171,7 +171,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
     fun `WHEN generate enhanced ecommerce with fulfilment THEN enhanced ecommerce data should not be null`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        val shopId = 652660
+        val shopId = 652660L
         presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())

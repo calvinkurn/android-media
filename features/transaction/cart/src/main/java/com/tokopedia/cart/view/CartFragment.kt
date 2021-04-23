@@ -2369,7 +2369,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartItemHolderData.shopId?.toLong()?.let { shopId ->
             cartItemHolderData.cartString?.let { cartString ->
                 val order = OrdersItem(
-                        shopId = shopId.toInt(),
+                        shopId = shopId,
                         uniqueId = cartString,
                         productDetails = listProductDetail,
                         codes = listPromoCodes)
