@@ -3,6 +3,7 @@ package com.tokopedia.home_component.viewholders
 import android.annotation.SuppressLint
 import android.view.Gravity
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -60,7 +61,8 @@ class MixLeftComponentViewHolder (itemView: View,
     private lateinit var image: ImageView
     private lateinit var loadingBackground: ImageView
     private lateinit var parallaxBackground: View
-    private lateinit var containerMixLeft: ConstraintLayout
+    private lateinit var parallaxView: View
+    private lateinit var containerMixLeft: FrameLayout
 
     private lateinit var layoutManager: LinearLayoutManager
 
@@ -114,6 +116,7 @@ class MixLeftComponentViewHolder (itemView: View,
         image = itemView.findViewById(R.id.parallax_image)
         loadingBackground = itemView.findViewById(R.id.background_loader)
         parallaxBackground = itemView.findViewById(R.id.parallax_background)
+        parallaxView = itemView.findViewById(R.id.parallax_view)
         containerMixLeft = itemView.findViewById(R.id.container_mixleft)
     }
 
@@ -154,6 +157,7 @@ class MixLeftComponentViewHolder (itemView: View,
         launch {
             try {
                 recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
+                parentRecycledViewPool?.let {recyclerView.setRecycledViewPool(it) }
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
@@ -176,21 +180,17 @@ class MixLeftComponentViewHolder (itemView: View,
         return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (layoutManager.findFirstVisibleItemPosition() == 0 && dx != 0) {
+                if (layoutManager.findFirstVisibleItemPosition() == 0) {
                     val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
                     firstView?.let {
                         val distanceFromLeft = it.left
                         val translateX = distanceFromLeft * 0.2f
-                        if (translateX <= 0) {
-                            image.translationX = translateX
-                            if (distanceFromLeft <= 0) {
-                                val itemSize = it.width.toFloat()
-                                val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
-                                image.alpha = 1 - alpha
-                            }
-                        } else {
-                            image.translationX = 0f
-                            image.alpha = 1f
+                        parallaxView.translationX = translateX
+
+                        if (distanceFromLeft <= 0) {
+                            val itemSize = it.width.toFloat()
+                            val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
+                            image.alpha = 1 - alpha
                         }
                     }
                 }
