@@ -1,0 +1,16 @@
+{
+  "readme": "click create button on the centralized promo bottom sheet",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickAdsPromo",
+      "eventCategory" : "ads and promotion",
+      "eventAction" : "click detail submission mvc - create",
+      "eventLabel" : "{{.*}}",
+      "screenName" : "/adspromotion",
+      "currentSite" : "tokopediaseller",
+      "userId" : "{{.+}}",
+      "businessUnit ": "physical goods"
+    }
+  ]
+}

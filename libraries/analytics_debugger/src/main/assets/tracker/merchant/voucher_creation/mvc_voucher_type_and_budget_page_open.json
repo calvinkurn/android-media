@@ -1,0 +1,14 @@
+{
+  "readme": "open the second page of voucher creation process",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "openScreen",
+      "screenName" : "/vouchercreation - type & budget",
+      "isLoggedInStatus" : "{{.+}}",
+      "currentSite" : "tokopediaseller",
+      "userId" : "{{{.+}}",
+      "businessUnit" : "physical goods"
+    }
+  ]
+}

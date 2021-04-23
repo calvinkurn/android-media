@@ -1,0 +1,16 @@
+{
+  "readme": "click the download button on voucher detail page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickVoucherDetail",
+      "eventCategory" : "voucher detail page - berlangsung",
+      "eventAction" : "click download voucher",
+      "eventLabel" : "{{.*}}",
+      "screenName" : "/voucherdetailpage - berlangsung",
+      "currentSite" : "tokopediaseller",
+      "userId" : "{{.+}}",
+      "businessUnit ": "physical goods"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "readme": "open the third page of voucher creation process",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "openScreen",
+      "screenName" : "/vouchercreation - period",
+      "isLoggedInStatus" : "{{.+}}",
+      "currentSite" : "tokopediaseller",
+      "userId" : "{{{.+}}",
+      "businessUnit" : "physical goods"
+    }
+  ]
+}

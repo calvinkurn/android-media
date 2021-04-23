@@ -1,0 +1,14 @@
+{
+  "readme": "open centralized promo page",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "openScreen",
+      "screenName": "/adspromotion",
+      "isLoggedInStatus": "{{.+}}",
+      "currentSite": "tokopediaseller",
+      "userId": "{{.+}}",
+      "businessUnit": "physical goods"
+    }
+  ]
+}

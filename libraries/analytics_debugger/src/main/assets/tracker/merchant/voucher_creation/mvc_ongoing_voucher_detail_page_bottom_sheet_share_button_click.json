@@ -1,0 +1,16 @@
+{
+  "readme": "click the share button on voucher detail page - pelajari selengkapnya",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickVoucherDetail",
+      "eventCategory" : "voucher detail page - berlangsung",
+      "eventAction" : "click share voucher",
+      "eventLabel" : "{{.*}}",
+      "screenName" : "/voucherdetailpage - berlangsung",
+      "currentSite" : "tokopediaseller",
+      "userId" : "{{.+}}",
+      "businessUnit ": "physical goods"
+    }
+  ]
+}
