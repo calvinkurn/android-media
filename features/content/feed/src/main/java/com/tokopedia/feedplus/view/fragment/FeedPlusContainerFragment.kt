@@ -39,6 +39,7 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
+import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
 import com.tokopedia.feedplus.view.customview.FeedMainToolbar
 import com.tokopedia.feedplus.view.di.DaggerFeedContainerComponent
@@ -487,6 +488,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                             screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
                             appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, createPostAppLink))
                     setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
+                    toolBarAnalytics.sendClickBuatFeedPostEvent()
                 }
             }
             else -> {
@@ -496,6 +498,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                     val author = whitelistDomain.authors.first()
                     fab_feed.setOnClickListener { onGoToLink(author.link) }
                 }
+                toolBarAnalytics.sendClickBuatFeedPostEvent()
             }
         }
     }
