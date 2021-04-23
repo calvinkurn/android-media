@@ -1,14 +1,17 @@
 package com.tokopedia.topads.dashboard.view.sheet
 
 import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_filter_bottomsheet.*
 import kotlinx.android.synthetic.main.topads_dash_filter_bottomsheet.view.*
 
@@ -19,74 +22,77 @@ private const val SELECTED_STATUS_0 = 0;
 private const val SELECTED_STATUS_1 = 1;
 private const val SELECTED_STATUS_2 = 2;
 private const val SELECTED_STATUS_3 = 3;
+private const val CLICK_TERAPKAN = "click - terapkan"
 
 class TopadsGroupFilterSheet : BottomSheetUnify() {
     private var dialog: BottomSheetDialog? = null
     var onSubmitClick: (() -> Unit)? = null
     private var filterCount = 0
     private var selectedStatus = SELECTED_STATUS_0
+    private var contentView: View? = null
 
-    private fun setupView(context: Context) {
-        dialog?.let {
-            it.setOnShowListener { dialogInterface ->
-                val dialog = dialogInterface as BottomSheetDialog
-                val frameLayout = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-                frameLayout?.let {
-                    val behavior = BottomSheetBehavior.from(frameLayout)
-                    behavior.isHideable = false
-                }
-            }
-            it.btn_close.setImageDrawable(context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_group_close))
-            it.status?.visibility = View.VISIBLE
-            it.status_title?.visibility = View.VISIBLE
+    private lateinit var userSession: UserSessionInterface
 
-            it.active?.setOnClickListener { v ->
-                if (v.active.chipType == ChipsUnify.TYPE_NORMAL) {
-                    v.active.chipType = ChipsUnify.TYPE_SELECTED
-                    selectedStatus = SELECTED_STATUS_1
-                } else {
-                    v.active.chipType = ChipsUnify.TYPE_NORMAL
-                    selectedStatus = SELECTED_STATUS_0
-                }
-                it.tidak_aktif?.chipType = ChipsUnify.TYPE_NORMAL
-                it.tidak_tampil?.chipType = ChipsUnify.TYPE_NORMAL
-            }
-            it.tidak_tampil?.setOnClickListener { v ->
-                if (v.tidak_tampil.chipType == ChipsUnify.TYPE_NORMAL) {
-                    v.tidak_tampil.chipType = ChipsUnify.TYPE_SELECTED
-                    selectedStatus = SELECTED_STATUS_2
-                } else {
-                    v.tidak_tampil.chipType = ChipsUnify.TYPE_NORMAL
-                    selectedStatus = SELECTED_STATUS_0
-                }
-                it.active?.chipType = ChipsUnify.TYPE_NORMAL
-                it.tidak_aktif?.chipType = ChipsUnify.TYPE_NORMAL
-            }
-            it.tidak_aktif?.setOnClickListener { v ->
-                if (v.tidak_aktif.chipType == ChipsUnify.TYPE_NORMAL) {
-                    v.tidak_aktif.chipType = ChipsUnify.TYPE_SELECTED
-                    selectedStatus = SELECTED_STATUS_3
-                } else {
-                    v.tidak_aktif.chipType = ChipsUnify.TYPE_NORMAL
-                    selectedStatus = SELECTED_STATUS_0
-                }
-                it.active?.chipType = ChipsUnify.TYPE_NORMAL
-                it.tidak_tampil?.chipType = ChipsUnify.TYPE_NORMAL
-            }
 
-            it.btn_close.setOnClickListener {
-                dismissDialog()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        contentView = View.inflate(context, R.layout.topads_dash_filter_bottomsheet, null)
+        setChild(contentView)
+        setTitle(getString(R.string.topads_dash_filter_sheet_title))
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        userSession = UserSession(context)
+        view.status?.visibility = View.VISIBLE
+        view.status_title?.visibility = View.VISIBLE
+
+        view.active?.setOnClickListener { v ->
+            if (v.active.chipType == ChipsUnify.TYPE_NORMAL) {
+                v.active.chipType = ChipsUnify.TYPE_SELECTED
+                selectedStatus = SELECTED_STATUS_1
+            } else {
+                v.active.chipType = ChipsUnify.TYPE_NORMAL
+                selectedStatus = SELECTED_STATUS_0
             }
-            it.submit.setOnClickListener { _ ->
-                filterCount = 0
-                if (selectedStatus != 0)
-                    filterCount++
-                if (it.sortFilter?.checkedRadioButtonId != -1)
-                    filterCount++
-                onSubmitClick?.invoke()
-                dismissDialog()
-            }
+            view.tidak_aktif?.chipType = ChipsUnify.TYPE_NORMAL
+            view.tidak_tampil?.chipType = ChipsUnify.TYPE_NORMAL
         }
+        view.tidak_tampil?.setOnClickListener { v ->
+            if (v.tidak_tampil.chipType == ChipsUnify.TYPE_NORMAL) {
+                v.tidak_tampil.chipType = ChipsUnify.TYPE_SELECTED
+                selectedStatus = SELECTED_STATUS_2
+            } else {
+                v.tidak_tampil.chipType = ChipsUnify.TYPE_NORMAL
+                selectedStatus = SELECTED_STATUS_0
+            }
+            view.active?.chipType = ChipsUnify.TYPE_NORMAL
+            view.tidak_aktif?.chipType = ChipsUnify.TYPE_NORMAL
+        }
+        view.tidak_aktif?.setOnClickListener { v ->
+            if (v.tidak_aktif.chipType == ChipsUnify.TYPE_NORMAL) {
+                v.tidak_aktif.chipType = ChipsUnify.TYPE_SELECTED
+                selectedStatus = SELECTED_STATUS_3
+            } else {
+                v.tidak_aktif.chipType = ChipsUnify.TYPE_NORMAL
+                selectedStatus = SELECTED_STATUS_0
+            }
+            view.active?.chipType = ChipsUnify.TYPE_NORMAL
+            view.tidak_tampil?.chipType = ChipsUnify.TYPE_NORMAL
+        }
+        view.submit.setOnClickListener { _ ->
+            context.let {
+                var eventLabel = "{${userSession.shopId}}" + "-" + "{${getSelectedText(context)}}" + "-" + "{${getSelectedSortId()}}"
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_TERAPKAN, eventLabel, userSession.userId)
+            }
+            filterCount = 0
+            if (selectedStatus != 0)
+                filterCount++
+            if (view.sortFilter?.checkedRadioButtonId != -1)
+                filterCount++
+            onSubmitClick?.invoke()
+            dismiss()
+        }
+        
     }
 
     fun getFilterCount(): Int {
@@ -95,8 +101,8 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
 
     fun removeStatusFilter() {
         dialog.let {
-            it?.status?.visibility = View.GONE
-            it?.status_title?.visibility = View.GONE
+            view?.status?.visibility = View.GONE
+            view?.status_title?.visibility = View.GONE
         }
     }
 
@@ -133,23 +139,12 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
         return ""
     }
 
-    fun show() {
-        dialog?.show()
-    }
-
-    fun dismissDialog() {
-        dialog?.dismiss()
-    }
-
     companion object {
         lateinit var list: Array<String>
         fun newInstance(context: Context?): TopadsGroupFilterSheet {
             val fragment = TopadsGroupFilterSheet()
             context?.let {
-                fragment.dialog = BottomSheetDialog(context, com.tokopedia.topads.common.R.style.CreateAdsBottomSheetDialogTheme)
-                fragment.dialog?.setContentView(R.layout.topads_dash_filter_bottomsheet)
                 list = context.resources.getStringArray(R.array.top_ads_sort_value)
-                fragment.setupView(context)
             }
             return fragment
         }

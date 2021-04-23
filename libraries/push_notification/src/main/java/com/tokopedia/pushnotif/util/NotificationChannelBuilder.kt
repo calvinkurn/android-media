@@ -20,8 +20,8 @@ object NotificationChannelBuilder {
                 Constant.NotificationChannel.GENERAL,
                 NotificationManager.IMPORTANCE_HIGH
         ).apply {
-            ringtoneUri?.let {
-                setSound(ringtoneUri, AudioAttributes.Builder()
+            ringtoneUri?.run {
+                setSound(this, AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                         .build())
             }

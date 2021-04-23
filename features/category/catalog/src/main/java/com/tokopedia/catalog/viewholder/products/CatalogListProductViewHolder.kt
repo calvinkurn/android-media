@@ -35,7 +35,7 @@ open class CatalogListProductViewHolder(itemView: View, private val catalogProdu
 
         if(catalogProductItem.freeOngkir.isActive){
             itemView.image_ongir.show()
-            itemView.image_ongir.loadImage(catalogProductItem.freeOngkir.imageUrl)
+            itemView.image_ongir.loadImageWithoutPlaceholder(catalogProductItem.freeOngkir.imageUrl)
         }else {
             itemView.image_ongir.hide()
         }

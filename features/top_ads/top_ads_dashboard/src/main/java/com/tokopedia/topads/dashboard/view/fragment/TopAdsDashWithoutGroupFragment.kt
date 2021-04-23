@@ -68,15 +68,11 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
 
     private val groupFilterSheet: TopadsGroupFilterSheet by lazy {
-        context.run {
-            TopadsGroupFilterSheet.newInstance(context!!)
-        }
+            TopadsGroupFilterSheet.newInstance(context)
     }
 
     private val movetoGroupSheet: MovetoGroupSheetList by lazy {
-        context.run {
-            MovetoGroupSheetList.newInstance(context!!)
-        }
+        MovetoGroupSheetList.newInstance(requireContext())
     }
 
     override fun getScreenName(): String {
@@ -173,7 +169,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         fetchData()
         btnFilter.setOnClickListener {
-            groupFilterSheet.show()
+            groupFilterSheet.show(childFragmentManager, "")
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
 
@@ -198,7 +194,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
             }
         }
         delete.setOnClickListener {
-            showConfirmationDialog(context!!)
+            showConfirmationDialog(requireContext())
         }
         Utils.setSearchListener(context, view, ::fetchData)
     }

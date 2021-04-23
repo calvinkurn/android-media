@@ -6,6 +6,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
@@ -308,9 +310,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                 ?: PdpGetLayout()
 
         if (gqlResponse.isCached) {
-            Timber.w("P2#PDP_CACHE#true;productId=$productId")
+            ServerLogger.log(Priority.P2, "PDP_CACHE", mapOf("type" to "true", "productId" to productId))
         } else {
-            Timber.w("P2#PDP_CACHE#false;productId=$productId")
+            ServerLogger.log(Priority.P2, "PDP_CACHE", mapOf("type" to "false", "productId" to productId))
         }
         val blacklistMessage = data.basicInfo.blacklistMessage
 

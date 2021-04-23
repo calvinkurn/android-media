@@ -36,7 +36,6 @@ import com.tokopedia.checkout.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.kotlin.extensions.view.TextViewExtKt;
 import com.tokopedia.logisticCommon.data.constant.CourierConstant;
@@ -57,6 +56,7 @@ import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.utils.currency.CurrencyFormatUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -178,13 +178,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     // order prioritas
     private CheckboxUnify checkBoxPriority;
-    private TextView tvPrioritasTicker;
+    private Typography tvPrioritasTicker;
     private LinearLayout llPrioritasTicker;
     private RelativeLayout llPrioritas;
     private Typography tvPrioritasFee;
     private Typography tvPrioritasFeePrice;
     private ImageView imgPriorityTnc;
-    private TextView tvPrioritasInfo;
+    private Typography tvPrioritasInfo;
     private boolean isPriorityChecked = false;
 
     // Shipping Experience
@@ -480,6 +480,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             ImageHandler.loadImageWithoutPlaceholderAndError(
                     imgFreeShipping, shipmentCartItemModel.getFreeShippingBadgeUrl()
             );
+            if (shipmentCartItemModel.isFreeShippingExtra()) {
+                imgFreeShipping.setContentDescription(itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe));
+            } else {
+                imgFreeShipping.setContentDescription(itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo));
+            }
             imgFreeShipping.setVisibility(View.VISIBLE);
             separatorFreeShipping.setVisibility(View.VISIBLE);
         } else {
@@ -512,6 +517,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (!shipmentCartItemModel.getShopBadge().isEmpty()) {
                 ImageHandler.loadImageWithoutPlaceholder(imgShopBadge, shipmentCartItemModel.getShopBadge());
                 imgShopBadge.setVisibility(View.VISIBLE);
+                String shopType = itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_power_merchant);
+                if (shipmentCartItemModel.isOfficialStore()) {
+                    shopType = itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_official_store);
+                }
+                imgShopBadge.setContentDescription(itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopType));
             }
         } else {
             imgShopBadge.setVisibility(View.GONE);
@@ -571,13 +581,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderProductPrice(CartItemModel cartItemModel) {
-        tvProductPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+        tvProductPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                 (long) cartItemModel.getPrice(), false)));
         int dp4 = tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_4);
         int dp10 = tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_10);
         if (cartItemModel.getOriginalPrice() > 0) {
             tvProductPrice.setPadding(dp4, dp4, 0, 0);
-            tvProductOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+            tvProductOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                     cartItemModel.getOriginalPrice(), false
             )));
             tvProductOriginalPrice.setPaintFlags(tvProductOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -603,7 +613,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             mIconTooltip.setOnClickListener(view -> mActionListener.navigateToProtectionMore(cartItemModel.getProtectionLinkUrl()));
             tvPPPLinkText.setText(cartItemModel.getProtectionTitle());
             tvPPPPrice.setText(cartItemModel.getProtectionSubTitle());
-            mPricePerProduct.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItemModel.getProtectionPricePerProduct(), false)));
+            mPricePerProduct.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) cartItemModel.getProtectionPricePerProduct(), false)));
 
             if (cartItemModel.isProtectionCheckboxDisabled()) {
                 cbPPP.setEnabled(false);
@@ -697,7 +707,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         );
 
         String courierName = selectedCourierItemData.getName() + " (" +
-                Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                         selectedCourierItemData.getShipperPrice(), false
                 )) + ")";
 
@@ -709,7 +719,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             labelSelectedShippingPriceorDuration.setText(R.string.estimasi_tidak_tersedia);
         } else {
             TextViewExtKt.setTextAndContentDescription(labelSelectedShippingCourier, selectedCourierItemData.getName(), R.string.content_desc_label_selected_shipping_courier);
-            labelSelectedShippingPriceorDuration.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+            labelSelectedShippingPriceorDuration.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                     selectedCourierItemData.getShipperPrice(), false
             )));
         }
@@ -788,13 +798,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             } else if (selectedCourierItemData.getDiscountedRate() > 0) {
                 // Discounted Shipping Price
                 labelFreeShippingOriginalEtaPrice.setVisibility(View.VISIBLE);
-                String originalEtaPrice = "(" + Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                String originalEtaPrice = "(" + Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                         selectedCourierItemData.getShippingRate(), false
                 ));
                 labelFreeShippingOriginalEtaPrice.setText(originalEtaPrice);
                 labelFreeShippingOriginalPrice.setVisibility(View.GONE);
                 labelFreeShippingOriginalEtaPrice.setPaintFlags(labelFreeShippingOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                String DiscountedEtaPrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                String DiscountedEtaPrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                         selectedCourierItemData.getDiscountedRate(), false
                 )) + ")";
                 labelFreeShippingDiscountedEtaPrice.setText(DiscountedEtaPrice);
@@ -819,11 +829,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 labelFreeShippingDiscountedPrice.setVisibility(View.GONE);
             } else if (selectedCourierItemData.getDiscountedRate() > 0) {
                 // Discounted Shipping Price
-                labelFreeShippingOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                labelFreeShippingOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                         selectedCourierItemData.getShippingRate(), false
                 )));
                 labelFreeShippingOriginalPrice.setPaintFlags(labelFreeShippingOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                labelFreeShippingDiscountedPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                labelFreeShippingDiscountedPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                         selectedCourierItemData.getDiscountedRate(), false
                 )));
                 labelFreeShippingOriginalPrice.setVisibility(View.VISIBLE);
@@ -1042,7 +1052,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             subTotalPrice = totalItemPrice;
         }
-        TextViewExtKt.setTextAndContentDescription(tvSubTotalPrice, subTotalPrice == 0 ? "-" : Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotalPrice, false)), R.string.content_desc_tv_sub_total_price);
+        TextViewExtKt.setTextAndContentDescription(tvSubTotalPrice, subTotalPrice == 0 ? "-" : Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(subTotalPrice, false)), R.string.content_desc_tv_sub_total_price);
         TextViewExtKt.setTextAndContentDescription(tvTotalItemPrice, totalItemPrice == 0 ? "-" : getPriceFormat(tvTotalItem, tvTotalItemPrice, totalItemPrice), R.string.content_desc_tv_total_item_price_subtotal);
         tvTotalItem.setText(totalItemLabel);
         tvShippingFee.setText(shippingFeeLabel);
@@ -1548,7 +1558,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             textViewLabel.setVisibility(View.VISIBLE);
             textViewPrice.setVisibility(View.VISIBLE);
-            return Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(price, false));
+            return Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(price, false));
         }
     }
 

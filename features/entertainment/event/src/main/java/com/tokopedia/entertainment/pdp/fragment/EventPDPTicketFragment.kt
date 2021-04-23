@@ -379,7 +379,15 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
                     context?.let {
                         val coachMark = CoachMark2(it)
                         coachMark.apply {
-                            showCoachMark(ArrayList(getCoachmarkItem(listRecom)), scroll_ticket_pdp, 0)
+                            showCoachMark(ArrayList(getCoachmarkItem(listRecom)), null, 0)
+                            setStepListener(object : CoachMark2.OnStepListener{
+                                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                                    if(currentIndex == 1){
+                                        val position = tgEventTicketRecommendationTitle.y
+                                        scroll_ticket_pdp.smoothScrollTo(0, position.toInt())
+                                    }
+                                }
+                            })
                         }
                     }
                     localCacheHandler.apply {

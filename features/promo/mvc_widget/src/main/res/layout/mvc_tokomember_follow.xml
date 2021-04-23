@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:layout_marginTop="@dimen/dp_16"
-            tools:background="@color/red_30">
+            tools:background="@color/Unify_Y200">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTitle"
@@ -44,7 +44,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"
-                android:textColor="@color/mvcw_31353B"
+                android:textColor="@color/Unify_N700"
                 tools:text="Jadi member toko untuk dapat kupon:
                 \n•  Cashback 10% hingga Rp500.000
                 \n•  Cashback 10% hingga Rp500.000

@@ -57,7 +57,7 @@ class TopAdsCreateAnalytics {
     }
 
 
-    fun sendTopAdsEvent(eventAction: String, eventLabel: String,userId: String) {
+    fun sendTopAdsEvent(eventAction: String, eventLabel: String, userId: String) {
         val map = mapOf(
                 KEY_EVENT to KEY_EVENT_VALUE,
                 KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_VALUE,
@@ -68,7 +68,7 @@ class TopAdsCreateAnalytics {
         getTracker().sendGeneralEvent(map)
     }
 
-    fun sendTopAdsEventEdit(eventAction: String, eventLabel: String,userId: String) {
+    fun sendTopAdsEventEdit(eventAction: String, eventLabel: String, userId: String) {
         val map = mapOf(
                 KEY_EVENT to KEY_EVENT_VALUE_EDIT,
                 KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_VALUE_EDIT,

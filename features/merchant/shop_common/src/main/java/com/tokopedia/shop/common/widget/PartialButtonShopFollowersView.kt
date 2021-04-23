@@ -12,6 +12,7 @@ import com.tokopedia.shop.common.util.loadLeftDrawable
 import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.shop.common.util.RoundedShadowUtill
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.layout_button_npl_follow.view.*
 
@@ -114,10 +115,11 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
 
     private fun setupButtonFollowers(buttonLabel: String?, voucherIconUrl: String?) {
         voucherIconUrl?.run {
+            followersBtn?.layoutParams?.width = 110.toPx()
             followersBtn?.loadLeftDrawable(
                     context = view.context,
                     url = voucherIconUrl,
-                    convertIntoSize = 50
+                    convertIntoSize = 20.toPx()
             )
         }
         followersBtn?.run {
@@ -128,7 +130,16 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
                 if (!isLoading) {
                     listener.onButtonFollowNplClick()
                 }
+                voucherIconUrl?.run {
+                    removeCompoundDrawableFollowButton()
+                }
             }
+        }
+    }
+
+    private fun removeCompoundDrawableFollowButton() {
+        if (!followersBtn?.compoundDrawables.isNullOrEmpty()) {
+            followersBtn?.removeDrawable()
         }
     }
 

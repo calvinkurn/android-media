@@ -26,7 +26,7 @@ class ProgressMapper @Inject constructor(): BaseResponseMapper<GetProgressDataRe
                     maxValueTxt = it.maxValueText.orEmpty(),
                     value = it.value.toZeroIfNull(),
                     maxValue = it.maxValue.toZeroIfNull(),
-                    colorState = mapState(it.state.orEmpty()),
+                    colorState = mapState(it.state),
                     error = it.errorMessage.orEmpty(),
                     subtitle = it.subtitle.orEmpty(),
                     dataKey = it.dataKey.orEmpty(),

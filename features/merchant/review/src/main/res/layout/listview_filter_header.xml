@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -13,9 +14,8 @@
         android:lineSpacingExtra="8sp"
         android:padding="@dimen/padding_activity"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/font_medium"
-        android:textStyle="normal"
         tools:text="Status"
+        app:typographyType="body_1"
         />
 
 </LinearLayout>

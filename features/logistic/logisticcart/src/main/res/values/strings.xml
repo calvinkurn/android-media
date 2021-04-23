@@ -16,7 +16,6 @@
     <string name="logistic_promo_serviceid_mismatch_message">Tidak tersedia kurir untuk promo tersebut</string>
     <string name="order_prioritas">Tersedia Layanan Order Prioritas</string>
     <string name="title_term_and_condition">Syarat dan Ketentuan</string>
-    <string name="cod_brand_tag">Bayar di Tempat</string>
     <string name="duration_header_ticker">Perkiraan tiba dihitung sejak pesanan dikirim</string>
     <string name="label_hardcoded_courier_ticker_logistic">Pembelian di atas 14:00 WIB berpotensi dikirim besok</string>
     <string name="label_hardcoded_courier_ticker_instant">Barang tiba maks. 3 jam sejak penjual menyerahkan ke kurir</string>
@@ -37,4 +36,5 @@
     <string name="estimasi_tidak_tersedia">Estimasi tidak tersedia</string>
     <string name="bracket_container">(%1$s)</string>
     <string name="content_description_img_logo_rates_promo_prefix">image %1$s</string>
+    <string name="message_error_shipping_general">Terjadi kesalahan</string>
 </resources>

@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:textColor="@color/setting_green"
+        android:textColor="@color/Unify_G500"
         android:text="@string/setting_logout"
         app:typographyType="body_1"
         app:typographyWeight="reguler"
@@ -22,7 +22,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:textColor="@color/setting_grey_pale"
+        android:textColor="@color/Unify_N700_32"
         app:typographyType="body_1"
         app:typographyWeight="reguler"
         app:layout_constraintEnd_toStartOf="@id/logoutGuidelineRight"/>

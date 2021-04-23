@@ -211,6 +211,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 } else if (isFromANA == true) {
                     listener?.onAddressDataChanged()
                     dismissBottomSheet()
+                } else {
+                    dismissBottomSheet()
                 }
             }
             REQUEST_CODE_LOGIN_PAGE -> {
@@ -230,6 +232,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     }
 
     private fun initLayout() {
+        clearContentPadding = true
         val view = View.inflate(context, R.layout.bottomsheet_choose_address, null)
         setupView(view)
         setChild(view)

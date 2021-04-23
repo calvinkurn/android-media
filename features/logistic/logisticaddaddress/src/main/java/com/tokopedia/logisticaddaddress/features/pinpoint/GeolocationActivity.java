@@ -17,13 +17,13 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.uimodel.CoordinateUiModel;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.di.GeolocationModule;
 import com.tokopedia.logisticaddaddress.di.DaggerGeolocationComponent;
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.user.session.UserSession;
@@ -196,7 +196,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
     ) {
         return new RetrofitInteractor.GenerateLatLongListener() {
             @Override
-            public void onSuccess(CoordinateViewModel model) {
+            public void onSuccess(CoordinateUiModel model) {
                 locationPass.setLatitude(
                         String.valueOf(model.getCoordinate().latitude)
                 );

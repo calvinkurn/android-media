@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.view.fragment
 
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -14,11 +13,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.pocnewrelic.*
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.BuildConfig
@@ -103,6 +99,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val MAX_LOTTIE_ANIM_SPEED = 4f
         private const val SCROLL_DELTA_MIN_Y_THRESHOLD = 20f
         private const val SCROLL_DELTA_MAX_Y_THRESHOLD = 100f
+
+        private const val HIDDEN_WIDGET_COUNT = 2
+
+        private const val DEFAULT_HEIGHT_DP = 720f
     }
 
     @Inject
@@ -128,6 +128,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 null
             }
 
+    private val deviceDisplayHeight: Float
+        get() =
+            try {
+                val dm = resources.displayMetrics
+                dm.heightPixels / dm.density
+            } catch (ex: Exception) {
+                DEFAULT_HEIGHT_DP
+            }
+
     private var sellerHomeListener: Listener? = null
     private var menu: Menu? = null
     private val notificationDotBadge: NotificationDotBadge? by lazy {
@@ -143,6 +152,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 super.onScrolled(recyclerView, dx, dy)
             }
         }
+    }
+
+    private val isNewLazyLoad by lazy {
+        remoteConfig.isSellerHomeDashboardNewLazyLoad()
     }
 
     private var notifCenterCount = 0
@@ -172,7 +185,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         initPltPerformanceMonitoring()
         startHomeLayoutNetworkMonitoring()
         startHomeLayoutCustomMetric()
-        sellerHomeViewModel.getWidgetLayout()
+        val deviceHeight =
+                if (isNewLazyLoad) {
+                    deviceDisplayHeight
+                } else {
+                    null
+                }
+        sellerHomeViewModel.getWidgetLayout(deviceHeight)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -198,6 +217,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.multiLineGraphWidgetData, WidgetType.MULTI_LINE_GRAPH)
         observeWidgetData(sellerHomeViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
         observeTickerLiveData()
+        observeCustomTracePerformanceMonitoring()
         context?.let { UpdateShopActiveService.startService(it) }
     }
 
@@ -325,7 +345,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 if (widget.widgetType == WidgetType.CARD) {
                     visibleWidgets.add(widget)
                 } else {
-                    if (index in firstVisible..lastVisible) {
+                    val lastLoadingWidget =
+                            if (isNewLazyLoad) {
+                                getLastLoadingWidget(lastVisible)
+                            } else {
+                                lastVisible
+                            }
+                    if (index in firstVisible..lastLoadingWidget) {
                         visibleWidgets.add(widget)
                     }
                 }
@@ -335,13 +361,34 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
     }
 
+    /**
+     * Get index of last widget which data will be loaded.
+     * This will be used to load widgets below the visible widgets for smooth scrolling
+     *
+     * @param   lastVisibleWidget   index of last visible widget on the screen
+     * @return  index of last widget that need its data to be loaded
+     */
+    private fun getLastLoadingWidget(lastVisibleWidget: Int): Int {
+        return if (lastVisibleWidget + HIDDEN_WIDGET_COUNT >= adapter.dataSize) {
+            adapter.lastIndex
+        } else {
+            lastVisibleWidget + HIDDEN_WIDGET_COUNT
+        }
+    }
+
     private fun reloadPage() = view?.run {
         val isAdapterNotEmpty = adapter.data.isNotEmpty()
         setProgressBarVisibility(!isAdapterNotEmpty)
         swipeRefreshLayout.isRefreshing = isAdapterNotEmpty
 
         sahGlobalError.gone()
-        sellerHomeViewModel.getWidgetLayout()
+        val deviceHeight =
+                if (isNewLazyLoad) {
+                    deviceDisplayHeight
+                } else {
+                    null
+                }
+        sellerHomeViewModel.getWidgetLayout(deviceHeight)
         sellerHomeViewModel.getTicker()
     }
 
@@ -353,9 +400,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     }
 
-    override fun loadData(page: Int) {
-
-    }
+    override fun loadData(page: Int) {}
 
     private fun List<BaseWidgetUiModel<*>>.setLoading() {
         forEach {
@@ -639,7 +684,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         })
 
-        view?.swipeRefreshLayout?.isRefreshing = true
         setProgressBarVisibility(true)
     }
 
@@ -679,7 +723,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         hideSnackBarRetry()
         updateScrollListenerState(false)
 
+        var isWidgetHasError = false
         val newWidgetFromCache = widgets.first().isFromCache
+        if (isNewLazyLoad) {
+            startHomeLayoutRenderMonitoring()
+            stopPltMonitoringIfNotCompleted(fromCache = newWidgetFromCache)
+        }
         val newWidgets = if (adapter.data.isEmpty()) {
             widgets as List<BaseWidgetUiModel<BaseDataUiModel>>
         } else {
@@ -690,6 +739,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 val newWidgets = arrayListOf<BaseWidgetUiModel<*>>()
                 widgets.forEach { newWidget ->
                     oldWidgets.find { isTheSameWidget(it, newWidget) }.let { oldWidget ->
+                        if (isNewLazyLoad) {
+                            // If there are card widgets exist in adapter data, set the previous value in the latest widget
+                            // to enable animation after pull to refresh
+                            if (newWidget is CardWidgetUiModel) {
+                                newWidget.data?.previousValue = (oldWidget as? CardWidgetUiModel)?.data?.previousValue
+                            }
+                            // Set flag if initial widget layout list has error data to determine showing toaster or not
+                            if (!newWidget.data?.error.isNullOrBlank()) {
+                                isWidgetHasError = true
+                            }
+                        }
                         if (oldWidget == null) {
                             newWidgets.add(newWidget)
                         } else {
@@ -728,6 +788,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         setProgressBarVisibility(false)
+
+        if (isWidgetHasError) {
+            showErrorToaster()
+        }
     }
 
     private fun isTheSameWidget(oldWidget: BaseWidgetUiModel<*>, newWidget: BaseWidgetUiModel<*>): Boolean {
@@ -840,6 +904,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.getTicker()
     }
 
+    private fun observeCustomTracePerformanceMonitoring() {
+        sellerHomeViewModel.startWidgetCustomMetricTag.observe(viewLifecycleOwner) { tag ->
+            startCustomMetric(tag)
+        }
+        sellerHomeViewModel.stopWidgetType.observe(viewLifecycleOwner) { widgetType ->
+            stopSellerHomeFragmentWidgetPerformanceMonitoring(widgetType, false)
+        }
+    }
+
     private fun setViewBackground() = view?.run {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
@@ -863,8 +936,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
                     }
                 }
+                loadNextUnloadedWidget()
             }
         })
+    }
+
+    /**
+     * Load next unloaded indexed widget in adapter after the previous one is complete
+     */
+    private fun loadNextUnloadedWidget() {
+        if (isNewLazyLoad) {
+            adapter.data?.find { !it.isLoaded }?.let { newWidgets ->
+                getWidgetsData(listOf(newWidgets))
+            }
+        }
     }
 
     private fun stopSellerHomeFragmentWidgetPerformanceMonitoring(type: String, isFromCache: Boolean) {
@@ -972,7 +1057,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun onSuccessGetTickers(tickers: List<TickerItemUiModel>) {
 
-        fun getTickerType(hexColor: String): Int = when (hexColor) {
+        fun getTickerType(hexColor: String?): Int = when (hexColor) {
             context?.getString(R.string.sah_ticker_warning) -> Ticker.TYPE_WARNING
             else -> Ticker.TYPE_ANNOUNCEMENT
         }

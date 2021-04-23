@@ -42,7 +42,7 @@
             android:label="@string/shop_settings_manage_notes"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
-            <intent-filter >
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -63,7 +63,7 @@
             android:label="@string/shop_settings_add_etalase"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
-            <intent-filter >
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
