@@ -274,6 +274,13 @@ abstract class TopchatRoomTest {
         ).check(matches(viewMatcher))
     }
 
+    protected fun assertEmptyStockLabelOnProductCard(
+            recyclerViewId: Int,
+            atPosition: Int,
+    ) {
+        assertLabelTextOnProductCard(recyclerViewId, atPosition, "Stok habis")
+    }
+
     protected fun assertLabelTextOnProductCard(
             recyclerViewId: Int,
             atPosition: Int,

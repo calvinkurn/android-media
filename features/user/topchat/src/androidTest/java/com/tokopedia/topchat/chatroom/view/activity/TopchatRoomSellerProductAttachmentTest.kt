@@ -154,7 +154,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
 
         // Then
         assertLabelOnProductCard(R.id.recycler_view, 1, isDisplayed())
-        assertLabelTextOnProductCard(R.id.recycler_view, 1, "Stok habis")
+        assertEmptyStockLabelOnProductCard(R.id.recycler_view, 1)
         assertStockCountVisibilityAt(R.id.recycler_view, 1, isDisplayed())
         assertStockCountValueAt(R.id.recycler_view, 1, 0)
     }
@@ -410,17 +410,52 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         assertStockCountBtnVisibilityAt(
                 R.id.recycler_view, 1, isDisplayed()
         )
-        assertStockCountValueAt(
-                R.id.recycler_view, 1, variantStockResult
-        )
         assertStockCountVisibilityAt(
                 R.id.recycler_view, 1, isDisplayed()
+        )
+        assertStockCountValueAt(
+                R.id.recycler_view, 1, variantStockResult
         )
         assertSnackbarText(
                 "Stok produk \"$productName - $variantName\" berhasil diubah."
         )
     }
 
-    // TODO: Add test update status with variant product
+    @Test
+    fun should_has_empty_stock_if_variant_result_is_inactive_from_update_stock() {
+        // Given
+        val productName = "Sepatu"
+        val productId = "1261590628"
+        val variantStockResult = 0
+        val variantName = "Biru"
+        val variantResult = UpdateCampaignVariantResult(
+                ProductStatus.INACTIVE, variantStockResult, variantName
+        )
+        val variantMapResult = hashMapOf(
+                productId to variantResult
+        )
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductVariantChatReplies
+        chatAttachmentUseCase.response = sellerProductVariantAttachment
+        createSuccessUpdateStockIntentResult(
+                productId, 55, ProductStatus.ACTIVE, productName, variantMapResult
+        )
+        inflateTestFragment()
+
+        // When
+        clickChangeStockBtn(R.id.recycler_view, 1)
+
+        // Then
+        assertStockCountBtnVisibilityAt(
+                R.id.recycler_view, 1, isDisplayed()
+        )
+        assertStockCountVisibilityAt(
+                R.id.recycler_view, 1, isDisplayed()
+        )
+        assertStockCountValueAt(
+                R.id.recycler_view, 1, 0
+        )
+        assertEmptyStockLabelOnProductCard(R.id.recycler_view, 1)
+    }
 
 }
