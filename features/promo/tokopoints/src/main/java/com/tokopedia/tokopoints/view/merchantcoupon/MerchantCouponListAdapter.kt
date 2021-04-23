@@ -24,10 +24,11 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.ImageUnify
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 
 class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback: AdapterCallback) : BaseAdapter<CatalogMVCWithProductsListItem>(callback) {
     private var mRecyclerView: RecyclerView? = null
-    private var flagUrlChange = false
+    private var adIdImpression = HashSet<String>()
 
     inner class CouponListViewHolder(view: View) : BaseVH(view) {
 
@@ -67,18 +68,16 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
 
         if (item?.products?.size != null && item?.products?.size > 0) {
             if (item?.products?.size == 1) {
-                flagUrlChange = false
-                vh.productParentTwo.show()
+                vh.productParentOne.show()
                 item?.products?.get(0)?.imageURL?.let {
                     if (it.isNotEmpty()) {
-                        vh.ivCouponTwo.setImageUrl(it, 1f)
+                        vh.ivCouponOne.setImageUrl(it, 1f)
                     }
                 }
-                vh.tvDealsCouponTwo.text = item?.products?.get(0)?.benefitLabel
+                vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
             }
 
             if (item?.products?.size > 1) {
-                flagUrlChange = true
                 vh.productParentTwo.show()
                 item?.products?.get(1)?.imageURL?.let {
                     if (it.isNotEmpty()) {
@@ -116,11 +115,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
         }
 
         vh.ivCouponTwo.setOnClickListener {
-            var couponIndex = 0
-            if (flagUrlChange) {
-                couponIndex = 1
-            }
-            RouteManager.route(vh.itemView.context, item?.products?.get(couponIndex)?.redirectAppLink)
+            RouteManager.route(vh.itemView.context, item?.products?.get(1)?.redirectAppLink)
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_PRODUCT_CARD, vh, item?.AdInfo)
         }
 
@@ -167,8 +162,6 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
     }
 
     private fun sendTopadsClick(context: Context, adInfo: AdInfo?) {
-        val check = adInfo?.let { isEventTriggered(context, 1, it) }
-        if (check != null && !check) {
             TopAdsUrlHitter(context).hitClickUrl(
                     this::class.java.simpleName,
                     adInfo?.AdClickUrl,
@@ -177,12 +170,11 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
                     "",
                     ""
             )
-        }
     }
 
     private fun sendTopadsImpression(context: Context, adInfo: AdInfo?) {
-        val check = adInfo?.let { isEventTriggered(context, 0, it) }
-        if (check != null && !check) {
+        if (!adIdImpression.contains(adInfo?.AdID) && adInfo?.AdViewUrl!!.isNotBlank() && !isEventTriggered(context,adInfo)){
+            adInfo?.AdID?.let { adIdImpression?.add(it) }
             TopAdsUrlHitter(SectionMerchantCouponAdapter.packageName).hitImpressionUrl(
                     context,
                     adInfo?.AdViewUrl,

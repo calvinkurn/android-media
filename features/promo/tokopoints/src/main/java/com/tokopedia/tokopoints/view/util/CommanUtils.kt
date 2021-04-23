@@ -47,19 +47,11 @@ fun isDarkMode(context: Context): Boolean {
     }
 }
 
-fun isEventTriggered(context: Context, type: Int, adInfo: AdInfo): Boolean? {
+fun isEventTriggered(context: Context, adInfo: AdInfo): Boolean {
     var check: Boolean? = false
     val setData = PersistentAdsData(context).getAdsSet()
-
-    when (type) {
-        0 -> {
-            check = setData?.contains(adInfo?.AdViewUrl)
-        }
-        else -> {
-            check = setData?.contains(adInfo?.AdClickUrl)
-        }
-    }
-    return check
+    check = setData?.contains(adInfo?.AdID)
+    return check!!
 }
 
 
