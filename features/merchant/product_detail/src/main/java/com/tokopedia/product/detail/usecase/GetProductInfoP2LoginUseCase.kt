@@ -67,7 +67,8 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
         val shopId = requestParams.getInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, 0)
         val isShopOwner = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_IS_SHOP_OWNER, false)
 
-        val isWishlistedParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to (productId ?: ""))
+        val isWishlistedParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to (productId
+                ?: ""))
         val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
                 WishlistStatus::class.java, isWishlistedParams)
 
@@ -105,7 +106,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
                         .isWishlisted == true
             } else {
                 p2Login.isWishlisted = true
-                val error: List<GraphqlError>?  = gqlResponse.getError(ProductShopFollowResponse::class.java)
+                val error: List<GraphqlError>? = gqlResponse.getError(ProductShopFollowResponse::class.java)
                 errorLogListener?.invoke(MessageErrorException(error?.mapNotNull { it.message }?.joinToString(separator = ", ")))
             }
 
@@ -134,7 +135,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
                             ?: 0
                 }
             } else {
-                val error: List<GraphqlError>?  = gqlResponse.getError(ProductShopFollowResponse::class.java)
+                val error: List<GraphqlError>? = gqlResponse.getError(ProductShopFollowResponse::class.java)
                 errorLogListener?.invoke(MessageErrorException(error?.mapNotNull { it.message }?.joinToString(separator = ", ")))
             }
         } catch (t: Throwable) {

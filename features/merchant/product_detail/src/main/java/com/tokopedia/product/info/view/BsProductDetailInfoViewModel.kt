@@ -52,6 +52,6 @@ class BsProductDetailInfoViewModel @Inject constructor(dispatchers: CoroutineDis
     }
 
     private fun logProductDetailBottomSheet(throwable: Throwable) {
-        ProductDetailLogger.logThrowable(throwable, ERROR_TYPE_DESCRIPTION_INFO,  parcelData.value?.productId ?: "", userSession.userId, userSession.deviceId)
+        ProductDetailLogger.logThrowable(throwable, ERROR_TYPE_DESCRIPTION_INFO,  parcelData.value?.productId ?: "", userSession.deviceId)
     }
 }

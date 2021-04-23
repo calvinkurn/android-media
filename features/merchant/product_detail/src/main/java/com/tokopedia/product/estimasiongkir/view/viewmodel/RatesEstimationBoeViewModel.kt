@@ -61,7 +61,7 @@ class RatesEstimationBoeViewModel @Inject constructor(private val ratesUseCase: 
 
     private fun logRateEstimate(throwable: Throwable) {
         val extras = mapOf(Pair(LOCALIZATION_DATA_KEY, _ratesRequest.value?.destination ?: "")).toString()
-        ProductDetailLogger.logThrowable(throwable, ERROR_TYPE_RATE_ESTIMATE, _ratesRequest.value?.productId ?: "", userSession.userId, userSession.deviceId, extras)
+        ProductDetailLogger.logThrowable(throwable, ERROR_TYPE_RATE_ESTIMATE, _ratesRequest.value?.productId ?: "", userSession.deviceId, extras)
     }
 
 }

@@ -488,6 +488,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData = mapIntoUiData(successData.response)
         } catch (t: Throwable) {
             Timber.d(t)
+            errorLogListener?.invoke(t)
         }
         return p2UiData
     }
