@@ -3,6 +3,7 @@ package com.tokopedia.orderhistory.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -18,11 +19,11 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class OrderHistoryViewModel @Inject constructor(
-        private val contextProvider: OrderHistoryCoroutineContextProvider,
+        private val contextProvider: CoroutineDispatchers,
         private val productHistoryUseCase: GetProductOrderHistoryUseCase,
         private val addWishListUseCase: AddWishListUseCase,
         private var addToCartUseCase: AddToCartUseCase,
-) : BaseViewModel(contextProvider.Main) {
+) : BaseViewModel(contextProvider.main) {
 
     private val _product: MutableLiveData<Result<ChatHistoryProductResponse>> = MutableLiveData()
     val product: LiveData<Result<ChatHistoryProductResponse>> get() = _product
@@ -54,12 +55,12 @@ class OrderHistoryViewModel @Inject constructor(
             onError: (msg: String) -> Unit
     ) {
         launchCatchError(
-                contextProvider.IO,
+                contextProvider.io,
                 block = {
                     val atcResponse = addToCartUseCase.createObservable(requestParams)
                             .toBlocking()
                             .single().data
-                    withContext(contextProvider.Main) {
+                    withContext(contextProvider.main) {
                         if (atcResponse.success == 1) {
                             onSuccessAddToCart(atcResponse)
                         } else {
@@ -68,7 +69,7 @@ class OrderHistoryViewModel @Inject constructor(
                     }
                 },
                 onError = {
-                    withContext(contextProvider.IO) {
+                    withContext(contextProvider.io) {
                         it.message?.let { errorMsg ->
                             onError(errorMsg)
                         }

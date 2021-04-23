@@ -8,18 +8,18 @@ import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.layout_title_dynamic_initial_state.view.*
 
-class DynamicInitialStateTitleViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<DynamicInitialStateTitleViewModel>(itemView) {
+class DynamicInitialStateTitleViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<DynamicInitialStateTitleDataView>(itemView) {
 
-    override fun bind(element: DynamicInitialStateTitleViewModel) {
+    override fun bind(element: DynamicInitialStateTitleDataView) {
         bindTitle(element)
         bindActionButton(element)
     }
 
-    private fun bindTitle(item: DynamicInitialStateTitleViewModel) {
+    private fun bindTitle(item: DynamicInitialStateTitleDataView) {
         itemView.initialStateDynamicTitle?.text = item.title
     }
 
-    private fun bindActionButton(item: DynamicInitialStateTitleViewModel) {
+    private fun bindActionButton(item: DynamicInitialStateTitleDataView) {
         itemView.initialStateDynamicButton?.shouldShowWithAction(item.labelAction.isNotEmpty()) {
             itemView.initialStateDynamicButton?.text = item.labelAction
             itemView.initialStateDynamicButton?.isEnabled = true

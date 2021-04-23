@@ -17,11 +17,12 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.product.share.ekstensions.getShareContent
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.utils.image.ImageProcessingUtil
-import timber.log.Timber
 import java.io.File
 
 class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) {
@@ -118,10 +119,14 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 branchTime > TIMEOUT_LOG ||
                 linkerError != null ||
                 error.isNotEmpty()) {
-            Timber.w("P2#$log_tag#log;mode=$mode;img_ready=$imageReady;" +
-                    "img_process=$imageProcess;branch_time=$branchTime;" +
-                    "err='${error.joinToString(",") { it.stackTrace.toString().substring(0, 50) }}';" +
-                    "linker_err='${linkerError?.errorCode}'")
+            ServerLogger.log(Priority.P2, log_tag, mapOf("type" to "log",
+                    "mode" to mode.toString(),
+                    "img_ready" to imageReady.toString(),
+                    "img_process" to imageProcess.toString(),
+                    "branch_time" to branchTime.toString(),
+                    "err" to error.map { it.stackTrace.toString().substring(0, 50) }.joinToString(","),
+                    "linker_err" to linkerError?.errorCode.toString()
+            ))
         }
     }
 

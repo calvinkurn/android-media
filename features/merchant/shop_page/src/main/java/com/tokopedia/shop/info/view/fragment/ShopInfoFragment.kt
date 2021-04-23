@@ -261,7 +261,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
         setupLogisticList(shopInfo)
 
         if (shopViewModel?.isMyShop(shopInfo.shopId) == true) {
-            labelViewLogisticTitle.setContent(getString(R.string.shop_info_label_manage_note))
+            labelViewLogisticTitle.content = getString(R.string.shop_info_label_manage_note)
             labelViewLogisticTitle.setOnClickListener { goToManageLogistic() }
         }
     }
@@ -315,7 +315,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     }
 
     private fun showManageNotesLabel() {
-        noteLabelView.setContent(getString(R.string.shop_info_label_manage_note))
+        noteLabelView.content = getString(R.string.shop_info_label_manage_note)
         noteLabelView.setOnClickListener { onEmptyButtonClicked() }
     }
 

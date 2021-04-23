@@ -14,6 +14,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.DeletePrefer
 import com.tokopedia.oneclickcheckout.preference.edit.domain.get.GetPreferenceByIdUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.model.UpdatePreferenceRequest
+import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import javax.inject.Inject
 
@@ -116,7 +117,7 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
         }
         createPreferenceUseCase.execute(CreatePreferenceRequest(addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow, chosenAddress),
                 { message: String ->
-                    if (addressModel != null && (isSelectedPreference || isDefaultProfileChecked)) {
+                    if (addressModel != null && fromFlow == PreferenceEditActivity.FROM_FLOW_OSP && (isSelectedPreference || isDefaultProfileChecked)) {
                         _localCacheAddressResult.value = addressModel
                     }
                     _editResult.value = OccState.Success(message)
@@ -133,7 +134,7 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
         OccIdlingResource.increment()
         updatePreferenceUseCase.execute(UpdatePreferenceRequest(profileId, addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow),
                 { message: String ->
-                    if (addressModel != null && (isSelectedPreference || isDefaultProfileChecked)) {
+                    if (addressModel != null && fromFlow == PreferenceEditActivity.FROM_FLOW_OSP && (isSelectedPreference || isDefaultProfileChecked)) {
                         _localCacheAddressResult.value = addressModel
                     }
                     _editResult.value = OccState.Success(message)

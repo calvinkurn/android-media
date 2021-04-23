@@ -4,7 +4,7 @@ import android.app.Activity
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -38,7 +38,7 @@ class HotelDestinationViewModel @Inject constructor(
         private val getPropertyPopularUseCase: GetPropertyPopularUseCase,
         private val getHotelRecentSearchUseCase: GetHotelRecentSearchUseCase,
         val graphqlRepository: GraphqlRepository,
-        val dispatcher: TravelDispatcherProvider) : BaseViewModel(dispatcher.io()) {
+        val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.io) {
 
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     val popularSearch = MutableLiveData<Result<List<PopularSearch>>>()
@@ -72,7 +72,7 @@ class HotelDestinationViewModel @Inject constructor(
         val dataParams = mapOf(PARAM_DATA to params)
         launchCatchError(block = {
             searchDestination.postValue(Shimmering)
-            val data = withContext(dispatcher.ui()) {
+            val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_SEARCH_RESPONSE, dataParams)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelSuggestion.Response>()
@@ -85,7 +85,7 @@ class HotelDestinationViewModel @Inject constructor(
     fun deleteRecentSearch(query: String, uuid: String) {
         val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt(), PARAM_DELETE_RECENT_UUID to uuid)
         launchCatchError(block = {
-            val data = withContext(dispatcher.ui()) {
+            val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(query, RecentSearch.DeleteResponse::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RecentSearch.DeleteResponse>()

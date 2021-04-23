@@ -57,7 +57,7 @@
             android:name=".hoteldetail.presentation.activity.HotelDetailActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.NoActionBar">
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -83,7 +83,7 @@
             android:name=".roomdetail.presentation.activity.HotelRoomDetailActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.NoActionBar" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".hoteldetail.presentation.activity.HotelReviewActivity"
             android:screenOrientation="portrait"
@@ -165,7 +165,7 @@
             android:name=".orderdetail.presentation.activity.SeeInvoiceActivity"
             android:configChanges="uiMode"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
