@@ -71,6 +71,7 @@
 /features/merchant/favorite/                            @tokopedia/android-minionstuart-dev
 /features/merchant/seller_search/                       @tokopedia/android-minionstuart-dev
 /features/merchant/seller_action/                       @tokopedia/android-minionstuart-dev
+/features/ordermanagement/buyer_order_detail            @tokopedia/android-minionstuart-dev
 /features/transaction/sellerorder/                      @tokopedia/android-minionstuart-dev
 
 /features/merchant/product_draft_database/              @tokopedia/android-minionken-dev
