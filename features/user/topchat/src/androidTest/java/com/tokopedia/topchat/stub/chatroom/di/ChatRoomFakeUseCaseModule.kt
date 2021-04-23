@@ -10,6 +10,7 @@ import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
@@ -198,5 +199,23 @@ class ChatRoomFakeUseCaseModule {
             gqlUseCase: GraphqlUseCaseStub<OrderProgressResponse>
     ): OrderProgressUseCaseStub {
         return OrderProgressUseCaseStub(gqlUseCase)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideChatBackgroundUseCase(
+            stub: ChatBackgroundUseCaseStub
+    ): ChatBackgroundUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideChatBackgroundUseCaseStub(
+            gqlUseCase: GraphqlUseCaseStub<ChatBackgroundResponse>,
+            cacheManager: TopchatCacheManager,
+            dispatchers: CoroutineTestDispatchersProvider
+    ): ChatBackgroundUseCaseStub {
+        return ChatBackgroundUseCaseStub(gqlUseCase, cacheManager, dispatchers)
     }
 }

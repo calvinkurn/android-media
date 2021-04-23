@@ -33,6 +33,7 @@ import com.tokopedia.topchat.action.ClickChildViewWithIdAction
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
@@ -103,6 +104,9 @@ abstract class TopchatRoomTest {
     protected lateinit var orderProgressUseCase: OrderProgressUseCaseStub
 
     @Inject
+    protected lateinit var chatBackgroundUseCase: ChatBackgroundUseCaseStub
+
+    @Inject
     protected lateinit var websocket: RxWebSocketUtilStub
 
     protected open lateinit var activity: TopChatRoomActivityStub
@@ -110,16 +114,17 @@ abstract class TopchatRoomTest {
 
     protected open val exMessageId = "66961"
 
-    protected var firstPageChatAsBuyer: GetExistingChatPojo = GetExistingChatPojo()
-    protected var firstPageChatAsSeller: GetExistingChatPojo = GetExistingChatPojo()
-    protected var chatAttachmentResponse: ChatAttachmentResponse = ChatAttachmentResponse()
-    protected var stickerGroupAsBuyer: ChatListGroupStickerResponse = ChatListGroupStickerResponse()
-    protected var stickerListAsBuyer: StickerResponse = StickerResponse()
-    protected var firstPageChatBroadcastAsBuyer: GetExistingChatPojo = GetExistingChatPojo()
-    protected var getShopFollowingStatus: ShopFollowingPojo = ShopFollowingPojo()
-    protected var chatSrwResponse: ChatSmartReplyQuestionResponse = ChatSmartReplyQuestionResponse()
-    protected var uploadImageReplyResponse: ChatReplyPojo = ChatReplyPojo()
-    protected var orderProgressResponse: OrderProgressResponse = OrderProgressResponse()
+    protected var firstPageChatAsBuyer = GetExistingChatPojo()
+    protected var firstPageChatAsSeller = GetExistingChatPojo()
+    protected var chatAttachmentResponse = ChatAttachmentResponse()
+    protected var stickerGroupAsBuyer = ChatListGroupStickerResponse()
+    protected var stickerListAsBuyer = StickerResponse()
+    protected var firstPageChatBroadcastAsBuyer = GetExistingChatPojo()
+    protected var getShopFollowingStatus = ShopFollowingPojo()
+    protected var chatSrwResponse = ChatSmartReplyQuestionResponse()
+    protected var uploadImageReplyResponse = ChatReplyPojo()
+    protected var orderProgressResponse = OrderProgressResponse()
+    protected var chatBackgroundResponse = ChatBackgroundResponse()
 
     protected lateinit var chatComponentStub: ChatComponentStub
 
@@ -179,8 +184,8 @@ abstract class TopchatRoomTest {
     }
 
     protected fun setupDefaultResponseWhenFirstOpenChatRoom() {
-        // TODO: Add chat background default response
         // TODO: Add chat room setting default response
+        chatBackgroundUseCase.response = chatBackgroundResponse
         getChatUseCase.response = firstPageChatAsBuyer
         orderProgressUseCase.response = orderProgressResponse
         chatAttachmentUseCase.response = chatAttachmentResponse
