@@ -28,7 +28,7 @@ import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
 
-class TopchatRoomBuyerAttachProductTest : BaseBuyerTopchatRoomTest() {
+class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
     lateinit var productPreview: ProductPreview
 
