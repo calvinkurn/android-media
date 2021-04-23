@@ -127,10 +127,12 @@ internal fun getSortFilterParamsString(mapParameter: Map<String?, Any?>): String
 private fun <T> Map<String?, T?>.removeWithNonFilterPrefix(): Map<String?, T?> =
         filter { !it.key.matchesWithNonFilterPrefix() }
 
-internal fun getFilterParams(mapParameter: Map<String?, String?>): Map<String?, String?> {
+@Suppress("UNCHECKED_CAST")
+internal fun getFilterParams(mapParameter: Map<String?, String?>): Map<String, String> {
     return mapParameter
             .removeWithNonFilterPrefix()
             .minus(nonFilterParameterKeyList + listOf(SearchApiConst.OB))
+            as Map<String, String>
 }
 
 internal fun createSearchProductDefaultFilter() = Gson().fromJson(createSearchProductDefaultFilterJSON(), DynamicFilterModel::class.java)

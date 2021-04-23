@@ -20,16 +20,16 @@ object SearchTracking {
     private const val ACTION_FIELD = "/searchproduct - %s"
     private const val ORGANIC = "organic"
     private const val ORGANIC_ADS = "organic ads"
-    const val ECOMMERCE = "ecommerce"
-    const val EVENT_CATEGORY_EMPTY_SEARCH = "empty search"
-    const val EVENT_CATEGORY_SEARCH_RESULT = "search result"
-    const val PROMO_CLICK = "promoClick"
-    const val PROMOTIONS = "promotions"
+    private const val ECOMMERCE = "ecommerce"
+    private const val EVENT_CATEGORY_EMPTY_SEARCH = "empty search"
+    private const val EVENT_CATEGORY_SEARCH_RESULT = "search result"
+    private const val PROMO_CLICK = "promoClick"
+    private const val PROMOTIONS = "promotions"
     const val EVENT_CLICK_SEARCH_RESULT = "clickSearchResult"
-    const val EVENT_ACTION_CLICK_NEW_SEARCH = "click - lakukan pencarian baru"
-    const val PROMO_VIEW = "promoView"
-    const val EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET = "click - lihat semua widget"
-    const val EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT = "impression widget - digital product"
+    private const val EVENT_ACTION_CLICK_NEW_SEARCH = "click - lakukan pencarian baru"
+    private const val PROMO_VIEW = "promoView"
+    private const val EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET = "click - lihat semua widget"
+    private const val EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT = "impression widget - digital product"
 
     @JvmStatic
     fun screenTrackSearchSectionFragment(screen: String?) {
@@ -212,21 +212,12 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun eventSearchResultChangeGrid(context: Context?, gridName: String, screenName: String?) {
+    fun eventSearchResultChangeGrid(gridName: String, screenName: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 SearchEventTracking.Event.SEARCH_RESULT,
                 SearchEventTracking.Category.GRID_MENU,
                 SearchEventTracking.Action.CLICK_CHANGE_GRID + gridName,
                 screenName
-        ))
-    }
-
-    fun eventSearchResultCatalogClick(context: Context?, keyword: String, catalogName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.CLICK_CATALOG,
-                "$keyword - $catalogName"
         ))
     }
 
@@ -265,13 +256,19 @@ object SearchTracking {
                             keywordProcess: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 SearchEventTracking.Event.EVENT_VIEW_SEARCH_RESULT,
-                SearchEventTracking.Category.EVENT_TOP_NAV, String.format(SearchEventTracking.Action.NO_SEARCH_RESULT_WITH_TAB, screenName), String.format("keyword: %s - type: %s - alternative: %s - param: %s - treatment: %s",
-                keyword,
-                if (!TextUtils.isEmpty(resultCode)) resultCode else "none/other",
-                if (!TextUtils.isEmpty(alternativeKeyword)) alternativeKeyword else "none/other",
-                generateFilterEventLabel(selectedFilter),
-                if (!TextUtils.isEmpty(keywordProcess)) keywordProcess else "none / other"
-        ))
+                SearchEventTracking.Category.EVENT_TOP_NAV,
+                String.format(
+                        SearchEventTracking.Action.NO_SEARCH_RESULT_WITH_TAB,
+                        screenName
+                ),
+                String.format("keyword: %s - type: %s - alternative: %s - param: %s - treatment: %s",
+                        keyword,
+                        if (!TextUtils.isEmpty(resultCode)) resultCode else "none/other",
+                        if (!TextUtils.isEmpty(alternativeKeyword)) alternativeKeyword else "none/other",
+                        generateFilterEventLabel(selectedFilter),
+                        if (!TextUtils.isEmpty(keywordProcess)) keywordProcess else "none / other"
+                )
+        )
     }
 
     fun eventUserClickNewSearchOnEmptySearch(context: Context?, screenName: String?) {

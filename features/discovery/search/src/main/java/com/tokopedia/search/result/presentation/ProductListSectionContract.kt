@@ -35,8 +35,8 @@ interface ProductListSectionContract {
         fun setAutocompleteApplink(autocompleteApplink: String?)
         fun sendTrackingEventAppsFlyerViewListingSearch(afProdIds: JSONArray?, query: String?, prodIdArray: ArrayList<String?>?)
         fun sendTrackingEventMoEngageSearchAttempt(query: String?, hasProductList: Boolean, category: HashMap<String?, String?>?)
-        fun sendTrackingGTMEventSearchAttempt(generalSearchTrackingModel: GeneralSearchTrackingModel?)
-        fun sendImpressionGlobalNav(globalNavDataView: GlobalNavDataView?)
+        fun sendTrackingGTMEventSearchAttempt(generalSearchTrackingModel: GeneralSearchTrackingModel)
+        fun sendImpressionGlobalNav(globalNavDataView: GlobalNavDataView)
         val isAnySortActive: Boolean
         fun clearLastProductItemPositionFromCache()
         fun saveLastProductItemPositionToCache(lastProductItemPositionToCache: Int)
