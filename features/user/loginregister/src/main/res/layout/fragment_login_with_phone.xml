@@ -97,9 +97,9 @@
                 android:layout_marginLeft="@dimen/spacing_lvl5"
                 android:layout_marginRight="@dimen/spacing_lvl5"
                 android:contentDescription="@string/content_desc_socmed_btn_phone"
-                android:text="@string/social_media"
+                android:text="@string/another_method"
                 android:textAllCaps="false"
-                app:unifyButtonType="alternate"
+                app:unifyButtonType="main"
                 app:unifyButtonVariant="ghost" />
 
             <com.tokopedia.unifyprinciples.Typography
