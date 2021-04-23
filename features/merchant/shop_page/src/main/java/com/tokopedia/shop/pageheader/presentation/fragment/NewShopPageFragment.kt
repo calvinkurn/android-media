@@ -6,9 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.ScaleDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -63,7 +62,6 @@ import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
-import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -963,14 +961,17 @@ class NewShopPageFragment :
                 setHasOptionsMenu(true)
 
                 // set back button color
-                val drawable = scaledDrawableResources(com.tokopedia.iconunify.R.drawable.iconunify_arrow_back)
-                val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    drawable.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
-                }else{
-                    drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+                val backButtonDrawable = ContextCompat.getDrawable(this, com.tokopedia.iconunify.R.drawable.iconunify_arrow_back)
+                if (backButtonDrawable != null) {
+                    val sd = ScaleDrawable(backButtonDrawable, 0, 24F, 24F)
+                    val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        sd.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+                    }else{
+                        sd.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+                    }
+                    supportActionBar?.setHomeAsUpIndicator(sd);
                 }
-                supportActionBar?.setHomeAsUpIndicator(drawable)
             }
         }
         if (isMyShop) {
@@ -978,12 +979,6 @@ class NewShopPageFragment :
         } else {
             displayToolbarBuyer()
         }
-    }
-
-    private fun scaledDrawableResources(id: Int): Drawable {
-        val bmp = BitmapFactory.decodeResource(resources, id)
-        val bmpScaled = Bitmap.createScaledBitmap(bmp, 24, 24, false)
-        return BitmapDrawable(resources, bmpScaled)
     }
 
     private fun displayToolbarSeller() {
