@@ -43,6 +43,10 @@ class TextFieldTitleViewComponent(
 
     fun getText() = textField.textFieldInput.text.toString()
 
+    fun setText(text: String) {
+        textField.textFieldInput.setText(text)
+    }
+
     private fun getTitleLabelText(): CharSequence {
         val asterisk = '*'
         val finalText = "${getString(R.string.play_title_input_label)}$asterisk"

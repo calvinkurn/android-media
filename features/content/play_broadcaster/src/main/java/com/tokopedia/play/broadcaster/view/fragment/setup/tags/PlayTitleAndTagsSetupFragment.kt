@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
@@ -141,6 +142,7 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
     private fun setupObserve() {
         observeRecommendedTags()
         observeAddedTags()
+        observeTitle()
         observeUploadEvent()
     }
 
@@ -165,6 +167,12 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
                     if (!it.hasBeenHandled) onUploadSuccess()
                 }
             }
+        })
+    }
+
+    private fun observeTitle() {
+        viewModel.observableTitle.observe(viewLifecycleOwner, Observer {
+            if (it is PlayTitleUiModel.HasTitle) titleFieldView.setText(it.title)
         })
     }
 

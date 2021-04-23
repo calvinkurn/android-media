@@ -8,11 +8,13 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.validator.tag.TagSetupValidator
 import com.tokopedia.play.broadcaster.ui.validator.title.TitleSetupValidator
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.event.Event
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.filterIsInstance
 import javax.inject.Inject
 
 /**
@@ -31,6 +33,11 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         get() = _observableRecommendedTagsModel
     val observableUploadEvent: LiveData<Event<NetworkResult<Unit>>>
         get() = _observableUploadEvent
+
+    val observableTitle: LiveData<PlayTitleUiModel>
+        get() = setupDataStore.getObservableTitle()
+                .filterIsInstance<PlayTitleUiModel.HasTitle>()
+                .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
 
     private val _observableAddedTags = MutableLiveData<Set<String>>()
     private val _observableRecommendedTags = MutableLiveData<Set<String>>()
@@ -57,7 +64,7 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
 
     private val validTagRegex = Regex("[a-zA-Z0-9 ]+")
 
-    private val addedTags = mutableSetOf<String>()
+    private val addedTags: MutableSet<String> = setupDataStore.getTags().toMutableSet()
 
     init {
         getTags()

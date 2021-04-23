@@ -8,4 +8,5 @@ enum class OverwriteMode {
     Product,
     Cover,
     Title,
+    Tags,
 }

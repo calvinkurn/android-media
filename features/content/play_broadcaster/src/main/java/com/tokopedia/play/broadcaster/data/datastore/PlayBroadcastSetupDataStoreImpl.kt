@@ -35,6 +35,10 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
             overwriteTitleDataStore(dataStore)
         }
 
+        if (!modeExclusion.contains(OverwriteMode.Tags)) {
+            overwriteTagsDataStore(dataStore)
+        }
+
         overwriteBroadcastScheduleDataStore(dataStore)
     }
 
@@ -61,6 +65,11 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
     private fun overwriteTitleDataStore(dataStore: TitleDataStore) {
         val title = dataStore.getTitle()
         if (title is PlayTitleUiModel.HasTitle) setTitle(title.title)
+    }
+
+    private fun overwriteTagsDataStore(dataStore: TagsDataStore) {
+        val tags = dataStore.getTags()
+        setTags(tags)
     }
 
     private fun overwriteBroadcastScheduleDataStore(dataStore: BroadcastScheduleDataStore) {

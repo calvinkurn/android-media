@@ -30,10 +30,6 @@ import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.custom.PlayStartStreamingButton
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.fragment.edit.CoverEditFragment
-import com.tokopedia.play.broadcaster.view.fragment.edit.EditCoverTitleBottomSheet
-import com.tokopedia.play.broadcaster.view.fragment.edit.ProductEditFragment
-import com.tokopedia.play.broadcaster.view.fragment.edit.SetupBroadcastScheduleBottomSheet
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.partial.BroadcastScheduleViewComponent
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -44,6 +40,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewMod
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.broadcaster.view.fragment.edit.*
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
@@ -177,6 +174,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             is EditCoverTitleBottomSheet -> childFragment.setListener(setupResultListener)
             is CoverEditFragment -> childFragment.setListener(setupResultListener)
             is SetupBroadcastScheduleBottomSheet -> childFragment.setListener(setupResultListener)
+            is TitleAndTagsEditBottomSheet -> childFragment.setListener(setupResultListener)
         }
     }
 
@@ -213,7 +211,8 @@ class PlayBeforeLiveFragment @Inject constructor(
             analytic.clickEditProductTaggingOnFinalSetupPage()
         }
         tvChannelTitle.setOnClickListener {
-            openEditCoverTitlePage()
+//            openEditCoverTitlePage()
+            openEditTitleAndTagsPage()
             analytic.clickEditTitleOnFinalSetupPage()
         }
         ivImagePreview.setOnClickListener {
@@ -421,6 +420,12 @@ class PlayBeforeLiveFragment @Inject constructor(
         getEditTitleBottomSheet().show(childFragmentManager)
     }
 
+    private fun openEditTitleAndTagsPage() {
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val editTitleAndTagsBottomSheet = fragmentFactory.instantiate(requireContext().classLoader, TitleAndTagsEditBottomSheet::class.java.name) as TitleAndTagsEditBottomSheet
+        editTitleAndTagsBottomSheet.show(childFragmentManager, TAG_TITLE_AND_TAGS_EDIT)
+    }
+
     private fun openSetupBroadcastSchedulePage() {
         getSetupBroadcastScheduleBottomSheet().show(childFragmentManager)
         analytic.viewBottomSheetScheduleOnFinalSetupPage()
@@ -545,5 +550,6 @@ class PlayBeforeLiveFragment @Inject constructor(
         private const val KEY_SETUP_DATA = "setup_data"
         private const val TAG_COVER_EDIT = "cover_edit"
         private const val TAG_PRODUCT_EDIT = "product_edit"
+        private const val TAG_TITLE_AND_TAGS_EDIT = "title_and_tags_edit"
     }
 }
