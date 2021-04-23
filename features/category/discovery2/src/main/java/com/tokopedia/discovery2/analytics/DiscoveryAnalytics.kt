@@ -125,10 +125,10 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     }
 
 
-    override fun trackPlayWidgetClick(componentsItem: ComponentsItem, userID: String?, channelId: String, destinationURL: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {
+    override fun trackPlayWidgetClick(componentsItem: ComponentsItem, userID: String?, channelId: String, destinationURL: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-                KEY_ID to "0_0_$channelId",
+                KEY_ID to "0_${if (shopId.isEmpty()) 0 else shopId}_$channelId",
                 KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}",
                 KEY_CREATIVE to " - $isAutoPlay",
                 KEY_POSITION to channelPositionInList
@@ -241,10 +241,10 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     }
 
 
-    override fun trackPlayWidgetImpression(componentsItem: ComponentsItem, userID: String?, channelId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {
+    override fun trackPlayWidgetImpression(componentsItem: ComponentsItem, userID: String?, channelId: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-                KEY_ID to "0_0_$channelId",
+                KEY_ID to "0_${if (shopId.isEmpty()) 0 else shopId}_$channelId",
                 KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}",
                 KEY_CREATIVE to " - $isAutoPlay",
                 KEY_POSITION to channelPositionInList
