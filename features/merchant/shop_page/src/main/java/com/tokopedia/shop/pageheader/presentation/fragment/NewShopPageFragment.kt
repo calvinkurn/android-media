@@ -5,10 +5,7 @@ import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Bitmap
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.PorterDuff
+import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
@@ -965,17 +962,16 @@ class NewShopPageFragment :
                 setHasOptionsMenu(true)
 
                 // set back button color
-                val backButtonDrawable = ContextCompat.getDrawable(this, com.tokopedia.iconunify.R.drawable.iconunify_arrow_back)
-                if (backButtonDrawable != null) {
-                    val bitmap = (backButtonDrawable as BitmapDrawable).bitmap
+                val bitmap = BitmapFactory.decodeResource(resources, com.tokopedia.iconunify.R.drawable.iconunify_arrow_back)
+                if (bitmap != null) {
                     val bitmapResized = Bitmap.createScaledBitmap(bitmap, 24, 24, false)
-                    val newBackButtonDrawable = BitmapDrawable(resources, bitmapResized)
+                    val backButtonDrawable = BitmapDrawable(resources, bitmapResized)
 
                     val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        newBackButtonDrawable.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+                        backButtonDrawable.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
                     }else{
-                        newBackButtonDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+                        backButtonDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
                     }
                     supportActionBar?.setHomeAsUpIndicator(backButtonDrawable);
                 }
