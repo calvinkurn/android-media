@@ -23,6 +23,8 @@ class ShopNoteBottomSheetViewHolder(view: View): BaseViewHolder(view) {
     companion object {
         val LAYOUT = R.layout.item_shop_note_bottom_sheet
         const val ANIMATION_DURATION = 250L
+        const val LAST_TAG_CHAR = '>'
+        const val TAG_PARAGRAPH = "<p></p>"
     }
 
     private var tpTitle: Typography? = null
@@ -107,9 +109,13 @@ class ShopNoteBottomSheetViewHolder(view: View): BaseViewHolder(view) {
     }
 
     fun bind(model: ShopNoteBottomSheetUiModel) {
+        var description = model.description
+        if (description.last() != LAST_TAG_CHAR) {
+            description += TAG_PARAGRAPH
+        }
         setupUi(
                 title = model.title,
-                description = MethodChecker.fromHtml(model.description),
+                description = MethodChecker.fromHtml(description),
                 isTheLastPosition = model.isTheLastPosition
         )
     }

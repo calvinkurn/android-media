@@ -48,8 +48,7 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var viewModel: ShopNoteBottomSheetViewModel
+    private var viewModel: ShopNoteBottomSheetViewModel? = null
 
     private var buyerShopId: String? = null
     private var rvNote: RecyclerView? = null
@@ -111,7 +110,7 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupObserver() {
-        viewModel.shopNotes.observe(viewLifecycleOwner) { result ->
+        viewModel?.shopNotes?.observe(viewLifecycleOwner) { result ->
             loader?.gone()
             rvNote?.show()
             when(result) {
@@ -128,7 +127,7 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
 
     private fun getShopNotes() {
         buyerShopId?.run {
-            viewModel.getShopNotes(this)
+            viewModel?.getShopNotes(this)
             loader?.show()
             rvNote?.gone()
         }
@@ -140,8 +139,8 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
         response.forEachIndexed { position, model ->
             notes.add(
                     ShopNoteBottomSheetUiModel(
-                            title = model.title ?: "",
-                            description = model.content ?: "",
+                            title = model.title.orEmpty(),
+                            description = model.content.orEmpty(),
                             isTheLastPosition = position == responseSize
                     )
             )
