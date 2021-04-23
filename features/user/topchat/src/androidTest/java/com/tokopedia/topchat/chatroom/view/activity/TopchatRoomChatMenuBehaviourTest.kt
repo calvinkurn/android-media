@@ -7,6 +7,7 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.assertion.DrawableMatcher
 import com.tokopedia.topchat.assertion.ToastMatcher
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.matchers.isKeyboardShown
@@ -269,7 +270,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
                 .adapter?.itemCount?: 0
 
         onView(withId(R.id.new_comment)).perform(typeText("Test"))
-        onView(withId(R.id.send_but)).perform(click())
+        clickSendBtn()
 
         //Then
         onView(
@@ -283,6 +284,22 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
     @Test
     fun test_msg_sent_error_empty_text() {
+        //Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        inflateTestFragment()
+
+        //When
+        onView(withId(R.id.new_comment)).perform(typeText("Test"))
+        onView(withId(R.id.new_comment)).perform(clearText())
+
+        //Then
+        DrawableMatcher.compareDrawable(R.id.send_but, R.drawable.bg_topchat_send_btn_disabled)
+    }
+
+    @Test
+    fun test_msg_sent_error_empty_text_click() {
         //Given
         setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsSeller
