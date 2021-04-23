@@ -81,7 +81,7 @@ object CatalogDetailAnalytics {
         val eCommerce = mapOf(
                 KEYS.CLICK to mapOf(
                         KEYS.ACTION_FIELD to mapOf(
-                                KEYS.LIST to ""
+                                KEYS.LIST to getCatalogTrackingUrl(catalogUrl)
                         ),
                         KEYS.PRODUCTS to list
                 )

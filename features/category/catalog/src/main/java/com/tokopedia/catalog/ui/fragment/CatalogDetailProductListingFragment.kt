@@ -147,6 +147,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             viewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
             fetchProductData(getProductListParams(getPage()))
             viewModel.fetchQuickFilters(getQuickFilterParams())
+            viewModel.catalogUrl = catalogUrl
         }
     }
 
@@ -427,13 +428,13 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
             startActivityForResult(intent, 1002)
-            CatalogDetailAnalytics.trackProductCardClick(catalogId,catalogUrl,userSession.userId,
+            CatalogDetailAnalytics.trackProductCardClick(catalogId,viewModel.catalogUrl,userSession.userId,
                     item,(adapterPosition + 1).toString(),viewModel.searchParametersMap.value)
         }
     }
 
     override fun onProductImpressed(item: CatalogProductItem, adapterPosition: Int) {
-        CatalogDetailAnalytics.trackEventImpressionProductCard(catalogId,catalogUrl,userSession.userId,
+        CatalogDetailAnalytics.trackEventImpressionProductCard(catalogId,viewModel.catalogUrl,userSession.userId,
                 item,(adapterPosition + 1).toString(),viewModel.searchParametersMap.value)
     }
 
