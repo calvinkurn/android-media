@@ -1,8 +1,10 @@
 package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class ShopShipment(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("ship_id")
         val shipId: Int = 0,
         @SerializedName("ship_name")

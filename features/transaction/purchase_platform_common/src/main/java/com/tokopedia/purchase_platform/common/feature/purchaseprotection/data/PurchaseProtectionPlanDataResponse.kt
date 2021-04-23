@@ -1,10 +1,12 @@
 package com.tokopedia.purchase_platform.common.feature.purchaseprotection.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class PurchaseProtectionPlanDataResponse(
         @SerializedName("protection_available")
         var protectionAvailable: Boolean = false,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("protection_type_id")
         var protectionTypeId: Int = 0,
         @SerializedName("protection_price_per_product")

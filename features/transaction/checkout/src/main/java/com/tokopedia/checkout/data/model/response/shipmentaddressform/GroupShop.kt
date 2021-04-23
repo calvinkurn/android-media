@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
 
@@ -12,8 +13,10 @@ data class GroupShop(
         val shopShipments: List<ShopShipment> = emptyList(),
         @SerializedName("products")
         val products: List<Product> = emptyList(),
+        @SuppressLint("Invalid Data Type")
         @SerializedName("shipping_id")
         val shippingId: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("sp_id")
         val spId: Int = 0,
         @SerializedName("dropshipper")

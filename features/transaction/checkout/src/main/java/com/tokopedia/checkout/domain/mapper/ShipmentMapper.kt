@@ -184,11 +184,9 @@ class ShipmentMapper @Inject constructor() {
                 productImageSrc200Square = it.productImageSrc200Square
                 productNotes = it.productNotes
                 productQuantity = it.productQuantity
-                productMenuId = it.productMenuId
                 isProductFinsurance = it.productFinsurance == 1
                 isProductFcancelPartial = it.productFcancelPartial == 1
                 productCatId = it.productCatId
-                productCatalogId = it.productCatalogId
                 isShowTicker = it.productTicker.isShowTicker
                 tickerMessage = it.productTicker.message
                 if (it.freeShippingExtra.eligible) {
