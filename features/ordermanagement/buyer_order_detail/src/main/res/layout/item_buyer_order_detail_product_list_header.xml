@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/spacing_lvl4"
     android:layout_marginTop="@dimen/buyer_order_detail_header_top_margin"
-    android:layout_marginEnd="@dimen/spacing_lvl4">
+    android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:paddingBottom="6dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBuyerOrderDetailProductDetailLabel"
@@ -14,6 +15,9 @@
         android:layout_height="wrap_content"
         android:text="@string/label_product_detail"
         android:textColor="@color/Unify_N700_96"
+        android:translationY="-1.97dp"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5" />
@@ -35,17 +39,16 @@
         android:id="@+id/tvBuyerOrderDetailShopName"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:background="@color/Green_G100"
         android:ellipsize="end"
         android:maxLines="1"
+        android:translationY="-1.97dp"
         app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailProductDetailLabel"
         app:layout_constraintEnd_toStartOf="@id/icBuyerOrderDetailSeeShopPage"
         app:layout_constraintStart_toEndOf="@id/icBuyerOrderDetailSeeShopBadge"
         app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailProductDetailLabel"
-        app:layout_constraintWidth_max="wrap"
-        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintWidth_default="wrap"
         app:typographyType="heading_6"
-        tools:text="Rockerpower Shopz Rockerpower Shopz Rockerpower Shopz Shopz Rockerpower Shopz" />
+        tools:text="Rockerpower Shopz" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icBuyerOrderDetailSeeShopBadge"
@@ -53,12 +56,20 @@
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:translationY="-1.3dp"
         app:icon_name="BADGE_PM_FILLED"
         app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailShopName"
         app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailShopName"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailProductDetailLabel"
+        app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailShopName" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

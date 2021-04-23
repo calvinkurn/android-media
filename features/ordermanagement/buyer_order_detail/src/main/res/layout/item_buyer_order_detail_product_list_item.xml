@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/spacing_lvl4"
-    android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
-    android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:layout_marginStart="11dp"
+    android:layout_marginEnd="11dp"
     android:padding="@dimen/spacing_lvl4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -74,9 +73,11 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toTopOf="@id/tvBuyerOrderDetailProductPriceQuantity"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivBuyerOrderDetailProductThumbnail"
             app:layout_constraintTop_toTopOf="@id/ivBuyerOrderDetailProductThumbnail"
+            app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="heading_6"
             tools:text="Jordan 1 Mid Royal (2020) - Original Hoops Malaysia" />
 
@@ -87,6 +88,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="@id/ivBuyerOrderDetailProductThumbnail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvBuyerOrderDetailProductName"
             app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailProductName"
@@ -121,22 +123,26 @@
             android:text="@string/label_total_price"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toTopOf="@id/tvBuyerOrderDetailProductPriceValue"
-            app:layout_constraintEnd_toStartOf="@id/btnBuyerOrderDetailBuyProductAgain"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/dividerBuyerOrderDetailProduct"
-            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintWidth_default="wrap"
             app:typographyType="small" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvBuyerOrderDetailProductPriceValue"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
             android:textColor="@color/Unify_N700_96"
+            android:translationY="-1.97dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btnBuyerOrderDetailBuyProductAgain"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailTotalProductPriceLabel"
-            app:layout_constraintWidth_percent="0.35"
+            app:layout_constraintWidth_default="wrap"
             app:typographyType="heading_6"
             tools:text="Rp4.000.000" />
 
@@ -149,11 +155,20 @@
             android:text="@string/buy_again_label"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailProductPriceValue"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/guideline"
             app:layout_constraintTop_toBottomOf="@id/dividerBuyerOrderDetailProduct"
-            app:layout_constraintWidth_percent="0.6"
+            app:layout_constraintWidth_default="wrap"
+            app:unifyButtonSize="small"
             app:unifyButtonType="main"
             app:unifyButtonVariant="filled" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

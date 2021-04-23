@@ -1,6 +1,8 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
+import android.graphics.drawable.GradientDrawable
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickListener
@@ -17,7 +19,7 @@ class ActionButtonsViewHolder(itemView: View?, private val listener: ActionButto
     private var element: ActionButtonsUiModel? = null
 
     init {
-        itemView?.btnBuyerOrderDetailSecondaryActions?.setOnClickListener(this)
+        setupSecondaryButton()
     }
 
     override fun bind(element: ActionButtonsUiModel?) {
@@ -37,6 +39,19 @@ class ActionButtonsViewHolder(itemView: View?, private val listener: ActionButto
         with(itemView) {
             btnBuyerOrderDetailPrimaryActions.text = element?.primaryActionButton?.label.orEmpty()
             btnBuyerOrderDetailPrimaryActions.setOnClickListener(this@ActionButtonsViewHolder)
+        }
+    }
+
+    private fun setupSecondaryButton() {
+        itemView.btnBuyerOrderDetailSecondaryActions?.apply {
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                setColor(ContextCompat.getColor(context, android.R.color.transparent))
+                cornerRadius = resources.getDimension(com.tokopedia.unifycomponents.R.dimen.button_corner_radius)
+                setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.buttonunify_alternate_stroke_color))
+            }
+            setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
+            setOnClickListener(this@ActionButtonsViewHolder)
         }
     }
 

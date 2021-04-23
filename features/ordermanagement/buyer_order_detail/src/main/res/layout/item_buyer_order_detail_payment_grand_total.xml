@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailPaymentInfoValue"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="heading_5"
         tools:text="Total Harga (2 Barang)" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -29,7 +29,7 @@
         app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailPaymentInfoLabel"
         app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailPaymentInfoLabel"
         app:layout_constraintWidth_default="wrap"
-        app:typographyType="body_3"
+        app:typographyType="heading_5"
         tools:text="Rp5.000.000" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,7 +12,6 @@
         android:id="@+id/tvBuyerOrderDetailAwbLabel"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
         android:text="@string/label_awb_number"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toStartOf="@id/icBuyerOrderDetailCopyAwb"
@@ -44,7 +43,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailAwbLabel"
-        app:layout_constraintWidth_percent="0.6"
         app:typographyType="body_3"
         tools:text="BOOE900142127415" />
 

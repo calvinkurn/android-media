@@ -12,7 +12,6 @@
         android:id="@+id/tvBuyerOrderDetailInvoice"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toStartOf="@id/icBuyerOrderDetailCopyInvoice"
         app:layout_constraintHorizontal_bias="0"
@@ -40,12 +39,13 @@
         android:id="@+id/tvBuyerOrderDetailSeeInvoice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Lihat Invoice"
         android:textColor="@color/Unify_G500"
+        android:translationY="-1.97dp"
         app:flow_horizontalBias="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailInvoice"
-        app:typographyType="heading_6"
-        tools:text="Lihat Invoice" />
+        app:typographyType="heading_6" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBuyerOrderDetailPurchaseDateLabel"
@@ -91,6 +91,12 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailDeadlineLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailDeadlineLabel" />
+        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailDeadlineLabel"
+        app:timer_unify_single_remainingHours="0"
+        app:timer_unify_single_remainingMinutes="0"
+        app:timer_unify_single_remainingSeconds="0"
+        app:timer_unify_single_showClockIcon="true"
+        app:timer_unify_single_type="auto"
+        app:timer_unify_single_variant="informative" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

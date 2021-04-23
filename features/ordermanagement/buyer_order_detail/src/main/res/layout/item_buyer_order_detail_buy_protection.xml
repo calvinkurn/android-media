@@ -36,16 +36,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailBuyProtectionLabel"
+        app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailBuyProtectionSeeMore"
+        app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailBuyProtectionLabel"
+        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailBuyProtectionLabel"
         app:timer_unify_single_remainingHours="0"
         app:timer_unify_single_remainingMinutes="0"
         app:timer_unify_single_remainingSeconds="0"
         app:timer_unify_single_showClockIcon="true"
         app:timer_unify_single_type="auto"
-        app:timer_unify_single_variant="informative"
-        app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailBuyProtectionLabel"
-        app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailBuyProtectionSeeMore"
-        app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailBuyProtectionLabel"
-        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailBuyProtectionLabel" />
+        app:timer_unify_single_variant="informative" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBuyerOrderDetailBuyProtectionDescription"
