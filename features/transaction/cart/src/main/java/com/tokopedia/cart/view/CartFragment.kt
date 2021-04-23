@@ -137,6 +137,7 @@ import javax.inject.Inject
  * @author anggaprasetiyo on 18/01/18.
  */
 
+@Keep
 class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
         RefreshHandler.OnRefreshHandlerListener, CartToolbarListener,
         TickerAnnouncementActionListener, SellerCashbackListener {
