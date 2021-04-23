@@ -73,6 +73,7 @@ class ChatRoomFakePresenterModule {
             chatAttachmentUseCase: ChatAttachmentUseCase,
             chatToggleBlockChat: ChatToggleBlockChatUseCase,
             chatBackgroundUseCase: ChatBackgroundUseCase,
+            chatSrwUseCase: SmartReplyQuestionUseCase,
             sharedPref: SharedPreferences,
             dispatchers: CoroutineDispatchers,
             remoteConfig: RemoteConfig
@@ -102,6 +103,7 @@ class ChatRoomFakePresenterModule {
                 chatAttachmentUseCase,
                 chatToggleBlockChat,
                 chatBackgroundUseCase,
+                chatSrwUseCase,
                 sharedPref,
                 dispatchers,
                 remoteConfig

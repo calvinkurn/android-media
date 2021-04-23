@@ -45,7 +45,7 @@ public class DiscomActivity extends BaseSimpleActivity
         analytics = new CheckoutAnalyticsChangeAddress();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setElevation(0);
-            toolbar.setNavigationIcon(com.tokopedia.design.R.drawable.ic_close);
+            toolbar.setNavigationIcon(com.tokopedia.design.R.drawable.ic_close_thin);
         }
     }
 

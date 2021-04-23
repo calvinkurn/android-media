@@ -409,12 +409,15 @@ class LoginEmailPhoneViewModel @Inject constructor(
         mutableGoToSecurityQuestionAfterRelogin.value = email
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    fun clearBackgroundTask() {
         tickerInfoUseCase.unsubscribe()
         discoverUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
-        dynamicBannerUseCase.cancelJobs()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        clearBackgroundTask()
     }
 }
