@@ -40,7 +40,10 @@ data class ShopEtalaseModel(@SerializedName("id")
                             @SerializedName("rules")
                             @Expose
                             val rules: List<ShopEtalaseRules> = listOf(),
-                            var isChecked: Boolean = false
+                            @SerializedName("imageURL")
+                            @Expose
+                            val imageUrl: String? = "",
+                            var isChecked: Boolean = false,
 ) : Parcelable
 
 @Parcelize

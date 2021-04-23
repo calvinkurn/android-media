@@ -14,13 +14,18 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.entity.ProductStockReminder
+import com.tokopedia.notifcenter.data.entity.deletereminder.DeleteReminderResponse
 import com.tokopedia.notifcenter.data.mapper.ProductHighlightMapper
 import com.tokopedia.notifcenter.data.viewbean.ProductHighlightViewBean
 import com.tokopedia.notifcenter.domain.ProductHighlightUseCase
+import com.tokopedia.notifcenter.domain.ProductStockReminderDeleteUseCase
 import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase
 import com.tokopedia.notifcenter.util.SingleLiveEvent
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.net.ConnectException
@@ -32,6 +37,7 @@ import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase.Companion.pa
 
 interface ProductStockHandlerContract {
     fun setProductReminder(productId: String, notificationId: String)
+    fun deleteReminder(productId: String, notificationId: String)
     fun getHighlightProduct(shopId: String)
     fun addProductToCart(userId: String, product: ProductData?)
     fun onErrorMessage(throwable: Throwable)
@@ -41,11 +47,16 @@ class ProductStockHandlerViewModel @Inject constructor(
         private val stockReminderUseCase: ProductStockReminderUseCase,
         private val productHighlightUseCase: ProductHighlightUseCase,
         private var addToCartUseCase: AddToCartUseCase,
+        private val deleteReminderUseCase: ProductStockReminderDeleteUseCase,
         dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.io), ProductStockHandlerContract {
 
     private val _productStockReminder = SingleLiveEvent<ProductStockReminder>()
     val productStockReminder: LiveData<ProductStockReminder> get() = _productStockReminder
+
+    private val _deleteReminder = SingleLiveEvent<Result<DeleteReminderResponse>>()
+    val deleteReminder: LiveData<Result<DeleteReminderResponse>>
+        get() = _deleteReminder
 
     private val _productHighlight = MutableLiveData<List<ProductHighlightViewBean>>()
     val productHighlight: LiveData<List<ProductHighlightViewBean>> get() = _productHighlight
@@ -104,6 +115,14 @@ class ProductStockHandlerViewModel @Inject constructor(
                 _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
             }
         }
+    }
+
+    override fun deleteReminder(productId: String, notificationId: String) {
+        deleteReminderUseCase.get(productId, notificationId, {
+            _deleteReminder.setValue(Success(it))
+        }, {
+            _deleteReminder.setValue(Fail(it))
+        })
     }
 
     fun cleared() {

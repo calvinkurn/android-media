@@ -338,14 +338,13 @@ class PlayAnalytic(
         )
     }
 
-    fun impressionHighlightedVoucher(vouchers: List<MerchantVoucherUiModel>) {
-        val voucherId = vouchers.firstOrNull { it.highlighted }?.id ?: return
+    fun impressionHighlightedVoucher(voucher: MerchantVoucherUiModel) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "impression on merchant voucher",
-                        KEY_EVENT_LABEL to "$channelId - $voucherId - ${channelType.value}",
+                        KEY_EVENT_LABEL to "$channelId - ${voucher.id}- ${channelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
@@ -369,30 +368,26 @@ class PlayAnalytic(
         )
     }
 
-    fun impressionFeaturedProduct(products: List<PlayProductUiModel.Product>, maxFeaturedProduct: Int) {
-        if (products.isNotEmpty()) {
-            val featuredProducts = products.take(maxFeaturedProduct)
-            trackingQueue.putEETracking(
-                    EventModel(
-                            "productView",
-                            KEY_TRACK_GROUP_CHAT_ROOM,
-                            "view on featured product",
-                            "$channelId - ${featuredProducts[0].id} - ${channelType.value} - featured product tagging"
-                    ),
-                    hashMapOf(
-                            "ecommerce" to hashMapOf(
-                                    "currencyCode" to "IDR",
-                                    "impressions" to convertProductsToListOfObject(featuredProducts, "featured product")
-                            )
-                    ),
-                    hashMapOf(
-                            KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                            KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                            KEY_USER_ID to userId,
-                            KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-                    )
-            )
-        }
+    fun impressionFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int) {
+        val finalPosition = position + 1
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                mapOf(
+                        KEY_EVENT to "productView",
+                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                        KEY_EVENT_ACTION to "view on featured product",
+                        KEY_EVENT_LABEL to "$channelId - ${featuredProduct.id} - ${channelType.value} - featured product tagging",
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                        "ecommerce" to hashMapOf(
+                                "currencyCode" to "IDR",
+                                "impressions" to mutableListOf(
+                                        convertProductToHashMapWithList(featuredProduct, finalPosition,"featured product")
+                                )
+                        )
+                )
+        )
     }
 
     fun clickFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int) {
@@ -471,10 +466,15 @@ class PlayAnalytic(
     /**
      * Private methods
      */
-    private fun convertProductsToListOfObject(listOfProducts: List<PlayProductUiModel.Product>, sourceFrom: String): MutableList<HashMap<String, Any>> {
+    private fun convertProductsToListOfObject(
+            listOfProducts: List<PlayProductUiModel.Product>,
+            sourceFrom: String,
+            startPosition: Int = 0
+    ): MutableList<HashMap<String, Any>> {
         val products = mutableListOf<HashMap<String, Any>>()
         listOfProducts.forEachIndexed { index, product ->
-            products.add(convertProductToHashMapWithList(product, index, sourceFrom))
+            val position = startPosition + index
+            products.add(convertProductToHashMapWithList(product, position, sourceFrom))
         }
         return products
     }
