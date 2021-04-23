@@ -14,6 +14,8 @@ import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -24,6 +26,7 @@ import com.tokopedia.sessioncommon.data.admin.AdminDetailInformation
 import com.tokopedia.sessioncommon.data.admin.AdminRoleType
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
 import com.tokopedia.sessioncommon.domain.usecase.RefreshShopBasicDataUseCase
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -169,6 +172,7 @@ class TestMainNavViewModel {
         Assert.assertEquals(mockUnreadCount.toString(), complainVisitable.notifCount)
     }
 
+
     //transaction section
     @Test
     fun `test when viewmodel created and user does not ongoing order and payment transaction then only create transaction menu item`() {
@@ -259,6 +263,232 @@ class TestMainNavViewModel {
         Assert.assertNotNull(transactionDataModel)
     }
 
+    //user menu section
+    @Test
+    fun `test get account header menu section`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+                .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+                .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+                .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+        viewModel = createViewModel(
+                clientMenuGenerator = clientMenuGenerator
+        )
+        viewModel.getMainNavData(true)
+
+        val headerModelPosition = viewModel.findHeaderModelPosition()
+
+        Assert.assertNotNull(headerModelPosition)
+    }
+
+    @Test
+    fun `test init viewmodel data`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+                .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+                .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+                .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+
+        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel.setInitialState()
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        Assert.assertNotNull(visitableList)
+    }
+
+    @Test
+    fun `test set page source`() {
+        val pageName = "DefaultTest"
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+                .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+                .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+                .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel.setPageSource(pageName)
+
+        val dataPageName = viewModel.getPageSource()
+
+        Assert.assertTrue(dataPageName == pageName)
+    }
+
+    @Test
+    fun `test add home button`() {
+        val pageName = "DefaultTestNotHome"
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+                .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+                .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+                .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel.setPageSource(pageName)
+
+        val dataPageName = viewModel.getPageSource()
+        val backMenu = viewModel.findMenu(ID_HOME)
+        Assert.assertTrue(dataPageName == pageName)
+        Assert.assertNotNull(backMenu)
+    }
+
+    @Test
+    fun `test list not have home button`() {
+        val pageName = ApplinkConsInternalNavigation.SOURCE_HOME
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+                .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+                .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+                .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel.setPageSource(pageName)
+
+        val dataPageName = viewModel.getPageSource()
+        val backMenu = viewModel.findMenu(ID_HOME)
+        Assert.assertTrue(dataPageName == pageName)
+        Assert.assertNull(backMenu)
+    }
+
+    @Test
+    fun `success refresh uoh and transaction`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        val getNavOrderUseCase = mockk<GetUohOrdersNavUseCase>()
+        val getPaymentUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        val userSession = mockk<UserSessionInterface>()
+
+        every { userSession.isLoggedIn() } returns true
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+                .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+                .answers { HomeNavTickerDataModel() }
+        every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+                .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+
+        coEvery { getNavOrderUseCase.executeOnBackground() } returns listOf(NavProductOrder())
+        coEvery { getPaymentUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
+        viewModel = createViewModel(
+                clientMenuGenerator = clientMenuGenerator,
+                getPaymentOrdersNavUseCase = getPaymentUseCase,
+                getUohOrdersNavUseCase = getNavOrderUseCase)
+        viewModel.refreshTransactionListData()
+
+
+        val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
+            it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.ORDER
+        }?: listOf()
+
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemDataModel
+        }
+
+        Assert.assertFalse(menuList.isEmpty());
+        Assert.assertNotNull(transactionDataModel)
+    }
+
+    @Test
+    fun `Success refresh data after login`(){
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderDataModel(
+                userName = "Joko",
+                userImage = "Tingkir",
+                ovoSaldo = "Rp 100",
+                ovoPoint = "Rp 100",
+                badge = "kucing",
+                shopName = "binatang",
+                shopId = "1234")
+        viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.getMainNavData(true)
+        viewModel.reloadMainNavAfterLogin()
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val accountHeaderViewModel = dataList.find { it is AccountHeaderDataModel} as AccountHeaderDataModel
+        Assert.assertTrue(dataList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.userName.isNotEmpty()
+                && accountHeaderViewModel.userImage.isNotEmpty()
+                && accountHeaderViewModel.ovoSaldo.isNotEmpty()
+                && accountHeaderViewModel.ovoPoint.isNotEmpty()
+                && accountHeaderViewModel.badge.isNotEmpty()
+                && accountHeaderViewModel.shopId.isNotEmpty()
+                && accountHeaderViewModel.shopName.isNotEmpty())
+    }
+
+    @Test
+    fun `Success test refresh shop data`() {
+        val newShopName = "binatang kucing"
+        val newShopId = "123123"
+        val isLocationAdmin: Boolean = true
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
+        val shopInfoRefreshData = mockk<GetShopInfoUseCase>()
+        val expectedAdminRoleText = "Joko Tingkir"
+        val adminDataResponse =
+                AdminDataResponse(
+                        data = AdminData(
+                                adminTypeText = expectedAdminRoleText,
+                                detail = AdminDetailInformation(
+                                        roleType = AdminRoleType(
+                                                isLocationAdmin = isLocationAdmin
+                                        )
+                                ),
+                                status = "1"
+                        )
+                )
+        val accountInfoPair = Pair(adminDataResponse, null)
+        val refreshShopBasicDataUseCase = mockk<RefreshShopBasicDataUseCase>()
+        val gqlRepository = mockk<GraphqlRepository>()
+        val accountAdminInfoUseCase = spyk(AccountAdminInfoUseCase(refreshShopBasicDataUseCase, gqlRepository))
+
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderDataModel(
+                userName = "Joko",
+                userImage = "Tingkir",
+                ovoSaldo = "Rp 100",
+                ovoPoint = "Rp 100",
+                badge = "kucing",
+                shopName = "binatang",
+                hasShop = true,
+                shopId = "1234")
+
+        coEvery {
+            shopInfoRefreshData.executeOnBackground()
+        } returns Success(ShopData(
+                ShopData.ShopInfoPojo(
+                        ShopData.ShopInfoPojo.Info(
+                                shopName = newShopName,
+                                shopId = newShopId
+                        )
+                ),
+                ShopData.NotificationPojo()))
+        coEvery {
+            accountAdminInfoUseCase.executeOnBackground()
+        } returns accountInfoPair
+        viewModel = createViewModel(
+                getProfileDataUseCase = getProfileDataUseCase,
+                getShopInfoUseCase = shopInfoRefreshData,
+                accountAdminInfoUseCase = accountAdminInfoUseCase)
+        viewModel.getMainNavData(true)
+        viewModel.refreshUserShopData()
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel} as AccountHeaderDataModel
+        Assert.assertTrue(visitableList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.shopId.isNotEmpty()
+                && accountHeaderViewModel.shopId == newShopId
+                && accountHeaderViewModel.shopName.isNotEmpty()
+                && accountHeaderViewModel.shopName == newShopName)
+    }
+
     @Test
     fun `Success getProfileFullData`(){
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
@@ -288,6 +518,35 @@ class TestMainNavViewModel {
                 && accountHeaderViewModel.shopName.isNotEmpty())
     }
 
+    @Test
+    fun `Success refresh profile after login`(){
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderDataModel(
+                userName = "Joko",
+                userImage = "Tingkir",
+                ovoSaldo = "Rp 100",
+                ovoPoint = "Rp 100",
+                badge = "kucing",
+                shopName = "binatang",
+                shopId = "1234")
+        viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.getMainNavData(true)
+        viewModel.refreshProfileData()
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val accountHeaderViewModel = dataList.find { it is AccountHeaderDataModel} as AccountHeaderDataModel
+        Assert.assertTrue(dataList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.userName.isNotEmpty()
+                && accountHeaderViewModel.userImage.isNotEmpty()
+                && accountHeaderViewModel.ovoSaldo.isNotEmpty()
+                && accountHeaderViewModel.ovoPoint.isNotEmpty()
+                && accountHeaderViewModel.badge.isNotEmpty()
+                && accountHeaderViewModel.shopId.isNotEmpty()
+                && accountHeaderViewModel.shopName.isNotEmpty())
+    }
 
     @Test
     fun `Success getUserNameAndPictureData`(){
