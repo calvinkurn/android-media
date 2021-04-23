@@ -149,15 +149,6 @@
                     android:path="@string/path_redirect_create_shop"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.tkpd.thankyou.view.ReactNativeThankYouPageActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.tkpd.home.ReactNativeSubPromoPageActivity"
-            android:screenOrientation="portrait" />
 
         <service
             android:name="com.tokopedia.tkpd.thankyou.view.ThanksTrackerService"

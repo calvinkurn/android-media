@@ -9,7 +9,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
@@ -27,7 +27,7 @@ import javax.inject.Inject
 class ShippingDurationViewModel @Inject constructor(private val useCase: GetShippingDurationUseCase,
                                                     private val useCaseRates: GetRatesUseCase,
                                                     private val mapperPrice: ShippingDurationModelWithPriceMapper,
-                                                    private val dispatchers: ExecutorDispatchers) : BaseViewModel(dispatchers.main) {
+                                                    private val dispatchers: CoroutineDispatchers) : BaseViewModel(dispatchers.immediate) {
 
     var selectedId = -1
     private var shippingDurationModel: ShippingListModel? = null

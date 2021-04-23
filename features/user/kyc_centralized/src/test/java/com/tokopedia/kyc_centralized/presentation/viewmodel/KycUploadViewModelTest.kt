@@ -14,7 +14,7 @@ import junit.framework.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import util.TestAppDispatchProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import javax.crypto.Cipher
 import kotlin.test.assertFailsWith
 
@@ -36,7 +36,7 @@ class KycUploadViewModelTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        viewModel = spyk(KycUploadViewModel(useCase, TestAppDispatchProvider))
+        viewModel = spyk(KycUploadViewModel(useCase, CoroutineTestDispatchersProvider))
     }
 
     private fun provideEveryUseCase(kycData: KycData) {

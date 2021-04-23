@@ -9,7 +9,7 @@ import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingC
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
 import com.tokopedia.topchat.chatlist.domain.websocket.PendingMessageHandler
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class ChatListWebSocketViewModel @Inject constructor(
         webSocket: TopChatWebSocket,
         private val userSession: UserSessionInterface,
-        private val dispatchers: TopchatCoroutineContextProvider,
+        private val dispatchers: CoroutineDispatchers,
         private val pendingMessageHandler: PendingMessageHandler
 ) : WebSocketViewModel(
         webSocket,
@@ -52,7 +52,7 @@ class ChatListWebSocketViewModel @Inject constructor(
                         if (!isOnStop && !pendingMessageHandler.hasPendingMessage()) {
                             _itemChat.postValue(chat)
                         } else {
-                            withContext(dispatchers.Main) {
+                            withContext(dispatchers.main) {
                                 queueIncomingMessage(data)
                             }
                         }

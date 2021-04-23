@@ -247,7 +247,7 @@ class ShopPageProductListViewModel @Inject constructor(
 
     private suspend fun getSortListData(): MutableList<ShopProductSortModel> {
         val listSort = gqlGetShopSortUseCase.executeOnBackground()
-        return shopProductSortMapper.convertSort(listSort)
+        return shopProductSortMapper.convertSort(listSort).toMutableList()
     }
 
     private suspend fun getProductList(

@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
@@ -100,7 +101,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun loadAvatar(avatarUrl: String) {
-        val avatar = toolbar.findViewById<ImageView>(com.tokopedia.chat_common.R.id.user_avatar)
+        val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
         ImageHandler.loadImageCircle2(avatar.context, avatar, avatarUrl,
                 R.drawable.chatbot_avatar)
     }
@@ -311,6 +312,13 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun getAdapter(): ChatbotAdapter {
         return super.getAdapter() as ChatbotAdapter
+    }
+
+    override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
+        val title = toolbar.findViewById<TextView>(R.id.title)
+        val interlocutorName = getInterlocutorName(chatroomViewModel.getHeaderName())
+        title.text = MethodChecker.fromHtml(interlocutorName)
+        loadAvatar(chatroomViewModel.headerModel.image)
     }
 
     override fun getInterlocutorName(headerName: String): String  = headerName

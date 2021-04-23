@@ -295,6 +295,22 @@ class OrderSummaryPageActivityRevampTest {
                 )
                 closeBottomSheet()
             }
+
+            clickInsurance()
+            assertInsurance(false)
+
+            assertPayment("Rp116.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp15.000",
+                        insurancePrice = null,
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp116.000"
+                )
+                closeBottomSheet()
+            }
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",
@@ -337,6 +353,79 @@ class OrderSummaryPageActivityRevampTest {
                         isBbo = true,
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp101.000"
+                )
+                closeBottomSheet()
+            }
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
+
+    @Test
+    fun happyFlow_UnchooseBbo() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertShipmentPromoRevamp(
+                    hasPromo = true,
+                    promoDescription = "Tersedia Bebas Ongkir (4-6 hari)")
+
+            promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
+
+            clickApplyShipmentPromoRevamp()
+
+            assertShipmentPromoRevamp(hasPromo = false)
+
+            assertShipmentRevamp(
+                    shippingDuration = null,
+                    shippingCourier = "Pengiriman Bebas Ongkir (4-6 hari)",
+                    shippingPrice = null,
+                    shippingEta = null
+            )
+
+            assertPayment("Rp101.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp0",
+                        isBbo = true,
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp101.000"
+                )
+                closeBottomSheet()
+            }
+
+            clickChangeCourierRevamp {
+                chooseCourierWithText("Next Day (1 hari)")
+            }
+
+            assertShipmentPromoRevamp(
+                    hasPromo = true,
+                    promoDescription = "Tersedia Bebas Ongkir (4-6 hari)")
+
+            assertShipmentRevamp(
+                    shippingDuration = "Pengiriman Next Day (1 hari)",
+                    shippingCourier = "JNE",
+                    shippingPrice = "Rp38.000",
+                    shippingEta = null
+            )
+
+            assertPayment("Rp139.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp38.000",
+                        isBbo = false,
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp139.000"
                 )
                 closeBottomSheet()
             }

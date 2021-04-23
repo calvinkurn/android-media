@@ -23,5 +23,6 @@ data class RoomListModel(
         var roomLeft: Int = 0,
         var available: Boolean = true,
         var tagging: String = "",
-        var slashPrice: String = ""
+        var slashPrice: String = "",
+        var payInHotelString: String = ""
 )
