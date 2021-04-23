@@ -141,7 +141,7 @@ class DisabledCartItemViewHolder(private val binding: HolderItemCartErrorBinding
                     }
                 }
             }
-            setTextColor(ContextCompat.getColor(context, R.color.GeneralLightGreenText))
+            setTextColor(ContextCompat.getColor(context, R.color.Unify_G500))
             show()
         }
     }
