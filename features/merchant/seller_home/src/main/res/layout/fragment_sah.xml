@@ -120,6 +120,7 @@
                 android:paddingEnd="@dimen/spacing_lvl2"
                 android:paddingRight="@dimen/spacing_lvl2"
                 android:visibility="gone"
+                android:layoutAnimation="@anim/seller_home_rv_layout_animation"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
