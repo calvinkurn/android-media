@@ -204,13 +204,13 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         viewModel.sendOtpResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessSendOtp(it.data)
-                is Fail -> onFailedSendOtp(it.throwable)
+                is Fail -> onFailedSendOtp().invoke(it.throwable)
             }
         })
         viewModel.otpValidateResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessOtpValidate(it.data)
-                is Fail -> onFailedOtpValidate(it.throwable)
+                is Fail -> onFailedOtpValidate().invoke(it.throwable)
             }
         })
     }
@@ -234,10 +234,10 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 }
             }
             otpRequestData.errorMessage.isNotEmpty() -> {
-                onFailedSendOtp(MessageErrorException(otpRequestData.errorMessage))
+                onFailedSendOtp().invoke(MessageErrorException(otpRequestData.errorMessage))
             }
             else -> {
-                onFailedSendOtp(Throwable())
+                onFailedSendOtp().invoke(Throwable())
             }
         }
 
@@ -245,26 +245,28 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         showKeyboard()
     }
 
-    open fun onFailedSendOtp(throwable: Throwable) {
-        throwable.printStackTrace()
-        viewBound.containerView?.let {
-            val message = ErrorHandler.getErrorMessage(context, throwable)
-            Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+    private fun onFailedSendOtp(): (Throwable) -> Unit {
+        return { throwable ->
+            throwable.printStackTrace()
+            viewBound.containerView?.let {
+                val message = ErrorHandler.getErrorMessage(context, throwable)
+                Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
 
-            if (!isFirstSendOtp) {
-                when (otpData.otpType) {
-                    OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
-                        analytics.trackFailedClickResendRegisterPhoneOtpButton(message)
-                    }
-                    OtpConstant.OtpType.REGISTER_EMAIL -> {
-                        analytics.trackFailedClickResendRegisterEmailOtpButton(message)
+                if (!isFirstSendOtp) {
+                    when (otpData.otpType) {
+                        OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                            analytics.trackFailedClickResendRegisterPhoneOtpButton(message)
+                        }
+                        OtpConstant.OtpType.REGISTER_EMAIL -> {
+                            analytics.trackFailedClickResendRegisterEmailOtpButton(message)
+                        }
                     }
                 }
             }
-        }
 
-        isFirstSendOtp = false
-        showKeyboard()
+            isFirstSendOtp = false
+            showKeyboard()
+        }
     }
 
     private fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {
@@ -284,15 +286,15 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 redirectAfterValidationSuccessful(bundle)
             }
             otpValidateData.errorMessage.isNotEmpty() -> {
-                onFailedOtpValidate(MessageErrorException(otpValidateData.errorMessage))
+                onFailedOtpValidate().invoke(MessageErrorException(otpValidateData.errorMessage))
             }
             else -> {
-                onFailedOtpValidate(Throwable())
+                onFailedOtpValidate().invoke(Throwable())
             }
         }
     }
 
-    open fun trackSuccess() {
+    private fun trackSuccess() {
         when (otpData.otpType) {
             OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
                 analytics.trackSuccessClickVerificationRegisterPhoneButton()
@@ -308,22 +310,24 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         activity?.finish()
     }
 
-    open fun onFailedOtpValidate(throwable: Throwable) {
-        throwable.printStackTrace()
-        viewBound.containerView?.let {
-            val message = ErrorHandler.getErrorMessage(context, throwable)
-            Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-            when (otpData.otpType) {
-                OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
-                    analytics.trackFailedClickVerificationRegisterPhoneButton(message)
-                }
-                OtpConstant.OtpType.REGISTER_EMAIL -> {
-                    analytics.trackFailedClickVerificationRegisterEmailButton(message)
+    private fun onFailedOtpValidate(): (Throwable) -> Unit {
+        return { throwable ->
+            throwable.printStackTrace()
+            viewBound.containerView?.let {
+                val message = ErrorHandler.getErrorMessage(context, throwable)
+                Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                when (otpData.otpType) {
+                    OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                        analytics.trackFailedClickVerificationRegisterPhoneButton(message)
+                    }
+                    OtpConstant.OtpType.REGISTER_EMAIL -> {
+                        analytics.trackFailedClickVerificationRegisterEmailButton(message)
+                    }
                 }
             }
+            viewBound.pin?.isError = true
+            showKeyboard()
         }
-        viewBound.pin?.isError = true
-        showKeyboard()
     }
 
     fun animateText(txt: CharSequence) {

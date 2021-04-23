@@ -7,10 +7,6 @@ package com.tokopedia.otp.common.analytics
 
 object TrackingOtpConstant{
 
-    const val EVENT_BUSINESS_UNIT = "businessUnit"
-    const val EVENT_CURRENT_SITE = "currentSite"
-    const val EVENT_USER_ID = "userId"
-
     object Screen{
         const val SCREEN_COTP = "Input OTP "
         const val SCREEN_COTP_MISSCALL = "Input OTP miscall"
@@ -29,7 +25,6 @@ object TrackingOtpConstant{
     object Event{
         const val EVENT_CLICK_ACTIVATION = "clickActivation"
         const val EVENT_CLICK_OTP = "clickOtp"
-        const val EVENT_VIEW_OTP = "viewOtp"
         const val EVENT_CLICK_REGISTER = "clickRegister"
         const val EVENT_CLICK_BACK = "clickBack"
         const val EVENT_CLICK_CONFIRM = "clickConfirm"
@@ -40,7 +35,6 @@ object TrackingOtpConstant{
         const val CATEGORY_ACTIVATION_PAGE = "activation page"
         const val CATEGORY_CHOOSE_OTP_PAGE = "choose otp page"
         const val CATEGORY_INPUT_OTP_PAGE = "input otp page"
-        const val CATEGORY_OTP_PAGE = "otp page"
         const val CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP = "register with phone number otp"
         const val CATEGORY_PUSH_NOTIF_RECEIVE_PAGE = "otp push notif - receive page"
         const val CATEGORY_PUSH_NOTIF_RECEIVE_SUCCESS_PAGE = "otp push notif - receive success page"
@@ -84,8 +78,6 @@ object TrackingOtpConstant{
         const val ACTION_CLICK_ATUR_ULANG_KATA_SANDI = "click atur ulang kata sandi"
         const val ACTION_CLICK_ON_BUTTON_AKTIFKAN_MASUK_LEWAT_NOTIF = "click on button aktifkan masuk lewat notifikasi"
         const val ACTION_CLICK_ON_INACTIVE_PHONE = "click nomor saya sudah tidak aktif"
-        const val ACTION_VIEW_CHOOSE_OTP_PAGE = "view choose otp page"
-        const val ACTION_AUTO_SUBMIT_OTP_PAGE = "auto submit otp page"
     }
 
     object Label{
@@ -95,14 +87,5 @@ object TrackingOtpConstant{
         const val LABEL_FAILED = "failed - "
         const val LABEL_ON = "on"
         const val LABEL_OFF = "off"
-        const val LABEL_PIN = "PIN"
-    }
-
-    object BusinessUnit {
-        const val USER_PLATFORM_UNIT = "user platform"
-    }
-
-    object CurrentSite {
-        const val TOKOPEDIA_MARKETPLACE_SITE = "tokopediamarketplace"
     }
 }
