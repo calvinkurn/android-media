@@ -1351,12 +1351,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
                         ?: false
                 if (isBalanceWidgetNotEmpty) {
-                    var isTokopointsOrOvoFailed = false
-                    it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.values?.forEach { data ->
-                        if (data.state != BalanceDrawerItemModel.STATE_SUCCESS) {
-                            isTokopointsOrOvoFailed = true
-                        }
-                    }
+                    val isTokopointsOrOvoFailed = it.headerDataModel?.homeBalanceModel?.isTokopointsOrOvoFailed ?: false
                     if (!isTokopointsOrOvoFailed) {
                         Handler().postDelayed({
                             if (!coachMarkIsShowing && !bottomSheetIsShowing)
