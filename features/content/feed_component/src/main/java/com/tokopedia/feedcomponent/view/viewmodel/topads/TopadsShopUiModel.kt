@@ -12,7 +12,7 @@ import com.tokopedia.topads.sdk.domain.model.Data
 /**
  * @author by milhamj on 08/01/19.
  */
-data class TopadsShopViewModel(
+data class TopadsShopUiModel(
         val title: Title = Title(),
         val dataList: MutableList<Data> = ArrayList(),
         val template: Template = Template(),

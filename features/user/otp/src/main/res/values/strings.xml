@@ -23,8 +23,8 @@
     <string name="button_change_email">Ubah Email</string>
     <string name="change_email_error_condition">change email</string>
     <string name="success_resend_activation">Kode aktivasi telah dikirim ulang</string>
-    <string name="validation_resend_email">Tidak menerima kode? Kirim ulang </string>
-    <string name="validation_resend_email_or_with_other_method">Tidak menerima kode? Kirim ulang atau \ngunakan metode verifikasi lain.</string>
+    <string name="validation_resend">Tidak menerima kode? Kirim ulang </string>
+    <string name="validation_resend_or_with_other_method">Tidak menerima kode? Kirim ulang atau \ngunakan metode verifikasi lain.</string>
     <string name="with_other_method">gunakan metode verifikasi lain.</string>
     <string name="resend_otp">Kirim ulang</string>
     <string name="verification_coundown_text"><![CDATA[Mohon tunggu dalam %d detik untuk kirim ulang.]]></string>
