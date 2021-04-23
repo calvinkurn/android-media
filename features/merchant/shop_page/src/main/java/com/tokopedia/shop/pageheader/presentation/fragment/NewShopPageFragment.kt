@@ -962,17 +962,8 @@ class NewShopPageFragment :
                 setHasOptionsMenu(true)
 
                 // set back button color
-                val backButtonDrawable = ContextCompat.getDrawable(this, com.tokopedia.iconunify.R.drawable.iconunify_arrow_back)
-                if (backButtonDrawable != null) {
-                    val sd = ScaleDrawable(backButtonDrawable, 0, 24F, 24F)
-                    val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        sd.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
-                    }else{
-                        sd.setColorFilter(color, PorterDuff.Mode.SRC_IN)
-                    }
-                    supportActionBar?.setHomeAsUpIndicator(sd);
-                }
+                val backButtonDrawable = ContextCompat.getDrawable(this, R.drawable.ic_back_button_icon)
+                supportActionBar?.setHomeAsUpIndicator(backButtonDrawable);
             }
         }
         if (isMyShop) {
