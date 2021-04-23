@@ -81,7 +81,7 @@
                 android:contentDescription="@string/content_desc_socmed_btn_register"
                 android:text="@string/another_method"
                 android:textAllCaps="false"
-                app:unifyButtonType="main"
+                app:unifyButtonType="alternate"
                 app:unifyButtonVariant="ghost" />
 
             <com.tokopedia.loginregister.common.view.LoginTextView
