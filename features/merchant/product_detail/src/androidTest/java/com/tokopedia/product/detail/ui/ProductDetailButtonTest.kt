@@ -201,9 +201,9 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     @Test
     fun check_button_seller_side() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1() //given user logged in
-        InstrumentationAuthHelper.modifyUserSession {
-            it.setIsShopOwner(true)
-            it.shopId = "1990266"
+        InstrumentationAuthHelper.userSession {
+            setIsShopOwner(true)
+            shopId = "1990266"
         }
 
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
