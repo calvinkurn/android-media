@@ -699,7 +699,8 @@
                     android:layout_weight="1"
                     android:text="@string/hotel_detail_show_room_text"
                     app:unifyButtonSize="medium"
-                    app:unifyButtonType="transaction" />
+                    app:unifyButtonType="main"
+                    app:unifyButtonVariant="filled"/>
 
             </LinearLayout>
 

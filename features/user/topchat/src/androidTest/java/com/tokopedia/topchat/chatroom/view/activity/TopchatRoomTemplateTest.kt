@@ -26,9 +26,7 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         clickTemplateChatAt(0)
 
         // Then
-        onView(withId(R.id.list_template)).check(
-                matches(isDisplayed())
-        )
+        assertTemplateChatVisibility(isDisplayed())
         onView(withId(R.id.new_comment)).check(
                 matches(withText(" Hi barang ini ready gk? "))
         )
@@ -44,9 +42,8 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         inflateTestFragment()
 
         // Then
-        onView(withId(R.id.list_template)).check(
-                matches(not(isDisplayed()))
-        )
+
+        assertTemplateChatVisibility(not(isDisplayed()))
     }
 
 }

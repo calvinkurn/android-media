@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.suggestion.SuggestionClickListener
 import com.tokopedia.autocomplete.util.safeSetSpan
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.unifyprinciples.Typography
@@ -23,7 +22,7 @@ import java.util.*
 class SuggestionProductLineViewHolder(
         itemView: View,
         private val clickListener: SuggestionClickListener
-) : AbstractViewHolder<SuggestionProductLineDataView>(itemView) {
+) : AbstractViewHolder<SuggestionProductLineDataDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -32,7 +31,7 @@ class SuggestionProductLineViewHolder(
 
     private var searchQueryStartIndexInKeyword = -1
 
-    override fun bind(item: SuggestionProductLineDataView) {
+    override fun bind(item: SuggestionProductLineDataDataView) {
         setComponentHeight(item)
         setImage(item)
         setSearchQueryStartIndexInKeyword(item)
@@ -43,7 +42,7 @@ class SuggestionProductLineViewHolder(
         setListener(item)
     }
 
-    private fun setComponentHeight(item: SuggestionProductLineDataView) {
+    private fun setComponentHeight(item: SuggestionProductLineDataDataView) {
         val layoutParams = itemView.autocompleteProductItem.layoutParams
 
         if (item.hasSlashedPrice()) layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_height)
@@ -52,7 +51,7 @@ class SuggestionProductLineViewHolder(
         itemView.autocompleteProductItem.layoutParams = layoutParams
     }
 
-    private fun setImage(item: SuggestionProductLineDataView) {
+    private fun setImage(item: SuggestionProductLineDataDataView) {
         setImageHeight()
         bindImage(item)
     }
@@ -67,14 +66,14 @@ class SuggestionProductLineViewHolder(
         itemView.autocompleteProductImage.layoutParams = layoutParams
     }
 
-    private fun bindImage(item: SuggestionProductLineDataView) {
+    private fun bindImage(item: SuggestionProductLineDataDataView) {
         val context = itemView.context
         itemView.autocompleteProductImage?.let {
             ImageHandler.loadImageRounded(context, it, item.imageUrl, context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius))
         }
     }
 
-    private fun setSearchQueryStartIndexInKeyword(item: SuggestionProductLineDataView) {
+    private fun setSearchQueryStartIndexInKeyword(item: SuggestionProductLineDataDataView) {
         val displayName = item.title
         val searchTerm = item.searchTerm
 
@@ -83,7 +82,7 @@ class SuggestionProductLineViewHolder(
         } else -1
     }
 
-    private fun setTitle(item: SuggestionProductLineDataView) {
+    private fun setTitle(item: SuggestionProductLineDataDataView) {
         itemView.autocompleteProductTitle?.setType(Typography.BODY_2)
         itemView.autocompleteProductTitle?.setWeight(Typography.REGULAR)
 
@@ -91,7 +90,7 @@ class SuggestionProductLineViewHolder(
         else itemView.autocompleteProductTitle?.text = getHighlightedTitle(item)
     }
 
-    private fun getHighlightedTitle(item: SuggestionProductLineDataView): SpannableString {
+    private fun getHighlightedTitle(item: SuggestionProductLineDataDataView): SpannableString {
         val highlightedTitle = SpannableString(MethodChecker.fromHtml(item.title))
 
         highlightTitleBeforeKeyword(highlightedTitle)
@@ -108,7 +107,7 @@ class SuggestionProductLineViewHolder(
         )
     }
 
-    private fun highlightTitleAfterKeyword(highlightedTitle: SpannableString, item: SuggestionProductLineDataView) {
+    private fun highlightTitleAfterKeyword(highlightedTitle: SpannableString, item: SuggestionProductLineDataDataView) {
         val highlightAfterKeywordStartIndex = searchQueryStartIndexInKeyword + (item.searchTerm.length)
         val highlightAfterKeywordEndIndex = item.title.length
 
@@ -118,27 +117,27 @@ class SuggestionProductLineViewHolder(
         )
     }
 
-    private fun setLabelDiscountPercentage(item: SuggestionProductLineDataView) {
+    private fun setLabelDiscountPercentage(item: SuggestionProductLineDataDataView) {
         itemView.autocompleteProductLabelDiscountPercentage?.shouldShowWithAction(item.hasSlashedPrice()) {
             itemView.autocompleteProductLabelDiscountPercentage?.text = item.discountPercentage
         }
     }
 
-    private fun setOriginalPrice(item: SuggestionProductLineDataView) {
+    private fun setOriginalPrice(item: SuggestionProductLineDataDataView) {
         itemView.autocompleteProductOriginalPrice?.shouldShowWithAction(item.hasSlashedPrice()) {
             itemView.autocompleteProductOriginalPrice?.setTextAndCheckShow(item.originalPrice)
             itemView.autocompleteProductOriginalPrice?.paintFlags = itemView.autocompleteProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
     }
 
-    private fun setPrice(item: SuggestionProductLineDataView) {
+    private fun setPrice(item: SuggestionProductLineDataDataView) {
         itemView.autocompleteProductPrice?.setType(Typography.BODY_3)
         itemView.autocompleteProductPrice?.setWeight(Typography.BOLD)
 
         itemView.autocompleteProductPrice?.setTextAndCheckShow(item.subtitle)
     }
 
-    private fun setListener(item: SuggestionProductLineDataView) {
+    private fun setListener(item: SuggestionProductLineDataDataView) {
         itemView.autocompleteProductItem?.setOnClickListener {
             clickListener.onItemClicked(item)
         }

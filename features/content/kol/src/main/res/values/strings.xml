@@ -22,8 +22,6 @@
     <!--Kol Following List-->
     <string name="title_following_kol">Following</string>
     <string name="title_follower_kol">Followers</string>
-    <string name="title_image_picker">Image Picker</string>
-    <string name="title_image_editor">Image Editor</string>
     <string name="title_create_post">Create Post</string>
 
     <!--Kol Post Detail-->

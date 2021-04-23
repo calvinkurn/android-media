@@ -301,7 +301,7 @@ public class CMInAppManager implements CmInAppListener,
             CMNotificationUtils.INSTANCE.sendUTMParamsInGTM(appLink);
         } else {
             Map<String, String> messageMap = new HashMap<>();
-            messageMap.put("type", "svalidation");
+            messageMap.put("type", "validation");
             messageMap.put("reason", "application_null_no_activity");
             messageMap.put("data", "");
             ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);

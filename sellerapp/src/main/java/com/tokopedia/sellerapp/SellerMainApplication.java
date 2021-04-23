@@ -37,6 +37,8 @@ import com.tokopedia.logger.LoggerProxy;
 import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
+import com.tokopedia.media.common.Loader;
+import com.tokopedia.media.common.common.ToasterActivityLifecycle;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -163,6 +165,8 @@ public class SellerMainApplication extends SellerRouterApplication implements
         initBlockCanary();
         TokoPatch.init(this);
         initSlicePermission();
+
+        Loader.init(this);
     }
 
     private void initCacheManager() {
@@ -173,8 +177,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
     private void initLogManager(){
         LogManager.init(SellerMainApplication.this, new LoggerProxy() {
             final AESEncryptorECB encryptor = new AESEncryptorECB();
-            private final String ENCRYPTION_KEY = new String(new char[]{113, 40, 101, 35, 37, 71, 102, 64, 111, 105, 62, 108, 107, 66, 126, 104});
-            final SecretKey secretKey = encryptor.generateKey(ENCRYPTION_KEY);
+            final SecretKey secretKey = encryptor.generateKey(com.tokopedia.sellerapp.utils.constants.Constants.ENCRYPTION_KEY);
 
             @Override
             public Function1<String, String> getDecrypt() {
@@ -283,6 +286,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
+        registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
     }
 
     @Override

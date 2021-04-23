@@ -15,7 +15,12 @@ import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadIcon
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationCarouselDataModel
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
@@ -23,7 +28,6 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
-
 
 class AddToCartDoneRecommendationCarouselViewHolder(
         itemView: View,
@@ -180,8 +184,8 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         shopLocation.text = dataModel.recommendationItem.location
         reviewCount.text = "(${dataModel.recommendationItem.countReview})"
         ratingCount.text = dataModel.recommendationItem.rating.toString()
-        shopBadges.loadImage(dataModel.recommendationItem.badgesUrl.firstOrNull() ?: "")
-        freeOngkirImage.loadImage(dataModel.recommendationItem.freeOngkirImageUrl)
+        shopBadges.loadIcon(dataModel.recommendationItem.badgesUrl.firstOrNull() ?: "")
+        freeOngkirImage.loadIcon(dataModel.recommendationItem.freeOngkirImageUrl)
         ticker.tickerType = if(dataModel.recommendationItem.shopId == model?.shopId) Ticker.TYPE_INFORMATION else Ticker.TYPE_ANNOUNCEMENT
         ticker.setTextDescription(getString(if(dataModel.recommendationItem.shopId == model?.shopId) R.string.ticker_atc_done_some_store else R.string.ticker_atc_done_different_store))
         addToCartDoneAddedProductListener.onRecommendationItemSelected(dataModel, dataModel.recommendationItem.position)
@@ -211,10 +215,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         constructor(parent: ViewGroup) : this(LayoutInflater.from(parent.context).inflate(R.layout.add_to_cart_done_recommendation_carousel_image_item, parent, false))
         fun bind(dataModel: AddToCartDoneRecommendationItemDataModel){
             val recommendation = dataModel.recommendationItem
-            itemView.findViewById<ImageView>(R.id.carousel_image)?.loadImageRounded(
-                    recommendation.imageUrl,
-                    16f
-            )
+            itemView.findViewById<ImageView>(R.id.carousel_image)?.loadImageRounded(recommendation.imageUrl)
             if(!itemView.hasOnClickListeners()){
                 itemView.setOnClickListener {
                     recommendationListener.onProductClick(

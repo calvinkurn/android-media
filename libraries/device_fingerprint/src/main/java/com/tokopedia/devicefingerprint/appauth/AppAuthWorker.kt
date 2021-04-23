@@ -24,9 +24,6 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
     @Inject
     lateinit var appAuthUseCase: AppAuthUseCase
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
     init {
         DaggerDeviceFingerprintComponent.builder()
                 .deviceFingerprintModule(DeviceFingerprintModule(appContext))
@@ -54,8 +51,7 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
                     val uuid = DeviceInfo.getUUID(appContext).trim()
                     val content = (adsId + androidId + uuid + encd + appContext.packageName)
                     val contentSha = content.sha256()
-                    appAuthUseCase.setParams(contentSha)
-                    val objResult = appAuthUseCase.executeOnBackground()
+                    val objResult = appAuthUseCase.execute(contentSha)
                     if (objResult.mutationSignDvc.isSuccess) {
                         setAlreadySuccessSend(appContext, 1)
                         Result.success()

@@ -36,8 +36,6 @@ import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
-import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -72,7 +70,6 @@ import timber.log.Timber;
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         ExploreApplinkModule.class,
-        LoginRegisterApplinkModule.class,
         HomeCreditAppLinkModule.class,
         WebViewApplinkModule.class,
 })
@@ -93,7 +90,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
-                    new LoginRegisterApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new WebViewApplinkModuleLoader()
             );

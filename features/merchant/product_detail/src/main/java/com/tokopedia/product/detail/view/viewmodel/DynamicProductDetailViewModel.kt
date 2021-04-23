@@ -197,7 +197,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var tradeInParams: TradeInParams = TradeInParams()
     var variantData: ProductVariantCommon? = null
     var listOfParentMedia: MutableList<Media>? = null
-    var buttonActionType: Int = 0
     var buttonActionText: String = ""
     var tradeinDeviceId: String = ""
 
