@@ -34,10 +34,10 @@ class ProductProfile {
     val variant: List<AttachmentVariant>? = listOf()
     @SerializedName("drop_percentage")
     @Expose
-    val dropPercentage: String = ""
+    var dropPercentage: String = ""
     @SerializedName("price_before")
     @Expose
-    val priceBefore: String = ""
+    var priceBefore: String = ""
     @SerializedName("shop_id")
     @Expose
     val shopId: Long = 0
@@ -67,5 +67,11 @@ class ProductProfile {
     val isPreOrder: Boolean = false
     @SerializedName("campaign_id")
     @Expose
-    val campaignId: Long = 0
+    var campaignId: Long = 0
+    @SerializedName("is_fulfillment")
+    @Expose
+    var isFulFillment: Boolean = false
+    @SerializedName("icon_tokocabang")
+    @Expose
+    var urlTokocabang: String = ""
 }
