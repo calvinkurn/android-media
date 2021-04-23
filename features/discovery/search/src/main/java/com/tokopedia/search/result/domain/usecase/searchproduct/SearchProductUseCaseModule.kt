@@ -26,25 +26,20 @@ class SearchProductUseCaseModule {
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
     fun provideSearchProductFirstPageUseCase(
             searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
-            remoteConfig: RemoteConfig,
             userSession: UserSessionInterface,
             coroutineDispatchers: CoroutineDispatchers
     ): UseCase<SearchProductModel> {
-        // Temporarily keep 2 search use case for TDN and without TDN
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SEARCH_TDN)) {
-            val topAdsImageViewUseCase = TopAdsImageViewUseCase(
-                    userSession.userId,
-                    TopAdsRepository()
-            )
-            return SearchProductTDNFirstPageGqlUseCase(
-                    GraphqlUseCase(),
-                    searchProductModelMapper,
-                    topAdsImageViewUseCase,
-                    coroutineDispatchers,
-                    SearchLogger()
-            )
-        }
-        return SearchProductFirstPageGqlUseCase(GraphqlUseCase(), searchProductModelMapper)
+        val topAdsImageViewUseCase = TopAdsImageViewUseCase(
+                userSession.userId,
+                TopAdsRepository()
+        )
+        return SearchProductFirstPageGqlUseCase(
+                GraphqlUseCase(),
+                searchProductModelMapper,
+                topAdsImageViewUseCase,
+                coroutineDispatchers,
+                SearchLogger()
+        )
     }
 
     @SearchScope

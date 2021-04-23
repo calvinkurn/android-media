@@ -40,6 +40,7 @@ data class ShopGroupAvailableData(
         var totalItem: Int = 0,
 
         var preOrderInfo: String = "",
+        var isFreeShippingExtra: Boolean = false,
         var freeShippingBadgeUrl: String = "",
         var incidentInfo: String = "",
         var estimatedTimeArrival: String = ""
