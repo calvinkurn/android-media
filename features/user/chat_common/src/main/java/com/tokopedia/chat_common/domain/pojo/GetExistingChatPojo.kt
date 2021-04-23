@@ -160,7 +160,10 @@ data class Reply(
         val blastId: Long = 0,
         @Expose
         @SerializedName("source")
-        val source: String = ""
+        val source: String = "",
+        @Expose
+        @SerializedName("label")
+        val label: String = ""
 ) {
 
     val attachmentType: Int get(): Int = attachment?.type ?: 0

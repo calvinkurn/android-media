@@ -56,13 +56,12 @@ class SettingStateViewModel @Inject constructor(
     override fun addPinnedEmailItems(data: UserSettingDataView) {
         addPinnedItems(data) {
             val email = userSession.email
-            val hasEmail = email.isNotEmpty()
 
-            // pinned add email
-            addPinnedPermission(hasEmail, activationEmail())
+            // pinned recom tag to adding a new email if user doesn't have
+            addPinnedPermission(email.isEmpty(), activationEmail())
 
             // pinned change email
-            if (hasEmail) pinnedItems.add(changeEmail(email))
+            if (email.isNotEmpty()) pinnedItems.add(changeEmail(email))
         }
     }
 
