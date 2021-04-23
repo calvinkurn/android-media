@@ -11,6 +11,7 @@ import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -181,5 +182,21 @@ class ChatRoomFakeUseCaseModule {
             gqlUseCase: GraphqlUseCaseStub<ChatSmartReplyQuestionResponse>
     ): SmartReplyQuestionUseCaseStub {
         return SmartReplyQuestionUseCaseStub(gqlUseCase)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideOrderProgressUseCase(
+            stub: OrderProgressUseCaseStub
+    ): OrderProgressUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideOrderProgressUseCaseStub(
+            gqlUseCase: GraphqlUseCaseStub<OrderProgressResponse>
+    ): OrderProgressUseCaseStub {
+        return OrderProgressUseCaseStub(gqlUseCase)
     }
 }

@@ -34,6 +34,7 @@ import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -99,6 +100,9 @@ abstract class TopchatRoomTest {
     protected lateinit var chatSrwUseCase: SmartReplyQuestionUseCaseStub
 
     @Inject
+    protected lateinit var orderProgressUseCase: OrderProgressUseCaseStub
+
+    @Inject
     protected lateinit var websocket: RxWebSocketUtilStub
 
     protected open lateinit var activity: TopChatRoomActivityStub
@@ -115,6 +119,7 @@ abstract class TopchatRoomTest {
     protected var getShopFollowingStatus: ShopFollowingPojo = ShopFollowingPojo()
     protected var chatSrwResponse: ChatSmartReplyQuestionResponse = ChatSmartReplyQuestionResponse()
     protected var uploadImageReplyResponse: ChatReplyPojo = ChatReplyPojo()
+    protected var orderProgressResponse: OrderProgressResponse = OrderProgressResponse()
 
     protected lateinit var chatComponentStub: ChatComponentStub
 
@@ -174,9 +179,10 @@ abstract class TopchatRoomTest {
     }
 
     protected fun setupDefaultResponseWhenFirstOpenChatRoom() {
-        // TODO: Add chat order progress default response
         // TODO: Add chat background default response
+        // TODO: Add chat room setting default response
         getChatUseCase.response = firstPageChatAsBuyer
+        orderProgressUseCase.response = orderProgressResponse
         chatAttachmentUseCase.response = chatAttachmentResponse
         stickerGroupUseCase.response = stickerGroupAsBuyer
         chatListStickerUseCase.response = stickerListAsBuyer
