@@ -338,15 +338,15 @@ class ShipmentPresenterCheckoutTest {
         val validateUseResponse = DataProvider.provideValidateUseResponse()
         presenter.validateUsePromoRevampUiModel = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        dataCheckoutRequest.shopProducts[0].cartString = "239594-0-301643"
+        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
         presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
 
         // When
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 
         // Then
-        assert(checkoutRequest.promos.isNotEmpty())
-        assert(checkoutRequest.promoCodes.isNotEmpty())
+        assert(checkoutRequest.promos?.isNotEmpty() == true)
+        assert(checkoutRequest.promoCodes?.isNotEmpty() == true)
     }
 
     @Test
@@ -378,8 +378,8 @@ class ShipmentPresenterCheckoutTest {
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 
         // Then
-        assert(checkoutRequest.egoldData.isEgold)
-        assert(checkoutRequest.egoldData.egoldAmount == egoldAmount)
+        assert(checkoutRequest.egoldData?.isEgold == true)
+        assert(checkoutRequest.egoldData?.egoldAmount == egoldAmount)
     }
 
     @Test
@@ -399,9 +399,9 @@ class ShipmentPresenterCheckoutTest {
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 
         // Then
-        assert(checkoutRequest.cornerData.isTokopediaCorner)
-        assert(checkoutRequest.cornerData.cornerId == tmpCornerId.toLongOrZero())
-        assert(checkoutRequest.cornerData.userCornerId == tmpUserCornerId)
+        assert(checkoutRequest.cornerData?.isTokopediaCorner == true)
+        assert(checkoutRequest.cornerData?.cornerId == tmpCornerId.toLongOrZero())
+        assert(checkoutRequest.cornerData?.userCornerId == tmpUserCornerId)
     }
 
     @Test
