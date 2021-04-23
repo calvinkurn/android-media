@@ -26,7 +26,7 @@ class ShopProductItemListViewHolder(
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
         itemView.productCardView?.setProductModel(
-                ShopPageProductListMapper.mapToProductCardModel(shopProductUiModel)
+                ShopPageProductListMapper.mapToProductCardModel(shopProductUiModel, false)
         )
         itemView.productCardView?.setThreeDotsOnClickListener {
             shopProductClickedListener?.onThreeDotsClicked(shopProductUiModel, adapterPosition)

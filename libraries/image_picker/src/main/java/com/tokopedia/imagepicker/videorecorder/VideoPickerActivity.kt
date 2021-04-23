@@ -21,11 +21,12 @@ import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
 import com.tokopedia.imagepicker.common.model.MediaItem
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
-import com.tokopedia.videorecorder.main.adapter.ViewPagerAdapter
+import com.tokopedia.imagepicker.videorecorder.adapter.ViewPagerAdapter
 import com.tokopedia.imagepicker.videorecorder.recorder.VideoRecorderFragment
 import com.tokopedia.imagepicker.common.state.StateRecorder
-import com.tokopedia.videorecorder.utils.*
-import com.tokopedia.videorecorder.utils.show
+import com.tokopedia.imagepicker.videorecorder.utils.*
+import com.tokopedia.imagepicker.videorecorder.utils.hide
+import com.tokopedia.imagepicker.videorecorder.utils.show
 import kotlinx.android.synthetic.main.activity_video_picker.*
 import java.io.File
 import java.util.*
@@ -88,7 +89,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item?.itemId) {
+        when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
                 finish()
@@ -229,11 +230,11 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
         if (isImageExist) {
             val dialog = Dialog(this, Dialog.Type.PROMINANCE)
-            dialog.setTitle(getString(R.string.cp_title_update_post))
+            dialog.setTitle(getString(R.string.ip_title_update_post))
             dialog.setDesc(
-                    getString(R.string.cp_message_update_choosen_video))
-            dialog.setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
-            dialog.setBtnOk(getString(com.tokopedia.imagepicker.common.R.string.cp_continue))
+                    getString(R.string.ip_message_update_choosen_video))
+            dialog.setBtnCancel(getString(R.string.ip_label_cancel))
+            dialog.setBtnOk(getString(com.tokopedia.imagepicker.common.R.string.ip_continue))
             dialog.setOnOkClickListener{
                 dialog.dismiss()
                 onFinishPicked(videoPath)

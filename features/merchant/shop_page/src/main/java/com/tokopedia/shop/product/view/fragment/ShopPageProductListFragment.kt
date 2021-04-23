@@ -854,7 +854,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         activity?.let {
             val snackbar = Snackbar.make(it.findViewById(android.R.id.content), stringToShow,
                     Snackbar.LENGTH_LONG)
-            snackbar.setAction(requireActivity().getString(com.tokopedia.design.R.string.close)) { snackbar.dismiss() }
+            snackbar.setAction(requireActivity().getString(R.string.label_close)) { snackbar.dismiss() }
             snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             snackbar.show()
         }

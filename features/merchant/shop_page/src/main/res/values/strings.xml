@@ -308,6 +308,7 @@
     <string name="shop_page_share_action_more">Lainnya</string>
     <string name="shop_page_share_action_copy_success">Teks berhasil disalin</string>
     <string name="shop_page_share_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
+    <string name="label_close">Tutup</string>
 
     <!-- content description shop page -->
     <string name="content_desc_shop_page_main_profile_image">image gambar toko</string>

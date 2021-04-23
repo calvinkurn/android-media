@@ -239,7 +239,7 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/room_left_text_view"
                     app:unifyButtonSize="medium"
-                    app:unifyButtonType="transaction"
+                    app:unifyButtonType="main"
                     app:unifyButtonVariant="filled"
                     tools:gravity="center_vertical" />
 
