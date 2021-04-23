@@ -129,7 +129,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                         if (productData.getShipperId() == shipperId && productData.getShipperProductId() == spId) {
                             view.updateCourierBottomssheetHasData(
                                     shippingDurationUiModel.getShippingCourierViewModelList(),
-                                    itemPosition, shipmentCartItemModel
+                                    itemPosition, shipmentCartItemModel, shippingRecommendationData.getPreOrderModel()
                             );
                             return;
                         }
