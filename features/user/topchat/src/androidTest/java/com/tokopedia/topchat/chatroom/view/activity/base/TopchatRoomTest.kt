@@ -135,6 +135,7 @@ abstract class TopchatRoomTest {
                 .chatRoomContextModule(ChatRoomContextModule(context))
                 .build()
         chatComponentStub.inject(this)
+        setupDefaultResponseWhenFirstOpenChatRoom()
     }
 
     protected open fun setupResponse() {
@@ -170,6 +171,18 @@ abstract class TopchatRoomTest {
                 "success_upload_image_reply.json",
                 ChatReplyPojo::class.java
         )
+    }
+
+    protected fun setupDefaultResponseWhenFirstOpenChatRoom() {
+        // TODO: Add chat order progress default response
+        // TODO: Add chat background default response
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        stickerGroupUseCase.response = stickerGroupAsBuyer
+        chatListStickerUseCase.response = stickerListAsBuyer
+        chatSrwUseCase.response = chatSrwResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus
+        getTemplateChatRoomUseCase.response = generateTemplateResponse(true)
     }
 
     protected fun setupChatRoomActivity(
