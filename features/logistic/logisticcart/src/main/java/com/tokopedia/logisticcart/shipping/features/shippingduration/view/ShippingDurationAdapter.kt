@@ -23,8 +23,12 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     fun setShippingDurationViewModels(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: LogisticPromoUiModel?, isDisableOrderPrioritas: Boolean, preOrderModel: PreOrderModel?) {
         this.isDisableOrderPrioritas = isDisableOrderPrioritas
         this.mData = shippingDurationUiModels.toMutableList()
-        preOrderModel?.let { this.mData.add(0, it) }
-        promoUiModel?.let { this.mData.add(1, it) }
+        if (preOrderModel?.display == true)  {
+            preOrderModel?.let { this.mData.add(0, it) }
+            promoUiModel?.let { this.mData.add(1, it) }
+        } else {
+            promoUiModel?.let { this.mData.add(0, it) }
+        }
         if (shippingDurationUiModels[0].etaErrorCode == 1) {
             this.mData.add(0, NotifierModel())
         }
