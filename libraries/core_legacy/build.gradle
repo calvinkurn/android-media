@@ -21,11 +21,13 @@ buildscript {
 }
 
 android {
-    sourceSets {
-        if (project.hasProperty("newRelic")) {
-            main.java.srcDirs += 'src/main/new_relic'
-        }else{
-            main.java.srcDirs += 'src/main/new_relic_dummy'
+    if (project.hasProperty("newRelic")) {
+        sourceSets.each {
+            it.java.srcDirs += "src/main/new_relic"
+        }
+    }else{
+        sourceSets.each {
+            it.java.srcDirs += "src/main/new_relic_dummy"
         }
     }
     defaultConfig {
