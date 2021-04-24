@@ -24,9 +24,11 @@ class ItemDetailPerformanceViewHolder(view: View,
         with(itemView) {
             setupItemDetailPerformance(element)
 
-            val titleBottomSheet = if (element?.titleDetailPerformance == getString(R.string.desc_calculation_open_seller_app_within_90_days)) {
+            val titleBottomSheet = if (element?.titleDetailPerformance?.startsWith(getString(R.string.desc_calculation_open_seller_app)) == true) {
                 getString(R.string.desc_calculation_open_seller_app)
-            } else element?.titleDetailPerformance.orEmpty()
+            } else {
+                element?.titleDetailPerformance.orEmpty()
+            }
             setOnClickListener {
                 itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
                         titleBottomSheet,
