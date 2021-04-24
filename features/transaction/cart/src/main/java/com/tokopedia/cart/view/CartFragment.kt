@@ -417,7 +417,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 refreshCartWithProgressDialog()
             }
             PaymentConstant.PAYMENT_FAILED -> {
-                showToastMessageRed(getString(R.string.default_request_error_unknown))
+                showToastMessageRed(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown))
                 refreshCartWithProgressDialog()
             }
             CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED -> {
@@ -2808,7 +2808,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, actionText, tmpCtaClickListener)
                         .show()
             } else {
-                Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, it.resources.getString(R.string.checkout_flow_toaster_action_ok), tmpCtaClickListener)
+                Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, it.resources.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok), tmpCtaClickListener)
                         .show()
             }
         }
@@ -2837,7 +2837,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 Toaster.build(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, actionText, tmpCtaClickListener)
                         .show()
             } else {
-                Toaster.build(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, v.resources.getString(R.string.checkout_flow_toaster_action_ok), tmpCtaClickListener)
+                Toaster.build(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, v.resources.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok), tmpCtaClickListener)
                         .show()
             }
         }
@@ -3359,8 +3359,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         binding?.apply {
             promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.INACTIVE
             promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-            promoCheckoutBtnCart.title = getString(R.string.promo_checkout_inactive_label)
-            promoCheckoutBtnCart.desc = getString(R.string.promo_checkout_inactive_desc)
+            promoCheckoutBtnCart.title = getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_label)
+            promoCheckoutBtnCart.desc = getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_desc)
             promoCheckoutBtnCart.setOnClickListener {
                 renderPromoCheckoutLoading()
                 dPresenter.doValidateUse(generateParamValidateUsePromoRevamp(false, -1, -1, true))
