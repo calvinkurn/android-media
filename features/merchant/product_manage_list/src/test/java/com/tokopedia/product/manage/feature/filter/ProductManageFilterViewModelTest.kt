@@ -12,8 +12,7 @@ import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertFalse
+import junit.framework.Assert.*
 import org.junit.Test
 
 class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture() {
@@ -46,6 +45,8 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
         viewModel.clearSelected()
 
         verifyAllFilterDataIsNotSelected()
+        assertTrue(viewModel.getSelectedFilters().isEmpty())
+
     }
 
     @Test

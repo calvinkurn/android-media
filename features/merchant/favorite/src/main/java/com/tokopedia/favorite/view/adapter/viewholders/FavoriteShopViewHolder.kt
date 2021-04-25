@@ -12,14 +12,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.favorite.R
 import com.tokopedia.favorite.utils.TrackingConst
-import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel
+import com.tokopedia.favorite.view.viewmodel.FavoriteShopUiModel
 import com.tokopedia.track.TrackApp
 import java.util.*
 
 /**
  * @author kulomady on 1/24/17.
  */
-class FavoriteShopViewHolder(itemView: View) : AbstractViewHolder<FavoriteShopViewModel?>(itemView) {
+class FavoriteShopViewHolder(itemView: View) : AbstractViewHolder<FavoriteShopUiModel?>(itemView) {
 
     companion object {
         @JvmField
@@ -31,7 +31,7 @@ class FavoriteShopViewHolder(itemView: View) : AbstractViewHolder<FavoriteShopVi
         initView(itemView)
     }
 
-    private var favoriteShop: FavoriteShopViewModel? = null
+    private var favoriteShop: FavoriteShopUiModel? = null
     private val context: Context = itemView.context
     private var avatarImageView: ImageView? = null
     private var nameTextView: TextView? = null
@@ -49,7 +49,7 @@ class FavoriteShopViewHolder(itemView: View) : AbstractViewHolder<FavoriteShopVi
         shopLayout.setOnClickListener { onShopLayoutClicked() }
     }
 
-    override fun bind(favoriteShop: FavoriteShopViewModel?) {
+    override fun bind(favoriteShop: FavoriteShopUiModel?) {
         this.favoriteShop = favoriteShop
         if (favoriteShop == null) return
 
