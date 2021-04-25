@@ -491,9 +491,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             hideLoading()
             when (it) {
                 is Success -> {
-                    addProductListHeader()
-                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, it.data.totalProductData, true)
-                    productListName = it.data.listShopProductUiModel.joinToString(",") { product -> product.name.orEmpty() }
+                    val productListData = it.data.listShopProductUiModel
+                    val hasNextPage = it.data.hasNextPage
+                    val totalProductOnShop = it.data.totalProductData
+                    if(productListData.isNotEmpty())
+                        addProductListHeader()
+                    updateProductListData(hasNextPage, productListData, totalProductOnShop, true)
+                    productListName = productListData.joinToString(",") { product -> product.name.orEmpty() }
                 }
             }
         })
