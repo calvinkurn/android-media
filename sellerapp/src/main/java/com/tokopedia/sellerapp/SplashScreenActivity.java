@@ -18,11 +18,11 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.graphql.util.LoggingUtils;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
-import com.tokopedia.keys.Keys.NEW_RELIC;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
@@ -49,7 +49,7 @@ public class SplashScreenActivity extends SplashScreen {
     public void onCreate(Bundle savedInstanceState) {
         boolean defaultInteraction = false;
         NewRelic
-                .withApplicationToken(NEW_RELIC)
+                .withApplicationToken(Keys.NEW_RELIC)
                 .withDefaultInteractions(defaultInteraction)
                 .start(this.getApplication());
         
