@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.pdp.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -205,6 +206,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun setupBottomSheet(listActiveDates: List<String>) {
         if (startDate.isNotBlank() && endDate.isNotBlank() && selectedDate.isNotBlank()) {
             bottomSheets = BottomSheetUnify()
