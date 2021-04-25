@@ -1169,6 +1169,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun observeProductLimitationData() {
+        if (!RollenceUtil.getProductLimitationRollence()) return
         if (isAdding() || viewModel.isDuplicate) {
             if (isFragmentFirstTimeLoaded && !isDrafting()) viewModel.getProductLimitation()
             viewModel.productLimitationData.observe(viewLifecycleOwner) {
@@ -1636,6 +1637,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun setupProductLimitationViews() {
+        if (!RollenceUtil.getProductLimitationRollence()) return
         val htmlDescription = getString(R.string.label_product_limitation_ticker, PRODUCT_LIMITATION_START_DATE)
         productLimitationTicker?.apply {
             setHtmlDescription(htmlDescription)
