@@ -87,7 +87,7 @@ abstract class MediaLoaderFactory<T> {
             if (isCache && signatureKey != null) {
                 signature(signatureKey!!)
             } else if (isCache && signatureKey == null) {
-                signature(ObjectKey(properties.urlHasQualityParam))
+                signature(ObjectKey(properties.urlHasQualityParam + cacheVersionNumber))
             } else {
                 skipMemoryCache(true)
             }

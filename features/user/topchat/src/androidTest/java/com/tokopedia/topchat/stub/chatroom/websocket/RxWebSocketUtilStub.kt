@@ -6,7 +6,7 @@ import com.tokopedia.websocket.WebSocketInfo
 import com.tokopedia.websocket.WebSocketResponse
 import okhttp3.WebSocket
 import rx.Observable
-import rx.schedulers.TestScheduler
+import rx.android.schedulers.AndroidSchedulers
 import rx.subjects.PublishSubject
 
 class RxWebSocketUtilStub constructor() : RxWebSocketUtil(
@@ -18,8 +18,9 @@ class RxWebSocketUtilStub constructor() : RxWebSocketUtil(
 
     override fun getWebSocketInfo(url: String, accessToken: String): Observable<WebSocketInfo>? {
         return websocketInfoObservable
-                .subscribeOn(TestScheduler())
-                .observeOn(TestScheduler()).also {
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .also {
                     websocketInfoObservable.onNext(WebSocketInfo(websocket, true))
                 }
     }

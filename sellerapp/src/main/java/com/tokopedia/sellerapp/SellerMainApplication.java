@@ -79,6 +79,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_sellerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_new_relic";
+    private static final String PARSER_SCALYR_SA = "android-seller-app-p%s";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -238,6 +239,12 @@ public class SellerMainApplication extends SellerRouterApplication implements
             @Override
             public String getUserId() {
                 return getUserSession().getUserId();
+            }
+
+            @NotNull
+            @Override
+            public String getParserScalyr() {
+                return PARSER_SCALYR_SA;
             }
 
             @NotNull

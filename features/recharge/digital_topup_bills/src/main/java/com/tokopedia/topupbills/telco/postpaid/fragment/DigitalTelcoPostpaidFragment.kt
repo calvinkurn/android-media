@@ -364,8 +364,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun onInputNewNumberUpdateLayout() {
-        tabLayout.show()
-        separator.show()
         viewPager.show()
         buyWidget.setVisibilityLayout(false)
         postpaidClientNumberWidget.resetEnquiryResult()
