@@ -117,8 +117,16 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         val shopScoreVisitableList = mutableListOf<BaseShopPerformance>()
         val isEligiblePM = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePm
         val shopScoreResult = shopScoreWrapperResponse.shopScoreLevelResponse?.result
-        val shopAge = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.shopAge.orZero()
-        val isNewSeller = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isNewSeller ?: false
+        val shopAge = if (shopScoreWrapperResponse.goldGetPMShopInfoResponse != null) {
+            shopScoreWrapperResponse.goldGetPMShopInfoResponse?.shopAge
+        } else {
+            shopInfoPeriodUiModel.shopAge
+        } ?: 0
+        val isNewSeller = if (shopScoreWrapperResponse.goldGetPMShopInfoResponse != null) {
+            shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isNewSeller
+        } else {
+            shopInfoPeriodUiModel.isNewSeller
+        } ?: false
         shopScoreVisitableList.apply {
             if (isNewSeller) {
                 val mapTimerNewSeller = mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller)
