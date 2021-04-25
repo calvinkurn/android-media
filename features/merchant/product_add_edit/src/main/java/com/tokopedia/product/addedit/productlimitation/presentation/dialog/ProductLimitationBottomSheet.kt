@@ -3,6 +3,8 @@ package com.tokopedia.product.addedit.productlimitation.presentation.dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isVisible
@@ -86,14 +88,19 @@ class ProductLimitationBottomSheet(
         }
 
         ticker?.apply {
+            val tickerDesc: String
             if (isEligible) {
                 tickerType = Ticker.TYPE_ANNOUNCEMENT
                 tickerTitle = getString(R.string.title_product_limitation_bottomsheet_ticker, limitAmount)
+                tickerDesc = getString(R.string.label_product_limitation_bottomsheet_ticker)
+                closeButtonVisibility = GONE
             } else {
                 tickerType = Ticker.TYPE_WARNING
                 tickerTitle = ""
+                tickerDesc = getString(R.string.label_product_limitation_bottomsheet_ticker_exceed, limitAmount)
+                closeButtonVisibility = VISIBLE
             }
-            setHtmlDescription(getString(R.string.label_product_limitation_bottomsheet_ticker))
+            setHtmlDescription(tickerDesc)
             setOnClickListener {
                 onBottomSheetResult.invoke(URL_PRODUCT_LIMITATION_EDU)
             }
