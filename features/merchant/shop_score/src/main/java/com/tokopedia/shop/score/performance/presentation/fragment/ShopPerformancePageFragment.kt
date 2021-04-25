@@ -504,6 +504,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 is Fail -> {
                     shopPerformanceAdapter.hideLoading()
                     shopPerformanceAdapter.setShopPerformanceError(ItemShopPerformanceErrorUiModel())
+                    coachMark?.dismissCoachMark()
                 }
             }
         }
@@ -519,7 +520,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     this.shopScoreWrapperResponse = it.data.second
                     counterPenalty = it.data.first.filterIsInstance<HeaderShopPerformanceUiModel>().firstOrNull()?.scorePenalty.orZero()
                     showPenaltyBadge()
-                    if(!shopScoreCoachMarkPrefs.getFinishCoachMark()) {
+                    if (!shopScoreCoachMarkPrefs.getFinishCoachMark()) {
                         Handler().postDelayed({
                             scrollToItemParameterDetail()
                         }, COACH_MARK_RENDER_SHOW)
@@ -529,6 +530,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 is Fail -> {
                     shopPerformanceAdapter.hideLoading()
                     shopPerformanceAdapter.setShopPerformanceError(ItemShopPerformanceErrorUiModel())
+                    coachMark?.dismissCoachMark()
                 }
             }
         }
