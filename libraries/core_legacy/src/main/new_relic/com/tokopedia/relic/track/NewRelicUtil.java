@@ -1,6 +1,6 @@
 package com.tokopedia.relic.track;
 
-import com.newrelic.agent.android.NewRelic
+import com.newrelic.agent.android.NewRelic;
 import java.util.Map;
 
 public class NewRelicUtil {
