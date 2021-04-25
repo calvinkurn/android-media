@@ -17,6 +17,8 @@ object PMConstant {
         const val PM_SHOP_SCORE_NOT_ELIGIBLE_BOTTOM_SHEET = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_inactive.png"
         const val PM_ADD_PRODUCT_BOTTOM_SHEET = "https://images.tokopedia.net/img/android/gold_merchant_common/gm_add_product.png"
         const val PM_INACTIVE = "https://images.tokopedia.net/img/android/gold_merchant_common/gmc_pm_inactive.png"
+        const val PM_REGISTRATION_PM = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_registration_header.png"
+        const val PM_REGISTRATION_PM_PRO = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_registration_header.png"
     }
 
     object Urls {

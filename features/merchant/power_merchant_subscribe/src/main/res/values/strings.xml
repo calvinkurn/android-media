@@ -130,7 +130,11 @@
     <string name="power_merchant_free_shipping_learn_more">Pelajari Bebas Ongkir</string>
     <string name="power_merchant_click_to_reload">Ketuk ikon untuk memuat ulang</string>
     <string name="power_merchant_success_free_shipping_description">Yuk, aktivasi fitur Bebas Ongkir untuk meningkatkan penjualan tokomu.</string>
+    <string name="pm_power_merchant">Power Merchant</string>
+    <string name="pm_power_merchant_pro">Power Merchant Pro</string>
+    <string name="pm_power_merchant_section_description"><![CDATA[<strong><font color=\"%1$s\">%2$s</font></strong> tiap produk terjual]]></string>
     <string name="pm_power_merchant_status">Power Merchant Status :</string>
+    <string name="pm_not_eligible_yet">Belum memenuhi syarat</string>
     <string name="pm_active">Aktif</string>
     <string name="pm_inactive">Tidak Aktif</string>
     <string name="pm_power_merchant_exclusive_features">Fitur Eksklusif Power Merchant</string>
@@ -140,7 +144,8 @@
     <string name="pm_power_merchant_slider_title">Perubahan Power Merchant</string>
     <string name="pm_power_merchant_slider_footer_cta_text">Lebih lanjut tentang Performa Toko, <font color="#03AC0E"><b>di sini</b></font></string>
     <string name="pm_content_slider_last_slide_button">Oke, Saya Mengerti</string>
-    <string name="pm_registration_header_description">Maksimalkan penjualan tokomu dengan upgrade \nke Power Merchant, yuk!</string>
+    <string name="pm_registration_header_pm">Seller yang ingin meningkatkan penjualan &amp; kepercayaan pembeli</string>
+    <string name="pm_registration_header_pm_pro">Seller terbaik yang konsisten memberikan Performa &amp; layanan memuaskan</string>
     <string name="pm_registration_terms">Syarat Pendaftaran</string>
     <string name="pm_registration_potential_description">Dari data di 2020, dengan biaya layanan <b>1%</b> saja dari setiap produk terjual, tokomu berpotensi:</string>
     <string name="pm_tnc_agreement_text">Saya setuju dengan <font color="#03AC0E"><b>S&amp;K</b></font> yang berlaku.</string>

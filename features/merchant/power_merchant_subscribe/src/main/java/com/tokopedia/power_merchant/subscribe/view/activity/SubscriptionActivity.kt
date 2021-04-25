@@ -25,14 +25,15 @@ import kotlinx.android.synthetic.main.activity_pm_subsription.*
  * Created By @ilhamsuaib on 25/02/21
  */
 
-class SubscriptionActivity : BaseActivity(), SubscriptionActivityInterface, HasComponent<PowerMerchantSubscribeComponent> {
+class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribeComponent> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
-        openPowerMerchantWebView()
         setContentView(R.layout.activity_pm_subsription)
         window.decorView.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+
+        setupView()
     }
 
     override fun getComponent(): PowerMerchantSubscribeComponent {
@@ -49,18 +50,6 @@ class SubscriptionActivity : BaseActivity(), SubscriptionActivityInterface, HasC
         return super.onOptionsItemSelected(item)
     }
 
-    override fun switchToPmRevampPage(pmSettingInfo: PowerMerchantSettingInfoUiModel) {
-        val fragment = PowerMerchantSubscriptionFragment.createInstance().apply {
-            setPmSettingInfo(pmSettingInfo)
-        }
-        showFragment(fragment)
-    }
-
-    private fun openPowerMerchantWebView() {
-        RouteManager.route(this, PMConstant.Urls.POWER_MERCHANT_PAGE)
-        finish()
-    }
-
     private fun initInjector() {
         component.inject(this)
     }
@@ -69,6 +58,8 @@ class SubscriptionActivity : BaseActivity(), SubscriptionActivityInterface, HasC
         setSupportActionBar(toolbarPmSubscription)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setWhiteStatusBar()
+
+        showFragment()
     }
 
     private fun setWhiteStatusBar() {
@@ -78,7 +69,8 @@ class SubscriptionActivity : BaseActivity(), SubscriptionActivityInterface, HasC
         }
     }
 
-    private fun showFragment(fragment: Fragment) {
+    private fun showFragment() {
+        val fragment = PowerMerchantSubscriptionFragment.createInstance()
         if (!fragment.isAdded) {
             supportFragmentManager.beginTransaction()
                     .replace(R.id.framePmFragmentContainer, fragment)

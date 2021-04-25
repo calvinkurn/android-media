@@ -4,8 +4,9 @@ package com.tokopedia.gm.common.data.source.local.model
  * Created By @ilhamsuaib on 25/03/21
  */
 
-data class PMStatusAndShopInfoUiModel(
+data class PowerMerchantBasicInfoUiModel(
         val pmStatus: PMStatusUiModel,
         val shopInfo: PMShopInfoUiModel,
+        val settingInfo: PowerMerchantSettingInfoUiModel,
         val isFreeShippingEnabled: Boolean = false
 )

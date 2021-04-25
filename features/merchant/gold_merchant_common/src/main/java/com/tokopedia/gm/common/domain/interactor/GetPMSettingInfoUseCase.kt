@@ -40,7 +40,6 @@ class GetPMSettingInfoUseCase @Inject constructor(
         private val QUERY = """
            query goldGetPMSettingInfo(${'$'}shopID: Int!, ${'$'}source: String!) {
              goldGetPMSettingInfo(shopID: ${'$'}shopID, source:${'$'}source) {
-               shop_id
                period_type
                period_end_date_time
                ticker_list {

@@ -14,7 +14,6 @@ class PMShopInfoMapper @Inject constructor() {
 
     fun mapRemoteModelToUiModel(response: GoldGetPMShopInfoDataModel?): PMShopInfoUiModel {
         return PMShopInfoUiModel(
-                shopId = response?.shopId.orZero().toString(),
                 isNewSeller = response?.isNewSeller ?: true,
                 shopAge = response?.shopAge.orZero(),
                 isKyc = response?.isKyc ?: false,
@@ -24,6 +23,7 @@ class PMShopInfoMapper @Inject constructor() {
                 isEligibleShopScore = response?.isEligibleShopScore ?: false,
                 hasActiveProduct = response?.hasActiveProduct ?: false,
                 isEligiblePm = response?.isEligiblePm ?: false,
+                isEligiblePmPro = response?.isEligiblePmPro ?: false,
                 shopLevel = response?.shopLevel.orZero()
         )
     }

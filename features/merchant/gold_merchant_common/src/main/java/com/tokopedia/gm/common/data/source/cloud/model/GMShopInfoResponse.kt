@@ -12,8 +12,6 @@ data class GMShopInfoResponse(
 )
 
 data class GoldGetPMShopInfoDataModel(
-        @SerializedName("shop_id")
-        val shopId: Long? = 0,
         @SerializedName("is_new_seller")
         val isNewSeller: Boolean? = true,
         @SerializedName("shop_age")
@@ -32,6 +30,8 @@ data class GoldGetPMShopInfoDataModel(
         val hasActiveProduct: Boolean? = false,
         @SerializedName("is_eligible_pm")
         val isEligiblePm: Boolean? = false,
+        @SerializedName("is_eligible_pm_pro")
+        val isEligiblePmPro: Boolean? = false,
         @SerializedName("shop_level")
         val shopLevel: Int? = 0
 )

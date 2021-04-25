@@ -5,7 +5,6 @@ package com.tokopedia.gm.common.data.source.local.model
  */
 
 data class PMShopInfoUiModel(
-        val shopId: String = "",
         val isNewSeller: Boolean = true,
         val shopAge: Int = 0,
         val isKyc: Boolean = false,
@@ -15,5 +14,6 @@ data class PMShopInfoUiModel(
         val isEligibleShopScore: Boolean = false,
         val hasActiveProduct: Boolean = false,
         val isEligiblePm: Boolean = false,
+        val isEligiblePmPro: Boolean = false,
         val shopLevel: Int? = 0
 )

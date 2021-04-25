@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.gm.common.data.source.local.model.PMStatusAndShopInfoUiModel
+import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMStatusAndShopInfoUseCase
 import com.tokopedia.gm.common.domain.interactor.PowerMerchantActivateUseCase
 import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMActiveDataUseCase
@@ -37,8 +37,8 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         get() = _pmActiveData
     val shopInfoAndPMGradeBenefits: LiveData<Result<PMGradeBenefitAndShopInfoUiModel>>
         get() = _pmGradeAndShopInfo
-    val pmStatusAndShopInfo: LiveData<Result<PMStatusAndShopInfoUiModel>>
-        get() = _pmStatusAndShopInfo
+    val powerMerchantBasicInfo: LiveData<Result<PowerMerchantBasicInfoUiModel>>
+        get() = _powerMerchantBasicInfo
     val pmActivationStatus: LiveData<Result<Boolean>>
         get() = _pmActivationStatus
     val pmCancelDeactivationStatus: LiveData<Result<Boolean>>
@@ -46,20 +46,20 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
 
     private val _pmActiveData: MutableLiveData<Result<PMActiveDataUiModel>> = MutableLiveData()
     private val _pmGradeAndShopInfo: MutableLiveData<Result<PMGradeBenefitAndShopInfoUiModel>> = MutableLiveData()
-    private val _pmStatusAndShopInfo: MutableLiveData<Result<PMStatusAndShopInfoUiModel>> = MutableLiveData()
+    private val _powerMerchantBasicInfo: MutableLiveData<Result<PowerMerchantBasicInfoUiModel>> = MutableLiveData()
     private val _pmActivationStatus: MutableLiveData<Result<Boolean>> = MutableLiveData()
     private val _pmCancelDeactivationStatus: MutableLiveData<Result<Boolean>> = MutableLiveData()
 
-    fun getPmStatusAndShopInfo() {
+    fun getPowerMerchantBasicInfo() {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 val isFreeShippingEnabled = remoteConfig.get().isFreeShippingEnabled()
                 val data = getPMStatusAndShopInfo.get().executeOnBackground()
                 return@withContext data.copy(isFreeShippingEnabled = isFreeShippingEnabled)
             }
-            _pmStatusAndShopInfo.value = Success(result)
+            _powerMerchantBasicInfo.value = Success(result)
         }, onError = {
-            _pmStatusAndShopInfo.value = Fail(it)
+            _powerMerchantBasicInfo.value = Fail(it)
         })
     }
 

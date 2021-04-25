@@ -14,8 +14,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
-import com.tokopedia.gm.common.data.source.local.model.PMStatusAndShopInfoUiModel
-import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
+import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
 import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
@@ -67,8 +66,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         ViewModelProvider(this, viewModelFactory).get(PowerMerchantSubscriptionViewModel::class.java)
     }
 
-    private var pmStatusAndShopInfo: PMStatusAndShopInfoUiModel? = null
-    private var pmSettingInfo: PowerMerchantSettingInfoUiModel? = null
+    private var pmBasicInfo: PowerMerchantBasicInfoUiModel? = null
     private var cancelPmDeactivationWidgetPosition: Int? = null
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
@@ -90,7 +88,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
         setupView()
 
-        observePmStatusAndShopInfo()
+        observePowerMerchantBasicInfo()
         observePmActiveState()
         observePmRegistrationPage()
         observePmActivationStatus()
@@ -102,7 +100,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     override fun loadData(page: Int) {}
 
     override fun setOnDeactivatePMClickListener() {
-        val bottomSheet = PowerMerchantCancelBottomSheet.newInstance(getExpiredTimeFmt(), pmStatusAndShopInfo?.isFreeShippingEnabled.orFalse())
+        val bottomSheet = PowerMerchantCancelBottomSheet.newInstance(getExpiredTimeFmt(), pmBasicInfo?.isFreeShippingEnabled.orFalse())
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
         bottomSheet.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
@@ -132,10 +130,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         adapter.notifyItemRemoved(position)
     }
 
-    fun setPmSettingInfo(pmSettingInfo: PowerMerchantSettingInfoUiModel) {
-        this.pmSettingInfo = pmSettingInfo
-    }
-
     private fun setupView() = view?.run {
         swipeRefreshPm.setOnRefreshListener {
             reloadPageContent()
@@ -143,7 +137,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun getExpiredTimeFmt(): String {
-        val expiredTime = pmStatusAndShopInfo?.pmStatus?.expiredTime.orEmpty()
+        val expiredTime = pmBasicInfo?.pmStatus?.expiredTime.orEmpty()
         return try {
             val currentFormat = "dd MMMM yyyy HH:mm:ss"
             val dateFormat = "dd MMMM yyyy"
@@ -156,12 +150,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
     }
 
-    private fun observePmStatusAndShopInfo() {
-        fetchPmStatusAndShopInfo()
-        mViewModel.pmStatusAndShopInfo.observe(viewLifecycleOwner, Observer {
+    private fun observePowerMerchantBasicInfo() {
+        fetchPowerMerchantBasicInfo()
+        mViewModel.powerMerchantBasicInfo.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    this.pmStatusAndShopInfo = it.data
+                    this.pmBasicInfo = it.data
                     fetchPageContent()
                 }
                 is Fail -> {
@@ -191,7 +185,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             when (it) {
                 is Success -> {
                     showCancelDeactivationToaster()
-                    fetchPmStatusAndShopInfo()
+                    fetchPowerMerchantBasicInfo()
                 }
                 is Fail -> {
                     cancelPmDeactivationWidgetPosition?.let { position ->
@@ -223,26 +217,26 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun reloadPageContent() {
-        if (pmStatusAndShopInfo == null) {
-            mViewModel.getPmStatusAndShopInfo()
+        if (pmBasicInfo == null) {
+            mViewModel.getPowerMerchantBasicInfo()
         } else {
             view?.swipeRefreshPm?.isRefreshing = true
             fetchPageContent()
         }
     }
 
-    private fun fetchPmStatusAndShopInfo() {
+    private fun fetchPowerMerchantBasicInfo() {
         showLoadingState()
-        mViewModel.getPmStatusAndShopInfo()
+        mViewModel.getPowerMerchantBasicInfo()
     }
 
     private fun fetchPageContent() {
-        if (pmStatusAndShopInfo == null) {
+        if (pmBasicInfo == null) {
             showErrorState()
             return
         }
 
-        when (pmStatusAndShopInfo?.pmStatus?.status) {
+        when (pmBasicInfo?.pmStatus?.status) {
             PMStatusConst.INACTIVE -> fetchPmRegistrationData()
             else -> fetchPmActiveState()
         }
@@ -265,7 +259,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun renderPmRegistrationPM(data: PMGradeBenefitAndShopInfoUiModel) {
-        if (pmStatusAndShopInfo?.pmStatus?.status != PMStatusConst.INACTIVE) return
+        if (pmBasicInfo?.pmStatus?.status != PMStatusConst.INACTIVE) return
 
         val widgets = listOf(
                 getHeaderWidgetData(data.shopInfo),
@@ -280,11 +274,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun setOnPmActivationSuccess() {
-        if (pmSettingInfo?.periodeType == PeriodType.TRANSITION_PERIOD) {
-            showSuccessRegistrationPopupTransitionPeriod()
-        } else {
-            showSuccessRegistrationPopupEndGamePeriod()
-        }
+        showSuccessRegistrationPopupEndGamePeriod()
     }
 
     private fun showActivationProgress() {
@@ -303,14 +293,14 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         var reloadPageOnDismiss = true
         showNotificationBottomSheet(title, description, ctaText, illustrationUrl, callback = {
             reloadPageOnDismiss = false
-            if (pmStatusAndShopInfo?.shopInfo?.isNewSeller == true) {
+            if (pmBasicInfo?.shopInfo?.isNewSeller == true) {
                 showNewPowerMerchantInfoPopup()
             } else {
                 showPerubahanPowerMerchantPopup()
             }
         }, onDismiss = {
             if (reloadPageOnDismiss) {
-                fetchPmStatusAndShopInfo()
+                fetchPowerMerchantBasicInfo()
             }
         })
     }
@@ -321,7 +311,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val ctaText = getString(R.string.pm_see_the_next)
         val illustrationUrl = PMConstant.Images.PM_REGISTRATION_SUCCESS
         showNotificationBottomSheet(title, description, ctaText, illustrationUrl, onDismiss = {
-            fetchPmStatusAndShopInfo()
+            fetchPowerMerchantBasicInfo()
         })
     }
 
@@ -361,7 +351,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 dismiss()
             }
             setOnDismissListener {
-                fetchPmStatusAndShopInfo()
+                fetchPowerMerchantBasicInfo()
             }
             show(this@PowerMerchantSubscriptionFragment.childFragmentManager)
         }
@@ -405,7 +395,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 bottomSheet.dismiss()
             }
             setOnDismissListener {
-                fetchPmStatusAndShopInfo()
+                fetchPowerMerchantBasicInfo()
             }
             show(this@PowerMerchantSubscriptionFragment.childFragmentManager)
         }
@@ -531,14 +521,14 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun renderPmActiveState(data: PMActiveDataUiModel) {
-        if(pmStatusAndShopInfo?.pmStatus?.status == PMStatusConst.INACTIVE) return
+        if(pmBasicInfo?.pmStatus?.status == PMStatusConst.INACTIVE) return
 
         view?.pmRegistrationFooterView?.gone()
         val isAutoExtendEnabled = getAutoExtendEnabled()
         val widgets = mutableListOf<BaseWidgetUiModel>()
-        if (!pmSettingInfo?.tickers.isNullOrEmpty() && isAutoExtendEnabled) {
+        /*if (!pmSettingInfo?.tickers.isNullOrEmpty() && isAutoExtendEnabled) {
             widgets.add(WidgetTickerUiModel(pmSettingInfo?.tickers.orEmpty()))
-        }
+        }*/
         if (!isAutoExtendEnabled) {
             widgets.add(WidgetCancelDeactivationSubmissionUiModel(getExpiredTimeFmt()))
         }
@@ -548,12 +538,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         widgets.add(WidgetDividerUiModel)
         val shouldShowNextGradeWidget = data.nextPMGrade != null && isAutoExtendEnabled
                 && data.currentPMGrade?.gradeName != PMShopGrade.DIAMOND
-                && !pmStatusAndShopInfo?.shopInfo?.isNewSeller.orTrue()
+                && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue()
         if (shouldShowNextGradeWidget) {
             widgets.add(getNextShopGradeWidgetData(data))
             widgets.add(WidgetDividerUiModel)
         }
-        if (isAutoExtendEnabled && !pmStatusAndShopInfo?.shopInfo?.isNewSeller.orTrue()) {
+        if (isAutoExtendEnabled && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue()) {
             widgets.add(WidgetNextUpdateUiModel(data.nextQuarterlyCalibrationRefreshDate))
         }
         widgets.add(WidgetSingleCtaUiModel(getString(R.string.pm_pm_transition_period_learnmore), Constant.Url.POWER_MERCHANT_EDU))
@@ -578,8 +568,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun getAutoExtendEnabled(): Boolean {
-        val expiredTime = pmStatusAndShopInfo?.pmStatus?.expiredTime
-        val autoExtendEnabled = pmStatusAndShopInfo?.pmStatus?.autoExtendEnabled.orTrue()
+        val expiredTime = pmBasicInfo?.pmStatus?.expiredTime
+        val autoExtendEnabled = pmBasicInfo?.pmStatus?.autoExtendEnabled.orTrue()
         return !expiredTime.isNullOrBlank() && autoExtendEnabled
     }
 
@@ -613,12 +603,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun getShopGradeWidgetData(data: PMActiveDataUiModel): WidgetShopGradeUiModel {
         val shopGrade = data.currentPMGrade
-        val shopScoreThreshold = pmStatusAndShopInfo?.shopInfo?.shopScoreThreshold.orZero()
+        val shopScoreThreshold = pmBasicInfo?.shopInfo?.shopScoreThreshold.orZero()
         return WidgetShopGradeUiModel(
-                isNewSeller = pmStatusAndShopInfo?.shopInfo?.isNewSeller.orTrue(),
+                isNewSeller = pmBasicInfo?.shopInfo?.isNewSeller.orTrue(),
                 shopGrade = shopGrade?.gradeName.orEmpty(),
                 shopScore = shopGrade?.shopScore.orZero(),
-                shopAge = pmStatusAndShopInfo?.shopInfo?.shopAge ?: 1,
+                shopAge = pmBasicInfo?.shopInfo?.shopAge ?: 1,
                 threshold = shopScoreThreshold,
                 gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
                 gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
@@ -630,7 +620,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun getNewSellerTenure(): String {
         val daysBecomeExisting = 90
-        val shopAge = pmStatusAndShopInfo?.shopInfo?.shopAge ?: 1
+        val shopAge = pmBasicInfo?.shopInfo?.shopAge ?: 1
         val remainingDays = daysBecomeExisting.minus(shopAge)
         val remainingDaysMillis = TimeUnit.DAYS.toMillis(remainingDays.toLong())
         val endOfTenureMillis = Date().time.plus(remainingDaysMillis)
@@ -639,17 +629,17 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun getPmNextCalculationDate(): String {
-        val shopInfo = pmStatusAndShopInfo?.shopInfo
+        val shopInfo = pmBasicInfo?.shopInfo
         return if (shopInfo?.isNewSeller.orTrue()) {
             val day60ofTenure = 60
             val shopAge = shopInfo?.shopAge ?: 1
             return if (shopAge < day60ofTenure) {
                 getNewSellerTenure()
             } else {
-                pmSettingInfo?.periodeEndDate.orEmpty()
+                pmBasicInfo?.settingInfo?.periodeEndDate.orEmpty()
             }
         } else {
-            pmSettingInfo?.periodeEndDate.orEmpty()
+            pmBasicInfo?.settingInfo?.periodeEndDate.orEmpty()
         }
     }
 
@@ -682,7 +672,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
         bottomSheet.show(childFragmentManager)
         bottomSheet.setOnDeactivationSuccess {
-            fetchPmStatusAndShopInfo()
+            fetchPowerMerchantBasicInfo()
         }
     }
 
