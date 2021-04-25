@@ -385,6 +385,7 @@
     <string name="label_product_limitation_item_usepromotion">Semakin banyak produk yang terjual, semakin banyak kuota produk untuk tokomu!</string>
     <string name="title_product_limitation_bottomsheet_ticker">Kamu bisa upload hingga %1$d produk</string>
     <string name="label_product_limitation_bottomsheet_ticker">Jumlah maks. produk yang dapat ditambahkan didasarkan oleh tipe Seller. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
+    <string name="label_product_limitation_bottomsheet_ticker_exceed">Jumlah produk di tokomu sudah mencapai maks. kuota sebanyak %1$d produk. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
     <string name="title_product_limitation_bottomsheet_info">Bagaimana cara menambahkan lebih banyak produk?</string>
     <string name="label_product_limitation_bottomsheet_button">Kembali ke Daftar Produk</string>
     <string name="label_product_limitation_bottomsheet_button_draft">Simpan Sebagai Draft</string>
