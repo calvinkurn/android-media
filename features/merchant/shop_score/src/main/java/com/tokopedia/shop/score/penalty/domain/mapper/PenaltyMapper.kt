@@ -2,27 +2,26 @@ package com.tokopedia.shop.score.penalty.domain.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.ShopScoreConstant.DELIVERY_IGNORED
-import com.tokopedia.shop.score.common.ShopScoreConstant.DELIVERY_REFUSED
-import com.tokopedia.shop.score.common.ShopScoreConstant.GUILT_RESOLUTION_CENTER
 import com.tokopedia.shop.score.common.ShopScoreConstant.ON_GOING
-import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_IGNORED
-import com.tokopedia.shop.score.common.ShopScoreConstant.PATTER_DATE_TEXT
+import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_TEXT
+import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM
 import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_DONE
 import com.tokopedia.shop.score.common.ShopScoreConstant.POINTS_NOT_YET_DEDUCTED
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST
+import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST_VALUE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST
+import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST_VALUE
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_SORT
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
-import com.tokopedia.shop.score.common.format
-import com.tokopedia.shop.score.common.getNPastMonthTimeStamp
-import com.tokopedia.shop.score.common.getNowTimeStamp
+import com.tokopedia.shop.score.common.formatDate
+import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
+import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
+import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltySummaryResponse
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyTypesResponse
 import com.tokopedia.shop.score.penalty.presentation.model.*
-import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.unifycomponents.ChipsUnify
-import java.util.*
 import javax.inject.Inject
 
 class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context?) {
@@ -114,136 +113,101 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
         }
     }
 
-    fun mapToPenaltyData(shopScorePenaltyTypes: ShopScorePenaltyTypesResponse.ShopScorePenaltyTypes): PenaltyDataWrapper {
+    fun mapToPenaltyData(shopScorePenaltySummaryWrapper: ShopPenaltySummaryTypeWrapper,
+                         shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail,
+                         dateFilter: Pair<String, String>,
+                         sortBy: Int,
+                         typeId: Int
+
+    ): PenaltyDataWrapper {
+        val penaltyTypes = shopScorePenaltySummaryWrapper.shopScorePenaltyTypesResponse?.result
         return PenaltyDataWrapper(
-                cardShopPenaltyUiModel = mapToCardShopPenalty(),
-                itemDetailPenaltyFilterUiModel = mapToDetailPenaltyFilter(shopScorePenaltyTypes.result),
-                itemPenaltyUiModel = mapToItemPenaltyList()
+                cardShopPenaltyUiModel = shopScorePenaltySummaryWrapper.shopScorePenaltySummaryResponse?.result?.let { mapToCardShopPenalty(it) },
+                itemDetailPenaltyFilterUiModel = penaltyTypes?.let { mapToDetailPenaltyFilter(it, dateFilter, typeId) },
+                itemPenaltyUiModel = mapToItemPenaltyList(shopScorePenaltyDetailResponse),
+                penaltyFilterList = penaltyTypes?.let { mapToPenaltyFilterBottomSheet(it, sortBy, typeId) }
         )
     }
 
-    private fun mapToCardShopPenalty(): ItemCardShopPenaltyUiModel {
-        return ItemCardShopPenaltyUiModel(totalPenalty = 9, hasPenalty = true, deductionPoints = -5)
+    private fun mapToCardShopPenalty(penaltySummary: ShopScorePenaltySummaryResponse.ShopScorePenaltySummary.Result): ItemCardShopPenaltyUiModel {
+        return ItemCardShopPenaltyUiModel(totalPenalty = penaltySummary.penaltyAmount, hasPenalty = penaltySummary.penaltyAmount.isMoreThanZero(), deductionPoints = penaltySummary.penalty)
     }
 
-    private fun mapToDetailPenaltyFilter(penaltyTypes: List<ShopScorePenaltyTypesResponse.ShopScorePenaltyTypes.Result>): ItemDetailPenaltyFilterUiModel {
-        return ItemDetailPenaltyFilterUiModel(periodDetail = "${format(getNPastMonthTimeStamp(1).time, PATTER_DATE_TEXT)} - ${format(getNowTimeStamp(), PATTER_DATE_TEXT)}",
-                itemSortFilterWrapperList = mapToSortFilterPenalty(penaltyTypes))
+    private fun mapToDetailPenaltyFilter(penaltyTypes: List<ShopScorePenaltyTypesResponse.ShopScorePenaltyTypes.Result>,
+                                         dateFilter: Pair<String, String>,
+                                         typeId: Int
+    ): ItemDetailPenaltyFilterUiModel {
+        return ItemDetailPenaltyFilterUiModel(
+                periodDetail = "${dateFilter.first.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_DATE_TEXT)} - ${dateFilter.second.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_DATE_TEXT)}",
+                itemSortFilterWrapperList = mapToSortFilterPenalty(penaltyTypes, typeId))
     }
 
-    private fun mapToSortFilterPenalty(penaltyTypes: List<ShopScorePenaltyTypesResponse.ShopScorePenaltyTypes.Result>): List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper> {
+    private fun mapToSortFilterPenalty(penaltyTypes: List<ShopScorePenaltyTypesResponse.ShopScorePenaltyTypes.Result>, typeId: Int): List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper> {
         return mutableListOf<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>().apply {
             penaltyTypes.map {
-                add(ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper(
-                        sortFilterItem = SortFilterItem(
-                                title = it.name,
-                                type = ChipsUnify.TYPE_NORMAL,
-                                size = ChipsUnify.SIZE_SMALL
-                ), isSelected = false))
+                add(ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper(title = it.name, isSelected = it.id == typeId, idFilter = it.id))
             }
         }
     }
 
-    private fun mapToItemPenaltyList(): List<ItemPenaltyUiModel> {
-        return mutableListOf<ItemPenaltyUiModel>().apply {
-            add(ItemPenaltyUiModel(
-                    statusPenalty = ON_GOING,
-                    statusDate = "27 jan 2021", periodDate = "Selesai di 8 Mei 2021",
-                    transactionPenalty = GUILT_RESOLUTION_CENTER,
-                    descPenalty = "INV/20210126/XX/V/553738285",
-                    colorPenalty = com.tokopedia.unifyprinciples.R.color.Unify_RN600
-            ))
-            add(ItemPenaltyUiModel(statusPenalty = PENALTY_DONE,
-                    statusDate = "25 jan 2021", periodDate = "Sejak 10 Mei 2021",
-                    transactionPenalty = ORDER_IGNORED,
-                    descPenalty = "INV/20210126/XX/V/553738285",
-                    colorPenalty = com.tokopedia.unifyprinciples.R.color.Unify_NN500
-            ))
-            add(ItemPenaltyUiModel(statusPenalty = ON_GOING,
-                    statusDate = "27 jan 2021", periodDate = "Selesai 30 juli 2021",
-                    transactionPenalty = DELIVERY_IGNORED,
-                    descPenalty = "INV/20210126/XX/V/553738285",
-                    colorPenalty = com.tokopedia.unifyprinciples.R.color.Unify_RN600
-            ))
-            add(ItemPenaltyUiModel(statusPenalty = POINTS_NOT_YET_DEDUCTED,
-                    statusDate = "17 jan 2021", periodDate = "Mulai juli 2021",
-                    transactionPenalty = DELIVERY_REFUSED,
-                    descPenalty = "INV/20210126/XX/V/553738285",
-                    colorPenalty = com.tokopedia.unifyprinciples.R.color.Unify_NN500
-            ))
-            add(ItemPenaltyUiModel(
-                    statusPenalty = ON_GOING,
-                    statusDate = "27 jan 2021", periodDate = "8 Mei 2021",
-                    transactionPenalty = GUILT_RESOLUTION_CENTER,
-                    descPenalty = "INV/20210126/XX/V/553738285",
-                    colorPenalty = com.tokopedia.unifyprinciples.R.color.Unify_RN600
-            ))
-            add(ItemPenaltyUiModel(statusPenalty = PENALTY_DONE,
-                    statusDate = "25 jan 2021", periodDate = "Sejak 10 Mei 2021",
-                    transactionPenalty = ORDER_IGNORED,
-                    descPenalty = "INV/20210126/XX/V/553738285",
-                    colorPenalty = com.tokopedia.unifyprinciples.R.color.Unify_NN500
-            ))
-            add(ItemPenaltyUiModel(statusPenalty = ON_GOING,
-                    statusDate = "27 jan 2021", periodDate = "30 juli 2021",
-                    transactionPenalty = DELIVERY_IGNORED,
-                    descPenalty = "INV/20210126/XX/V/553738285",
-                    colorPenalty = com.tokopedia.unifyprinciples.R.color.Unify_RN600
-            ))
-            add(ItemPenaltyUiModel(statusPenalty = POINTS_NOT_YET_DEDUCTED,
-                    statusDate = "17 jan 2021", periodDate = "24 juli 2021",
-                    transactionPenalty = DELIVERY_REFUSED,
-                    descPenalty = "INV/20210126/XX/V/553738285",
-                    colorPenalty = com.tokopedia.unifyprinciples.R.color.Unify_NN500
-            ))
-            add(ItemPenaltyUiModel(
-                    statusPenalty = ON_GOING,
-                    statusDate = "27 jan 2021", periodDate = "8 Mei 2021",
-                    transactionPenalty = GUILT_RESOLUTION_CENTER,
-                    descPenalty = "INV/20210126/XX/V/553738285",
-                    colorPenalty = com.tokopedia.unifyprinciples.R.color.Unify_RN600
-            ))
-            add(ItemPenaltyUiModel(statusPenalty = PENALTY_DONE,
-                    statusDate = "25 jan 2021", periodDate = "Sejak 10 Mei 2021",
-                    transactionPenalty = ORDER_IGNORED,
-                    descPenalty = "INV/20210126/XX/V/553738285",
-                    colorPenalty = com.tokopedia.unifyprinciples.R.color.Unify_NN500
-            ))
-            add(ItemPenaltyUiModel(statusPenalty = ON_GOING,
-                    statusDate = "27 jan 2021", periodDate = "30 juli 2021",
-                    transactionPenalty = DELIVERY_REFUSED,
-                    descPenalty = "INV/20210126/XX/V/553738285",
-                    colorPenalty = com.tokopedia.unifyprinciples.R.color.Unify_RN600
-            ))
-            add(ItemPenaltyUiModel(statusPenalty = POINTS_NOT_YET_DEDUCTED,
-                    statusDate = "17 jan 2021", periodDate = "24 juli 2021",
-                    transactionPenalty = GUILT_RESOLUTION_CENTER,
-                    descPenalty = "INV/20210126/XX/V/553738285",
-                    colorPenalty = com.tokopedia.unifyprinciples.R.color.Unify_NN500
-            ))
-        }
+    fun mapToItemPenaltyList(shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail): Triple<List<ItemPenaltyUiModel>, Boolean, Boolean> {
+        return Triple(mutableListOf<ItemPenaltyUiModel>().apply {
+            shopScorePenaltyDetailResponse.result.forEach {
+                val colorTypePenalty = when (it.status) {
+                    POINTS_NOT_YET_DEDUCTED, PENALTY_DONE -> {
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                    }
+                    ON_GOING -> {
+                        com.tokopedia.unifyprinciples.R.color.Unify_RN600
+                    }
+                    else -> {
+                        null
+                    }
+                }
+                add(ItemPenaltyUiModel(
+                        statusPenalty = it.status,
+                        startDate = it.penaltyStartDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_DATE_TEXT),
+                        endDate = it.penaltyExpirationDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_DATE_TEXT),
+                        typePenalty = it.typeName,
+                        descPenalty = it.reason,
+                        colorPenalty = colorTypePenalty
+                ))
+            }
+        }, shopScorePenaltyDetailResponse.hasPrev, shopScorePenaltyDetailResponse.hasNext)
     }
 
-    fun mapToPenaltyFilterBottomSheet(): List<PenaltyFilterUiModel> {
+    private fun mapToPenaltyFilterBottomSheet(penaltyTypes: List<ShopScorePenaltyTypesResponse.ShopScorePenaltyTypes.Result>,
+                                              sortBy: Int, typeId: Int): List<PenaltyFilterUiModel> {
         return mutableListOf<PenaltyFilterUiModel>().apply {
-            add(PenaltyFilterUiModel(title = TITLE_SORT, isDividerVisible = true, chipsFilerList = mapToChipsSortFilter()))
-            add(PenaltyFilterUiModel(title = TITLE_TYPE_PENALTY, chipsFilerList = mapToChipsTypePenaltyFilter()))
+            add(PenaltyFilterUiModel(title = TITLE_SORT, isDividerVisible = true, chipsFilerList = mapToChipsSortFilter(sortBy)))
+            add(PenaltyFilterUiModel(title = TITLE_TYPE_PENALTY, chipsFilerList = mapToChipsTypePenaltyFilter(penaltyTypes, typeId)))
         }
     }
 
-    private fun mapToChipsSortFilter(): List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel> {
+    private fun mapToChipsSortFilter(sortBy: Int): List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel> {
         return mutableListOf<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>().apply {
-            add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = SORT_LATEST))
-            add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = SORT_OLDEST))
+            add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = SORT_LATEST, isSelected = sortBy == SORT_LATEST_VALUE, value = SORT_LATEST_VALUE))
+            add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = SORT_OLDEST, isSelected = sortBy == SORT_OLDEST_VALUE, value = SORT_OLDEST_VALUE))
         }
     }
 
-    private fun mapToChipsTypePenaltyFilter(): List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel> {
+    private fun mapToChipsTypePenaltyFilter(penaltyTypes: List<ShopScorePenaltyTypesResponse.ShopScorePenaltyTypes.Result>, typeId: Int): List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel> {
         return mutableListOf<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>().apply {
-            add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = GUILT_RESOLUTION_CENTER))
-            add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = ORDER_IGNORED))
-            add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = DELIVERY_IGNORED))
-            add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = DELIVERY_REFUSED))
+            penaltyTypes.map {
+                add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(it.name, isSelected = it.id == typeId, value = it.id))
+            }
         }
+    }
+
+    fun mapToSortFilterItemFromPenaltyList(penaltyFilterList: List<PenaltyFilterUiModel>): List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper> {
+        val mapItemSortFilterWrapper = mutableListOf<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>()
+        penaltyFilterList.find { it.title == TITLE_TYPE_PENALTY }?.chipsFilerList?.map {
+            mapItemSortFilterWrapper.add(ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper(
+                    title = it.title,
+                    isSelected = it.isSelected,
+                    idFilter = it.value
+            ))
+        }
+        return mapItemSortFilterWrapper
     }
 }

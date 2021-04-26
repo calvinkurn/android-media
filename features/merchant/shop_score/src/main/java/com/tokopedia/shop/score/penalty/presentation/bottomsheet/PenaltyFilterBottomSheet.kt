@@ -100,15 +100,16 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
                 viewModelShopPenalty.updateFilterSelected(nameFilter, chipType, position)
             }
             ShopScoreConstant.TITLE_TYPE_PENALTY -> {
-                viewModelShopPenalty.updateFilterManySelected(nameFilter, chipType, chipTitle)
+                viewModelShopPenalty.updateFilterSelected(nameFilter, chipType, position)
             }
         }
     }
 
     private fun getDataCacheFromManager() {
         val cacheManager = context?.let { SaveInstanceCacheManager(it, arguments?.getString(KEY_CACHE_MANAGER_ID_PENALTY_FILTER)) }
-        val filterTypePenalty = cacheManager?.get(KEY_FILTER_TYPE_PENALTY, FilterTypePenaltyUiModelWrapper::class.java) ?: FilterTypePenaltyUiModelWrapper()
-        filterTypePenalty.sortBy?.let { viewModelShopPenalty.getFilterPenalty(filterTypePenalty.itemFilterTypePenalty, it) }
+        val filterTypePenalty = cacheManager?.get(KEY_FILTER_TYPE_PENALTY, FilterTypePenaltyUiModelWrapper::class.java)
+                ?: FilterTypePenaltyUiModelWrapper()
+        viewModelShopPenalty.getFilterPenalty(filterTypePenalty.penaltyFilterList)
     }
 
     private fun clickBtnApplied() {

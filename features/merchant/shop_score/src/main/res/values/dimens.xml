@@ -2,13 +2,10 @@
 <resources>
     <dimen name="shop_performance_promo_creation_icon_size">56dp</dimen>
     <dimen name="promo_promo_creation_card_top_margin">28dp</dimen>
-    <dimen name="power_merchant_benefit_icon_size">22dp</dimen>
-    <dimen name="pm_reputation_icon_height">14dp</dimen>
     <dimen name="height_shimmer_banner_shop_performance">161dp</dimen>
     <dimen name="height_seller_announce">28dp</dimen>
     <dimen name="width_card_recommendation_feature">190dp</dimen>
     <dimen name="height_card_recommendation_feature">150dp</dimen>
-    <dimen name="height_timer_new_seller">248dp</dimen>
     <dimen name="width_divider_stepper_penalty_detail">144dp</dimen>
     <dimen name="scorePenaltyTextSize">48sp</dimen>
 </resources>

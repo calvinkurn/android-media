@@ -13,19 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="0dp">
-
-        <include layout="@layout/item_card_reputation_join_shop_score" />
-
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/tickerShopScore"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tickerType="information"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            app:tickerShapeType="loose" />
-
         <include
             layout="@layout/seller_reputation_header"
             android:layout_width="match_parent"

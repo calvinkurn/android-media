@@ -36,6 +36,7 @@ import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewMo
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.card_shop_score_total_penalty.*
@@ -74,17 +75,18 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         setupSwipeRefresh()
         observePenaltyPage()
         observeUpdateSortFilter()
+        observeDetailPenaltyNextPage()
     }
 
     private fun setupSwipeRefresh() {
-        appBarPenaltyPage.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            swipeToRefresh.isEnabled = (verticalOffset == 0)
+        appBarPenaltyPage?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            swipeToRefresh?.isEnabled = (verticalOffset == 0)
         })
 
-        rvPenaltyPage.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        rvPenaltyPage?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val topRowVerticalPosition = if (recyclerView.childCount == 0) 0 else recyclerView.getChildAt(0).top
-                swipeToRefresh.isEnabled = topRowVerticalPosition >= 0
+                swipeToRefresh?.isEnabled = topRowVerticalPosition >= 0
             }
         })
     }
@@ -125,20 +127,28 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     }
 
     override fun loadData(page: Int) {
-
+        viewModelShopPenalty.getPenaltyDetailListNext(page)
     }
 
     override fun onClickFilterApplied(penaltyFilterUiModelList: List<PenaltyFilterUiModel>) {
         val typePenaltyList = penaltyFilterUiModelList.find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilerList
         viewModelShopPenalty.setItemSortFilterWrapperList(penaltyFilterUiModelList, typePenaltyList.chipsPenaltyMapToItemSortFilter())
         sortFilterDetailPenalty.setupSortFilter(typePenaltyList.chipsPenaltyMapToItemSortFilter())
+
+        val typeId = typePenaltyList?.find { it.isSelected }?.value ?: 0
+        val sortBy = penaltyFilterUiModelList.find { it.title == ShopScoreConstant.TITLE_SORT }?.chipsFilerList?.find { it.isSelected }?.value
+                ?: 0
+        viewModelShopPenalty.setSortTypeFilterData(Pair(sortBy, typeId))
+        endlessRecyclerViewScrollListener.resetState()
+        penaltyPageAdapter.removePenaltyNotFound()
+        penaltyPageAdapter.setPenaltyLoading()
     }
 
     private fun List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>?.chipsPenaltyMapToItemSortFilter(): List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper> {
         val itemSortFilterWrapperList = mutableListOf<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>()
         this?.map {
             itemSortFilterWrapperList.add(ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper(
-                    sortFilterItem = SortFilterItem(it.title),
+                    title = it.title,
                     isSelected = it.isSelected
             ))
         }
@@ -147,6 +157,11 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
 
     private fun updateItemChildSortFilterPenalty(sortFilterItemWrapperList: List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>?) {
         sortFilterDetailPenalty.setupSortFilter(sortFilterItemWrapperList)
+        val typeId = sortFilterItemWrapperList?.find { it.isSelected }?.idFilter ?: 0
+        viewModelShopPenalty.setTypeFilterData(typeId)
+        endlessRecyclerViewScrollListener.resetState()
+        penaltyPageAdapter.removePenaltyNotFound()
+        penaltyPageAdapter.setPenaltyLoading()
     }
 
     override fun onSaveCalendarClicked(startDate: Pair<String, String>, endDate: Pair<String, String>) {
@@ -158,6 +173,10 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             "${startDate.second} - ${endDate.second}"
         }
         tvPeriodDetailPenalty?.text = getString(R.string.period_date_detail_penalty, date)
+        viewModelShopPenalty.setDateFilterData(Pair(startDate.first, endDate.first))
+        endlessRecyclerViewScrollListener.resetState()
+        penaltyPageAdapter.removePenaltyNotFound()
+        penaltyPageAdapter.setPenaltyLoading()
     }
 
     override fun onItemPenaltyClick(statusPenalty: String) {
@@ -192,11 +211,12 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
                 .setAllCornerSizes(roundedRadius)
                 .build()
 
-        if (element?.totalPenalty?.isZero() == true) {
-            tvCountTotalPenalty?.text = getString(R.string.desc_no_penalty)
-        } else {
-            tvCountTotalPenalty.text = element?.totalPenalty?.toString().orEmpty()
+        if (element?.hasPenalty == true) {
+            tvCountTotalPenalty.text = element.totalPenalty.toString()
             context?.resources?.getDimension(R.dimen.scorePenaltyTextSize)?.let { tvCountTotalPenalty.setTextSize(TypedValue.COMPLEX_UNIT_PX, it) }
+        } else {
+            tvCountTotalPenalty?.text = getString(R.string.desc_no_penalty)
+            tvCountTotalPenalty.setType(Typography.HEADING_3)
         }
         tvTotalPointDeductions?.text = if (element?.deductionPoints?.isLessThanZero() == true) element.deductionPoints.toString() else "-"
     }
@@ -219,13 +239,11 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         val sortFilterItemList = ArrayList<SortFilterItem>()
 
         updateSortFilterItemList?.map {
-            it.sortFilterItem?.let { sortFilterItem ->
-                sortFilterItemList.add(SortFilterItem(
-                        title = sortFilterItem.title,
-                        size = ChipsUnify.SIZE_SMALL,
-                        type = if (it.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
-                ))
-            }
+            sortFilterItemList.add(SortFilterItem(
+                    title = it.title,
+                    size = ChipsUnify.SIZE_SMALL,
+                    type = if (it.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+            ))
         }
 
         addItem(sortFilterItemList)
@@ -233,22 +251,11 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         sortFilterItemList.forEach {
             it.listener = {
                 if (it.type != ChipsUnify.TYPE_DISABLE) {
-                    it.toggle()
                     onChildSortFilterItemClick(it)
+                    it.toggle()
                 }
             }
         }
-    }
-
-    private fun List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>.filterTypePenaltyTransform(): List<FilterTypePenaltyUiModelWrapper.ItemFilterTypePenalty> {
-        val itemFilterTypePenaltyList = mutableListOf<FilterTypePenaltyUiModelWrapper.ItemFilterTypePenalty>()
-        for (item in this) {
-            itemFilterTypePenaltyList.add(FilterTypePenaltyUiModelWrapper.ItemFilterTypePenalty(
-                    title = item.sortFilterItem?.title?.toString().orEmpty(),
-                    isSelected = item.isSelected
-            ))
-        }
-        return itemFilterTypePenaltyList
     }
 
     private fun observeUpdateSortFilter() {
@@ -274,6 +281,30 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
                 }
             }
         }
+    }
+
+    private fun observeDetailPenaltyNextPage() {
+        observe(viewModelShopPenalty.shopPenaltyDetailData) {
+            when (it) {
+                is Success -> {
+                    onSuccessGetPenaltyListData(it.data)
+                }
+                is Fail -> {
+                    containerShimmerPenalty?.hide()
+                    setupGlobalErrorState()
+                }
+            }
+        }
+    }
+
+    private fun onSuccessGetPenaltyListData(data: Triple<List<ItemPenaltyUiModel>, Boolean, Boolean>) {
+        if (!data.third && data.first.isEmpty()) {
+            penaltyPageAdapter.setEmptyStatePenalty()
+        } else {
+            penaltyPageAdapter.removePenaltyNotFound()
+            penaltyPageAdapter.setPenaltyListDetailData(data.first)
+        }
+        updateScrollListenerState(data.second)
     }
 
     private fun setupGlobalErrorState() {
@@ -307,7 +338,11 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         val cardPenaltyData = data.cardShopPenaltyUiModel
         setupCardPenalty(cardPenaltyData)
         setupDetailPenaltyFilter(penaltyFilterData)
-        penaltyPageAdapter.setPenaltyData(penaltyList)
+        if(penaltyList.first.isNotEmpty()) {
+            penaltyPageAdapter.setPenaltyData(penaltyList.first)
+        } else {
+            penaltyPageAdapter.setEmptyStatePenalty()
+        }
     }
 
     private fun onDateClick() {
@@ -318,14 +353,9 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
 
     private fun onParentSortFilterClick() {
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-        val itemTypePenaltyData = viewModelShopPenalty.getSortFilterItemList().filterTypePenaltyTransform()
-        val sortByTitle = viewModelShopPenalty.getPenaltyFilterUiModelList().find { it.title == ShopScoreConstant.TITLE_SORT }
-                ?.chipsFilerList?.find { it.isSelected }?.title ?: ""
-        val sortByValue = viewModelShopPenalty.getPenaltyFilterUiModelList().find { it.title == ShopScoreConstant.TITLE_SORT }
-                ?.chipsFilerList?.find { it.isSelected }?.isSelected ?: false
+        val filterPenalty = viewModelShopPenalty.getPenaltyFilterUiModelList()
         cacheManager?.put(PenaltyFilterBottomSheet.KEY_FILTER_TYPE_PENALTY, FilterTypePenaltyUiModelWrapper(
-                itemTypePenaltyData,
-                Pair(sortByTitle, sortByValue)
+                filterPenalty
         ))
 
         val bottomSheetFilterPenalty = PenaltyFilterBottomSheet.newInstance(cacheManager?.id.orEmpty())

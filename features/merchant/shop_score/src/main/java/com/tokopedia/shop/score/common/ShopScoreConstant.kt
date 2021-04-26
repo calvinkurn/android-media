@@ -44,23 +44,6 @@ object ShopScoreConstant {
     const val BG_GREEN_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_green_timer@3x.png"
     const val BG_ORANGE_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_orange_timer@3x.png"
 
-    const val PM_INACTIVE = "inactive"
-    const val SUPPOSED_INACTIVE_TEXT = "nonaktif"
-    const val PM_ACTIVE = "active"
-    const val PM_IDLE = "idle"
-    const val UP_POTENTIAL_PM = "naik"
-    const val STILL_POTENTIAL_PM = "tetap"
-    const val DOWN_POTENTIAL_PM = "turun"
-    const val GRADE_BRONZE_PM = "bronze"
-    const val GRADE_SILVER_PM = "silver"
-    const val GRADE_GOLD_PM = "gold"
-    const val GRADE_DIAMOND_PM = "diamond"
-    const val NO_GRADE_SCORE = 0
-    const val BRONZE_SCORE = 1
-    const val SILVER_SCORE = 2
-    const val GOLD_SCORE = 3
-    const val DIAMOND_SCORE = 4
-
     const val PENALTY_IDENTIFIER = "penalty"
 
     const val minuteText = "menit"
@@ -69,6 +52,8 @@ object ShopScoreConstant {
 
     const val SORT_LATEST = "Paling Baru"
     const val SORT_OLDEST = "Paling Lama"
+    const val SORT_LATEST_VALUE = 0
+    const val SORT_OLDEST_VALUE = 1
 
     const val TITLE_SORT = "Urutkan"
     const val TITLE_TYPE_PENALTY = "Jenis Pelanggaran"
@@ -77,25 +62,16 @@ object ShopScoreConstant {
     const val ON_GOING = "Sedang Berlangsung"
     const val PENALTY_DONE = "Penalty Selesai"
 
-    const val GUILT_RESOLUTION_CENTER = "Bersalah di Pusat Resolusi"
-    const val ORDER_IGNORED = "Pesanan diabaikan"
-    const val DELIVERY_IGNORED = " Pengiriman diabaikan"
-    const val DELIVERY_REFUSED = "Pengiriman ditolak"
-
-    const val TRANSITION_PERIOD = "transition_period"
-    const val COMMUNICATION_PERIOD = "communication_period"
-    const val END_PERIOD = "final"
-
-    const val ONE_MONTH = 1
-    const val TWO_MONTH = 2
-    const val THREE_MONTH = 3
-
     const val VIDEO_YOUTUBE_ID = "MjbnDFmWbZk"
 
     const val SYSTEM_PENALTY_HELP_URL = "https://www.tokopedia.com/help/article/bagaimana-sistem-penalti-pengurangan-reputasi-toko"
     const val HELP_URL = "https://www.tokopedia.com/help"
 
-    const val PATTER_DATE_TEXT = "dd MMMM yyyy"
+    const val PATTERN_DATE_TEXT = "dd MMMM yyyy"
 
     const val SHOP_INFO_URL = "https://seller.tokopedia.com/shop-score-info"
+    const val EMPTY_STATE_PENALTY_URL = "https://images.tokopedia.net/img/android/shop_score/ic_empty_state_penalty@2x.png"
+
+    const val PATTERN_PENALTY_DATE_PARAM = "yyyy-MM-dd"
+    const val PATTERN_PERIOD_DATE = "yyyy-MM-dd HH:mm:ss"
 }

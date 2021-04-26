@@ -25,9 +25,9 @@ class ItemPenaltyViewHolder(view: View,
                 tv_title_status_penalty?.setTextColor(ContextCompat.getColor(context, it))
             }
             tv_title_status_penalty?.text = element.statusPenalty
-            tv_end_date_status_penalty?.text = element.periodDate
-            tv_date_status_penalty?.text = element.statusDate
-            tv_title_transaction_penalty?.text = element.transactionPenalty
+            tv_end_date_status_penalty?.text = element.endDate
+            tv_date_status_penalty?.text = element.startDate
+            tv_title_type_penalty?.text = element.typePenalty
 
             tv_invoice_transaction_penalty?.text = element.descPenalty
 

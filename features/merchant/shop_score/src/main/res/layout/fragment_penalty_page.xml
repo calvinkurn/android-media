@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl3"
-                app:sort_filter_relationship="AND"
+                app:sort_filter_relationship="OR"
                 app:sort_filter_type="advanced" />
 
         </com.google.android.material.appbar.AppBarLayout>

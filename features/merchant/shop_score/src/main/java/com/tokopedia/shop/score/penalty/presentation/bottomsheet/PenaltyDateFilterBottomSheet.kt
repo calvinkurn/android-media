@@ -32,8 +32,6 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
 
     private var mode: CalendarPickerView.SelectionMode = CalendarPickerView.SelectionMode.RANGE
 
-    private var selectedDates = mutableListOf<Date>()
-
     private var calenderFilterListener: CalenderListener? = null
 
     private var startDateParam = ""

@@ -24,14 +24,6 @@ object GoldMerchantUtil {
         return diff.toInt()
     }
 
-    fun String.totalMonths(): Int {
-        val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, Locale("id"))
-        val startDate = simpleDateFormat.parse(this)
-        val diffInMs: Long = abs(System.currentTimeMillis() - startDate?.time.orZero())
-        val diff = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
-        return (diff.toInt() / 30).toDouble().roundToInt() + 1
-    }
-
     fun String.isTenureNewSeller(): Boolean {
         val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, Locale("id"))
         val joinDate = simpleDateFormat.parse(this)

@@ -24,15 +24,20 @@ class ItemDetailPerformanceViewHolder(view: View,
         with(itemView) {
             setupItemDetailPerformance(element)
 
+            val titleBottomSheet = if (element?.titleDetailPerformance?.startsWith(getString(R.string.desc_calculation_open_seller_app)) == true) {
+                getString(R.string.desc_calculation_open_seller_app)
+            } else {
+                element?.titleDetailPerformance.orEmpty()
+            }
             setOnClickListener {
                 itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
-                        element?.titleDetailPerformance.orEmpty(),
+                        titleBottomSheet,
                         element?.identifierDetailPerformance.orEmpty()
                 )
             }
             ic_item_performance_right?.setOnClickListener {
                 itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
-                        element?.titleDetailPerformance.orEmpty(),
+                        titleBottomSheet,
                         element?.identifierDetailPerformance.orEmpty()
                 )
             }

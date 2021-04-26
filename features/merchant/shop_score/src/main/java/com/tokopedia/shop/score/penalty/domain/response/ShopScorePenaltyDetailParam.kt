@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName
 data class ShopScorePenaltyDetailParam(
         @Expose
         @SerializedName("page")
-        val page: Int = 0,
+        val page: Int = 1,
         @Expose
         @SerializedName("total")
-        val total: Int = 0,
+        val total: Int = 10,
         @SerializedName("startDate")
         @Expose
         val startDate: String = "",
@@ -27,5 +27,5 @@ data class ShopScorePenaltyDetailParam(
         val lang: String = "id",
         @SerializedName("source")
         @Expose
-        val source: String = "android"
+        val source: String = "android-shop-penalty"
 )

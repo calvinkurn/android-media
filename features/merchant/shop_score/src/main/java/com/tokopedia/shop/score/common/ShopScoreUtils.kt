@@ -4,11 +4,9 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
-import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.text.method.LinkMovementMethod
 import androidx.core.content.ContextCompat
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.score.R
 import com.tokopedia.sortfilter.SortFilterItem
@@ -60,12 +58,11 @@ fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): Str
     return sdf.format(timeMillis)
 }
 
-fun String.formatDate(pattern: String, locale: Locale = getLocale()): String {
-    val fromSimpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale)
+fun String.formatDate(beforePattern: String, targetPattern: String, locale: Locale = getLocale()): String {
+    val fromSimpleDateFormat = SimpleDateFormat(beforePattern, locale)
     val parseDate = fromSimpleDateFormat.parse(this)
-    val convertFormatDate = SimpleDateFormat(pattern, locale)
-    val formatDateText = parseDate?.let { convertFormatDate.format(it) } ?: ""
-    return formatDateText
+    val convertFormatDate = SimpleDateFormat(targetPattern, locale)
+    return parseDate?.let { convertFormatDate.format(it) } ?: ""
 }
 
 fun getLocale(): Locale {
