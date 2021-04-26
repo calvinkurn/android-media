@@ -147,6 +147,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
             }
 
         } catch (e: Throwable) {
+            throw MessageErrorException(e.message)
         }
 
         return shopScoreWrapperResponse
