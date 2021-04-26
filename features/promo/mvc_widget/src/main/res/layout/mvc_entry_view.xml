@@ -8,8 +8,9 @@
     android:clipToPadding="false">
 
     <com.tokopedia.mvcwidget.views.ShadowOutlineLayout
+        android:id="@+id/mvc_shadow"
         android:elevation="@dimen/mvc_shadow_elevation"
-        app:srcCompat="@drawable/mvc_shadow"
+        app:srcCompat="@drawable/mvc_shadow_n0"
         android:layout_gravity="center_vertical"
         android:layout_width="match_parent"
         android:translationY="@dimen/mvc_shadow_translation"
@@ -33,11 +34,12 @@
         android:clipChildren="false">
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/mvc_bg_duplicate"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_3"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/mvc_bg_duplicate" />
+            app:srcCompat="@drawable/mvc_bg_duplicate_n0" />
 
         <com.tokopedia.mvcwidget.views.SquareImageView
             android:id="@+id/image_coupon"
@@ -72,7 +74,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tvTitle"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
             app:typographyType="body_3"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_N600"
             tools:text="Masih ada 6 Kupon Toko lainnya!" />
 
         <androidx.appcompat.widget.AppCompatImageView

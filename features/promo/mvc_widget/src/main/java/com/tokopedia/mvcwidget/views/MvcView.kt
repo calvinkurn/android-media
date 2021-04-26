@@ -16,6 +16,7 @@ import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.htmltags.HtmlUtil
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 /*
 * 1. It has internal Padding of 6dp to render its shadows
@@ -26,6 +27,8 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     lateinit var tvSubTitle: Typography
     lateinit var imageChevron: AppCompatImageView
     lateinit var imageCoupon: AppCompatImageView
+    lateinit var mvcShadow: ShadowOutlineLayout
+    lateinit var mvcBgDuplicate: AppCompatImageView
     lateinit var mvcContainer: View
     var shopId: String = ""
     var isMainContainerSetFitsSystemWindows = false
@@ -36,6 +39,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         View.inflate(context, R.layout.mvc_entry_view, this)
         initViews()
         setClicks()
+        setBackgroundColor()
     }
 
     private fun initViews() {
@@ -44,12 +48,24 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         imageChevron = this.findViewById(R.id.image_chevron)
         imageCoupon = this.findViewById(R.id.image_coupon)
         mvcContainer = this.findViewById(R.id.mvc_container)
+        mvcShadow = this.findViewById(R.id.mvc_shadow)
+        mvcBgDuplicate = this.findViewById(R.id.mvc_bg_duplicate)
     }
 
     private fun setClicks() {
         mvcContainer.setOnClickListener {
             context.startActivity(TransParentActivity.getIntent(context, shopId, this.source))
             Tracker.userClickEntryPoints(shopId,UserSession(context).userId,this.source)
+        }
+    }
+
+    private fun setBackgroundColor() {
+        if (context.isDarkMode()) {
+            mvcShadow.setImageResource(R.drawable.mvc_shadow_n50)
+            mvcBgDuplicate.setImageResource(R.drawable.mvc_bg_duplicate_n50)
+        } else {
+            mvcShadow.setImageResource(R.drawable.mvc_shadow_n0)
+            mvcBgDuplicate.setImageResource(R.drawable.mvc_bg_duplicate_n0)
         }
     }
 
