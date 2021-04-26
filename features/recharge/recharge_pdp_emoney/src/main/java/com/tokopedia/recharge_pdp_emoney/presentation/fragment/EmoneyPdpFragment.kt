@@ -144,6 +144,11 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             renderErrorToaster(it)
         })
 
+        emoneyPdpViewModel.inputViewError.observe(viewLifecycleOwner, Observer {
+            emoneyPdpInputCardWidget.renderError(it)
+            if (it.isNotEmpty()) showRecentNumberAndPromo()
+        })
+
         emoneyPdpViewModel.catalogPrefixSelect.observe(viewLifecycleOwner, Observer {
             if (it is Fail) {
                 renderFullPageError(it.throwable)

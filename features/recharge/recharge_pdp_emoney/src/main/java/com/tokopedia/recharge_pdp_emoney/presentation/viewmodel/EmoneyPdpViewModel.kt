@@ -37,6 +37,10 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     val errorMessage: LiveData<String>
         get() = _errorMessage
 
+    private val _inputViewError = MutableLiveData<String>()
+    val inputViewError: LiveData<String>
+        get() = _inputViewError
+
     private val _catalogPrefixSelect = MutableLiveData<Result<TelcoCatalogPrefixSelect>>()
     val catalogPrefixSelect: LiveData<Result<TelcoCatalogPrefixSelect>>
         get() = _catalogPrefixSelect
@@ -85,6 +89,8 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     }
 
     fun getSelectedOperator(inputNumber: String, errorNotFoundString: String) {
+        resetInputViewError()
+        if (inputNumber.isEmpty()) return
         try {
             if (catalogPrefixSelect.value is Success) {
                 val operatorSelected = (catalogPrefixSelect.value as Success).data.rechargeCatalogPrefixSelect.prefixes.single {
@@ -95,8 +101,12 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 setErrorMessage(MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT))
             }
         } catch (e: Throwable) {
-            setErrorMessage(Throwable(errorNotFoundString))
+            _inputViewError.value = errorNotFoundString
         }
+    }
+
+    private fun resetInputViewError() {
+        _inputViewError.value = ""
     }
 
     fun getProductFromOperator(menuId: Int, operatorId: String) {

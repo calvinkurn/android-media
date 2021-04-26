@@ -59,6 +59,11 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
 
     }
 
+    fun renderError(errorMsg: String) {
+        emoneyPdpCardInputNumber.setError(errorMsg.isNotEmpty())
+        emoneyPdpCardInputNumber.setMessage(errorMsg)
+    }
+
     fun setNumber(number: String) {
         emoneyPdpCardInputNumber.textFieldInput.setText(number)
         if (number.isNotEmpty()) showClearIcon()
@@ -74,6 +79,7 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
     private fun getInputString() = emoneyPdpCardInputNumber.textFieldInput.text.toString()
 
     private fun clearNumberAndOperator() {
+        renderError("")
         emoneyPdpCardInputNumber.textFieldInput.setText("")
         emoneyPdpCardInputNumber.getSecondIcon().hide()
         emoneyPdpCardInputNumber.getFirstIcon().hide()

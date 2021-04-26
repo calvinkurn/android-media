@@ -26,11 +26,11 @@ import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.di.NfcCheckBalanceInstance
 import com.tokopedia.common_electronic_money.util.EmoneyAnalytics
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
 open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
@@ -260,7 +260,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         activity?.let {
             val bundle = Bundle()
             bundle.putParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData)
-            val intent = RouteManager.getIntent(it, ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM)
+            val intent = RouteManager.getIntent(it, ApplinkConsInternalDigital.ELECTRONICMONEY_PRODUCT_FORM)
             intent.putExtras(bundle)
             startActivity(intent)
         }
