@@ -42,7 +42,7 @@
                 android:scaleType="fitCenter"
                 android:visibility="gone" />
 
-            <com.tokopedia.loginregister.common.view.PartialRegisterInputView
+            <com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
                 android:id="@+id/login_input_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -160,7 +160,7 @@
             android:visibility="gone"/>
     </RelativeLayout>
 
-  <com.tokopedia.loginregister.common.view.emailextension.EmailExtension
+  <com.tokopedia.loginregister.common.view.EmailExtension
     android:id="@+id/emailExtension"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

@@ -1,4 +1,4 @@
-package com.tokopedia.videorecorder.utils
+package com.tokopedia.imagepicker.videorecorder.utils
 
 import android.os.Environment
 import java.io.File
@@ -85,15 +85,6 @@ object FileUtils {
         for (file: String in filesToDelete) {
             deleteFile(file)
         }
-    }
-
-    fun generateTempFile(path: String): File {
-        val file = publicDirectory(path)
-        return File(file.absolutePath, TEMP_FILE)
-    }
-
-    fun moveToDir(sourceFile: File?): File {
-        return moveToDir(sourceFile, RESULT_DIR)!!
     }
 
     fun moveToDir(sourceFile: File?, path: String): File? {

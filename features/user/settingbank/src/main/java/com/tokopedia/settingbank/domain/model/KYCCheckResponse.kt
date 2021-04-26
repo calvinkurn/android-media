@@ -1,7 +1,9 @@
 package com.tokopedia.settingbank.domain.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class KYCCheckResponse(
         @SerializedName("kycInfo")
@@ -9,6 +11,7 @@ data class KYCCheckResponse(
         val kycInfo : KYCInfo
 )
 
+@Parcelize
 data class KYCInfo(
         @SerializedName("Fullname")
         @Expose
@@ -19,4 +22,4 @@ data class KYCInfo(
         @SerializedName("IsExist")
         @Expose
         val isExist : Boolean
-)
+) : Parcelable

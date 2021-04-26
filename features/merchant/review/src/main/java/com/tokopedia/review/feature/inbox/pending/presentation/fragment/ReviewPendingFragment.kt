@@ -20,6 +20,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -79,6 +80,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
     private var reviewInboxListener: ReviewInboxListener? = null
     private var source: String = ""
+    private var containerListener: InboxFragmentContainer? = null
 
     override fun getAdapterTypeFactory(): ReviewPendingAdapterTypeFactory {
         return ReviewPendingAdapterTypeFactory(this)
@@ -111,6 +113,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     override fun onStarsClicked(reputationId: Long, productId: Long, rating: Int, inboxReviewId: Long, seen: Boolean) {
         if (!seen) {
             viewModel.markAsSeen(inboxReviewId)
+            containerListener?.decreaseReviewUnreviewedCounter()
         }
         goToCreateReviewActivity(reputationId, productId, rating, inboxReviewId.toString())
     }
@@ -142,7 +145,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
             override fun onGlobalLayout() {
                 reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
                 reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                reviewPendingRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                reviewPendingRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
@@ -262,6 +265,12 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getSourceData()
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is InboxFragmentContainer) {
+            containerListener = context
+        }
     }
 
     private fun initView() {

@@ -55,6 +55,7 @@ import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_VALUE_ETALASE_TYPE
 import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_IMAGE_URL
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_PRODUCT_RESULT_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -108,6 +109,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var shopPageTracking: ShopPageTrackingBuyer? = null
     private val shopProductAdapter: ShopProductAdapter by lazy { adapter as ShopProductAdapter }
     private var shopId: String? = null
+    private var shopName: String? = null
     private var shopRef: String = ""
     private var keyword: String = ""
     private var productListName: String = ""
@@ -414,13 +416,18 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 is Fail -> {
                     onErrorGetShopInfo(it.throwable)
                     val throwable = it.throwable
-                    ShopUtil.logTimberWarning(
-                            "SHOP_PAGE_PRODUCT_RESULT_SHOP_INFO_ERROR",
-                            mapOf("shop_id" to shopId.orEmpty(),
-                                    "error_message" to com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable),
-                                    "error_trace" to Log.getStackTraceString(it.throwable)
-                            )
-                    )
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                SHOP_PAGE_PRODUCT_RESULT_BUYER_FLOW_TAG,
+                                this::observeLiveData.name,
+                                ShopPageProductListResultViewModel::shopInfoResp.name,
+                                userId,
+                                shopId.orEmpty(),
+                                shopName.orEmpty(),
+                                com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable),
+                                Log.getStackTraceString(throwable)
+                        )
+                    }
                 }
             }
         })
@@ -429,15 +436,20 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             when (it) {
                 is Success -> onSuccessGetSortFilterData(it.data)
                 is Fail -> {
-                    showGetListError(it.throwable)
                     val throwable = it.throwable
-                    ShopUtil.logTimberWarning(
-                            "SHOP_PAGE_PRODUCT_RESULT_SHOP_FILTER_DATA_ERROR",
-                            mapOf("shop_id" to shopId.orEmpty(),
-                                    "error_message" to com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable),
-                                    "error_trace" to Log.getStackTraceString(it.throwable)
-                            )
-                    )
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                SHOP_PAGE_PRODUCT_RESULT_BUYER_FLOW_TAG,
+                                this::observeLiveData.name,
+                                ShopPageProductListResultViewModel::shopSortFilterData.name,
+                                userId,
+                                shopId.orEmpty(),
+                                shopName.orEmpty(),
+                                com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable),
+                                Log.getStackTraceString(throwable)
+                        )
+                    }
+                    showGetListError(it.throwable)
                 }
             }
         })
@@ -461,7 +473,22 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     isNeedToReloadData = false
                     productListName = it.data.listShopProductUiModel.joinToString(","){ product -> product.name.orEmpty() }
                 }
-                is Fail -> showGetListError(it.throwable)
+                is Fail -> {
+                    val throwable = it.throwable
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                SHOP_PAGE_PRODUCT_RESULT_BUYER_FLOW_TAG,
+                                this::observeLiveData.name,
+                                ShopPageProductListResultViewModel::productData.name,
+                                userId,
+                                shopId.orEmpty(),
+                                shopName.orEmpty(),
+                                com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable),
+                                Log.getStackTraceString(throwable)
+                        )
+                    }
+                    showGetListError(it.throwable)
+                }
             }
         })
 
@@ -801,6 +828,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         this.shopId = shopInfo.shopCore.shopID
         this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
         this.isGoldMerchant = shopInfo.goldOS.isGold == 1
+        this.shopName = shopInfo.shopCore.name
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
         onShopProductListFragmentListener?.updateUIByShopName(shopInfo.shopCore.name)
         shopPageProductListResultFragmentListener?.updateShopInfo(shopInfo)
@@ -1080,6 +1108,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
             bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
             bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopInfo!!.shopCore.shopID)
+            bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_TYPE, customDimensionShopPage.shopType)
 
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
             intent.putExtra(EXTRA_BUNDLE, bundle)
