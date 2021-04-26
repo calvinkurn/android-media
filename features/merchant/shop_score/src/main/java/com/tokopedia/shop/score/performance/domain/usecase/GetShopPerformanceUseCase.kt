@@ -6,7 +6,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :

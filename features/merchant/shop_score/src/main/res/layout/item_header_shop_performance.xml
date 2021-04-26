@@ -7,14 +7,14 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/spacing_lvl3"
     android:layout_marginTop="@dimen/spacing_lvl3"
-    android:layout_marginEnd="@dimen/spacing_lvl3"
-    tools:background="@drawable/corner_rounded_performance_headline">
+    android:layout_marginEnd="@dimen/spacing_lvl3">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/containerHeaderShopPerformance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
+        android:scaleType="fitXY"
         app:srcCompat="@drawable/bg_performance_headline" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -9,8 +9,10 @@ import kotlin.math.roundToInt
 
 object GoldMerchantUtil {
 
+    private const val LOCALE_ID = "id"
+
     infix fun String.diffDays(days: Int): Boolean {
-        val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, Locale("id"))
+        val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, Locale(LOCALE_ID))
         val joinDate = simpleDateFormat.parse(this)
         val diffInMs: Long = abs(System.currentTimeMillis() - joinDate?.time.orZero())
         val diff = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
@@ -25,7 +27,7 @@ object GoldMerchantUtil {
     }
 
     fun String.isTenureNewSeller(): Boolean {
-        val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, Locale("id"))
+        val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, Locale(LOCALE_ID))
         val joinDate = simpleDateFormat.parse(this)
         val diffInMs: Long = abs(System.currentTimeMillis() - joinDate?.time.orZero())
         val diff = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)

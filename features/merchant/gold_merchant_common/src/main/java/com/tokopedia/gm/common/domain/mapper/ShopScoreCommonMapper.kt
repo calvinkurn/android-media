@@ -9,11 +9,10 @@ import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class ShopScoreCommonMapper @Inject constructor(private val userSession: UserSessionInterface) {
+class ShopScoreCommonMapper @Inject constructor() {
 
     fun mapToGetShopInfo(shopInfoPeriodWrapperResponse: ShopInfoPeriodWrapperResponse): ShopInfoPeriodUiModel {
         return ShopInfoPeriodUiModel(
-                isOfficialStore = userSession.isShopOfficialStore,
                 periodType = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo?.periodType ?: "",
                 isNewSeller = shopInfoPeriodWrapperResponse.shopInfoByIDResponse?.result?.firstOrNull()?.createInfo?.shopCreated.orEmpty()
                         isNewSeller (NEW_SELLER_DAYS),
