@@ -135,10 +135,10 @@
                 },
                 "product_alias": "cpl-konven",
                 "sku": "",
-                "campaign_id": 1000,
-                "product_original_price": 200000,
-                "product_price_original_fmt": "Rp200.000",
-                "is_slash_price": true,
+                "campaign_id": 0,
+                "product_original_price": 0,
+                "product_price_original_fmt": "",
+                "is_slash_price": false,
                 "free_returns": {
                   "free_returns_logo": ""
                 },
@@ -163,7 +163,7 @@
                 }
               },
               "cart_string": "480176-0-2034-4678943",
-              "payment_profile": "TKPDPAY",
+              "payment_profile": "",
               "purchase_protection_plan_data": {
                 "protection_available": false,
                 "protection_type_id": 0,
@@ -480,18 +480,18 @@
             "payment": {
               "enable": 1,
               "active": 1,
-              "gateway_code": "OVO",
-              "gateway_name": "OVO 1",
+              "gateway_code": "PAYMENT1",
+              "gateway_name": "Payment 1",
               "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png",
               "description": "",
               "url": "",
-              "fee": 0,
-              "minimum_amount": 0,
+              "fee": 1000,
+              "minimum_amount": 10000,
               "maximum_amount": 100000000,
               "flags": {
                 "pin": false
               },
-              "wallet_amount": 200000,
+              "wallet_amount": 0,
               "metadata": "",
               "mdr": 0,
               "credit_card": {
@@ -515,8 +515,8 @@
               },
               "ticker_message": "",
               "is_enable_next_button": false,
-              "is_disable_pay_button": true,
-              "is_ovo_only_campaign": true
+              "is_disable_pay_button": false,
+              "is_ovo_only_campaign": false
             },
             "shipment": {
               "service_id": 1104,
@@ -531,15 +531,17 @@
                 "global_success": true,
                 "success": true,
                 "message": {
-                  "state": "",
-                  "color": "",
-                  "text": ""
+                  "state": "grey",
+                  "color": "#e0e0e0",
+                  "text": "Kamu berpotensi dapat cashback sebesar Rp5.500 setelah pesanan selesai"
                 },
-                "codes": [],
+                "codes": [
+                  "TESTACK25"
+                ],
                 "promo_code_id": 0,
-                "title_description": "",
+                "title_description": "Potongan Ongkir JNE Rp.10.000",
                 "discount_amount": 0,
-                "cashback_wallet_amount": 0,
+                "cashback_wallet_amount": 5500,
                 "cashback_advocate_referral_amount": 0,
                 "cashback_voucher_description": "",
                 "invoice_description": "",
@@ -561,12 +563,38 @@
                 },
                 "voucher_orders": [],
                 "benefit_summary_info": {
-                  "final_benefit_text": "",
-                  "final_benefit_amount": 0,
-                  "final_benefit_amount_str": "",
-                  "summaries": []
+                  "final_benefit_text": "Total benefit anda: ",
+                  "final_benefit_amount": 5500,
+                  "final_benefit_amount_str": "Rp5.500",
+                  "summaries": [
+                    {
+                      "section_name": "Cashback",
+                      "section_description": "",
+                      "description": "Total cashback: ",
+                      "type": "cashback",
+                      "amount_str": "Rp5.500",
+                      "amount": 5500,
+                      "details": [
+                        {
+                          "section_name": "",
+                          "description": "Total Cashback OVO Points ",
+                          "type": "ovo_points",
+                          "amount_str": "Rp5.500",
+                          "amount": 5500,
+                          "points": 5500,
+                          "points_str": ""
+                        }
+                      ]
+                    }
+                  ]
                 },
-                "tracking_details": [],
+                "tracking_details": [
+                  {
+                    "product_id": 688020593,
+                    "promo_codes_tracking": "TESTACK25",
+                    "promo_details_tracking": "G:1:5500:grey"
+                  }
+                ],
                 "ticker_info": {
                   "unique_id": "",
                   "status_code": 0,
@@ -574,8 +602,8 @@
                 },
                 "additional_info": {
                   "message_info": {
-                    "message": "Makin hemat pakai promo",
-                    "detail": ""
+                    "message": "Kamu bisa hemat Rp5.500",
+                    "detail": "1 promo dipakai"
                   },
                   "error_detail": {
                     "message": ""
@@ -585,14 +613,21 @@
                     "message": "",
                     "detail": ""
                   },
-                  "usage_summaries": [],
+                  "usage_summaries": [
+                    {
+                      "description": "Cashback OVO Points",
+                      "type": "cashback",
+                      "amount_str": "5.500",
+                      "amount": 5500
+                    }
+                  ],
                   "sp_ids": []
                 }
               }
             },
             "error_default": {
-              "title": "",
-              "description": ""
+              "title": "promo tidak dapat digunakan",
+              "description": "silahkan coba beberapa saat lagi"
             }
           },
           "customer_data": {
@@ -607,13 +642,26 @@
             "signature": "f80ab707425ad0a0ca67d58a62f47ef5470d2ff1",
             "change_cc_link": ""
           },
-          "error_ticker": "OVO Error Ticker",
+          "error_ticker": "",
           "prompt": {
             "type": "",
             "title": "",
             "description": "",
             "image_url": "",
             "buttons": []
+          },
+          "occ_revamp": {
+            "enable": true,
+            "total_profile": 2,
+            "change_template_text": "Pilih template lain"
+          },
+          "occ_remove_profile": {
+            "enable": true,
+            "ui_type": 2,
+            "message": {
+              "title": "",
+              "description": ""
+            }
           }
         }
       }

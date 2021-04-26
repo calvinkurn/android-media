@@ -5,6 +5,7 @@
         "error_message": [],
         "status": "OK",
         "data": {
+          "error_code": "3",
           "tickers": [
             {
               "id": 0,
@@ -117,7 +118,7 @@
                 },
                 "product_all_images": "[{\"file_name\":\"5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg\",\"file_path\":\"product-1/2017/11/30/5513284\",\"status\":2}]",
                 "product_notes": "",
-                "product_quantity": 2,
+                "product_quantity": 1,
                 "product_weight_unit_code": 1,
                 "product_weight_unit_text": "gr",
                 "last_update_price": "1512021695",
@@ -135,10 +136,10 @@
                 },
                 "product_alias": "cpl-konven",
                 "sku": "",
-                "campaign_id": 1000,
-                "product_original_price": 200000,
-                "product_price_original_fmt": "Rp200.000",
-                "is_slash_price": true,
+                "campaign_id": 0,
+                "product_original_price": 0,
+                "product_price_original_fmt": "",
+                "is_slash_price": false,
                 "free_returns": {
                   "free_returns_logo": ""
                 },
@@ -163,7 +164,7 @@
                 }
               },
               "cart_string": "480176-0-2034-4678943",
-              "payment_profile": "TKPDPAY",
+              "payment_profile": "",
               "purchase_protection_plan_data": {
                 "protection_available": false,
                 "protection_type_id": 0,
@@ -459,34 +460,35 @@
               }
             },
             "profile_id": 1,
-            "status": 2,
+            "status": 1,
             "address": {
-              "address_id": 1,
-              "receiver_name": "User 1",
-              "address_name": "Address 1",
-              "address_street": "Address Street 1",
-              "district_id": 1,
-              "district_name": "District 1",
-              "city_id": 1,
-              "city_name": "City 1",
-              "province_id": 1,
-              "province_name": "Province 1",
-              "phone": "1",
-              "longitude": "1",
-              "latitude": "1",
-              "postal_code": "1",
-              "geolocation": "1,1"
+              "address_id": 0,
+              "receiver_name": "",
+              "address_name": "",
+              "address_street": "",
+              "district_id": 0,
+              "district_name": "",
+              "city_id": 0,
+              "city_name": "0",
+              "province_id": 0,
+              "province_name": "",
+              "phone": "0",
+              "longitude": "0",
+              "latitude": "0",
+              "postal_code": "0",
+              "geolocation": "0",
+              "status": 0
             },
             "payment": {
               "enable": 1,
               "active": 1,
-              "gateway_code": "OVO",
-              "gateway_name": "OVO 1",
-              "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/ovo.png",
+              "gateway_code": "PAYMENT1",
+              "gateway_name": "Payment 1",
+              "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png",
               "description": "",
               "url": "",
-              "fee": 0,
-              "minimum_amount": 0,
+              "fee": 1000,
+              "minimum_amount": 10000,
               "maximum_amount": 100000000,
               "flags": {
                 "pin": false
@@ -515,22 +517,8 @@
               },
               "ticker_message": "",
               "is_enable_next_button": false,
-              "is_disable_pay_button": true,
-              "is_ovo_only_campaign": true,
-              "ovo_additional_data": {
-                "ovo_activation": {
-                  "is_required": true,
-                  "button_title": "Aktivasi",
-                  "error_message": "",
-                  "error_ticker": "OVO kamu belum aktif. Silahkan aktifkan atau pilih pembayaran lain."
-                },
-                "ovo_top_up": {
-                  "is_required": false,
-                  "button_title": "Top-Up",
-                  "error_message": "Rp300.000. OVO Cash kamu tidak cukup.",
-                  "error_ticker": "OVO cash kamu tidak cukup. Silakan top up atau pilih pembayaran lain."
-                }
-              }
+              "is_disable_pay_button": false,
+              "is_ovo_only_campaign": false
             },
             "shipment": {
               "service_id": 1104,
@@ -619,8 +607,7 @@
             "merchant_code": "tokopedia",
             "profile_code": "TKPD_DEFAULT",
             "signature": "f80ab707425ad0a0ca67d58a62f47ef5470d2ff1",
-            "change_cc_link": "",
-            "callback_url": "https://api-staging.tokopedia.com/cart/v2/receiver"
+            "change_cc_link": ""
           },
           "error_ticker": "",
           "prompt": {
@@ -629,6 +616,19 @@
             "description": "",
             "image_url": "",
             "buttons": []
+          },
+          "occ_revamp": {
+            "enable": true,
+            "total_profile": 2,
+            "change_template_text": "Pilih template lain"
+          },
+          "occ_remove_profile": {
+            "enable": true,
+            "ui_type": 2,
+            "message": {
+              "title": "",
+              "description": ""
+            }
           }
         }
       }
