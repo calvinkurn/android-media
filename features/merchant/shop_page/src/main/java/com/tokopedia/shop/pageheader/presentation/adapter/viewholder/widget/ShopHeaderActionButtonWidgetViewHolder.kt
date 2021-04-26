@@ -11,12 +11,14 @@ import com.tokopedia.shop.pageheader.presentation.adapter.ShopHeaderActionButton
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetNoteButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 
 class ShopHeaderActionButtonWidgetViewHolder(
         itemView: View,
         private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
         private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
+        private val shopActionButtonWidgetNoteButtonComponentListener: ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
         private val adapterShopHeader: ShopPageHeaderAdapter?
 ) : AbstractViewHolder<ShopHeaderWidgetUiModel>(itemView) {
 
@@ -30,7 +32,8 @@ class ShopHeaderActionButtonWidgetViewHolder(
         val shopActionButtonWidgetAdapter = ShopActionButtonWidgetAdapter(ShopHeaderActionButtonWidgetAdapterTypeFactory(
                 model,
                 shopActionButtonWidgetChatButtonComponentListener,
-                shopActionButtonWidgetFollowButtonComponentListener
+                shopActionButtonWidgetFollowButtonComponentListener,
+                shopActionButtonWidgetNoteButtonComponentListener
         ))
         adapterShopHeader?.setAdapterWidgetButton(shopActionButtonWidgetAdapter)
         recyclerViewButtonComponent?.apply {

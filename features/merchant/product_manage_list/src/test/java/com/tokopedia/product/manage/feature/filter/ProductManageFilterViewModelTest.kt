@@ -14,6 +14,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture() {
@@ -46,6 +47,8 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
         viewModel.clearSelected()
 
         verifyAllFilterDataIsNotSelected()
+        assertTrue(viewModel.getSelectedFilters().isEmpty())
+
     }
 
     @Test

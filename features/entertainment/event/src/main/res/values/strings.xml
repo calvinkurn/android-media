@@ -105,8 +105,8 @@
     <string name="ent_checkout_summary_amount">(x%d)</string>
     <string name="ent_checkout_to_order_detail">%s?from_payment=true</string>
     <string name="ent_pdp_param_to_package">%s/%s?selectedDate=%s&amp;startDate=%s&amp;endDate=%s</string>
-    <string name="ent_checkout_price_expand">Mulai dari \u0020</string>
-    <string name="ent_pdp_available_date_label">Tiket tersedia pada \u0020</string>
+    <string name="ent_checkout_price_expand">Mulai dari&#160;</string>
+    <string name="ent_pdp_available_date_label">Tiket tersedia pada&#160;</string>
 
     <string name="ent_home_coachmark_title">Beli tiket kini lebih mudah!</string>
     <string name="ent_home_coachmark_subtitle">Cobain yuk, sekarang kamu dapat membeli paket lain bersamaan!</string>

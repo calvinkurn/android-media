@@ -278,7 +278,8 @@ ext {
             javaxInject           :  "javax.inject:javax.inject:1",
             slice                 : "androidx.slice:slice-builders-ktx:$sliceVersion",
             sliceCore             : "androidx.slice:slice-core:$sliceCoreVersion",
-            transition            : "androidx.transition:transition:$transitionVersion"
+            transition            : "androidx.transition:transition:$transitionVersion",
+            newRelic              : 'com.newrelic.agent.android:android-agent:5.28.1',
     ]
 
     testDependencies = [
