@@ -13,6 +13,7 @@ import com.tokopedia.product.util.BaseProductViewModelTest
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
@@ -27,8 +28,11 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
     @RelaxedMockK
     private lateinit var ratesUseCase: GetRatesEstimateUseCase
 
+    @RelaxedMockK
+    private lateinit var userSessionInterface: UserSessionInterface
+
     private val viewModel: RatesEstimationBoeViewModel by lazy {
-        RatesEstimationBoeViewModel(ratesUseCase, CoroutineTestDispatchersProvider)
+        RatesEstimationBoeViewModel(ratesUseCase, userSessionInterface, CoroutineTestDispatchersProvider)
     }
 
     private val service = listOf(ServiceModel(
