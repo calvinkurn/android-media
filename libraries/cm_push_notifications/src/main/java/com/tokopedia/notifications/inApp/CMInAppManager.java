@@ -89,6 +89,9 @@ public class CMInAppManager implements CmInAppListener,
 
     public void init(@NonNull Application application) {
         this.application = application;
+        dataConsumer = new DataConsumerImpl();
+        RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), dataConsumer);
+
         this.cmInAppListener = this;
         cmRemoteConfigUtils = new CMRemoteConfigUtils(application);
         cmDataConsumer = new CmDataConsumer(this);
@@ -99,8 +102,6 @@ public class CMInAppManager implements CmInAppListener,
                 pushIntentHandler,
                 this,
                 this);
-        dataConsumer = new DataConsumerImpl();
-        RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), dataConsumer);
         initInAppManager();
     }
 

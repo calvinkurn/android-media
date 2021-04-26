@@ -2,7 +2,6 @@ package com.tokopedia.shop.pageheader.presentation.uimodel.component
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
 interface BaseShopHeaderComponentUiModel : Visitable<BaseAdapterTypeFactory> {
 

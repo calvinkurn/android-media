@@ -21,7 +21,17 @@ object LoggingUtils {
 
     @JvmStatic
     fun logGqlError(classType: String, request: String, throwable: Throwable) {
-        ServerLogger.log(Priority.P1, "GQL_RESP_CODE", mapOf("type" to classType, "err" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH).trim(), "resp" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
+        ServerLogger.log(Priority.P1, "GQL_ERROR", mapOf("type" to classType, "err" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH).trim(), "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
+    }
+
+    @JvmStatic
+    fun logGqlErrorNetwork(classType: String, request: String, throwable: Throwable) {
+        ServerLogger.log(Priority.P1, "GQL_ERROR_NETWORK", mapOf("type" to classType, "err" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH).trim(), "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
+    }
+
+    @JvmStatic
+    fun logGqlErrorBackend(from: String, request: String, errorMessage: String) {
+        ServerLogger.log(Priority.P1, "GQL_ERROR_BACKEND", mapOf("from" to from, "err" to errorMessage, "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
     }
 
     @JvmStatic

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:paddingBottom="@dimen/layout_lvl6">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -260,27 +261,32 @@
             </LinearLayout>
 
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_N0"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true"
+        android:padding="@dimen/layout_lvl2">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
-            android:orientation="horizontal"
-            android:padding="@dimen/layout_lvl2">
+            android:layout_weight="1"
+            android:text="@string/hotel_e_voucher_powered_by"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/hotel_e_voucher_powered_by"
-                android:textColor="@color/Unify_N700_68"
-                app:typographyType="body_3" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_hotel_booking_com_logo" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_hotel_booking_com_logo" />
-
-        </LinearLayout>
     </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>
