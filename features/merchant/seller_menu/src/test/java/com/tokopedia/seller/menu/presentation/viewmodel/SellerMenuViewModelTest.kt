@@ -1,6 +1,8 @@
 package com.tokopedia.seller.menu.presentation.viewmodel
 
+import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
 import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
@@ -19,16 +21,47 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
 
     @Test
     fun `when getAllSettingShopInfo success should set live data success`() {
-        val shopScoreResponse = ShopScoreResult()
-        val shopSettingsResponse = createShopSettingsResponse()
+        coroutineTestRule.runBlockingTest {
+            val shopScoreResponse = ShopScoreResult()
+            val shopSettingsResponse = createShopSettingsResponse()
 
-        onGetAllShopInfoUseCase_thenReturn(shopSettingsResponse)
-        onGetShopScore_thenReturn(shopScoreResponse)
+            onGetAllShopInfoUseCase_thenReturn(shopSettingsResponse)
+            onGetShopScore_thenReturn(shopScoreResponse)
 
-        viewModel.getAllSettingShopInfo()
+            viewModel.getAllSettingShopInfo()
 
-        val expectedResult = createShopInfoUiModel()
-        val actualResult = (viewModel.settingShopInfoLiveData.value as Success).data
+            val expectedResult = createShopInfoUiModel()
+            val actualResult = (viewModel.settingShopInfoLiveData.value as Success).data
+
+            assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    @Test
+    fun `when getShopAccountTickerPeriod success should set live data success`() {
+        coroutineTestRule.runBlockingTest {
+            val shopInfoPeriodResponse = ShopInfoPeriodUiModel(periodType = TRANSITION_PERIOD)
+
+            onGetShopInfoPeriodUseCase_thenReturn(shopInfoPeriodResponse)
+
+            viewModel.getShopAccountTickerPeriod()
+
+            val actualResult = (viewModel.shopAccountTickerPeriod.value as Success).data
+
+            assertEquals(shopInfoPeriodResponse, actualResult)
+        }
+    }
+
+    @Test
+    fun `given getShopInfoPeriod error when getShopAccountTickerPeriod should set live data fail`() {
+        val error = MessageErrorException()
+
+        onGetGetShopInfoPeriodUseCase_thenReturnError(error)
+
+        viewModel.getShopAccountTickerPeriod()
+
+        val expectedResult = MessageErrorException::class.java
+        val actualResult = (viewModel.shopAccountTickerPeriod.value as Fail).throwable::class.java
 
         assertEquals(expectedResult, actualResult)
     }
@@ -36,9 +69,9 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
     @Test
     fun `when getProductCount success should set live data success`() {
         val tabs = listOf(
-            Tab(ProductStatus.ACTIVE.name, "20"),
-            Tab(ProductStatus.INACTIVE.name, "20"),
-            Tab(ProductStatus.VIOLATION.name, "20")
+                Tab(ProductStatus.ACTIVE.name, "20"),
+                Tab(ProductStatus.INACTIVE.name, "20"),
+                Tab(ProductStatus.VIOLATION.name, "20")
         )
 
         onGetProductListMeta_thenReturn(tabs)
@@ -68,11 +101,11 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
     @Test
     fun `when getNotifications success should set live data success`() {
         val response = createNotificationResponse(
-            newOrder = 1,
-            readyToShip = 2,
-            totalUnread = 4,
-            talk = 1,
-            inResolution = 1
+                newOrder = 1,
+                readyToShip = 2,
+                totalUnread = 4,
+                talk = 1,
+                inResolution = 1
         )
 
         onGetNotifications_thenReturn(response)
