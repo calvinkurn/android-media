@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:theme="@style/Toolbar.White"
-        android:fitsSystemWindows="true">
+        android:backgroundTint="@color/Unify_N0">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"

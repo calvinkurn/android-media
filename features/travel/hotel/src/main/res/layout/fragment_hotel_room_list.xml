@@ -8,7 +8,8 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:theme="@style/Toolbar.White">
+        app:theme="@style/Toolbar.White"
+        android:backgroundTint="@color/Unify_N0">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
