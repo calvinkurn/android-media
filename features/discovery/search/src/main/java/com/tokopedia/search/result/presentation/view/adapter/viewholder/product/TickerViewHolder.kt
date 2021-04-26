@@ -29,7 +29,7 @@ class TickerViewHolder(
     }
 
     private fun bindTickerView(element: TickerDataView) {
-        val shouldShowTicker = tickerListener.isTickerHasDismissed || element.text.isEmpty()
+        val shouldShowTicker = !(tickerListener.isTickerHasDismissed || element.text.isEmpty())
 
         itemView.shouldShowWithAction(shouldShowTicker) {
             tickerView?.setHtmlDescription(element.text)

@@ -147,13 +147,14 @@ class ProductEmptySearchViewHolder(
             )
 
     private fun bindNewSearchButton() {
-        val shouldShow = boundedEmptySearchModel?.isFilterActive == true
+        val shouldShow = boundedEmptySearchModel?.isFilterActive == false
 
         emptyButtonItemButton?.shouldShowWithAction(shouldShow) {
             emptyButtonItemButton.setOnClickListener(this::newSearchButtonOnClick)
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun newSearchButtonOnClick(view: View) {
         emptyStateListener.onEmptyButtonClicked()
     }
@@ -205,6 +206,7 @@ class ProductEmptySearchViewHolder(
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun onEmptySearchToGlobalSearchClicked(view: View) {
         emptyStateListener.onEmptySearchToGlobalSearchClicked(boundedEmptySearchModel?.globalSearchApplink ?: "")
     }

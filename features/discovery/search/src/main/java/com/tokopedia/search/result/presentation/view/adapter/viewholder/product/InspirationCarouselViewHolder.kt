@@ -124,6 +124,7 @@ class InspirationCarouselViewHolder(
 
         itemView.inspirationCarousel?.inspirationCarouselChipsContent?.bindCarouselProductCardViewGrid(
                 productCardModelList = chipsProductCardModels,
+                recyclerViewPool = inspirationCarouselListener.carouselRecycledViewPool,
                 showSeeMoreCard = activeOption.applink.isNotEmpty(),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {

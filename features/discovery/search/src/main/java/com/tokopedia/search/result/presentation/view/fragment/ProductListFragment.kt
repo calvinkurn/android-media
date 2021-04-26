@@ -185,7 +185,7 @@ class ProductListFragment: BaseDaggerFragment(),
     private var redirectionListener: RedirectionListener? = null
     private var searchPerformanceMonitoringListener: SearchPerformanceMonitoringListener? = null
     private var recyclerView: RecyclerView? = null
-    private var adapter: ProductListAdapter? = null
+    private var productListAdapter: ProductListAdapter? = null
     private var trackingQueue: TrackingQueue? = null
     private var performanceMonitoring: PerformanceMonitoring? = null
     private var topAdsConfig: Config? = null
@@ -204,6 +204,7 @@ class ProductListFragment: BaseDaggerFragment(),
         )
     }
 
+    override val carouselRecycledViewPool = RecyclerView.RecycledViewPool()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -350,7 +351,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 topAdsConfig = topAdsConfig,
         )
 
-        adapter = ProductListAdapter(itemChangeView = this, typeFactory = productListTypeFactory)
+        productListAdapter = ProductListAdapter(itemChangeView = this, typeFactory = productListTypeFactory)
     }
 
     private fun initLoadMoreListener() {
@@ -368,7 +369,7 @@ class ProductListFragment: BaseDaggerFragment(),
                     val searchParameterMap = searchParameter?.getSearchParameterMap() ?: return
                     presenter?.loadMoreData(searchParameterMap)
                 } else {
-                    adapter?.removeLoading()
+                    productListAdapter?.removeLoading()
                 }
             }
         }
@@ -392,7 +393,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         recyclerView?.apply {
             layoutManager = staggeredGridLayoutManager
-            adapter = adapter
+            adapter = productListAdapter
             addItemDecoration(createProductItemDecoration())
             addOnScrollListener(onScrollListener)
         }
@@ -458,10 +459,10 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun switchLayoutType() {
-        val adapter = adapter ?: return
+        val productListAdapter = productListAdapter ?: return
         if (!userVisibleHint) return
 
-        when (adapter.getCurrentLayoutType()) {
+        when (productListAdapter.getCurrentLayoutType()) {
             SearchConstant.ViewType.LIST -> {
                 switchLayoutTypeTo(SearchConstant.ViewType.BIG_GRID)
                 SearchTracking.eventSearchResultChangeGrid("grid 1", screenName)
@@ -478,21 +479,21 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun switchLayoutTypeTo(layoutType: SearchConstant.ViewType) {
-        val adapter = adapter ?: return
+        val productListAdapter = productListAdapter ?: return
         if (!userVisibleHint) return
 
         when (layoutType) {
             SearchConstant.ViewType.LIST -> {
                 staggeredGridLayoutManager?.spanCount = 1
-                adapter.changeListView()
+                productListAdapter.changeListView()
             }
             SearchConstant.ViewType.SMALL_GRID -> {
                 staggeredGridLayoutManager?.spanCount = 2
-                adapter.changeDoubleGridView()
+                productListAdapter.changeDoubleGridView()
             }
             SearchConstant.ViewType.BIG_GRID -> {
                 staggeredGridLayoutManager?.spanCount = 1
-                adapter.changeSingleGridView()
+                productListAdapter.changeSingleGridView()
             }
         }
 
@@ -500,11 +501,11 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun refreshMenuItemGridIcon() {
-        val adapter = adapter ?: return
+        val productListAdapter = productListAdapter ?: return
 
         searchNavigationListener?.refreshMenuItemGridIcon(
-                adapter.getTitleTypeRecyclerView(),
-                adapter.getIconTypeRecyclerView()
+                productListAdapter.getTitleTypeRecyclerView(),
+                productListAdapter.getIconTypeRecyclerView()
         )
     }
 
@@ -523,18 +524,18 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun addProductList(list: List<Visitable<*>>) {
-        adapter?.appendItems(list)
+        productListAdapter?.appendItems(list)
     }
 
     override fun setProductList(list: List<Visitable<*>>) {
-        adapter?.clearData()
+        productListAdapter?.clearData()
 
         stopSearchResultPagePerformanceMonitoring()
         addProductList(list)
     }
 
     override fun addRecommendationList(list: List<Visitable<*>>) {
-        adapter?.appendItems(list)
+        productListAdapter?.appendItems(list)
     }
 
     private fun stopSearchResultPagePerformanceMonitoring() {
@@ -580,9 +581,9 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun showNetworkError(startRow: Int) {
-        val adapter = adapter ?: return
+        val productListAdapter = productListAdapter ?: return
 
-        if (adapter.isListEmpty())
+        if (productListAdapter.isListEmpty())
             showNetworkErrorOnEmptyList()
         else
             showNetworkErrorOnLoadMore()
@@ -663,11 +664,13 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun updateWishlistFromPDP(position: Int, isWishlist: Boolean) {
-        val adapter = adapter ?: return
+        val productListAdapter = productListAdapter ?: return
 
-        if (adapter.isProductItem(position) || adapter.isRecommendationItem(position)) {
-            adapter.updateWishlistStatus(position, isWishlist)
-        }
+        val isProductOrRecommendation =
+                productListAdapter.isProductItem(position) || productListAdapter.isRecommendationItem(position)
+
+        if (isProductOrRecommendation)
+            productListAdapter.updateWishlistStatus(position, isWishlist)
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
@@ -943,7 +946,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun onTickerDismissed() {
         presenter?.onPriceFilterTickerDismissed()
-        adapter?.removePriceFilterTicker()
+        productListAdapter?.removePriceFilterTicker()
     }
 
     override val isTickerHasDismissed
@@ -1077,7 +1080,7 @@ class ProductListFragment: BaseDaggerFragment(),
         get() = searchParameter?.get(SearchApiConst.PREVIOUS_KEYWORD) ?: ""
 
     override fun setEmptyProduct(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView) {
-        adapter?.showEmptyState(globalNavDataView, emptySearchProductDataView)
+        productListAdapter?.showEmptyState(globalNavDataView, emptySearchProductDataView)
     }
 
     private fun setSortFilterIndicatorCounter() {
@@ -1086,7 +1089,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>) {
-        adapter?.appendItems(bannedProductsErrorMessageAsList)
+        productListAdapter?.appendItems(bannedProductsErrorMessageAsList)
     }
 
     override fun trackEventImpressionBannedProducts(isEmptySearch: Boolean) {
@@ -1106,7 +1109,7 @@ class ProductListFragment: BaseDaggerFragment(),
         showRefreshLayout()
 
         presenter?.clearData()
-        adapter?.clearData()
+        productListAdapter?.clearData()
 
         hideSearchSortFilter()
         initTopAdsParams()
@@ -1162,12 +1165,12 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun addLoading() {
-        adapter?.addLoading()
+        productListAdapter?.addLoading()
     }
 
     override fun removeLoading() {
         removeSearchPageLoading()
-        adapter?.removeLoading()
+        productListAdapter?.removeLoading()
     }
 
     private fun removeSearchPageLoading() {
@@ -1492,7 +1495,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun updateWishlistStatus(productId: String?, isWishlisted: Boolean) {
-        adapter?.updateWishlistStatus(productId!!, isWishlisted)
+        productListAdapter?.updateWishlistStatus(productId!!, isWishlisted)
     }
 
     override fun showMessageSuccessWishlistAction(isWishlisted: Boolean) {
@@ -1809,11 +1812,11 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun addLocalSearchRecommendation(visitableList: List<Visitable<*>>) {
-        adapter?.appendItems(visitableList)
+        productListAdapter?.appendItems(visitableList)
     }
 
     override fun onChangeViewClicked(position: Int) {
-        val currentLayoutType = adapter?.getCurrentLayoutType() ?: SearchConstant.ViewType.SMALL_GRID
+        val currentLayoutType = productListAdapter?.getCurrentLayoutType() ?: SearchConstant.ViewType.SMALL_GRID
         presenter?.handleChangeView(position, currentLayoutType)
     }
 
@@ -1825,14 +1828,14 @@ class ProductListFragment: BaseDaggerFragment(),
         if (!userVisibleHint) return
 
         staggeredGridLayoutManager?.spanCount = 1
-        adapter?.changeSearchNavigationListView(position)
+        productListAdapter?.changeSearchNavigationListView(position)
     }
 
     override fun switchSearchNavigationLayoutTypeToBigGridView(position: Int) {
         if (!userVisibleHint) return
 
         staggeredGridLayoutManager?.spanCount = 1
-        adapter?.changeSearchNavigationSingleGridView(position)
+        productListAdapter?.changeSearchNavigationSingleGridView(position)
     }
 
 
@@ -1840,7 +1843,7 @@ class ProductListFragment: BaseDaggerFragment(),
         if (!userVisibleHint) return
 
         staggeredGridLayoutManager?.spanCount = 2
-        adapter?.changeSearchNavigationDoubleGridView(position)
+        productListAdapter?.changeSearchNavigationDoubleGridView(position)
     }
 
     override fun onTopAdsImageViewImpressed(
@@ -1901,7 +1904,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun refreshItemAtIndex(index: Int) {
-        adapter?.refreshItemAtIndex(index)
+        productListAdapter?.refreshItemAtIndex(index)
     }
 
     override fun onBannerClicked(bannerDataView: BannerDataView) {

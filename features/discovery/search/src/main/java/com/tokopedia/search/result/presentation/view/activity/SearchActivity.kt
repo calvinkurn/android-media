@@ -284,7 +284,7 @@ class SearchActivity: BaseActivity(),
             it.setHomeButtonEnabled(false)
         }
 
-        buttonChangeGrid?.showWithCondition(isEnableChooseAddress)
+        buttonChangeGrid?.showWithCondition(!isEnableChooseAddress)
     }
 
     private fun configureToolbarOnClickListener() {
