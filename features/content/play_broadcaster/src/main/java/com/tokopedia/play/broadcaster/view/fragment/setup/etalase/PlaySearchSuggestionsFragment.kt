@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Fade
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -16,9 +15,9 @@ import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.SearchSuggestionsAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlaySearchSuggestionsViewModel
-import com.tokopedia.play_common.delegate.FragmentViewContainer
-import com.tokopedia.play_common.delegate.FragmentWithDetachableView
-import com.tokopedia.play_common.delegate.detachableView
+import com.tokopedia.play_common.detachableview.FragmentViewContainer
+import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
+import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject

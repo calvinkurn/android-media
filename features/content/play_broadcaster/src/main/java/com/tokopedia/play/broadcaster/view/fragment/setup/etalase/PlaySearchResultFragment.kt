@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
@@ -25,9 +24,9 @@ import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListe
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
-import com.tokopedia.play_common.delegate.FragmentViewContainer
-import com.tokopedia.play_common.delegate.FragmentWithDetachableView
-import com.tokopedia.play_common.delegate.detachableView
+import com.tokopedia.play_common.detachableview.FragmentViewContainer
+import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
+import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject

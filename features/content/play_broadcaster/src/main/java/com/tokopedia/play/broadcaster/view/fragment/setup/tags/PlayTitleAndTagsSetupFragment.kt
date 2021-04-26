@@ -20,9 +20,9 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayTitleAndTagsSetupViewModel
-import com.tokopedia.play_common.delegate.FragmentViewContainer
-import com.tokopedia.play_common.delegate.FragmentWithDetachableView
-import com.tokopedia.play_common.delegate.detachableView
+import com.tokopedia.play_common.detachableview.FragmentViewContainer
+import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
+import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster

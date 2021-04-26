@@ -46,9 +46,9 @@ import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play_common.delegate.FragmentViewContainer
-import com.tokopedia.play_common.delegate.FragmentWithDetachableView
-import com.tokopedia.play_common.delegate.detachableView
+import com.tokopedia.play_common.detachableview.FragmentViewContainer
+import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
+import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster

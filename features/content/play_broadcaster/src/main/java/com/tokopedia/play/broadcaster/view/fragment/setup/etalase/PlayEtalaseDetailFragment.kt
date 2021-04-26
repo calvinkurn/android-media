@@ -34,10 +34,9 @@ import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play_common.delegate.FragmentViewContainer
-import com.tokopedia.play_common.delegate.FragmentWithDetachableView
-import com.tokopedia.play_common.delegate.detachableView
-import com.tokopedia.play_common.lifecycle.lifecycleBound
+import com.tokopedia.play_common.detachableview.FragmentViewContainer
+import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
+import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.extension.doOnPreDraw
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener

@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.transition.Fade
 import androidx.transition.Slide
 import androidx.transition.TransitionSet
@@ -33,9 +32,9 @@ import com.tokopedia.play.broadcaster.view.partial.BottomActionViewComponent
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPageViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
-import com.tokopedia.play_common.delegate.FragmentViewContainer
-import com.tokopedia.play_common.delegate.FragmentWithDetachableView
-import com.tokopedia.play_common.delegate.detachableView
+import com.tokopedia.play_common.detachableview.FragmentViewContainer
+import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
+import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.viewcomponent.viewComponent
