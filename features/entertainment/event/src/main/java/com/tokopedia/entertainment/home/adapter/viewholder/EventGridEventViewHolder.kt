@@ -1,6 +1,5 @@
 package com.tokopedia.entertainment.home.adapter.viewholder
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

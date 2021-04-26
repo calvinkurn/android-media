@@ -92,7 +92,7 @@ class EventHomeViewModel @Inject constructor(
                                 .build()
                         restRepository.getResponse(restRequest)
                     }
-                    var data = (result.getData() as ActionLikedResponse).data
+                    val data = (result.getData() as ActionLikedResponse).data
                     data?.let {
                         item.isLiked = it.isLiked
                         mutableLikedProduct.postValue(item)

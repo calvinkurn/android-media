@@ -36,8 +36,7 @@ import com.tokopedia.entertainment.navigation.EventNavigationActivity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.ent_home_fragment.*
-import kotlinx.android.synthetic.main.ent_layout_shimering_home.*
+import kotlinx.android.synthetic.main.fragment_home_event.*
 import javax.inject.Inject
 
 class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>(),
@@ -86,8 +85,8 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        renderToolbar()
         requestData()
+        renderToolbar()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -96,6 +95,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
         viewModel.eventHomeListData.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> {
+                    clearAllData()
                     onSuccessGetData(it.data)
                 }
 
@@ -127,17 +127,16 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     private fun onSuccessGetData(data: List<HomeEventItem>) {
-        adapter.data.clear()
         analytics.openHomeEvent()
         renderList(data)
         performanceMonitoring.stopTrace()
-        swipe_refresh_layout?.isRefreshing = false
+        swipe_refresh_layout_home?.isRefreshing = false
         startShowCase()
     }
 
     private fun onErrorGetData(throwable: Throwable) {
         adapter.data.clear()
-        swipe_refresh_layout?.isRefreshing = false
+        swipe_refresh_layout_home?.isRefreshing = false
         performanceMonitoring.stopTrace()
         Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
     }
@@ -147,7 +146,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
         if (coachMarkShown) return
 
         val coachItems = ArrayList<CoachMarkItem>()
-        coachItems.add(CoachMarkItem(view?.rootView?.findViewById(R.id.txt_search), getString(R.string.ent_home_page_coach_mark_title_1), getString(R.string.ent_home_page_coach_mark_desc_1)))
+        coachItems.add(CoachMarkItem(txt_search_home, getString(R.string.ent_home_page_coach_mark_title_1), getString(R.string.ent_home_page_coach_mark_desc_1)))
         val coachMark = CoachMarkBuilder().build()
         coachMark.show(activity, COACH_MARK_TAG, coachItems)
         localCacheHandler.apply {
