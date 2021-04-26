@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
@@ -33,24 +34,21 @@ class ProductEditFragment : TkpdBaseV4Fragment() {
     @Inject
     lateinit var analytic: PlayBroadcastAnalytic
 
-    private lateinit var simpleEditProductBottomSheet: SimpleEditProductBottomSheet
-    private lateinit var productSetupBottomSheet: ProductSetupBottomSheet
-
     private lateinit var parentViewModel: PlayBroadcastViewModel
     private lateinit var viewModel: DataStoreViewModel
 
     private var mListener: SetupResultListener? = null
 
     private val editProductListener = object: SimpleEditProductBottomSheet.Listener {
-        override fun onChooseOver() {
+        override fun onChooseOver(bottomSheet: BottomSheetDialogFragment) {
             openProductSetupBottomSheet()
-            getSimpleEditProductBottomSheet().dismiss()
+            bottomSheet.dismiss()
             analytic.clickChooseOverOnEditProductBottomSheet()
         }
 
-        override suspend fun onSaveEditedProductList(dataStore: PlayBroadcastSetupDataStore): Throwable? {
+        override suspend fun onSaveEditedProductList(bottomSheet: BottomSheetDialogFragment, dataStore: PlayBroadcastSetupDataStore): Throwable? {
             analytic.clickSubmitOnEditProductBottomSheet()
-            return mListener?.onSetupCompletedWithData(simpleEditProductBottomSheet, dataStore)
+            return mListener?.onSetupCompletedWithData(bottomSheet, dataStore)
         }
     }
 
@@ -122,18 +120,10 @@ class ProductEditFragment : TkpdBaseV4Fragment() {
     }
 
     private fun getSimpleEditProductBottomSheet(): SimpleEditProductBottomSheet {
-        if (!::simpleEditProductBottomSheet.isInitialized) {
-            simpleEditProductBottomSheet =
-                    getFragmentByClassName(SimpleEditProductBottomSheet::class.java) as SimpleEditProductBottomSheet
-        }
-        return simpleEditProductBottomSheet
+        return getFragmentByClassName(SimpleEditProductBottomSheet::class.java) as SimpleEditProductBottomSheet
     }
 
     private fun getProductSetupBottomSheet(): ProductSetupBottomSheet {
-        if (!::productSetupBottomSheet.isInitialized) {
-            productSetupBottomSheet =
-                    getFragmentByClassName(ProductSetupBottomSheet::class.java) as ProductSetupBottomSheet
-        }
-        return productSetupBottomSheet
+        return getFragmentByClassName(ProductSetupBottomSheet::class.java) as ProductSetupBottomSheet
     }
 }

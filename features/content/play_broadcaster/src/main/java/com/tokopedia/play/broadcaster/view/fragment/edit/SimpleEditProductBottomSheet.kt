@@ -145,7 +145,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
             if (btnAction.isLoading) return@setOnClickListener
             viewModel.uploadProduct()
         }
-        tvChooseOver.setOnClickListener { mListener?.onChooseOver() }
+        tvChooseOver.setOnClickListener { mListener?.onChooseOver(this@SimpleEditProductBottomSheet) }
 
         setSelectedProductList(viewModel.selectedProducts)
     }
@@ -184,7 +184,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
     private fun onUploadSuccess() {
         scope.launch {
-            val error = mListener?.onSaveEditedProductList(dataStoreViewModel.getDataStore())
+            val error = mListener?.onSaveEditedProductList(this@SimpleEditProductBottomSheet, dataStoreViewModel.getDataStore())
             if (error != null) {
                 yield()
                 onUploadFailed(error)
@@ -245,7 +245,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
     interface Listener {
 
-        fun onChooseOver()
-        suspend fun onSaveEditedProductList(dataStore: PlayBroadcastSetupDataStore): Throwable?
+        fun onChooseOver(bottomSheet: BottomSheetDialogFragment)
+        suspend fun onSaveEditedProductList(bottomSheet: BottomSheetDialogFragment, dataStore: PlayBroadcastSetupDataStore): Throwable?
     }
 }

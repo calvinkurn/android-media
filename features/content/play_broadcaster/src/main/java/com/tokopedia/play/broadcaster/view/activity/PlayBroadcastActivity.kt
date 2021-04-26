@@ -107,8 +107,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
 
-    private lateinit var loadingFragment: LoadingDialogFragment
-
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         initViewModel()
@@ -437,18 +435,27 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun getLoadingFragment(): LoadingDialogFragment {
-        if (!::loadingFragment.isInitialized) {
+        val loadingFragment = getAddedLoadingDialog()
+        return if (loadingFragment == null) {
             val setupClass = LoadingDialogFragment::class.java
             val fragmentFactory = supportFragmentManager.fragmentFactory
-            loadingFragment = fragmentFactory.instantiate(this.classLoader, setupClass.name) as LoadingDialogFragment
-        }
-        return loadingFragment
+            fragmentFactory.instantiate(this.classLoader, setupClass.name) as LoadingDialogFragment
+        } else loadingFragment
+    }
+
+    private fun isLoadingDialogVisible(): Boolean {
+        val loadingDialog = getAddedLoadingDialog()
+        return loadingDialog != null && loadingDialog.isVisible
+    }
+
+    private fun getAddedLoadingDialog(): LoadingDialogFragment? {
+        return LoadingDialogFragment.get(supportFragmentManager)
     }
 
     private fun showLoading(isLoading: Boolean) {
-        if (isLoading && !getLoadingFragment().isVisible) {
+        if (isLoading && !isLoadingDialogVisible()) {
             getLoadingFragment().show(supportFragmentManager)
-        } else if (getLoadingFragment().isVisible) {
+        } else if (isLoadingDialogVisible()) {
             getLoadingFragment().dismiss()
         }
     }

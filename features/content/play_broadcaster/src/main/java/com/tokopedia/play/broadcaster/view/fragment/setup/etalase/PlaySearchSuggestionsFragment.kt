@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Fade
@@ -15,6 +16,9 @@ import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.SearchSuggestionsAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlaySearchSuggestionsViewModel
+import com.tokopedia.play_common.delegate.FragmentViewContainer
+import com.tokopedia.play_common.delegate.FragmentWithDetachableView
+import com.tokopedia.play_common.delegate.detachableView
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
@@ -22,11 +26,13 @@ import javax.inject.Inject
 class PlaySearchSuggestionsFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val analytic: PlayBroadcastAnalytic
-): PlayBaseEtalaseSetupFragment() {
+): PlayBaseEtalaseSetupFragment(), FragmentWithDetachableView {
 
     private lateinit var viewModel: PlaySearchSuggestionsViewModel
 
-    private lateinit var rvSuggestions: RecyclerView
+    private val rvSuggestions: RecyclerView by detachableView(R.id.rv_suggestions)
+
+    private val fragmentViewContainer = FragmentViewContainer()
 
     private val keyword: String
         get() = arguments?.getString(EXTRA_KEYWORD) ?: ""
@@ -43,7 +49,7 @@ class PlaySearchSuggestionsFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupTransition()
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlaySearchSuggestionsViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PlaySearchSuggestionsViewModel::class.java)
     }
 
     override fun onStart() {
@@ -58,7 +64,6 @@ class PlaySearchSuggestionsFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
         setupView(view)
     }
 
@@ -69,14 +74,12 @@ class PlaySearchSuggestionsFragment @Inject constructor(
 
     override fun refresh() {}
 
-    fun searchKeyword(keyword: String) {
-        if (::viewModel.isInitialized) viewModel.loadSuggestionsFromKeyword(keyword)
+    override fun getViewContainer(): FragmentViewContainer {
+        return fragmentViewContainer
     }
 
-    private fun initView(view: View) {
-        with (view) {
-            rvSuggestions = findViewById(R.id.rv_suggestions)
-        }
+    fun searchKeyword(keyword: String) {
+        if (::viewModel.isInitialized) viewModel.loadSuggestionsFromKeyword(keyword)
     }
 
     private fun setupView(view: View) {

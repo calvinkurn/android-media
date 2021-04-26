@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,18 +25,23 @@ import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListe
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.play_common.delegate.FragmentViewContainer
+import com.tokopedia.play_common.delegate.FragmentWithDetachableView
+import com.tokopedia.play_common.delegate.detachableView
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 class PlaySearchResultFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory
-): PlayBaseEtalaseSetupFragment() {
+): PlayBaseEtalaseSetupFragment(), FragmentWithDetachableView {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
 
-    private lateinit var rvSearchedProducts: RecyclerView
-    private lateinit var errorProductNotFound: GlobalError
+    private val rvSearchedProducts: RecyclerView by detachableView(R.id.rv_searched_products)
+    private val errorProductNotFound: GlobalError by detachableView(R.id.error_product_not_found)
+
+    private val fragmentViewContainer = FragmentViewContainer()
 
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
@@ -63,7 +69,7 @@ class PlaySearchResultFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupTransition()
-        viewModel = ViewModelProviders.of(requireParentFragment().requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
+        viewModel = ViewModelProvider(requireParentFragment().requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -74,7 +80,6 @@ class PlaySearchResultFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         startPostponedTransition()
-        initView(view)
         setupView(view)
     }
 
@@ -87,11 +92,8 @@ class PlaySearchResultFragment @Inject constructor(
         searchProductsAdapter.notifyDataSetChanged()
     }
 
-    private fun initView(view: View) {
-        with (view) {
-            rvSearchedProducts = findViewById(R.id.rv_searched_products)
-            errorProductNotFound = findViewById(R.id.error_product_not_found)
-        }
+    override fun getViewContainer(): FragmentViewContainer {
+        return fragmentViewContainer
     }
 
     private fun setupView(view: View) {

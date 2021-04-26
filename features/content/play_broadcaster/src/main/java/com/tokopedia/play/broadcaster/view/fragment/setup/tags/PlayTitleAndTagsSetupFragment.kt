@@ -20,6 +20,9 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayTitleAndTagsSetupViewModel
+import com.tokopedia.play_common.delegate.FragmentViewContainer
+import com.tokopedia.play_common.delegate.FragmentWithDetachableView
+import com.tokopedia.play_common.delegate.detachableView
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
@@ -33,7 +36,7 @@ import javax.inject.Inject
 class PlayTitleAndTagsSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val dispatcher: CoroutineDispatchers,
-) : PlayBaseSetupFragment(),
+) : PlayBaseSetupFragment(), FragmentWithDetachableView,
         TagAddedListViewComponent.Listener,
         TextFieldAddTagViewComponent.Listener,
         BottomActionNextViewComponent.Listener,
@@ -48,10 +51,12 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
     /**
      * UI
      */
-    private lateinit var bottomSheetHeader: PlayBottomSheetHeader
+    private val bottomSheetHeader: PlayBottomSheetHeader by detachableView(R.id.bottom_sheet_header)
     private val titleFieldView by viewComponent(isEagerInit = true) { TextFieldTitleViewComponent(it, R.id.text_field_title, this) }
     private val tagRecommendationListView by viewComponent { TagRecommendationListViewComponent(it, R.id.rv_tags_recommendation, this) }
     private val bottomActionNextView by viewComponent { BottomActionNextViewComponent(it, this) }
+
+    private val fragmentViewContainer = FragmentViewContainer()
 
     private var toasterBottomMargin = 0
 
@@ -76,9 +81,12 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
         setupView()
         setupObserve()
+    }
+
+    override fun getViewContainer(): FragmentViewContainer {
+        return fragmentViewContainer
     }
 
     /**
@@ -119,12 +127,6 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
 
     fun setListener(listener: Listener?) {
         mListener = listener
-    }
-
-    private fun initView(view: View) {
-        with(view) {
-            bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
-        }
     }
 
     private fun setupView() {

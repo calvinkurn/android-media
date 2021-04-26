@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.Fade
 import androidx.transition.Slide
@@ -33,6 +33,9 @@ import com.tokopedia.play.broadcaster.view.partial.BottomActionViewComponent
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPageViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.play_common.delegate.FragmentViewContainer
+import com.tokopedia.play_common.delegate.FragmentWithDetachableView
+import com.tokopedia.play_common.delegate.detachableView
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -47,7 +50,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         dispatcher: CoroutineDispatchers,
         private val analytic: PlayBroadcastAnalytic
-) : PlayBaseSetupFragment(), PlayEtalaseSetupCoordinator {
+) : PlayBaseSetupFragment(), PlayEtalaseSetupCoordinator, FragmentWithDetachableView {
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
@@ -55,12 +58,11 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var viewModel: PlayEtalasePickerViewModel
     private lateinit var dataStoreViewModel: DataStoreViewModel
 
-    private lateinit var container: ViewGroup
-    private lateinit var tvInfo: TextView
-    private lateinit var flEtalaseFlow: FrameLayout
-    private lateinit var psbSearch: PlaySearchBar
-    private lateinit var errorEtalase: GlobalError
-    private lateinit var bottomSheetHeader : PlayBottomSheetHeader
+    private val tvInfo: TextView by detachableView(R.id.tv_info)
+    private val flEtalaseFlow: FrameLayout by detachableView(R.id.fl_etalase_flow)
+    private val psbSearch: PlaySearchBar by detachableView(R.id.psb_search)
+    private val errorEtalase: GlobalError by detachableView(R.id.error_etalase)
+    private val bottomSheetHeader : PlayBottomSheetHeader by detachableView(R.id.bottom_sheet_header)
 
     private val pageNavigator: FragmentPageNavigator by lifecycleBound(
             creator = {
@@ -96,19 +98,18 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     private var toasterBottomMargin = 0
 
-    private val fragmentFactory: FragmentFactory
-        get() = childFragmentManager.fragmentFactory
-
     private val currentFragment: Fragment?
         get() = childFragmentManager.findFragmentById(R.id.fl_etalase_flow)
+
+    private val fragmentViewContainer = FragmentViewContainer()
 
     override fun getScreenName(): String = "Play Etalase Picker"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupTransition()
-        viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
-        dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
+        viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
+        dataStoreViewModel = ViewModelProvider(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
 
     override fun onStart() {
@@ -123,7 +124,6 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
         setupView(view)
 
         showBottomAction(false)
@@ -194,19 +194,12 @@ class PlayEtalasePickerFragment @Inject constructor(
         return requireParentFragment()
     }
 
-    fun setListener(listener: Listener) {
-        mListener = listener
+    override fun getViewContainer(): FragmentViewContainer {
+        return fragmentViewContainer
     }
 
-    private fun initView(view: View) {
-        with(view) {
-            container = this as ViewGroup
-            tvInfo = findViewById(R.id.tv_info)
-            flEtalaseFlow = findViewById(R.id.fl_etalase_flow)
-            psbSearch = findViewById(R.id.psb_search)
-            errorEtalase = findViewById(R.id.error_etalase)
-            bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
-        }
+    fun setListener(listener: Listener) {
+        mListener = listener
     }
 
     private fun setupView(view: View) {

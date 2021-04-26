@@ -34,6 +34,11 @@ import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play_common.delegate.FragmentViewContainer
+import com.tokopedia.play_common.delegate.FragmentWithDetachableView
+import com.tokopedia.play_common.delegate.detachableView
+import com.tokopedia.play_common.lifecycle.lifecycleBound
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.extension.doOnPreDraw
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -48,7 +53,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val dispatcher: CoroutineDispatchers,
         private val analytic: PlayBroadcastAnalytic
-) : PlayBaseSetupFragment() {
+) : PlayBaseSetupFragment(), FragmentWithDetachableView {
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
@@ -59,10 +64,12 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private val etalaseId: String
         get() = arguments?.getString(EXTRA_ETALASE_ID) ?: throw IllegalStateException("etalaseId must be set")
 
-    private lateinit var tvInfo: TextView
-    private lateinit var rvProduct: RecyclerView
-    private lateinit var errorEmptyProduct: GlobalError
-    private lateinit var bottomSheetHeader: PlayBottomSheetHeader
+    private val tvInfo: TextView by detachableView(R.id.tv_info)
+    private val rvProduct: RecyclerView by detachableView(R.id.rv_product)
+    private val errorEmptyProduct: GlobalError by detachableView(R.id.error_empty_product)
+    private val bottomSheetHeader: PlayBottomSheetHeader by detachableView(R.id.bottom_sheet_header)
+
+    private val fragmentViewContainer = FragmentViewContainer()
 
     private val selectedProductPageView by viewComponent {
         SelectedProductPageViewComponent(view as ViewGroup, object : SelectedProductPageViewComponent.Listener {
@@ -93,9 +100,42 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private var toasterBottomMargin = 0
 
-    private lateinit var selectableProductAdapter: ProductSelectableAdapter
+    private val selectableProductAdapter: ProductSelectableAdapter by viewLifecycleBound(
+            creator = {
+                ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
+                    private var isAlreadyBound = false
 
-    private lateinit var scrollListener: EndlessRecyclerViewScrollListener
+                    override fun onImageLoaded(position: Int, isSuccess: Boolean) {
+                        if (!isAlreadyBound) {
+                            startPostponedTransition()
+                            isAlreadyBound = true
+                        }
+                    }
+
+                    override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+                        viewModel.selectProduct(productId, isSelected)
+                        analytic.clickProductCard(productId.toString(), isSelected)
+                    }
+
+                    override fun onProductSelectError(reason: Throwable) {
+                        showToaster(
+                                message = reason.localizedMessage,
+                                actionLabel = getString(R.string.play_ok)
+                        )
+                    }
+                })
+            }
+    )
+
+    private val scrollListener: EndlessRecyclerViewScrollListener by viewLifecycleBound(
+            creator = {
+                object : EndlessRecyclerViewScrollListener(rvProduct.layoutManager!!) {
+                    override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                        viewModel.loadEtalaseProducts(etalaseId, page)
+                    }
+                }
+            }
+    )
 
     override fun getScreenName(): String = "Etalase Detail"
 
@@ -113,7 +153,6 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
         setupView(view)
     }
 
@@ -137,44 +176,16 @@ class PlayEtalaseDetailFragment @Inject constructor(
         } else false
     }
 
+    override fun getViewContainer(): FragmentViewContainer {
+        return fragmentViewContainer
+    }
+
     fun setListener(listener: ProductSetupListener) {
         mListener = listener
     }
 
-    private fun initView(view: View) {
-        with(view) {
-            tvInfo = findViewById(R.id.tv_info)
-            rvProduct = findViewById(R.id.rv_product)
-            errorEmptyProduct = findViewById(R.id.error_empty_product)
-            bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
-        }
-    }
-
     private fun setupView(view: View) {
         tvInfo.text = viewModel.maxProductDesc
-
-        selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
-            private var isAlreadyBound = false
-
-            override fun onImageLoaded(position: Int, isSuccess: Boolean) {
-                if (!isAlreadyBound) {
-                    startPostponedTransition()
-                    isAlreadyBound = true
-                }
-            }
-
-            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
-                viewModel.selectProduct(productId, isSelected)
-                analytic.clickProductCard(productId.toString(), isSelected)
-            }
-
-            override fun onProductSelectError(reason: Throwable) {
-                showToaster(
-                        message = reason.localizedMessage,
-                        actionLabel = getString(R.string.play_ok)
-                )
-            }
-        })
 
         rvProduct.layoutManager = GridLayoutManager(rvProduct.context, SPAN_COUNT, RecyclerView.VERTICAL, false).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -187,12 +198,6 @@ class PlayEtalaseDetailFragment @Inject constructor(
         }
         rvProduct.adapter = selectableProductAdapter
         rvProduct.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
-        scrollListener = object : EndlessRecyclerViewScrollListener(rvProduct.layoutManager!!) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadEtalaseProducts(etalaseId, page)
-            }
-        }
-
         rvProduct.addOnScrollListener(scrollListener)
         rvProduct.addOnScrollListener(StopFlingScrollListener())
 

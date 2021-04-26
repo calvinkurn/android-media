@@ -46,6 +46,9 @@ import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play_common.delegate.FragmentViewContainer
+import com.tokopedia.play_common.delegate.FragmentWithDetachableView
+import com.tokopedia.play_common.delegate.detachableView
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
@@ -61,7 +64,7 @@ class PlayCoverSetupFragment @Inject constructor(
         private val dispatcher: CoroutineDispatchers,
         private val permissionPref: PermissionSharedPreferences,
         private val analytic: PlayBroadcastAnalytic
-) : PlayBaseSetupFragment(), CoverCropViewComponent.Listener, CoverSetupViewComponent.Listener {
+) : PlayBaseSetupFragment(), CoverCropViewComponent.Listener, CoverSetupViewComponent.Listener, FragmentWithDetachableView {
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatcher.main + job)
@@ -71,7 +74,9 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private lateinit var yalantisImageCropper: YalantisImageCropper
 
-    private lateinit var bottomSheetHeader: PlayBottomSheetHeader
+    private val bottomSheetHeader: PlayBottomSheetHeader by detachableView(R.id.bottom_sheet_header)
+
+    private val fragmentViewContainer = FragmentViewContainer()
 
     private val coverSetupView by viewComponent(isEagerInit = true) {
         CoverSetupViewComponent(
@@ -95,7 +100,7 @@ class PlayCoverSetupFragment @Inject constructor(
 
     private val coverCropView by viewComponent { CoverCropViewComponent(it, this) }
 
-    private lateinit var imagePickerHelper: CoverImagePickerHelper
+    private var imagePickerHelper: CoverImagePickerHelper? = null
 
     private lateinit var dialogRationale: DialogUnify
     private val permissionStatusHandler: PermissionStatusHandler = {
@@ -180,7 +185,6 @@ class PlayCoverSetupFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
         setupView()
     }
 
@@ -188,7 +192,6 @@ class PlayCoverSetupFragment @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeCropState()
-//        observeCoverTitle()
         observeUploadCover()
     }
 
@@ -205,6 +208,7 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     override fun onDestroyView() {
+        imagePickerHelper = null
         super.onDestroyView()
         job.cancelChildren()
     }
@@ -213,6 +217,10 @@ class PlayCoverSetupFragment @Inject constructor(
         super.onAttachFragment(childFragment)
 
         getImagePickerHelper().onAttachFragment(childFragment)
+    }
+
+    override fun getViewContainer(): FragmentViewContainer {
+        return fragmentViewContainer
     }
 
     /**
@@ -291,12 +299,6 @@ class PlayCoverSetupFragment @Inject constructor(
             viewModel.setCroppingCoverByUri(it, CoverSource.Gallery)
         }
         getImagePickerHelper().dismiss()
-    }
-
-    private fun initView(view: View) {
-        with(view) {
-            bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
-        }
     }
 
     private fun setupView() {
@@ -385,7 +387,7 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     private fun getImagePickerHelper(): CoverImagePickerHelper {
-        if (!::imagePickerHelper.isInitialized) {
+        if (imagePickerHelper == null) {
             imagePickerHelper = CoverImagePickerHelper(
                     context = requireContext(),
                     fragmentManager = childFragmentManager,
@@ -408,7 +410,7 @@ class PlayCoverSetupFragment @Inject constructor(
                     }
             )
         }
-        return imagePickerHelper
+        return imagePickerHelper!!
     }
 
     private fun getDialogRationale(): DialogUnify {
