@@ -146,7 +146,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         with(binding) {
             if (data.shopGroupAvailableData.isError) {
                 cbSelectShop.isEnabled = false
-                flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, R.drawable.fg_disabled_item)
+                flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item)
                 llShopContainer.setBackgroundResource(R.drawable.bg_error_shop)
                 if (data.shopGroupAvailableData.errorTitle?.isNotBlank() == true) {
                     val errorDescription = data.shopGroupAvailableData.errorDescription
