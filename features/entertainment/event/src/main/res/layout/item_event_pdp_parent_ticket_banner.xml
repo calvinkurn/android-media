@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/spacing_lvl3"
-    android:background="@color/Unify_N0"
     android:padding="@dimen/spacing_lvl4"
     android:text="@string/ent_event_pdp_ticket_recommendation_label"
     android:textColor="@color/Neutral_N700_68"

@@ -11,10 +11,11 @@ class EventPDPTicketBannerViewHolder(view: View): AbstractViewHolder<EventPDPTic
     override fun bind(element: EventPDPTicketBanner?) {
         itemView.tgEventTicketRecommendationTitle.text =
                 getString(R.string.ent_event_pdp_ticket_recommendation_label)
+        itemView.tgEventTicketRecommendationTitle.background =
+                itemView.context.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N0)
     }
 
     companion object {
         val LAYOUT = R.layout.item_event_pdp_parent_ticket_banner
-
     }
 }
