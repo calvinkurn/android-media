@@ -24,7 +24,7 @@ import static com.tokopedia.flight.common.constant.FlightUrl.FLIGHT_PROMO_APPLIN
  * Created by alvarisi on 12/5/17.
  */
 
-public abstract class BaseFlightActivity extends BaseSimpleActivity {
+public abstract class BaseFlightActivity extends BaseSimpleActivity implements FlightMenuBottomSheet.FlightMenuListener {
 
 
     @Inject
@@ -34,6 +34,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
 
     private FlightComponent component;
 
+    static String TAG_FLIGHT_MENU = "flightMenu";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,23 +76,34 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == com.tokopedia.flight.R.id.menu_promo) {
-            navigateToAllPromoPage();
-            return true;
-        } else if (item.getItemId() == com.tokopedia.flight.R.id.menu_transaction_list) {
-            if (userSession.isLoggedIn()) {
-                flightAnalytics.eventClickTransactions(getScreenName());
-                RouteManager.route(this, ApplinkConst.FLIGHT_ORDER);
-            } else {
-                RouteManager.route(this, ApplinkConst.LOGIN);
-            }
-            return true;
-        } else if (item.getItemId() == com.tokopedia.flight.R.id.menu_help) {
-            navigateToHelpPage();
-            return true;
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        showBottomMenu();
+        return false;
+    }
+
+    public void showBottomMenu(){
+        FlightMenuBottomSheet flightMenuBottomSheet = new FlightMenuBottomSheet();
+        flightMenuBottomSheet.listener = this;
+        flightMenuBottomSheet.show(getSupportFragmentManager(), TAG_FLIGHT_MENU);
+    }
+
+    @Override
+    public void onHelpClicked() {
+        navigateToHelpPage();
+    }
+
+    @Override
+    public void onOrderListClicked() {
+        if (userSession.isLoggedIn()) {
+            flightAnalytics.eventClickTransactions(getScreenName());
+            RouteManager.route(this, ApplinkConst.FLIGHT_ORDER);
         } else {
-            return super.onOptionsItemSelected(item);
+            RouteManager.route(this, ApplinkConst.LOGIN);
         }
+    }
+
+    @Override
+    public void onPromoClicked() {
+        navigateToAllPromoPage();
     }
 }
