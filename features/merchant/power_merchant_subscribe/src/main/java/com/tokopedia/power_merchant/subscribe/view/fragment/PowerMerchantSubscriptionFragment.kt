@@ -646,7 +646,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private fun getHeaderWidgetData(shopInfo: PMShopInfoUiModel): WidgetRegistrationHeaderUiModel {
         return WidgetRegistrationHeaderUiModel(
                 shopInfo = shopInfo,
-                terms = PMRegistrationTermHelper.getPMRegistrationTerms(requireContext(), shopInfo)
+                pmTerms = PMRegistrationTermHelper.getPmRegistrationTerms(requireContext(), shopInfo),
+                pmProTerms = PMRegistrationTermHelper.getPmProRegistrationTerms(requireContext(), shopInfo)
         )
     }
 

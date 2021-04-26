@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.adapter.RegistrationTermAdapter
+import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetRegistrationHeaderUiModel
 import kotlinx.android.synthetic.main.widget_pm_registration_header.view.*
 
@@ -27,9 +28,11 @@ class RegistrationHeaderWidget(itemView: View) : AbstractViewHolder<WidgetRegist
         private const val PM_PRO_CHARGING = "1,5%"
     }
 
+    private val termAdapter by lazy { RegistrationTermAdapter() }
+
     override fun bind(element: WidgetRegistrationHeaderUiModel) {
         setupView(element)
-        setupTermsList(element)
+        setupTermsList()
     }
 
     private fun setupView(element: WidgetRegistrationHeaderUiModel) {
@@ -37,12 +40,13 @@ class RegistrationHeaderWidget(itemView: View) : AbstractViewHolder<WidgetRegist
             val shopInfo = element.shopInfo
             tvPmHeaderNewSellerLabel.visibility = if (shopInfo.isNewSeller) View.VISIBLE else View.GONE
 
-            setupPmSection(element.shopInfo)
+            setupPmSection(element)
             setTickerVisibility(shopInfo)
         }
     }
 
-    private fun setupPmSection(shopInfo: PMShopInfoUiModel) = with(itemView) {
+    private fun setupPmSection(element: WidgetRegistrationHeaderUiModel) = with(itemView) {
+        val shopInfo = element.shopInfo
         val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
 
         pmsPmRegular.setTitle(context.getString(R.string.pm_power_merchant))
@@ -50,6 +54,7 @@ class RegistrationHeaderWidget(itemView: View) : AbstractViewHolder<WidgetRegist
         pmsPmRegular.setOnClickListener {
             setPmRegularSectionSelected()
             setPmProSectionDescription(shopInfo.isEligiblePmPro)
+            showTermList(element.pmTerms)
         }
 
         pmsPmPro.setTitle(context.getString(R.string.pm_power_merchant_pro))
@@ -57,6 +62,7 @@ class RegistrationHeaderWidget(itemView: View) : AbstractViewHolder<WidgetRegist
         pmsPmPro.setOnClickListener {
             setPmProSectionDescription(true)
             setPmProSectionSelected()
+            showTermList(element.pmProTerms)
         }
 
         if (shopInfo.isEligiblePmPro) {
@@ -64,6 +70,11 @@ class RegistrationHeaderWidget(itemView: View) : AbstractViewHolder<WidgetRegist
         } else {
             pmsPmRegular.performClick()
         }
+    }
+
+    private fun showTermList(terms: List<RegistrationTermUiModel>) {
+        termAdapter.setItems(terms)
+        termAdapter.notifyDataSetChanged()
     }
 
     private fun setPmProSectionDescription(isEligiblePmPro: Boolean) = with(itemView){
@@ -103,12 +114,12 @@ class RegistrationHeaderWidget(itemView: View) : AbstractViewHolder<WidgetRegist
         }
     }
 
-    private fun setupTermsList(element: WidgetRegistrationHeaderUiModel) {
+    private fun setupTermsList() {
         with(itemView.rvPmRegistrationTerm) {
             layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically(): Boolean = false
             }
-            adapter = RegistrationTermAdapter(element.terms)
+            adapter = termAdapter
         }
     }
 }

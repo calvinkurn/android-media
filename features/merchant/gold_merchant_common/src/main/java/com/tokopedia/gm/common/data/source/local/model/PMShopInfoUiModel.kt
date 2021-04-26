@@ -10,10 +10,23 @@ data class PMShopInfoUiModel(
         val isKyc: Boolean = false,
         val kycStatusId: Int = 0, //pls refer https://tokopedia.atlassian.net/wiki/spaces/AUT/pages/452132984/KYC+-+Know+Your+Customer
         val shopScore: Int = 0,
-        val shopScoreThreshold: Int = 0,
+        val shopScoreThreshold: Int = DEFAULT_PM_SHOP_SCORE_THRESHOLD,
+        val shopScorePmProThreshold: Int = DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD,
         val isEligibleShopScore: Boolean = false,
         val hasActiveProduct: Boolean = false,
         val isEligiblePm: Boolean = false,
         val isEligiblePmPro: Boolean = false,
-        val shopLevel: Int? = 0
-)
+        val shopLevel: Int = 0,
+        val itemSoldOneMonth: Int = 0,
+        val itemSoldPmProThreshold: Int = DEFAULT_ORDER_THRESHOLD,
+        val nivOneMonth: Long = 0,
+        val nivPmProThreshold: Long = DEFAULT_NIV_THRESHOLD
+) {
+
+    companion object {
+        const val DEFAULT_PM_SHOP_SCORE_THRESHOLD = 60
+        const val DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD = 70
+        const val DEFAULT_ORDER_THRESHOLD = 3
+        const val DEFAULT_NIV_THRESHOLD = 350000L
+    }
+}

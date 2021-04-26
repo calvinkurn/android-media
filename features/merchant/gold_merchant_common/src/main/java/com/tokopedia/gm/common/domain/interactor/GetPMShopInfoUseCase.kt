@@ -48,11 +48,16 @@ class GetPMShopInfoUseCase @Inject constructor(
               kyc_status_id
               shop_score_sum
               shop_score_threshold
+              shop_score_pm_pro_threshold
               is_has_active_product
               shop_level
               is_eligible_shop_score
               is_eligible_pm
               is_eligible_pm_pro
+              item_sold_one_month
+              item_sold_pm_pro_threshold
+              niv_one_month
+              niv_pm_pro_threshold
             }
           }
         """.trimIndent()

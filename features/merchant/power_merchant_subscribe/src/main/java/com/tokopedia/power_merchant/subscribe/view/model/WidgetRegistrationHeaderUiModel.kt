@@ -9,7 +9,8 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
 
 data class WidgetRegistrationHeaderUiModel(
         val shopInfo: PMShopInfoUiModel,
-        val terms: List<RegistrationTermUiModel>
+        val pmTerms: List<RegistrationTermUiModel> = emptyList(),
+        val pmProTerms: List<RegistrationTermUiModel> = emptyList()
 ) : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

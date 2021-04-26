@@ -19,9 +19,9 @@ import kotlinx.android.synthetic.main.item_pm_registration_term.view.*
  * Created By @ilhamsuaib on 03/03/21
  */
 
-class RegistrationTermAdapter(
-        private val terms: List<RegistrationTermUiModel>
-) : RecyclerView.Adapter<RegistrationTermAdapter.RegistrationTermViewHolder>() {
+class RegistrationTermAdapter : RecyclerView.Adapter<RegistrationTermAdapter.RegistrationTermViewHolder>() {
+
+    private var terms: List<RegistrationTermUiModel> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RegistrationTermViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -35,6 +35,10 @@ class RegistrationTermAdapter(
     }
 
     override fun getItemCount(): Int = terms.size
+
+    fun setItems(terms: List<RegistrationTermUiModel>) {
+        this.terms = terms
+    }
 
     inner class RegistrationTermViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -51,7 +55,7 @@ class RegistrationTermAdapter(
                 val ctaTextColor = com.tokopedia.unifyprinciples.R.color.Unify_G500
                 val termDescription = PowerMerchantSpannableUtil.createSpannableString(
                         text = term.descriptionHtml.parseAsHtml(),
-                        highlightText = term.clickableText,
+                        highlightText = term.clickableText.orEmpty(),
                         colorId = itemView.context.getResColor(ctaTextColor),
                         isBold = true
                 ) {

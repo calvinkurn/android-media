@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/layout_lvl1"
-    android:paddingBottom="@dimen/layout_lvl1">
+    android:paddingTop="@dimen/pm_spacing_6dp"
+    android:paddingBottom="@dimen/pm_spacing_6dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icPmHeaderTermItem"

@@ -24,6 +24,8 @@ data class GoldGetPMShopInfoDataModel(
         val shopScore: Int? = 0,
         @SerializedName("shop_score_threshold")
         val shopScoreThreshold: Int? = 0,
+        @SerializedName("shop_score_pm_pro_threshold")
+        val shopScorePmProThreshold: Int? = 0,
         @SerializedName("is_eligible_shop_score")
         val isEligibleShopScore: Boolean? = false,
         @SerializedName("is_has_active_product")
@@ -33,5 +35,13 @@ data class GoldGetPMShopInfoDataModel(
         @SerializedName("is_eligible_pm_pro")
         val isEligiblePmPro: Boolean? = false,
         @SerializedName("shop_level")
-        val shopLevel: Int? = 0
+        val shopLevel: Int? = 0,
+        @SerializedName("item_sold_one_month")
+        val itemSoldOneMonth: Int? = 0,
+        @SerializedName("item_sold_pm_pro_threshold")
+        val itemSoldPmProThreshold: Int? = 0,
+        @SerializedName("niv_one_month")
+        val nivOneMonth: Long? = 0,
+        @SerializedName("niv_pm_pro_threshold")
+        val nivPmProThreshold: Long? = 0
 )

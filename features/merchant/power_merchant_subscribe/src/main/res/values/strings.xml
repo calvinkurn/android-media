@@ -171,7 +171,7 @@
     <string name="pm_already_have_one_active_product">Memiliki 1 Produk Aktif</string>
     <string name="pm_have_not_one_active_product_yet">Belum Memiliki 1 Produk Aktif</string>
     <string name="pm_label_already_have_one_active_product">Kamu sudah memiliki minimal 1 produk aktif.</string>
-    <string name="pm_label_have_not_one_active_product_yet"><![CDATA[Tambah minimal 1 produk aktif. <br>Tambah Produk]]></string>
+    <string name="pm_label_have_not_one_active_product_yet"><![CDATA[Tambah minimal 1 produk aktif. Tambah Produk]]></string>
     <string name="pm_shop_score_eligible"><![CDATA[Skor Toko: <font color=\"%1$s\">%2$d</font>]]></string>
     <string name="pm_shop_score_not_eligible"><![CDATA[Skor Toko: <font color=\"%1$s\">%2$d</font>]]></string>
     <string name="pm_shop_score_eligible_description"><![CDATA[Skormu sudah mencapai batas <strong>min. skor %1$d</strong> untuk daftar Power Merchant. Skor akan diperbarui setiap Senin, ya.]]></string>
@@ -233,4 +233,9 @@
     <string name="pm_rate_4_star">Puas</string>
     <string name="pm_rate_5_star">Sangat Puas</string>
     <string name="pm_all_questionnaire_must_be_answered">Anda belum menjawab semua pertanyaan</string>
+    <string name="pm_number_of_order"><![CDATA[Jumlah Pesanan: <font color=\"%1$s\">%2$d</font>]]></string>
+    <string name="pm_number_of_minimum_order">Jumlah min. %1$d pesanan</string>
+    <string name="pm_number_of_order_threshold">Tingkatkan jumlah pesanan min. %1$d, ya!</string>
+    <string name="pm_niv_term"><![CDATA[Pendapatan Bersih: <font color=\"%1$s\">%2$s</font>]]></string>
+    <string name="pm_niv_threshold_term">Pendapatan bersih min. %1$s</string>
 </resources>
