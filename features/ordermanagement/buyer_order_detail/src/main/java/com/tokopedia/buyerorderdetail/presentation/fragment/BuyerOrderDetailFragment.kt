@@ -55,7 +55,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
                             arrivalEstimation = "(Estimasi tiba 17 Jan - 19 Jan)"
                     ),
                     ticker = TickerUiModel(
-                            description = "Jaminan tepat waktu. Ongkir kembali jika pesanan tiba lebih dari 15 Dec 20; 15:20 WIB. <a href=\"#\">Lihat S&K</a>"
+                            description = "Jaminan tepat waktu. Ongkir kembali jika pesanan tiba lebih dari 15 Dec 20; 15:20 WIB. ",
+                            actionText = "Lihat S&K",
+                            actionUrl = "https://www.m.tokopedia.com",
+                            actionKey = "",
+                            type = "info"
                     ),
                     courierDriverInfoUiModel = ShipmentInfoUiModel.CourierDriverInfoUiModel(
                             photoUrl = "https://static.wikia.nocookie.net/nickelodeon-movies/images/7/7e/Patrick_Star.png",
@@ -117,7 +121,13 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
                             label = "Total Belanja",
                             value = "Rp5.173.500"
                     ),
-                    ticker = TickerUiModel("Cashback <b>30.000 OVO Points</b>")
+                    ticker = TickerUiModel(
+                            description = "Cashback <b>30.000 OVO Points</b>",
+                            actionText = "",
+                            actionUrl = "",
+                            actionKey = "",
+                            type = "info"
+                    )
             ),
             productListUiModel = ProductListUiModel(
                     productListHeaderUiModel = ProductListUiModel.ProductListHeaderUiModel(
@@ -175,18 +185,30 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
             ),
             orderStatusUiModel = OrderStatusUiModel(
                     orderStatusHeaderUiModel = OrderStatusUiModel.OrderStatusHeaderUiModel(
+                            orderId = "771624875",
                             indicatorColor = "#FFC400",
                             orderStatus = "Menunggu Konfirmasi"
                     ),
                     ticker = TickerUiModel(
-                            description = "Pengajuan pembatalan berhasil dan menunggu persetujuan dari penjual. <a href=\"#\">Lihat S&K</a>"
+                            description = "Pengajuan pembatalan berhasil dan menunggu persetujuan dari penjual. ",
+                            actionText = "Lihat S&K",
+                            actionUrl = "https://www.m.tokopedia.com",
+                            actionKey = "",
+                            type = "info"
                     ),
                     orderStatusInfoUiModel = OrderStatusUiModel.OrderStatusInfoUiModel(
-                            invoice = "INV/20161025/XVI/X/55069657",
+                            invoice = OrderStatusUiModel.OrderStatusInfoUiModel.InvoiceUiModel(
+                                    invoice = "INV/20161025/XVI/X/55069657",
+                                    url = "https://www.tokopedia.com/invoice.pl?id=771624875&pdf=Invoice-12299749-6841924-20210423104343-ZmZmZmZmZmYy"
+                            ),
                             purchaseDate = "25 Des 2021, 05:00 WIB",
-                            deadline = Calendar.getInstance(TimeZone.getDefault()).apply {
-                                add(Calendar.HOUR, 10)
-                            }.timeInMillis
+                            deadline = OrderStatusUiModel.OrderStatusInfoUiModel.DeadlineUiModel(
+                                    label = "Batal Otomatis",
+                                    value = Calendar.getInstance(TimeZone.getDefault()).apply {
+                                        add(Calendar.HOUR, 10)
+                                    }.timeInMillis,
+                                    color = "#FFC400"
+                            )
                     )
             ))
 

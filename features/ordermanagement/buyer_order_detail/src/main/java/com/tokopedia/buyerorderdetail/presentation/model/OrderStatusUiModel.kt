@@ -5,26 +5,38 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class OrderStatusUiModel(
-    val orderStatusHeaderUiModel: OrderStatusHeaderUiModel,
-    val ticker: TickerUiModel,
-    val orderStatusInfoUiModel: OrderStatusInfoUiModel
+        val orderStatusHeaderUiModel: OrderStatusHeaderUiModel,
+        val ticker: TickerUiModel,
+        val orderStatusInfoUiModel: OrderStatusInfoUiModel
 ) {
     data class OrderStatusHeaderUiModel(
+            val orderId: String,
             val indicatorColor: String,
             val orderStatus: String
-    ): Visitable<BuyerOrderDetailTypeFactory> {
+    ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
         }
     }
 
     data class OrderStatusInfoUiModel(
-            val invoice: String,
+            val invoice: InvoiceUiModel,
             val purchaseDate: String,
-            val deadline: Long
-    ): Visitable<BuyerOrderDetailTypeFactory> {
+            val deadline: DeadlineUiModel
+    ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
         }
+
+        data class InvoiceUiModel(
+                val invoice: String,
+                val url: String
+        )
+
+        data class DeadlineUiModel(
+                val label: String,
+                val value: Long,
+                val color: String
+        )
     }
 }

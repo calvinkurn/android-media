@@ -1,5 +1,8 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
@@ -49,8 +52,14 @@ class ProductViewHolder(itemView: View?) : AbstractViewHolder<ProductListUiModel
 
     private fun setupProductNote(productNote: String) {
         itemView.tvBuyerOrderDetailProductNote?.apply {
-            text = productNote
+            text = composeItalicNote(productNote)
             showWithCondition(productNote.isNotBlank())
+        }
+    }
+
+    private fun composeItalicNote(productNote: String): SpannableString {
+        return SpannableString(productNote).apply {
+            setSpan(StyleSpan(android.graphics.Typeface.ITALIC), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
     }
 

@@ -1,5 +1,7 @@
 package com.tokopedia.buyerorderdetail.common
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -17,5 +19,10 @@ object Utils {
         val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
         drawable.colorFilter = filter
         return drawable
+    }
+
+    fun copyText(context: Context, label: String, text: String) {
+        val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, text))
     }
 }

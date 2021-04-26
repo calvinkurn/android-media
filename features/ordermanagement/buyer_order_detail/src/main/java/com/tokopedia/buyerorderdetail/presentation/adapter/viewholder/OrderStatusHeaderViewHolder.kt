@@ -2,7 +2,12 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_ORDER_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_USER_MODE
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import kotlinx.android.synthetic.main.item_buyer_order_detail_status_info_header.view.*
@@ -13,10 +18,25 @@ class OrderStatusHeaderViewHolder(itemView: View?) : AbstractViewHolder<OrderSta
         val LAYOUT = R.layout.item_buyer_order_detail_status_info_header
     }
 
+    init {
+        setupSeeOrderStatusDetail()
+    }
+
+    private var orderId: String = ""
+
     override fun bind(element: OrderStatusUiModel.OrderStatusHeaderUiModel?) {
         element?.let {
+            orderId = it.orderId
             setupIndicatorColor(it.indicatorColor)
             setupStatusHeader(it.orderStatus)
+        }
+    }
+
+    private fun setupSeeOrderStatusDetail() {
+        itemView.tvBuyerOrderDetailSeeDetail?.apply {
+            setOnClickListener {
+                BuyerOrderDetailNavigator.goToTrackOrderPage(context, orderId)
+            }
         }
     }
 
