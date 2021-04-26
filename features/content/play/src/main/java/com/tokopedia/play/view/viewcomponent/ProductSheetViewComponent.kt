@@ -263,7 +263,7 @@ class ProductSheetViewComponent(
         val products = productLineAdapter.getItems()
         if (products.isNotEmpty()) {
             val startPosition = layoutManagerProductList.findFirstCompletelyVisibleItemPosition()
-            val endPosition = layoutManagerProductList.findLastVisibleItemPosition()
+            val endPosition = layoutManagerProductList.findLastCompletelyVisibleItemPosition()
             if (startPosition > -1 && endPosition < products.size) return products.slice(startPosition..endPosition)
                     .filterIsInstance<PlayProductUiModel.Product>()
                     .mapIndexed { index, item ->
