@@ -1,5 +1,6 @@
 package com.tokopedia.seller.menu.presentation.viewmodel
 
+import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
@@ -7,6 +8,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
 import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
+import com.tokopedia.seller.menu.domain.query.ShopScoreLevelResponse
 import com.tokopedia.seller.menu.presentation.uimodel.NotificationUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.coroutines.Fail
@@ -14,13 +16,14 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyString
 import java.net.SocketTimeoutException
 
 @ExperimentalCoroutinesApi
 class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
 
     @Test
-    fun `when getAllSettingShopInfo success should set live data success`() {
+    fun `when getAllSettingShopInfo type comm period success should set live data success`() {
         coroutineTestRule.runBlockingTest {
             val shopScoreResponse = ShopScoreResult()
             val shopSettingsResponse = createShopSettingsResponse()
@@ -28,7 +31,25 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
             onGetAllShopInfoUseCase_thenReturn(shopSettingsResponse)
             onGetShopScore_thenReturn(shopScoreResponse)
 
-            viewModel.getAllSettingShopInfo()
+            viewModel.getAllSettingShopInfo(periodType = COMMUNICATION_PERIOD)
+
+            val expectedResult = createShopInfoUiModel()
+            val actualResult = (viewModel.settingShopInfoLiveData.value as Success).data
+
+            assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    @Test
+    fun `when getAllSettingShopInfo type transition period success should set live data success`() {
+        coroutineTestRule.runBlockingTest {
+            val shopScoreResponse = ShopScoreLevelResponse.ShopScoreLevel.Result(shopScore = 70)
+            val shopSettingsResponse = createShopSettingsResponse()
+
+            onGetAllShopInfoUseCase_thenReturn(shopSettingsResponse)
+            onGetShopScoreLevel_thenReturn(anyString(), shopScoreResponse)
+
+            viewModel.getAllSettingShopInfo(periodType = TRANSITION_PERIOD)
 
             val expectedResult = createShopInfoUiModel()
             val actualResult = (viewModel.settingShopInfoLiveData.value as Success).data
@@ -139,7 +160,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
 
         onGetAllShopInfoUseCase_thenReturn(error)
 
-        viewModel.getAllSettingShopInfo()
+        viewModel.getAllSettingShopInfo(periodType = TRANSITION_PERIOD)
 
         val expectedResult = NullPointerException::class.java
         val actualResult = (viewModel.settingShopInfoLiveData.value as Fail).throwable::class.java
@@ -153,7 +174,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
 
         onGetAllShopInfoUseCase_thenReturn(error)
 
-        viewModel.getAllSettingShopInfo()
+        viewModel.getAllSettingShopInfo(periodType = TRANSITION_PERIOD)
 
         val expectedResult = MessageErrorException::class.java
         val actualResult = (viewModel.settingShopInfoLiveData.value as Fail).throwable::class.java
@@ -166,14 +187,30 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
     }
 
     @Test
-    fun `given getShopScore error when getAllSettingShopInfo should set live data fail`() {
+    fun `given getShopScore error comm period when getAllSettingShopInfo should set live data fail`() {
         val error = IllegalStateException()
         val shopSettingsResponse = createShopSettingsResponse()
 
         onGetShopScore_thenReturn(error)
         onGetAllShopInfoUseCase_thenReturn(shopSettingsResponse)
 
-        viewModel.getAllSettingShopInfo()
+        viewModel.getAllSettingShopInfo(periodType = COMMUNICATION_PERIOD)
+
+        val expectedResult = IllegalStateException::class.java
+        val actualResult = (viewModel.settingShopInfoLiveData.value as Fail).throwable::class.java
+
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `given getShopScore error transition period when getAllSettingShopInfo should set live data fail`() {
+        val error = IllegalStateException()
+        val shopSettingsResponse = createShopSettingsResponse()
+
+        onGetShopScoreLevel_thenReturn(anyString(), error)
+        onGetAllShopInfoUseCase_thenReturn(shopSettingsResponse)
+
+        viewModel.getAllSettingShopInfo(periodType = TRANSITION_PERIOD)
 
         val expectedResult = IllegalStateException::class.java
         val actualResult = (viewModel.settingShopInfoLiveData.value as Fail).throwable::class.java
@@ -186,8 +223,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
         coroutineTestRule.runBlockingTest {
             val isToasterRetry = true
 
-            viewModel.getAllSettingShopInfo(isToasterRetry)
-            viewModel.getAllSettingShopInfo(isToasterRetry)
+            viewModel.getAllSettingShopInfo(isToasterRetry, TRANSITION_PERIOD)
 
             val expectedIsToasterAlreadyShown = true
             val actualIsToasterAlreadyShown = viewModel.isToasterAlreadyShown.value
@@ -200,7 +236,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
     fun `given isToasterRetry false when getAllSettingShopInfo should NOT set isToasterAlreadyShown true`() {
         val isToasterRetry = false
 
-        viewModel.getAllSettingShopInfo(isToasterRetry)
+        viewModel.getAllSettingShopInfo(isToasterRetry, TRANSITION_PERIOD)
 
         val expectedIsToasterAlreadyShown = false
         val actualIsToasterAlreadyShown = viewModel.isToasterAlreadyShown.value
@@ -213,7 +249,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
         coroutineTestRule.runBlockingTest {
             val isToasterRetry = true
 
-            viewModel.getAllSettingShopInfo(isToasterRetry)
+            viewModel.getAllSettingShopInfo(isToasterRetry, TRANSITION_PERIOD)
 
             advanceTimeBy(5000L)
 

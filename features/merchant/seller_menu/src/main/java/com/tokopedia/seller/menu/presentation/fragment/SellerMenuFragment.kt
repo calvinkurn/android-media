@@ -167,7 +167,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     override fun onRefreshShopInfo() {
         showShopInfoLoading()
-        getAllShopInfo()
+        viewModel.getShopAccountTickerPeriod()
     }
 
     private fun initInjector() {
@@ -188,7 +188,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setOnRefreshListener {
             showShopInfoLoading()
-            getAllShopInfo()
+            viewModel.getShopAccountTickerPeriod()
         }
     }
 
@@ -197,25 +197,16 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observeProductCount()
         observeNotifications()
         observeErrorToaster()
-        getAllShopInfo()
+        viewModel.getShopAccountTickerPeriod()
     }
 
     private fun observeShopInfoPeriod() {
         observe(viewModel.shopAccountTickerPeriod) {
             when (it) {
                 is Success -> {
-                    if (it.data.periodType == COMMUNICATION_PERIOD) {
-                        val tickerShopInfoData = TickerShopScoreUiModel(
-                                tickerTitle = context?.let { context ->
-                                    getString(com.tokopedia.seller.menu.common.R.string.seller_menu_ticker_title_shop_score, getShopScoreDate(context))
-                                } ?: "",
-                                descTitle = getString(com.tokopedia.seller.menu.common.R.string.seller_menu_ticker_desc_shop_score))
-                        adapter.showShopScoreTicker(tickerShopInfoData)
-                    } else {
-                        adapter.hideShopScoreTicker()
-                    }
                     isNewSeller = it.data.isNewSeller
                     periodType = it.data.periodType
+                    getAllShopInfo()
                 }
             }
         }
@@ -271,6 +262,16 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun showShopInfo(settingResponseState: SettingResponseState, shopScore: Int = 0) {
         when (settingResponseState) {
             is SettingSuccess -> {
+                if (periodType == COMMUNICATION_PERIOD) {
+                    val tickerShopInfoData = TickerShopScoreUiModel(
+                            tickerTitle = context?.let { context ->
+                                getString(com.tokopedia.seller.menu.common.R.string.seller_menu_ticker_title_shop_score, getShopScoreDate(context))
+                            } ?: "",
+                            descTitle = getString(com.tokopedia.seller.menu.common.R.string.seller_menu_ticker_desc_shop_score))
+                    adapter.showShopScoreTicker(tickerShopInfoData)
+                } else {
+                    adapter.hideShopScoreTicker()
+                }
                 if (settingResponseState is SettingShopInfoUiModel) {
                     adapter.showShopInfo(settingResponseState, shopScore)
                     sellerMenuTracker.sendEventViewShopAccount(settingResponseState)
@@ -289,8 +290,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     private fun getAllShopInfo() {
-        viewModel.getShopAccountTickerPeriod()
-        viewModel.getAllSettingShopInfo()
+        viewModel.getAllSettingShopInfo(periodType = periodType)
         viewModel.getProductCount()
         viewModel.getNotifications()
     }
@@ -310,20 +310,20 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     private fun View.showToasterError(errorMessage: String) {
-        Toaster.make(this,
+        Toaster.build(this,
                 errorMessage,
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry),
                 View.OnClickListener {
                     retryFetchAfterError()
-                })
+                }).show()
     }
 
     private fun retryFetchAfterError() {
         showShopInfoLoading()
         viewModel.getShopAccountTickerPeriod()
-        viewModel.getAllSettingShopInfo(isToasterRetry = true)
+        viewModel.getAllSettingShopInfo(isToasterRetry = true, periodType = periodType)
     }
 
     private fun showShopInfoLoading() {

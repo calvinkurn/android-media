@@ -21,7 +21,9 @@ import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiM
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
 import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse
 import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse.*
+import com.tokopedia.seller.menu.domain.query.ShopScoreLevelResponse
 import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
+import com.tokopedia.seller.menu.domain.usecase.GetShopScoreLevelUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -43,6 +45,7 @@ open class SellerMenuViewModelTestFixture {
     private lateinit var getSellerMenuNotifications: GetSellerNotificationUseCase
     private lateinit var getShopScoreUseCase: GetShopScoreUseCase
     private lateinit var getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase
+    private lateinit var getShopScoreLevelUseCase: GetShopScoreLevelUseCase
     private lateinit var userSession: UserSessionInterface
 
     protected lateinit var viewModel: SellerMenuViewModel
@@ -54,6 +57,7 @@ open class SellerMenuViewModelTestFixture {
         getSellerMenuNotifications = mockk(relaxed = true)
         getShopScoreUseCase = mockk(relaxed = true)
         getShopInfoPeriodUseCase = mockk(relaxed = true)
+        getShopScoreLevelUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
 
         viewModel = SellerMenuViewModel(
@@ -62,6 +66,7 @@ open class SellerMenuViewModelTestFixture {
                 getProductListMetaUseCase,
                 getSellerMenuNotifications,
                 getShopScoreUseCase,
+                getShopScoreLevelUseCase,
                 userSession,
                 coroutineTestRule.dispatchers
         )
@@ -89,6 +94,14 @@ open class SellerMenuViewModelTestFixture {
 
     protected fun onGetShopScore_thenReturn(error: Throwable) {
         coEvery { getShopScoreUseCase.getData(any()) } throws error
+    }
+
+    protected fun onGetShopScoreLevel_thenReturn(shopId: String, shopScoreLevel: ShopScoreLevelResponse.ShopScoreLevel.Result) {
+        coEvery { getShopScoreLevelUseCase.execute(shopId) } returns shopScoreLevel
+    }
+
+    protected fun onGetShopScoreLevel_thenReturn(shopId: String, error: Throwable) {
+        coEvery { getShopScoreLevelUseCase.execute(shopId) } throws  error
     }
 
     protected fun onGetProductListMeta_thenReturn(tabs: List<Tab>) {
