@@ -11,7 +11,10 @@ import com.tokopedia.flight.promo_chips.presentation.adapter.FlightPromoChipsAda
 import com.tokopedia.flight.promo_chips.presentation.adapter.FlightPromoChipsAdapterTypeFactory
 import com.tokopedia.flight.promo_chips.presentation.adapter.viewholder.FlightPromoChipsViewHolder
 import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BaseCustomView
+import kotlinx.android.synthetic.main.include_flight_promo_chips.view.*
 
 /**
  * author by astidhiyaa on 16/02/21.
@@ -61,6 +64,17 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
                 (it as FlightPromoChipsViewHolder).itemView.performClick()
             }
         }
+    }
+
+    fun hideWidget(){
+        flight_promo_chips_widget_title.gone()
+        recycler_view_promo_chips.gone()
+    }
+
+
+    fun showWidget(){
+        flight_promo_chips_widget_title.visible()
+        recycler_view_promo_chips.visible()
     }
 
     interface PromoChipsListener{
