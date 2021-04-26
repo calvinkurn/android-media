@@ -23,6 +23,13 @@ class SellerMenuAdapter(
         }
     }
 
+    fun hideShopScoreTicker() {
+        if (visitables.getOrNull(firstIndex) is TickerShopScoreUiModel) {
+            visitables.removeAt(0)
+            notifyItemRemoved(0)
+        }
+    }
+
     fun showShopInfo(shopInfo: SettingShopInfoUiModel, shopScore: Int) {
         findShopInfoIndex()?.let { index ->
             val shopInfoUiModel = ShopInfoUiModel(shopInfo, shopScore)

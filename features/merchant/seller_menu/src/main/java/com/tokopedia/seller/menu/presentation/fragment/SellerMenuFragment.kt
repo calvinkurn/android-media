@@ -211,6 +211,8 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                                 } ?: "",
                                 descTitle = getString(com.tokopedia.seller.menu.common.R.string.seller_menu_ticker_desc_shop_score))
                         adapter.showShopScoreTicker(tickerShopInfoData)
+                    } else {
+                        adapter.hideShopScoreTicker()
                     }
                     isNewSeller = it.data.isNewSeller
                     periodType = it.data.periodType
