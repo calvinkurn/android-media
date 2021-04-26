@@ -160,11 +160,6 @@ query RatesV3($param: OngkirRatesV3Input!) {
             }
         is_bebas_ongkir_extra
       }
-      pre_order {
-        header
-        label
-        display
-      }
       info {
         blackbox_info {
           text_info
