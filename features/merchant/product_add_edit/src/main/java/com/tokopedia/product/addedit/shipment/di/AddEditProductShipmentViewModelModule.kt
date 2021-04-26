@@ -10,7 +10,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class AddEditProductShipmentModelModule {
+abstract class AddEditProductShipmentViewModelModule {
 
     @AddEditProductShipmentScope
     @Binds
@@ -19,6 +19,6 @@ abstract class AddEditProductShipmentModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(AddEditProductShipmentViewModel::class)
-    abstract fun addEditProductViewModel(shipmentViewModel: AddEditProductShipmentViewModel): ViewModel
+    abstract fun addEditProductShipmentViewModel(shipmentViewModel: AddEditProductShipmentViewModel): ViewModel
 
 }
