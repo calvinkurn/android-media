@@ -74,7 +74,7 @@ class ProductManageFilterViewModel @Inject constructor(
             val filterList = currentData.slice(ITEM_CATEGORIES_INDEX..ITEM_OTHER_FILTER_INDEX)
             val dataToSelect = getDataFromList(filterList, filterData)
             dataToSelect?.let { (needSort, filterUiModel, selectedFilter) ->
-                selectedFilter.select = true
+                selectedFilter.select = !selectedFilter.select
                 if(needSort) {
                     filterUiModel.data.sortByDescending { data -> data.select }
                 }
