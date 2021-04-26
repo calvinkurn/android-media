@@ -8,11 +8,6 @@
         <item name="colorSwitchThumbNormal">@color/Unify_N50</item>
     </style>
 
-    <style name="TransactionCheckbox" parent="Theme.AppCompat.Light">
-        <item name="colorAccent">@color/Unify_G500</item>
-        <item name="android:textColorSecondary">@color/Unify_N150</item>
-    </style>
-
     <style name="TransactionEditText" parent="Theme.AppCompat.Light">
         <item name="colorControlNormal">@color/Unify_N75</item>
         <item name="colorControlActivated">@color/Unify_G500</item>
@@ -22,18 +17,6 @@
     <style name="transactionTextInputLayout" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/Unify_N700_68</item>
         <item name="android:textSize">@dimen/sp_12</item>
-    </style>
-
-    <style name="TextSmall">
-        <item name="android:textSize">12sp</item>
-    </style>
-
-    <style name="TextSmallMedium" parent="TextSmall">
-        <item name="android:fontFamily">sans-serif-medium</item>
-    </style>
-
-    <style name="TextSmallMediumBlack54" parent="TextSmallMedium">
-        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 
 </resources>

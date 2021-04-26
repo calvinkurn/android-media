@@ -53,6 +53,7 @@ import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomS
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.ImageUnify;
 import com.tokopedia.unifycomponents.Label;
+import com.tokopedia.unifycomponents.TextFieldUnify;
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
@@ -138,10 +139,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography tvDropshipper;
     private ImageView imgDropshipperInfo;
     private LinearLayout llDropshipperInfo;
-    private AppCompatEditText etShipperName;
-    private AppCompatEditText etShipperPhone;
-    private TextInputLayout textInputLayoutShipperName;
-    private TextInputLayout textInputLayoutShipperPhone;
+    private TextFieldUnify textInputLayoutShipperName;
+    private TextFieldUnify textInputLayoutShipperPhone;
     private View vSeparatorMultipleProductSameStore;
     private View vSeparatorBelowProduct;
     private Typography tvAdditionalFee;
@@ -266,8 +265,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvDropshipper = itemView.findViewById(R.id.label_dropshipper);
         imgDropshipperInfo = itemView.findViewById(R.id.img_dropshipper_info);
         llDropshipperInfo = itemView.findViewById(R.id.ll_dropshipper_info);
-        etShipperName = itemView.findViewById(R.id.et_shipper_name);
-        etShipperPhone = itemView.findViewById(R.id.et_shipper_phone);
         textInputLayoutShipperName = itemView.findViewById(R.id.text_input_layout_shipper_name);
         textInputLayoutShipperPhone = itemView.findViewById(R.id.text_input_layout_shipper_phone);
         vSeparatorMultipleProductSameStore = itemView.findViewById(R.id.v_separator_multiple_product_same_store);
@@ -1096,8 +1093,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     llDropshipperInfo.setVisibility(View.GONE);
                     shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
                     shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhone(null);
-                    etShipperName.setText("");
-                    etShipperPhone.setText("");
+                    textInputLayoutShipperName.getTextFieldInput().setText("");
+                    textInputLayoutShipperPhone.getTextFieldInput().setText("");
                 } else {
                     llDropshipper.setVisibility(View.VISIBLE);
                 }
@@ -1116,15 +1113,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
                         data.getSelectedShipmentDetailData().setUseDropshipper(checked);
                         if (checked) {
-                            etShipperName.setText(data.getDropshiperName());
-                            etShipperPhone.setText(data.getDropshiperPhone());
+                            textInputLayoutShipperName.getTextFieldInput().setText(data.getDropshiperName());
+                            textInputLayoutShipperPhone.getTextFieldInput().setText(data.getDropshiperPhone());
                             data.getSelectedShipmentDetailData().setDropshipperName(data.getDropshiperName());
                             data.getSelectedShipmentDetailData().setDropshipperPhone(data.getDropshiperPhone());
                             llDropshipperInfo.setVisibility(View.VISIBLE);
                             mActionListener.onDropshipCheckedForTrackingAnalytics();
                         } else {
-                            etShipperName.setText("");
-                            etShipperPhone.setText("");
+                            textInputLayoutShipperName.getTextFieldInput().setText("");
+                            textInputLayoutShipperPhone.getTextFieldInput().setText("");
                             data.getSelectedShipmentDetailData().setDropshipperName("");
                             data.getSelectedShipmentDetailData().setDropshipperPhone("");
                             data.setDropshiperName("");
@@ -1168,7 +1165,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                             R.drawable.checkout_module_ic_dropshipper));
                 }
 
-                etShipperName.addTextChangedListener(new TextWatcher() {
+                textInputLayoutShipperName.getTextFieldInput().addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -1196,18 +1193,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 });
                 if (!TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName()) ||
                         !TextUtils.isEmpty(shipmentCartItemModel.getDropshiperName())) {
-                    etShipperName.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName());
+                    textInputLayoutShipperName.getTextFieldInput().setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName());
                 } else {
-                    etShipperName.setText("");
+                    textInputLayoutShipperName.getTextFieldInput().setText("");
                 }
                 if (shipmentCartItemModel.isStateDropshipperHasError()) {
-                    validateDropshipperName(shipmentCartItemModel, etShipperName.getText(), true);
+                    validateDropshipperName(shipmentCartItemModel, textInputLayoutShipperName.getTextFieldInput().getText(), true);
                 } else {
-                    validateDropshipperName(shipmentCartItemModel, etShipperName.getText(), false);
+                    validateDropshipperName(shipmentCartItemModel, textInputLayoutShipperName.getTextFieldInput().getText(), false);
                 }
-                etShipperName.setSelection(etShipperName.length());
+                textInputLayoutShipperName.getTextFieldInput().setSelection(textInputLayoutShipperName.getTextFieldInput().length());
 
-                etShipperPhone.addTextChangedListener(new TextWatcher() {
+                textInputLayoutShipperPhone.getTextFieldInput().addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -1235,16 +1232,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 });
                 if (!TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone()) ||
                         !TextUtils.isEmpty(shipmentCartItemModel.getDropshiperPhone())) {
-                    etShipperPhone.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone());
+                    textInputLayoutShipperPhone.getTextFieldInput().setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone());
                 } else {
-                    etShipperPhone.setText("");
+                    textInputLayoutShipperPhone.getTextFieldInput().setText("");
                 }
                 if (shipmentCartItemModel.isStateDropshipperHasError()) {
-                    validateDropshipperPhone(shipmentCartItemModel, etShipperPhone.getText(), true);
+                    validateDropshipperPhone(shipmentCartItemModel, textInputLayoutShipperPhone.getTextFieldInput().getText(), true);
                 } else {
-                    validateDropshipperPhone(shipmentCartItemModel, etShipperPhone.getText(), false);
+                    validateDropshipperPhone(shipmentCartItemModel, textInputLayoutShipperPhone.getTextFieldInput().getText(), false);
                 }
-                etShipperPhone.setSelection(etShipperPhone.length());
+                textInputLayoutShipperPhone.getTextFieldInput().setSelection(textInputLayoutShipperPhone.getTextFieldInput().length());
             }
         }
     }
@@ -1261,23 +1258,30 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void validateDropshipperPhone(ShipmentCartItemModel shipmentCartItemModel, CharSequence charSequence, boolean fromTextWatcher) {
         Matcher matcher = phoneNumberRegexPattern.matcher(charSequence);
         if (charSequence.length() == 0 && fromTextWatcher) {
-            textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_empty));
+            textInputLayoutShipperPhone.setError(true);
+            textInputLayoutShipperPhone.setMessage(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_empty));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhoneValid(false);
             mActionListener.onDataDisableToCheckout(null);
-        } else if (etShipperPhone.getText().length() != 0 && !matcher.matches()) {
-            textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_invalid));
+        } else if (textInputLayoutShipperPhone.getTextFieldInput().getText().length() != 0 && !matcher.matches()) {
+            textInputLayoutShipperPhone.setError(true);
+            textInputLayoutShipperPhone.setMessage(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_invalid));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhoneValid(false);
             mActionListener.onDataDisableToCheckout(null);
-        } else if (etShipperPhone.getText().length() != 0 && etShipperPhone.getText().length() < DROPSHIPPER_MIN_PHONE_LENGTH) {
-            textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_min_length));
+        } else if (textInputLayoutShipperPhone.getTextFieldInput().getText().length() != 0 &&
+                textInputLayoutShipperPhone.getTextFieldInput().getText().length() < DROPSHIPPER_MIN_PHONE_LENGTH) {
+            textInputLayoutShipperPhone.setError(true);
+            textInputLayoutShipperPhone.setMessage(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_min_length));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhoneValid(false);
             mActionListener.onDataDisableToCheckout(null);
-        } else if (etShipperPhone.getText().length() != 0 && etShipperPhone.getText().length() > DROPSHIPPER_MAX_PHONE_LENGTH) {
-            textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_max_length));
+        } else if (textInputLayoutShipperPhone.getTextFieldInput().getText().length() != 0 &&
+                textInputLayoutShipperPhone.getTextFieldInput().getText().length() > DROPSHIPPER_MAX_PHONE_LENGTH) {
+            textInputLayoutShipperPhone.setError(true);
+            textInputLayoutShipperPhone.setMessage(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_max_length));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhoneValid(false);
             mActionListener.onDataDisableToCheckout(null);
         } else {
-            textInputLayoutShipperPhone.setErrorEnabled(false);
+            textInputLayoutShipperPhone.setError(false);
+            textInputLayoutShipperPhone.setMessage("");
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhoneValid(true);
             mActionListener.onDataEnableToCheckout();
         }
@@ -1285,19 +1289,25 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void validateDropshipperName(ShipmentCartItemModel shipmentCartItemModel, CharSequence charSequence, boolean fromTextWatcher) {
         if (charSequence.length() == 0 && fromTextWatcher) {
-            textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_empty));
+            textInputLayoutShipperName.setError(true);
+            textInputLayoutShipperName.setMessage(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_empty));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperNameValid(false);
             mActionListener.onDataDisableToCheckout(null);
-        } else if (etShipperName.getText().length() != 0 && etShipperName.getText().length() < DROPSHIPPER_MIN_NAME_LENGTH) {
-            textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_min_length));
+        } else if (textInputLayoutShipperName.getTextFieldInput().getText().length() != 0 &&
+                textInputLayoutShipperName.getTextFieldInput().getText().length() < DROPSHIPPER_MIN_NAME_LENGTH) {
+            textInputLayoutShipperName.setError(true);
+            textInputLayoutShipperName.setMessage(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_min_length));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperNameValid(false);
             mActionListener.onDataDisableToCheckout(null);
-        } else if (etShipperName.getText().length() != 0 && etShipperName.getText().length() > DROPSHIPPER_MAX_NAME_LENGTH) {
-            textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_max_length));
+        } else if (textInputLayoutShipperName.getTextFieldInput().getText().length() != 0 &&
+                textInputLayoutShipperName.getTextFieldInput().getText().length() > DROPSHIPPER_MAX_NAME_LENGTH) {
+            textInputLayoutShipperName.setError(true);
+            textInputLayoutShipperName.setMessage(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_max_length));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperNameValid(false);
             mActionListener.onDataDisableToCheckout(null);
         } else {
-            textInputLayoutShipperName.setErrorEnabled(false);
+            textInputLayoutShipperName.setError(false);
+            textInputLayoutShipperName.setMessage("");
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperNameValid(true);
             mActionListener.onDataEnableToCheckout();
         }
@@ -1485,12 +1495,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             cbDropshipper.setEnabled(false);
             llDropshipper.setClickable(false);
             mIconTooltip.setClickable(false);
-            etShipperName.setClickable(false);
-            etShipperName.setFocusable(false);
-            etShipperName.setFocusableInTouchMode(false);
-            etShipperPhone.setClickable(false);
-            etShipperPhone.setFocusable(false);
-            etShipperPhone.setFocusableInTouchMode(false);
+            textInputLayoutShipperName.getTextFieldInput().setClickable(false);
+            textInputLayoutShipperName.getTextFieldInput().setFocusable(false);
+            textInputLayoutShipperName.getTextFieldInput().setFocusableInTouchMode(false);
+            textInputLayoutShipperPhone.getTextFieldInput().setClickable(false);
+            textInputLayoutShipperPhone.getTextFieldInput().setFocusable(false);
+            textInputLayoutShipperPhone.getTextFieldInput().setFocusableInTouchMode(false);
         } else {
             layoutError.setVisibility(View.GONE);
             tickerError.setVisibility(View.GONE);
@@ -1499,12 +1509,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llInsurance.setClickable(true);
             llDropshipper.setClickable(true);
             mIconTooltip.setClickable(true);
-            etShipperName.setClickable(true);
-            etShipperName.setFocusable(true);
-            etShipperName.setFocusableInTouchMode(true);
-            etShipperPhone.setClickable(true);
-            etShipperPhone.setFocusable(true);
-            etShipperPhone.setFocusableInTouchMode(true);
+            textInputLayoutShipperName.getTextFieldInput().setClickable(true);
+            textInputLayoutShipperName.getTextFieldInput().setFocusable(true);
+            textInputLayoutShipperName.getTextFieldInput().setFocusableInTouchMode(true);
+            textInputLayoutShipperPhone.getTextFieldInput().setClickable(true);
+            textInputLayoutShipperPhone.getTextFieldInput().setFocusable(true);
+            textInputLayoutShipperPhone.getTextFieldInput().setFocusableInTouchMode(true);
         }
     }
 
