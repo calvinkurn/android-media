@@ -10,7 +10,7 @@
     <com.tokopedia.mvcwidget.views.ShadowOutlineLayout
         android:id="@+id/mvc_shadow"
         android:elevation="@dimen/mvc_shadow_elevation"
-        app:srcCompat="@drawable/mvc_shadow_n0"
+        app:srcCompat="@drawable/mvc_shadow"
         android:layout_gravity="center_vertical"
         android:layout_width="match_parent"
         android:translationY="@dimen/mvc_shadow_translation"
@@ -39,7 +39,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_3"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/mvc_bg_duplicate_n0" />
+            app:srcCompat="@drawable/mvc_bg_duplicate" />
 
         <com.tokopedia.mvcwidget.views.SquareImageView
             android:id="@+id/image_coupon"
