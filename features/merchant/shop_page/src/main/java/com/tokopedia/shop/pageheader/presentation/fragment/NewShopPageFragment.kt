@@ -195,7 +195,7 @@ class NewShopPageFragment :
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
 
         private const val MARGIN_BOTTOM_STICKY_LOGIN = 16
-        private const val TEST_HERE = 11
+
         @JvmStatic
         fun createInstance() = NewShopPageFragment()
     }
