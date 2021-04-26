@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.feedcomponent.di.FeedComponentModule;
@@ -49,6 +50,8 @@ public interface KolComponent {
     FollowKolPostGqlUseCase getFollowKolPostGqlUseCase();
 
     UserSessionInterface userSessionInterface();
+
+    CoroutineDispatchers coroutineDispatchers();
 
     void inject(VideoDetailFragment videoDetailFragment);
     void inject(MediaPreviewFragment mediaPreviewFragment);

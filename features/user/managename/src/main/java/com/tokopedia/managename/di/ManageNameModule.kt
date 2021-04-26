@@ -6,8 +6,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.managename.constant.ManageNameConstants
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.managename.data.model.UpdateNameResponse
 import com.tokopedia.managename.di.scope.ManageNameContext
 import com.tokopedia.managename.domain.AddNameUseCase
@@ -23,10 +21,6 @@ class ManageNameModule(val context: Context) {
     fun provideNotificationContext(): Context {
         return context
     }
-
-    @Provides
-    @ManageNameScope
-    fun provideDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @Provides
     @ManageNameScope

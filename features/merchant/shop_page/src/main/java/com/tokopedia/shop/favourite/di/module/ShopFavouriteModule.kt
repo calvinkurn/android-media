@@ -1,8 +1,6 @@
 package com.tokopedia.shop.favourite.di.module
 
 import android.content.Context
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.favourite.data.query.GetShopFollowerListQueryProvider.getQuery
 import com.tokopedia.shop.favourite.di.scope.ShopFavouriteScope
@@ -26,11 +24,5 @@ class ShopFavouriteModule {
     @Named(GetShopFollowerListUseCase.QUERY_SHOP_FOLLOWER_LIST)
     fun providesGetShopFollowerQuery(): String {
         return getQuery()
-    }
-
-    @ShopFavouriteScope
-    @Provides
-    fun provideCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
     }
 }

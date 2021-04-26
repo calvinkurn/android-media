@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -49,6 +50,7 @@ interface ShopComponent {
     val shopReputationUseCase: GetShopReputationUseCase
     val graphqlRepository: GraphqlRepository
     val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase
+    fun provideCoroutineDispatchers(): CoroutineDispatchers
 
     @get:Named(GQLQueryNamedConstant.GQL_GET_SHOP_OPERATIONAL_HOUR_STATUS)
     val gqlQueryShopOperationalHourStatus: String
