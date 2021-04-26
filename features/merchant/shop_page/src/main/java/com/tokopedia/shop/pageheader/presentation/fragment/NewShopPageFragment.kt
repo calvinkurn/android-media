@@ -7,9 +7,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.*
 import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.ScaleDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.util.Log
@@ -85,7 +83,6 @@ import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocal
 import com.tokopedia.shop.common.util.ShopUtil.isExceptionIgnored
 import com.tokopedia.shop.common.util.ShopUtil.isShouldCheckShopType
 import com.tokopedia.shop.common.util.ShopUtil.isNotRegularMerchant
-import com.tokopedia.shop.common.util.ShopUtil.isShouldCheckShopType
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
