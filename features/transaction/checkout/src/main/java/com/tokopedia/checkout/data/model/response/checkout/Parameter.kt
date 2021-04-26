@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class Parameter(
         @SerializedName("transaction_id")
-        val transactionId: String? = null
+        val transactionId: String = ""
 )

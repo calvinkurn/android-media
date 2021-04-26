@@ -16,7 +16,7 @@ class CheckoutMapper @Inject constructor(private val gson: Gson) {
             errorMessage = checkoutDataResponse.error
             priceValidationData = mapPriceValidationData(checkoutDataResponse.data.priceValidation)
             errorReporter = mapErrorReporter(checkoutResponse.errorReporter)
-            if (!isError && checkoutDataResponse.data.parameter.transactionId != null) {
+            if (!isError && checkoutDataResponse.data.parameter.transactionId.isNotBlank()) {
                 transactionId = checkoutDataResponse.data.parameter.transactionId
                 paymentId = checkoutDataResponse.data.parameter.transactionId
                 queryString = checkoutDataResponse.data.queryString

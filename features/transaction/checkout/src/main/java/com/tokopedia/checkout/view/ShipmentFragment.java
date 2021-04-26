@@ -802,34 +802,30 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (getActivity() != null) {
             com.tokopedia.checkout.domain.model.checkout.MessageData messageData =
                     priceValidationData.getMessage();
-            if (messageData != null) {
-                DialogUnify priceValidationDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
-                priceValidationDialog.setTitle(messageData.getTitle());
-                priceValidationDialog.setDescription(messageData.getDesc());
-                priceValidationDialog.setPrimaryCTAText(messageData.getAction());
-                priceValidationDialog.setPrimaryCTAClickListener(() -> {
-                    shipmentPresenter.processInitialLoadCheckoutPage(
-                            true, isOneClickShipment(), isTradeIn(), true,
-                            true, null, getDeviceId(), getCheckoutLeasingId()
-                    );
-                    priceValidationDialog.dismiss();
-                    return Unit.INSTANCE;
-                });
+            DialogUnify priceValidationDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
+            priceValidationDialog.setTitle(messageData.getTitle());
+            priceValidationDialog.setDescription(messageData.getDesc());
+            priceValidationDialog.setPrimaryCTAText(messageData.getAction());
+            priceValidationDialog.setPrimaryCTAClickListener(() -> {
+                shipmentPresenter.processInitialLoadCheckoutPage(
+                        true, isOneClickShipment(), isTradeIn(), true,
+                        true, null, getDeviceId(), getCheckoutLeasingId()
+                );
+                priceValidationDialog.dismiss();
+                return Unit.INSTANCE;
+            });
 
-                priceValidationDialog.show();
+            priceValidationDialog.show();
 
-                StringBuilder eventLabelBuilder = new StringBuilder();
-                TrackerData trackerData = priceValidationData.getTrackerData();
-                if (trackerData != null) {
-                    eventLabelBuilder.append(trackerData.getProductChangesType());
-                    eventLabelBuilder.append(" - ");
-                    eventLabelBuilder.append(trackerData.getCampaignType());
-                    eventLabelBuilder.append(" - ");
-                    eventLabelBuilder.append(TextUtils.join(",", trackerData.getProductIds()));
-                }
+            StringBuilder eventLabelBuilder = new StringBuilder();
+            TrackerData trackerData = priceValidationData.getTrackerData();
+            eventLabelBuilder.append(trackerData.getProductChangesType());
+            eventLabelBuilder.append(" - ");
+            eventLabelBuilder.append(trackerData.getCampaignType());
+            eventLabelBuilder.append(" - ");
+            eventLabelBuilder.append(TextUtils.join(",", trackerData.getProductIds()));
 
-                checkoutAnalyticsCourierSelection.eventViewPopupPriceIncrease(eventLabelBuilder.toString());
-            }
+            checkoutAnalyticsCourierSelection.eventViewPopupPriceIncrease(eventLabelBuilder.toString());
         }
     }
 

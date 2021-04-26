@@ -6,6 +6,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class PriceValidationData(
         var isUpdated: Boolean = false,
-        var message: MessageData? = null,
-        var trackerData: TrackerData? = null
+        var message: MessageData = MessageData(),
+        var trackerData: TrackerData = TrackerData()
 ) : Parcelable
