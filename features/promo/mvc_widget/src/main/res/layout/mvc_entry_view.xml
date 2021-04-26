@@ -74,7 +74,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tvTitle"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
             app:typographyType="body_3"
-            android:textColor="@color/Unify_N600"
+            android:textColor="@color/Unify_N700"
             tools:text="Masih ada 6 Kupon Toko lainnya!" />
 
         <androidx.appcompat.widget.AppCompatImageView
