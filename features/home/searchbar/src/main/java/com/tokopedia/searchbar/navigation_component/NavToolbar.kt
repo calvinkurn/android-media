@@ -454,9 +454,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun observeLiveData() {
         lifecycleOwner?.let {owner ->
             viewModel?.navNotificationLiveData?.observe(owner, Observer {
-                setCentralizedBadgeCounter(IconList.ID_INBOX, it.totalNewInbox)
+                setCentralizedBadgeCounter(IconList.ID_INBOX, it.totalInbox)
                 setCentralizedBadgeCounter(IconList.ID_CART, it.totalCart)
                 setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, it.totalNotif)
+                setCentralizedBadgeCounter(IconList.ID_MESSAGE, it.totalNewInbox)
             })
         }
     }

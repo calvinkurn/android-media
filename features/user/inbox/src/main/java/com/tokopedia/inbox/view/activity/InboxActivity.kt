@@ -156,6 +156,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun setupToolbar() {
+        toolbar?.let { this.lifecycle.addObserver(it) }
         toolbar?.switchToLightToolbar()
         val view = View.inflate(
                 this, R.layout.partial_inbox_nav_content_view, null

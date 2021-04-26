@@ -200,6 +200,7 @@ class DiscoveryFragment :
         showOldToolbar = !RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
         val oldToolbar: Toolbar = view.findViewById(R.id.oldToolbar)
         navToolbar = view.findViewById(R.id.navToolbar)
+        viewLifecycleOwner.lifecycle.addObserver(navToolbar)
         if (showOldToolbar) {
             oldToolbar.visibility = View.VISIBLE
             navToolbar.visibility = View.GONE

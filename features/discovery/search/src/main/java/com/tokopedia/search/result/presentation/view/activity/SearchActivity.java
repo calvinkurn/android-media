@@ -313,6 +313,7 @@ public class SearchActivity extends BaseActivity
     private void setSearchNavigationToolbar(){
         if (searchNavigationToolbar == null) return;
 
+        this.getLifecycle().addObserver(searchNavigationToolbar);
         searchNavigationToolbar.bringToFront();
         searchNavigationToolbar.setToolbarPageName(SearchConstant.SEARCH_RESULT_PAGE);
         searchNavigationToolbar.setIcon(
