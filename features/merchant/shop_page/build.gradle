@@ -57,6 +57,7 @@ dependencies {
     implementation project(rootProject.ext.features.youtubeCommon)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.logger)
+    implementation project(rootProject.ext.libraries.adapterDelegate)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation project(rootProject.ext.libraries.youtubeutil)

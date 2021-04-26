@@ -7,7 +7,6 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -17,6 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.review.R;
+import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**
@@ -117,7 +117,7 @@ public class UserReputationView extends BaseCustomView {
                 if (negativeText != null) {
                     negativeText.setText(String.valueOf(negativeValue));
                 }
-                Button closeButton = dialog.findViewById(R.id.close_button);
+                UnifyButton closeButton = dialog.findViewById(R.id.close_button);
                 if (closeButton != null) {
                     closeButton.setOnClickListener(new OnClickListener() {
                         @Override

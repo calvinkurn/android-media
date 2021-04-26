@@ -304,11 +304,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
                 sortFilter.indicatorCounter -= additionalSelectedFilterCount
                 additionalSelectedFilterCount = 0
                 if (chips.size > chipItems.size) {
-                    for (i in chipItems.size until chips.size) {
+                    for (i in 0 until chips.size) {
                         if (chips[i].isSelected) additionalSelectedFilterCount++
                     }
                 }
-                sortFilter.indicatorCounter += additionalSelectedFilterCount
+                sortFilter.indicatorCounter = additionalSelectedFilterCount
             }
         }
     }

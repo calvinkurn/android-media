@@ -2,7 +2,6 @@ package com.tokopedia.shop.pageheader.presentation.uimodel.component
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
 interface BaseShopHeaderComponentUiModel : Visitable<BaseAdapterTypeFactory> {
 
@@ -15,6 +14,7 @@ interface BaseShopHeaderComponentUiModel : Visitable<BaseAdapterTypeFactory> {
     object ComponentName {
         const val SHOP_LOGO = "shop_logo"
         const val SHOP_NAME = "shop_name"
+        const val SHOP_OPERATIONAL_HOUR = "shop_operational_hour"
         const val BUTTON_SHOP_NOTES = "shop_notes"
         const val BUTTON_CHAT = "chat"
         const val BUTTON_FOLLOW = "follow_member"
