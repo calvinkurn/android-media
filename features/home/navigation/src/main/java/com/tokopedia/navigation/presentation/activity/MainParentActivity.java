@@ -498,9 +498,7 @@ public class MainParentActivity extends BaseActivity implements
     private void setupStatusBar() {
         //apply inset to allow recyclerview scrolling behind status bar
         fragmentContainer.setFitsSystemWindows(false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            fragmentContainer.requestApplyInsets();
-        }
+        fragmentContainer.requestApplyInsets();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int flags = fragmentContainer.getSystemUiVisibility();
