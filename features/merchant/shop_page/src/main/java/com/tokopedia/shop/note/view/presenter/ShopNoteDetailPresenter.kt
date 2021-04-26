@@ -12,10 +12,10 @@ import javax.inject.Inject
  * Created by normansyahputa on 2/8/18.
  */
 class ShopNoteDetailPresenter @Inject constructor(private val getShopNoteDetailUseCase: GetShopNoteDetailUseCase) : BaseDaggerPresenter<ShopNoteDetailView?>() {
-    fun getShopNoteList(shopId: String?, noteId: String?) {
+    fun getShopNoteList(shopId: String, noteId: String) {
         getShopNoteDetailUseCase.execute(createRequestParams(
-                shopId.orEmpty(),
-                noteId.orEmpty()
+                shopId,
+                noteId
         ), object : Subscriber<ShopNoteModel>() {
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
