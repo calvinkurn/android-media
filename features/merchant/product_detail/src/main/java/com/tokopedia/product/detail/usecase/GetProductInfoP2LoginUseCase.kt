@@ -2,10 +2,9 @@ package com.tokopedia.product.detail.usecase
 
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.*
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManageResponse
@@ -13,6 +12,7 @@ import com.tokopedia.product.detail.common.data.model.product.WishlistStatus
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.shop.ProductShopFollowResponse
 import com.tokopedia.product.detail.data.model.topads.TopAdsGetShopInfo
+import com.tokopedia.product.detail.data.util.OnErrorLog
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.doActionIfNotNull
 import com.tokopedia.usecase.RequestParams
@@ -56,6 +56,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
     }
 
     var requestParams = RequestParams.EMPTY
+    private var errorLogListener: OnErrorLog? = null
 
     override suspend fun executeOnBackground(): ProductInfoP2Login {
         val p2Login = ProductInfoP2Login()
@@ -63,7 +64,8 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
         val shopId = requestParams.getInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, 0)
         val isShopOwner = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_IS_SHOP_OWNER, false)
 
-        val isWishlistedParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to (productId ?: ""))
+        val isWishlistedParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to (productId
+                ?: ""))
         val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
                 WishlistStatus::class.java, isWishlistedParams)
 
@@ -96,11 +98,13 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
 
-            if (gqlResponse.getError(WishlistStatus::class.java)?.isNotEmpty() != true)
+            if (gqlResponse.getError(WishlistStatus::class.java)?.isNotEmpty() != true) {
                 p2Login.isWishlisted = gqlResponse.getData<WishlistStatus>(WishlistStatus::class.java)
                         .isWishlisted == true
-            else
+            } else {
                 p2Login.isWishlisted = true
+                logError(gqlResponse, WishlistStatus::class.java)
+            }
 
             if (gqlResponse.getError(TopAdsPdpAffiliateResponse::class.java)?.isNotEmpty() != true) {
                 p2Login.pdpAffiliate = gqlResponse
@@ -126,11 +130,23 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
                     p2Login.isFollow = gqlResponse.getData<ProductShopFollowResponse>(ProductShopFollowResponse::class.java).shopInfoByID.result.firstOrNull()?.favoriteData?.alreadyFavorited
                             ?: 0
                 }
+            } else {
+                logError(gqlResponse, ProductShopFollowResponse::class.java)
             }
         } catch (t: Throwable) {
+            errorLogListener?.invoke(t)
             Timber.d(t)
         }
 
         return p2Login
+    }
+
+    fun setErrorLogListener(setErrorLogListener: OnErrorLog) {
+        this.errorLogListener = setErrorLogListener
+    }
+
+    private fun logError(gqlResponse: GraphqlResponse, className: Class<*>) {
+        val error: List<GraphqlError>? = gqlResponse.getError(className)
+        errorLogListener?.invoke(MessageErrorException(error?.mapNotNull { it.message }?.joinToString(separator = ", ")))
     }
 }

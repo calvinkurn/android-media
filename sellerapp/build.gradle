@@ -5,6 +5,7 @@ if (project.hasProperty("auto-patch")) {
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'robust'
 apply plugin: 'io.hansel.preprocessor'
+apply plugin: 'newrelic'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 apply from: '../tools/set_debug_tools.gradle'
@@ -237,7 +238,6 @@ dependencies {
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.features.homecredit)
     implementation project(rootProject.ext.libraries.imageuploader)
-    implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.weaver)
@@ -298,6 +298,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
+    implementation rootProject.ext.miscDependencies.newRelic
 
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.debugToolsDependencies.chuck

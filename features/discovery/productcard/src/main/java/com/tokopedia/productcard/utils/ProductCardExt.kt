@@ -25,6 +25,7 @@ import com.tokopedia.media.loader.loadImageTopRightCrop
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 
 internal val View.isVisible: Boolean
@@ -219,6 +220,7 @@ private fun String?.toUnifyTextColor(context: Context): Int {
             TEXT_DARK_RED -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
             TEXT_DARK_GREY -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
             TEXT_LIGHT_GREY -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
+            TEXT_GREEN -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             else -> Color.parseColor(this)
         }
     } catch (throwable: Throwable){
@@ -227,13 +229,13 @@ private fun String?.toUnifyTextColor(context: Context): Int {
     }
 }
 
-internal fun safeParseColor(color: String): Int {
+internal fun safeParseColor(color: String, defaultColor: Int): Int {
     return try {
         Color.parseColor(color)
     }
     catch (throwable: Throwable) {
         throwable.printStackTrace()
-        0
+        defaultColor
     }
 }
 
@@ -295,14 +297,54 @@ private fun Typography.initLabelBestSeller(labelBestSellerModel: ProductCardMode
 private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup) {
     show()
 
-    background.overrideColor(labelBestSellerModel.type)
+    val defaultColor = "#E1AA1D"
+    background.overrideColor(labelBestSellerModel.type, defaultColor)
     text = labelBestSellerModel.title
 }
 
-internal fun Drawable.overrideColor(hexColor: String) {
+internal fun Drawable.overrideColor(hexColor: String, defaultColor: String) {
     when (this) {
-        is GradientDrawable -> setColor(safeParseColor(hexColor))
-        is ShapeDrawable -> paint.color = safeParseColor(hexColor)
-        is ColorDrawable -> color = safeParseColor(hexColor)
+        is GradientDrawable -> setColor(safeParseColor(hexColor, Color.parseColor(defaultColor)))
+        is ShapeDrawable -> paint.color = safeParseColor(hexColor, Color.parseColor(defaultColor))
+        is ColorDrawable -> color = safeParseColor(hexColor, Color.parseColor(defaultColor))
     }
 }
+
+internal fun renderStockBar(progressBarStock: ProgressBarUnify?, textViewStock: Typography?, productCardModel: ProductCardModel) {
+    renderStockPercentage(progressBarStock, productCardModel)
+    renderStockLabel(textViewStock, productCardModel)
+}
+
+private fun renderStockPercentage(progressBarStock: ProgressBarUnify?, productCardModel: ProductCardModel) {
+    progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+        it.setProgressIcon(icon = null)
+        if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
+            it.setProgressIcon(
+                    icon = ContextCompat.getDrawable(it.context, R.drawable.product_card_ic_fire_filled),
+                    width = it.context.resources.getDimension(FIRE_WIDTH).toInt(),
+                    height = it.context.resources.getDimension(FIRE_HEIGHT).toInt())
+        }
+        it.progressBarColorType = ProgressBarUnify.COLOR_RED
+        it.setValue(productCardModel.stockBarPercentage, false)
+    }
+}
+
+private fun renderStockLabel(textViewStockLabel: Typography?, productCardModel: ProductCardModel) {
+    textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+        it.text = productCardModel.stockBarLabel
+
+        val color = getStockLabelColor(productCardModel, it)
+        it.setTextColor(color)
+    }
+}
+
+private fun getStockLabelColor(productCardModel: ProductCardModel, it: Typography) =
+        when {
+            productCardModel.stockBarLabelColor.isNotEmpty() ->
+                safeParseColor(
+                        productCardModel.stockBarLabelColor,
+                        ContextCompat.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                )
+            else ->
+                MethodChecker.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+        }
