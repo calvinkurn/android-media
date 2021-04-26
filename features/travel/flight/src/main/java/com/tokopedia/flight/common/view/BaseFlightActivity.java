@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.flight.FlightComponentInstance;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -56,7 +57,14 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity implements F
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.clear();
         getMenuInflater().inflate(com.tokopedia.flight.R.menu.menu_flight_dashboard, menu);
-        updateOptionMenuColorWhite(menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_overflow_menu){
+            showBottomMenu();
+        }
         return true;
     }
 
