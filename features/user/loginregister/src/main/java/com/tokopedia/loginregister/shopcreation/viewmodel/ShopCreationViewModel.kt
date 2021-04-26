@@ -194,9 +194,13 @@ open class ShopCreationViewModel @Inject constructor(
         ))
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    fun clearBackgroundTask() {
         registerUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        clearBackgroundTask()
     }
 }

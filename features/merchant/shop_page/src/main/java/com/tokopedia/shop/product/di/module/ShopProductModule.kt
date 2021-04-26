@@ -3,8 +3,6 @@ package com.tokopedia.shop.product.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor
@@ -278,11 +276,5 @@ class ShopProductModule {
     @Provides
     fun provideShopProductSortMapper(): ShopProductSortMapper {
         return ShopProductSortMapper()
-    }
-
-    @ShopProductScope
-    @Provides
-    fun getCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
     }
 }

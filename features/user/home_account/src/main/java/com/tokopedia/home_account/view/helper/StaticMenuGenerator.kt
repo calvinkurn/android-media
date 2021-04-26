@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
@@ -27,7 +26,6 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
                 CommonDataView(applink = ApplinkConstInternalLogistic.MANAGE_ADDRESS, title = context?.getString(R.string.menu_account_title_address_list), body = context?.getString(R.string.menu_account_desc_address), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.SHOP, id = AccountConstants.SettingCode.SETTING_ACCOUNT_ADDRESS_ID),
                 CommonDataView(applink = ApplinkConstInternalGlobal.SETTING_BANK, title = context?.getString(R.string.menu_account_title_bank), body = context?.getString(R.string.menu_account_desc_bank), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.FINANCE, id = AccountConstants.SettingCode.SETTING_BANK_ACCOUNT_ID),
                 CommonDataView(applink = ApplinkConstInternalGlobal.PAYMENT_SETTING, title = context?.getString(R.string.menu_account_title_instant_payment), body = context?.getString(R.string.menu_account_desc_instant_payment), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.CARD, id = AccountConstants.SettingCode.SETTING_INSTANT_PAYMENT),
-                CommonDataView(applink = ApplinkConstInternalMarketplace.PREFERENCE_LIST, title = context?.getString(R.string.menu_account_title_quick_buy), body = context?.getString(R.string.menu_account_desc_quick_buy), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.QUICK_BUY, id = AccountConstants.SettingCode.SETTING_INSTANT_BUY),
                 CommonDataView(applink = ApplinkConstInternalGlobal.ACCOUNT_SETTING, title = context?.getString(R.string.menu_account_title_security), body = context?.getString(R.string.menu_account_desc_security), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LOCK, id = AccountConstants.SettingCode.SETTING_SECURITY),
                 CommonDataView(applink = ApplinkConst.SETTING_NOTIFICATION, title = context?.getString(R.string.menu_account_title_notification), body = context?.getString(R.string.menu_account_desc_notification), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.BELL_RING, id = AccountConstants.SettingCode.SETTING_NOTIFICATION)
         ), isExpanded = true)

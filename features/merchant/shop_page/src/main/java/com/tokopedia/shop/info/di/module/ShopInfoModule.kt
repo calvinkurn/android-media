@@ -2,13 +2,9 @@ package com.tokopedia.shop.info.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.shop.common.di.ShopPageContext
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.shop.info.di.scope.ShopInfoScope
-import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
 import com.tokopedia.shop.note.view.model.ShopNoteUiModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,9 +30,4 @@ class ShopInfoModule {
         return UserSession(context)
     }
 
-    @ShopInfoScope
-    @Provides
-    fun getCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
-    }
 }

@@ -92,23 +92,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     override fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        return MessageViewModel(
-                messageId = chatItemPojoByDateByTime.msgId.toString(),
-                fromUid = chatItemPojoByDateByTime.senderId.toString(),
-                from = chatItemPojoByDateByTime.senderName,
-                fromRole = chatItemPojoByDateByTime.role,
-                attachmentId = chatItemPojoByDateByTime.attachment?.id ?: "",
-                attachmentType = chatItemPojoByDateByTime.attachment?.type.toString(),
-                replyTime = chatItemPojoByDateByTime.replyTime,
-                startTime = "",
-                isRead = chatItemPojoByDateByTime.isRead,
-                isDummy = false,
-                isSender = !chatItemPojoByDateByTime.isOpposite,
-                message = chatItemPojoByDateByTime.msg,
-                source = chatItemPojoByDateByTime.source,
-                blastId = chatItemPojoByDateByTime.blastId,
-                fraudStatus = chatItemPojoByDateByTime.fraudStatus
-        )
+        return MessageViewModel(chatItemPojoByDateByTime)
     }
 
     private fun createBroadCastUiModel(chatDateTime: Reply, model: Map<String, Visitable<*>>): BroadCastUiModel {

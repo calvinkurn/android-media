@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.data.get
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
@@ -9,8 +8,7 @@ data class CartDataResponse(
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
         @SerializedName("cart_id")
-        @SuppressLint("Invalid Data Type")
-        val cartId: Long = 0,
+        val cartId: String = "",
         @SerializedName("product")
         val product: ProductDataResponse = ProductDataResponse(),
         @SerializedName("shop")
