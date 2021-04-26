@@ -13,6 +13,7 @@ import com.tokopedia.topads.common.view.adapter.viewpager.KeywordEditPagerAdapte
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.response.KeywordDataModel
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
+import com.tokopedia.topads.edit.utils.Constants.GROUP_STRATEGY
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_ADDED
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_DELETED
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORD_ALL
@@ -75,6 +76,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
                 handleAutoBidState(autoBidState)
             }
         }
+        arguments?.getString(GROUP_STRATEGY, "")?.let { handleAutoBidState(it) }
     }
 
     private fun handleAutoBidState(autoBidState: String) {
@@ -161,8 +163,6 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         strategies?.clear()
         if(autobid_selection.text == "Otomatis") {
             strategies?.add("auto_bid")
-        } else {
-            strategies?.add("")
         }
         dataMap[POSITIVE_CREATE] = addedKeywordsPos
         dataMap[POSITIVE_DELETE] = deletedKeywordsPos

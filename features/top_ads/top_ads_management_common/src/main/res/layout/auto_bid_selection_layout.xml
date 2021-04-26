@@ -123,7 +123,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
-        android:text="@string/topads_common_save_butt"
+        android:text="@string/lanjutkan"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"
         android:visibility="gone"

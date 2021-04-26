@@ -28,7 +28,7 @@
     <string name="topads_edit_harga_tertinggi">Harga Tertinggi</string>
     <string name="topads_edit_terbaru">Terbaru</string>
     <string name="topads_edit_terlaris">Terlaris</string>
-    <string name="topads_edit_select_sort">Pencarian Luas</string>
+    <string name="topads_edit_select_sort">Luas</string>
     <string name="topads_edit_leave_page_conf_dialog_title">Simpan Perubahan?</string>
     <string name="topads_edit_leave_page_conf_dialog_desc">Kamu sudah mengubah pengaturan grup dan belum simpan perubahanmu</string>
     <string name="topads_edit_delete_keyword_conf_dialog_title">Hapus Kata Kunci?</string>
@@ -38,6 +38,7 @@
     <string name="topads_edit_ya">Ya</string>
     <string name="topads_edit_batal">Batal</string>
     <string name="topads_edit_no_neg_keyword_title">Belum ada kata kunci negatif</string>
+    <string name="topads_edit_no_neg_keyword_desc_new">kenapa perlu tambah kata kunci negatif?</string>
     <string name="topads_edit_no_neg_keyword_desc">Gunakan kata kunci negatif agar iklanmu tidak muncul di sembarang hasil pencarian.</string>
     <string name="topads_edit_add_negative_keyword">Tambah Kata Kunci Negatif</string>
     <string name="topads_edit_tambah">Tambah</string>
@@ -55,6 +56,11 @@
     <string name="topads_edit_search_empty_tip_desc2">Lebih efektif dengan kata kunci spesifik.</string>
     <string name="topads_edit_search_empty_tip_desc3">Gunakan kata kunci umum dengan  maksimum 2 kata.</string>
     <string name="topads_edit_filter">Filter</string>
+    <string name="top_ads_edit_negatif_tip_1">Biaya iklan jadi lebih hemat.</string>
+    <string name="top_ads_edit_negatif_tip_2">Mengurangi angarran yang terapkai.</string>
+    <string name="top_ads_edit_negatif_tip_3">Meningkatkan fokus dan konversi .</string>
+    <string name="top_ads_edit_negatif_tip_4">Tidak dikenai alias gratis.</string>
+    <string name="top_ads_edit_negatif_tip_5">Iklan akan tampil di pencerian yang relevan.</string>
 
     <string-array name="sort_product_list_array">
         <item>Terlaris</item>

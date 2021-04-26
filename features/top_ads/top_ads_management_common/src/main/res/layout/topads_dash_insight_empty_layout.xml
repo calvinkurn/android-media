@@ -27,6 +27,7 @@
             android:layout_marginTop="@dimen/dp_24"
             android:layout_marginRight="@dimen/dp_50"
             android:gravity="center_horizontal"
+            app:typographyWeight="bold"
             android:text="@string/topads_dash_insight_empty_title"
             app:layout_constraintBottom_toTopOf="@id/text_desc"
             app:layout_constraintTop_toBottomOf="@id/image_empty"
@@ -43,6 +44,19 @@
             android:text="@string/topads_dash_insight_empty_desc"
             app:layout_constraintTop_toBottomOf="@id/text_title"
             app:typographyType="body_2" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/addBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_24"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_desc" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

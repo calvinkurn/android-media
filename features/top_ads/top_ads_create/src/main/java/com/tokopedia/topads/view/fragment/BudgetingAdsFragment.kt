@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
@@ -34,11 +36,12 @@ import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
 import com.tokopedia.topads.view.model.BudgetingAdsViewModel
 import com.tokopedia.topads.view.sheet.ChooseKeyBottomSheet
 import com.tokopedia.topads.view.sheet.InfoBottomSheet
-import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.text.currency.NumberTextWatcher
-import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
 import java.util.*
 import javax.inject.Inject
 
@@ -56,6 +59,20 @@ private const val CLICK_SETUP_KEY = "click - setup keyword"
 const val COUNT_TO_BE_SHOWN = 5
 
 class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
+
+    private lateinit var ticker: Ticker
+    private lateinit var buttonNext: UnifyButton
+    private lateinit var addKeyword: Typography
+    private lateinit var budget: TextFieldUnify
+    private lateinit var selectedkeyword: Typography
+    private lateinit var tipButton: FloatingButtonUnify
+    private lateinit var loading: LoaderUnify
+    private lateinit var info1: UnifyImageButton
+    private lateinit var info2: UnifyImageButton
+    private lateinit var bidList: RecyclerView
+    private lateinit var bottomLayout: ConstraintLayout
+    private lateinit var tipLayout: ConstraintLayout
+
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -92,6 +109,21 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         }
     }
 
+    private fun setupView(view: View) {
+        ticker = view.findViewById(com.tokopedia.topads.common.R.id.ticker)
+        buttonNext = view.findViewById(com.tokopedia.topads.common.R.id.btn_next)
+        addKeyword = view.findViewById(com.tokopedia.topads.common.R.id.addKeyword)
+        budget = view.findViewById(com.tokopedia.topads.common.R.id.budget)
+        selectedkeyword = view.findViewById(com.tokopedia.topads.common.R.id.selectedKeyword)
+        tipButton = view.findViewById(com.tokopedia.topads.common.R.id.tip_btn)
+        loading = view.findViewById(com.tokopedia.topads.common.R.id.loading)
+        info1 = view.findViewById(com.tokopedia.topads.common.R.id.info1)
+        info2 = view.findViewById(com.tokopedia.topads.common.R.id.info2)
+        bidList = view.findViewById(com.tokopedia.topads.common.R.id.bid_list)
+        bottomLayout = view.findViewById(com.tokopedia.topads.common.R.id.bottom)
+        tipLayout = view.findViewById(com.tokopedia.topads.common.R.id.tipView)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, viewModelFactory).get(BudgetingAdsViewModel::class.java)
@@ -108,7 +140,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     private fun prepareView() {
         if (stepperModel?.redirectionToSummary == true) {
-            btn_next?.text = getString(R.string.topads_common_save_butt)
+            buttonNext?.text = getString(R.string.topads_common_save_butt)
         }
 
         addKeyword?.setOnClickListener {
@@ -130,7 +162,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun actionEnable() {
-        btn_next.isEnabled = isEnable
+        buttonNext.isEnabled = isEnable
     }
 
     private fun onEditBudget(pos: Int) {
@@ -195,7 +227,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             stepperListener?.goToNextPage(stepperModel)
         else {
             stepperModel?.redirectionToSummary = false
-            stepperListener?.getToFragment(3, stepperModel)
+            stepperListener?.getToFragment(4, stepperModel)
         }
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_ATUR_BIAYA_IKLAN, "")
     }
@@ -215,7 +247,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.topads_create_fragment_budget_list, container, false)
+        return inflater.inflate(com.tokopedia.topads.common.R.layout.topads_create_fragment_budget_list, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -262,7 +294,11 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun setCount() {
-        selectedKeyword?.text = String.format(getString(R.string.topads_create_selected_keyword), bidInfoAdapter.items.count())
+        if(bidInfoAdapter.items.count() == 1 && bidInfoAdapter.items[0] is BidInfoEmptyViewModel) {
+            selectedkeyword?.text = String.format(getString(R.string.topads_create_selected_keyword), 0)
+        } else {
+            selectedkeyword?.text = String.format(getString(R.string.topads_create_selected_keyword), bidInfoAdapter.items.count())
+        }
     }
 
     private fun setRestoreValue() {
@@ -294,6 +330,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun onEmptySuggestion() {
+        ticker?.gone()
         bidInfoAdapter.items.add(BidInfoEmptyViewModel())
         bidInfoAdapter.notifyDataSetChanged()
     }
@@ -315,11 +352,12 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupView(view)
         prepareView()
         loading?.visibility = View.VISIBLE
         userID = UserSession(view.context).userId
         shopID = UserSession(view.context).shopId
-        btn_next?.setOnClickListener {
+        buttonNext?.setOnClickListener {
             gotoNextPage()
         }
         info1.setOnClickListener {
@@ -335,13 +373,13 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(R.drawable.topads_ic_tips))
         }
 
-        tip_btn?.addItem(tooltipView)
-        tip_btn?.setOnClickListener {
+        tipButton?.addItem(tooltipView)
+        tipButton?.setOnClickListener {
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
-                add(TipsUiRowModel(R.string.makin_tinggi_biaya_iklan_makin_besar_kemungkinan_produkmu_tampil_di_halaman_pencarian, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.gunakan_rekomendasi_biaya_agar_produkmu_lebih_bersaing, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.bayar_hanya_jika_iklan_produkmu_di_klik_dari_hasil_pencarian_kata_kunci_pilihan, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.biaya_iklan_tip_1, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.biaya_iklan_tip_2, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.biaya_iklan_tip_3, R.drawable.topads_create_ic_checklist))
             }
             val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
             tipsListSheet?.showHeader = true
@@ -387,15 +425,15 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                 actionEnable()
             }
         })
-        bid_list.adapter = bidInfoAdapter
-        bid_list.layoutManager = LinearLayoutManager(context)
-        tipView?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        bottom?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        if (tipView != null && bottom != null) {
-            val heightButton = tipView.measuredHeight
-            val bottomHeight = bottom.measuredHeight
+        bidList.adapter = bidInfoAdapter
+        bidList.layoutManager = LinearLayoutManager(context)
+        tipLayout?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        bottomLayout?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        if (tipLayout != null && bottomLayout != null) {
+            val heightButton = tipLayout.measuredHeight
+            val bottomHeight = bottomLayout.measuredHeight
             val height = (heightButton + bottomHeight)
-            bid_list?.setPadding(0, 0, 0, height)
+            bidList?.setPadding(0, 0, 0, height)
         }
     }
 
@@ -410,11 +448,15 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun resetView() {
-        bidInfoAdapter.items.clear()
-        stepperModel?.selectedKeywordStage?.forEach {
-            bidInfoAdapter.items.add(BidInfoItemViewModel(it))
+        if(bidInfoAdapter.items.size == 0) {
+            onEmptySuggestion()
+        } else {
+            bidInfoAdapter.items.clear()
+            stepperModel?.selectedKeywordStage?.forEach {
+                bidInfoAdapter.items.add(BidInfoItemViewModel(it))
+            }
+            bidInfoAdapter.notifyDataSetChanged()
         }
-        bidInfoAdapter.notifyDataSetChanged()
         setCount()
     }
 

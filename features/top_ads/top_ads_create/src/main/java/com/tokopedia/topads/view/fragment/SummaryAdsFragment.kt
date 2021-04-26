@@ -271,11 +271,11 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
         goToKeyword?.setOnClickListener {
             stepperModel?.redirectionToSummary = true
-            stepperListener?.getToFragment(2, stepperModel)
+            stepperListener?.getToFragment(3, stepperModel)
         }
         goToBudget?.setOnClickListener {
             stepperModel?.redirectionToSummary = true
-            stepperListener?.getToFragment(2, stepperModel)
+            stepperListener?.getToFragment(3, stepperModel)
         }
     }
 

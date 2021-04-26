@@ -26,6 +26,7 @@ import com.tokopedia.topads.edit.utils.Constants.ADDED_PRODUCTS
 import com.tokopedia.topads.edit.utils.Constants.ATUR_NAME
 import com.tokopedia.topads.edit.utils.Constants.DELETED_PRODUCTS
 import com.tokopedia.topads.edit.utils.Constants.KATA_KUNCI
+import com.tokopedia.topads.edit.utils.Constants.LAINNYA_NAME
 import com.tokopedia.topads.edit.utils.Constants.PRODUK_NAME
 import com.tokopedia.topads.edit.utils.Constants.TAB_POSITION
 import com.tokopedia.topads.edit.view.fragment.edit.BaseEditKeywordFragment
@@ -137,7 +138,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         view_pager.offscreenPageLimit = 3
         tab_layout?.addNewTab(PRODUK_NAME)
         tab_layout?.addNewTab(KATA_KUNCI)
-        tab_layout?.addNewTab(ATUR_NAME)
+        tab_layout?.addNewTab(LAINNYA_NAME)
         tab_layout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TAB_POSITION, 1) ?: 2)?.select()
         view_pager.currentItem = bundle?.getInt(TAB_POSITION, 1) ?: 2
         tab_layout?.getUnifyTabLayout()?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -167,7 +168,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         list.add(EditProductFragment.newInstance(bundle))
         list.add(BaseEditKeywordFragment.newInstance(bundle))
         list.add(EditGroupAdFragment.newInstance(bundle))
-        adapter = TopAdsEditPagerAdapter(arrayOf(PRODUK_NAME, KATA_KUNCI, ATUR_NAME), supportFragmentManager, 0)
+        adapter = TopAdsEditPagerAdapter(arrayOf(PRODUK_NAME, KATA_KUNCI, LAINNYA_NAME), supportFragmentManager, 0)
         adapter.setData(list)
         return adapter
     }

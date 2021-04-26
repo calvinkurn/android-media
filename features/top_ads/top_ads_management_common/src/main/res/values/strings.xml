@@ -21,6 +21,8 @@
     <string name="product_count">%d Produk</string>
     <string name="keyword_count">%d Kata Kunci</string>
     <string name="add_keyword">Tambah Kata Kunci</string>
+    <string name="add_keyword_positif">Tambah Kata Kunci Positif</string>
+    <string name="add_keyword_negatif">Tambah Kata Kunci Negatif</string>
     <string name="keyword_already_exists">Kata kunci sudah dipilih, silahkan coba kata kunci lainnya</string>
     <string name="error_max_length_keyword">Maksimum 5 kata</string>
     <string name="error_keyword">Gunakan hanya huruf dan angka</string>
@@ -152,6 +154,10 @@
     <string name="topads_common_error_invalid_item">Oops, ada produk di iklanmu yang sudah dihapus. Coba cek lagi, ya.</string>
     <string name="topads_common_error_invalid_keyword">Kata kunci hanya bisa diisi dengan huruf dan angka.</string>
     <string name="topads_common_error_group_name_exist">Nama grup iklan sudah digunakan. Coba tulis nama lain, ya.</string>
+    <string name="topads_dash_insight_empty_title">Yay, performa iklanmu sudah bagus!</string>
+    <string name="topads_dash_insight_empty_desc">Rutin pantau rekomendasi TopAds agar iklanmu semakin optimal.</string>
+    <string name="topads_empty_insight_title">Belum ada kata kunci yang ditambahkan</string>
+    <string name="topads_empty_insight_desc">Yuk, tambahkan dulu kata kunci yang \n sesuai dengan produkmu</string>
 
 
     <string name="autobid_otomatis">Otomatis</string>
@@ -165,7 +171,15 @@
     <string name="autobid_otomatis_desc">TopAds akan bantu kamu mengatur biaya iklan dan \n kata kunci yang dapat memaksimalkan penjualan.</string>
     <string name="autobid_manual_desc">TopAds akan bantu kamu mengatur biaya iklan dan \n kata kunci yang dapat memaksimalkan penjualan.</string>
     <string name="autobid_otomatis_ticker_title">Kata kunci dan biaya iklan otomatis</string>
-    <string name="autobid_otomatis_ticker_desc">Kata kunci dan biaya iklan otomatis</string>
+    <string name="autobid_otomatis_ticker_desc">Iklanmu sudah diatur secara optimal oleh TopAds.</string>
+
+    <string name="topads_common_per_click">per klik</string>
+    <string name="topads_common_selected_keyword">Kata kunci dipilih (%d)</string>
+    <string name="add_keywords">Tambah Kata Kunci</string>
+    <string name="topads_create_keyword_data">Kompetisi  <![CDATA["<font color='#42b549'><b> %s </b></font>  • Pencarian <font color='#F531353B'><b> %s</b></font> ]]></string>
+    <string name="topads_create_del_key_conf_dialog_title">Hapus kata kunci %s?</string>
+    <string name="topads_create_ya_hapus">Ya, Hapus</string>
+    <string name="topads_create_del_key_conf_dialog_desc">Kata kunci tersebut akan dihapus dari daftar kata kunci yang digunakan di iklanmu.</string>
 
     <string-array name="sort_product_list_array">
         <item>Terlaris</item>

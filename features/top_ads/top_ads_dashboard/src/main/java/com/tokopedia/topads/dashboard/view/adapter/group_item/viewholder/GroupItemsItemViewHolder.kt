@@ -31,7 +31,7 @@ private const val CLICK_ATUR_IKLAN = "click - atur iklan"
 class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean) -> Unit),
                                var actionDelete: ((pos: Int) -> Unit),
                                var actionStatusChange: ((pos: Int, status: Int) -> Unit),
-                               private var editDone: ((groupId: Int) -> Unit),
+                               private var editDone: ((groupId: Int, strategy: String) -> Unit),
                                private var onClickItem: ((id: Int, priceSpent: String, groupName: String) -> Unit)) : GroupItemsViewHolder<GroupItemsItemModel>(view) {
 
     companion object {
@@ -123,7 +123,11 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         view.img_menu.setOnClickListener {
             sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName, item.data.groupId)
             sheet?.onEditAction = {
-                editDone.invoke(item.data.groupId)
+                if(item.data.strategies.size > 0 && item.data.strategies.isNotEmpty()) {
+                    editDone.invoke(item.data.groupId, item.data.strategies[0])
+                } else {
+                    editDone.invoke(item.data.groupId, "")
+                }
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_ATUR_IKLAN, "")
             }
             sheet?.onDeleteClick = {

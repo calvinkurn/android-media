@@ -74,11 +74,19 @@ class AutoBidSelectionFragment: BaseStepperFragment<CreateManualAdsStepperModel>
         }
     }
 
+    private fun prepareView() {
+        if (stepperModel?.redirectionToSummary == true) {
+            nextBtn?.text = getString(R.string.topads_common_save_butt)
+        }
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         tipBtn.visibility = View.VISIBLE
         nextBtn.visibility = View.VISIBLE
+        prepareView()
 
         if (selected == MANUAL_BID)
             manualRadioBtn?.isChecked = true

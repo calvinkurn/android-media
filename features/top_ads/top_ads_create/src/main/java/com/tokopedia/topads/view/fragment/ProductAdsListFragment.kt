@@ -186,6 +186,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         tip_btn.setOnClickListener {
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
+                add(TipsUiRowModel(R.string.pilih_produk_yang_berada_dalam, R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.pilih_produk_dengan_ulasan_terbanyak, R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.pilih_produk_terpopuler, R.drawable.topads_create_ic_checklist))
             }

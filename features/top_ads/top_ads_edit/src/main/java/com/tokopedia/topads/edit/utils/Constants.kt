@@ -6,6 +6,7 @@ object Constants {
     const val PRODUCT_ID = "product"
     const val MIN_SUGGESTION = "minSuggestedBid"
     const val GROUP_ID = "groupId"
+    const val GROUP_STRATEGY = "groupStrategy"
     const val SELECTED_KEYWORD = "selectKeywords"
     const val RESTORED_DATA = "restoreData"
     const val CURRENTLIST = "currentKeywords"
@@ -75,5 +76,6 @@ object Constants {
     const val PRODUK_NAME = " Produk"
     const val KATA_KUNCI = " Kata Kunci"
     const val ATUR_NAME = " Atur"
+    const val LAINNYA_NAME = " Lainnya"
 
 }

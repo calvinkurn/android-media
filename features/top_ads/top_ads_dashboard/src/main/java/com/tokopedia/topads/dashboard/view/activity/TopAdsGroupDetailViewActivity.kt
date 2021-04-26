@@ -173,8 +173,12 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         priceDaily = data.priceDaily
         if(data.strategies.isNotEmpty()) {
             autoBidStatus = data.strategies[0]
+            per_click.visibility = View.GONE
+            budgetPerClick.text = getString(com.tokopedia.topads.common.R.string.autobid_otomatis)
+        } else {
+            per_click.visibility = View.VISIBLE
+            budgetPerClick.text = "Rp " + data.priceBid
         }
-        budgetPerClick.text = "Rp " + data.priceBid
         group_name.text = groupName
         btn_switch.setOnCheckedChangeListener(null)
         btn_switch.isChecked = data.status == ACTIVE || data.status == TIDAK_TAMPIL

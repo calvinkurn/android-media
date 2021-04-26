@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
@@ -20,7 +19,6 @@ import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
-import com.tokopedia.topads.edit.utils.Constants.BUDGET_LIMITED
 import com.tokopedia.topads.edit.utils.Constants.DAILY_BUDGET
 import com.tokopedia.topads.edit.utils.Constants.DEBOUNCE_CONST
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
@@ -28,9 +26,7 @@ import com.tokopedia.topads.edit.utils.Constants.GROUP_NAME
 import com.tokopedia.topads.edit.utils.Constants.IS_DATA_CHANGE
 import com.tokopedia.topads.edit.utils.Constants.MAXIMUM_LIMIT
 import com.tokopedia.topads.edit.utils.Constants.MULTIPLIER
-import com.tokopedia.topads.edit.utils.Constants.MULTIPLY_CONST
 import com.tokopedia.topads.edit.utils.Constants.NAME_EDIT
-import com.tokopedia.topads.edit.utils.Constants.PRICE_BID
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
@@ -42,9 +38,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
-
-private const val CLICK_RADIO_BUTTON_1 = "click - anggaran harian tidak dibatasi"
-private const val CLICK_RADIO_BUTTON_2 = "click - anggaran harian dibatasi"
 
 class EditGroupAdFragment : BaseDaggerFragment() {
 
@@ -73,8 +66,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private val sharedViewModel by lazy {
         ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
     }
-    private var initialBudgetChoice = false
-    private var initialPriceBid = 0
     private var initialDailyBudget = 0
 
 
@@ -99,24 +90,13 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         return inflater.inflate(resources.getLayout(R.layout.topads_edit_activity_edit_form_ad), container, false)
     }
 
-    private fun getLatestBid() {
-        val dummyId: MutableList<Long> = mutableListOf()
-        productId.forEach {
-            dummyId.add(it.toLong())
-        }
-        val suggestionsDefault = ArrayList<DataSuggestions>()
-        suggestionsDefault.add(DataSuggestions(PRODUCT, dummyId))
-        viewModel.getBidInfoDefault(suggestionsDefault, this::onBidSuccessSuggestion)
-    }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
         groupName = data.groupName
         group_name?.textFieldInput?.setText(data.groupName)
-        budget?.textFieldInput?.setText(data.priceBid.toString())
         priceDaily = data.priceDaily
         if (priceDaily != 0) {
             daily_budget?.textFieldInput?.setText(data.priceDaily.toString())
-            btnFixedBudget.isChecked = true
         } else {
             daily_budget?.textFieldInput?.setText((MULTIPLIER * data.priceBid).toString())
         }
@@ -126,49 +106,8 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     private fun getCurrentTitle() = group_name?.textFieldInput?.text?.toString()
 
-    private fun getCurrentBid(): Int {
-        return budget?.textFieldInput?.text.toString().removeCommaRawString().toInt()
-    }
-
     private fun getCurrentDailyBudget(): Int {
         return daily_budget?.textFieldInput?.text.toString().removeCommaRawString().toInt()
-    }
-
-    private fun checkForbidValidity(result: Int) {
-        when {
-            minBid == "0" || maxBid == "0" -> {
-                return
-            }
-            result < minBid.toDouble() -> {
-                setMessageErrorField(getString(R.string.min_bid_error), minBid, true)
-                validation2 = false
-                actionEnable()
-            }
-            result > maxBid.toDouble() -> {
-                validation2 = false
-                actionEnable()
-                setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
-            }
-            result % (MULTIPLY_CONST.toInt()) != 0 -> {
-                validation2 = false
-                actionEnable()
-                setMessageErrorField(getString(R.string.topads_common_50_multiply_error), MULTIPLY_CONST, true)
-            }
-            else -> {
-                validation2 = true
-                actionEnable()
-                setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick, false)
-            }
-        }
-    }
-
-    private fun onBidSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
-        data.firstOrNull()?.let {
-            suggestBidPerClick = it.suggestionBid
-            minBid = it.minBid
-            maxBid = it.maxBid
-        }
-        checkForbidValidity(getCurrentBid())
     }
 
     fun onSuccessGroupName(data: ResponseGroupValidateName.TopAdsGroupValidateName) {
@@ -201,19 +140,12 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             groupId = arguments?.getString(GROUP_ID)?.toInt()
             sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
         }
-        if (btnUnlimitedBudget?.isChecked != false) {
+        if (toggle?.isChecked != false) {
             daily_budget?.visibility = View.GONE
-        }
-        radio_group.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked == btnUnlimitedBudget?.id) {
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_RADIO_BUTTON_1, "")
-                daily_budget?.visibility = View.GONE
-                validation3 = true
-                actionEnable()
-            } else {
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_RADIO_BUTTON_2, "")
-                daily_budget?.visibility = View.VISIBLE
-            }
+            validation3 = true
+            actionEnable()
+        } else {
+            daily_budget?.visibility = View.VISIBLE
         }
 
         group_name?.textFieldInput?.addTextChangedListener(object : TextWatcher {
@@ -236,16 +168,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             }
         })
 
-        budget?.textFieldInput?.addTextChangedListener(object : NumberTextWatcher(budget.textFieldInput, "0") {
-            override fun onNumberChanged(number: Double) {
-                super.onNumberChanged(number)
-                currentBudget = number.toInt()
-                val result = number.toInt()
-                daily_budget?.textFieldInput?.setText((MULTIPLIER * result).toString())
-                checkForbidValidity(result)
-            }
-
-        })
         daily_budget?.textFieldInput?.addTextChangedListener(object : NumberTextWatcher(daily_budget.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
@@ -275,14 +197,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun saveInitialChoices() {
-        initialBudgetChoice = btnUnlimitedBudget?.isChecked ?: false
-        initialPriceBid = getCurrentBid()
         initialDailyBudget = getCurrentDailyBudget()
-    }
-
-    private fun setMessageErrorField(error: String, bid: String, bool: Boolean) {
-        budget?.setError(bool)
-        budget?.setMessage(String.format(error, bid))
     }
 
     private fun actionEnable() {
@@ -293,10 +208,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.getGroupInfo(groupId.toString(), this::onSuccessGroupInfo)
-        sharedViewModel.getProuductIds().observe(viewLifecycleOwner, Observer {
-            productId = it
-            getLatestBid()
-        })
     }
 
     override fun onAttach(context: Context) {
@@ -315,10 +226,8 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         try {
             dataMap[IS_DATA_CHANGE] = checkDataChanged()
             dataMap[GROUP_NAME] = getCurrentTitle()
-            dataMap[PRICE_BID] = getCurrentBid()
             dataMap[DAILY_BUDGET] = getCurrentDailyBudget()
             dataMap[GROUP_ID] = groupId
-            dataMap[BUDGET_LIMITED] = btnUnlimitedBudget?.isChecked
             dataMap[NAME_EDIT] = getCurrentTitle() != groupName
         } catch (e: NumberFormatException) {
         }
@@ -326,8 +235,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun checkDataChanged(): Boolean {
-        return initialBudgetChoice != btnUnlimitedBudget?.isChecked || initialDailyBudget != getCurrentDailyBudget() ||
-                initialPriceBid != getCurrentBid() || groupName != getCurrentTitle()
+        return initialDailyBudget != getCurrentDailyBudget() ||groupName != getCurrentTitle()
     }
 
     override fun onDetach() {
