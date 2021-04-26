@@ -440,7 +440,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_FACEBOOK,
-                LABEL_REGISTER_FAILED + errorMessage
+                LABEL_FAILED + errorMessage
         ))
     }
 
@@ -449,7 +449,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_GOOGLE,
-                LABEL_REGISTER_FAILED + errorMessage
+                LABEL_FAILED + errorMessage
         ))
     }
 
