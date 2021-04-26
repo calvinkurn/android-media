@@ -23,7 +23,7 @@ class WebSocketViewModelTest {
 
     @get:Rule val rule = InstantTaskExecutorRule()
 
-    private val webSocket: TopChatWebSocket = mockk(relaxed = true)
+    private val webSocket: DefaultTopChatWebSocket = mockk(relaxed = true)
     private val dispatchers = CoroutineTestDispatchersProvider
     private val viewModel = WebSocketViewModel(webSocket, dispatchers)
 

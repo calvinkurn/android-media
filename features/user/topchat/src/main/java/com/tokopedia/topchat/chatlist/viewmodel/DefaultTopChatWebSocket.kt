@@ -11,7 +11,7 @@ import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class TopChatWebSocket constructor(
+class DefaultTopChatWebSocket constructor(
         private val okHttpClient: OkHttpClient,
         private val webSocketUrl: String,
         private val token: String
@@ -33,7 +33,7 @@ class TopChatWebSocket constructor(
                     }
 
                     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                        Timber.d( "Failure $t")
+                        Timber.d("Failure $t")
                     }
 
                     override fun onClosing(webSocket: WebSocket, code: Int, reason: String?) {
@@ -43,7 +43,7 @@ class TopChatWebSocket constructor(
 
                     override fun onMessage(webSocket: WebSocket, text: String) {
                         runBlocking {
-                            Timber.d( " Message $text")
+                            Timber.d(" Message $text")
                             textChannel.send(GsonBuilder()
                                     .create()
                                     .fromJson(text, WebSocketResponse::class.java))
@@ -51,7 +51,7 @@ class TopChatWebSocket constructor(
                     }
 
                     override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-                        Timber.d( " Bytes $bytes")
+                        Timber.d(" Bytes $bytes")
                     }
 
                     override fun onClosed(webSocket: WebSocket, code: Int, reason: String?) {
@@ -62,10 +62,57 @@ class TopChatWebSocket constructor(
         )
     }
 
+    fun connectWebsocket(listener: WebSocketListener) {
+        okHttpClient.newWebSocket(
+                Request.Builder().url(webSocketUrl)
+                        .header(HEADER_KEY_ORIGIN, TokopediaUrl.getInstance().WEB)
+                        .header(HEADER_KEY_AUTH, "$HEADER_VALUE_BEARER $token")
+                        .build(),
+                listener
+        )
+    }
+
     fun cancel() {
         textChannel.close()
         webSocket?.close(1000, "Bye!")
     }
+
+
+    // TODO: remove later
+//    enum class Event {
+//        ON_OPEN,
+//        ON_FAILURE,
+//        ON_CLOSING,
+//        ON_MESSAGE,
+//        ON_CLOSED
+//    }
+//
+//    class WsEvent<out T> private constructor(
+//            val status: Status,
+//            val data: T?,
+//            val throwable: Throwable?,
+//    ) {
+//
+//        var referer: Any? = null
+//
+//        companion object {
+//            fun <T> success(data: T?): WsEvent<T> {
+//                return WsEvent(Status.SUCCESS, data, null)
+//            }
+//
+//            fun <T> error(throwable: Throwable, data: T?): WsEvent<T> {
+//                return WsEvent(Status.ERROR, data, throwable)
+//            }
+//
+//            fun <T> loading(data: T?): WsEvent<T> {
+//                return WsEvent(Status.LOADING, data, null)
+//            }
+//
+//            fun <T> empty(): WsEvent<T> {
+//                return WsEvent(Status.EMPTY, null, null)
+//            }
+//        }
+//    }
 
     companion object {
         private const val HEADER_KEY_ORIGIN = "Origin"

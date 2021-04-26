@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ChatListWebSocketViewModel @Inject constructor(
-        webSocket: TopChatWebSocket,
+        webSocket: DefaultTopChatWebSocket,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers,
         private val pendingMessageHandler: PendingMessageHandler

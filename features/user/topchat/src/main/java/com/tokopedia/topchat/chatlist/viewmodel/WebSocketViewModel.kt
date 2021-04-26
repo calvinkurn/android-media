@@ -22,7 +22,7 @@ import javax.inject.Inject
  */
 
 open class WebSocketViewModel @Inject constructor(
-        protected val webSocket: TopChatWebSocket,
+        protected val webSocket: DefaultTopChatWebSocket,
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io), LifecycleObserver {
 
