@@ -9,8 +9,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: GraphqlRepository,
-                                                    private val userSession: UserSessionInterface) :
+class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
         UseCase<ShopScoreWrapperResponse>() {
 
     companion object {
@@ -115,77 +114,42 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
 
         val shopScoreWrapperResponse = ShopScoreWrapperResponse()
 
-        when {
-            userSession.isShopOfficialStore -> {
-                requests.add(shopScoreLevelRequest)
-                requests.add(shopLevelRequest)
-                requests.add(getRecommendationToolsRequest)
-                try {
-                    val gqlResponse = gqlRepository.getReseponse(requests)
-
-                    if (gqlResponse.getError(ShopScoreWrapperResponse::class.java).isNullOrEmpty()) {
-                        val shopScoreLevelData = gqlResponse.getData<ShopScoreLevelResponse>(ShopScoreLevelResponse::class.java).shopScoreLevel
-                        shopScoreWrapperResponse.shopScoreLevelResponse = shopScoreLevelData
-                    } else {
-                        val shopScoreLevelErrorMessage = gqlResponse.getError(ShopScoreWrapperResponse::class.java).joinToString(prefix = ",") { it.message }
-                        throw MessageErrorException(shopScoreLevelErrorMessage)
-                    }
-
-                    if (gqlResponse.getError(ShopLevelTooltipResponse::class.java).isNullOrEmpty()) {
-                        val shopLevelTooltipData = gqlResponse.getData<ShopLevelTooltipResponse>(ShopLevelTooltipResponse::class.java).shopLevel
-                        shopScoreWrapperResponse.shopScoreTooltipResponse = shopLevelTooltipData
-                    } else {
-                        val shopLevelTooltipErrorMessage = gqlResponse.getError(ShopLevelTooltipResponse::class.java).joinToString(prefix = ",") { it.message }
-                        throw MessageErrorException(shopLevelTooltipErrorMessage)
-                    }
-
-                    if (gqlResponse.getError(GetRecommendationToolsResponse::class.java).isNullOrEmpty()) {
-                        val getRecommendationToolsData = gqlResponse.getData<GetRecommendationToolsResponse>(GetRecommendationToolsResponse::class.java).valuePropositionGetRecommendationTools
-                        shopScoreWrapperResponse.getRecommendationToolsResponse = getRecommendationToolsData
-                    }
-
-                } catch (e: Throwable) {
-                    throw MessageErrorException(e.message)
-                }
-            }
-            else -> {
-                with(requests) {
-                    add(shopScoreLevelRequest)
-                    add(shopLevelRequest)
-                    add(goldPMShopInfoRequest)
-                    add(getRecommendationToolsRequest)
-                }
-
-                try {
-                    val gqlResponse = gqlRepository.getReseponse(requests)
-
-                    if (gqlResponse.getError(ShopScoreWrapperResponse::class.java).isNullOrEmpty()) {
-                        val shopScoreLevelData = gqlResponse.getData<ShopScoreLevelResponse>(ShopScoreLevelResponse::class.java).shopScoreLevel
-                        shopScoreWrapperResponse.shopScoreLevelResponse = shopScoreLevelData
-                    } else {
-                        val shopScoreLevelErrorMessage = gqlResponse.getError(ShopScoreWrapperResponse::class.java).joinToString(prefix = ",") { it.message }
-                        throw MessageErrorException(shopScoreLevelErrorMessage)
-                    }
-
-                    if (gqlResponse.getError(ShopLevelTooltipResponse::class.java).isNullOrEmpty()) {
-                        val shopLevelTooltipData = gqlResponse.getData<ShopLevelTooltipResponse>(ShopLevelTooltipResponse::class.java).shopLevel
-                        shopScoreWrapperResponse.shopScoreTooltipResponse = shopLevelTooltipData
-                    }
-
-                    if (gqlResponse.getError(GoldGetPMShopInfoResponse::class.java).isNullOrEmpty()) {
-                        val goldGetPMShopInfoData = gqlResponse.getData<GoldGetPMShopInfoResponse>(GoldGetPMShopInfoResponse::class.java).goldGetPMShopInfo
-                        shopScoreWrapperResponse.goldGetPMShopInfoResponse = goldGetPMShopInfoData
-                    }
-
-                    if (gqlResponse.getError(GetRecommendationToolsResponse::class.java).isNullOrEmpty()) {
-                        val getRecommendationToolsData = gqlResponse.getData<GetRecommendationToolsResponse>(GetRecommendationToolsResponse::class.java).valuePropositionGetRecommendationTools
-                        shopScoreWrapperResponse.getRecommendationToolsResponse = getRecommendationToolsData
-                    }
-
-                } catch (e: Throwable) {
-                }
-            }
+        with(requests) {
+            add(shopScoreLevelRequest)
+            add(shopLevelRequest)
+            add(goldPMShopInfoRequest)
+            add(getRecommendationToolsRequest)
         }
+
+        try {
+            val gqlResponse = gqlRepository.getReseponse(requests)
+
+            if (gqlResponse.getError(ShopScoreWrapperResponse::class.java).isNullOrEmpty()) {
+                val shopScoreLevelData = gqlResponse.getData<ShopScoreLevelResponse>(ShopScoreLevelResponse::class.java).shopScoreLevel
+                shopScoreWrapperResponse.shopScoreLevelResponse = shopScoreLevelData
+            } else {
+                val shopScoreLevelErrorMessage = gqlResponse.getError(ShopScoreWrapperResponse::class.java).joinToString(prefix = ",") { it.message }
+                throw MessageErrorException(shopScoreLevelErrorMessage)
+            }
+
+            if (gqlResponse.getError(ShopLevelTooltipResponse::class.java).isNullOrEmpty()) {
+                val shopLevelTooltipData = gqlResponse.getData<ShopLevelTooltipResponse>(ShopLevelTooltipResponse::class.java).shopLevel
+                shopScoreWrapperResponse.shopScoreTooltipResponse = shopLevelTooltipData
+            }
+
+            if (gqlResponse.getError(GoldGetPMShopInfoResponse::class.java).isNullOrEmpty()) {
+                val goldGetPMShopInfoData = gqlResponse.getData<GoldGetPMShopInfoResponse>(GoldGetPMShopInfoResponse::class.java).goldGetPMShopInfo
+                shopScoreWrapperResponse.goldGetPMShopInfoResponse = goldGetPMShopInfoData
+            }
+
+            if (gqlResponse.getError(GetRecommendationToolsResponse::class.java).isNullOrEmpty()) {
+                val getRecommendationToolsData = gqlResponse.getData<GetRecommendationToolsResponse>(GetRecommendationToolsResponse::class.java).valuePropositionGetRecommendationTools
+                shopScoreWrapperResponse.getRecommendationToolsResponse = getRecommendationToolsData
+            }
+
+        } catch (e: Throwable) {
+        }
+
         return shopScoreWrapperResponse
     }
 }

@@ -274,5 +274,6 @@
     <string name="desc_coachmark_shop_score_3">Kamu bisa cek status dan potensi grade Power Merchant untuk tokomu di sini, ya!</string>
     <string name="title_penalty_filter_bottom_sheet">Filter</string>
     <string name="reset_filter_penalty">Reset</string>
+    <string name="close_youtube">Close</string>
 
 </resources>

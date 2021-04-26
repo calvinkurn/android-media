@@ -37,7 +37,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".performance.presentation.activity.ShopPerformanceYoutubeActivity" />
+        <activity android:name=".performance.presentation.activity.ShopPerformanceYoutubeActivity"
+            android:theme="@style/Theme.White"/>
 
         <activity
             android:name=".penalty.presentation.activity.ShopPenaltyPageActivity"

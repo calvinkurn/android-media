@@ -296,7 +296,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onWatchVideoClicked(videoId: String) {
-        context?.startActivity(ShopPerformanceYoutubeActivity.createInstance(context, videoId))
+        context?.let {
+            it.startActivity(ShopPerformanceYoutubeActivity.createIntent(it, videoId))
+        }
         shopScorePenaltyTracking.clickWatchVideoNewSeller()
     }
 
@@ -540,6 +542,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         shopPerformanceSwipeRefresh?.setOnRefreshListener {
             loadData()
             showPenaltyBadge()
+            coachMark?.dismissCoachMark()
         }
     }
 
