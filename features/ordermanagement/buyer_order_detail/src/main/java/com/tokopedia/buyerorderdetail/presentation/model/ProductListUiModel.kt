@@ -11,7 +11,8 @@ data class ProductListUiModel(
     data class ProductListHeaderUiModel(
             val header: String,
             val shopBadge: Int,
-            val shopName: String
+            val shopName: String,
+            val shopId: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -25,7 +26,9 @@ data class ProductListUiModel(
             val productNote: String,
             val totalPrice: String,
             val showBuyAgainButton: Boolean,
-            val showClaimInsurance: Boolean
+            val showClaimInsurance: Boolean,
+            val orderId: String,
+            val orderDetailId: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()

@@ -1,5 +1,8 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
@@ -34,6 +37,12 @@ class ReceiverAddressInfoViewHolder(itemView: View?) : AbstractViewHolder<Shipme
     }
 
     private fun setupReceiverAddressNote(receiverAddressNote: String) {
-        itemView.tvBuyerOrderDetailReceiverAddressNoteValue?.text = receiverAddressNote
+        itemView.tvBuyerOrderDetailReceiverAddressNoteValue?.text = composeReceiverAddressNote(receiverAddressNote)
+    }
+
+    private fun composeReceiverAddressNote(receiverAddressNote: String): SpannableString {
+        return SpannableString(receiverAddressNote).apply {
+            setSpan(StyleSpan(android.graphics.Typeface.ITALIC), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
     }
 }

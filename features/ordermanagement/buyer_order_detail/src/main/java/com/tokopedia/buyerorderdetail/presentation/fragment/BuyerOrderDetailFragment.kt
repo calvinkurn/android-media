@@ -13,13 +13,14 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapt
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ActionButtonsViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.BuyProtectionViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SecondaryActionButtonBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.model.*
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_buyer_order_detail.*
 import java.util.*
 
-class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener, BuyProtectionViewHolder.BuyProtectionListener {
+class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener, BuyProtectionViewHolder.BuyProtectionListener, ProductViewHolder.ProductViewListener {
 
     private val mockModel = BuyerOrderDetailUiModel(
             actionButtons = ActionButtonsUiModel(
@@ -133,7 +134,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
                     productListHeaderUiModel = ProductListUiModel.ProductListHeaderUiModel(
                             header = "Detail Produk",
                             shopBadge = 2,
-                            shopName = "Rockerpower Shopz"
+                            shopName = "Rockerpower Shopz",
+                            shopId = "1479278"
                     ),
                     productList = listOf(
                             ProductListUiModel.ProductUiModel(
@@ -143,7 +145,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
                                     productNote = "43 Size. Packing rapi plis.",
                                     totalPrice = "Rp 4.000.000",
                                     showBuyAgainButton = true,
-                                    showClaimInsurance = true
+                                    showClaimInsurance = true,
+                                    orderId = "774683135",
+                                    orderDetailId = "1200008888"
                             ),
                             ProductListUiModel.ProductUiModel(
                                     productThumbnailUrl = "https://akcdn.detik.net.id/visual/2020/08/11/patrick-star-di-spongebob-squarepants_169.jpeg?w=650",
@@ -152,7 +156,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
                                     productNote = "43 Size. Packing rapi plis pake bubble wrap yg tebel, kalau ga tebel nanti saya minta refund karena ga tebel bubble wrapnya, kasian patricknya.",
                                     totalPrice = "Rp 20.000.000",
                                     showBuyAgainButton = false,
-                                    showClaimInsurance = true
+                                    showClaimInsurance = true,
+                                    orderId = "774683135",
+                                    orderDetailId = "1200008888"
                             ),
                             ProductListUiModel.ProductUiModel(
                                     productThumbnailUrl = "https://img.tek.id/crop/330x230/content/2020/08/11/31957/nickelodeon-garap-serial-tv-spin-off-patrick-6siywPEb7g.jpg",
@@ -161,7 +167,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
                                     productNote = "43 Size. Packing rapi plis.",
                                     totalPrice = "Rp 30.000.000",
                                     showBuyAgainButton = false,
-                                    showClaimInsurance = false
+                                    showClaimInsurance = false,
+                                    orderId = "774683135",
+                                    orderDetailId = "1200008888"
                             ),
                             ProductListUiModel.ProductUiModel(
                                     productThumbnailUrl = "https://www.greenscene.co.id/wp-content/uploads/2020/08/Patrick-Stars-696x497.jpg",
@@ -170,7 +178,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
                                     productNote = "43 Size. Packing rapi plis.",
                                     totalPrice = "Rp 40.000.000",
                                     showBuyAgainButton = true,
-                                    showClaimInsurance = false
+                                    showClaimInsurance = false,
+                                    orderId = "774683135",
+                                    orderDetailId = "1200008888"
                             ),
                             ProductListUiModel.ProductUiModel(
                                     productThumbnailUrl = "https://cdn.kincir.com/1/production/media/2018/april/silsilah-keluarga-patrick-star-yang-harus-lo-tahu/2-patrick-patar-700x700.jpg",
@@ -179,7 +189,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
                                     productNote = "",
                                     totalPrice = "Rp 50.000.000",
                                     showBuyAgainButton = false,
-                                    showClaimInsurance = false
+                                    showClaimInsurance = false,
+                                    orderId = "774683135",
+                                    orderDetailId = "1200008888"
                             )
                     )
             ),
@@ -213,7 +225,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
             ))
 
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this, this)
+        BuyerOrderDetailTypeFactory(this, this, this)
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
@@ -256,6 +268,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
 
     override fun onReachBuyProtectionDeadline() {
 //        adapter.removeBuyProtectionWidget()
+    }
+
+    override fun onBuyAgainButtonClicked() {
+        //TODO: Implement ATC after backend provide contract
     }
 
     private fun setupViews() {

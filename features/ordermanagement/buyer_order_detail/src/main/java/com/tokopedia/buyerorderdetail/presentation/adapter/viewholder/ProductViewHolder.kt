@@ -6,20 +6,31 @@ import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.item_buyer_order_detail_product_list_item.view.*
 
-class ProductViewHolder(itemView: View?) : AbstractViewHolder<ProductListUiModel.ProductUiModel>(itemView) {
+class ProductViewHolder(
+        itemView: View?,
+        private val listener: ProductViewListener
+) : AbstractViewHolder<ProductListUiModel.ProductUiModel>(itemView), View.OnClickListener {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_product_list_item
     }
 
+    private var element: ProductListUiModel.ProductUiModel? = null
+
+    init {
+        setupClickListeners()
+    }
+
     override fun bind(element: ProductListUiModel.ProductUiModel?) {
         element?.let {
+            this.element = it
             setupClaimInsuranceButton(it.showClaimInsurance)
             setupProductThumbnail(it.productThumbnailUrl, it.showClaimInsurance)
             setupProductName(it.productName)
@@ -27,6 +38,36 @@ class ProductViewHolder(itemView: View?) : AbstractViewHolder<ProductListUiModel
             setupProductNote(it.productNote)
             setupTotalPrice(it.totalPrice)
             setupBuyAgainButton(it.showBuyAgainButton)
+        }
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.btnProductProtection -> goToBuyProductProtection()
+            R.id.cardBuyerOrderDetailProduct -> goToProductSnapshotPage()
+            R.id.btnBuyerOrderDetailBuyProductAgain -> addToCart()
+        }
+    }
+
+    private fun goToBuyProductProtection() {
+        //TODO: Implement ATC after knowing the applink
+    }
+
+    private fun goToProductSnapshotPage() {
+        element?.let {
+            BuyerOrderDetailNavigator.goToProductSnapshotPage(itemView.context, it.orderId, it.orderDetailId)
+        }
+    }
+
+    private fun addToCart() {
+        listener.onBuyAgainButtonClicked()
+    }
+
+    private fun setupClickListeners() {
+        with(itemView) {
+            btnProductProtection?.setOnClickListener(this@ProductViewHolder)
+            cardBuyerOrderDetailProduct?.setOnClickListener(this@ProductViewHolder)
+            btnBuyerOrderDetailBuyProductAgain?.setOnClickListener(this@ProductViewHolder)
         }
     }
 
@@ -69,5 +110,9 @@ class ProductViewHolder(itemView: View?) : AbstractViewHolder<ProductListUiModel
 
     private fun setupBuyAgainButton(showBuyAgainButton: Boolean) {
         itemView.btnBuyerOrderDetailBuyProductAgain?.showWithCondition(showBuyAgainButton)
+    }
+
+    interface ProductViewListener {
+        fun onBuyAgainButtonClicked()
     }
 }
