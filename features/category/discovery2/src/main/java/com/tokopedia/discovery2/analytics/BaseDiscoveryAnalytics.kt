@@ -78,5 +78,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackCategoryOptionClick(userLoggedIn: Boolean, childCatID: String, applink: String?, catDepth: Int, childCatName: String) {}
     open fun trackCategoryTreeCloseClick(userLoggedIn: Boolean) {}
     open fun trackBottomNavBarClick(buttonName: String, userID: String?) {}
+    open fun getHostSource() : String { return ""}
+    open fun getHostTrackingSource() : String {return ""}
 
 }
