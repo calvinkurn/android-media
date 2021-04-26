@@ -58,6 +58,7 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
@@ -150,7 +151,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         SearchListener, BroadcastSpamHandlerViewHolder.Listener,
         RoomSettingFraudAlertViewHolder.Listener, ReviewViewHolder.Listener,
         TopchatProductAttachmentListener, UploadImageBroadcastListener,
-        SrwQuestionViewHolder.Listener, SrwLinearLayout.Listener {
+        SrwQuestionViewHolder.Listener, SrwLinearLayout.Listener, ReplyBoxTextListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -210,7 +211,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var rvSrw: SrwLinearLayout? = null
     private var rvContainer: CoordinatorLayout? = null
     private var chatBackground: ImageView? = null
+    private var sendButton: IconUnify? = null
     private var textWatcher: MessageTextWatcher? = null
+    private var sendButtontextWatcher: SendButtonTextWatcher? = null
     private var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
 
@@ -294,6 +297,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun initReplyTextWatcher() {
         textWatcher = MessageTextWatcher(this)
         composeArea?.addTextChangedListener(textWatcher)
+        sendButtontextWatcher = SendButtonTextWatcher(this)
+        composeArea?.addTextChangedListener(sendButtontextWatcher)
     }
 
     private fun initTextComposeBackground() {
@@ -334,6 +339,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         rvContainer = view?.findViewById(R.id.rv_container)
         fbNewUnreadMessage = view?.findViewById(R.id.fb_new_unread_message)
         chatBackground = view?.findViewById(R.id.iv_bg_chat)
+        sendButton = view?.findViewById(R.id.send_but)
     }
 
     private fun initStickerView() {
@@ -884,12 +890,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onErrorUploadImage(errorMessage: String, it: ImageUploadViewModel) {
         showSnackbarError(errorMessage)
         getViewState().showRetryUploadImages(it, true)
-    }
-
-    override fun prepareListener() {
-        view?.findViewById<View>(R.id.send_but)?.setOnClickListener {
-            onSendButtonClicked()
-        }
     }
 
     override fun onSendButtonClicked() {
@@ -1996,6 +1996,20 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             "${substring(0, maxChar)}..."
         } else {
             this
+        }
+    }
+
+    override fun onReplyBoxEmpty() {
+        sendButton?.background = MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn_disabled)
+        sendButton?.setOnClickListener {
+            showSnackbarError(getString(R.string.topchat_desc_empty_text_box))
+        }
+    }
+
+    override fun onReplyBoxNotEmpty() {
+        sendButton?.background = MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn)
+        sendButton?.setOnClickListener {
+            onSendButtonClicked()
         }
     }
 

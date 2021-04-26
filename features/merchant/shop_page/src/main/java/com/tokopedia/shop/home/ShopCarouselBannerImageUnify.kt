@@ -317,14 +317,16 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        var width = measuredWidth
-        var height = measuredHeight
-        when {
-            width > 0 -> height = (width * heightRatio.orZero()).toInt()
-            height > 0 -> width = (height / heightRatio.orZero()).toInt()
-            else -> return
+        if (null != heightRatio) {
+            var width = measuredWidth
+            var height = measuredHeight
+            when {
+                width > 0 -> height = (width * heightRatio.orZero()).toInt()
+                height > 0 -> width = (height / heightRatio.orZero()).toInt()
+                else -> return
+            }
+            setMeasuredDimension(width, height)
         }
-        setMeasuredDimension(width, height)
     }
 
     override fun onDraw(canvas: Canvas?) {

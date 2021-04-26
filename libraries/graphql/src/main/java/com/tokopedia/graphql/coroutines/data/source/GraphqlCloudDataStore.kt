@@ -93,6 +93,8 @@ class GraphqlCloudDataStore @Inject constructor(
                         e !is ConnectionShutdownException &&
                         e !is CancellationException) {
                     LoggingUtils.logGqlError("kt", requests.toString(), e)
+                } else {
+                    LoggingUtils.logGqlErrorNetwork("kt", requests.toString(), e)
                 }
                 if (e !is CancellationException) {
                     throw e

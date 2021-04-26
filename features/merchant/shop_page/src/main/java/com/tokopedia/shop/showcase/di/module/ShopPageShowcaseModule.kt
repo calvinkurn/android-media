@@ -28,12 +28,6 @@ class ShopPageShowcaseModule {
 
     @ShopPageShowcaseScope
     @Provides
-    fun getCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
-    }
-
-    @ShopPageShowcaseScope
-    @Provides
     fun provideGqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }

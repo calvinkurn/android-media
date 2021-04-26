@@ -112,7 +112,6 @@ class ProductEmptySearchViewHolder(
         bindContentTextView()
         bindNewSearchButton()
         bindRecyclerView()
-        bindBannerAds()
         bindGlobalSearchButton()
     }
 

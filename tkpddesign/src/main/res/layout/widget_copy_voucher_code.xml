@@ -32,7 +32,7 @@
             android:layout_marginLeft="@dimen/dp_10"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
-            android:textColor="@color/font_black_disabled_38"
+            android:textColor="@color/Unify_N700_32"
             android:lineSpacingExtra="2sp"
             android:text="@string/button_copy_voucher_code"
             android:visibility="invisible"
@@ -51,7 +51,7 @@
         android:minHeight="@dimen/dp_44"
         android:textAlignment="center"
         android:gravity="center"
-        android:textColor="@color/tkpd_main_orange"
+        android:textColor="@color/Unify_Y500"
         tools:text="GRATISONGKIR"
         android:textIsSelectable="false"
         />
