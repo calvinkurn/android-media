@@ -660,7 +660,13 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
         fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
-        fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.CART_FRAGMENT, getIntent().getExtras()));
+
+        Bundle cartBundle = getIntent().getExtras();
+        if (cartBundle == null) {
+            cartBundle = new Bundle();
+        }
+        cartBundle.putString("CartFragment", MainParentActivity.class.getSimpleName());
+        fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.CART_FRAGMENT, cartBundle));
         fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
 
         return fragmentList;
