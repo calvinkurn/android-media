@@ -155,7 +155,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     private fun renderActionDelete(data: CartItemHolderData) {
         binding.btnDeleteCart.setOnClickListener {
             if (adapterPosition != RecyclerView.NO_POSITION) {
-                actionListener?.onCartItemDeleteButtonClicked(data, adapterPosition, parentPosition)
+                actionListener?.onCartItemDeleteButtonClicked(data)
             }
         }
         binding.btnDeleteCart.show()
@@ -500,12 +500,12 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         }
         qtyEditorCart.setSubstractListener {
             if (data.cartItemData?.isError == false && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
-                actionListener?.onCartItemQuantityMinusButtonClicked(data, adapterPosition, parentPosition)
+                actionListener?.onCartItemQuantityMinusButtonClicked()
             }
         }
         qtyEditorCart.setAddClickListener {
             if (data.cartItemData?.isError == false && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
-                actionListener?.onCartItemQuantityPlusButtonClicked(data, adapterPosition, parentPosition)
+                actionListener?.onCartItemQuantityPlusButtonClicked()
             }
         }
         qtyEditorCart.editText.setOnFocusChangeListener { v, hasFocus ->
@@ -577,7 +577,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             val needToUpdateView = cartItemHolderData?.cartItemData?.updatedData?.quantity != qty
             if (needToUpdateView) {
                 if (qty <= 0) {
-                    actionListener?.onCartItemQuantityReseted(adapterPosition, parentPosition, needToUpdateView)
+                    actionListener?.onCartItemQuantityReseted(adapterPosition, parentPosition)
                 }
                 binding.qtyEditorCart.setValue(qty)
             }

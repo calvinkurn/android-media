@@ -64,10 +64,10 @@ class CartItemAdapter(private val actionListener: ActionListener,
     }
 
     interface ActionListener {
-        fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData?, position: Int, parentPosition: Int)
-        fun onCartItemQuantityPlusButtonClicked(cartItemHolderData: CartItemHolderData?, position: Int, parentPosition: Int)
-        fun onCartItemQuantityMinusButtonClicked(cartItemHolderData: CartItemHolderData?, position: Int, parentPosition: Int)
-        fun onCartItemQuantityReseted(position: Int, parentPosition: Int, needRefreshItemView: Boolean)
+        fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData?)
+        fun onCartItemQuantityPlusButtonClicked()
+        fun onCartItemQuantityMinusButtonClicked()
+        fun onCartItemQuantityReseted(position: Int, parentPosition: Int)
         fun onCartItemProductClicked(cartItemData: CartItemData?)
         fun onCartItemQuantityInputFormClicked(qty: String?)
         fun onCartItemLabelInputRemarkClicked()

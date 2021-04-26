@@ -1079,7 +1079,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         refreshCartWithSwipeToRefresh()
     }
 
-    override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData?, position: Int, parentPosition: Int) {
+    override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData?) {
         cartPageAnalytics.eventClickAtcCartClickTrashBin()
         val cartItemDatas = mutableListOf<CartItemData>()
         cartItemHolderData?.cartItemData?.let {
@@ -1095,15 +1095,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartItemQuantityPlusButtonClicked(cartItemHolderData: CartItemHolderData?, position: Int, parentPosition: Int) {
+    override fun onCartItemQuantityPlusButtonClicked() {
         cartPageAnalytics.eventClickAtcCartClickButtonPlus()
     }
 
-    override fun onCartItemQuantityMinusButtonClicked(cartItemHolderData: CartItemHolderData?, position: Int, parentPosition: Int) {
+    override fun onCartItemQuantityMinusButtonClicked() {
         cartPageAnalytics.eventClickAtcCartClickButtonMinus()
     }
 
-    override fun onCartItemQuantityReseted(position: Int, parentPosition: Int, needRefreshItemView: Boolean) {
+    override fun onCartItemQuantityReseted(position: Int, parentPosition: Int) {
         cartAdapter.resetQuantity(position, parentPosition)
     }
 
