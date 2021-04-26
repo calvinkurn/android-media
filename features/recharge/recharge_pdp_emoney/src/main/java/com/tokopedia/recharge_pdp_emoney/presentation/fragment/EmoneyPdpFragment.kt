@@ -194,6 +194,8 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun loadData() {
+        emoneyGlobalError.hide()
+        emoneyPdpShimmeringLayout.show()
         topUpBillsViewModel.getMenuDetail(CommonTopupBillsGqlQuery.catalogMenuDetail,
                 topUpBillsViewModel.createMenuDetailParams(detailPassData.menuId.toIntOrZero()))
 
@@ -210,13 +212,13 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun renderRecommendationsAndPromoList(recommendations: List<TopupBillsRecommendation>,
                                                   promoList: List<TopupBillsPromo>) {
-
+        emoneyPdpShimmeringLayout.hide()
         if (recommendations.isEmpty() && promoList.isEmpty()) {
             emoneyPdpViewPager.hide()
             return
         }
-
         emoneyPdpViewPager.show()
+
         if (recommendations.isNotEmpty() && promoList.isNotEmpty()) {
             emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_recents_tab))
             emoneyPdpTab.addNewTab(getString(R.string.recharge_pdp_emoney_promo_tab))
@@ -408,12 +410,14 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun showProducts() {
+        emoneyPdpShimmeringLayout.hide()
         emoneyPdpTab.hide()
         emoneyPdpViewPager.hide()
         emoneyPdpProductWidget.show()
     }
 
     private fun showRecentNumberAndPromo() {
+        emoneyPdpShimmeringLayout.hide()
         emoneyPdpProductWidget.hide()
         (emoneyPdpViewPager.adapter)?.let {
             if ((it as EmoneyPdpFragmentPagerAdapter).itemCount > 1) {

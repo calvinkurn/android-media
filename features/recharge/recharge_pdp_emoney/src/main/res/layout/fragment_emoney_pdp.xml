@@ -5,13 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0"
     android:descendantFocusability="beforeDescendants">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:background="@color/Unify_N0"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -68,6 +68,16 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:visibility="gone" />
 
+        <include
+            android:id="@+id/emoneyPdpShimmeringLayout"
+            layout="@layout/layout_emoney_recent_transaction_shimmering"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_N0"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:visibility="visible"
+            tools:visibility="gone" />
+
         <com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpProductWidget
             android:id="@+id/emoneyPdpProductWidget"
             android:layout_width="match_parent"
@@ -120,7 +130,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:background="@color/Neutral_N0"
+        android:background="@color/Unify_N0"
         android:visibility="gone"
         android:orientation="vertical" />
 
