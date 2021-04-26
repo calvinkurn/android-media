@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -12,7 +11,6 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 
@@ -35,8 +33,6 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     override fun setProductModel(productCardModel: ProductCardModel) {
-        setCardBackgroundColor()
-
         imageProduct?.loadImageRounded(productCardModel.productImageUrl)
 
         renderLabelCampaign(labelCampaignBackground, textViewLabelCampaign, productCardModel)
@@ -72,11 +68,6 @@ class ProductCardListView: BaseCustomView, IProductCardView {
                     getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             )
         }
-    }
-
-    private fun setCardBackgroundColor() {
-        if (context.isDarkMode()) cardViewProductCard?.setCardBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
-        else cardViewProductCard?.setCardBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {

@@ -6,7 +6,7 @@
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
-    app:cardBackgroundColor="@color/Unify_N0"
+    app:cardBackgroundColor="@color/product_card_dms_card_background"
     android:foreground="?attr/selectableItemBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
