@@ -31,6 +31,8 @@ import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalasePic
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.setup.tags.PlayTitleAndTagsSetupFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.broadcaster.util.pageflow.FragmentPageNavigator
+import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.cleanBackstack
 import com.tokopedia.play_common.util.extension.compatTransitionName
 import java.util.*
@@ -72,6 +74,14 @@ class PlayBroadcastSetupBottomSheet(
 
     private val currentFragment: Fragment?
         get() = childFragmentManager.findFragmentById(R.id.fl_fragment)
+
+    private val pageNavigator: FragmentPageNavigator by lifecycleBound(
+            creator = {
+                FragmentPageNavigator(
+                        fragmentManager = childFragmentManager
+                )
+            }
+    )
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
@@ -115,7 +125,7 @@ class PlayBroadcastSetupBottomSheet(
 
     override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
         addBreadcrumb()
-        openFragment(fragmentClass, extras, sharedElements, onFragment)
+        openFragment(fragmentClass, extras, sharedElements)
     }
 
     override fun goBack() {
@@ -220,29 +230,17 @@ class PlayBroadcastSetupBottomSheet(
 
     private fun maxHeight(): Int = getScreenHeight()
 
-    private fun<T: Fragment> openFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit): Fragment {
-        val fragmentTransaction = childFragmentManager.beginTransaction()
-        val destFragment = getFragmentByClassName(fragmentClass)
-        destFragment.arguments = extras
-        onFragment(destFragment as T)
-        fragmentTransaction
-                .apply {
-                    sharedElements.forEach {
-                        val transitionName = it.compatTransitionName
-                        if (transitionName != null) addSharedElement(it, transitionName)
-                    }
-
-                    if (sharedElements.isNotEmpty()) setReorderingAllowed(true)
-                }
-                .replace(R.id.fl_fragment, destFragment, fragmentClass.name)
-                .addToBackStack(fragmentClass.name)
-                .commit()
-
-        return destFragment
-    }
-
-    private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
-        return fragmentFactory.instantiate(fragmentClass.classLoader!!, fragmentClass.name)
+    private fun<T: Fragment> openFragment(
+            fragmentClass: Class<out T>,
+            extras: Bundle,
+            sharedElements: List<View>,
+    ) {
+        pageNavigator.navigate(
+                flFragment.id,
+                fragmentClass,
+                extras,
+                sharedElements
+        )
     }
 
     private fun addBreadcrumb() {
