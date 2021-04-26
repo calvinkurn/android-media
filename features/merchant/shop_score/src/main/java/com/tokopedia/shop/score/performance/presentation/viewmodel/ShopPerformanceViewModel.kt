@@ -92,6 +92,4 @@ class ShopPerformanceViewModel @Inject constructor(
             _shopInfoLevel.postValue(Fail(it))
         })
     }
-
-
 }

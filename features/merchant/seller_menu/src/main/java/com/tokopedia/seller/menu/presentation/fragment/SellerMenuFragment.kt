@@ -204,15 +204,16 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observe(viewModel.shopAccountTickerPeriod) {
             when (it) {
                 is Success -> {
-                    if (it.data.first) {
+                    if (it.data.periodType == COMMUNICATION_PERIOD) {
                         val tickerShopInfoData = TickerShopScoreUiModel(
-                                tickerTitle = context?.let {
-                                    context -> getString(R.string.seller_menu_ticker_title_shop_score, getShopScoreDate(context))
+                                tickerTitle = context?.let { context ->
+                                    getString(com.tokopedia.seller.menu.common.R.string.seller_menu_ticker_title_shop_score, getShopScoreDate(context))
                                 } ?: "",
-                                descTitle = getString(R.string.seller_menu_ticker_desc_shop_score))
+                                descTitle = getString(com.tokopedia.seller.menu.common.R.string.seller_menu_ticker_desc_shop_score))
                         adapter.showShopScoreTicker(tickerShopInfoData)
                     }
-                    isNewSeller = it.data.second.isNewSeller
+                    isNewSeller = it.data.isNewSeller
+                    periodType = it.data.periodType
                 }
             }
         }
