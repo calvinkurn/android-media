@@ -14,6 +14,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.topchat.chatlist.viewmodel.TopChatWebSocket
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
@@ -107,7 +108,7 @@ class ChatListNetworkModule {
     @Provides
     fun provideXUserIdInterceptor(@ApplicationContext context: Context,
                                   networkRouter: NetworkRouter,
-                                  userSession: UserSession):
+                                  userSession: UserSessionInterface):
             XUserIdInterceptor {
         return XUserIdInterceptor(context, networkRouter, userSession)
     }
@@ -131,8 +132,7 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideOkHttpClient(@ApplicationContext context: Context,
-                            retryPolicy: OkHttpRetryPolicy,
+    fun provideOkHttpClient(retryPolicy: OkHttpRetryPolicy,
                             errorResponseInterceptor: ErrorResponseInterceptor,
                             chuckInterceptor: ChuckerInterceptor,
                             fingerprintInterceptor: FingerprintInterceptor,
@@ -153,4 +153,18 @@ class ChatListNetworkModule {
         }
         return builder.build()
     }
+
+    @ChatListScope
+    @Provides
+    fun provideTopChatWebSocket(
+            userSession: UserSessionInterface,
+            client: OkHttpClient
+    ): TopChatWebSocket {
+        val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
+                "?os_type=1" +
+                "&device_id=" + userSession.deviceId +
+                "&user_id=" + userSession.userId
+        return TopChatWebSocket(client, webSocketUrl, userSession.accessToken)
+    }
+
 }
