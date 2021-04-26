@@ -15,12 +15,14 @@ import androidx.transition.Fade
 import androidx.transition.Slide
 import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.util.extension.showToaster
+import com.tokopedia.play.broadcaster.util.pageflow.FragmentPageNavigator
 import com.tokopedia.play.broadcaster.view.contract.PlayEtalaseSetupCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
@@ -31,9 +33,8 @@ import com.tokopedia.play.broadcaster.view.partial.BottomActionViewComponent
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPageViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play_common.util.extension.compatTransitionName
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
@@ -60,6 +61,14 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var psbSearch: PlaySearchBar
     private lateinit var errorEtalase: GlobalError
     private lateinit var bottomSheetHeader : PlayBottomSheetHeader
+
+    private val pageNavigator: FragmentPageNavigator by lifecycleBound(
+            creator = {
+                FragmentPageNavigator(
+                        fragmentManager = childFragmentManager
+                )
+            }
+    )
 
     private val selectedProductPage by viewComponent {
         SelectedProductPageViewComponent(view as ViewGroup, object : SelectedProductPageViewComponent.Listener {
@@ -245,30 +254,13 @@ class PlayEtalasePickerFragment @Inject constructor(
             fragmentClass: Class<out Fragment>,
             extras: Bundle = Bundle.EMPTY,
             sharedElements: List<View> = emptyList(),
-            onFragment: (Fragment) -> Unit = {}
-    ): Fragment {
-        val fragmentTransaction = childFragmentManager.beginTransaction()
-        val destFragment = getFragmentByClassName(fragmentClass)
-        destFragment.arguments = extras
-        onFragment(destFragment)
-        fragmentTransaction
-                .apply {
-                    sharedElements.forEach {
-                        val transitionName = it.compatTransitionName
-                        if (transitionName != null) addSharedElement(it, transitionName)
-                    }
-
-                    if (sharedElements.isNotEmpty()) setReorderingAllowed(true)
-                }
-                .replace(R.id.fl_etalase_flow, destFragment, fragmentClass.name)
-                .addToBackStack(fragmentClass.name)
-                .commit()
-
-        return destFragment
-    }
-
-    private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
-        return fragmentFactory.instantiate(requireContext().classLoader, fragmentClass.name)
+    ) {
+        pageNavigator.navigate(
+                flEtalaseFlow.id,
+                fragmentClass,
+                extras,
+                sharedElements
+        )
     }
 
     private fun showSelectedProductPage() {
