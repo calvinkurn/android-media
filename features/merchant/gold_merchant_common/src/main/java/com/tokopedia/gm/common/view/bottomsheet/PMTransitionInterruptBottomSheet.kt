@@ -1,16 +1,10 @@
 package com.tokopedia.gm.common.view.bottomsheet
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.gm.common.R
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
 import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_gmc_pm_transition_interrupt.view.*
 
 /**
@@ -45,7 +39,7 @@ class PMTransitionInterruptBottomSheet : BaseBottomSheet() {
         }
 
         data?.let { data ->
-            tvSahPmTitle.text = context.getString(R.string.gmc_power_merchant_bottom_sheet_title, PMConstant.NEW_PM_CALCULATION_DATE)
+            tvSahPmTitle.text = context.getString(R.string.gmc_power_merchant_bottom_sheet_title, PMConstant.TRANSITION_PERIOD_START_DATE)
             slvSahPmShopLevel.show(data.shopLevel)
             pmgSahPmCard.show(data)
 

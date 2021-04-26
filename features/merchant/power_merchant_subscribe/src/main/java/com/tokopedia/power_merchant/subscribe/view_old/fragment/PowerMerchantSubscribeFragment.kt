@@ -19,10 +19,8 @@ import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
-import com.tokopedia.gm.common.data.source.local.model.PMStatusAndShopInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.TickerUiModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
@@ -35,8 +33,6 @@ import com.tokopedia.power_merchant.subscribe.view.model.ContentSliderUiModel
 import com.tokopedia.power_merchant.subscribe.view_old.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view_old.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view_old.bottomsheets.PowerMerchantCancelBottomSheet
-import com.tokopedia.power_merchant.subscribe.view_old.bottomsheets.PowerMerchantNotificationBottomSheet
-import com.tokopedia.power_merchant.subscribe.view_old.bottomsheets.PowerMerchantNotificationBottomSheet.CTAMode
 import com.tokopedia.power_merchant.subscribe.view_old.constant.PowerMerchantUrl.URL_FREE_SHIPPING_INTERIM_PAGE
 import com.tokopedia.power_merchant.subscribe.view_old.model.PMSettingAndShopInfoUiModel
 import com.tokopedia.power_merchant.subscribe.view_old.model.PMStatusAndSettingUiModel
@@ -69,7 +65,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     @Inject
     lateinit var powerMerchantTracking: PowerMerchantTracking
 
-    private var pmStatusAndShopInfo: PMStatusAndShopInfoUiModel? = null
     private var bottomSheetCancel: PowerMerchantCancelBottomSheet? = null
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
@@ -508,12 +503,12 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         val slideItems = listOf(
                 ContentSliderUiModel(
                         title = getString(R.string.pm_power_merchant_new_term_title),
-                        description = getString(R.string.pm_power_merchant_new_term_description),
+                        description = getString(R.string.pm_power_merchant_new_term_description, PMConstant.TRANSITION_PERIOD_START_DATE),
                         imgUrl = PMConstant.Images.PM_NEW_REQUIREMENT
                 ),
                 ContentSliderUiModel(
                         title = getString(R.string.pm_integrated_with_reputation_title),
-                        description = getString(R.string.pm_integrated_with_reputation_description),
+                        description = getString(R.string.pm_integrated_with_reputation_description, PMConstant.TRANSITION_PERIOD_START_DATE),
                         imgUrl = PMConstant.Images.PM_INTEGRATED_WITH_REPUTATION
                 ),
                 ContentSliderUiModel(
@@ -523,7 +518,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
                 ),
                 ContentSliderUiModel(
                         title = getString(R.string.pm_new_benefits_title),
-                        description = getString(R.string.pm_new_schema_description),
+                        description = getString(R.string.pm_new_schema_description, PMConstant.TRANSITION_PERIOD_START_DATE),
                         imgUrl = PMConstant.Images.PM_NEW_SCHEMA
                 )
         )

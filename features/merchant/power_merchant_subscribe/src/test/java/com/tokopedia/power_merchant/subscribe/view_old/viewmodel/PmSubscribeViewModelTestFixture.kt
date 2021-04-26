@@ -3,6 +3,8 @@ package com.tokopedia.power_merchant.subscribe.view_old.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase
+import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMSettingAndShopInfoUseCase
+import com.tokopedia.power_merchant.subscribe.view_old.model.PMSettingAndShopInfoUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.power_merchant.subscribe.view_old.model.ViewState
@@ -22,6 +24,7 @@ open class PmSubscribeViewModelTestFixture {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    private lateinit var getPMSettingAndShopInfoUseCase: GetPMSettingAndShopInfoUseCase
     private lateinit var getPowerMerchantStatusUseCase: GetPowerMerchantStatusUseCase
     private lateinit var getShopFreeShippingStatusUseCase: GetShopFreeShippingStatusUseCase
     private lateinit var userSession: UserSessionInterface
@@ -30,6 +33,7 @@ open class PmSubscribeViewModelTestFixture {
 
     @Before
     fun setUp() {
+        getPMSettingAndShopInfoUseCase = mockk(relaxed = true)
         getPowerMerchantStatusUseCase = mockk(relaxed = true)
         getShopFreeShippingStatusUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
@@ -38,12 +42,21 @@ open class PmSubscribeViewModelTestFixture {
         onGetFreeShippingEnabledConfig_thenReturn(false)
 
         viewModel = PmSubscribeViewModel(
-            getPowerMerchantStatusUseCase,
-            getShopFreeShippingStatusUseCase,
-            remoteConfig,
-            userSession,
-            CoroutineTestDispatchersProvider
+                getPMSettingAndShopInfoUseCase,
+                getPowerMerchantStatusUseCase,
+                getShopFreeShippingStatusUseCase,
+                remoteConfig,
+                userSession,
+                CoroutineTestDispatchersProvider
         )
+    }
+
+    protected fun onGetSettingAndShopInfo_thenReturn(pmSettingAndShopInfo: PMSettingAndShopInfoUiModel) {
+        coEvery { getPMSettingAndShopInfoUseCase.executeOnBackground() } returns pmSettingAndShopInfo
+    }
+
+    protected fun onGetSettingAndShopInfo_thenReturn(error: Throwable) {
+        coEvery { getPMSettingAndShopInfoUseCase.executeOnBackground() } throws error
     }
 
     protected fun onGetPowerMerchantStatusUseCase_thenReturn(powerMerchantStatus: PowerMerchantStatus) {

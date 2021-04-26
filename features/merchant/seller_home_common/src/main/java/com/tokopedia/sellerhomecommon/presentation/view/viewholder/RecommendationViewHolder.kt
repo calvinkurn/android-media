@@ -11,11 +11,14 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationTickerUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.adapter.WidgetRecommendationItemAdapter
 import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_recommendation_widget.view.*
 import kotlinx.android.synthetic.main.shc_recommendation_widget_error.view.*
@@ -75,6 +78,7 @@ class RecommendationViewHolder(
             val level = element.data?.progressLevel?.bar?.value.orZero()
             slvShcShopLevel.show(level)
 
+            setupTicker(element.data?.ticker)
             setupRecommendations(element)
 
             val progressBar = element.data?.progressBar
@@ -96,6 +100,43 @@ class RecommendationViewHolder(
         }
     }
 
+    private fun setupTicker(ticker: RecommendationTickerUiModel?) {
+        with(onSuccessView) {
+            if (ticker?.text.isNullOrBlank()) {
+                tickerShcRecommendation.gone()
+
+                val marginLeft = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+                val marginTop = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+                slvShcShopLevel.setMargin(marginLeft, marginTop, 0, 0)
+                return
+            }
+
+            ticker?.let {
+                tickerShcRecommendation.visible()
+                tickerShcRecommendation.setHtmlDescription(ticker.text)
+                tickerShcRecommendation.tickerType = when(ticker.type) {
+                    RecommendationTickerUiModel.TYPE_ERROR -> Ticker.TYPE_ERROR
+                    RecommendationTickerUiModel.TYPE_INFO -> Ticker.TYPE_INFORMATION
+                    RecommendationTickerUiModel.TYPE_WARNING -> Ticker.TYPE_WARNING
+                    else -> Ticker.TYPE_ANNOUNCEMENT
+                }
+                tickerShcRecommendation.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        RouteManager.route(context, linkUrl.toString())
+                    }
+
+                    override fun onDismiss() {
+
+                    }
+                })
+
+                val marginLeft = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+                val marginTop = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+                slvShcShopLevel.setMargin(marginLeft, marginTop, 0, 0)
+            }
+        }
+    }
+
     private fun setupCta(element: RecommendationWidgetUiModel) {
         with(onSuccessView) {
             val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
@@ -108,7 +149,9 @@ class RecommendationViewHolder(
                     openApplink(element)
                 }
                 val iconColor = context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
-                tvShcRecommendationCta.setUnifyDrawableEnd(IconUnify.CHEVRON_RIGHT, iconColor)
+                val iconWidth = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+                val iconHeight = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+                tvShcRecommendationCta.setUnifyDrawableEnd(IconUnify.CHEVRON_RIGHT, iconColor, iconWidth, iconHeight)
             }
         }
     }
@@ -143,11 +186,23 @@ class RecommendationViewHolder(
                 if (rvShcRecommendationList.isVisible) {
                     rvShcRecommendationList.gone()
                     tvShcRecommendationHeaderItem.setUnifyDrawableEnd(IconUnify.CHEVRON_DOWN, width = dp24, height = dp24)
-                    horLineShcShopScore2.gone()
+
+                    if (element.ctaText.isBlank()) {
+                        horLineShcShopScore2.gone()
+                    } else {
+                        horLineShcShopScore2.visible()
+                    }
+
+                    val margin = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+                    tvShcRecommendationCta.setMargin(0, margin, 0, margin)
                 } else {
                     rvShcRecommendationList.visible()
                     tvShcRecommendationHeaderItem.setUnifyDrawableEnd(IconUnify.CHEVRON_UP, width = dp24, height = dp24)
                     horLineShcShopScore2.visible()
+
+                    val marginTop = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+                    val marginBottom = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+                    tvShcRecommendationCta.setMargin(0, marginTop, 0, marginBottom)
                 }
             }
 

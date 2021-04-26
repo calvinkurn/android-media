@@ -1,6 +1,11 @@
 package com.tokopedia.power_merchant.subscribe.view_old.viewmodel
 
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
+import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
+import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
+import com.tokopedia.power_merchant.subscribe.utils.TestConstant
+import com.tokopedia.power_merchant.subscribe.view_old.model.PMSettingAndShopInfoUiModel
+import com.tokopedia.power_merchant.subscribe.view_old.model.PMStatusAndSettingUiModel
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.power_merchant.subscribe.view_old.model.PowerMerchantFreeShippingStatus
@@ -9,21 +14,36 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyString
 
 class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
 
     @Test
     fun `when getPmStatusInfo success should set result success`() {
+        val pmSettingAndShopInfo = PMSettingAndShopInfoUiModel(
+                shopInfo = PMShopInfoUiModel(),
+                pmSetting = PowerMerchantSettingInfoUiModel(
+                        shopId = anyString(),
+                        periodeType = TestConstant.PeriodType.COMMUNICATION_PERIOD,
+                        periodeEndDate = anyString()
+                )
+        )
+
         val kycUserProjectInfoPojo = KycUserProjectInfoPojo().apply {
             kycProjectInfo = KycProjectInfo()
         }
         val powerMerchantStatus = PowerMerchantStatus(kycUserProjectInfoPojo = kycUserProjectInfoPojo)
 
+        onGetSettingAndShopInfo_thenReturn(pmSettingAndShopInfo)
         onGetPowerMerchantStatusUseCase_thenReturn(powerMerchantStatus)
 
         viewModel.getPmStatusInfo()
 
-        val expectedResult = Success(powerMerchantStatus)
+        val result = PMStatusAndSettingUiModel(
+                pmStatus = powerMerchantStatus,
+                pmSettingAndShopInfo = pmSettingAndShopInfo
+        )
+        val expectedResult = Success(result)
 
         viewModel.getPmStatusInfoResult
             .verifySuccessEquals(expectedResult)
@@ -32,9 +52,62 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
     }
 
     @Test
+    fun `when getPmStatusInfo returns success and period type is not Communication Period set result success and shop info should null`() {
+        val pmSettingAndShopInfo = PMSettingAndShopInfoUiModel(
+                shopInfo = PMShopInfoUiModel(),
+                pmSetting = PowerMerchantSettingInfoUiModel(
+                        shopId = anyString(),
+                        periodeType = TestConstant.PeriodType.TRANSITION_PERIOD,
+                        periodeEndDate = anyString()
+                )
+        )
+
+        onGetSettingAndShopInfo_thenReturn(pmSettingAndShopInfo)
+
+        viewModel.getPmStatusInfo()
+
+        val result = PMStatusAndSettingUiModel(
+                pmStatus = null,
+                pmSettingAndShopInfo = pmSettingAndShopInfo
+        )
+        val expectedResult = Success(result)
+
+        viewModel.getPmStatusInfoResult
+                .verifySuccessEquals(expectedResult)
+
+        verifyHideLoading()
+    }
+
+    @Test
+    fun `when getPmStatusInfo then settingAndShopInfo returns error should set failed`() {
+        val error = Exception()
+
+        onGetSettingAndShopInfo_thenReturn(error)
+
+        viewModel.getPmStatusInfo()
+
+        val expectedResult = Fail(error)
+
+        viewModel.getPmStatusInfoResult
+                .verifyErrorEquals(expectedResult)
+
+        verifyHideLoading()
+    }
+
+    @Test
     fun `when getPmStatusInfo returns error should set result fail`() {
+        val pmSettingAndShopInfo = PMSettingAndShopInfoUiModel(
+                shopInfo = PMShopInfoUiModel(),
+                pmSetting = PowerMerchantSettingInfoUiModel(
+                        shopId = anyString(),
+                        periodeType = TestConstant.PeriodType.COMMUNICATION_PERIOD,
+                        periodeEndDate = anyString()
+                )
+        )
+
         val error = NullPointerException()
 
+        onGetSettingAndShopInfo_thenReturn(pmSettingAndShopInfo)
         onGetPowerMerchantStatusUseCase_thenReturn(error)
 
         viewModel.getPmStatusInfo()
@@ -49,11 +122,22 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
 
     @Test
     fun `given kycProjectInfo null when getPmStatusInfo should set result error`() {
+
+        val pmSettingAndShopInfo = PMSettingAndShopInfoUiModel(
+                shopInfo = PMShopInfoUiModel(),
+                pmSetting = PowerMerchantSettingInfoUiModel(
+                        shopId = anyString(),
+                        periodeType = TestConstant.PeriodType.COMMUNICATION_PERIOD,
+                        periodeEndDate = anyString()
+                )
+        )
+
         val kycUserProjectInfoPojo = KycUserProjectInfoPojo().apply {
             kycProjectInfo = null
         }
         val powerMerchantStatus = PowerMerchantStatus(kycUserProjectInfoPojo = kycUserProjectInfoPojo)
 
+        onGetSettingAndShopInfo_thenReturn(pmSettingAndShopInfo)
         onGetPowerMerchantStatusUseCase_thenReturn(powerMerchantStatus)
 
         viewModel.getPmStatusInfo()
