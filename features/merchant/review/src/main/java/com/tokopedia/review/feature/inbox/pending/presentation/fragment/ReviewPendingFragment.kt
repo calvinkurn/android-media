@@ -37,6 +37,7 @@ import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.common.analytics.ReviewInboxTrackingConstants
+import com.tokopedia.review.feature.inbox.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.feature.inbox.container.presentation.listener.ReviewInboxListener
 import com.tokopedia.review.feature.inbox.pending.analytics.ReviewPendingTracking
 import com.tokopedia.review.feature.inbox.pending.data.mapper.ReviewPendingMapper
@@ -441,6 +442,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun getSourceData() {
+        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+            source = containerListener?.getPageSource() ?: ReviewInboxConstants.DEFAULT_SOURCE
+            return
+        }
         source = arguments?.getString(ReviewInboxConstants.PARAM_SOURCE, ReviewInboxConstants.DEFAULT_SOURCE) ?: ReviewInboxConstants.DEFAULT_SOURCE
     }
 

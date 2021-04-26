@@ -87,7 +87,7 @@ import javax.inject.Inject
  */
 class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentContainer {
 
-    private var sourcre = ""
+    private var source = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -181,7 +181,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
             InboxConfig.setRole(it)
         }
         source?.let {
-            this.sourcre = it
+            this.source = it
         }
     }
 
@@ -240,6 +240,10 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     override fun showReviewCounter() {
         val notificationRole = InboxConfig.inboxCounter.getByRole(RoleType.BUYER) ?: return
         bottomNav?.setBadgeCount(InboxFragmentType.REVIEW, notificationRole.reviewInt)
+    }
+
+    override fun getPageSource(): String {
+        return source
     }
 
     private fun setupToolbar() {
