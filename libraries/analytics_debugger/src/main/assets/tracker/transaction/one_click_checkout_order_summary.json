@@ -118,55 +118,6 @@
       "eventLabel": ""
     },
     {
-      "eventAction": "preference - click ganti pilihan on order summary",
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
-      "sessionIris": "{{.*}}",
-      "eventLabel": ""
-    },
-    {
-      "eventAction": "preference - click gear logo from ganti pilihan",
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
-      "sessionIris": "{{.*}}",
-      "eventLabel": ""
-    },
-    {
-      "eventAction": "preference - click tambah pilihan from ganti pilihan",
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
-      "sessionIris": "{{.*}}",
-      "eventLabel": ""
-    },
-    {
-      "eventAction": "preference -  click gunakan pilihan ini from ganti pilihan",
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
-      "sessionIris": "{{.*}}",
-      "eventLabel": ""
-    },
-    {
-      "eventAction": "click button info on order summary page",
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "new buyer"
-    },
-    {
-      "eventAction": "view onboarding info",
-      "eventCategory": "order summary",
-      "event": "viewCheckoutExpressIris",
-      "sessionIris": "{{.*}}",
-      "eventLabel": ""
-    },
-    {
-      "eventAction": "preference - click atur preferensi for new buyer",
-      "eventCategory": "order summary",
-      "event": "clickCheckoutExpress",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
-    },
-    {
       "eventAction": "{{click (?:bayar|pilih pembayaran) - not success}}",
       "eventCategory": "order summary",
       "event": "clickCheckoutExpress",
