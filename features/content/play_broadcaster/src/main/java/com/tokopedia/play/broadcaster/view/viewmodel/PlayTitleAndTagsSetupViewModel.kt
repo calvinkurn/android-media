@@ -64,7 +64,8 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
 
     private val validTagRegex = Regex("[a-zA-Z0-9 ]+")
 
-    private val addedTags: MutableSet<String> = setupDataStore.getTags().toMutableSet()
+    private val addedTags: Set<String>
+        get() = _observableAddedTags.value.orEmpty()
 
     init {
         getTags()
@@ -81,15 +82,18 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
     fun toggleTag(tag: String) {
         if(!isTagValid(tag)) return
 
-        if (!addedTags.contains(tag)) addedTags.add(tag)
-        else addedTags.remove(tag)
+        val oldAddedTags = addedTags
+        val newAddedTags = if (!oldAddedTags.contains(tag)) oldAddedTags + tag
+        else oldAddedTags - tag
 
-        refreshAddedTags()
+        refreshAddedTags(newAddedTags)
     }
 
     fun removeTag(tag: String) {
-        addedTags.remove(tag)
-        refreshAddedTags()
+        val oldAddedTags = addedTags
+
+        val newAddedTags = oldAddedTags - tag
+        refreshAddedTags(newAddedTags)
     }
 
     fun finishSetup(title: String) {
@@ -127,8 +131,8 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         return@withContext setupDataStore.uploadTitle(hydraConfigStore.getChannelId())
     }
 
-    private fun refreshAddedTags() {
-        _observableAddedTags.value = addedTags
+    private fun refreshAddedTags(newTags: Set<String>) {
+        _observableAddedTags.value = newTags
     }
 
     /**
@@ -143,6 +147,7 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
                 try { getRecommendedTags() } catch (e: Throwable) { emptyList() }
             }
 
+            _observableAddedTags.value = addedTags.await().toSet()
             _observableRecommendedTags.value = (addedTags.await() + recommendedTags.await()).toSet()
         }
     }
@@ -152,7 +157,6 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
             setChannelId(hydraConfigStore.getChannelId())
         }.executeOnBackground()
 
-//            _observableRecommendedTags.value = channelTags.recommendedTags.tags.toSet()
         listOf(
                 "Baju",
                 "Review",
@@ -162,6 +166,8 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
                 "Fashion",
                 "Topi",
         )
+
+//        return@withContext recommendedTags.recommendedTags.tags
     }
 
     private suspend fun getAddedTags(): List<String> = withContext(dispatcher.io) {
