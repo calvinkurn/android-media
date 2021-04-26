@@ -12,8 +12,12 @@ import kotlinx.android.synthetic.main.fragment_hotel_pay_at_hotel_promo.*
 class HotelPayAtHotelPromoFragment : HotelBaseFragment() {
     override fun onErrorRetryClicked() {}
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_hotel_pay_at_hotel_promo, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val rootView = inflater.inflate(R.layout.fragment_hotel_pay_at_hotel_promo, container, false)
+        rootView.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+
+        return rootView
+    }
 
     override fun getScreenName(): String = getString(R.string.hotel_pay_at_hotel_promo_header_title)
 
