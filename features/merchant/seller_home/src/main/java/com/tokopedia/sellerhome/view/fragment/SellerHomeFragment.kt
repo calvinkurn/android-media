@@ -336,8 +336,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sahGlobalError.setActionClickListener {
             reloadPage()
         }
-        emptyState?.setPrimaryCTAClickListener {
-            reloadPage()
+        emptyState?.run {
+            setTitle(context?.getString(R.string.sah_failed_to_get_information).orEmpty())
+            setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500, null))
+            setPrimaryCTAText(context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty())
+            setPrimaryCTAClickListener {
+                reloadPage()
+            }
         }
 
         setViewBackground()
@@ -1194,12 +1199,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun EmptyStateUnify.showMessageExceptionError(throwable: Throwable) {
-        setTitle(this@SellerHomeFragment.context?.getString(R.string.sah_failed_to_get_information).orEmpty())
         val errorMessage = context?.let {
             ErrorHandler.getErrorMessage(it, throwable)
         } ?: this@SellerHomeFragment.context?.getString(R.string.sah_failed_to_get_information).orEmpty()
         setDescription(errorMessage)
-        setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500, null))
         visible()
     }
 
