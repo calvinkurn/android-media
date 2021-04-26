@@ -37,8 +37,8 @@
             <ImageView
                 android:contentDescription="@string/smart_bills_action_bar_title"
                 android:id="@+id/iv_smart_bills_item_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/spacing_lvl6"
+                android:layout_height="@dimen/spacing_lvl6"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/spacing_lvl2" />
 

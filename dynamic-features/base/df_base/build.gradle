@@ -153,4 +153,7 @@ dependencies {
 
     //Order Management
     implementation project(rootProject.ext.features.ordermanagementhistory)
+
+    //Library
+    implementation project(rootProject.ext.libraries.imagePicker)
 }

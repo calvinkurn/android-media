@@ -4,8 +4,7 @@
     <application>
         <activity
             android:name="com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

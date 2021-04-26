@@ -51,12 +51,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name="com.tokopedia.createpost.view.activity.CreatePostVideoPickerActivity"
-            android:label="@string/cp_title_image_video"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <service
             android:name="com.tokopedia.createpost.view.service.SubmitPostService"

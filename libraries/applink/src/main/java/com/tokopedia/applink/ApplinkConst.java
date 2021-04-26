@@ -100,6 +100,7 @@ public interface ApplinkConst {
     String NEW_WISHLIST = "tokopedia://new-wishlist";
     String WISHLIST_HOME = "tokopedia://wishlisthome";
     String RECENT_VIEW = "tokopedia://recentlyviewed";
+    String HOST_LOGIN = "login";
     String LOGIN = "tokopedia://login";
     String OTP = "tokopedia://otp";
     String OTP_PUSH_NOTIF_RECEIVER = "tokopedia://otp-verify";

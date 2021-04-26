@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +40,6 @@ import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
 import com.tokopedia.checkout.domain.model.checkout.TrackerData;
@@ -53,11 +53,10 @@ import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog;
 import com.tokopedia.checkout.view.helper.CartProtectionInfoBottomSheetHelper;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
-import com.tokopedia.design.countdown.CountDownView;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
@@ -96,8 +95,9 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
@@ -118,9 +118,11 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashb
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
+import com.tokopedia.unifycomponents.TimerUnify;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.utils.currency.CurrencyFormatUtil;
 import com.tokopedia.utils.time.TimeHelper;
 
 import java.util.ArrayList;
@@ -158,6 +160,7 @@ import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.K
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CHOSEN_ADDRESS;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.PAGE_CHECKOUT;
 
 /**
@@ -233,7 +236,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     // count down component
     private View cdLayout;
-    private CountDownView cdView;
+    private TimerUnify cdView;
     private Typography cdText;
 
     public static ShipmentFragment newInstance(boolean isOneClickShipment,
@@ -303,6 +306,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (delayScrollToFirstShopSubscription != null) {
             delayScrollToFirstShopSubscription.unsubscribe();
         }
+        shippingCourierBottomsheet = null;
+        CountDownTimer countDownTimer = cdView.getTimer();
+        if (countDownTimer != null) countDownTimer.cancel();
         shipmentPresenter.detachView();
     }
 
@@ -1827,8 +1833,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     (serviceDataTracker.getIsPromo() == 1),
                     serviceDataTracker.getServiceName(),
                     (serviceDataTracker.getCodData().getIsCod() == 1),
-                    Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(serviceDataTracker.getRangePrice().getMinPrice(), false)),
-                    Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(serviceDataTracker.getRangePrice().getMaxPrice(), false))
+                    Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(serviceDataTracker.getRangePrice().getMinPrice(), false)),
+                    Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(serviceDataTracker.getRangePrice().getMaxPrice(), false))
             );
         }
         if (flagNeedToSetPinpoint) {
@@ -1988,21 +1994,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (shipmentPresenter.getCodData() != null) {
                 codHistory = shipmentPresenter.getCodData().getCounterCod();
             }
-            if (shipmentDetailData != null) {
+            Activity activity = getActivity();
+            if (shipmentDetailData != null && activity != null) {
                 String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
                 ArrayList<Product> products = getProductForRatesRequest(shipmentCartItemModel);
-                ShippingDurationBottomsheet shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
+                ShippingDurationBottomsheet shippingDurationBottomsheet = new ShippingDurationBottomsheet();
+                shippingDurationBottomsheet.show(activity, getFragmentManager(), this,
                         shipmentDetailData, shipmentAdapter.getLastServiceId(), shipmentCartItemModel.getShopShipmentList(),
                         recipientAddressModel, cartPosition, codHistory,
                         shipmentCartItemModel.getIsLeasingProduct(), pslCode, products,
                         shipmentCartItemModel.getCartString(), shipmentCartItemModel.isOrderPrioritasDisable(),
                         isTradeInByDropOff(), shipmentCartItemModel.isFulfillment(),
                         shipmentCartItemModel.getShipmentCartData().getPreOrderDuration(), shipmentPresenter.generateRatesMvcParam(shipmentCartItemModel.getCartString()));
-                shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
-
-                if (getActivity() != null) {
-                    shippingDurationBottomsheet.show(getActivity().getSupportFragmentManager(), null);
-                }
             }
         }
     }
@@ -2033,15 +2036,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getShippingCourierViewModelsState(cartPosition) != null) {
             shippingCourierUiModels = shipmentPresenter.getShippingCourierViewModelsState(cartPosition);
         }
-        shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(
-                shippingCourierUiModels, recipientAddressModel, cartPosition);
-        shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this);
-        if (shippingCourierUiModels != null) {
-            checkHasCourierPromo(shippingCourierUiModels);
-        }
-
-        if (getActivity() != null) {
-            shippingCourierBottomsheet.show(getActivity().getSupportFragmentManager(), null);
+        Activity activity = getActivity();
+        if (activity != null) {
+            shippingCourierBottomsheet = new ShippingCourierBottomsheet();
+            shippingCourierBottomsheet.show(activity, getFragmentManager(), this,
+                    shippingCourierUiModels, recipientAddressModel, cartPosition);
+            if (shippingCourierUiModels != null) {
+                checkHasCourierPromo(shippingCourierUiModels);
+            }
         }
     }
 
@@ -2415,7 +2417,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId, String deviceModel, int devicePrice, String diagnosticId) {
+    public void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId,
+                                                                                 String deviceModel,
+                                                                                 long devicePrice,
+                                                                                 String diagnosticId) {
         List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getShipmentCartItemModelList());
 
         String eventCategory = ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION;
@@ -2502,7 +2507,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_REQUEST, promoRequestParam);
             intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam);
             intent.putStringArrayListExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_BBO_PROMO_CODES, bboPromoCodes);
-
+            setChosenAddressForTradeInDropOff(intent);
             setPromoExtraMvcLockCourierFlow(intent);
 
             startActivityForResult(intent, REQUEST_CODE_PROMO);
@@ -2595,31 +2600,33 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void checkCampaignTimer() {
         if (shipmentPresenter.getCampaignTimer() != null && shipmentPresenter.getCampaignTimer().getShowTimer()) {
             CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
-
             long diff = TimeHelper.timeSinceNow(timer.getTimerExpired());
+            showCampaignTimerExpiredDialog(timer, diff, checkoutAnalyticsCourierSelection);
+        }
+    }
 
-            if (diff <= 0 && getFragmentManager() != null) {
+    private void showCampaignTimerExpiredDialog(CampaignTimerUi timer, long diff, CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection) {
+        if (isAdded()) {
+            FragmentManager fragmentManager = getParentFragmentManager();
+            if (diff <= 0 && fragmentManager != null) {
                 ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection, this);
-                dialog.show(getFragmentManager(), "expired dialog");
+                dialog.show(fragmentManager, "expired dialog");
             }
         }
     }
 
     private void setCampaignTimer() {
-        if (shipmentPresenter.getCampaignTimer() != null && shipmentPresenter.getCampaignTimer().getShowTimer()) {
-            CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
-
+        CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
+        if (timer != null && timer.getShowTimer()) {
             long diff = TimeHelper.timeBetweenRFC3339(timer.getTimerServer(), timer.getTimerExpired());
-
             cdLayout.setVisibility(View.VISIBLE);
             cdText.setText(timer.getTimerDescription());
-            cdView.setupTimerFromRemianingMillis(diff, () -> {
-                // need to check with resumed to avoid crash when time is expired in background
-                // time needs to be running in background
-                if (getFragmentManager() != null && isResumed()) {
-                    ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection, this);
-                    dialog.show(getFragmentManager(), "expired dialog");
-                }
+            cdView.setRemainingMilliseconds(diff);
+
+            cdView.setOnFinish(() -> {
+                ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection, ShipmentFragment.this);
+                dialog.show(getFragmentManager(), "expired dialog");
+                return Unit.INSTANCE;
             });
         }
     }
@@ -2710,18 +2717,46 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         ValidateUsePromoRequest validateUseRequestParam = generateValidateUsePromoRequest();
         PromoRequest promoRequestParam = generateCouponListRecommendationRequest();
+
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE);
         intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PAGE_SOURCE, PAGE_CHECKOUT);
         intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_REQUEST, promoRequestParam);
         intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam);
         intent.putStringArrayListExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_BBO_PROMO_CODES, bboPromoCodes);
-
+        setChosenAddressForTradeInDropOff(intent);
         setPromoExtraMvcLockCourierFlow(intent);
 
         startActivityForResult(intent, REQUEST_CODE_PROMO);
 
         if (isTradeIn()) {
             checkoutTradeInAnalytics.eventTradeInClickPromo(isTradeInByDropOff());
+        }
+    }
+
+    private void setChosenAddressForTradeInDropOff(Intent intent) {
+        Activity activity = getActivity();
+        RecipientAddressModel recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
+        if (activity != null && isTradeInByDropOff() && ChooseAddressUtils.INSTANCE.isRollOutUser(activity) && recipientAddressModel != null) {
+            LocationDataModel locationDataModel = recipientAddressModel.getLocationDataModel();
+            ChosenAddress chosenAddress;
+            if (locationDataModel != null) {
+                chosenAddress = new ChosenAddress(
+                        ChosenAddress.MODE_ADDRESS,
+                        locationDataModel.getAddrId(),
+                        locationDataModel.getDistrict(),
+                        locationDataModel.getPostalCode(),
+                        (!TextUtils.isEmpty(locationDataModel.getLatitude()) && !TextUtils.isEmpty(locationDataModel.getLongitude())) ? locationDataModel.getLatitude() + "," + locationDataModel.getLongitude() : ""
+                );
+            } else {
+                chosenAddress = new ChosenAddress(
+                        ChosenAddress.MODE_ADDRESS,
+                        recipientAddressModel.getId(),
+                        recipientAddressModel.getDestinationDistrictId(),
+                        recipientAddressModel.getPostalCode(),
+                        (!TextUtils.isEmpty(recipientAddressModel.getLatitude()) && !TextUtils.isEmpty(recipientAddressModel.getLongitude())) ? recipientAddressModel.getLatitude() + "," + recipientAddressModel.getLongitude() : ""
+                );
+            }
+            intent.putExtra(ARGS_CHOSEN_ADDRESS, chosenAddress);
         }
     }
 

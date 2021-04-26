@@ -84,8 +84,8 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
         presenter.getVoucherList(voucherShopId)
     }
 
-    override fun getRecyclerView(view: View?): RecyclerView {
-        val recyclerView: RecyclerView = super.getRecyclerView(view)
+    override fun getRecyclerView(view: View?): RecyclerView? {
+        val recyclerView: RecyclerView? = super.getRecyclerView(view)
         if (recyclerView is VerticalRecyclerView) {
             recyclerView.clearItemDecoration()
         }

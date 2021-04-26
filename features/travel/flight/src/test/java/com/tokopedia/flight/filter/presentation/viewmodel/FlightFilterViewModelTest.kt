@@ -2,7 +2,7 @@ package com.tokopedia.flight.filter.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.constant.TravelSortOption
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.model.PriceRangeModel
 import com.tokopedia.flight.searchV4.domain.FlightSearchCountUseCase
@@ -35,7 +35,7 @@ class FlightFilterViewModelTest {
     @RelaxedMockK
     lateinit var flightSearchStatisticsUseCase: FlightSearchStatisticsUseCase
 
-    private val dispatcher = TravelTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var flightFilterViewModel: FlightFilterViewModel
 
     @Before
@@ -275,7 +275,7 @@ class FlightFilterViewModelTest {
     @Test
     fun resetFilter_withNullFilter_shouldResetFilterModel() {
         //given
-        val flightFilterViewModel = FlightFilterViewModel(flightSearchCountUseCase, flightSearchStatisticsUseCase, TravelTestDispatcherProvider())
+        val flightFilterViewModel = FlightFilterViewModel(flightSearchCountUseCase, flightSearchStatisticsUseCase, CoroutineTestDispatchersProvider)
 
         //when
         flightFilterViewModel.resetFilter()

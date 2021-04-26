@@ -619,6 +619,14 @@
             "enable": true,
             "total_profile": 2,
             "change_template_text": "Pilih template lain"
+          },
+          "occ_remove_profile": {
+            "enable": true,
+            "ui_type": 2,
+            "message": {
+              "title": "",
+              "description": ""
+            }
           }
         }
       }

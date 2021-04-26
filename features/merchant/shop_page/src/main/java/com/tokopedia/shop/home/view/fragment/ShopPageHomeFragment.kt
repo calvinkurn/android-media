@@ -154,7 +154,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         private const val REQUEST_CODE_USER_LOGIN = 101
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
-        const val NPL_REMIND_ME_CAMPAIGN_ID =  "NPL_REMIND_ME_CAMPAIGN_ID"
+        const val NPL_REMIND_ME_CAMPAIGN_ID = "NPL_REMIND_ME_CAMPAIGN_ID"
         private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.tkpd"
 
         fun createInstance(
@@ -181,12 +181,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private var threeDotsClickShopProductViewModel: ShopHomeProductUiModel? = null
     private var threeDotsClickShopCarouselProductUiModel: ShopHomeCarousellProductUiModel? = null
+
     @Inject
     lateinit var shopPageHomeTracking: ShopPageHomeTracking
+
     @Inject
     lateinit var shopPlayWidgetAnalytic: ShopPlayWidgetAnalyticListener
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var dispatcher: CoroutineDispatchers
 
@@ -253,7 +257,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
     private var isLoadInitialData = false
     private var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
-    private var initialProductListData : ShopProduct.GetShopProduct? = null
+    private var initialProductListData: ShopProduct.GetShopProduct? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (isShopHomeTabSelected())
@@ -464,9 +468,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     val throwable = it.throwable
                     ShopUtil.logTimberWarning(
                             "SHOP_PAGE_HOME_TAB_WIDGET_ERROR",
-                            "shop_id='${shopId}';" +
-                                    "error_message='${ErrorHandler.getErrorMessage(context, throwable)}'" +
-                                    ";error_trace='${Log.getStackTraceString(throwable)}'"
+                            mapOf("shop_id" to shopId,
+                                    "error_message" to ErrorHandler.getErrorMessage(context, throwable),
+                                    "error_trace" to Log.getStackTraceString(throwable)
+                            )
                     )
                 }
             }
@@ -486,9 +491,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             hideLoading()
             when (it) {
                 is Success -> {
-                    addProductListHeader()
-                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, it.data.totalProductData, true)
-                    productListName = it.data.listShopProductUiModel.joinToString(",") { product -> product.name.orEmpty() }
+                    val productListData = it.data.listShopProductUiModel
+                    val hasNextPage = it.data.hasNextPage
+                    val totalProductOnShop = it.data.totalProductData
+                    if(productListData.isNotEmpty())
+                        addProductListHeader()
+                    updateProductListData(hasNextPage, productListData, totalProductOnShop, true)
+                    productListName = productListData.joinToString(",") { product -> product.name.orEmpty() }
                 }
             }
         })
@@ -531,7 +540,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     }
                 }
                 is Fail -> {
-                    (it.throwable as? CheckCampaignNplException)?.let{ checkCampaignException ->
+                    (it.throwable as? CheckCampaignNplException)?.let { checkCampaignException ->
                         val errorMessage = ErrorHandler.getErrorMessage(context, checkCampaignException)
                         onFailCheckCampaignNplNotifyMe(checkCampaignException.campaignId, errorMessage)
                     }
@@ -593,14 +602,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun onFailCheckCampaignNplNotifyMe(campaignId: String, errorMessage: String) {
-        view?.let{
-            Toaster.make(
-                    it,
+        view?.let {
+            Toaster.build(it,
                     errorMessage,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
                     getString(R.string.shop_string_ok)
-            )
+            ).show()
         }
         shopHomeAdapter.updateRemindMeStatusCampaignNplWidgetData(campaignId)
     }
@@ -612,14 +620,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 isRegisterCampaign,
                 true
         )
-        if(viewModel?.isCampaignFollower(data.campaignId) == true){
+        if (viewModel?.isCampaignFollower(data.campaignId) == true) {
             shopPageHomeTracking.clickNotifyMeNplFollowerButton(
                     isOwner,
                     data.action,
                     viewModel?.userId.orEmpty(),
                     customDimensionShopPage
             )
-        }else{
+        } else {
             shopPageHomeTracking.clickNotifyMeButton(
                     isOwner,
                     data.action,
@@ -627,8 +635,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
         }
         view?.let {
-            Toaster.make(
-                    it,
+            Toaster.build(it,
                     data.message,
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
@@ -636,7 +643,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     View.OnClickListener {
                         shopPageHomeTracking.toasterActivationClickOk(isOwner, customDimensionShopPage)
                     }
-            )
+            ).show()
             shopPageHomeTracking.impressionToasterActivation(isOwner, customDimensionShopPage)
         }
     }
@@ -645,7 +652,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopHomeAdapter.updateRemindMeStatusCampaignNplWidgetData(data.campaignId, data.isAvailable)
         if (getNplRemindMeClickedCampaignId() == data.campaignId && !data.isAvailable) {
             val nplCampaignModel = shopHomeAdapter.getNplCampaignUiModel(data.campaignId)
-            nplCampaignModel?.let{
+            nplCampaignModel?.let {
                 shopHomeAdapter.showNplRemindMeLoading(data.campaignId)
                 handleClickRemindMe(it)
                 setNplRemindMeClickedCampaignId("")
@@ -701,7 +708,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             isOcc: Boolean = false
     ) {
 
-        if(isPersonalizationWidget) {
+        if (isPersonalizationWidget) {
             trackClickAddToCartPersonalization(dataModelAtc, shopHomeProductViewModel, shopHomeCarousellProductUiModel)
         } else {
             trackClickAddToCart(dataModelAtc, shopHomeProductViewModel, parentPosition, shopHomeCarousellProductUiModel)
@@ -791,7 +798,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             totalProductData: Int,
             isInitialData: Boolean
     ) {
-        if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
+        if (ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
             addChangeProductGridSection(totalProductData)
         }
         shopHomeAdapter.setProductListData(productList, isInitialData)
@@ -906,8 +913,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     return
                 }
 
-                val etalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID) ?: ""
-                val etalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME) ?: ""
+                val etalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
+                        ?: ""
+                val etalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
+                        ?: ""
                 val isNeedToReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
                 shopPageHomeTracking.clickMoreMenuChip(
                         isOwner,
@@ -1065,7 +1074,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             shopHomeProductViewModel.id,
                             shopAttribution,
                             shopRef,
-                            shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT},
+                            shopHomeProductViewModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
                             shopHomeProductViewModel.isShowFreeOngkir
                     )
             )
@@ -1165,20 +1174,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     )
                 } else {
                     viewModel?.addProductToCart(
-                        product,
-                        shopId,
-                        {
-                            onSuccessAddToCart(
-                                    it,
-                                    shopHomeProductViewModel,
-                                    parentPosition,
-                                    shopHomeCarousellProductUiModel,
-                                    isPersonalizationWidget = true
-                            )
-                        },
-                        {
-                            onErrorAddToCart(it)
-                        }
+                            product,
+                            shopId,
+                            {
+                                onSuccessAddToCart(
+                                        it,
+                                        shopHomeProductViewModel,
+                                        parentPosition,
+                                        shopHomeCarousellProductUiModel,
+                                        isPersonalizationWidget = true
+                                )
+                            },
+                            {
+                                onErrorAddToCart(it)
+                            }
                     )
                 }
             }
@@ -1327,7 +1336,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 widgetId = shopHomeCarouselProductUiModel?.widgetId.toString(),
                 appLink = shopHomeCarouselProductUiModel?.header?.ctaLink.toString(),
                 shopId = shopId,
-                shopType = customDimensionShopPage.shopType,
+                shopType = customDimensionShopPage.shopType.orEmpty(),
                 isOwner = isOwner
         )
 
@@ -1401,13 +1410,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun showToastSuccess(message: String) {
         activity?.run {
-            Toaster.make(findViewById(android.R.id.content), message)
+            Toaster.build(findViewById(android.R.id.content), message).show()
         }
     }
 
     private fun showErrorToast(message: String) {
         activity?.run {
-            Toaster.make(findViewById(android.R.id.content), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(findViewById(android.R.id.content), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -1477,6 +1486,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
             bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
             bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopId)
+            bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_TYPE, customDimensionShopPage.shopType)
 
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
             intent.putExtra(EXTRA_BUNDLE, bundle)
@@ -1535,6 +1545,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun refreshProductList() {
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
+        endlessRecyclerViewScrollListener.resetState()
         getProductList(1)
     }
 
@@ -1544,7 +1555,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
             shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
-        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let{
+        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
             shopPageHomeTracking.clickCampaignNplProduct(
                     isOwner,
                     it.statusCampaign,
@@ -1569,7 +1580,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
             shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
-        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let{
+        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
             shopPageHomeTracking.impressionCampaignNplProduct(
                     isOwner,
                     it.statusCampaign,
@@ -1635,7 +1646,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     it.statusCampaign,
                     customDimensionShopPage
             )
-            context?.let {context ->
+            context?.let { context ->
                 // expected ctaLink produce ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST
                 val showcaseIntent = RouteManager.getIntent(context, model.header.ctaLink).apply {
                     // set isNeedToReload data to true for sync shop info data in product result fragment
@@ -1648,9 +1659,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onClickCampaignBannerAreaNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
         model.data?.firstOrNull()?.let {
-            context?.let {context ->
-                val appLink  = model.header.ctaLink
-                if(appLink.isNotEmpty()){
+            context?.let { context ->
+                val appLink = model.header.ctaLink
+                if (appLink.isNotEmpty()) {
                     RouteManager.route(context, appLink)
                 }
             }
@@ -1708,7 +1719,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         return PersistentCacheManager.instance.get(NPL_REMIND_ME_CAMPAIGN_ID, String::class.java, "").orEmpty()
     }
 
-    private fun changeProductListGridView(gridType: ShopProductViewGridType){
+    private fun changeProductListGridView(gridType: ShopProductViewGridType) {
         shopHomeAdapter.updateShopPageProductChangeGridSectionIcon(gridType)
         shopHomeAdapter.changeProductCardGridType(gridType)
     }
@@ -1726,7 +1737,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         sortFilterBottomSheet = null
         shopProductFilterParameter?.clearParameter()
         shopProductFilterParameter?.setMapData(applySortFilterModel.mapParameter)
-        if(isResetButtonVisible == false){
+        if (isResetButtonVisible == false) {
             sortId = ""
         }
         changeShopProductFilterParameterSharedData()
@@ -1735,7 +1746,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         applySortFilterTracking(sortName, applySortFilterModel.selectedFilterMapParameter)
     }
 
-    private fun changeSortData(sortId: String){
+    private fun changeSortData(sortId: String) {
         this.sortId = sortId
         shopHomeAdapter.changeSelectedSortFilter(this.sortId, sortName)
         shopHomeAdapter.changeSortFilterIndicatorCounter(getIndicatorCount(
@@ -1743,13 +1754,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ))
         initialProductListData = null
         shopHomeAdapter.refreshSticky()
-        if(!isLoadInitialData)
+        if (!isLoadInitialData)
             refreshProductList()
     }
 
-    private fun changeShopProductFilterParameterSharedData(){
+    private fun changeShopProductFilterParameterSharedData() {
         shopProductFilterParameterSharedViewModel?.changeSharedSortData(
-                shopProductFilterParameter?:ShopProductFilterParameter()
+                shopProductFilterParameter ?: ShopProductFilterParameter()
         )
     }
 
@@ -1768,10 +1779,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopPageHomeTracking.clickFilterSortBy(productListName, selectedSortName, customDimensionShopPage)
         }
         if (!selectedFilterMap[PMAX_PARAM_KEY].isNullOrBlank() || !selectedFilterMap[PMIN_PARAM_KEY].isNullOrBlank()) {
-            shopPageHomeTracking.clickFilterPrice(productListName, selectedFilterMap[PMIN_PARAM_KEY] ?: "0", selectedFilterMap[PMAX_PARAM_KEY] ?: "0", customDimensionShopPage)
+            shopPageHomeTracking.clickFilterPrice(productListName, selectedFilterMap[PMIN_PARAM_KEY]
+                    ?: "0", selectedFilterMap[PMAX_PARAM_KEY] ?: "0", customDimensionShopPage)
         }
         if (!selectedFilterMap[RATING_PARAM_KEY].isNullOrBlank()) {
-            shopPageHomeTracking.clickFilterRating(productListName, selectedFilterMap[RATING_PARAM_KEY] ?: "0", customDimensionShopPage)
+            shopPageHomeTracking.clickFilterRating(productListName, selectedFilterMap[RATING_PARAM_KEY]
+                    ?: "0", customDimensionShopPage)
         }
     }
 
@@ -1859,7 +1872,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
                     if (parent.isNewlyBroadcastSaved() == true) {
                         parent.clearIsNewlyBroadcastSaved()
-                        recyclerView.addOneTimeGlobalLayoutListener {
+                        recyclerView?.addOneTimeGlobalLayoutListener {
                             viewScope.launch {
                                 parent.collapseAppBar()
                                 val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
@@ -1875,7 +1888,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 when (it) {
                     is CarouselPlayWidgetUiModel.Action.Delete -> showWidgetDeletedToaster()
                     is CarouselPlayWidgetUiModel.Action.DeleteFailed -> showWidgetDeleteFailedToaster(it.channelId, it.reason)
-                    else -> {}
+                    else -> {
+                    }
                 }
             }
         })
@@ -1927,16 +1941,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         val bottomSheetActionList = mutableListOf<PlayWidgetSellerActionBottomSheet.Action>()
         if (channelUiModel.share.isShow) {
             bottomSheetActionList.add(
-                PlayWidgetSellerActionBottomSheet.Action(
-                    com.tokopedia.resources.common.R.drawable.ic_system_action_share_grey_24,
-                    MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
-                        getString(R.string.shop_page_play_widget_sgc_copy_link)
-                ) {
-                    shopPlayWidgetAnalytic.onClickMoreActionShareLinkChannel(channelUiModel.channelId)
-                    copyToClipboard(channelUiModel.share.fullShareContent)
-                    showLinkCopiedToaster()
-                    playWidgetActionBottomSheet.dismiss()
-                }
+                    PlayWidgetSellerActionBottomSheet.Action(
+                            com.tokopedia.resources.common.R.drawable.ic_system_action_share_grey_24,
+                            MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
+                            getString(R.string.shop_page_play_widget_sgc_copy_link)
+                    ) {
+                        shopPlayWidgetAnalytic.onClickMoreActionShareLinkChannel(channelUiModel.channelId)
+                        copyToClipboard(channelUiModel.share.fullShareContent)
+                        showLinkCopiedToaster()
+                        playWidgetActionBottomSheet.dismiss()
+                    }
             )
         }
         if (channelUiModel.performanceSummaryLink.isNotBlank() && channelUiModel.performanceSummaryLink.isNotEmpty()) {
@@ -1953,9 +1967,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
         bottomSheetActionList.add(
                 PlayWidgetSellerActionBottomSheet.Action(
-                com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
-                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
-                context?.getString(R.string.shop_page_play_widget_sgc_delete_video).orEmpty()) {
+                        com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
+                        MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
+                        context?.getString(R.string.shop_page_play_widget_sgc_delete_video).orEmpty()) {
                     shopPlayWidgetAnalytic.onClickMoreActionDeleteChannel(channelUiModel.channelId)
                     showDeleteWidgetConfirmationDialog(channelUiModel.channelId)
                     playWidgetActionBottomSheet.dismiss()

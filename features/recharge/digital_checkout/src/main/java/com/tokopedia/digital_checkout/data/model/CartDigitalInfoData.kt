@@ -9,6 +9,8 @@ data class CartDigitalInfoData(
 
         var id: String = "",
 
+        var productId: String = "",
+
         var attributes: AttributesDigitalData = AttributesDigitalData(),
 
         var title: String = "",

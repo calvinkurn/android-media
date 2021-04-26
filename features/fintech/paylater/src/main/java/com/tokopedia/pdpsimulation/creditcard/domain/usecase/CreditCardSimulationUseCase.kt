@@ -15,7 +15,7 @@ class CreditCardSimulationUseCase @Inject constructor(
 
     fun getCreditCardSimulationData(
             onSuccess: (PdpCreditCardSimulation?) -> Unit,
-            onError: (Throwable) -> Unit, amount: Float,
+            onError: (Throwable) -> Unit, amount: Long,
     ) {
         try {
             this.setTypeClass(CreditCardGetSimulationResponse::class.java)
@@ -33,8 +33,8 @@ class CreditCardSimulationUseCase @Inject constructor(
         }
     }
 
-    private fun getRequestParams(amount: Float): Map<String, Float> {
-        return mapOf(PARAM_PRODUCT_AMOUNT to amount)
+    private fun getRequestParams(amount: Long): Map<String, Float> {
+        return mapOf(PARAM_PRODUCT_AMOUNT to amount.toFloat())
     }
 
     companion object {

@@ -62,6 +62,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_GET_TO_
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_IMAGE_QUALITY
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_INSTANT_BUY
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_INSTANT_PAYMENT
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_IP
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_LIST_ADDRESS
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_MEMBER
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_MEMBER_STORE
@@ -589,6 +590,20 @@ class HomeAccountAnalytics(val context: Context, val userSession: UserSessionInt
                 CATEGORY_ACCOUNT_BUYER,
                 ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
                 LABEL_PRIVACY_POLICY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun eventClickIpAboutTokopedia() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
+                LABEL_IP
         )
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE

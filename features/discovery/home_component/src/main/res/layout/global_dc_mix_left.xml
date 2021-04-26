@@ -48,7 +48,7 @@
 
             <ImageView
                 android:id="@+id/parallax_image"
-                android:layout_marginLeft="@dimen/dp_48"
+                android:layout_marginStart="@dimen/dp_36"
                 android:layout_height="match_parent"
                 android:layout_width="@dimen/product_card_flashsale_width"
                 android:clickable="true"

@@ -52,6 +52,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.pocNewRelic)
     implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation project(rootProject.ext.libraries.utils)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
@@ -73,7 +74,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.miscDependencies.coroutineCore
@@ -126,6 +126,8 @@ dependencies {
         transitive = true
     }
     implementation rootProject.ext.dbDependencies.sqliteFramework
+
+    androidTestImplementation project(rootProject.ext.features.loginregister)
 }
 
 project.ext {

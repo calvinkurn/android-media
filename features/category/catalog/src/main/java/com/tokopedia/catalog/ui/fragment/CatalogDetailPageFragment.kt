@@ -71,6 +71,7 @@ class CatalogDetailPageFragment : Fragment(),
     private var fullSpecificationDataModel = CatalogFullSpecificationDataModel(arrayListOf())
 
     private var catalogId: String = ""
+    private var catalogUrl: String = ""
 
     private var navToolbar: NavToolbar? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
@@ -142,7 +143,7 @@ class CatalogDetailPageFragment : Fragment(),
 
     private fun setUpBottomSheet(){
         requireActivity().supportFragmentManager.beginTransaction().replace(
-                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogId)
+                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogId,catalogUrl)
         ).commit()
 
         mBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_fragment_container)
@@ -156,6 +157,14 @@ class CatalogDetailPageFragment : Fragment(),
                 }
                 else if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     isBottomSheetOpen = true
+                }else if (newState == BottomSheetBehavior.STATE_DRAGGING){
+                    if(!isBottomSheetOpen){
+                        CatalogDetailAnalytics.sendEvent(
+                                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                                CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
+                                catalogId,userSession.userId)
+                    }
                 }
             }
         })
@@ -168,6 +177,7 @@ class CatalogDetailPageFragment : Fragment(),
                     it.data.listOfComponents.forEach { component ->
                         catalogUiUpdater.updateModel(component)
                     }
+                    catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
                     fullSpecificationDataModel = it.data.fullSpecificationDataModel
                     updateUi()
                 }
@@ -304,14 +314,6 @@ class CatalogDetailPageFragment : Fragment(),
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                 CatalogDetailAnalytics.EventKeys.EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_CATALOG_IMAGE,
-                catalogId,userSession.userId)
-    }
-
-    override fun onImagesScrolled() {
-        CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
                 catalogId,userSession.userId)
     }
 

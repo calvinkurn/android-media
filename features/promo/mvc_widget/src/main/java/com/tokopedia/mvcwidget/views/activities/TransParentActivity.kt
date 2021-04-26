@@ -35,13 +35,14 @@ class TransParentActivity : BaseActivity() {
     }
 
     val REQUEST_CODE_LOGIN = 12
-    val userSession = UserSession(this)
+    lateinit var userSession : UserSession
     lateinit var shopId: String
     @MvcSource
     var mvcSource = MvcSource.DEFAULT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        userSession = UserSession(this)
         handleDimming()
         shopId = intent.extras?.getString(SHOP_ID, "0") ?: "0"
         mvcSource = intent.extras?.getInt(MVC_SOURCE, MvcSource.DEFAULT) ?: MvcSource.DEFAULT

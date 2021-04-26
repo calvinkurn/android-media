@@ -1,8 +1,5 @@
 package com.tokopedia.checkout.view.adapter;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +8,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
+import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
-import com.tokopedia.checkout.view.ShipmentFragment;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel;
 import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel;
@@ -31,7 +27,6 @@ import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -39,7 +34,6 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel;
@@ -52,9 +46,7 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseDialog;
-import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.utils.currency.CurrencyFormatUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,7 +66,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public static final int HEADER_POSITION = 0;
     private static final long LAST_THREE_DIGIT_MODULUS = 1000;
 
-    private ArrayList<ShowCaseObject> showCaseObjectList;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
     private final SellerCashbackListener sellerCashbackListener;
     private List<Object> shipmentDataList;
@@ -96,7 +87,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private CompositeSubscription compositeSubscription;
 
     private boolean isShowOnboarding;
-    private boolean hasShownShowCase;
     private int lastChooseCourierItemPosition;
     private int lastServiceId;
 
@@ -110,7 +100,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.ratesDataConverter = ratesDataConverter;
         this.sellerCashbackListener = sellerCashbackListener;
         this.shipmentDataList = new ArrayList<>();
-        this.showCaseObjectList = new ArrayList<>();
     }
 
     public void setShowOnboarding(boolean showOnboarding) {
@@ -187,13 +176,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         Object data = shipmentDataList.get(position);
 
         if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
-            ((ShipmentRecipientAddressViewHolder) holder).bindViewHolder((RecipientAddressModel) data,
-                    showCaseObjectList);
+            ((ShipmentRecipientAddressViewHolder) holder).bindViewHolder((RecipientAddressModel) data, isShowOnboarding);
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
-            ((ShipmentItemViewHolder) holder).bindViewHolder(
-                    (ShipmentCartItemModel) data, shipmentDataList, recipientAddressModel,
-                    ratesDataConverter);
-            setShowCase(holder.itemView.getContext());
+            ((ShipmentItemViewHolder) holder).bindViewHolder((ShipmentCartItemModel) data, shipmentDataList, recipientAddressModel, ratesDataConverter);
         } else if (viewType == PromoCheckoutViewHolder.getITEM_VIEW_PROMO_CHECKOUT()) {
             ((PromoCheckoutViewHolder) holder).bindViewHolder(lastApplyUiModel);
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
@@ -236,37 +221,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (compositeSubscription != null) {
             compositeSubscription.clear();
         }
-    }
-
-
-    private void setShowCase(Context context) {
-        if (!hasShownShowCase && isShowOnboarding) {
-            hasShownShowCase = true;
-            createShowCaseDialog().show((Activity) context,
-                    ShipmentFragment.class.getName(),
-                    showCaseObjectList
-            );
-        }
-    }
-
-    @SuppressLint("PrivateResource")
-    private ShowCaseDialog createShowCaseDialog() {
-        return new ShowCaseBuilder()
-                .customView(com.tokopedia.logisticcart.R.layout.show_case_checkout)
-                .prevStringRes(R.string.show_case_prev)
-                .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                .spacingRes(com.tokopedia.abstraction.R.dimen.dp_12)
-                .arrowWidth(com.tokopedia.abstraction.R.dimen.dp_16)
-                .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
-                .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-                .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                .circleIndicatorBackgroundDrawableRes(R.drawable.checkout_module_selector_circle_green)
-                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
-                .finishStringRes(R.string.show_case_finish)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .build();
     }
 
     public void clearData() {
@@ -355,7 +309,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             if (cartItemCounter == shipmentCartItemModelList.size()) {
                 double priceTotal = shipmentCostModel.getTotalPrice() <= 0 ? 0 : shipmentCostModel.getTotalPrice();
-                String priceTotalFormatted = Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) priceTotal, false));
+                String priceTotalFormatted = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) priceTotal, false));
                 shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted);
             } else {
                 shipmentAdapterActionListener.onTotalPaymentChange("-");
@@ -384,7 +338,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 shipmentSellerCashbackModel = new ShipmentSellerCashbackModel();
             }
             shipmentSellerCashbackModel.setVisible(true);
-            shipmentSellerCashbackModel.setSellerCashbackFmt(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, false)));
+            shipmentSellerCashbackModel.setSellerCashbackFmt(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) cashback, false)));
             shipmentDataList.add(shipmentSellerCashbackModel);
         }
     }

@@ -82,6 +82,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
@@ -1347,15 +1348,21 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
             adapter?.submitList(data)
             (data.firstOrNull { it is HomeHeaderOvoDataModel } as? HomeHeaderOvoDataModel)?.let {
-                Handler().postDelayed({
-                    val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
-                            ?: false
-                    if (!coachMarkIsShowing && !bottomSheetIsShowing && isBalanceWidgetNotEmpty)
-                        showCoachMark()
-                }, 2000)
+                val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
+                        ?: false
+                if (isBalanceWidgetNotEmpty) {
+                    val isTokopointsOrOvoFailed = it.headerDataModel?.homeBalanceModel?.isTokopointsOrOvoFailed ?: false
+                    if (!isTokopointsOrOvoFailed) {
+                        Handler().postDelayed({
+                            if (!coachMarkIsShowing && !bottomSheetIsShowing)
+                                showCoachMark()
+                        }, 3000)
+                    }
+                }
             }
         }
     }
+
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
         val instance = list.filterIsInstance(type)
@@ -2219,11 +2226,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun manageCoachmarkOnFragmentVisible(isVisibleToUser: Boolean) {
         when (isVisibleToUser) {
-            true -> if (coachMarkIsShowing) {
-                coachmark?.let {
-                    it.showCoachMark(step = it.coachMarkItem, index = it.currentIndex)
-                }
-            }
             false -> if (coachMarkIsShowing) {
                 coachmark?.hideCoachMark()
             }

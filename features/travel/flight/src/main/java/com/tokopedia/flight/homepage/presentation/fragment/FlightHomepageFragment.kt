@@ -310,13 +310,14 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     }
 
     override fun onVideoBannerClicked(bannerData: TravelVideoBannerModel) {
-        // do nothing for now, will use for tracking later
+        flightHomepageViewModel.sendTrackingVideoBannerClick(bannerData)
     }
 
     private fun renderVideoBannerView(bannerData: TravelCollectiveBannerModel) {
         flightHomepageVideoBanner.listener = this
         flightHomepageVideoBanner.setData(bannerData)
         flightHomepageVideoBanner.build()
+        flightHomepageViewModel.sendTrackingVideoBannerImpression(flightHomepageVideoBanner.getData())
     }
 
     private fun hideVideoBannerView() {

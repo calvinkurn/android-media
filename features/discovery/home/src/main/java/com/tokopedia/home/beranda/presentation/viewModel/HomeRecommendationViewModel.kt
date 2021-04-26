@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.home.beranda.common.HomeDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
@@ -16,8 +16,8 @@ import javax.inject.Inject
 class HomeRecommendationViewModel @Inject constructor(
         private val getHomeRecommendationUseCase: GetHomeRecommendationUseCase,
         private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-        homeDispatcher: HomeDispatcherProvider
-) : BaseViewModel(homeDispatcher.io()){
+        homeDispatcher: CoroutineDispatchers
+) : BaseViewModel(homeDispatcher.io){
     val homeRecommendationLiveData get() = _homeRecommendationLiveData
     private val _homeRecommendationLiveData: MutableLiveData<HomeRecommendationDataModel> = MutableLiveData()
     val homeRecommendationNetworkLiveData get() = _homeRecommendationNetworkLiveData
