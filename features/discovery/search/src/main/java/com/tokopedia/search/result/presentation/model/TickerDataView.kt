@@ -32,6 +32,7 @@ class TickerDataView(
     )
 
     companion object {
+        @JvmField
         val CREATOR: Parcelable.Creator<TickerDataView> = object : Parcelable.Creator<TickerDataView> {
             override fun createFromParcel(source: Parcel): TickerDataView {
                 return TickerDataView(source)

@@ -78,6 +78,7 @@ class GlobalNavDataView(
         )
 
         companion object {
+            @JvmField
             val CREATOR: Parcelable.Creator<Item> = object : Parcelable.Creator<Item> {
                 override fun createFromParcel(source: Parcel): Item {
                     return Item(source)
@@ -117,6 +118,7 @@ class GlobalNavDataView(
     )
 
     companion object {
+        @JvmField
         val CREATOR: Parcelable.Creator<GlobalNavDataView> = object : Parcelable.Creator<GlobalNavDataView> {
             override fun createFromParcel(source: Parcel): GlobalNavDataView {
                 return GlobalNavDataView(source)

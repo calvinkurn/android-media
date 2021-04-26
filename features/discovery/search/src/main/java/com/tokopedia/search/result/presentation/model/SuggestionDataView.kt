@@ -32,6 +32,7 @@ class SuggestionDataView(
     )
 
     companion object {
+        @JvmField
         val CREATOR: Parcelable.Creator<SuggestionDataView> = object : Parcelable.Creator<SuggestionDataView> {
             override fun createFromParcel(source: Parcel): SuggestionDataView {
                 return SuggestionDataView(source)

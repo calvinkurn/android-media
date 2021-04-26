@@ -209,6 +209,7 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
         private const val ORGANIC = "organic"
         private const val ORGANIC_ADS = "organic ads"
 
+        @JvmField
         val CREATOR: Parcelable.Creator<ProductItemDataView> = object : Parcelable.Creator<ProductItemDataView> {
             override fun createFromParcel(source: Parcel): ProductItemDataView {
                 return ProductItemDataView(source)

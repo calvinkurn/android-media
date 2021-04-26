@@ -68,6 +68,7 @@ class ProductDataView() : Parcelable {
     }
 
     companion object {
+        @JvmField
         val CREATOR: Parcelable.Creator<ProductDataView> = object : Parcelable.Creator<ProductDataView> {
             override fun createFromParcel(source: Parcel): ProductDataView {
                 return ProductDataView(source)
