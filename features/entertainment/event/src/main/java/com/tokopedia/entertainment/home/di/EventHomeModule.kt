@@ -2,12 +2,12 @@ package com.tokopedia.entertainment.home.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
-import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModelFactory
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
@@ -71,15 +71,6 @@ class EventHomeModule {
     fun provideErrorInterceptors(): CommonErrorResponseInterceptor {
         return CommonErrorResponseInterceptor()
     }
-
-    @EventHomeScope
-    @Provides
-    fun provideViewModelFactory(dispatcher: CoroutineDispatcher,
-                                gqlRepository: GraphqlRepository,
-                                restRepository: RestRepository,
-                                userSession: UserSessionInterface):
-            HomeEventViewModelFactory = HomeEventViewModelFactory(dispatcher,
-            gqlRepository, restRepository, userSession)
 
     @EventHomeScope
     @Provides

@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventGridModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
@@ -24,15 +24,13 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_i
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
-                                                         onSuccess: (EventItemModel) -> Unit,
-                                                         onError: (Throwable) -> Unit) -> Unit),
+class EventGridEventViewHolder(itemView: View,
                                val gridlistener: TrackingListener,
                                val clickGridListener: ClickGridListener
 )
-    : HomeEventViewHolder<EventGridModel>(itemView) {
+    : AbstractViewHolder<EventGridModel>(itemView) {
 
-    var itemAdapter = InnerItemAdapter(action, gridlistener, clickGridListener)
+    var itemAdapter = InnerItemAdapter(gridlistener, clickGridListener)
 
     init {
         itemView.ent_recycle_view_grid.apply {
@@ -65,10 +63,7 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
         val TAG = EventGridEventViewHolder::class.java.simpleName
     }
 
-    class InnerItemAdapter(val action: (data: EventItemModel,
-                                        onSuccess: (EventItemModel) -> Unit,
-                                        onError: (Throwable) -> Unit) -> Unit,
-                           val gridlistener: TrackingListener,
+    class InnerItemAdapter(val gridlistener: TrackingListener,
                            val clickGridListener: ClickGridListener
     )
         : RecyclerView.Adapter<InnerViewHolder>() {
@@ -106,18 +101,10 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
                 gridlistener.impressionSectionEventProduct(item, items, titleGrid,
                         position + 1)
             })
+
             holder.view.iv_favorite.setOnClickListener {
-                action.invoke(item, ::onSuccessPostLiked, ::onErrorPostLiked)
+                clickGridListener.likeProductGrid(item)
             }
-        }
-
-        fun onSuccessPostLiked(data: EventItemModel) {
-            notifyItemChanged(pos)
-        }
-
-        fun onErrorPostLiked(throwable: Throwable) {
-            notifyItemChanged(pos)
-            Log.e(TAG, throwable.localizedMessage)
         }
 
         fun setList(list: MutableList<EventItemModel>) {
@@ -132,6 +119,7 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
 
     interface ClickGridListener{
         fun redirectToPDPEvent(applink: String)
+        fun likeProductGrid(data: EventItemModel)
     }
 
 }

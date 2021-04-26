@@ -1,17 +1,16 @@
 package com.tokopedia.entertainment.home.adapter.factory
 
-import android.view.ViewGroup
-import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
+import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.entertainment.home.adapter.viewmodel.*
 
 /**
  * @author by errysuprayogi on 3/29/17.
  */
-interface HomeTypeFactory {
+interface HomeTypeFactory: AdapterTypeFactory {
     fun type(model: BannerModel): Int
     fun type(model: CategoryModel): Int
     fun type(model: EventCarouselModel): Int
     fun type(model: EventGridModel): Int
     fun type(model: EventLocationModel): Int
-    fun createViewHolder(view: ViewGroup, viewType: Int): HomeEventViewHolder<*>
+    fun type(model: EmptyHomeModel): Int
 }

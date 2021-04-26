@@ -28,7 +28,6 @@
             android:layout_height="@dimen/spacing_lvl6"
             android:layout_margin="@dimen/spacing_lvl2"
             android:background="@drawable/ent_ic_circle"
-            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
