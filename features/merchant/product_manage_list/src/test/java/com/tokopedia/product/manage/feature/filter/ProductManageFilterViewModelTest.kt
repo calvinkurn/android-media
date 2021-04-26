@@ -249,6 +249,31 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
     }
 
     @Test
+    fun `given category and other filter selected true when updateSelect for should update filter selected false`() {
+        val categoryFilter = getCategoryDataModel(isSelected = true)
+        val otherFilter = getOtherFilterDataModel(isSelected = true)
+
+        val sortViewModel = getSortFilterViewModel()
+        val etalaseViewModel = getEtalaseFilterViewModel()
+        val categoryViewModel = getCategoryFilterViewModel(categoryFilter)
+        val otherFilterViewModel = getOtherFilterFilterViewModel(otherFilter)
+
+        viewModel.updateData(listOf(sortViewModel, etalaseViewModel, categoryViewModel, otherFilterViewModel))
+        viewModel.updateSelect(categoryFilter)
+        viewModel.updateSelect(otherFilter)
+
+        val selectedCategoryDataViewModel = FilterDataUiModel("293", "Some Category", "", false)
+        val expectedCategoryModel = getCategoryFilterViewModel(selectedCategoryDataViewModel)
+        val expectedCategoryIndex = ProductManageFilterFragment.ITEM_CATEGORIES_INDEX
+        val selectedOtherFilterDataViewModel = FilterDataUiModel("4183", "Some Other Filter", "", false)
+        val expectedOtherFilterModel = getOtherFilterFilterViewModel(selectedOtherFilterDataViewModel)
+        val expectedOtherFilterIndex = ProductManageFilterFragment.ITEM_OTHER_FILTER_INDEX
+
+        verifyFilterDataAtIndex(expectedCategoryModel, expectedCategoryIndex)
+        verifyFilterDataAtIndex(expectedOtherFilterModel, expectedOtherFilterIndex)
+    }
+
+    @Test
     fun `given selected category or other filter not found when updateSelect should NOT update filter data model`() {
         val sortViewModel = getSortFilterViewModel()
         val etalaseViewModel = getEtalaseFilterViewModel()

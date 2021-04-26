@@ -38,8 +38,8 @@ fun getEtalaseFilterViewModel(etalaseDataModel: FilterDataUiModel = getEtalaseDa
             ), isChipsShown)
 }
 
-fun getCategoryDataModel(id: String = "293"): FilterDataUiModel {
-    return FilterDataUiModel(id, "Some Category", "", false)
+fun getCategoryDataModel(id: String = "293", isSelected: Boolean = false): FilterDataUiModel {
+    return FilterDataUiModel(id, "Some Category", "", isSelected)
 }
 
 fun getCategoryFilterViewModel(categoryDataModel: FilterDataUiModel = getCategoryDataModel()): FilterUiModel {
@@ -56,8 +56,8 @@ fun getCategoryFilterViewModel(categoryDataModel: FilterDataUiModel = getCategor
             ), false)
 }
 
-fun getOtherFilterDataModel(id: String = "4183"): FilterDataUiModel {
-    return FilterDataUiModel(id, "Some Other Filter", "", false)
+fun getOtherFilterDataModel(id: String = "4183", isSelected: Boolean = false): FilterDataUiModel {
+    return FilterDataUiModel(id, "Some Other Filter", "", isSelected)
 }
 
 fun getOtherFilterFilterViewModel(otherFilterDataModel: FilterDataUiModel = getOtherFilterDataModel()): FilterUiModel {
