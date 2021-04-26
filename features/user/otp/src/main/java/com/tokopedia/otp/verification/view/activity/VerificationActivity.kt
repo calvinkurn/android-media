@@ -12,9 +12,7 @@ import com.tokopedia.otp.common.abstraction.BaseOtpActivity
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
-import com.tokopedia.otp.verification.view.fragment.OnboardingMiscallFragment
-import com.tokopedia.otp.verification.view.fragment.VerificationFragment
-import com.tokopedia.otp.verification.view.fragment.VerificationMethodFragment
+import com.tokopedia.otp.verification.view.fragment.*
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -70,9 +68,9 @@ open class VerificationActivity : BaseOtpActivity() {
     }
 
     private fun setupParams() {
-        if(isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN) == true) {
+        if (isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN) == true) {
             otpData.userId = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID, "").toEmptyStringIfNull()
-        }else {
+        } else {
             otpData.userId = userSession.userId ?: userSession.temporaryUserId
         }
         otpData.otpType = intent?.extras?.getInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 0) ?: 0
@@ -84,7 +82,8 @@ open class VerificationActivity : BaseOtpActivity() {
         otpData.canUseOtherMethod = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false) ?: false
         otpData.isShowChooseMethod = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false) ?: false
         otpData.accessToken = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, "").toEmptyStringIfNull()
-        isLoginRegisterFlow = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, false)?: false
+        isLoginRegisterFlow = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, false)
+                ?: false
     }
 
     private fun createBundle(modeListData: ModeListData? = null, isMoreThanOne: Boolean = true): Bundle {
@@ -116,8 +115,35 @@ open class VerificationActivity : BaseOtpActivity() {
     }
 
     fun goToVerificationPage(modeListData: ModeListData, isMoreThanOne: Boolean = true) {
-        val fragment = VerificationFragment.createInstance(createBundle(modeListData, isMoreThanOne))
+        val bundle = createBundle(modeListData, isMoreThanOne)
+        val fragment = generateVerificationFragment(modeListData, bundle)
         doFragmentTransaction(fragment, TAG_OTP_VALIDATOR, false)
+    }
+
+    private fun generateVerificationFragment(modeListData: ModeListData, bundle: Bundle): VerificationFragment {
+        return when (modeListData.modeText) {
+            OtpConstant.OtpMode.EMAIL -> {
+                EmailVerificationFragment.createInstance(bundle)
+            }
+            OtpConstant.OtpMode.SMS -> {
+                SmsVerificationFragment.createInstance(bundle)
+            }
+            OtpConstant.OtpMode.WA -> {
+                WhatsappVerificationFragment.createInstance(bundle)
+            }
+            OtpConstant.OtpMode.GOOGLE_AUTH -> {
+                GoogleAuthVerificationFragment.createInstance(bundle)
+            }
+            OtpConstant.OtpMode.PIN -> {
+                PinVerificationFragment.createInstance(bundle)
+            }
+            OtpConstant.OtpMode.MISCALL -> {
+                MisscallVerificationFragment.createInstance(bundle)
+            }
+            else -> {
+                VerificationFragment.createInstance(bundle)
+            }
+        }
     }
 
     fun goToOnboardingMiscallPage(modeListData: ModeListData) {

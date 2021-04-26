@@ -33,7 +33,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 background = widgetBackground,
                 config = configMapper.mapWidgetConfig(data),
                 items = mapWidgetItem(prevMediumModel?.items, data.data).toMutableList().apply {
-                    add(0, mapWidgetItemOverlay(widgetBackground))
+                    if (shouldAddLeftBanner(widgetBackground)) add(0, mapWidgetItemOverlay(widgetBackground))
                 }
         )
     }
@@ -58,6 +58,8 @@ class PlayWidgetMediumUiMapper @Inject constructor(
             else -> null
         }
     }
+
+    private fun shouldAddLeftBanner(item: PlayWidgetBackgroundUiModel) = item.overlayImageUrl.isNotBlank()
 
     private fun mapWidgetItemOverlay(item: PlayWidgetBackgroundUiModel): PlayWidgetMediumOverlayUiModel = PlayWidgetMediumOverlayUiModel(
             appLink = item.overlayImageAppLink,

@@ -36,5 +36,7 @@
     <color name="topchat_transparent">#00000000</color>
     <color name="topchat_dms_image_upload_overlay">#00eeeeee</color>
     <color name="topchat_dms_image_upload_overlay_start_color">#50000000</color>
-
+    <color name="topchat_dms_black_12">#1F000000</color>
+    <color name="topchat_dms_icon_compose">#525A67</color>
+    <color name="topchat_send_button_gray_bg">#DAE2ED</color>
 </resources>

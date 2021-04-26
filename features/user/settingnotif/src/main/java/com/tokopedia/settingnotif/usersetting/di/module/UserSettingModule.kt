@@ -11,8 +11,8 @@ import com.tokopedia.settingnotif.usersetting.base.SettingRepository
 import com.tokopedia.settingnotif.usersetting.di.UserSettingScope
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.settingnotif.usersetting.analytics.MoengageManager
+import com.tokopedia.settingnotif.usersetting.analytics.MoengageManagerImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -77,8 +77,7 @@ import dagger.Provides
 
     @Provides
     @UserSettingScope
-    fun provideCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
+    fun provideMoengageManager(): MoengageManager {
+        return MoengageManagerImpl()
     }
-
 }
