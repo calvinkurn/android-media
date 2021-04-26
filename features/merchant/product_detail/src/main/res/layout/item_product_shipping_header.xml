@@ -17,8 +17,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/pdp_ic_location_from"
-            android:layout_width="@dimen/unify_space_24"
-            android:layout_height="@dimen/unify_space_24"
+            android:layout_width="@dimen/unify_space_16"
+            android:layout_height="@dimen/unify_space_16"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
             app:icon_name="LOCATION"

@@ -35,35 +35,12 @@
                     android:visibility="gone" />
 
                 <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-                    android:id="@+id/recycler_viewParent"
+                    android:id="@+id/rvEventTicketList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     tools:itemCount="3"
                     tools:listitem="@layout/ent_ticket_adapter_item" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tgEventTicketRecommendationTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl3"
-                    android:background="@color/Unify_N0"
-                    android:padding="@dimen/spacing_lvl4"
-                    android:text="@string/ent_event_pdp_ticket_recommendation_label"
-                    android:textColor="@color/Unify_N700_68"
-                    android:visibility="gone"
-                    app:typographyType="heading_6"
-                    tools:visibility="visible" />
-
-                <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-                    android:id="@+id/rvEventRecommendationList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:itemCount="3"
-                    tools:listitem="@layout/ent_ticket_adapter_item"
-                    tools:visibility="visible" />
-
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
