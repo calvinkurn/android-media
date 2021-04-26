@@ -15,6 +15,7 @@
     android:layout_marginRight="@dimen/dp_16"
     android:layout_marginEnd="@dimen/dp_16"
     android:layout_marginBottom="@dimen/dp_16"
+    app:cardBackgroundColor="@color/similar_search_dms_original_product_background"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4"
     app:cardUseCompatPadding="true"
@@ -24,7 +25,6 @@
         android:id="@+id/constraintLayoutOriginalProduct"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0_96"
         android:padding="@dimen/dp_8">
 
         <androidx.appcompat.widget.AppCompatImageView

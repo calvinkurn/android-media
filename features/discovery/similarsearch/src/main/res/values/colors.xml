@@ -10,4 +10,5 @@
     <color name="similar_search_title_color">#f531353b</color>
     <color name="similar_search_content_color">#ae31353b</color>
 
+    <color name="similar_search_dms_original_product_background">@color/Unify_N0</color>
 </resources>
