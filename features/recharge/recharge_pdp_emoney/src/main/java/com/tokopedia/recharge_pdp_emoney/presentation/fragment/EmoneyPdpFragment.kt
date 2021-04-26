@@ -3,6 +3,7 @@ package com.tokopedia.recharge_pdp_emoney.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,8 @@ import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -116,6 +119,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         super.onActivityCreated(savedInstanceState)
 
         topUpBillsViewModel.menuDetailData.observe(viewLifecycleOwner, Observer {
+            emoneyGlobalError.hide()
             when (it) {
                 is Success -> {
                     trackEventViewPdp(it.data.catalog.label)
@@ -123,7 +127,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     renderTicker(EmoneyPdpMapper.mapTopUpBillsTickersToTickersData(it.data.tickers))
                 }
                 is Fail -> {
-                    emoneyPdpViewModel.setErrorMessage(it.throwable)
+                    renderFullPageError(it.throwable)
                 }
             }
         })
@@ -137,11 +141,13 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         })
 
         emoneyPdpViewModel.errorMessage.observe(viewLifecycleOwner, Observer {
-            renderErrorMessage(it)
+            renderErrorToaster(it)
         })
 
         emoneyPdpViewModel.catalogPrefixSelect.observe(viewLifecycleOwner, Observer {
-            if (it is Fail) emoneyPdpViewModel.setErrorMessage(it.throwable)
+            if (it is Fail) {
+                renderFullPageError(it.throwable)
+            }
         })
 
         emoneyPdpViewModel.selectedOperator.observe(viewLifecycleOwner, Observer {
@@ -322,8 +328,16 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         emoneyPdpInputCardWidget.setNumber(cardNumber)
     }
 
-    private fun renderErrorMessage(message: String) {
+    private fun renderErrorToaster(message: String) {
         Toaster.build(requireView(), message, Toaster.LENGTH_LONG).show()
+    }
+
+    private fun renderFullPageError(throwable: Throwable) {
+        emoneyGlobalError.showUnifyError(throwable, { loadData() })
+        emoneyGlobalError.findViewById<GlobalError>(com.tokopedia.globalerror.R.id.globalerror_view)?.apply {
+            gravity = Gravity.CENTER
+        }
+        emoneyGlobalError.show()
     }
 
     override fun onClickCheckBalance() {
