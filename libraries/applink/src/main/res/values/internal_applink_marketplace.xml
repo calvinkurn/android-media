@@ -104,6 +104,7 @@
     <string name="path_user_attach_product" translatable="false">/user-attach-product</string>
     <string name="path_user_order_history" translatable="false">/user-order-history/.*\\/</string>
     <string name="path_user_inbox" translatable="false">/inbox</string>
+    <string name="path_user_inbox_with_query" translatable="false">/inbox?.*</string>
     <string name="title_open_shop">Buka Toko Gratis</string>
     <string name="title_ovop2p">OVO P2P Transfer</string>
     <string name="applink_report_title">Report</string>
