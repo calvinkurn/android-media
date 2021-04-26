@@ -125,7 +125,7 @@ class LoginActivityInstrumentedTest {
 
     /* Show socmed container if socmed button clicked */
     fun onSocmedBtnClick() {
-        onView(allOf(withText(R.string.social_media), withContentDescription(R.string.content_desc_socmed_btn_phone))).perform(click())
+        onView(allOf(withText(R.string.another_method), withContentDescription(R.string.content_desc_socmed_btn_phone))).perform(click())
         onView(withId(R.id.socmed_container)).check(matches(isDisplayed()))
     }
 

@@ -57,6 +57,8 @@ import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
 import com.tokopedia.moengage_wrapper.util.NotificationBroadcast;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.media.common.Loader;
+import com.tokopedia.media.common.common.ToasterActivityLifecycle;
 import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -123,6 +125,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_customerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_new_relic";
+    private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -149,6 +152,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
         registerActivityLifecycleCallbacks();
         checkAppSignatureAsync();
+
+        Loader.init(this);
     }
 
     private void checkAppSignatureAsync() {
@@ -313,7 +318,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
-
+        registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
     }
 
 
@@ -364,7 +369,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     @NotNull
     private Boolean executePreCreateSequence() {
-
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
         FpmLogger.init(ConsumerMainApplication.this);
         return true;
@@ -484,6 +488,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             @Override
             public String getUserId() {
                 return getUserSession().getUserId();
+            }
+
+            @NotNull
+            @Override
+            public String getParserScalyr() {
+                return PARSER_SCALYR_MA;
             }
 
             @NotNull

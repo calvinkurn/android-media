@@ -200,7 +200,7 @@
           "item_name": "{{.*}}",
           "item_brand": "{{.*}}",
           "item_category": "{{.*}}",
-          "price": "{{\\d+.\\d+}}",
+          "price": "{{.*}}",
           "item_variant": "{{.*}}",
           "index": "{{\\d+(.\\d+)?}}"
         }

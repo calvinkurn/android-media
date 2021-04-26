@@ -363,6 +363,11 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         event_pdp_app_bar_layout.removeOnOffsetChangedListener(this)
     }
 
+    override fun onStop() {
+        super.onStop()
+        hideShareLoading()
+    }
+
     private fun goToTicketPage(productDetailData: ProductDetailData, selectedDate: String) {
         val startDate = getStartDate(productDetailData)
         val endDate = getEndDate(productDetailData)

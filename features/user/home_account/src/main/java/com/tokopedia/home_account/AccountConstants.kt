@@ -178,6 +178,7 @@ object AccountConstants {
         const val SETTING_APP_SETTING = 46
         const val SETTING_ABOUT_TOKOPEDIA = 47
         const val SETTING_TOKOPOINTS = 48
+        const val SETTING_QUALITY_SETTING = 49
     }
 
     object KEY {
