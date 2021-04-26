@@ -614,17 +614,14 @@ class NewShopPageFragment :
         })
 
         shopViewModel?.shopOperationalHoursListData?.observe(owner, Observer { result ->
-            when(result) {
-                is Success -> {
-                    val opsHoursList = result.data.getShopOperationalHoursList?.data
-                    opsHoursList?.let { hourList ->
-                        if (hourList.isNotEmpty()) {
-                            shopOperationalHoursListBottomSheet?.hideLoader()
-                            shopOperationalHoursListBottomSheet?.updateShopHoursDataSet(hourList)
-                        }
+            if (result is Success) {
+                val opsHoursList = result.data.getShopOperationalHoursList?.data
+                opsHoursList?.let { hourList ->
+                    if (hourList.isNotEmpty()) {
+                        shopOperationalHoursListBottomSheet = ShopOperationalHoursListBottomSheet.createInstance()
+                        shopOperationalHoursListBottomSheet?.updateShopHoursDataSet(hourList)
                     }
                 }
-                is Fail -> {}
             }
         })
 
@@ -744,6 +741,7 @@ class NewShopPageFragment :
         getShopInfoData()
         getFollowStatus()
         getSellerPlayWidget()
+        getShopOperationalHoursData()
     }
 
     private fun getShopInfoData() {
@@ -760,6 +758,10 @@ class NewShopPageFragment :
             shopPageFragmentHeaderViewHolder?.setLoadingFollowButton(true)
             shopViewModel?.getFollowStatusData(shopId)
         }
+    }
+
+    private fun getShopOperationalHoursData() {
+        shopViewModel?.getShopOperationalHoursList(shopId)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -1953,10 +1955,7 @@ class NewShopPageFragment :
         // check type for non applink component
         if (componentName == BaseShopHeaderComponentUiModel.ComponentName.SHOP_OPERATIONAL_HOUR) {
             // show shop operational hour bottomsheet
-            shopOperationalHoursListBottomSheet = ShopOperationalHoursListBottomSheet()
             shopOperationalHoursListBottomSheet?.show(fragmentManager)
-            shopOperationalHoursListBottomSheet?.showLoader()
-            shopViewModel?.getShopOperationalHoursList(shopId)
         }
 
         if (isShopReviewAppLink(appLink)) {

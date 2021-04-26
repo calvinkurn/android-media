@@ -8,13 +8,10 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopOperationalHoursListBottomsheetAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.LoaderUnify
 
 /**
  * Created by Rafli Syam on 16/04/2021
@@ -29,9 +26,9 @@ class ShopOperationalHoursListBottomSheet : BottomSheetUnify() {
         fun createInstance(): ShopOperationalHoursListBottomSheet = ShopOperationalHoursListBottomSheet()
     }
 
+    var operationalHourList = mutableListOf<ShopOperationalHour>()
     private var rvOperationalHours: RecyclerView? = null
     private var rvOperationalHoursAdapter: ShopOperationalHoursListBottomsheetAdapter? = null
-    private var loader: LoaderUnify? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupBottomsheetChildView(inflater, container)
@@ -43,16 +40,6 @@ class ShopOperationalHoursListBottomSheet : BottomSheetUnify() {
         initRecyclerView()
     }
 
-    fun showLoader() {
-        rvOperationalHours?.gone()
-        loader?.visible()
-    }
-
-    fun hideLoader() {
-        rvOperationalHours?.visible()
-        loader?.gone()
-    }
-
     fun show(fragmentManager: FragmentManager?) {
         fragmentManager?.let {
             show(it, TAG)
@@ -60,7 +47,7 @@ class ShopOperationalHoursListBottomSheet : BottomSheetUnify() {
     }
 
     fun updateShopHoursDataSet(newList: List<ShopOperationalHour>) {
-        rvOperationalHoursAdapter?.updateData(newList)
+        operationalHourList = newList.toMutableList()
     }
 
     private fun setupBottomsheetChildView(
@@ -69,7 +56,6 @@ class ShopOperationalHoursListBottomSheet : BottomSheetUnify() {
     ) {
         inflater.inflate(LAYOUT, container).apply {
             rvOperationalHours = findViewById(R.id.rv_shop_operational_hours_list)
-            loader = findViewById(R.id.loaderUnifyOperationalHours)
             setTitle(getString(R.string.shop_ops_hour_bottomsheet_title))
             setChild(this)
             setCloseClickListener {
@@ -79,7 +65,7 @@ class ShopOperationalHoursListBottomSheet : BottomSheetUnify() {
     }
 
     private fun initRecyclerView() {
-        rvOperationalHoursAdapter = ShopOperationalHoursListBottomsheetAdapter(context)
+        rvOperationalHoursAdapter = ShopOperationalHoursListBottomsheetAdapter(context, operationalHourList)
         rvOperationalHours?.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

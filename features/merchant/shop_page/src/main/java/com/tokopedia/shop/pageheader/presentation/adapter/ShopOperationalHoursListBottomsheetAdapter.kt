@@ -14,7 +14,8 @@ import com.tokopedia.unifyprinciples.Typography
  * Created by Rafli Syam on 16/04/2021
  */
 class ShopOperationalHoursListBottomsheetAdapter(
-        private val context: Context?
+        private val context: Context?,
+        private val operationalHoursList: MutableList<ShopOperationalHour>
 ): RecyclerView.Adapter<ShopOperationalHoursListBottomsheetAdapter.ViewHolder>() {
 
     companion object {
@@ -37,8 +38,6 @@ class ShopOperationalHoursListBottomsheetAdapter(
         const val MAX_END_TIME = "23:59:00"
     }
 
-    var operationalHoursList: MutableList<ShopOperationalHour> = mutableListOf()
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(View.inflate(context, ITEM_LAYOUT, null))
     }
@@ -50,12 +49,6 @@ class ShopOperationalHoursListBottomsheetAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(operationalHoursList[position])
     }
-
-    fun updateData(newList: List<ShopOperationalHour>) {
-        operationalHoursList = newList.toMutableList()
-        notifyDataSetChanged()
-    }
-
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
