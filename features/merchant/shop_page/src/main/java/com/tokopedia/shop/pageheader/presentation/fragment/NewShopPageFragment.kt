@@ -107,6 +107,7 @@ import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerA
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.*
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopOperationalHoursListBottomSheet
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.holder.NewShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
@@ -290,6 +291,7 @@ class NewShopPageFragment :
     private var initialProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var shopShareBottomSheet: ShopShareBottomSheet? = null
     private var shopUnmoderateBottomSheet: ShopRequestUnmoderateBottomSheet? = null
+    private var shopOperationalHoursListBottomSheet: ShopOperationalHoursListBottomSheet? = null
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
@@ -330,6 +332,7 @@ class NewShopPageFragment :
         shopViewModel?.shopSellerPLayWidgetData?.removeObservers(this)
         shopViewModel?.shopPageTickerData?.removeObservers(this)
         shopViewModel?.shopPageShopShareData?.removeObservers(this)
+        shopViewModel?.shopOperationalHoursListData?.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
@@ -600,6 +603,18 @@ class NewShopPageFragment :
             }
         })
 
+        shopViewModel?.shopOperationalHoursListData?.observe(owner, Observer { result ->
+            if (result is Success) {
+                val opsHoursList = result.data.getShopOperationalHoursList?.data
+                opsHoursList?.let { hourList ->
+                    if (hourList.isNotEmpty()) {
+                        shopOperationalHoursListBottomSheet = ShopOperationalHoursListBottomSheet.createInstance()
+                        shopOperationalHoursListBottomSheet?.updateShopHoursDataSet(hourList)
+                    }
+                }
+            }
+        })
+
     }
 
     private fun onSuccessUpdateFollowStatus(followShop: FollowShop) {
@@ -716,6 +731,7 @@ class NewShopPageFragment :
         getShopInfoData()
         getFollowStatus()
         getSellerPlayWidget()
+        getShopOperationalHoursData()
     }
 
     private fun getShopInfoData() {
@@ -732,6 +748,10 @@ class NewShopPageFragment :
             shopPageFragmentHeaderViewHolder?.setLoadingFollowButton(true)
             shopViewModel?.getFollowStatusData(shopId)
         }
+    }
+
+    private fun getShopOperationalHoursData() {
+        shopViewModel?.getShopOperationalHoursList(shopId)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -1921,11 +1941,19 @@ class NewShopPageFragment :
     ) {
         val appLink = componentModel.text.getOrNull(0)?.textLink.orEmpty()
         val valueDisplayed = componentModel.text.getOrNull(0)?.textHtml?.trim().orEmpty()
+        val componentName = componentModel.name
         sendClickShopHeaderComponentTracking(
                 shopHeaderWidgetUiModel,
                 componentModel,
                 valueDisplayed
         )
+
+        // check type for non applink component
+        if (componentName == BaseShopHeaderComponentUiModel.ComponentName.SHOP_OPERATIONAL_HOUR) {
+            // show shop operational hour bottomsheet
+            shopOperationalHoursListBottomSheet?.show(fragmentManager)
+        }
+
         if (isShopReviewAppLink(appLink)) {
             val reviewTabPosition = viewPagerAdapter?.getFragmentPosition(ReviewShopFragment::class.java).orZero()
             viewPager.setCurrentItem(reviewTabPosition, false)
