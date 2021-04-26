@@ -64,8 +64,9 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity implements F
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_overflow_menu){
             showBottomMenu();
+            return true;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     protected FlightComponent getFlightComponent() {
