@@ -5,7 +5,6 @@
     android:id="@+id/parent_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -97,7 +96,7 @@
                 android:layout_marginLeft="@dimen/spacing_lvl5"
                 android:layout_marginRight="@dimen/spacing_lvl5"
                 android:contentDescription="@string/content_desc_socmed_btn_phone"
-                android:text="@string/social_media"
+                android:text="@string/another_method"
                 android:textAllCaps="false"
                 app:unifyButtonType="alternate"
                 app:unifyButtonVariant="ghost" />

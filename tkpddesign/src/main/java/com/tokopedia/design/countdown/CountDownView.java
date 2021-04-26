@@ -77,8 +77,8 @@ public class CountDownView extends FrameLayout {
             hourView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)));
             minuteView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)));
             secondView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)));
-            col1.setTextColor(a.getColor(R.styleable.CountDownView_countDownSparatorColor, ContextCompat.getColor(context, R.color.tkpd_main_orange)));
-            col2.setTextColor(a.getColor(R.styleable.CountDownView_countDownSparatorColor, ContextCompat.getColor(context, R.color.tkpd_main_orange)));
+            col1.setTextColor(a.getColor(R.styleable.CountDownView_countDownSparatorColor, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500)));
+            col2.setTextColor(a.getColor(R.styleable.CountDownView_countDownSparatorColor, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500)));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 hourView.setBackground(a.getDrawable(R.styleable.CountDownView_coundDownBackgroud));
                 minuteView.setBackground(a.getDrawable(R.styleable.CountDownView_coundDownBackgroud));

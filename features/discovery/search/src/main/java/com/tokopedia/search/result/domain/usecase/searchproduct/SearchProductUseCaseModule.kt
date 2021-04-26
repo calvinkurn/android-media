@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.domain.usecase.searchproduct
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -26,7 +26,8 @@ class SearchProductUseCaseModule {
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
     fun provideSearchProductFirstPageUseCase(
             searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
-            userSession: UserSessionInterface
+            userSession: UserSessionInterface,
+            coroutineDispatchers: CoroutineDispatchers
     ): UseCase<SearchProductModel> {
         val topAdsImageViewUseCase = TopAdsImageViewUseCase(
                 userSession.userId,
@@ -36,7 +37,7 @@ class SearchProductUseCaseModule {
                 GraphqlUseCase(),
                 searchProductModelMapper,
                 topAdsImageViewUseCase,
-                CoroutineDispatchersProvider,
+                coroutineDispatchers,
                 SearchLogger()
         )
     }

@@ -202,7 +202,7 @@
                     android:layout_width="@dimen/spacing_lvl7"
                     android:layout_height="@dimen/spacing_lvl7"
                     android:layout_marginBottom="@dimen/spacing_lvl4"
-                    android:background="@drawable/bg_topchat_send_btn"
+                    android:background="@drawable/bg_topchat_send_btn_disabled"
                     android:paddingStart="@dimen/dp_topchat_10"
                     android:paddingTop="@dimen/dp_topchat_10"
                     android:paddingEnd="@dimen/dp_topchat_9"

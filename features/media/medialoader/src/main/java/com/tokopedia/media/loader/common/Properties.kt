@@ -52,6 +52,9 @@ open class Properties(
     // validation of performance monitoring
     internal val isTrackable: Boolean = data is String && data.toString().contains(CDN_IMAGE_URL)
 
+    // versioning of cache
+    internal val cacheVersionNumber = "+v2"
+
     internal fun setImageSize(width: Int, height: Int) = apply {
         this.imageViewSize = Pair(width, height)
     }

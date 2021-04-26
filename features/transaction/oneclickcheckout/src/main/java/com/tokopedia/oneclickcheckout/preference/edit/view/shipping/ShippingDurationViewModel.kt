@@ -81,7 +81,7 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
 
 
     /*With Price*/
-    fun getRates(listShopShipment: ArrayList<ShopShipment>?, shippingParam: ShippingParam?, isNewLayout: Boolean) {
+    fun getRates(listShopShipment: ArrayList<ShopShipment>?, shippingParam: ShippingParam?) {
         _shippingDuration.value = OccState.Loading
         OccIdlingResource.increment()
         val ratesParam = shippingParam?.let { listShopShipment?.let { list -> RatesParam.Builder(list, it) } }?.build()
@@ -99,7 +99,7 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
                                     if (!shippingRecomendationData.errorMessage.isNullOrEmpty()) {
                                         _shippingDuration.value = OccState.Failed(Failure(MessageErrorException(shippingRecomendationData.errorMessage)))
                                     } else {
-                                        logicSelection(mapToModelPrice(shippingRecomendationData, isNewLayout))
+                                        logicSelection(mapToModelPrice(shippingRecomendationData))
                                     }
                                 }
 
@@ -111,8 +111,8 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
         }
     }
 
-    private fun mapToModelPrice(responses: ShippingRecommendationData, isNewLayout: Boolean): ShippingListModel {
-        return mapperPrice.convertToDomainModelWithPrice(responses, isNewLayout)
+    private fun mapToModelPrice(responses: ShippingRecommendationData): ShippingListModel {
+        return mapperPrice.convertToDomainModelWithPrice(responses)
     }
 
     override fun onCleared() {
