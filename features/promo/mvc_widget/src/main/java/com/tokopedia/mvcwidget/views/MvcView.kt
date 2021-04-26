@@ -61,8 +61,8 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     private fun setBackgroundColor() {
         if (context.isDarkMode()) {
-            mvcShadow.setImageResource(R.drawable.mvc_shadow_n50)
-            mvcBgDuplicate.setImageResource(R.drawable.mvc_bg_duplicate_n50)
+            mvcShadow.setImageResource(R.drawable.mvc_shadow_n75)
+            mvcBgDuplicate.setImageResource(R.drawable.mvc_bg_duplicate_n75)
         } else {
             mvcShadow.setImageResource(R.drawable.mvc_shadow_n0)
             mvcBgDuplicate.setImageResource(R.drawable.mvc_bg_duplicate_n0)
