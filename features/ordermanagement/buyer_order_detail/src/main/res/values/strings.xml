@@ -17,5 +17,6 @@
     <string name="buy_again_label">Beli Lagi</string>
     <string name="buyer_order_detail_toolbar_title">Detail Pesanan</string>
     <string name="message_invoice_copied">Kode invoice telah tersalin</string>
+    <string name="message_awb_copied">Nomor resi telah tersalin</string>
     <string name="html_link">%1$s &lt;a href=\"%2$s\"&gt;%3$s&lt;/a&gt;</string>
 </resources>
