@@ -402,12 +402,12 @@
             "blackbox_info": {
               "text_info": ""
             }
-          }
+          },
           "pre_order": {
             "header": "Barang akan dikirim mulai 25 Jan",
             "label": "PreOrder 3 Hari",
             "display": false
-            }
+          }
         }
       }
     }
