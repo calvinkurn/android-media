@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.module.net.NetModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.cachemanager.CacheManager;
 
 import dagger.Module;
@@ -45,5 +47,11 @@ public class AppModule {
     @Provides
     public CacheManager provideGlobalCacheManager(AbstractionRouter abstractionRouter) {
         return abstractionRouter.getPersistentCacheManager();
+    }
+
+    @ApplicationScope
+    @Provides
+    public CoroutineDispatchers provideCoroutineDispatchers() {
+        return CoroutineDispatchersProvider.INSTANCE;
     }
 }

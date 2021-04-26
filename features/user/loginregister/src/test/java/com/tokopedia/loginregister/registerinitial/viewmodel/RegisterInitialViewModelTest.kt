@@ -1,10 +1,12 @@
 package com.tokopedia.loginregister.registerinitial.viewmodel
 
+import android.util.Base64
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
+import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
@@ -25,9 +27,8 @@ import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConsta
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.*
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sessioncommon.data.LoginToken
-import com.tokopedia.sessioncommon.data.LoginTokenPojo
-import com.tokopedia.sessioncommon.data.PopupError
+import com.tokopedia.network.refreshtoken.EncoderDecoder
+import com.tokopedia.sessioncommon.data.*
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
@@ -41,10 +42,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import junit.framework.TestCase.assertEquals
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
@@ -109,6 +107,10 @@ class RegisterInitialViewModelTest {
 
     @Before
     fun setUp() {
+        MockKAnnotations.init(this)
+        mockkObject(RsaUtils)
+        mockkObject(EncoderDecoder())
+
         viewModel = RegisterInitialViewModel(
                 registerCheckUseCase,
                 registerRequestUseCase,
@@ -146,6 +148,7 @@ class RegisterInitialViewModelTest {
         viewModel.goToActivationPageAfterRelogin.observeForever(goToActivationPageAfterReloginObserver)
         viewModel.goToSecurityQuestionAfterRelogin.observeForever(goToSecurityAfterReloginQuestionObserver)
         viewModel.checkOvoResponse.observeForever(hasOvoObserver)
+
     }
 
     @Test
@@ -197,6 +200,39 @@ class RegisterInitialViewModelTest {
     }
 
     @Test
+    fun `on Error Register Request had errors`() {
+        /* When */
+        val errors = arrayListOf(RegisterRequestErrorData(name = "errors", message = "error happen"))
+        val responseData = RegisterRequestData(accessToken = "", refreshToken = "", tokenType = "", errors = errors)
+        val response = RegisterRequestPojo(data = responseData)
+
+        every { registerRequestUseCase.execute(any(), any()) } answers {
+            firstArg<(RegisterRequestPojo) -> Unit>().invoke(response)
+        }
+
+        viewModel.registerRequest("", "", "", "")
+
+        /* Then */
+        assertThat(viewModel.registerRequestResponse.value, instanceOf(Fail::class.java))
+    }
+
+    @Test
+    fun `on Error Register Request had another errors`() {
+        /* When */
+        val responseData = RegisterRequestData(accessToken = "", refreshToken = "", tokenType = "")
+        val response = RegisterRequestPojo(data = responseData)
+
+        every { registerRequestUseCase.execute(any(), any()) } answers {
+            firstArg<(RegisterRequestPojo) -> Unit>().invoke(response)
+        }
+
+        viewModel.registerRequest("", "", "", "")
+
+        /* Then */
+        assertThat(viewModel.registerRequestResponse.value, instanceOf(Fail::class.java))
+    }
+
+    @Test
     fun `on Failed Register Request`() {
         every { registerRequestUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
@@ -206,6 +242,49 @@ class RegisterInitialViewModelTest {
 
         /* Then */
         verify { registerRequestObserver.onChanged(Fail(throwable)) }
+    }
+
+    @Test
+    fun `on Success Register Request v2`() {
+        /* When */
+        val responseData = RegisterRequestData(accessToken = "abc123", refreshToken = "abc123", tokenType = "12")
+        val response = RegisterRequestV2(data = responseData)
+        val keyData = KeyData(key = "testkey", hash = "123")
+        val keyPojo = GenerateKeyPojo(keyData)
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
+
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns keyPojo
+        coEvery { registerV2UseCase.executeOnBackground() } returns response
+
+        viewModel.registerRequestV2("yoris.prayogo@tokopedia.com", "123456", "Yoris", "asd")
+
+        /* Then */
+        coVerify {
+            generatePublicKeyUseCase.executeOnBackground()
+            RsaUtils.encrypt(any(), any(), true)
+            userSession.setToken(any(), any())
+            registerRequestObserver.onChanged(Success(responseData))
+        }
+    }
+
+    @Test
+    fun `on Failed Register Request v2`() {
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } throws throwable
+
+        viewModel.registerRequestV2("yoris.prayogo@tokopedia.com", "123456", "Yoris", "asd")
+
+        /* Then */
+        coVerify {
+            userSession.clearToken()
+            registerRequestObserver.onChanged(Fail(throwable))
+        }
     }
 
     @Test
@@ -793,6 +872,18 @@ class RegisterInitialViewModelTest {
         viewModel.checkHasOvoAccount(phone)
 
         verify { hasOvoObserver.onChanged(Success(response)) }
+    }
 
+    @Test
+    fun `clear task`() {
+        viewModel.clearBackgroundTask()
+        verify {
+            registerRequestUseCase.cancelJobs()
+            registerCheckUseCase.cancelJobs()
+            tickerInfoUseCase.unsubscribe()
+            discoverUseCase.unsubscribe()
+            loginTokenUseCase.unsubscribe()
+            getProfileUseCase.unsubscribe()
+        }
     }
 }

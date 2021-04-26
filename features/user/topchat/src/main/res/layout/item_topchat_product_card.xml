@@ -231,8 +231,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_topchat_20"
                 android:layout_gravity="center_vertical"
+                android:adjustViewBounds="true"
                 android:contentDescription="@null"
-                android:scaleType="fitCenter"
                 android:visibility="gone"
                 tools:src="@drawable/ic_close_default"
                 tools:visibility="visible" />
@@ -302,7 +302,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/unify_space_4"
-                android:text="Dilayani TokoCabang"
+                android:text="@string/title_topchat_dilayani_tokocabang"
                 android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_3"
                 tools:visibility="visible" />
@@ -372,7 +372,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:unifyButtonSize="small"
-                app:unifyButtonType="transaction"
+                app:unifyButtonType="main"
                 app:unifyButtonVariant="ghost"
                 tools:visibility="visible" />
 
@@ -388,7 +388,7 @@
                 app:layout_constraintStart_toEndOf="@+id/tv_atc"
                 app:layout_constraintTop_toTopOf="parent"
                 app:unifyButtonSize="small"
-                app:unifyButtonType="transaction"
+                app:unifyButtonType="main"
                 tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.UnifyButton
@@ -405,9 +405,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:unifyButtonSize="small"
-                app:unifyButtonType="transaction"
+                app:unifyButtonType="main"
                 app:unifyButtonVariant="ghost"
-                tools:visibility="gone" />
+                tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 

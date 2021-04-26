@@ -33,7 +33,10 @@ import com.tokopedia.topchat.action.ClickChildViewWithIdAction
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -99,6 +102,15 @@ abstract class TopchatRoomTest {
     protected lateinit var chatSrwUseCase: SmartReplyQuestionUseCaseStub
 
     @Inject
+    protected lateinit var orderProgressUseCase: OrderProgressUseCaseStub
+
+    @Inject
+    protected lateinit var chatBackgroundUseCase: ChatBackgroundUseCaseStub
+
+    @Inject
+    protected lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCaseStub
+
+    @Inject
     protected lateinit var websocket: RxWebSocketUtilStub
 
     protected open lateinit var activity: TopChatRoomActivityStub
@@ -106,15 +118,18 @@ abstract class TopchatRoomTest {
 
     protected open val exMessageId = "66961"
 
-    protected var firstPageChatAsBuyer: GetExistingChatPojo = GetExistingChatPojo()
-    protected var firstPageChatAsSeller: GetExistingChatPojo = GetExistingChatPojo()
-    protected var chatAttachmentResponse: ChatAttachmentResponse = ChatAttachmentResponse()
-    protected var stickerGroupAsBuyer: ChatListGroupStickerResponse = ChatListGroupStickerResponse()
-    protected var stickerListAsBuyer: StickerResponse = StickerResponse()
-    protected var firstPageChatBroadcastAsBuyer: GetExistingChatPojo = GetExistingChatPojo()
-    protected var getShopFollowingStatus: ShopFollowingPojo = ShopFollowingPojo()
-    protected var chatSrwResponse: ChatSmartReplyQuestionResponse = ChatSmartReplyQuestionResponse()
-    protected var uploadImageReplyResponse: ChatReplyPojo = ChatReplyPojo()
+    protected var firstPageChatAsBuyer = GetExistingChatPojo()
+    protected var firstPageChatAsSeller = GetExistingChatPojo()
+    protected var chatAttachmentResponse = ChatAttachmentResponse()
+    protected var stickerGroupAsBuyer = ChatListGroupStickerResponse()
+    protected var stickerListAsBuyer = StickerResponse()
+    protected var firstPageChatBroadcastAsBuyer = GetExistingChatPojo()
+    protected var getShopFollowingStatus = ShopFollowingPojo()
+    protected var chatSrwResponse = ChatSmartReplyQuestionResponse()
+    protected var uploadImageReplyResponse = ChatReplyPojo()
+    protected var orderProgressResponse = OrderProgressResponse()
+    protected var chatBackgroundResponse = ChatBackgroundResponse()
+    protected var chatRoomSettingResponse = RoomSettingResponse()
 
     protected lateinit var chatComponentStub: ChatComponentStub
 
@@ -135,6 +150,7 @@ abstract class TopchatRoomTest {
                 .chatRoomContextModule(ChatRoomContextModule(context))
                 .build()
         chatComponentStub.inject(this)
+        setupDefaultResponseWhenFirstOpenChatRoom()
     }
 
     protected open fun setupResponse() {
@@ -170,6 +186,19 @@ abstract class TopchatRoomTest {
                 "success_upload_image_reply.json",
                 ChatReplyPojo::class.java
         )
+    }
+
+    protected fun setupDefaultResponseWhenFirstOpenChatRoom() {
+        getChatRoomSettingUseCase.response = chatRoomSettingResponse
+        chatBackgroundUseCase.response = chatBackgroundResponse
+        getChatUseCase.response = firstPageChatAsBuyer
+        orderProgressUseCase.response = orderProgressResponse
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        stickerGroupUseCase.response = stickerGroupAsBuyer
+        chatListStickerUseCase.response = stickerListAsBuyer
+        chatSrwUseCase.response = chatSrwResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus
+        getTemplateChatRoomUseCase.response = generateTemplateResponse(true)
     }
 
     protected fun setupChatRoomActivity(
@@ -272,6 +301,13 @@ abstract class TopchatRoomTest {
                         atPosition, R.id.lb_product_label
                 )
         ).check(matches(viewMatcher))
+    }
+
+    protected fun assertEmptyStockLabelOnProductCard(
+            recyclerViewId: Int,
+            atPosition: Int,
+    ) {
+        assertLabelTextOnProductCard(recyclerViewId, atPosition, "Stok habis")
     }
 
     protected fun assertLabelTextOnProductCard(
@@ -386,6 +422,28 @@ abstract class TopchatRoomTest {
         assertSrwContentContainerVisibility(not(isDisplayed()))
         assertSrwErrorVisibility(not(isDisplayed()))
         assertSrwLoadingVisibility(not(isDisplayed()))
+    }
+
+    protected fun assertHeaderRightMsgBubbleVisibility(
+            position: Int, visibilityMatcher: Matcher<in View>
+    ) {
+        onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
+                position, R.id.tvRole
+        )).check(matches(visibilityMatcher))
+    }
+
+    protected fun assertHeaderRightMsgBubbleText(position: Int, msg: String) {
+        onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
+                position, R.id.tvRole
+        )).check(matches(withText(msg)))
+    }
+
+    protected fun assertHeaderRightMsgBubbleBlueDotVisibility(
+            position: Int, visibilityMatcher: Matcher<in View>
+    ) {
+        onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
+                position, R.id.img_sr_blue_dot
+        )).check(matches(visibilityMatcher))
     }
 
     protected fun generateTemplateResponse(

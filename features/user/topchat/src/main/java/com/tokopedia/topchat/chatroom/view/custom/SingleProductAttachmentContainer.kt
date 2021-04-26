@@ -378,7 +378,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindSellerFullfilment(product: ProductAttachmentViewModel) {
-        if (commonListener?.isSeller() == true && product.isFullfilment) {
+        if (commonListener?.isSeller() == true && product.isFulfillment) {
             sellerFullfilment?.show()
             ImageHandler.LoadImage(sellerFullfilmentImage, product.urlTokocabang)
         } else {
@@ -388,7 +388,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindSellerUpdateStockBtn(product: ProductAttachmentViewModel) {
         if (product.canShowFooter || commonListener?.isSeller() == false ||
-                product.isProductCampaign()) {
+                product.isProductCampaign() || !enableUpdateStockSeller()) {
             btnUpdateStockContainer?.hide()
         } else {
             btnUpdateStockContainer?.show()
@@ -623,6 +623,13 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         (layoutParams as? LinearLayout.LayoutParams)?.apply {
             this.gravity = gravity
         }
+    }
+
+    /**
+     * hansel function, remove if no longer used
+     */
+    private fun enableUpdateStockSeller(): Boolean {
+        return true
     }
 
     /**

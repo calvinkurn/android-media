@@ -93,6 +93,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterShared
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.note.view.bottomsheet.ShopNoteBottomSheet
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
@@ -101,10 +102,7 @@ import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageOnlyComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.*
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
@@ -152,7 +150,9 @@ class NewShopPageFragment :
         ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener,
         ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
         ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
-        ShopHeaderPlayWidgetViewHolder.Listener {
+        ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
+        ShopHeaderPlayWidgetViewHolder.Listener
+{
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -181,6 +181,7 @@ class NewShopPageFragment :
         private const val PATH_REVIEW = "review"
         private const val PATH_PRODUCT = "product"
         private const val PATH_FEED = "feed"
+        private const val PATH_NOTE = "note"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
@@ -272,6 +273,7 @@ class NewShopPageFragment :
     private var shouldOverrideTabToReview: Boolean = false
     private var shouldOverrideTabToProduct: Boolean = false
     private var shouldOverrideTabToFeed: Boolean = false
+    private var shouldOpenShopNoteBottomSheet: Boolean = false
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(
@@ -348,6 +350,7 @@ class NewShopPageFragment :
                 shopPageTracking,
                 shopPageTrackingSGCPlay,
                 view.context,
+                this,
                 this,
                 this,
                 this,
@@ -787,6 +790,9 @@ class NewShopPageFragment :
                     }
                     if (lastPathSegment.orEmpty() == PATH_FEED) {
                         shouldOverrideTabToFeed = true
+                    }
+                    if (lastPathSegment.orEmpty() == PATH_NOTE) {
+                        shouldOpenShopNoteBottomSheet = true
                     }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
@@ -1229,6 +1235,9 @@ class NewShopPageFragment :
         }
         getShopPageP2Data()
         setupTabs()
+        if (shouldOpenShopNoteBottomSheet) {
+            showShopNoteBottomSheet()
+        }
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
         stickyLoginView?.loadContent()
     }
@@ -2022,6 +2031,14 @@ class NewShopPageFragment :
                 componentPosition,
                 customDimensionShopPage
         )
+    }
+
+    private fun showShopNoteBottomSheet() {
+        ShopNoteBottomSheet.createInstance(shopId).show(childFragmentManager, ShopNoteBottomSheet.TAG)
+    }
+
+    override fun onClickNoteButton(link: String) {
+        showShopNoteBottomSheet()
     }
 
     override fun setFollowStatus(isFollowing: Boolean) {

@@ -4,6 +4,8 @@ import android.view.Gravity
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseSellerTopchatRoomTest
@@ -152,7 +154,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
 
         // Then
         assertLabelOnProductCard(R.id.recycler_view, 1, isDisplayed())
-        assertLabelTextOnProductCard(R.id.recycler_view, 1, "Stok habis")
+        assertEmptyStockLabelOnProductCard(R.id.recycler_view, 1)
         assertStockCountVisibilityAt(R.id.recycler_view, 1, isDisplayed())
         assertStockCountValueAt(R.id.recycler_view, 1, 0)
     }
@@ -286,6 +288,174 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
 
         // Then
         assertSnackbarText(errorMsg)
+    }
+
+    @Test
+    fun header_msg_from_smart_reply() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerSmartReply
+        chatAttachmentUseCase.response = sellerProductAttachment
+        inflateTestFragment()
+
+        // Then
+        assertHeaderRightMsgBubbleVisibility(0, isDisplayed())
+        assertHeaderRightMsgBubbleBlueDotVisibility(0, isDisplayed())
+        assertHeaderRightMsgBubbleText(0, "Dibalas oleh Smart Reply")
+    }
+
+    @Test
+    fun header_msg_from_topbot() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerTopBot
+        chatAttachmentUseCase.response = sellerProductAttachment
+        inflateTestFragment()
+
+        // Then
+        assertHeaderRightMsgBubbleVisibility(0, isDisplayed())
+        assertHeaderRightMsgBubbleBlueDotVisibility(0, isDisplayed())
+        assertHeaderRightMsgBubbleText(0, "Dibalas oleh Smart Reply")
+    }
+
+    @Test
+    fun header_msg_from_auto_reply() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerAutoReply
+        chatAttachmentUseCase.response = sellerProductAttachment
+        inflateTestFragment()
+
+        // Then
+        assertHeaderRightMsgBubbleVisibility(0, isDisplayed())
+        assertHeaderRightMsgBubbleBlueDotVisibility(0, not(isDisplayed()))
+        assertHeaderRightMsgBubbleText(0, "Dibalas oleh Balasan Otomatis")
+    }
+
+    @Test
+    fun header_msg_from_normal_inbox() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerSourceInbox
+        chatAttachmentUseCase.response = sellerProductAttachment
+        inflateTestFragment()
+
+        // Then
+        assertHeaderRightMsgBubbleVisibility(0, not(isDisplayed()))
+        assertHeaderRightMsgBubbleBlueDotVisibility(0, not(isDisplayed()))
+    }
+
+    @Test
+    fun tokocabang_status_on_product_card() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment.setFulFillment(
+                0, true
+        )
+        inflateTestFragment()
+
+        // Then
+        assertTokoCabangVisibility(
+                R.id.recycler_view, 1, isDisplayed()
+        )
+        onView(
+                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                        1, R.id.tp_seller_fullfilment
+                )
+        ).check(matches(withText("Dilayani TokoCabang")))
+    }
+
+    @Test
+    fun tokocabang_status_on_product_card_disabled() {
+        // Given
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment.setFulFillment(
+                0, false
+        )
+        inflateTestFragment()
+
+        // Then
+        assertTokoCabangVisibility(
+                R.id.recycler_view, 1, not(isDisplayed())
+        )
+    }
+
+    @Test
+    fun should_update_variant_stock_instead_of_main_stock() {
+        // Given
+        val productName = "Sepatu"
+        val productId = "1261590628"
+        val variantStockResult = 20
+        val variantName = "Biru"
+        val variantResult = UpdateCampaignVariantResult(
+                ProductStatus.ACTIVE, variantStockResult, variantName
+        )
+        val variantMapResult = hashMapOf(
+                productId to variantResult
+        )
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductVariantChatReplies
+        chatAttachmentUseCase.response = sellerProductVariantAttachment
+        createSuccessUpdateStockIntentResult(
+                productId, 55, ProductStatus.ACTIVE, productName, variantMapResult
+        )
+        inflateTestFragment()
+
+        // When
+        clickChangeStockBtn(R.id.recycler_view, 1)
+
+        // Then
+        assertStockCountBtnVisibilityAt(
+                R.id.recycler_view, 1, isDisplayed()
+        )
+        assertStockCountVisibilityAt(
+                R.id.recycler_view, 1, isDisplayed()
+        )
+        assertStockCountValueAt(
+                R.id.recycler_view, 1, variantStockResult
+        )
+        assertSnackbarText(
+                "Stok produk \"$productName - $variantName\" berhasil diubah."
+        )
+    }
+
+    @Test
+    fun should_has_empty_stock_if_variant_result_is_inactive_from_update_stock() {
+        // Given
+        val productName = "Sepatu"
+        val productId = "1261590628"
+        val variantStockResult = 0
+        val variantName = "Biru"
+        val variantResult = UpdateCampaignVariantResult(
+                ProductStatus.INACTIVE, variantStockResult, variantName
+        )
+        val variantMapResult = hashMapOf(
+                productId to variantResult
+        )
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductVariantChatReplies
+        chatAttachmentUseCase.response = sellerProductVariantAttachment
+        createSuccessUpdateStockIntentResult(
+                productId, 55, ProductStatus.ACTIVE, productName, variantMapResult
+        )
+        inflateTestFragment()
+
+        // When
+        clickChangeStockBtn(R.id.recycler_view, 1)
+
+        // Then
+        assertStockCountBtnVisibilityAt(
+                R.id.recycler_view, 1, isDisplayed()
+        )
+        assertStockCountVisibilityAt(
+                R.id.recycler_view, 1, isDisplayed()
+        )
+        assertStockCountValueAt(
+                R.id.recycler_view, 1, 0
+        )
+        assertEmptyStockLabelOnProductCard(R.id.recycler_view, 1)
     }
 
 }

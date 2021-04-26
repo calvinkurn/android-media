@@ -12,6 +12,8 @@ import org.hamcrest.CoreMatchers.not
 
 open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
 
+    protected var chatSrwResponseMultipleQuestion = ChatSmartReplyQuestionResponse()
+
     private val templateChats = listOf(
             "I am buyer", "Is this product ready?"
     )
@@ -26,6 +28,10 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
         super.setupResponse()
         chatSrwResponse = AndroidFileUtil.parse(
                 "buyer/success_get_srw_questions.json",
+                ChatSmartReplyQuestionResponse::class.java
+        )
+        chatSrwResponseMultipleQuestion = AndroidFileUtil.parse(
+                "buyer/success_get_srw_multiple_questions.json",
                 ChatSmartReplyQuestionResponse::class.java
         )
     }

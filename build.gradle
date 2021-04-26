@@ -50,6 +50,7 @@ buildscript {
         classpath 'org.javassist:javassist:3.20.0-GA'
         classpath "androidx.benchmark:benchmark-gradle-plugin:1.0.0"
         classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0"
+        classpath "com.newrelic.agent.android:agent-gradle-plugin:5.28.1"
     }
 }
 

@@ -74,7 +74,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         }
     val stringBlastId: String get() = blastId.toString()
     var campaignId: Long = 0
-    var isFullfilment: Boolean = false
+    var isFulfillment: Boolean = false
     var urlTokocabang: String = ""
 
     override fun updateData(attribute: Any?) {
@@ -101,7 +101,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
             rating = attribute.productProfile.rating
             isPreOrder = attribute.productProfile.isPreOrder
             campaignId = attribute.productProfile.campaignId
-            isFullfilment = attribute.productProfile.isFullFilment
+            isFulfillment = attribute.productProfile.isFulFillment
             urlTokocabang = attribute.productProfile.urlTokocabang
             if (variants.isNotEmpty()) {
                 setupVariantsField()
@@ -404,7 +404,34 @@ open class ProductAttachmentViewModel : SendableViewModel,
     }
 
     fun isProductCampaign(): Boolean {
-        return hasDiscount
+        return campaignId != 0L
+    }
+
+    fun getProductSource(): String {
+        return if (fromBroadcast()) {
+            "broadcast"
+        } else {
+            "buyer attached"
+        }
+    }
+
+    fun getEventLabelImpression(amISeller: Boolean): String {
+        val role = if (amISeller) {
+            "seller"
+        } else {
+            "buyer"
+        }
+        val isWarehouse = if (isFulfillment) {
+            "warehouse"
+        } else {
+            "notwarehouse"
+        }
+        val isCampaign = if (isProductCampaign()) {
+            "campaign"
+        } else {
+            "notcampaign"
+        }
+        return "$role - $productId - $isWarehouse - $isCampaign"
     }
 
     fun getProductSource(): String {

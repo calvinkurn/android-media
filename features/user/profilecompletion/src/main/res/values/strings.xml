@@ -169,8 +169,7 @@
     <string name="add_pin_success_heading">PIN Tokopedia kamu berhasil disimpan</string>
     <string name="add_pin_success_body">Jangan bagikan PIN Tokopedia kamu kepada pihak mana pun.</string>
     <string name="add_pin_success_button_title">Selesai</string>
-  
     <string name="detail_term_and_privacy">Dengan mendaftar, saya menyetujui Syarat dan Ketentuan serta Kebijakan Privasi.</string>
 
-    <string name="text_change_name_warning_message">Ubah nama profil sesuai nama aslimu, untuk kemudahan bertransaski!</string>
+    <string name="text_change_name_warning_message">Ubah nama akunmu jadi nama asli untuk meningkatkan keamanan akun.</string>
 </resources>

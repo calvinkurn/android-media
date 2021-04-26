@@ -160,8 +160,11 @@ class FlexBoxChatLayout : FrameLayout {
             totalWidth += infoWidth
         }
 
-        if (infoHeight > 0 && info?.isVisible == true && !isAddStatusHeight) {
+        if (infoHeight > 0 && info?.isVisible == true) {
             totalHeight += infoHeight
+            if (isAddStatusHeight) {
+                totalHeight -= statusHeight
+            }
         }
 
         if (totalWidth > maxWidth || useMaxWidth) {
@@ -173,7 +176,7 @@ class FlexBoxChatLayout : FrameLayout {
          * with [status]
          */
         val contentWidth = totalWidth - paddingLeft - paddingRight
-        if ((infoWidth + statusWidth) > 0 && msgLineCount > 1) {
+        if (msgLineCount > 1) {
             val newInfoWidth = messageWidth - statusWidth
             infoLayout.width = newInfoWidth
             info?.layoutParams = infoLayout
