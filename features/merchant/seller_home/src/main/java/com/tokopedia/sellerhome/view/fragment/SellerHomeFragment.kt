@@ -852,9 +852,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (adapter.data.isEmpty()) {
             showErrorViewByException(throwable)
         } else {
-            context?.let {
-                showErrorToaster(ErrorHandler.getErrorMessage(it, throwable))
-            }
+            throwable.showErrorToaster()
             sahGlobalError.gone()
             emptyState?.gone()
         }
@@ -899,6 +897,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         Handler().postDelayed({
             isErrorToastShown = false
         }, TOAST_DURATION)
+    }
+
+    private fun Throwable.showErrorToaster() {
+        context?.let {
+            showErrorToaster(ErrorHandler.getErrorMessage(it, this))
+        }
     }
 
     /**
