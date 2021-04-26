@@ -10,6 +10,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.track.TrackApp
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.UserSession
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -24,11 +26,15 @@ class PageInfoPusherManager(val activity: Activity) {
     val EVENT_ACTION = "eventAction"
     val EVENT_LABEL = "eventLabel"
     val USER_ID = "userId"
+    val BUSINESS_UNIT = "businessUnit"
+    val CURRENT_SITE = "currentSite"
 
     val remoteConfig : RemoteConfig
+    val userSession : UserSessionInterface
 
     init {
         remoteConfig = FirebaseRemoteConfigImpl(activity)
+        userSession = UserSession(activity)
     }
 
     fun showGeneralInfoMessage() {
@@ -100,10 +106,13 @@ class PageInfoPusherManager(val activity: Activity) {
     private fun eventDisplayGeneralInfo(infoId: String?) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
-                        EVENT, "viewGeneralInfo",
+                        EVENT, "viewGeneralInfoIris",
                         EVENT_CATEGORY, "android - tools",
                         EVENT_ACTION, "general info - impression",
-                        EVENT_LABEL, "$infoId"
+                        EVENT_LABEL, "$infoId",
+                        USER_ID, userSession.userId,
+                        BUSINESS_UNIT, "",
+                        CURRENT_SITE, ""
                 )
         )
     }

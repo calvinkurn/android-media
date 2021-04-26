@@ -13,12 +13,14 @@ buildscript {
 }
 
 dependencies {
-    implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.unifyDependencies.dialog
+
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
-    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 }
 
 project.ext {
