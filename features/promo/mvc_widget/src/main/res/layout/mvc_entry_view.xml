@@ -8,7 +8,6 @@
     android:clipToPadding="false">
 
     <com.tokopedia.mvcwidget.views.ShadowOutlineLayout
-        android:id="@+id/mvc_shadow"
         android:elevation="@dimen/mvc_shadow_elevation"
         app:srcCompat="@drawable/mvc_shadow"
         android:layout_gravity="center_vertical"
@@ -34,7 +33,6 @@
         android:clipChildren="false">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/mvc_bg_duplicate"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_3"
