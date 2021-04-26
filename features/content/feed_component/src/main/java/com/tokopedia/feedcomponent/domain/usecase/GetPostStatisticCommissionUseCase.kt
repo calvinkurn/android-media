@@ -2,7 +2,7 @@ package com.tokopedia.feedcomponent.domain.usecase
 
 import com.tokopedia.feedcomponent.domain.model.commission.AffiliatedProductByProductIDs
 import com.tokopedia.feedcomponent.domain.model.statistic.FeedGetStatsPosts
-import com.tokopedia.feedcomponent.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.async
@@ -15,7 +15,7 @@ import javax.inject.Inject
 class GetPostStatisticCommissionUseCase @Inject constructor(
         private val getPostStatisticUseCase: GetPostStatisticUseCase,
         private val getAffiliatedProductByIdsUseCase: GetAffiliatedProductByIdsUseCase,
-        private val dispatcherProvider: CoroutineDispatcherProvider
+        private val dispatcherProvider: CoroutineDispatchers
 ) : UseCase<Pair<FeedGetStatsPosts, AffiliatedProductByProductIDs>>() {
 
     companion object {

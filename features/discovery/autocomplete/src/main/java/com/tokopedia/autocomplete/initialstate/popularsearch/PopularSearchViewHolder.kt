@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -22,18 +21,18 @@ import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 class PopularSearchViewHolder(
         itemView: View,
         private val listener: InitialStateItemClickListener
-) : AbstractViewHolder<PopularSearchViewModel>(itemView) {
+) : AbstractViewHolder<PopularSearchDataView>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_popular_autocomplete
     }
 
-    override fun bind(element: PopularSearchViewModel) {
+    override fun bind(element: PopularSearchDataView) {
         bindContent(element)
     }
 
-    private fun bindContent(element: PopularSearchViewModel) {
+    private fun bindContent(element: PopularSearchDataView) {
         itemView.recyclerView?.let {
             it.layoutManager = createLayoutManager()
             it.adapter = createAdapter(element.list)

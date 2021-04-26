@@ -194,20 +194,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun initToolbar() {
         status_bar_bg.visibility = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
-            else -> View.GONE
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> View.VISIBLE
+            else -> View.INVISIBLE
         }
         status_bar_bg2.visibility = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.INVISIBLE
-            else -> View.GONE
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> View.INVISIBLE
+            else -> View.INVISIBLE
         }
         toolbarParent.removeAllViews()
-//        if (showOldToolbar) {
-//            initOldToolBar()
-//        } else {
-//            initNewToolBar()
-//        }
         initNewToolBar()
         toolbarParent.addView(feedToolbar)
     }
@@ -432,9 +426,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             feedBackgroundCrossfader.reverseTransition(200)
             toolbarType = TOOLBAR_GRADIENT
             status_bar_bg2.visibility = when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
-                else -> View.GONE
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> View.VISIBLE
+                else -> View.INVISIBLE
             }
             activity?.let {
                 tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
@@ -449,7 +442,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             feedBackgroundCrossfader.reverseTransition(200)
             toolbarType = TOOLBAR_WHITE
             status_bar_bg2.visibility = when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.INVISIBLE
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> View.INVISIBLE
                 else -> View.GONE
             }
             activity?.let {
@@ -487,6 +480,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                             screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
                             appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, createPostAppLink))
                     setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
+                    toolBarAnalytics.sendClickBuatFeedPostEvent()
                 }
             }
             else -> {
@@ -496,6 +490,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                     val author = whitelistDomain.authors.first()
                     fab_feed.setOnClickListener { onGoToLink(author.link) }
                 }
+                toolBarAnalytics.sendClickBuatFeedPostEvent()
             }
         }
     }

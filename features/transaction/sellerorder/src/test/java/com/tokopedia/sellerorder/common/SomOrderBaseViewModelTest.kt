@@ -2,17 +2,13 @@ package com.tokopedia.sellerorder.common
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerorder.common.domain.model.*
-import com.tokopedia.sellerorder.common.domain.usecase.SomAcceptOrderUseCase
-import com.tokopedia.sellerorder.common.domain.usecase.SomEditRefNumUseCase
-import com.tokopedia.sellerorder.common.domain.usecase.SomRejectCancelOrderUseCase
-import com.tokopedia.sellerorder.common.domain.usecase.SomRejectOrderUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
+import com.tokopedia.sellerorder.util.observeAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert
 import org.junit.Before
@@ -34,6 +30,9 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
 
     @RelaxedMockK
     lateinit var somRejectCancelOrderUseCase: SomRejectCancelOrderUseCase
+
+    @RelaxedMockK
+    lateinit var somValidateOrderUseCase: SomValidateOrderUseCase
 
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
@@ -150,5 +149,40 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
         viewModel.rejectCancelOrder(orderId)
 
         assert(viewModel.rejectCancelOrderResult.value is Fail)
+    }
+
+    @Test
+    fun validateOrders_shouldReturnSuccess() {
+        val orderIds = listOf(orderId)
+        val param = SomValidateOrderRequest(orderIds)
+        coEvery {
+            somValidateOrderUseCase.execute(param)
+        } returns true
+
+        viewModel.validateOrders(orderIds)
+
+        coVerify {
+            somValidateOrderUseCase.execute(param)
+        }
+
+        val result = viewModel.validateOrderResult.observeAwaitValue()
+        assert(result is Success && result.data)
+    }
+
+    @Test
+    fun validateOrders_shouldReturnFail() {
+        val orderIds = listOf(orderId)
+        val param = SomValidateOrderRequest(orderIds)
+        coEvery {
+            somValidateOrderUseCase.execute(param)
+        } throws Throwable()
+
+        viewModel.validateOrders(orderIds)
+
+        coVerify {
+            somValidateOrderUseCase.execute(param)
+        }
+
+        assert(viewModel.validateOrderResult.observeAwaitValue() is Fail)
     }
 }
