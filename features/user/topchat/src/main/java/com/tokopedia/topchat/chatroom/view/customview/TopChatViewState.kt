@@ -5,6 +5,7 @@ import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 
 interface TopChatViewState : BaseChatViewState {
@@ -35,6 +36,7 @@ interface TopChatViewState : BaseChatViewState {
 
     fun showConfirmationBlockChat()
 
-    fun updateTemplateState()
-
+    fun hasProductPreviewShown(): Boolean
+    fun showTemplateChatIfReady(lastMessageBroadcast: Boolean, amIBuyer: Boolean)
+    fun attachFragmentView(fragmentView: TopChatContract.View)
 }
