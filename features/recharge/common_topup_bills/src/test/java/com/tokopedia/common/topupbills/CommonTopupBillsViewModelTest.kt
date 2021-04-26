@@ -32,7 +32,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
-import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
@@ -42,18 +41,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import junit.framework.Assert.assertNotNull
-import junit.framework.Assert.assertNull
 import junit.framework.Assert.assertTrue
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import org.assertj.core.api.Assertions.assertThat
-import org.hamcrest.core.Is.`is`
 import org.junit.Assert
 import org.junit.Test
-import rx.Subscriber
-import rx.observers.TestSubscriber
 import java.lang.reflect.Type
-import kotlin.coroutines.coroutineContext
 
 class CommonTopupBillsViewModelTest {
 
