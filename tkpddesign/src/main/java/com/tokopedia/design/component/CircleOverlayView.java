@@ -82,7 +82,7 @@ public class CircleOverlayView extends LinearLayout {
 
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(getResources().getColor(R.color.colorPrimary));
+        paint.setColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500));
 
         paint.setAlpha(255);
         osCanvas.drawRect(mainRectangle, paint);

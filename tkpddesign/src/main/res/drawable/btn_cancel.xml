@@ -7,7 +7,7 @@
         <shape>
             <corners android:radius="3dp" />
 
-            <solid android:color="#D6D6D6" />
+            <solid android:color="@color/Unify_N100" />
         </shape>
     </item>
     <item android:bottom="1dp">
@@ -17,7 +17,7 @@
 
             <stroke
                 android:width="0.5dp"
-                android:color="#AAAAAA" />
+                android:color="@color/Unify_N200" />
 
             <corners android:radius="2.5dp" />
 

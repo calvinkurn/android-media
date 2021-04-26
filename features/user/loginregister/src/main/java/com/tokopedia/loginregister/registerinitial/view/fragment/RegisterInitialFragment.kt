@@ -86,6 +86,7 @@ import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.util.TokenGenerator
+import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -1201,14 +1202,13 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     override fun onSuccessRegister() {
         activityShouldEnd = true
-
         registerPushNotif()
         activity?.let {
             if (isFromAccount() || isFromOnboarding()) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
                 startActivity(intent)
             }
-val intent = Intent()
+            val intent = Intent()
             intent.putExtra(PARAM_IS_SUCCESS_REGISTER, true)
 
             it.setResult(Activity.RESULT_OK, intent)
@@ -1218,6 +1218,7 @@ val intent = Intent()
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
             DataVisorWorker.scheduleWorker(requireContext(), true)
             AppAuthWorker.scheduleWorker(it, true)
+            TwoFactorMluHelper.clear2FaInterval(it)
         }
     }
 

@@ -13,6 +13,8 @@ object OtpConstant {
 
     object OtpMode {
         const val SMS = "sms"
+        const val WA = "whatsapp"
+        const val EMAIL = "email"
         const val MISCALL = "misscall"
         const val PIN = "PIN"
         const val GOOGLE_AUTH = "google_authenticator"
