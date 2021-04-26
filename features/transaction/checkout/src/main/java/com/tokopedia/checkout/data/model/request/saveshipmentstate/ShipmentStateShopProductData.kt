@@ -1,14 +1,17 @@
 package com.tokopedia.checkout.data.model.request.saveshipmentstate
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class ShipmentStateShopProductData(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("shop_id")
         var shopId: Long = 0,
         @SerializedName("is_preorder")
         var isPreorder: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("warehouse_id")
-        var warehouseId: Int = 0,
+        var warehouseId: Long = 0,
         @SerializedName("finsurance")
         var finsurance: Int = 0,
         @SerializedName("shipping_info")

@@ -78,7 +78,7 @@ data class ShopProductGqlData(
         var fcancelPartial: Int = 0,
         @SerializedName("warehouse_id")
         @SuppressLint("Invalid Data Type")
-        var warehouseId: Int = 0,
+        var warehouseId: Long = 0,
         @SerializedName("promo_codes")
         var promoCodes: List<String> = emptyList(),
         @SerializedName("promos")

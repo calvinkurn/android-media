@@ -27,7 +27,7 @@ data class ShopProductCheckoutRequest(
         var fcancelPartial: Int = 0,
         @SuppressLint("Invalid Data Type")
         @SerializedName("warehouse_id")
-        var warehouseId: Int = 0,
+        var warehouseId: Long = 0,
         @SerializedName("promo_codes")
         var promoCodes: ArrayList<String>? = null,
         @SerializedName("promos")

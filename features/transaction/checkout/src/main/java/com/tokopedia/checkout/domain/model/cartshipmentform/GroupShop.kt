@@ -20,7 +20,7 @@ data class GroupShop(
         var isHasPromoList: Boolean = false,
         var isSaveStateFlag: Boolean = false,
         var isFulfillment: Boolean = false,
-        var fulfillmentId: Int = 0,
+        var fulfillmentId: Long = 0,
         var fulfillmentName: String = "",
         var fulfillmentBadgeUrl: String = "",
         var isLeasingProduct: Boolean = false,
