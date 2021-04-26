@@ -70,6 +70,7 @@ import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_ACTIVITY_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_P1_MIDDLE
@@ -79,6 +80,7 @@ import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
+import com.tokopedia.shop.common.util.ShopUtil.isExceptionIgnored
 import com.tokopedia.shop.common.util.ShopUtil.isShouldCheckShopType
 import com.tokopedia.shop.common.util.ShopUtil.isNotRegularMerchant
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
@@ -207,6 +209,8 @@ class NewShopPageFragment :
     var shopPageTracking: ShopPageTrackingBuyer? = null
     var shopPageTrackingSGCPlay: ShopPageTrackingSGCPlayWidget? = null
     private var shopId = ""
+    private val shopName: String
+        get() = shopPageHeaderDataModel?.shopName.orEmpty()
     var shopRef: String = ""
     var shopDomain: String? = null
     var shopAttribution: String? = null
@@ -439,15 +443,20 @@ class NewShopPageFragment :
                     onSuccessGetShopPageP1Data(result.data)
                 }
                 is Fail -> {
-                    onErrorGetShopPageTabData(result.throwable)
                     val throwable = result.throwable
-                    ShopUtil.logTimberWarning(
-                            "SHOP_PAGE_P1_ERROR",
-                            mapOf("shop_id" to shopId,
-                                    "error_message" to ErrorHandler.getErrorMessage(context, throwable),
-                                    "error_trace" to Log.getStackTraceString(throwable)
-                            )
-                    )
+                    if (!isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                SHOP_PAGE_HEADER_BUYER_FLOW_TAG,
+                                this::observeLiveData.name,
+                                NewShopPageViewModel::shopPageP1Data.name,
+                                userId,
+                                shopId,
+                                shopName,
+                                ErrorHandler.getErrorMessage(context, throwable),
+                                Log.getStackTraceString(throwable)
+                        )
+                    }
+                    onErrorGetShopPageTabData(throwable)
                 }
             }
             stopMonitoringPltCustomMetric(SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER)
@@ -494,28 +503,20 @@ class NewShopPageFragment :
                     onSuccessGetShopIdFromDomain(result.data)
                 }
                 is Fail -> {
-                    onErrorGetShopPageTabData(result.throwable)
-                }
-            }
-        })
-
-        shopViewModel?.shopShareTracker?.observe(owner, Observer {
-            when (it) {
-                is Success -> {
-                    if (!it.data.success) {
-                        ShopUtil.logTimberWarning(
-                                "SHOP_PAGE_SHARING_SEND_GQL_TRACKER_ERROR",
-                                mapOf("shop_id" to shopId,
-                                        "error_message" to it.data.message)
+                    val throwable = result.throwable
+                    if (!isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                SHOP_PAGE_HEADER_BUYER_FLOW_TAG,
+                                this::observeLiveData.name,
+                                NewShopPageViewModel::shopIdFromDomainData.name,
+                                userId,
+                                shopId,
+                                shopName,
+                                ErrorHandler.getErrorMessage(context, throwable),
+                                Log.getStackTraceString(throwable)
                         )
                     }
-                }
-                is Fail -> {
-                    ShopUtil.logTimberWarning(
-                            "SHOP_PAGE_SHARING_SEND_GQL_TRACKER_ERROR",
-                            mapOf("shop_id" to shopId,
-                                    "error_message" to it.throwable.message.toString())
-                    )
+                    onErrorGetShopPageTabData(throwable)
                 }
             }
         })
@@ -548,13 +549,6 @@ class NewShopPageFragment :
                 is Fail -> {
                     onCompleteSendRequestOpenModerate()
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
-                    ShopUtil.logTimberWarning(
-                            "SHOP_PAGE_REQ_UNMODERATE_ERROR",
-                            mapOf("shop_id" to shopId,
-                                    "error_message" to errorMessage,
-                                    "error_trace" to Log.getStackTraceString(it.throwable)
-                            )
-                    )
                     showToasterShopUnmoderate(errorMessage, Toaster.TYPE_ERROR)
                 }
             }
@@ -572,13 +566,6 @@ class NewShopPageFragment :
                 }
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
-                    ShopUtil.logTimberWarning(
-                            "SHOP_PAGE_CHECK_MODERATE_STATUS_ERROR",
-                            mapOf("shop_id" to shopId,
-                                    "error_message" to errorMessage,
-                                    "error_trace" to Log.getStackTraceString(it.throwable)
-                            )
-                    )
                     showToasterShopUnmoderate(errorMessage, Toaster.TYPE_ERROR)
                 }
             }
