@@ -28,12 +28,6 @@ import dagger.Provides
 @Module
 class ChatRoomFakePresenterModule {
 
-    @Provides
-    @ChatScope
-    fun provideTestDispatcher(): CoroutineTestDispatchersProvider {
-        return CoroutineTestDispatchersProvider
-    }
-
     @ChatScope
     @Provides
     fun provideRemoteConfig(@TopchatContext context: Context): RemoteConfig {
