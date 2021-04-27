@@ -50,18 +50,21 @@ class InboxNotificationUseCase @Inject constructor(
                 notifcenter_int
                 chat_int
                 talk_int
+                review_int
               }
               buyer{
                 total_int
                 notifcenter_int
                 chat_int
                 talk_int
+                review_int
               }
               seller{
                 total_int
                 notifcenter_int
                 chat_int
                 talk_int
+                review_int
               }
             }
           }
