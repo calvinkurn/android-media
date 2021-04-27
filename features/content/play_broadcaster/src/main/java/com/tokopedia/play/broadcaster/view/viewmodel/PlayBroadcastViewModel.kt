@@ -52,6 +52,7 @@ class PlayBroadcastViewModel @Inject constructor(
         private val getChannelUseCase: GetChannelUseCase,
         private val createChannelUseCase: CreateChannelUseCase,
         private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
+        private val getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val dispatcher: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
@@ -251,16 +252,29 @@ class PlayBroadcastViewModel @Inject constructor(
     private suspend fun getChannelById(channelId: String): Throwable? {
         _observableChannelInfo.value = NetworkResult.Loading
         return try {
-            val channel =  withContext(dispatcher.io) {
-                getChannelUseCase.params = GetChannelUseCase.createParams(channelId)
-                return@withContext getChannelUseCase.executeOnBackground()
+            val (channel, tags) = supervisorScope {
+                val channelDeferred = async(dispatcher.io) {
+                    getChannelUseCase.apply {
+                        params = GetChannelUseCase.createParams(channelId)
+                    }.executeOnBackground()
+                }
+
+                val tagsDeferred = async {
+                    getAddedChannelTagsUseCase.apply {
+                        setChannelId(channelId)
+                    }.executeOnBackground()
+                }
+
+                return@supervisorScope channelDeferred.await() to tagsDeferred.await()
             }
+
             val channelInfo = playBroadcastMapper.mapChannelInfo(channel)
             _observableChannelInfo.value = NetworkResult.Success(channelInfo)
 
             setChannelId(channelInfo.channelId)
             setChannelTitle(channelInfo.title)
             setChannelInfo(channelInfo)
+            setAddedTags(tags.recommendedTags.tags.toSet())
 
             setSelectedProduct(playBroadcastMapper.mapChannelProductTags(channel.productTags))
             setSelectedCover(playBroadcastMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl))
@@ -448,6 +462,10 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun setChannelInfo(channelInfo: ChannelInfoUiModel) {
         hydraConfigStore.setIngestUrl(channelInfo.ingestUrl)
+    }
+
+    private fun setAddedTags(tags: Set<String>) {
+        getCurrentSetupDataStore().setTags(tags)
     }
 
     private fun setProductConfig(configModel: ProductTagConfigUiModel) {

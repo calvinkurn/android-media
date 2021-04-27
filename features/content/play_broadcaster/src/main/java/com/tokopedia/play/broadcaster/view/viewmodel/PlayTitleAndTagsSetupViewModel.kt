@@ -24,7 +24,6 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         private val hydraConfigStore: HydraConfigStore,
         private val dispatcher: CoroutineDispatchers,
         private val setupDataStore: PlayBroadcastSetupDataStore,
-        private val getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase,
         private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
 ) : ViewModel(), TitleSetupValidator, TagSetupValidator {
 
@@ -153,13 +152,5 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         )
 
 //        return@withContext recommendedTags.recommendedTags.tags
-    }
-
-    private suspend fun getAddedTags(): List<String> = withContext(dispatcher.io) {
-        val addedTags = getAddedChannelTagsUseCase.apply {
-            setChannelId(hydraConfigStore.getChannelId())
-        }.executeOnBackground()
-
-        return@withContext addedTags.recommendedTags.tags
     }
 }
