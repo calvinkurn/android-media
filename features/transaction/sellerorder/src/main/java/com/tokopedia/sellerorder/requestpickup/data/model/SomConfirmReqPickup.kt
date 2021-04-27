@@ -45,7 +45,7 @@ data class SomConfirmReqPickup (
                             @Expose
                             val notes: Notes = Notes(),
 
-                            @SerializedName("schedule_time")
+                            @SerializedName("schedule_time_day")
                             @Expose
                             val schedule_time: ScheduleTime = ScheduleTime()) : Parcelable {
 

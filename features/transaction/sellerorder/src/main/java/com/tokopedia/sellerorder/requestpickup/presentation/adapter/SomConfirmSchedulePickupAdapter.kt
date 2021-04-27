@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.requestpickup.data.model.*
-import com.tokopedia.sellerorder.requestpickup.presentation.viewholder.ScheduleTomorrowViewHolder
 import com.tokopedia.unifyprinciples.Typography
 
 class SomConfirmSchedulePickupAdapter(private val listener: SomConfirmSchedulePickupAdapterListener) : RecyclerView.Adapter<SomConfirmSchedulePickupAdapter.BaseViewHolder<*>>() {
