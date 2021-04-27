@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +39,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
+import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
 import com.tokopedia.searchbar.navigation_component.viewModel.NavigationViewModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -108,11 +110,24 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                     .build()
             component.inject(this)
 
-            if (it is AppCompatActivity) {
-                val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-                viewModelProvider[NavigationViewModel::class.java]
-            } else {
-                null
+            when (it) {
+                is AppCompatActivity -> {
+                    val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+                    viewModelProvider[NavigationViewModel::class.java]
+                }
+                is ContextThemeWrapper -> {
+                    val activity = it.getActivityFromContext()
+                    activity?.let {
+                        if (activity is AppCompatActivity) {
+                            val viewModelProvider = ViewModelProviders.of(activity, viewModelFactory)
+                            viewModelProvider[NavigationViewModel::class.java]
+                        }
+                    }
+                    null
+                }
+                else -> {
+                    null
+                }
             }
         }
     }
