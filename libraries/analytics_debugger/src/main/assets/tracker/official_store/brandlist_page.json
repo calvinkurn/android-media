@@ -3,131 +3,117 @@
   "mode": "exact",
   "query": [
     {
-      "clientId": ".*",
-      "contactInfo": ".*",
-      "screenName": ".*",
+      "clientId": "{{.*}}",
+      "contactInfo": "{{.*}}",
+      "screenName": "{{.*}}",
       "event": "openScreen",
-      "androidId": ".*"
+      "androidId": "{{.*}}"
     },
     {
       "event" : "clickOSAllBrands",
-      "eventCategory" : ".*",
-      "eventAction" : ".*",
-      "eventLabel" : ".*",
-      "sessionIris": ".*"
+      "eventCategory" : "{{.*}}",
+      "eventAction" : "{{.*}}",
+      "eventLabel" : "{{.*}}",
+      "sessionIris": "{{.*}}"
     },
     {
       "event": "select_content",
-      "eventCategory": ".*",
-      "eventAction": "click - shop - brand of choice list - login|click - shop - brand of choice list - nonlogin",
-      "sessionIris" : ".*",
+      "eventCategory": "{{.*}}",
+      "eventAction": "{{click - shop - brand of choice list - login|click - shop - brand of choice list - non login}}",
+      "sessionIris" : "{{.*}}",
       "promotions": [{
-        "creative_name": ".*",
-        "creative_slot": ".*",
-        "item_id": ".*",
-        "item_name": ".*",
-        "creative_url": ".*"
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
       }],
-      "eventLabel": ".*"
+      "eventLabel": "{{.*}}"
     },
     {
       "event": "view_item",
-      "eventCategory": ".*",
-      "eventAction": "impression - shop - brand of choice list - login|impression - shop - brand of choice list - nonlogin",
-      "sessionIris" : ".*",
+      "eventCategory": "{{.*}}",
+      "eventAction": "{{impression - shop - brand of choice list - login|impression - shop - brand of choice list - nonlogin}}",
+      "sessionIris" : "{{.*}}",
       "promotions": [{
-        "creative_name": ".*",
-        "creative_slot": ".*",
-        "item_id": ".*",
-        "item_name": ".*",
-        "creative_url": ".*"
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
       }],
-      "eventLabel": ".*"
+      "eventLabel": "{{.*}}"
     },
     {
-      "event": "select_content|view_item",
-      "eventCategory": ".*",
-      "eventAction": "click - shop - popular brand list - login|click - shop - popular brand list - non login",
-      "sessionIris" : ".*",
+      "event": "{{select_content|view_item}}",
+      "eventCategory": "{{.*}}",
+      "eventAction": "{{click - shop - popular brand list - login|click - shop - popular brand list - non login}}",
+      "sessionIris" : "{{.*}}",
       "promotions": [{
-        "creative_name": ".*",
-        "creative_slot": ".*",
-        "item_id": ".*",
-        "item_name": ".*",
-        "creative_url": ".*"
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
       }],
-      "eventLabel": ".*"
+      "eventLabel": "{{.*}}"
     },
     {
-      "eventCategory": ".*",
+      "eventCategory": "{{.*}}",
       "event": "select_content",
-      "eventAction": "click - shop - new brand list - login|click - shop - new brand list - nonlogin",
-      "sessionIris" : ".*",
+      "eventAction": "{{click - shop - new brand list - login|click - shop - new brand list - non login}}",
+      "sessionIris" : "{{.*}}",
       "promotions": [{
-        "creative_name": ".*",
-        "creative_slot": ".*",
-        "item_id": ".*",
-        "item_name": ".*",
-        "creative_url": ".*"
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
       }],
-      "eventLabel": ".*"
-    },
-    {
-      "eventCategory": ".*",
-      "event": "select_content",
-      "eventAction": "click - shop - all brand list - search result - login|click - shop - all brand list - search result - nonlogin",
-      "sessionIris" : ".*",
-      "promotions": [{
-        "creative_name": ".*",
-        "creative_slot": ".*",
-        "item_id": ".*",
-        "item_name": ".*",
-        "creative_url": ".*"
-      }],
-      "eventLabel": ".*"
+      "eventLabel": "{{.*}}"
     },
 
     {
-      "eventCategory": ".*",
+      "eventCategory": "{{.*}}",
       "event": "view_item",
-      "eventAction": "impression - shop - new brand list - login|impression - shop - new brand list - nonlogin",
-      "sessionIris" : ".*",
+      "eventAction": "{{impression - shop - new brand list - login|impression - shop - new brand list - non login}}",
+      "sessionIris" : "{{.*}}",
       "promotions": [{
-        "creative_name": ".*",
-        "creative_slot": ".*",
-        "item_id": ".*",
-        "item_name": ".*",
-        "creative_url": ".*"
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
       }],
-      "eventLabel": ".*"
+      "eventLabel": "{{.*}}"
     },
     {
-      "eventCategory": ".*",
+      "eventCategory": "{{.*}}",
       "event": "view_item",
-      "eventAction": "impression - shop - all brand list - login|impression - shop - all brand list - nonlogin",
-      "sessionIris" : ".*",
+      "eventAction": "{{impression - shop - all brand list - login|impression - shop - all brand list - non login}}",
+      "sessionIris" : "{{.*}}",
       "promotions": [{
-        "creative_name": ".*",
-        "creative_slot": ".*",
-        "item_id": ".*",
-        "item_name": ".*",
-        "creative_url": ".*"
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
       }],
-      "eventLabel": ".*"
+      "eventLabel": "{{.*}}"
     },
     {
-      "eventCategory": ".*",
+      "eventCategory": "{{.*}}",
       "event": "select_content",
-      "eventAction": "click - shop - all brand list - not search result - login|click - shop - all brand list - not search result - nonlogin",
-      "sessionIris" : ".*",
+      "eventAction": "{{click - shop - all brand list - not search result - login|click - shop - all brand list - not search result - nonlogin}}",
+      "sessionIris" : "{{.*}}",
       "promotions": [{
-        "creative_name": ".*",
-        "creative_slot": ".*",
-        "item_id": ".*",
-        "item_name": ".*",
-        "creative_url": ".*"
+        "creative_name": "{{.*}}",
+        "creative_slot": "{{.*}}",
+        "item_id": "{{.*}}",
+        "item_name": "{{.*}}",
+        "creative_url": "{{.*}}"
       }],
-      "eventLabel": ".*"
+      "eventLabel": "{{.*}}"
     }
   ]
 }

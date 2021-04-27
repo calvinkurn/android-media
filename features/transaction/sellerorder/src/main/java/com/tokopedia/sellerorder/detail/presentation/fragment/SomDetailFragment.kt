@@ -643,7 +643,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                         when {
                             buttonResp.key.equals(KEY_ACCEPT_ORDER, true) -> {
                                 btn_primary?.isLoading = true
-                                setActionAcceptOrder(buttonResp.displayName, orderId)
+                                setActionAcceptOrder(buttonResp.displayName, orderId, skipOrderValidation())
                             }
                             buttonResp.key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(buttonResp)
                             buttonResp.key.equals(KEY_REQUEST_PICKUP, true) -> {
@@ -692,16 +692,16 @@ class SomDetailFragment : BaseDaggerFragment(),
         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
-    private fun setActionAcceptOrder(actionName: String, orderId: String) {
+    private fun setActionAcceptOrder(actionName: String, orderId: String, skipOrderValidation: Boolean) {
         if (detailResponse?.flagOrderMeta?.flagFreeShipping == true) {
             showFreeShippingAcceptOrderDialog(orderId)
         } else {
-            acceptOrder(actionName, orderId)
+            acceptOrder(actionName, orderId, skipOrderValidation)
         }
     }
 
-    private fun acceptOrder(actionName: String, orderId: String) {
-        if (!skipOrderValidation()) {
+    private fun acceptOrder(actionName: String, orderId: String, skipOrderValidation: Boolean) {
+        if (!skipOrderValidation) {
             pendingAction = SomPendingAction(actionName, orderId) {
                 btn_primary?.isLoading = true
                 if (orderId.isNotBlank()) {
@@ -887,7 +887,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                     key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
                     key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(it)
                     key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
-                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it.displayName, orderId)
+                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it.displayName, orderId, skipOrderValidation())
                     key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                     key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
                     key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
@@ -970,7 +970,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         SomOrderRequestCancelBottomSheet().apply {
             setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
                 override fun onAcceptOrder(actionName: String) {
-                    setActionAcceptOrder(actionName, orderId)
+                    setActionAcceptOrder(actionName, orderId, true)
                 }
 
                 override fun onRejectOrder(reasonBuyer: String) {
@@ -1003,10 +1003,10 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onTextCopied(label: String, str: String) {
+    override fun onTextCopied(label: String, str: String, readableDataName: String) {
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
-        showCommonToaster(getString(R.string.resi_tersalin))
+        showCommonToaster(getString(R.string.message_success_copy, readableDataName))
     }
 
     override fun onInvalidResiUpload(awbUploadUrl: String) {

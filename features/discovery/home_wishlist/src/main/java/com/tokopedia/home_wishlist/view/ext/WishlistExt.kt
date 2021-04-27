@@ -106,3 +106,56 @@ fun List<WishlistDataModel>.mappingTopadsBannerToWishlist(
     }
     return list
 }
+
+fun mappingTopadsBannerWithRecommendationToWishlist(
+        topadsBanner: TopAdsImageViewModel,
+        wishlistVisitable: List<WishlistDataModel>,
+        listRecommendation: List<RecommendationWidget>,
+        listRecommendationCarouselOnMarked: HashMap<Int, WishlistDataModel>,
+        recommendationPositionInPage: Int,
+        currentPage: Int,
+        isInBulkMode: Boolean,
+        maxItemInPage: Int,
+        recommendationIndex: Int): List<WishlistDataModel> {
+    val recommendationPositionInThisPage = ((currentPage-1) * maxItemInPage) + recommendationPositionInPage
+    val list = mutableListOf<WishlistDataModel>()
+    list.addAll(wishlistVisitable)
+    if (isInBulkMode) {
+        listRecommendationCarouselOnMarked[recommendationPositionInThisPage] =
+                BannerTopAdsDataModel(
+                        topAdsDataModel = topadsBanner,
+                        isOnBulkRemoveProgress = isInBulkMode)
+    } else {
+        list.add(recommendationPositionInThisPage,
+                BannerTopAdsDataModel(
+                        topAdsDataModel = topadsBanner,
+                        isOnBulkRemoveProgress = isInBulkMode))
+    }
+
+    if (isInBulkMode) {
+        listRecommendationCarouselOnMarked[recommendationIndex] =
+                RecommendationCarouselDataModel(
+                        id = listRecommendation.first().tid,
+                        title = listRecommendation.first().title,
+                        list = listRecommendation.first().recommendationItemList.map {
+                            RecommendationCarouselItemDataModel(it, listRecommendation.first().title, getRecommendationParentPosition(
+                                    maxItemInPage,
+                                    recommendationPositionInPage,
+                                    currentPage)) } as MutableList<RecommendationCarouselItemDataModel>,
+                        isOnBulkRemoveProgress = isInBulkMode,
+                        seeMoreAppLink = listRecommendation.first().seeMoreAppLink)
+    } else {
+        list.add(recommendationIndex,
+                RecommendationCarouselDataModel(
+                        id = listRecommendation.first().tid,
+                        title = listRecommendation.first().title,
+                        list = listRecommendation.first().recommendationItemList.map {
+                            RecommendationCarouselItemDataModel(it, listRecommendation.first().title, getRecommendationParentPosition(
+                                    maxItemInPage,
+                                    recommendationPositionInPage,
+                                    currentPage)) } as MutableList<RecommendationCarouselItemDataModel>,
+                        isOnBulkRemoveProgress = isInBulkMode,
+                        seeMoreAppLink = listRecommendation.first().seeMoreAppLink))
+    }
+    return list
+}

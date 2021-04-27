@@ -3,51 +3,52 @@
   "mode": "subset",
   "query": [
     {
-      "businessUnit": "",
-      "clientId": ".+",
+      "businessUnit": "communication",
+      "clientId": "{{.+}}",
       "eventCategory": "chat detail",
       "currentSite": "",
       "item_list": "/chat - search chat",
       "screenName": "",
       "event": "view_item_list",
-      "userId": ".*",
+      "userId": "{{.*}}",
       "eventAction": "view on product thumbnail",
-      "sessionIris": ".+",
+      "sessionIris": "{{.+}}",
+      "eventLabel": "{{.+}}",
       "items": [
         {
           "dimension87": "",
           "dimension88": "",
-          "item_id": ".+",
-          "price": ".+",
+          "item_id": "{{.+}}",
+          "price": "{{.+}}",
           "dimension40": "/chat - search chat",
-          "item_name": ".+",
-          "currency": ".+",
+          "item_name": "{{.+}}",
+          "currency": "{{.+}}",
           "list": "/chat - search chat",
-          "item_brand": ".+",
-          "item_variant": ".+",
+          "item_brand": "{{.+}}",
+          "item_variant": "{{.+}}",
           "item_category": ""
         }
       ]
     },
     {
       "businessUnit": "",
-      "clientId": ".+",
+      "clientId": "{{.+}}",
       "eventCategory": "chat detail",
       "currentSite": "",
       "item_list": "/chat - search chat",
       "screenName": "",
       "event": "select_content",
-      "userId": ".*",
+      "userId": "{{.*}}",
       "eventAction": "click on product thumbnail",
-      "sessionIris": ".+",
+      "sessionIris": "{{.+}}",
       "items": [
         {
-          "item_id": ".+",
+          "item_id": "{{.+}}",
           "dimension40": "/chat - search chat",
-          "item_name": ".+",
-          "currency": ".+",
-          "item_brand": ".+",
-          "item_variant": ".+",
+          "item_name": "{{.+}}",
+          "currency": "{{.+}}",
+          "item_brand": "{{.+}}",
+          "item_variant": "{{.+}}",
           "item_category": ""
         }
       ]
@@ -55,17 +56,17 @@
     {
       "eventCategory": "chat detail",
       "event": "clickChatDetail",
-      "userId": ".*",
+      "userId": "{{.*}}",
       "eventAction": "click atc on product thumbnail",
-      "sessionIris": ".+",
-      "eventLabel": "chat - .*"
+      "sessionIris": "{{.+}}",
+      "eventLabel": "chat - {{.*}}"
     },
     {
       "eventCategory": "chat detail",
       "event": "clickChatDetail",
       "eventAction": "click buy on product thumbnail",
-      "sessionIris": ".+",
-      "eventLabel": "chat - .*"
+      "sessionIris": "{{.+}}",
+      "eventLabel": "chat - {{.*}}"
     }
   ]
 }
