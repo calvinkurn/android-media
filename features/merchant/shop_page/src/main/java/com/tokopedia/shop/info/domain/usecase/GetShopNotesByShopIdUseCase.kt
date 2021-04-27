@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.graphql.domain.usecase.shopnotes
+package com.tokopedia.shop.info.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -9,15 +9,17 @@ import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.ShopNoteQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import javax.inject.Inject
 
-class GetShopNotesByShopIdUseCase (private val gqlQuery: String,
-                                   private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<List<ShopNoteModel>>() {
+class GetShopNotesByShopIdUseCase @Inject constructor(
+        private val gqlUseCase: MultiRequestGraphqlUseCase
+) : UseCase<List<ShopNoteModel>>() {
 
     var params: RequestParams = RequestParams.EMPTY
     var isFromCacheFirst: Boolean = true
 
     override suspend fun executeOnBackground(): List<ShopNoteModel> {
-        val gqlRequest = GraphqlRequest(gqlQuery, ShopNoteQuery::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(QUERY, ShopNoteQuery::class.java, params.parameters)
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(gqlRequest)
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
@@ -29,8 +31,8 @@ class GetShopNotesByShopIdUseCase (private val gqlQuery: String,
             val shopNoteQueryResult = (gqlResponse.getData(ShopNoteQuery::class.java) as ShopNoteQuery).result ?:
                 throw MessageErrorException()
 
-            if (shopNoteQueryResult.graphQLDataError != null && !shopNoteQueryResult.graphQLDataError.message.isNullOrEmpty()){
-                throw MessageErrorException(shopNoteQueryResult.graphQLDataError.message)
+            if (shopNoteQueryResult.graphQLDataError != null && !shopNoteQueryResult.graphQLDataError?.message.isNullOrEmpty()){
+                throw MessageErrorException(shopNoteQueryResult.graphQLDataError?.message)
             } else {
                 return shopNoteQueryResult.result?.toList() ?: listOf()
             }
@@ -44,7 +46,25 @@ class GetShopNotesByShopIdUseCase (private val gqlQuery: String,
         private const val NOTE_ID = "id"
         private const val IS_TERM = "isTerm"
         private const val SLUG = "slug"
-
+        private const val QUERY = """
+            query getShopNotesByShopId(${'$'}shopId: String!, ${'$'}id: String, ${'$'}isTerm: Boolean, ${'$'}slug: String){
+                shopNotesByShopID(shopID: ${'$'}shopId, id: ${'$'}id, isTerms: ${'$'}isTerm, slug: ${'$'}slug){
+                    result{
+                      id
+                      title
+                      content
+                      isTerms
+                      updateTime
+                      position
+                      url
+                    }
+                    error {
+                      message
+                    }
+                }
+            }
+        """
+        
         @JvmStatic
         fun createParams(shopId: String, noteId: String? = null, isTerm: Boolean? = null, slug: String? = null) =
                 RequestParams.create().apply {
