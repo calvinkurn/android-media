@@ -1646,7 +1646,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun setupBottomSheetProductLimitation(productLimitationModel: ProductLimitationModel) {
-        if (productLimitationModel.limitAmount <= 0 || productLimitationModel.isUnlimited) {
+        if (productLimitationModel.isUnlimited) {
             productLimitationTicker?.gone()
             return
         }
