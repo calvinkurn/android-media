@@ -111,8 +111,8 @@ class PageInfoPusherManager(val activity: Activity) {
                         EVENT_ACTION, "general info - impression",
                         EVENT_LABEL, "$infoId",
                         USER_ID, userSession.userId,
-                        BUSINESS_UNIT, "",
-                        CURRENT_SITE, ""
+                        BUSINESS_UNIT, "Tech (Corp. Function)",
+                        CURRENT_SITE, "tokopediamarketplace"
                 )
         )
     }
