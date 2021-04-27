@@ -620,4 +620,16 @@ public interface ApplinkConst {
     interface Navigation {
         String MAIN_NAV = "tokopedia://navigation/main";
     }
+
+    interface Inbox {
+        String PARAM_PAGE = "page";
+        String VALUE_PAGE_NOTIFICATION = "notification";
+        String VALUE_PAGE_CHAT = "chat";
+        String VALUE_PAGE_TALK = "talk";
+        String VALUE_PAGE_REVIEW = "review";
+
+        String PARAM_ROLE = "role";
+        String VALUE_ROLE_BUYER = "buyer";
+        String VALUE_ROLE_SELLER = "seller";
+    }
 }
