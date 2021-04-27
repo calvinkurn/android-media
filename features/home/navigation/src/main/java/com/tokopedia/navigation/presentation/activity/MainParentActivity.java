@@ -507,9 +507,7 @@ public class MainParentActivity extends BaseActivity implements
     private void setupStatusBar() {
         //apply inset to allow recyclerview scrolling behind status bar
         fragmentContainer.setFitsSystemWindows(false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            fragmentContainer.requestApplyInsets();
-        }
+        fragmentContainer.requestApplyInsets();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int flags = fragmentContainer.getSystemUiVisibility();
@@ -519,14 +517,7 @@ public class MainParentActivity extends BaseActivity implements
         }
 
         //make full transparent statusBar
-        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
-            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true);
-        }
-
-        if (Build.VERSION.SDK_INT >= 19) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        }
-
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         if (Build.VERSION.SDK_INT >= 21) {
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
