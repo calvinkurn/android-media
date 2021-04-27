@@ -6,10 +6,10 @@ import android.net.ParseException
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.JsonReader
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
+import android.widget.Toast
 import androidx.core.app.TaskStackBuilder
 import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
@@ -34,6 +34,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         private set
     protected var allowOverride = true
     protected var needLogin = false
+    private var backPressedEnabled = true
+    private var backPressedMessage = ""
     var webViewTitle = ""
     var whiteListedDomains = WhiteListedDomains()
 
@@ -153,7 +155,26 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 f.webView.goBack()
             }
         } else {
-            goPreviousActivity()
+            if (backPressedEnabled) {
+                goPreviousActivity()
+            } else {
+                showOnBackPressedDisabledMessage()
+            }
+        }
+    }
+
+    fun setOnWebViewPageFinished() {
+        val uri = intent.data
+        uri?.let {
+            backPressedEnabled = it.getBooleanQueryParameter(KEY_BACK_PRESSED_ENABLED, true)
+            backPressedMessage = it.getQueryParameter(KEY_ON_DISABLED_MESSAGE).orEmpty()
+        }
+    }
+
+    fun enableBackButton() {
+        val f = fragment
+        if (f is BaseSessionWebViewFragment && !f.webView.canGoBack()) {
+            backPressedEnabled = true
         }
     }
 
@@ -196,6 +217,12 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             }
         }
         return false
+    }
+
+    private fun showOnBackPressedDisabledMessage() {
+        if (backPressedMessage.isNotBlank()) {
+            Toast.makeText(this, backPressedMessage, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun logWebViewApplink() {

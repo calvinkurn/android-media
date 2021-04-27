@@ -6,6 +6,8 @@ const val KEY_ALLOW_OVERRIDE = "allow_override"
 const val KEY_NEED_LOGIN = "need_login"
 const val KEY_TITLE = "title"
 const val KEY_PULL_TO_REFRESH = "pull_to_refresh"
+const val KEY_BACK_PRESSED_ENABLED = "back_pressed_enabled"
+const val KEY_ON_DISABLED_MESSAGE = "back_pressed_message"
 internal const val DEFAULT_TITLE = "Tokopedia"
 internal const val KEY_CACHE_RELOAD_WEBVIEW = "reload_webview"
 
