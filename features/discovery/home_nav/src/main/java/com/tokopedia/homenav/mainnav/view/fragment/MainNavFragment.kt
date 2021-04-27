@@ -257,7 +257,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             ID_ALL_TRANSACTION -> TrackingTransactionSection.clickOnAllTransaction(userSession.userId)
             ID_TICKET -> TrackingTransactionSection.clickOnTicket(userSession.userId)
             ID_REVIEW -> TrackingTransactionSection.clickOnReview(userSession.userId)
-            ID_WISHLIST_MENU -> TrackingTransactionSection.clickOnWishlist(userSession.userId)
+            ID_WISHLIST_MENU -> TrackingUserMenuSection.clickOnUserMenu(homeNavMenuDataModel.trackerName, userSession.userId)
             ID_FAVORITE_SHOP -> TrackingTransactionSection.clickOnTokoFavorit(userSession.userId)
             else -> TrackingUserMenuSection.clickOnUserMenu(homeNavMenuDataModel.trackerName, userSession.userId)
         }
