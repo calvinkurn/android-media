@@ -406,6 +406,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
+    fun updateNotification() {
+        viewModel?.getNotification()
+    }
+
     internal fun setBackgroundAlpha(alpha: Float) {
         navToolbar?.let {
             val drawable = it.background
