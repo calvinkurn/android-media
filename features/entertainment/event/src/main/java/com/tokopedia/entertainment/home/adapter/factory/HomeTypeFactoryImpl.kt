@@ -36,8 +36,8 @@ class HomeTypeFactoryImpl(private val trackingListener: TrackingListener,
         return EventLocationEventViewHolder.LAYOUT
     }
 
-    override fun type(model: EmptyHomeModel): Int {
-        return EmptyHomeEventViewHolder.LAYOUT
+    override fun type(model: LoadingHomeModel): Int {
+        return LoadingHomeEventViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -51,8 +51,8 @@ class HomeTypeFactoryImpl(private val trackingListener: TrackingListener,
             EventCarouselEventViewHolder(view, trackingListener, clickCarouselListener)
         } else if (type == EventLocationEventViewHolder.LAYOUT) {
             EventLocationEventViewHolder(view, trackingListener)
-        } else if (type == EmptyHomeEventViewHolder.LAYOUT){
-            EmptyHomeEventViewHolder(view)
+        } else if (type == LoadingHomeEventViewHolder.LAYOUT){
+            LoadingHomeEventViewHolder(view)
         } else super.createViewHolder(view, type)
     }
 }

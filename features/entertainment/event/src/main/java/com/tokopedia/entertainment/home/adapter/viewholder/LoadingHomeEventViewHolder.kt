@@ -4,11 +4,11 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.home.adapter.viewmodel.EmptyHomeModel
+import com.tokopedia.entertainment.home.adapter.viewmodel.LoadingHomeModel
 
-class EmptyHomeEventViewHolder(itemView: View): AbstractViewHolder<EmptyHomeModel>(itemView)  {
+class LoadingHomeEventViewHolder(itemView: View): AbstractViewHolder<LoadingHomeModel>(itemView)  {
 
-    override fun bind(element: EmptyHomeModel) {
+    override fun bind(element: LoadingHomeModel) {
 
     }
 

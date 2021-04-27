@@ -12,5 +12,5 @@ interface HomeTypeFactory: AdapterTypeFactory {
     fun type(model: EventCarouselModel): Int
     fun type(model: EventGridModel): Int
     fun type(model: EventLocationModel): Int
-    fun type(model: EmptyHomeModel): Int
+    fun type(model: LoadingHomeModel): Int
 }

@@ -131,7 +131,7 @@ class EventHomeViewModel @Inject constructor(
     }
 
     private fun requestEmptyItem(): List<HomeEventItem> {
-        return listOf(EmptyHomeModel())
+        return listOf(LoadingHomeModel())
     }
 
     companion object {

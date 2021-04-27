@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -93,9 +94,9 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
         super.onActivityCreated(savedInstanceState)
 
         viewModel.eventHomeListData.observe(viewLifecycleOwner, Observer {
+            clearAllData()
             when(it){
                 is Success -> {
-                    clearAllData()
                     onSuccessGetData(it.data)
                 }
 
@@ -135,10 +136,16 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     private fun onErrorGetData(throwable: Throwable) {
-        adapter.data.clear()
         swipe_refresh_layout_home?.isRefreshing = false
+        errorHandler()
         performanceMonitoring.stopTrace()
         Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun errorHandler(){
+        NetworkErrorHelper.showEmptyState(context, view?.rootView) {
+            loadAllData()
+        }
     }
 
     private fun startShowCase() {
