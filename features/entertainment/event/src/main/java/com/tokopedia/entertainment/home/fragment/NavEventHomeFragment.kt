@@ -314,7 +314,6 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
 
         val TAG = NavEventHomeFragment::class.java.simpleName
 
-
         const val PROMOURL = "https://www.tokopedia.com/promo/tiket/events/"
         const val FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/"
         const val REQUEST_LOGIN_FAVORITE = 213

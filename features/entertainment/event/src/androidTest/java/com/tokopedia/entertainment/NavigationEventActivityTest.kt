@@ -13,6 +13,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.banner.BannerViewPagerAdapter
@@ -22,7 +23,7 @@ import com.tokopedia.entertainment.home.adapter.viewholder.CategoryEventViewHold
 import com.tokopedia.entertainment.home.adapter.viewholder.EventCarouselEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventGridEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventLocationEventViewHolder
-import com.tokopedia.entertainment.home.fragment.EventHomeFragment
+import com.tokopedia.entertainment.home.fragment.NavEventHomeFragment
 import com.tokopedia.entertainment.navigation.EventNavigationActivity
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -75,8 +76,8 @@ class NavigationEventActivityTest {
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = Intent(targetContext, EventNavigationActivity::class.java)
 
-        LocalCacheHandler(context, EventHomeFragment.PREFERENCES_NAME).also {
-            it.putBoolean(EventHomeFragment.SHOW_COACH_MARK_KEY, true)
+        LocalCacheHandler(context, NavEventHomeFragment.PREFERENCES_NAME).also {
+            it.putBoolean(NavEventHomeFragment.SHOW_COACH_MARK_KEY, true)
             it.applyEditor()
         }
 
@@ -87,7 +88,7 @@ class NavigationEventActivityTest {
 
     @Test
     fun validateNavigationHomePDPEvent() {
-        Thread.sleep(5000)
+        Thread.sleep(10000)
         //HOME
 
         impression_banner()
@@ -149,9 +150,9 @@ class NavigationEventActivityTest {
 
     fun click_category_icon() {
         val viewInteraction = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
+                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view_home), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.scrollToPosition<HomeEventViewHolder<*>>(1))
+        viewInteraction.perform(RecyclerViewActions.scrollToPosition<AbstractViewHolder<*>>(1))
         Thread.sleep(2000)
         Espresso.onView(ViewMatchers.withId(R.id.ent_recycle_view_category)).perform(RecyclerViewActions.actionOnItemAtPosition<CategoryEventViewHolder>(0, ViewActions.click()))
         Thread.sleep(2000)
@@ -172,24 +173,24 @@ class NavigationEventActivityTest {
     fun impression_taman_bermain_lokal() {
         Thread.sleep(1000)
         val viewInteraction = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
+                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view_home), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.scrollToPosition<HomeEventViewHolder<*>>(3))
+        viewInteraction.perform(RecyclerViewActions.scrollToPosition<AbstractViewHolder<*>>(3))
     }
 
     fun click_product_taman_bermain_lokal() {
         Thread.sleep(3000)
         val viewInteraction = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.ent_recycle_view_grid), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.recycler_view)),
+                AllOf.allOf(ViewMatchers.withId(R.id.ent_recycle_view_grid), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.recycler_view_home)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<EventGridEventViewHolder>(1, ViewActions.click()))
         Thread.sleep(3000)
         Espresso.onView(isRoot()).perform(ViewActions.pressBack())
         Thread.sleep(3000)
         val viewInteractions = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
+                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view_home), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteractions.perform(RecyclerViewActions.scrollToPosition<HomeEventViewHolder<*>>(3))    }
+        viewInteractions.perform(RecyclerViewActions.scrollToPosition<AbstractViewHolder<*>>(3))    }
 
     fun click_see_all_taman_bermain_lokal() {
         Thread.sleep(1000)
@@ -203,9 +204,9 @@ class NavigationEventActivityTest {
     fun impression_location_event() {
         Thread.sleep(1000)
         val viewInteraction = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
+                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view_home), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.scrollToPosition<HomeEventViewHolder<*>>(4))
+        viewInteraction.perform(RecyclerViewActions.scrollToPosition<AbstractViewHolder<*>>(4))
         Thread.sleep(2000)
         Espresso.onView(ViewMatchers.withId(R.id.ent_recycle_view_location)).perform(RecyclerViewActions.scrollToPosition<EventLocationEventViewHolder>(3))
     }
@@ -222,25 +223,25 @@ class NavigationEventActivityTest {
     fun impression_taman_bermain_mancanegara() {
         Thread.sleep(1000)
         val viewInteraction = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
+                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view_home), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.scrollToPosition<HomeEventViewHolder<*>>(5))
+        viewInteraction.perform(RecyclerViewActions.scrollToPosition<AbstractViewHolder<*>>(5))
         Thread.sleep(2000)
     }
 
     fun click_product_taman_bermain_mancanegara() {
         Thread.sleep(3000)
         val viewInteraction = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.ent_recycle_view_grid), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.recycler_view)), ViewMatchers.hasSibling(ViewMatchers.withId(R.id.ent_title_card)),
+                AllOf.allOf(ViewMatchers.withId(R.id.ent_recycle_view_grid), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.recycler_view_home)), ViewMatchers.hasSibling(ViewMatchers.withId(R.id.ent_title_card)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<EventGridEventViewHolder>(1, ViewActions.click()))
         Thread.sleep(3000)
         Espresso.onView(isRoot()).perform(ViewActions.pressBack())
         Thread.sleep(3000)
         val viewInteractions = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
+                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view_home), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteractions.perform(RecyclerViewActions.scrollToPosition<HomeEventViewHolder<*>>(5))
+        viewInteractions.perform(RecyclerViewActions.scrollToPosition<AbstractViewHolder<*>>(5))
     }
 
     fun click_see_all_taman_bermain_mancanegara() {
@@ -255,25 +256,25 @@ class NavigationEventActivityTest {
     fun impression_aktivitas() {
         Thread.sleep(1000)
         val viewInteraction = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
+                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view_home), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.scrollToPosition<HomeEventViewHolder<*>>(6))
+        viewInteraction.perform(RecyclerViewActions.scrollToPosition<AbstractViewHolder<*>>(6))
         Thread.sleep(2000)
     }
 
     fun click_product_aktivitas() {
         Thread.sleep(3000)
         val viewInteraction = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.ent_recycle_view_grid), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.recycler_view)), ViewMatchers.hasSibling(ViewMatchers.withId(R.id.ent_title_card)), ViewMatchers.hasSibling(ViewMatchers.withText("Aktivitas")),
+                AllOf.allOf(ViewMatchers.withId(R.id.ent_recycle_view_grid), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.recycler_view_home)), ViewMatchers.hasSibling(ViewMatchers.withId(R.id.ent_title_card)), ViewMatchers.hasSibling(ViewMatchers.withText("Aktivitas")),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<EventGridEventViewHolder>(1, ViewActions.click()))
         Thread.sleep(3000)
         Espresso.onView(isRoot()).perform(ViewActions.pressBack())
         Thread.sleep(3000)
         val viewInteractions = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
+                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view_home), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteractions.perform(RecyclerViewActions.scrollToPosition<HomeEventViewHolder<*>>(6))
+        viewInteractions.perform(RecyclerViewActions.scrollToPosition<AbstractViewHolder<*>>(6))
     }
 
     fun click_see_all_aktivitas() {
@@ -288,25 +289,25 @@ class NavigationEventActivityTest {
     fun impression_festival() {
         Thread.sleep(1000)
         val viewInteraction = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
+                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view_home), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.scrollToPosition<HomeEventViewHolder<*>>(7))
+        viewInteraction.perform(RecyclerViewActions.scrollToPosition<AbstractViewHolder<*>>(7))
         Thread.sleep(2000)
     }
 
     fun click_product_festival() {
         Thread.sleep(3000)
         val viewInteraction = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.ent_recycle_view_grid), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.recycler_view)), ViewMatchers.hasSibling(ViewMatchers.withId(R.id.ent_title_card)), ViewMatchers.hasSibling(ViewMatchers.withText("Festival")),
+                AllOf.allOf(ViewMatchers.withId(R.id.ent_recycle_view_grid), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.recycler_view_home)), ViewMatchers.hasSibling(ViewMatchers.withId(R.id.ent_title_card)), ViewMatchers.hasSibling(ViewMatchers.withText("Festival")),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<EventGridEventViewHolder>(1, ViewActions.click()))
         Thread.sleep(3000)
         Espresso.onView(isRoot()).perform(ViewActions.pressBack())
         Thread.sleep(3000)
         val viewInteractios = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
+                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view_home), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteractios.perform(RecyclerViewActions.scrollToPosition<HomeEventViewHolder<*>>(7))
+        viewInteractios.perform(RecyclerViewActions.scrollToPosition<AbstractViewHolder<*>>(7))
     }
 
     fun click_see_all_festival() {
@@ -322,25 +323,25 @@ class NavigationEventActivityTest {
     fun impression_event() {
         Thread.sleep(1000)
         val viewInteraction = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
+                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view_home), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.scrollToPosition<HomeEventViewHolder<*>>(8))
+        viewInteraction.perform(RecyclerViewActions.scrollToPosition<AbstractViewHolder<*>>(8))
         Thread.sleep(2000)
     }
 
     fun click_product_event() {
         Thread.sleep(3000)
         val viewInteraction = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.ent_recycle_view_grid), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.recycler_view)), ViewMatchers.hasSibling(ViewMatchers.withId(R.id.ent_title_card)), ViewMatchers.hasSibling(ViewMatchers.withText("Events")),
+                AllOf.allOf(ViewMatchers.withId(R.id.ent_recycle_view_grid), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.recycler_view_home)), ViewMatchers.hasSibling(ViewMatchers.withId(R.id.ent_title_card)), ViewMatchers.hasSibling(ViewMatchers.withText("Events")),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<EventGridEventViewHolder>(1, ViewActions.click()))
         Thread.sleep(3000)
         Espresso.onView(isRoot()).perform(ViewActions.pressBack())
         Thread.sleep(3000)
         val viewInteractions = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
+                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view_home), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteractions.perform(RecyclerViewActions.scrollToPosition<HomeEventViewHolder<*>>(8))
+        viewInteractions.perform(RecyclerViewActions.scrollToPosition<AbstractViewHolder<*>>(8))
     }
 
     fun click_see_all_event() {
@@ -355,25 +356,25 @@ class NavigationEventActivityTest {
     fun impression_aktivitas_anak() {
         Thread.sleep(1000)
         val viewInteraction = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
+                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view_home), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.scrollToPosition<HomeEventViewHolder<*>>(9))
+        viewInteraction.perform(RecyclerViewActions.scrollToPosition<AbstractViewHolder<*>>(9))
         Thread.sleep(2000)
     }
 
     fun click_product_aktivitas_anak() {
         Thread.sleep(3000)
         val viewInteraction = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.ent_recycle_view_grid), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.recycler_view)), ViewMatchers.hasSibling(ViewMatchers.withId(R.id.ent_title_card)), ViewMatchers.hasSibling(ViewMatchers.withText("Aktivitas Anak")),
+                AllOf.allOf(ViewMatchers.withId(R.id.ent_recycle_view_grid), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.recycler_view_home)), ViewMatchers.hasSibling(ViewMatchers.withId(R.id.ent_title_card)), ViewMatchers.hasSibling(ViewMatchers.withText("Aktivitas Anak")),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<EventGridEventViewHolder>(0, ViewActions.click()))
         Thread.sleep(3000)
         Espresso.onView(isRoot()).perform(ViewActions.pressBack())
         Thread.sleep(3000)
         val viewInteractions = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
+                AllOf.allOf(ViewMatchers.withId(R.id.recycler_view_home), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.event_home_fragment)),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteractions.perform(RecyclerViewActions.scrollToPosition<HomeEventViewHolder<*>>(9))
+        viewInteractions.perform(RecyclerViewActions.scrollToPosition<AbstractViewHolder<*>>(9))
     }
 
     fun click_see_all_aktivitas_anak() {
@@ -384,7 +385,7 @@ class NavigationEventActivityTest {
         viewInteraction.perform(ViewActions.click())
         Thread.sleep(3000)
         val viewInteractions = Espresso.onView(AllOf.allOf(
-                AllOf.allOf(ViewMatchers.withId(R.id.ent_recycle_view_grid), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.recycler_view)), ViewMatchers.hasSibling(ViewMatchers.withId(R.id.ent_title_card)), ViewMatchers.hasSibling(ViewMatchers.withText("Aktivitas Anak")),
+                AllOf.allOf(ViewMatchers.withId(R.id.ent_recycle_view_grid), ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.recycler_view_home)), ViewMatchers.hasSibling(ViewMatchers.withId(R.id.ent_title_card)), ViewMatchers.hasSibling(ViewMatchers.withText("Aktivitas Anak")),
                         ViewMatchers.isDisplayed()))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteractions.perform(RecyclerViewActions.actionOnItemAtPosition<EventGridEventViewHolder>(0, ViewActions.click()))
         Thread.sleep(3000)
