@@ -212,6 +212,8 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             }
         }
 
+        iconImage.notificationRef.gone()
+
         when {
             iconToolbar.badgeCounter.isZero() -> {
                 iconImage.notificationRef.gone()
@@ -222,17 +224,16 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
                         notificationType = NotificationUnify.NONE_TYPE,
                         colorType = NotificationUnify.COLOR_PRIMARY
                 )
-                iconImage.setNotifXY(0.1f, 0.1f)
                 iconImage.notificationGravity = Gravity.TOP or Gravity.RIGHT
                 iconImage.notificationRef.visible()
             }
             else -> {
+                iconImage.setNotifXY(1f, -0.8f)
                 iconImage.notificationRef.setNotification(
                         notif = iconToolbar.badgeCounter.toString(),
                         notificationType = NotificationUnify.COUNTER_TYPE,
                         colorType = NotificationUnify.COLOR_PRIMARY
                 )
-                iconImage.setNotifXY(1f, -0.8f)
                 iconImage.notificationGravity = Gravity.TOP or Gravity.RIGHT
                 iconImage.notificationRef.visible()
             }
