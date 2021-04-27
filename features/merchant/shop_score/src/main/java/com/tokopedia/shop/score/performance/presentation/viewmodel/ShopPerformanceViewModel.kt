@@ -79,9 +79,9 @@ class ShopPerformanceViewModel @Inject constructor(
         })
     }
 
-    fun getShopPerformanceDetail(titlePerformance: String) {
+    fun getShopPerformanceDetail(identifierPerformance: String) {
         launch {
-            _shopPerformanceDetail.value = shopScoreMapper.mapToShopPerformanceDetail(titlePerformance)
+            _shopPerformanceDetail.value = shopScoreMapper.mapToShopPerformanceDetail(identifierPerformance)
         }
     }
 
@@ -89,7 +89,7 @@ class ShopPerformanceViewModel @Inject constructor(
         launchCatchError(block = {
             _shopInfoLevel.value = Success(shopScoreMapper.mapToShopInfoLevelUiModel(level))
         }, onError = {
-            _shopInfoLevel.postValue(Fail(it))
+            _shopInfoLevel.value = Fail(it)
         })
     }
 }
