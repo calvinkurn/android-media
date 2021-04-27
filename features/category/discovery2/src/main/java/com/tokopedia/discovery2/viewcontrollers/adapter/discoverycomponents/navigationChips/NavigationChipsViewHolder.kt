@@ -17,6 +17,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.SpaceItemDecoration
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 
@@ -46,7 +47,7 @@ class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) 
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackImpressionNavigationChips(item)
             categoriesRecycleAdapter.setDataList(item)
             categoriesRecycleAdapter.notifyDataSetChanged()
-            if(item.size <= 0) chipsParentView.hide()
+            if(item.size <= 0) chipsParentView.gone()
         })
         navigationChipsViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
             if (item) {
