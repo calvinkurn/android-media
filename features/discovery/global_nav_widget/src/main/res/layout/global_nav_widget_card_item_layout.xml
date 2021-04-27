@@ -6,6 +6,7 @@
     android:id="@+id/globalNavCardItemCardView"
     android:layout_width="136dp"
     android:layout_height="match_parent"
+    app:cardBackgroundColor="@color/global_nav_dms_card_background"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4"
     app:cardUseCompatPadding="true"
