@@ -28,7 +28,6 @@ class AdminPermissionMapper @Inject constructor(private val userSession: UserSes
         private const val APPLINK_FORMAT = "%s?url=%s%s"
 
         private const val SCREEN_NAME = "MA - Akun Toko"
-        const val PAGE_SOURCE = "home side nav"
     }
 
     fun mapFeatureToAccessId(@AdminFeature adminFeature: String): Int {
@@ -138,7 +137,6 @@ class AdminPermissionMapper @Inject constructor(private val userSession: UserSes
                     Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
                         appendQueryParameter(ApplinkConst.Inbox.PARAM_PAGE, ApplinkConst.Inbox.VALUE_PAGE_REVIEW)
                         appendQueryParameter(ApplinkConst.Inbox.PARAM_ROLE, ApplinkConst.Inbox.VALUE_ROLE_SELLER)
-                        appendQueryParameter(ApplinkConst.Inbox.PARAM_SOURCE, PAGE_SOURCE)
                     }.build().toString())
         } else {
             RouteManager.getIntent(context, ApplinkConst.REPUTATION).apply {
