@@ -33,12 +33,12 @@ object ChooseAddressTracking : BaseTrackerConst() {
 
     private const val BUSINESS_UNIT_LOGISTIC = "logistics & fulfillment"
 
-    fun onClickWidget(source: String, userId: String) {
+    fun onClickWidget(source: String, userId: String, eventLabel: String) {
         getTracker().sendGeneralEvent(BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(WIDGET_CHOOSE_ADDRESS)
                 .appendEventAction("$CLICK_WIDGET_CHOOSE_ADDRESS_TRIBE $source")
-                .appendEventLabel("")
+                .appendEventLabel(eventLabel)
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
