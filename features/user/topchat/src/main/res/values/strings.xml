@@ -213,6 +213,8 @@ yang ditemukan</string>
     <string name="title_regular_stock">Stok:</string>
     <string name="title_campaign_stock">Stok campaign:</string>
     <string name="title_success_update_stock">Stok produk \"%1$s\" berhasil diubah.</string>
+    <string name="title_success_activate_product_status">produk \"%1$s\" berhasil diaktifkan.</string>
+    <string name="title_success_deactivate_product_status">produk \"%1$s\" berhasil dinonaktifkan.</string>
     <string name="title_topchat_dilayani_tokocabang">Dilayani TokoCabang</string>
 
     <string name="topchat_desc_empty_text_box">Oops, tulis pesan dulu ya sebelum kirim chat.</string>
