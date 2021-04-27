@@ -101,8 +101,8 @@ internal fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) 
 internal fun ImageView.loadImage(url: String?) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
-            setErrorDrawable(R.drawable.product_card_placeholder_grey)
             setPlaceHolder(R.drawable.product_card_placeholder_grey)
+            setErrorDrawable(R.drawable.product_card_placeholder_grey)
         }
     }
 }
