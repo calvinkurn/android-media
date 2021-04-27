@@ -59,8 +59,7 @@ object DeeplinkMapperHome {
             return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
         else if (deeplink.startsWithPattern(ApplinkConst.OFFICIAL_STORE_CATEGORY) && uri.pathSegments.size == 1)
         {
-            val link = deeplink.replace("mobile","0")
-            val params = UriUtil.destructureUriToMap(ApplinkConst.OFFICIAL_STORE_CATEGORY, Uri.parse(link), true)
+            val params = UriUtil.destructureUriToMap(ApplinkConst.OFFICIAL_STORE_CATEGORY, Uri.parse(deeplink), true)
             params.put(EXTRA_TAB_POSITION, TAB_POSITION_OS)
 
             return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params)
