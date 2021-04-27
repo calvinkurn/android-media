@@ -103,6 +103,7 @@ public interface ApplinkConst {
     String HOST_LOGIN = "login";
     String LOGIN = "tokopedia://login";
     String OTP = "tokopedia://otp";
+    String QR_LOGIN = "tokopedia://qr/login/{uuid}";
     String OTP_PUSH_NOTIF_RECEIVER = "tokopedia://otp-verify";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String OFFICIAL_STORE = "tokopedia://official-store";

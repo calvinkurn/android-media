@@ -1,5 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Otp</string>
+
+    <!--  otp verification  -->
     <string name="choose_verification_method">Pilih Metode Verifikasi</string>
     <string name="my_phone_number_is_inactive">Nomor saya sudah tidak aktif</string>
     <string name="pick_one_of_these_method_to_get_verification_code">Pilih salah satu metode
@@ -34,6 +36,7 @@
     <string name="change_phone_number">Ubah Nomor HP</string>
     <string name="change_inactive_phone_number_html"><![CDATA[Nomor HP kamu tidak aktif lagi? <a href="(%1$s)">Ubah Nomor HP</a>.]]></string>
 
+    <!--  otp notif  -->
     <string name="title_push_notif_receiver">Ada perangkat baru yang ingin mengakses akunmu</string>
     <string name="subtitle_push_notif_receiver">Jangan berikan akses ke perangkat orang lain, agar akun &amp; data pribadimu tetap aman.</string>
     <string name="subtitle_push_notif_setting">Kamu bisa masuk ke akunmu dengan melakukan verifikasi lewat notifikasi yang dikirim ke perangkat terdaftar</string>
@@ -51,4 +54,11 @@
     <string name="title_setting_push_notif">Masuk Lewat Notifikasi</string>
     <string name="title_registered_device">Perangkat terdaftar</string>
     <string name="subtitle_registered_device">Ingin berhenti terima notifikasi di salah satu perangkat? Keluar dari akunmu lewat perangkat tersebut.</string>
+
+    <!--  otp qrcode  -->
+    <string name="main_title_login_by_qr">Ini adalah konfrimasi untuk login melalui desktop.</string>
+    <string name="main_subtitle_login_by_qr">Pastikan kamu login di perangkatmu sendiri, dan jangan berikan akses masuk atas permintaan orang lain.</string>
+    <string name="user_title_login_by_qr">Masuk Sebagai:</string>
+    <string name="approve_button_login_by_qr">Ya, Konfirmasi masuk</string>
+    <string name="reject_button_login_by_qr">Batal</string>
 </resources>

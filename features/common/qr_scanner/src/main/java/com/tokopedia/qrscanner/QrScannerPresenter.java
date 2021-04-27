@@ -53,6 +53,8 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     private static final String QR_ID = "qr_id";
     private static final String OVO_TEXT = "ovo";
     private static final String GPNR_TEXT = "gpnqr";
+    private static final String QR_TEXT = "qr";
+    private static final String LOGIN_TEXT = "login";
     private static final String EVENT_REDEEM = "tokopedia.com/v1/api/event/custom/redeem/invoice";
 
     private ScannerUseCase scannerUseCase;
@@ -91,6 +93,13 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 onScanBranchIOLink(barcodeData);
             } else if (host.contains("tokopedia")) {
                 openActivity(barcodeData);
+            } else if (host.equals("qr") &&
+                    uri.getPathSegments().get(0) != null &&
+                    uri.getPathSegments().get(1) != null &&
+                    !uri.getPathSegments().get(0).isEmpty() &&
+                    !uri.getPathSegments().get(1).isEmpty() &&
+                    uri.getPathSegments().get(0).equals("login")) {
+                getView().goToLoginByQr(uri.getPathSegments().get(1));
             } else {
                 getView().showErrorGetInfo(context.getString(R.string.qr_scanner_msg_dialog_wrong_scan));
             }
