@@ -515,8 +515,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>) {
-        showErrorToaster()
+    override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>, error: String) {
+        showErrorToaster(error)
     }
 
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
