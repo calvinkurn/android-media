@@ -46,6 +46,7 @@ object QueryNotification {
             "                      readyToShip\n" +
             "                      shipped\n" +
             "                      arriveAtDestination\n" +
+            "                      inResolution\n" +
             "                    }\n" +
             "                  }\n" +
             "\n" +

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
 import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -14,6 +15,7 @@ import javax.inject.Inject
 
 class NavigationViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher,
+        val userSession: UserSessionInterface,
         val getNotificationUseCase: GetNotificationUseCase
 ) : BaseViewModel(dispatcher) {
     private var getNotificationJob: Job? = null
@@ -22,10 +24,16 @@ class NavigationViewModel @Inject constructor(
     val navNotificationLiveData: LiveData<TopNavNotificationModel>
         get() = _navNotificationModel
 
+    private var topNavNotificationModel = TopNavNotificationModel()
+
     fun getNotification() {
+        getAllNotification()
+    }
+
+    private fun getAllNotification() {
         if (getNotificationJob == null || getNotificationJob?.isActive == false) {
             getNotificationJob = viewModelScope.launchCatchError(Dispatchers.IO, {
-                val topNavNotificationModel = getNotificationUseCase.executeOnBackground()
+                topNavNotificationModel = getNotificationUseCase.executeOnBackground()
                 _navNotificationModel.postValue(topNavNotificationModel)
             }) {
 

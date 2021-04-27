@@ -11,5 +11,7 @@ data class SellerOrderStatus(
     @SerializedName("readyToShip")
     val readyToShip: Int = 0,
     @SerializedName("shipped")
-    val shipped: Int = 0
+    val shipped: Int = 0,
+    @SerializedName("inResolution")
+    val inResolution: Int = 0
 )

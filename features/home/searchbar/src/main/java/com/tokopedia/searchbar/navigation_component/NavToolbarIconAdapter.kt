@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.searchbar.R
+import com.tokopedia.searchbar.navigation_component.NavConstant.ICON_COUNTER_NONE_TYPE
 import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
 import com.tokopedia.searchbar.navigation_component.icons.IconConfig
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -211,18 +212,31 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             }
         }
 
-        if (iconToolbar.badgeCounter.isZero()) {
-            iconImage.notificationRef.gone()
-        } else {
-            iconImage.notificationRef.setNotification(
-                    notif = iconToolbar.badgeCounter.toString(),
-                    notificationType = NotificationUnify.COUNTER_TYPE,
-                    colorType = NotificationUnify.COLOR_PRIMARY
-            )
-            iconImage.notificationGravity = Gravity.TOP or Gravity.RIGHT
-            iconImage.notificationRef.visible()
+        when {
+            iconToolbar.badgeCounter.isZero() -> {
+                iconImage.notificationRef.gone()
+            }
+            iconToolbar.badgeCounter == ICON_COUNTER_NONE_TYPE -> {
+                iconImage.notificationRef.setNotification(
+                        notif = iconToolbar.badgeCounter.toString(),
+                        notificationType = NotificationUnify.NONE_TYPE,
+                        colorType = NotificationUnify.COLOR_PRIMARY
+                )
+                iconImage.setNotifXY(0.1f, 0.1f)
+                iconImage.notificationGravity = Gravity.TOP or Gravity.RIGHT
+                iconImage.notificationRef.visible()
+            }
+            else -> {
+                iconImage.notificationRef.setNotification(
+                        notif = iconToolbar.badgeCounter.toString(),
+                        notificationType = NotificationUnify.COUNTER_TYPE,
+                        colorType = NotificationUnify.COLOR_PRIMARY
+                )
+                iconImage.setNotifXY(1f, -0.8f)
+                iconImage.notificationGravity = Gravity.TOP or Gravity.RIGHT
+                iconImage.notificationRef.visible()
+            }
         }
-        iconImage.setNotifXY(1f, -0.8f)
         iconImage.visibility = View.VISIBLE
     }
 

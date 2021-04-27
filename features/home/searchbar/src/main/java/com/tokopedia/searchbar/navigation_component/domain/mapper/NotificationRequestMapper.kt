@@ -1,5 +1,6 @@
 package com.tokopedia.searchbar.navigation_component.domain.mapper
 
+import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.searchbar.navigation_component.data.notification.NotifcenterUnread
 import com.tokopedia.searchbar.navigation_component.data.notification.NotificationResponse
 import com.tokopedia.searchbar.navigation_component.data.notification.Notifications
@@ -17,12 +18,26 @@ object NotificationRequestMapper {
         val totalInbox = buildTotalInbox(notification)
         val totalNotif = buildTotalNotif(notificationResponse)
 
+        val totalSellerOrderCount = buildTotalOrderCount(notificationResponse)
+        val totalReviewCount = notification.inbox.review
+        val totalInboxTicket = notification.inbox.ticket
+        val totalUnreadComplain = notification.resolutionAs.buyer
+        val totalGlobalNavNotif = totalSellerOrderCount + totalReviewCount + totalInboxTicket + totalUnreadComplain
+        val totalGlobalNavBadge = if (totalGlobalNavNotif > 0) NavConstant.ICON_COUNTER_NONE_TYPE else 0
+
         return TopNavNotificationModel(
                 totalNewInbox = totalNewInbox,
                 totalInbox = totalInbox,
                 totalCart = totalCart,
-                totalNotif = totalNotif
+                totalNotif = totalNotif,
+                totalGlobalNavNotif = totalGlobalNavBadge
         )
+    }
+
+    private fun buildTotalOrderCount(data: NotificationResponse): Int {
+        return data.notifications.sellerOrderStatus.newOrder
+                .plus(data.notifications.sellerOrderStatus.readyToShip)
+                .plus(data.notifications.sellerOrderStatus.inResolution)
     }
 
     private fun buildTotalNotif(data: NotificationResponse): Int {

@@ -20,5 +20,5 @@ abstract class NavigationViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(NavigationViewModel::class)
-    abstract fun provideStickyLoginViewModel(viewModel: NavigationViewModel): ViewModel
+    abstract fun provideNavigationViewModel(viewModel: NavigationViewModel): ViewModel
 }

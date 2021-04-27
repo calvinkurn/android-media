@@ -121,9 +121,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                         if (activity is AppCompatActivity) {
                             val viewModelProvider = ViewModelProviders.of(activity, viewModelFactory)
                             viewModelProvider[NavigationViewModel::class.java]
+                        } else {
+                            null
                         }
                     }
-                    null
                 }
                 else -> {
                     null
@@ -469,10 +470,11 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun observeLiveData() {
         lifecycleOwner?.let {owner ->
             viewModel?.navNotificationLiveData?.observe(owner, Observer {
-                setCentralizedBadgeCounter(IconList.ID_INBOX, it.totalInbox)
+                setCentralizedBadgeCounter(IconList.ID_MESSAGE, it.totalInbox)
                 setCentralizedBadgeCounter(IconList.ID_CART, it.totalCart)
                 setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, it.totalNotif)
-                setCentralizedBadgeCounter(IconList.ID_MESSAGE, it.totalNewInbox)
+                setCentralizedBadgeCounter(IconList.ID_INBOX, it.totalNewInbox)
+                setCentralizedBadgeCounter(IconList.ID_NAV_GLOBAL, it.totalGlobalNavNotif)
             })
         }
     }
