@@ -8,19 +8,19 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
+import com.tokopedia.common.travel.widget.TravelMenuBottomSheet
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.di.component.HotelComponent
-import com.tokopedia.hotel.common.presentation.widget.HotelMenuBottomSheets
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * @author by furqan on 25/03/19
  */
-abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.HotelMenuListener {
+abstract class HotelBaseActivity: BaseSimpleActivity(), TravelMenuBottomSheet.TravelMenuListener {
 
     private lateinit var hotelComponent: HotelComponent
 
@@ -104,7 +104,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
     }
 
     private fun showBottomMenus() {
-        val hotelMenuBottomSheets = HotelMenuBottomSheets()
+        val hotelMenuBottomSheets = TravelMenuBottomSheet()
         hotelMenuBottomSheets.listener = this
         hotelMenuBottomSheets.show(supportFragmentManager, TAG_HOTEL_MENU)
     }

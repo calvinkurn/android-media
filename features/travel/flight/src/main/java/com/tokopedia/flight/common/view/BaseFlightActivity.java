@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.common.travel.widget.TravelMenuBottomSheet;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.di.component.FlightComponent;
@@ -25,7 +26,7 @@ import static com.tokopedia.flight.common.constant.FlightUrl.FLIGHT_PROMO_APPLIN
  * Created by alvarisi on 12/5/17.
  */
 
-public abstract class BaseFlightActivity extends BaseSimpleActivity implements FlightMenuBottomSheet.FlightMenuListener {
+public abstract class BaseFlightActivity extends BaseSimpleActivity implements TravelMenuBottomSheet.TravelMenuListener {
 
 
     @Inject
@@ -91,7 +92,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity implements F
     }
 
     public void showBottomMenu(){
-        FlightMenuBottomSheet flightMenuBottomSheet = new FlightMenuBottomSheet();
+        TravelMenuBottomSheet flightMenuBottomSheet = new TravelMenuBottomSheet();
         flightMenuBottomSheet.listener = this;
         flightMenuBottomSheet.show(getSupportFragmentManager(), TAG_FLIGHT_MENU);
     }
