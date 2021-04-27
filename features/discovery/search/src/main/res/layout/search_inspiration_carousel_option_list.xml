@@ -126,6 +126,7 @@
 
         <ImageView
             android:id="@+id/optionListCardImageSalesRatingFloat"
+            android:contentDescription="@string/content_desc_search_optionListCardImageSalesRatingFloat"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             android:adjustViewBounds="true"
