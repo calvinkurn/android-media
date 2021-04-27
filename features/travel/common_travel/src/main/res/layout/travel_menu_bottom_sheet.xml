@@ -19,7 +19,7 @@
     <View
         android:id="@+id/v_first_separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_height="@dimen/common_travel_1dp"
         android:background="@drawable/bg_line_separator" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -36,7 +36,7 @@
     <View
         android:id="@+id/v_second_separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_height="@dimen/common_travel_1dp"
         android:background="@drawable/bg_line_separator" />
 
     <com.tokopedia.unifyprinciples.Typography
