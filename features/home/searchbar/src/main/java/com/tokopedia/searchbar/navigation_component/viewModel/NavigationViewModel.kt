@@ -20,7 +20,7 @@ class NavigationViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher) {
     private var getNotificationJob: Job? = null
 
-    private val _navNotificationModel = MutableLiveData<TopNavNotificationModel>()
+    private val _navNotificationModel = MutableLiveData<TopNavNotificationModel>(TopNavNotificationModel())
     val navNotificationLiveData: LiveData<TopNavNotificationModel>
         get() = _navNotificationModel
 
@@ -28,6 +28,10 @@ class NavigationViewModel @Inject constructor(
 
     fun getNotification() {
         getAllNotification()
+    }
+
+    fun applyNotification() {
+        _navNotificationModel.applyLiveDataValue()
     }
 
     private fun getAllNotification() {
@@ -39,5 +43,10 @@ class NavigationViewModel @Inject constructor(
 
             }
         }
+    }
+
+    //triggering observer without heavy process
+    fun <T> MutableLiveData<T>.applyLiveDataValue() {
+        this.value = this.value
     }
 }
