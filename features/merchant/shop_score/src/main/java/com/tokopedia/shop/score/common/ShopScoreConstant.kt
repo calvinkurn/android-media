@@ -74,4 +74,7 @@ object ShopScoreConstant {
 
     const val PATTERN_PENALTY_DATE_PARAM = "yyyy-MM-dd"
     const val PATTERN_PERIOD_DATE = "yyyy-MM-dd HH:mm:ss"
+
+    const val AND_SYMBOL = "&"
+    const val AND_TEXT = "dan"
 }

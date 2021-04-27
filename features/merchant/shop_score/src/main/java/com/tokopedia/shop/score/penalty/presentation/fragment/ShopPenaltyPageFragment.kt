@@ -12,20 +12,19 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
 import com.tokopedia.shop.score.common.setTextMakeHyperlink
+import com.tokopedia.shop.score.common.setTypeGlobalError
 import com.tokopedia.shop.score.common.toggle
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.adapter.*
@@ -173,10 +172,11 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             "${startDate.second} - ${endDate.second}"
         }
         tvPeriodDetailPenalty?.text = getString(R.string.period_date_detail_penalty, date)
-        viewModelShopPenalty.setDateFilterData(Pair(startDate.first, endDate.first))
-        endlessRecyclerViewScrollListener.resetState()
         penaltyPageAdapter.removePenaltyNotFound()
-        penaltyPageAdapter.setPenaltyLoading()
+        viewModelShopPenalty.setDateFilterData(Pair(startDate.first, endDate.first))
+        viewModelShopPenalty.getDataPenalty()
+        hideAllViewWithLoading()
+        endlessRecyclerViewScrollListener.resetState()
     }
 
     override fun onItemPenaltyClick(statusPenalty: String) {
@@ -277,7 +277,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
                 }
                 is Fail -> {
                     containerShimmerPenalty?.hide()
-                    setupGlobalErrorState()
+                    setupGlobalErrorState(it.throwable)
                 }
             }
         }
@@ -291,7 +291,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
                 }
                 is Fail -> {
                     containerShimmerPenalty?.hide()
-                    setupGlobalErrorState()
+                    setupGlobalErrorState(it.throwable)
                 }
             }
         }
@@ -307,9 +307,9 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         updateScrollListenerState(data.second)
     }
 
-    private fun setupGlobalErrorState() {
+    private fun setupGlobalErrorState(throwable: Throwable) {
         globalErrorPenalty.show()
-        globalErrorPenalty.setType(GlobalError.SERVER_ERROR)
+        globalErrorPenalty.setTypeGlobalError(throwable)
         globalErrorPenalty?.errorAction?.setOnClickListener {
             onSwipeRefresh()
         }
@@ -346,7 +346,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     }
 
     private fun onDateClick() {
-        val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance()
+        val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance(viewModelShopPenalty.getStartDate(), viewModelShopPenalty.getEndDate())
         bottomSheetDateFilter.setCalendarListener(this)
         bottomSheetDateFilter.show(childFragmentManager)
     }

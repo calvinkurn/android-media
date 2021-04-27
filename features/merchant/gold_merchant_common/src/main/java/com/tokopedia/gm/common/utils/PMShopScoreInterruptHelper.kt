@@ -50,6 +50,8 @@ class PMShopScoreInterruptHelper @Inject constructor() {
     private var oneTimeWorkRequest: OneTimeWorkRequest? = null
     private var pmCommonPreferenceManager: PMCommonPreferenceManager? = null
 
+    fun getPeriodType() = data?.periodType
+
     fun showInterrupt(context: Context, owner: LifecycleOwner, fm: FragmentManager) {
         init(context)
         initWorker()

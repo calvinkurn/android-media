@@ -1,5 +1,6 @@
 package com.tokopedia.applink.shopscore
 
+import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -13,12 +14,18 @@ import com.tokopedia.config.GlobalConfig
 object DeepLinkMapperShopScore {
 
     const val PARAM_IS_CONSENT = "is_consent"
+    const val COMMUNICATION_PERIOD = "communication_period"
+    const val TRANSITION_PERIOD = "transition_period"
+    const val PARAM_TYPE = "type"
 
     fun getShopScoreApplink(deeplink: String): String {
         return if (deeplink.startsWith(ApplinkConst.SHOP_SCORE_DETAIL_ACKNOWLEDGE_INTERRUPT)) {
             getInterruptHandlerPageApplink()
         } else {
-            deeplink.replace(ApplinkConst.SHOP_SCORE_DETAIL, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
+            when(Uri.parse(deeplink).getQueryParameter(PARAM_TYPE)) {
+                COMMUNICATION_PERIOD -> deeplink.replace(ApplinkConst.SHOP_SCORE_DETAIL, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
+                else -> ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
+            }
         }
     }
 

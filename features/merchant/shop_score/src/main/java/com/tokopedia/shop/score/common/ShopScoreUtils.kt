@@ -8,11 +8,14 @@ import android.graphics.drawable.Drawable
 import android.text.method.LinkMovementMethod
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.shop.score.R
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -27,6 +30,14 @@ object ShopScoreUtils {
             ShopScoreConstant.SHOP_SCORE_LEVEL_FOUR -> R.drawable.ic_four_level_white
             else -> R.drawable.ic_no_level
         }
+    }
+}
+
+fun GlobalError.setTypeGlobalError(throwable: Throwable?) {
+    if (throwable is UnknownHostException || throwable is SocketTimeoutException) {
+        setType(GlobalError.NO_CONNECTION)
+    } else {
+        setType(GlobalError.SERVER_ERROR)
     }
 }
 

@@ -77,7 +77,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
             tickerShopHasPenalty?.showWithCondition(element?.scorePenalty.orZero() < 0)
             tickerShopHasPenalty?.apply {
                 addOnImpressionListener(impressHolderTicker) {
-
+                    shopPerformanceListener.onTickerImpressionToPenaltyPage()
                 }
                 if (element?.scorePenalty != null) {
                     setHtmlDescription(getString(R.string.ticker_deduction_point_penalty, element.scorePenalty?.toString()))

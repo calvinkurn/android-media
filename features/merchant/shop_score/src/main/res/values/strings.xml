@@ -259,8 +259,8 @@
 
     <string name="shop_performance_level_header">Level %s</string>
     
-    <string name="menu_title_info_shop_performance">Menu Info Shop Performance</string>
-    <string name="menu_title_warning_shop_performance">Menu Warning Shop Performance</string>
+    <string name="menu_title_info_shop_performance">Info</string>
+    <string name="menu_title_warning_shop_performance">Penalty</string>
     <string name="title_detail_penalty_label">Detail Pelanggaran</string>
     <string name="title_level_score_projection">Proyeksi level &amp; skor hingga saat ini</string>
 
@@ -274,5 +274,6 @@
     <string name="desc_coachmark_shop_score_3">Kamu bisa cek status dan potensi grade Power Merchant untuk tokomu di sini, ya!</string>
     <string name="title_penalty_filter_bottom_sheet">Filter</string>
     <string name="reset_filter_penalty">Reset</string>
+    <string name="close_youtube">Close</string>
 
 </resources>
