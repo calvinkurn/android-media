@@ -615,9 +615,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (cartItemModel.isProtectionCheckboxDisabled()) {
                 cbPPP.setEnabled(false);
                 cbPPP.setChecked(true);
+                cbPPP.skipAnimation();
             } else {
                 cbPPP.setEnabled(true);
                 cbPPP.setChecked(cartItemModel.isProtectionOptIn());
+                cbPPP.skipAnimation();
                 cbPPP.setOnCheckedChangeListener((compoundButton, checked) -> notifyOnPurchaseProtectionChecked(checked, 0));
             }
 
