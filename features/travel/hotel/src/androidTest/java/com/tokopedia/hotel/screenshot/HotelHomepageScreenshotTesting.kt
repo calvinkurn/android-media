@@ -63,7 +63,6 @@ class HotelHomepageScreenshotTesting {
         val carousel = activityRule.activity.findViewById<CarouselUnify>(com.tokopedia.hotel.R.id.banner_hotel_homepage_promo)
         carousel.apply {
             autoplay = false
-            clearAnimation()
         }
     }
 
