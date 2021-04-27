@@ -20,7 +20,7 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         private val titleDataStore: TitleDataStore,
         private val tagsDataStore: TagsDataStore,
         private val scheduleDataStore: BroadcastScheduleDataStore,
-) : PlayBroadcastSetupDataStore {
+) : PlayBroadcastSetupDataStore, TitleDataStore by titleDataStore, TagsDataStore by tagsDataStore {
 
     override fun overwrite(dataStore: PlayBroadcastSetupDataStore, modeExclusion: List<OverwriteMode>) {
         if (!modeExclusion.contains(OverwriteMode.Product)) {
@@ -152,39 +152,8 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
     /**
      * Title
      */
-    override fun getObservableTitle(): Flow<PlayTitleUiModel> {
-        return titleDataStore.getObservableTitle()
-    }
-
     override fun getTitleDataStore(): TitleDataStore {
         return titleDataStore
-    }
-
-    override fun getTitle(): PlayTitleUiModel {
-        return titleDataStore.getTitle()
-    }
-
-    override fun setTitle(title: String) {
-        titleDataStore.setTitle(title)
-    }
-
-    override suspend fun uploadTitle(channelId: String): NetworkResult<Unit> {
-        return titleDataStore.uploadTitle(channelId)
-    }
-
-    /**
-     * Tags
-     */
-    override fun getTags(): Set<String> {
-        return tagsDataStore.getTags()
-    }
-
-    override fun setTags(tags: Set<String>) {
-        tagsDataStore.setTags(tags)
-    }
-
-    override fun addTag(tag: String) {
-        tagsDataStore.addTag(tag)
     }
 
     /**

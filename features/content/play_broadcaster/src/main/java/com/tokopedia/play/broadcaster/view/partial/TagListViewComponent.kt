@@ -15,7 +15,7 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 /**
  * Created by jegul on 18/02/21
  */
-class TagRecommendationListViewComponent(
+class TagListViewComponent(
         container: ViewGroup,
         @IdRes idRes: Int,
         private val listener: Listener
@@ -44,6 +44,6 @@ class TagRecommendationListViewComponent(
 
     interface Listener {
 
-        fun onTagClicked(view: TagRecommendationListViewComponent, tag: String)
+        fun onTagClicked(view: TagListViewComponent, tag: String)
     }
 }

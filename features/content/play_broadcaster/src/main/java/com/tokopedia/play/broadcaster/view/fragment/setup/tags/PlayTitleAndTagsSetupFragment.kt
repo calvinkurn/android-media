@@ -37,11 +37,9 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val dispatcher: CoroutineDispatchers,
 ) : PlayBaseSetupFragment(), FragmentWithDetachableView,
-        TagAddedListViewComponent.Listener,
-        TextFieldAddTagViewComponent.Listener,
         BottomActionNextViewComponent.Listener,
         TextFieldTitleViewComponent.Listener,
-        TagRecommendationListViewComponent.Listener {
+        TagListViewComponent.Listener {
 
     private var mListener: Listener? = null
 
@@ -53,7 +51,7 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
      */
     private val bottomSheetHeader: PlayBottomSheetHeader by detachableView(R.id.bottom_sheet_header)
     private val titleFieldView by viewComponent(isEagerInit = true) { TextFieldTitleViewComponent(it, R.id.text_field_title, this) }
-    private val tagRecommendationListView by viewComponent { TagRecommendationListViewComponent(it, R.id.rv_tags_recommendation, this) }
+    private val tagListView by viewComponent { TagListViewComponent(it, R.id.rv_tags_recommendation, this) }
     private val bottomActionNextView by viewComponent { BottomActionNextViewComponent(it, this) }
 
     private val fragmentViewContainer = FragmentViewContainer()
@@ -85,6 +83,11 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
         setupObserve()
     }
 
+    override fun onPause() {
+        super.onPause()
+        viewModel.saveTitleAndTags(titleFieldView.getText())
+    }
+
     override fun getViewContainer(): FragmentViewContainer {
         return fragmentViewContainer
     }
@@ -99,21 +102,7 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
     /**
      * Tag Recommendation List View Component
      */
-    override fun onTagClicked(view: TagRecommendationListViewComponent, tag: String) {
-        viewModel.toggleTag(tag)
-    }
-
-    /**
-     * Tag Added List View Component
-     */
-    override fun onTagRemoved(view: TagAddedListViewComponent, tag: String) {
-        viewModel.removeTag(tag)
-    }
-
-    /**
-     * Text Field Add Tag View Component
-     */
-    override fun onTagSubmitted(view: TextFieldAddTagViewComponent, tag: String) {
+    override fun onTagClicked(view: TagListViewComponent, tag: String) {
         viewModel.toggleTag(tag)
     }
 
@@ -142,22 +131,15 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
     }
 
     private fun setupObserve() {
-        observeRecommendedTags()
-        observeAddedTags()
+        observeTags()
         observeTitle()
         observeUploadEvent()
     }
 
-    private fun observeRecommendedTags() {
+    private fun observeTags() {
         viewModel.observableRecommendedTagsModel.observe(viewLifecycleOwner, Observer {
-            tagRecommendationListView.setTags(it.toList())
+            tagListView.setTags(it.toList())
         })
-    }
-
-    private fun observeAddedTags() {
-//        viewModel.observableAddedTags.observe(viewLifecycleOwner, Observer {
-//            tagAddedListView.setTags(it.toList())
-//        })
     }
 
     private fun observeUploadEvent() {

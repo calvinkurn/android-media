@@ -33,7 +33,7 @@ class SetChannelTagsUseCase @Inject constructor(
         return@withContext super.executeOnBackground()
     }
 
-    fun setParams(channelId: String, tags: List<String>) {
+    fun setParams(channelId: String, tags: Set<String>) {
         setRequestParams(
                 mapOf(
                         PARAM_CHANNEL_ID to channelId,

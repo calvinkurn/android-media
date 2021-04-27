@@ -26,7 +26,6 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         private val setupDataStore: PlayBroadcastSetupDataStore,
         private val getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase,
         private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
-        private val setChannelTagsUseCase: SetChannelTagsUseCase,
 ) : ViewModel(), TitleSetupValidator, TagSetupValidator {
 
     val observableRecommendedTagsModel: LiveData<List<PlayTagUiModel>>
@@ -39,7 +38,7 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
                 .filterIsInstance<PlayTitleUiModel.HasTitle>()
                 .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
 
-    private val _observableAddedTags = MutableLiveData<Set<String>>()
+    private val _observableAddedTags = MutableLiveData(setupDataStore.getTags())
     private val _observableRecommendedTags = MutableLiveData<Set<String>>()
     private val _observableRecommendedTagsModel = MediatorLiveData<List<PlayTagUiModel>>().apply {
         addSource(_observableAddedTags) {
@@ -89,23 +88,20 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         refreshAddedTags(newAddedTags)
     }
 
-    fun removeTag(tag: String) {
-        val oldAddedTags = addedTags
-
-        val newAddedTags = oldAddedTags - tag
-        refreshAddedTags(newAddedTags)
+    fun saveTitleAndTags(title: String) {
+        setupDataStore.setTitle(title)
+        setupDataStore.setTags(addedTags)
     }
 
     fun finishSetup(title: String) {
-        setupDataStore.setTitle(title)
-        setupDataStore.setTags(addedTags)
+        saveTitleAndTags(title)
 
         _observableUploadEvent.value = Event(NetworkResult.Loading)
 
         viewModelScope.launch(dispatcher.main) {
 
             try {
-                uploadTags(_observableAddedTags.value.orEmpty())
+                uploadTags()
                 /**
                  * Upload title after tags because when title is success, the channel will already be complete draft,
                  * even if the tags return error
@@ -119,11 +115,8 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         }
     }
 
-    private suspend fun uploadTags(tags: Set<String>) = withContext(dispatcher.io) {
-        val isSuccess = setChannelTagsUseCase.apply {
-            setParams(hydraConfigStore.getChannelId(), addedTags.toList())
-        }.executeOnBackground().recommendedTags.success
-
+    private suspend fun uploadTags() {
+        val isSuccess = setupDataStore.uploadTags(hydraConfigStore.getChannelId())
         if (!isSuccess) error("Set Channel Tag Failed")
     }
 
@@ -140,15 +133,7 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
      */
     private fun getTags() {
         viewModelScope.launch {
-            val addedTags = async {
-                try { getAddedTags() } catch (e: Throwable) { emptyList() }
-            }
-            val recommendedTags = async {
-                try { getRecommendedTags() } catch (e: Throwable) { emptyList() }
-            }
-
-            _observableAddedTags.value = addedTags.await().toSet()
-            _observableRecommendedTags.value = (addedTags.await() + recommendedTags.await()).toSet()
+            _observableRecommendedTags.value = getRecommendedTags().toSet()
         }
     }
 

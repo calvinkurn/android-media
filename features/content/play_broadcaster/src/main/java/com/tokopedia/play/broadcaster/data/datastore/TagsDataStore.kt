@@ -10,4 +10,6 @@ interface TagsDataStore {
     fun setTags(tags: Set<String>)
 
     fun addTag(tag: String)
+
+    suspend fun uploadTags(channelId: String): Boolean
 }
