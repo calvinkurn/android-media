@@ -77,8 +77,8 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
     private fun initObserver() {
         viewModel.verifyQrResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessVerifyPushNotif().invoke(it.data)
-                is Fail -> onFailedVerifyPushNotif().invoke(it.throwable)
+                is Success -> onSuccessVerifyQr().invoke(it.data)
+                is Fail -> onFailedVerifyQr().invoke(it.throwable)
             }
         })
     }
@@ -98,7 +98,7 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
         goToResult("asd", uuid, "dfg", "fgh", "ghj")
     }
 
-    private fun onSuccessVerifyPushNotif(): (VerifyQrData) -> Unit {
+    private fun onSuccessVerifyQr(): (VerifyQrData) -> Unit {
         return { verifyQrData ->
             goToResult(
                     verifyQrData.imglink,
@@ -110,7 +110,7 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    private fun onFailedVerifyPushNotif(): (Throwable) -> Unit {
+    private fun onFailedVerifyQr(): (Throwable) -> Unit {
         return { throwable ->
             throwable.printStackTrace()
             LetUtil.ifLet(throwable.message, viewBound.containerView) { (message, containerView) ->
