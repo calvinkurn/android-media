@@ -43,4 +43,6 @@
 
     <!--Contextual Promo-->
     <dimen name="play_widget_card_small_promo_radius">4dp</dimen>
+    <dimen name="play_widget_card_medium_promo_additional_context_width">69dp</dimen>
+    <dimen name="play_widget_card_medium_promo_additional_context_height">21dp</dimen>
 </resources>
