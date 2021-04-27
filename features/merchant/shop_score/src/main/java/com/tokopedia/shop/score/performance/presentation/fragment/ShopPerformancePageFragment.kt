@@ -505,7 +505,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     shopPerformanceAdapter.hideLoading()
-                    shopPerformanceAdapter.setShopPerformanceError(ItemShopPerformanceErrorUiModel())
+                    shopPerformanceAdapter.setShopPerformanceError(ItemShopPerformanceErrorUiModel(it.throwable))
                     coachMark?.dismissCoachMark()
                 }
             }
@@ -531,7 +531,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     shopPerformanceAdapter.hideLoading()
-                    shopPerformanceAdapter.setShopPerformanceError(ItemShopPerformanceErrorUiModel())
+                    shopPerformanceAdapter.setShopPerformanceError(ItemShopPerformanceErrorUiModel(it.throwable))
                     coachMark?.dismissCoachMark()
                 }
             }

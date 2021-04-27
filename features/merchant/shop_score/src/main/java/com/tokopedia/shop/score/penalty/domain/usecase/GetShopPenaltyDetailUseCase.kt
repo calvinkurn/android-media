@@ -50,11 +50,11 @@ class GetShopPenaltyDetailUseCase @Inject constructor(
     override suspend fun executeOnBackground(): ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail {
         val shopScorePenaltyDetailRequest = GraphqlRequest(SHOP_SCORE_PENALTY_DETAIL_QUERY, ShopScorePenaltyDetailResponse::class.java, params)
         val gqlResponse = gqlRepository.getReseponse(listOf(shopScorePenaltyDetailRequest))
-        val error = gqlResponse.getError(GraphqlError::class.java)
-        if (error.isNullOrEmpty()) {
+        try {
             return gqlResponse.getData<ShopScorePenaltyDetailResponse>(ShopScorePenaltyDetailResponse::class.java).shopScorePenaltyDetail
-        } else {
-            throw MessageErrorException(error.joinToString(", ") { it.message} )
+        } catch (e: Throwable) {
+            val error = gqlResponse.getError(ShopScorePenaltyDetailResponse::class.java)
+            throw MessageErrorException(error.joinToString(", ") { it.message })
         }
     }
 }
