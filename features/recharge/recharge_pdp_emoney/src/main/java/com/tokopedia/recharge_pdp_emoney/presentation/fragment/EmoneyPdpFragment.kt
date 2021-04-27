@@ -149,9 +149,13 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             when (it) {
                 is Fail -> emoneyPdpViewModel.setErrorMessage(it.throwable)
                 is Success -> {
-                    topUpBillsViewModel.favNumberData.value?.let { favNumber ->
-                        if (favNumber is Success) {
-                            favNumber.data.favNumberList.firstOrNull()?.let { num -> renderClientNumber(num) }
+                    if (detailPassData.clientNumber != null && detailPassData.clientNumber.isNotEmpty()) {
+                        renderClientNumber(TopupBillsFavNumberItem(clientNumber = detailPassData.clientNumber))
+                    } else {
+                        topUpBillsViewModel.favNumberData.value?.let { favNumber ->
+                            if (favNumber is Success) {
+                                favNumber.data.favNumberList.firstOrNull()?.let { num -> renderClientNumber(num) }
+                            }
                         }
                     }
                 }

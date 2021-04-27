@@ -12,6 +12,8 @@ object DeeplinkMapperDigitalConst {
     const val MENU_ID_TELCO_PREPAID = 2
     const val MENU_ID_TELCO_POSTPAID = 3
 
+    const val DEFAULT_ELECTRONICMONEY_MENU_ID = "267"
+
     val MENU_ID_TELCO = listOf(MENU_ID_TELCO_PREPAID, MENU_ID_TELCO_POSTPAID)
 
 }
