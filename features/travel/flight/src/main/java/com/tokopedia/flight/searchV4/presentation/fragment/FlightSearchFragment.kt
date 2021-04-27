@@ -49,6 +49,8 @@ import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache
 import com.tokopedia.flight.searchV4.presentation.util.select
 import com.tokopedia.flight.searchV4.presentation.util.unselect
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -757,11 +759,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     }
 
     fun hidePromoChips(){
-        promoChipsWidget.hideWidget()
+        promoChipsWidget.hide()
     }
 
     fun showPromoChips() {
-        promoChipsWidget.showWidget()
+        promoChipsWidget.show()
     }
 
     private fun initPromoChips(){
@@ -769,6 +771,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             when(it){
                 is Success ->{
                     if (!it.data.dataPromoChips.isNullOrEmpty()) {
+                        showPromoChips()
                         promoChipsWidget.renderPromoList(it.data.dataPromoChips[FLIGHT_PROMO_CHIPS_START_DATE].airlinePrices)
                     }else{
                         hidePromoChips()
