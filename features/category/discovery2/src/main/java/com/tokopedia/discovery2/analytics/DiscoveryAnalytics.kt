@@ -132,13 +132,13 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     }
 
 
-    override fun trackPlayWidgetClick(componentsItem: ComponentsItem, userID: String?, channelId: String, destinationURL: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {
+    override fun trackPlayWidgetClick(componentsItem: ComponentsItem, userID: String?, channelId: String, destinationURL: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-                KEY_ID to "0_0_$channelId",
-                KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}",
+                KEY_ID to "0_${if (shopId.isEmpty()) 0 else shopId}_$channelId",
+                KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$CHANNEL",
                 KEY_CREATIVE to " - $isAutoPlay",
-                KEY_POSITION to channelPositionInList
+                KEY_POSITION to "$channelPositionInList - "
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                 EVENT_PROMO_CLICK to mapOf(
@@ -203,7 +203,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
                 KEY_ID to componentsItem.id,
-                KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}",
+                KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$BANNER",
                 KEY_CREATIVE to EMPTY_STRING,
                 KEY_POSITION to "$channelPositionInList - "
         ))
@@ -228,7 +228,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
                 KEY_ID to componentsItem.id,
-                KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}",
+                KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$BANNER",
                 KEY_CREATIVE to EMPTY_STRING,
                 KEY_POSITION to "$channelPositionInList - "
         ))
@@ -248,13 +248,13 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     }
 
 
-    override fun trackPlayWidgetImpression(componentsItem: ComponentsItem, userID: String?, channelId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {
+    override fun trackPlayWidgetImpression(componentsItem: ComponentsItem, userID: String?, channelId: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-                KEY_ID to "0_0_$channelId",
-                KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}",
+                KEY_ID to "0_${if (shopId.isEmpty()) 0 else shopId}_$channelId",
+                KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$CHANNEL",
                 KEY_CREATIVE to " - $isAutoPlay",
-                KEY_POSITION to channelPositionInList
+                KEY_POSITION to "$channelPositionInList - "
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                 EVENT_PROMO_VIEW to mapOf(

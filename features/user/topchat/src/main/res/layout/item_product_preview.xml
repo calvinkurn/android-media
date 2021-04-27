@@ -1,136 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/dp_topchat_210"
-    android:layout_height="@dimen/dp_topchat_90"
-    android:layout_marginTop="@dimen/spacing_lvl2">
+    android:id="@+id/cl_container"
+    android:layout_width="@dimen/dp_topchat_230"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/dp_topchat_1"
+    android:layout_marginTop="@dimen/dp_topchat_6"
+    android:layout_marginBottom="@dimen/unify_space_2"
+    android:minHeight="@dimen/unify_space_64"
+    android:paddingTop="@dimen/unify_space_8"
+    android:paddingBottom="@dimen/unify_space_8">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/spacing_lvl3"
-        android:background="@drawable/bg_rounded_grey"
-        android:padding="@dimen/dp_topchat_10">
+    <ImageView
+        android:id="@+id/iv_product"
+        android:layout_width="@dimen/unify_space_48"
+        android:layout_height="@dimen/unify_space_48"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        tools:src="@color/Unify_G200" />
 
-        <ImageView
-            android:id="@+id/iv_product"
-            android:layout_width="@dimen/dp_topchat_52"
-            android:layout_height="@dimen/dp_topchat_52"
-            android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@color/Unify_G200" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_name"
+        android:layout_width="@dimen/dp_topchat_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toStartOf="@+id/iv_close"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_product"
+        app:layout_constraintTop_toTopOf="@+id/iv_product"
+        app:typographyType="body_3"
+        tools:text="This is really long product name that appear on the screen" />
+
+    <LinearLayout
+        android:id="@+id/ll_variant"
+        android:layout_width="@dimen/dp_topchat_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:orientation="horizontal"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_product"
+        app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
+        tools:visibility="visible">
 
         <LinearLayout
-            android:id="@+id/ll_variant"
-            android:layout_width="@dimen/dp_topchat_0"
-            android:layout_height="@dimen/dp_topchat_14"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginLeft="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:id="@+id/ll_variant_color"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_topchat_20"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:background="@drawable/bg_attach_product_variant"
             android:orientation="horizontal"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_product"
-            app:layout_constraintTop_toTopOf="parent">
+            android:paddingStart="@dimen/spacing_lvl3"
+            android:paddingEnd="@dimen/spacing_lvl3">
 
-            <LinearLayout
-                android:id="@+id/ll_variant_color"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+            <ImageView
+                android:id="@+id/iv_variant_color"
+                android:layout_width="@dimen/dp_topchat_6"
+                android:layout_height="@dimen/dp_topchat_6"
+                android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/spacing_lvl2"
-                android:layout_marginRight="@dimen/spacing_lvl2"
-                android:background="@drawable/bg_rounded_grey"
-                android:orientation="horizontal"
-                android:paddingStart="@dimen/spacing_lvl3"
-                android:paddingEnd="@dimen/spacing_lvl3">
+                android:contentDescription="@null"
+                tools:background="@color/Unify_N700" />
 
-                <ImageView
-                    android:id="@+id/iv_variant_color"
-                    android:layout_width="@dimen/dp_topchat_6"
-                    android:layout_height="@dimen/dp_topchat_6"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/spacing_lvl2"
-                    android:layout_marginRight="@dimen/spacing_lvl2"
-                    tools:background="@color/Unify_N700" />
-
-                <com.tokopedia.design.component.TextViewCompat
-                    android:id="@+id/tv_variant_color"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textSize="@dimen/fontSize_lvl10"
-                    tools:text="Hitam" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_variant_size"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_variant_color"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/spacing_lvl3"
-                android:layout_marginRight="@dimen/spacing_lvl3"
-                android:background="@drawable/bg_rounded_grey"
-                android:orientation="horizontal"
-                android:paddingStart="@dimen/spacing_lvl3"
-                android:paddingEnd="@dimen/spacing_lvl3">
-
-                <com.tokopedia.design.component.TextViewCompat
-                    android:id="@+id/tv_variant_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textSize="@dimen/fontSize_lvl10"
-                    tools:text="Besar" />
-
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="small"
+                app:typographyWeight="bold"
+                tools:text="Hitam" />
 
         </LinearLayout>
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/tv_product_name"
-            android:layout_width="@dimen/dp_topchat_0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginLeft="@dimen/spacing_lvl3"
+        <LinearLayout
+            android:id="@+id/ll_variant_size"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl3"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_product"
-            app:layout_constraintTop_toBottomOf="@+id/ll_variant"
-            tools:text="This is really long product name that appear on the screen" />
+            android:background="@drawable/bg_attach_product_variant"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/spacing_lvl3"
+            android:paddingEnd="@dimen/spacing_lvl3"
+            android:textColor="@color/Unify_N700_68">
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/tv_product_price"
-            android:layout_width="@dimen/dp_topchat_0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginLeft="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl3"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/Unify_Y500"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_product"
-            app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
-            tools:text="Rp500.000" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_variant_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="small"
+                app:typographyWeight="bold"
+                tools:text="Besar" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_price"
+        android:layout_width="@dimen/dp_topchat_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toStartOf="@+id/iv_close"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_product"
+        app:layout_constraintTop_toBottomOf="@+id/ll_variant"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Rp500.000" />
 
     <ImageView
         android:id="@+id/iv_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        app:srcCompat="@drawable/ic_close_border_24" />
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        android:layout_marginEnd="@dimen/dp_topchat_10"
+        android:contentDescription="@null"
+        android:paddingStart="@dimen/dp_topchat_6"
+        android:paddingEnd="@dimen/dp_topchat_6"
+        android:paddingBottom="@dimen/dp_topchat_6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/topchat_ic_close" />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

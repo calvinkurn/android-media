@@ -350,6 +350,15 @@ class ShopCreationViewModelTest {
         assertEquals(throwable, result.throwable)
     }
 
+    @Test
+    fun `clear background task`() {
+        viewmodel.clearBackgroundTask()
+        verify {
+            registerUseCase.unsubscribe()
+            getProfileUseCase.unsubscribe()
+        }
+    }
+
     companion object {
         private val successAddNameResponse: UserProfileUpdatePojo = FileUtil.parse(
                 "/success_add_name_response.json",

@@ -41,6 +41,7 @@ import com.tokopedia.product.info.view.adapter.BsProductDetailInfoAdapter
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactoryImpl
 import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheet_product_detail_info.*
 import timber.log.Timber
 import java.util.concurrent.Executors
@@ -51,6 +52,9 @@ import javax.inject.Inject
  * Created by Yehezkiel on 12/10/20
  */
 class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListener {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -206,7 +210,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToShopNotes(title: String, date: String, desc: String) {
         context?.let {
-            DynamicProductDetailTracking.ProductDetailSheet.onShopNotesClicked(listener?.getPdpDataSource(), viewModel?.userSession?.userId
+            DynamicProductDetailTracking.ProductDetailSheet.onShopNotesClicked(listener?.getPdpDataSource(), userSession.userId
                     ?: "", title)
             val bsShopNotes = ProductDetailBottomSheetBuilder.getShopNotesBottomSheet(it, date, desc, title)
             bsShopNotes.show(childFragmentManager, "shopNotes")
@@ -214,7 +218,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     }
 
     override fun goToSpecification(annotation: List<ProductDetailInfoContent>) {
-        DynamicProductDetailTracking.ProductDetailSheet.onSpecificationClick(listener?.getPdpDataSource(), viewModel?.userSession?.userId
+        DynamicProductDetailTracking.ProductDetailSheet.onSpecificationClick(listener?.getPdpDataSource(), userSession.userId
                 ?: "")
         val bs = ProductAnnotationBottomSheet()
         bs.getData(annotation)
@@ -276,7 +280,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     private fun onVariantGuideLineBottomSheetClicked(url: String) {
         activity?.let {
-            DynamicProductDetailTracking.ProductDetailSheet.onVariantGuideLineBottomSheetClicked(listener?.getPdpDataSource(), viewModel?.userSession?.userId
+            DynamicProductDetailTracking.ProductDetailSheet.onVariantGuideLineBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
                     ?: "")
             startActivity(ImagePreviewActivity.getCallingIntent(it, arrayListOf(url)))
         }
@@ -284,7 +288,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     private fun onCategoryClicked(url: String) {
         if (!GlobalConfig.isSellerApp()) {
-            DynamicProductDetailTracking.ProductDetailSheet.onCategoryBottomSheetClicked(listener?.getPdpDataSource(), viewModel?.userSession?.userId
+            DynamicProductDetailTracking.ProductDetailSheet.onCategoryBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
                     ?: "")
             RouteManager.route(context, url)
         }
@@ -300,7 +304,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
             UriUtil.buildUri(ApplinkConst.SHOP, shopId)
         })
 
-        DynamicProductDetailTracking.ProductDetailSheet.onEtalaseBottomSheetClicked(listener?.getPdpDataSource(), viewModel?.userSession?.userId
+        DynamicProductDetailTracking.ProductDetailSheet.onEtalaseBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
                 ?: "")
         startActivity(intent)
     }
