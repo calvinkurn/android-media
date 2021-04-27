@@ -131,8 +131,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
                     }
                     startActivityForResult(this, AUTO_ADS_DISABLED)
                 }
-            }
-            if (adStatus == MANUAL || adStatus == NO_ADS || adStatus == NO_PRODUCTS) {
+            } else {
                 RouteManager.getIntent(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE).apply {
                     if (isFromPdpSellerMigration(activity?.intent?.extras)) {
                         putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
@@ -145,21 +144,21 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
         btn_start_manual_ads?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN_MANUAL, "")
-            if (adStatus == MANUAL || adStatus == NO_ADS || adStatus == NO_PRODUCTS) {
-                Intent(activity, StepperActivity::class.java).apply {
-                    if (isFromPdpSellerMigration(activity?.intent?.extras)) {
-                        putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
-                        putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
-                    }
-                    startActivity(this)
-                }
-            } else if (adStatus == AUTO) {
+             if (adStatus == AUTO) {
                 val sheet = ManualAdsConfirmationCommonSheet.newInstance()
                 sheet.show(childFragmentManager, "")
                 sheet.manualClick = {
                     viewModel.postAutoAds(TOGGLE_OFF, dailyBudget)
                 }
-            }
+            } else {
+                 Intent(activity, StepperActivity::class.java).apply {
+                     if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                         putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                         putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+                     }
+                     startActivity(this)
+                 }
+             }
         }
     }
 
