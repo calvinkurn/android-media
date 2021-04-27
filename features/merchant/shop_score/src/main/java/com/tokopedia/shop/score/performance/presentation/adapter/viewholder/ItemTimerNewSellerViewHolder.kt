@@ -15,6 +15,7 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ItemTimerNewSel
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
 import kotlinx.android.synthetic.main.timer_new_seller_before_transition.view.*
 
+
 class ItemTimerNewSellerViewHolder(view: View,
                                    private val itemTimerNewSellerListener: ItemTimerNewSellerListener): AbstractViewHolder<ItemTimerNewSellerUiModel>(view) {
 
@@ -27,7 +28,7 @@ class ItemTimerNewSellerViewHolder(view: View,
 
     override fun bind(element: ItemTimerNewSellerUiModel?) {
         with(itemView) {
-            containerTimerNewSeller?.loadImage(if (element?.isTenureDate == true) BG_ORANGE_TIMER  else  BG_GREEN_TIMER)
+            containerTimerNewSeller?.loadImage(if (element?.isTenureDate == true) BG_ORANGE_TIMER else BG_GREEN_TIMER)
             timerNewSeller?.targetDate = element?.effectiveDate
 
             tv_shop_performance_new_seller?.text = getString(R.string.title_shop_performance_become_existing_seller,
@@ -62,11 +63,14 @@ class ItemTimerNewSellerViewHolder(view: View,
     private fun setIconVideoClickListener() {
         with(itemView) {
             watchVideoGroup?.apply {
+                val refIds: IntArray = referencedIds
+                for (id in refIds) {
+                    findViewById<View>(id).setOnClickListener {
+                        itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
+                    }
+                }
                 addOnImpressionListener(impressHolderWatchVideo) {
                     itemTimerNewSellerListener.onImpressWatchVideo()
-                }
-                setOnClickListener {
-                    itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
                 }
             }
         }
