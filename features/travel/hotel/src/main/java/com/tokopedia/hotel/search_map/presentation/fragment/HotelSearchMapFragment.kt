@@ -881,10 +881,17 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         showQuickFilterShimmering(false)
 
         val searchProperties = data.properties
-
         if (searchProperties.isNotEmpty()) {
             showCardListView()
             if (adapterCardList.itemCount <= MINIMUM_NUMBER_OF_RESULT_LOADED) {
+                trackingHotelUtil.hotelViewHotelListMapImpression(context,
+                        searchDestinationName,
+                        searchDestinationType,
+                        hotelSearchMapViewModel.searchParam,
+                        searchProperties,
+                        adapterCardList.dataSize,
+                        SEARCH_SCREEN_NAME)
+
                 renderCardListMap(searchProperties)
                 searchProperties.forEach {
                     addMarker(it.location.latitude.toDouble(), it.location.longitude.toDouble(), it.roomPrice[0].price)
