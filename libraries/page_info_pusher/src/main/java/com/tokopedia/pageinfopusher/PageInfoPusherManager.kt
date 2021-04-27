@@ -1,4 +1,4 @@
- pupackage com.tokopedia.pageinfopusher
+package com.tokopedia.pageinfopusher
 
 import android.app.Activity
 import android.util.Log
