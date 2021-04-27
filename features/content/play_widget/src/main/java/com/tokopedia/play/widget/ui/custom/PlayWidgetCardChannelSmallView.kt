@@ -100,7 +100,6 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         ivCover.loadImage(model.video.coverUrl)
 
         handleType(model.channelType)
-        handlePromo(model.channelType, model.hasPromo)
         handleTotalView(model.channelType, model.totalViewVisible, model.totalView)
 
         tvTitle.text = model.title
@@ -155,12 +154,6 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
             }
             else -> {}
         }
-    }
-
-    private fun handlePromo(type: PlayWidgetChannelType, hasPromo: Boolean) {
-//        if (type == PlayWidgetChannelType.Upcoming || type == PlayWidgetChannelType.Unknown) ivDiscount.gone()
-//        else if (hasPromo) ivDiscount.visible()
-//        else ivDiscount.gone()
     }
 
     private fun handleTotalView(type: PlayWidgetChannelType, isVisible: Boolean, totalViewString: String) {
