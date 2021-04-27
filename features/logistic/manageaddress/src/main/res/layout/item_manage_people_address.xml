@@ -7,13 +7,13 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/dp_16"
     android:layout_marginEnd="@dimen/dp_16"
+    android:padding="@dimen/dp_16"
     android:orientation="vertical"
     app:cardCornerRadius="@dimen/dp_4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16">
+        android:layout_height="wrap_content">
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_location_state"
