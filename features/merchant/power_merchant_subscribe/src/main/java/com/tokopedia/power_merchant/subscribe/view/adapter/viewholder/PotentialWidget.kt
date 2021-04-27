@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.adapter.PotentialAdapter
+import com.tokopedia.power_merchant.subscribe.view.model.PotentialItemUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetPotentialUiModel
 import kotlinx.android.synthetic.main.widget_pm_potential.view.*
 
@@ -18,12 +19,33 @@ class PotentialWidget(itemView: View) : AbstractViewHolder<WidgetPotentialUiMode
         val RES_LAYOUT = R.layout.widget_pm_potential
     }
 
+    private val benefitList by getBenefitList()
+
     override fun bind(element: WidgetPotentialUiModel) {
         with(itemView) {
             rvPmPotential.layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically(): Boolean = false
             }
-            rvPmPotential.adapter = PotentialAdapter(element.potentialItems)
+            rvPmPotential.adapter = PotentialAdapter(benefitList)
+        }
+    }
+
+    private fun getBenefitList(): Lazy<List<PotentialItemUiModel>>  {
+        return lazy {
+            listOf(
+                    PotentialItemUiModel(
+                            resDrawableIcon = R.drawable.ic_pm_benefit_01,
+                            description = getString(R.string.pm_potential_benefit_01)
+                    ),
+                    PotentialItemUiModel(
+                            resDrawableIcon = R.drawable.ic_pm_benefit_02,
+                            description = getString(R.string.pm_potential_benefit_02)
+                    ),
+                    PotentialItemUiModel(
+                            resDrawableIcon = R.drawable.ic_pm_benefit_03,
+                            description = getString(R.string.pm_potential_benefit_03)
+                    )
+            )
         }
     }
 }

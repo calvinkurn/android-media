@@ -68,6 +68,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private var pmBasicInfo: PowerMerchantBasicInfoUiModel? = null
     private var cancelPmDeactivationWidgetPosition: Int? = null
+    private var pmGradeBenefitAndShopInfo: PMGradeBenefitAndShopInfoUiModel? = null
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
 
@@ -128,6 +129,18 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     override fun setOnTickerWidgetRemoved(position: Int) {
         adapter.data.removeAt(position)
         adapter.notifyItemRemoved(position)
+    }
+
+    override fun onPowerMerchantSectionClickListener(headerWidget: WidgetRegistrationHeaderUiModel) {
+        adapter.data.clear()
+        adapter.data.add(headerWidget)
+        renderRegularPmRegistrationWidget()
+    }
+
+    override fun onPowerMerchantProSectionClickListener(headerWidget: WidgetRegistrationHeaderUiModel) {
+        adapter.data.clear()
+        adapter.data.add(headerWidget)
+        renderPmProRegistrationWidgets()
     }
 
     private fun setupView() = view?.run {
@@ -258,19 +271,40 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         view?.pmRegistrationFooterView?.gone()
     }
 
-    private fun renderPmRegistrationPM(data: PMGradeBenefitAndShopInfoUiModel) {
-        if (pmBasicInfo?.pmStatus?.status != PMStatusConst.INACTIVE) return
+    private fun renderPmRegistrationWidgets(data: PMGradeBenefitAndShopInfoUiModel) {
+        this.pmGradeBenefitAndShopInfo = data
 
-        val widgets = listOf(
-                getHeaderWidgetData(data.shopInfo),
-                getPotentialBenefitWidgetData(),
-                WidgetDividerUiModel,
-                WidgetGradeBenefitUiModel(benefitPages = data.gradeBenefitList)
-        )
         adapter.data.clear()
-        renderList(widgets)
+        adapter.data.add(getHeaderWidgetData())
+        if (data.shopInfo.isEligiblePmPro) {
+            renderPmProRegistrationWidgets()
+        } else {
+            renderRegularPmRegistrationWidget()
+        }
+    }
 
-        setupFooterCta(data.shopInfo)
+    private fun renderPmProRegistrationWidgets() {
+        val widgets = listOf(
+                WidgetPmProStaticBenefit,
+                WidgetDividerUiModel,
+                WidgetGradeBenefitUiModel(benefitPages = pmGradeBenefitAndShopInfo?.gradeBenefitList.orEmpty())
+        )
+        adapter.data.addAll(widgets)
+        adapter.notifyDataSetChanged()
+
+        setupFooterCta()
+    }
+
+    private fun renderRegularPmRegistrationWidget() {
+        val widgets = listOf(
+                WidgetPotentialUiModel,
+                WidgetDividerUiModel,
+                WidgetGradeBenefitUiModel(benefitPages = pmGradeBenefitAndShopInfo?.gradeBenefitList.orEmpty())
+        )
+        adapter.data.addAll(widgets)
+        adapter.notifyDataSetChanged()
+
+        setupFooterCta()
     }
 
     private fun setOnPmActivationSuccess() {
@@ -407,7 +441,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
     }
 
-    private fun setupFooterCta(shopInfo: PMShopInfoUiModel) = view?.run {
+    private fun setupFooterCta() = view?.run {
+        val shopInfo = pmGradeBenefitAndShopInfo?.shopInfo ?: return@run
+
         val isEligibleShopScore = !shopInfo.isNewSeller && shopInfo.isEligibleShopScore
         val hasActiveProduct = shopInfo.isNewSeller && shopInfo.hasActiveProduct
         val needTnC = (!shopInfo.isKyc && (isEligibleShopScore || hasActiveProduct))
@@ -521,8 +557,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun renderPmActiveState(data: PMActiveDataUiModel) {
-        if(pmBasicInfo?.pmStatus?.status == PMStatusConst.INACTIVE) return
-
         view?.pmRegistrationFooterView?.gone()
         val isAutoExtendEnabled = getAutoExtendEnabled()
         val widgets = mutableListOf<BaseWidgetUiModel>()
@@ -558,7 +592,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         mViewModel.shopInfoAndPMGradeBenefits.observe(viewLifecycleOwner, Observer {
             hideSwipeRefreshLoading()
             when (it) {
-                is Success -> renderPmRegistrationPM(it.data)
+                is Success -> renderPmRegistrationWidgets(it.data)
                 is Fail -> {
                     showErrorState()
                     logToCrashlytic(PowerMerchantErrorLogger.REGISTRATION_PAGE_ERROR, it.throwable)
@@ -643,29 +677,14 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
     }
 
-    private fun getHeaderWidgetData(shopInfo: PMShopInfoUiModel): WidgetRegistrationHeaderUiModel {
+    private fun getHeaderWidgetData(): WidgetRegistrationHeaderUiModel? {
+        val shopInfo = pmGradeBenefitAndShopInfo?.shopInfo ?: return null
+
         return WidgetRegistrationHeaderUiModel(
                 shopInfo = shopInfo,
                 pmTerms = PMRegistrationTermHelper.getPmRegistrationTerms(requireContext(), shopInfo),
                 pmProTerms = PMRegistrationTermHelper.getPmProRegistrationTerms(requireContext(), shopInfo)
         )
-    }
-
-    private fun getPotentialBenefitWidgetData(): WidgetPotentialUiModel {
-        return WidgetPotentialUiModel(listOf(
-                PotentialItemUiModel(
-                        resDrawableIcon = R.drawable.ic_pm_benefit_01,
-                        description = getString(R.string.pm_potential_benefit_01)
-                ),
-                PotentialItemUiModel(
-                        resDrawableIcon = R.drawable.ic_pm_benefit_02,
-                        description = getString(R.string.pm_potential_benefit_02)
-                ),
-                PotentialItemUiModel(
-                        resDrawableIcon = R.drawable.ic_pm_benefit_03,
-                        description = getString(R.string.pm_potential_benefit_03)
-                )
-        ))
     }
 
     private fun showDeactivationQuestionnaire() {

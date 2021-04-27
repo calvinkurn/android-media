@@ -19,7 +19,10 @@ import kotlinx.android.synthetic.main.widget_pm_registration_header.view.*
  * Created By @ilhamsuaib on 02/03/21
  */
 
-class RegistrationHeaderWidget(itemView: View) : AbstractViewHolder<WidgetRegistrationHeaderUiModel>(itemView) {
+class RegistrationHeaderWidget(
+        itemView: View,
+        private val listener: Listener
+) : AbstractViewHolder<WidgetRegistrationHeaderUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.widget_pm_registration_header
@@ -52,24 +55,34 @@ class RegistrationHeaderWidget(itemView: View) : AbstractViewHolder<WidgetRegist
         pmsPmRegular.setTitle(context.getString(R.string.pm_power_merchant))
         pmsPmRegular.setDescription(context.getString(R.string.pm_power_merchant_section_description, textColor, PM_CHARGING))
         pmsPmRegular.setOnClickListener {
-            setPmRegularSectionSelected()
-            setPmProSectionDescription(shopInfo.isEligiblePmPro)
-            showTermList(element.pmTerms)
+            setupRegularPmState(element)
+            listener.onPowerMerchantSectionClickListener(element)
         }
 
         pmsPmPro.setTitle(context.getString(R.string.pm_power_merchant_pro))
         setPmProSectionDescription(shopInfo.isEligiblePmPro)
         pmsPmPro.setOnClickListener {
-            setPmProSectionDescription(true)
-            setPmProSectionSelected()
-            showTermList(element.pmProTerms)
+            setupPmProState(element)
+            listener.onPowerMerchantProSectionClickListener(element)
         }
 
         if (shopInfo.isEligiblePmPro) {
-            pmsPmPro.performClick()
+            setupPmProState(element)
         } else {
-            pmsPmRegular.performClick()
+            setupRegularPmState(element)
         }
+    }
+
+    private fun setupRegularPmState(element: WidgetRegistrationHeaderUiModel) {
+        setPmRegularSectionSelected()
+        setPmProSectionDescription(element.shopInfo.isEligiblePmPro)
+        showTermList(element.pmTerms)
+    }
+
+    private fun setupPmProState(element: WidgetRegistrationHeaderUiModel) {
+        setPmProSectionDescription(true)
+        setPmProSectionSelected()
+        showTermList(element.pmProTerms)
     }
 
     private fun showTermList(terms: List<RegistrationTermUiModel>) {
@@ -121,5 +134,10 @@ class RegistrationHeaderWidget(itemView: View) : AbstractViewHolder<WidgetRegist
             }
             adapter = termAdapter
         }
+    }
+
+    interface Listener {
+        fun onPowerMerchantSectionClickListener(headerWidget: WidgetRegistrationHeaderUiModel)
+        fun onPowerMerchantProSectionClickListener(headerWidget: WidgetRegistrationHeaderUiModel)
     }
 }

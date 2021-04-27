@@ -238,4 +238,9 @@
     <string name="pm_number_of_order_threshold">Tingkatkan jumlah pesanan min. %1$d, ya!</string>
     <string name="pm_niv_term"><![CDATA[Pendapatan Bersih: <font color=\"%1$s\">%2$s</font>]]></string>
     <string name="pm_niv_threshold_term">Pendapatan bersih min. %1$s</string>
+    <string name="pm_free_shipping_description">Biaya Bebas Ongkir yang lebih murah</string>
+    <string name="pm_search_ranking_description">Peringkat pencarian lebih tinggi</string>
+    <string name="pm_exclusive_badge_pm_pro_description">Badge eksklusif PM Pro di tampilan buyer</string>
+    <string name="pm_growing_benefit_description">Keuntungan bertambah sesuai Performa</string>
+    <string name="pm_pm_pro_statistic_benefit_description">Berbagai keuntungan yang bisa didapatkan!</string>
 </resources>

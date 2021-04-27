@@ -43,10 +43,13 @@ class WidgetAdapterFactoryImpl(
 
     override fun type(model: WidgetTickerUiModel): Int = TickerWidget.RES_LAYOUT
 
+    override fun type(model: WidgetPmProStaticBenefit): Int = PmProStaticBenefitWidget.RES_LAYOUT
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            RegistrationHeaderWidget.RES_LAYOUT -> RegistrationHeaderWidget(parent)
+            RegistrationHeaderWidget.RES_LAYOUT -> RegistrationHeaderWidget(parent, widgetListener)
             CancelDeactivationSubmissionWidget.RES_LAYOUT -> CancelDeactivationSubmissionWidget(parent, widgetListener)
+            PmProStaticBenefitWidget.RES_LAYOUT -> PmProStaticBenefitWidget(parent)
             NextUpdateInfoWidget.RES_LAYOUT -> NextUpdateInfoWidget(parent)
             NextShopGradeWidget.RES_LAYOUT -> NextShopGradeWidget(parent)
             GradeBenefitWidget.RES_LAYOUT -> GradeBenefitWidget(parent)
