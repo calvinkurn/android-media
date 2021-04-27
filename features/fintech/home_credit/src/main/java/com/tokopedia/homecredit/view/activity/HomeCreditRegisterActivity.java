@@ -87,8 +87,7 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             String[] permissions;
             permissions = new String[]{
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                    Manifest.permission.CAMERA};
             permissionsToRequest = new ArrayList<>();
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
