@@ -70,6 +70,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.constant.*
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_RENDER
@@ -209,6 +210,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     private val sortName
         get() = viewModel?.getSortNameById(sortId).orEmpty()
+    val userId: String
+        get() = viewModel?.userId.orEmpty()
     private var recyclerViewTopPadding = 0
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopChangeProductGridSharedViewModel: ShopChangeProductGridSharedViewModel? = null
@@ -464,15 +467,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
                 }
                 is Fail -> {
-                    onErrorGetShopHomeLayoutData(it.throwable)
                     val throwable = it.throwable
-                    ShopUtil.logTimberWarning(
-                            "SHOP_PAGE_HOME_TAB_WIDGET_ERROR",
-                            mapOf("shop_id" to shopId,
-                                    "error_message" to ErrorHandler.getErrorMessage(context, throwable),
-                                    "error_trace" to Log.getStackTraceString(throwable)
-                            )
-                    )
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
+                                this::observeLiveData.name,
+                                ShopHomeViewModel::shopHomeLayoutData.name,
+                                userId,
+                                shopId,
+                                shopName,
+                                ErrorHandler.getErrorMessage(context, throwable),
+                                Log.getStackTraceString(throwable)
+                        )
+                    }
+                    onErrorGetShopHomeLayoutData(throwable)
                 }
             }
             getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -491,9 +499,28 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             hideLoading()
             when (it) {
                 is Success -> {
-                    addProductListHeader()
-                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, it.data.totalProductData, true)
-                    productListName = it.data.listShopProductUiModel.joinToString(",") { product -> product.name.orEmpty() }
+                    val productListData = it.data.listShopProductUiModel
+                    val hasNextPage = it.data.hasNextPage
+                    val totalProductOnShop = it.data.totalProductData
+                    if(productListData.isNotEmpty())
+                        addProductListHeader()
+                    updateProductListData(hasNextPage, productListData, totalProductOnShop, true)
+                    productListName = productListData.joinToString(",") { product -> product.name.orEmpty() }
+                }
+                is Fail -> {
+                    val throwable = it.throwable
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
+                                this::observeLiveData.name,
+                                ShopHomeViewModel::productListData.name,
+                                userId,
+                                shopId,
+                                shopName,
+                                ErrorHandler.getErrorMessage(context, throwable),
+                                Log.getStackTraceString(throwable)
+                        )
+                    }
                 }
             }
         })
@@ -1165,6 +1192,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                 )
                             },
                             {
+                                if (!ShopUtil.isExceptionIgnored(it)) {
+                                    ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                            SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
+                                            ShopHomeViewModel::addProductToCartOcc.name,
+                                            "",
+                                            userId,
+                                            shopId,
+                                            shopName,
+                                            ErrorHandler.getErrorMessage(context, it),
+                                            Log.getStackTraceString(it)
+                                    )
+                                }
                                 onErrorAddToCart(it)
                             }
                     )
@@ -1182,6 +1221,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                 )
                             },
                             {
+                                if (!ShopUtil.isExceptionIgnored(it)) {
+                                    ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                            SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
+                                            ShopHomeViewModel::addProductToCart.name,
+                                            "",
+                                            userId,
+                                            shopId,
+                                            shopName,
+                                            ErrorHandler.getErrorMessage(context, it),
+                                            Log.getStackTraceString(it)
+                                    )
+                                }
                                 onErrorAddToCart(it)
                             }
                     )
@@ -1375,6 +1426,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             onSuccessAddToCart(it, shopHomeProductViewModel, parentPosition, shopHomeCarousellProductUiModel)
                         },
                         {
+                            if (!ShopUtil.isExceptionIgnored(it)) {
+                                ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                        SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
+                                        ShopHomeViewModel::addProductToCart.name,
+                                        "",
+                                        userId,
+                                        shopId,
+                                        shopName,
+                                        ErrorHandler.getErrorMessage(context, it),
+                                        Log.getStackTraceString(it)
+                                )
+                            }
                             onErrorAddToCart(it)
                         }
                 )

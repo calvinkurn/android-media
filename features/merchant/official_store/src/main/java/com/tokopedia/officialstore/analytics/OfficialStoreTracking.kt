@@ -898,7 +898,7 @@ class OfficialStoreTracking(context: Context) {
                         FIELD_ACTION_FIELD , DataLayer.mapOf( FIELD_PRODUCT_LIST , listKeyValue),
                         FIELD_PRODUCTS, DataLayer.listOf(
                             createFlashSaleCardProductItemMapComponent(productItem,
-                                    (productPosition +1).toString(),
+                                    productPosition.toString(),
                                     isLogin,
                                     valueDynamicMix
                             )
