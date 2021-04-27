@@ -1097,6 +1097,13 @@ public class GTMAnalytics extends ContextAnalytics {
             Map<String, Object> map = bundleToMap(bundle);
             for(Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator(); it.hasNext(); ) {
                 Map.Entry<String, Object> entry = it.next();
+                Object value = entry.getValue();
+                if (value != null & value instanceof String){
+                    String value2 = (String)value;
+                    if(TextUtils.isEmpty(value2)) {
+                        it.remove();
+                    }
+                }
                 if(TextUtils.isEmpty((String)entry.getValue())) {
                     it.remove();
                 }
