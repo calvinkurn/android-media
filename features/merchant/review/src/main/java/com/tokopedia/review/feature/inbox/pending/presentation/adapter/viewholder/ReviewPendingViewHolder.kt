@@ -1,16 +1,15 @@
 package com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder
 
 import android.os.Handler
-import android.view.Gravity
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerReviewPendingView
 import com.tokopedia.review.R
+import com.tokopedia.review.feature.inbox.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.item_review_pending.view.*
 
 class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener: ReviewPendingItemListener) : AbstractViewHolder<ReviewPendingUiModel>(view) {
@@ -90,7 +89,14 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
     }
 
     private fun showNew(seen: Boolean) {
-        itemView.reviewPendingNewIcon.showWithCondition(!seen)
+        itemView.reviewPendingNewIcon.apply {
+            if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+                setNotification("", NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_SECONDARY)
+            } else {
+                setNotification("", NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+            }
+            showWithCondition(!seen)
+        }
     }
 
     private fun showIncentive(isEligible: Boolean) {

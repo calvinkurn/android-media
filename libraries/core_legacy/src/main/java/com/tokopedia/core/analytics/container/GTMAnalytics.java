@@ -26,6 +26,7 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.relic.track.NewRelicUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -1092,6 +1093,16 @@ public class GTMAnalytics extends ContextAnalytics {
         try {
             if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
                 bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
+            }
+            Map<String, Object> map = bundleToMap(bundle);
+            for(Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry<String, Object> entry = it.next();
+                if(TextUtils.isEmpty((String)entry.getValue())) {
+                    it.remove();
+                }
+            }
+            if(GlobalConfig.isSellerApp()){
+                NewRelicUtil.sendTrack(eventName, map);
             }
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);

@@ -38,7 +38,7 @@ public class CountDrawable extends Drawable {
 
     private void createBadgePaint(Context context) {
         badgePaint = new Paint();
-        badgePaint.setColor(ContextCompat.getColor(context.getApplicationContext(), R.color.red_800));
+        badgePaint.setColor(ContextCompat.getColor(context.getApplicationContext(), com.tokopedia.unifyprinciples.R.color.Unify_Y500));
         badgePaint.setAntiAlias(true);
         badgePaint.setStyle(Paint.Style.FILL);
     }

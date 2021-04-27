@@ -144,14 +144,14 @@ class TrackingHotelUtil {
 
     fun searchNearLocation(context: Context?, destType: String, destination: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
-        val eventLabel = "$HOTEL_LABEL - $LABEL_HOTEL_SEARCH_MAP - $destType - $destination"
+        val eventLabel = "$HOTEL_LABEL - $destType - $destination"
         map.addGeneralEvent(CLICK_HOTEL, CLICK_SEARCH_NEAR_LOCATION, eventLabel)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     fun searchHotelNotFound(context: Context?, destType: String, destination: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
-        val eventLabel = "$HOTEL_LABEL - $LABEL_HOTEL_SEARCH_MAP - $destType - $destination"
+        val eventLabel = "$HOTEL_LABEL - $destType - $destination"
         map.addGeneralEvent(VIEW_HOTEL_IRIS, SEE_HOTEL_NOT_FOUND, eventLabel)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
@@ -216,7 +216,7 @@ class TrackingHotelUtil {
         val duration = HotelUtils.countDayDifference(searchParam.checkIn, searchParam.checkOut)
 
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
-        val eventLabel = "$HOTEL_LABEL - $LABEL_HOTEL_SEARCH_MAP - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(searchParam.checkIn)} - $duration"
+        val eventLabel = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(searchParam.checkIn)} - $duration"
         map.addGeneralEvent(PRODUCT_CLICK, CHOOSE_HOTEL_FROM_MAP, eventLabel)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CLICK_LABEL, DataLayer.mapOf(
