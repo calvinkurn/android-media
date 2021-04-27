@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
@@ -104,6 +103,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: NavigationViewModel? by lazy {
+        //TODO : REMOTE CONFIG HERE
         context?.let {
             val component = DaggerNavigationComponent.builder()
                     .navigationModule(NavigationModule(it.applicationContext))
@@ -309,10 +309,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     fun setBadgeCounter(iconId: Int, counter: Int) {
-        useCentralizedIconNotification[iconId]?.let {
-            if (!it) {
-                navIconAdapter?.setIconCounter(iconId, counter)
-            }
+        // only allow direct set badge counter when viewmodel is not initialized
+        // means remote config for centralized notification is off
+        if (viewModel == null) {
+            navIconAdapter?.setIconCounter(iconId, counter)
         }
     }
 
@@ -419,10 +419,6 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             return viewholder?.itemView
         }
         return null
-    }
-
-    fun updateNotification() {
-        viewModel?.getNotification()
     }
 
     internal fun setBackgroundAlpha(alpha: Float) {
