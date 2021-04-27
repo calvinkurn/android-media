@@ -40,35 +40,33 @@ class HotelHomepageScreenshotTesting {
     }
 
     @Test
-    fun screenShot(){
+    fun screenShot() {
         val activity = activityRule.activity
         turnOffDynamicCarousel()
 
         Thread.sleep(3000)
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "top")
 
-        CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "top")
+            CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_search_form_container, filePrefix(), "search-container")
 
-        CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_search_form_container, filePrefix(), "search-container")
+            CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_container_last_search, filePrefix(), "recent-search")
 
-        CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_container_last_search, filePrefix(), "recent-search")
+            CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_container_promo, filePrefix(), "promo-container")
 
-        CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_container_promo, filePrefix(), "promo-container")
+            CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_homepage_video_banner, filePrefix(), "video-banner")
 
-        CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_homepage_video_banner, filePrefix(), "video-banner")
-
-        CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.widget_hotel_homepage_popular_cities, filePrefix(), "widget-popular-cities")
-
+            CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.widget_hotel_homepage_popular_cities, filePrefix(), "widget-popular-cities")
+        }
         activityRule.activity.finishAndRemoveTask()
     }
 
-    private fun turnOffDynamicCarousel(){
+    private fun turnOffDynamicCarousel() {
         val carousel = activityRule.activity.findViewById<CarouselUnify>(com.tokopedia.hotel.R.id.banner_hotel_homepage_promo)
-        activityRule.runOnUiThread {
-            carousel.apply {
-                autoplay = false
-                infinite = false
-                slideToShow = 0f
-            }
+        carousel.apply {
+            autoplay = false
+            infinite = false
+            slideToShow = 0f
         }
     }
 
