@@ -15,6 +15,7 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.topchat.chatlist.di.ChatListScope
+import com.tokopedia.topchat.chatlist.viewmodel.DefaultTopChatWebSocket
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
@@ -100,7 +101,7 @@ class ChatListNetworkModuleStub(
     @Provides
     fun provideXUserIdInterceptor(@ApplicationContext context: Context,
                                   networkRouter: NetworkRouter,
-                                  userSession: UserSession):
+                                  userSession: UserSessionInterface):
             XUserIdInterceptor {
         return XUserIdInterceptor(context, networkRouter, userSession)
     }
@@ -145,5 +146,19 @@ class ChatListNetworkModuleStub(
                     .addInterceptor(httpLoggingInterceptor)
         }
         return builder.build()
+    }
+
+    // TODO: switch to fake
+    @ChatListScope
+    @Provides
+    fun provideTopChatWebSocket(
+            userSession: UserSessionInterface,
+            client: OkHttpClient
+    ): DefaultTopChatWebSocket {
+        val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
+                "?os_type=1" +
+                "&device_id=" + userSession.deviceId +
+                "&user_id=" + userSession.userId
+        return DefaultTopChatWebSocket(client, webSocketUrl, userSession.accessToken)
     }
 }

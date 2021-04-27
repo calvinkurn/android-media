@@ -8,10 +8,11 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.*
 import okio.ByteString
 import timber.log.Timber
+import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class DefaultTopChatWebSocket constructor(
+class DefaultTopChatWebSocket @Inject constructor(
         private val okHttpClient: OkHttpClient,
         private val webSocketUrl: String,
         private val token: String
