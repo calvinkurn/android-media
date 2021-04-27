@@ -102,6 +102,7 @@ internal fun ImageView.loadImage(url: String?) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
             setErrorDrawable(R.drawable.product_card_placeholder_grey)
+            setPlaceHolder(R.drawable.product_card_placeholder_grey)
         }
     }
 }
