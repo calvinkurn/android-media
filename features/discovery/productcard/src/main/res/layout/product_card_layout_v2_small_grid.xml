@@ -30,6 +30,7 @@
 
             <ImageView
                 android:id="@+id/imageProduct"
+                android:contentDescription="@string/content_desc_imageProduct"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
@@ -45,6 +46,7 @@
 
             <ImageView
                 android:id="@+id/buttonWishlist"
+                android:contentDescription="@string/content_desc_imageWishlist"
                 android:layout_width="@dimen/dp_28"
                 android:layout_height="@dimen/dp_28"
                 android:layout_marginTop="@dimen/dp_4"
@@ -112,6 +114,7 @@
 
             <ImageView
                 android:id="@+id/imageShop"
+                android:contentDescription="@string/content_desc_imageShop"
                 android:layout_width="@dimen/dp_32"
                 android:layout_height="@dimen/dp_32"
                 android:layout_marginEnd="@dimen/dp_8"
@@ -269,6 +272,7 @@
 
                 <ImageView
                     android:id="@+id/imageViewRating1"
+                    android:contentDescription="@string/content_desc_imageRating"
                     android:layout_width="@dimen/dp_12"
                     android:layout_height="@dimen/dp_12"
                     android:adjustViewBounds="true"
@@ -278,6 +282,7 @@
 
                 <ImageView
                     android:id="@+id/imageViewRating2"
+                    android:contentDescription="@string/content_desc_imageRating"
                     android:layout_width="@dimen/dp_12"
                     android:layout_height="@dimen/dp_12"
                     android:adjustViewBounds="true"
@@ -287,6 +292,7 @@
 
                 <ImageView
                     android:id="@+id/imageViewRating3"
+                    android:contentDescription="@string/content_desc_imageRating"
                     android:layout_width="@dimen/dp_12"
                     android:layout_height="@dimen/dp_12"
                     android:adjustViewBounds="true"
@@ -296,6 +302,7 @@
 
                 <ImageView
                     android:id="@+id/imageViewRating4"
+                    android:contentDescription="@string/content_desc_imageRating"
                     android:layout_width="@dimen/dp_12"
                     android:layout_height="@dimen/dp_12"
                     android:adjustViewBounds="true"
@@ -305,6 +312,7 @@
 
                 <ImageView
                     android:id="@+id/imageViewRating5"
+                    android:contentDescription="@string/content_desc_imageRating"
                     android:layout_width="@dimen/dp_12"
                     android:layout_height="@dimen/dp_12"
                     android:adjustViewBounds="true"
@@ -344,6 +352,7 @@
 
             <ImageView
                 android:id="@+id/imageFreeOngkirPromo"
+                android:contentDescription="@string/content_desc_imageFreeOngkirPromo"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_8"
@@ -402,6 +411,7 @@
 
         <ImageView
             android:id="@+id/imageTopAds"
+            android:contentDescription="@string/content_desc_imageTopAds"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_8"

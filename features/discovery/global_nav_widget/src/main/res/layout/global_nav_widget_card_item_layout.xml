@@ -20,6 +20,7 @@
 
         <ImageView
             android:id="@+id/globalNavCardItemBackground"
+            android:contentDescription="@string/content_desc_globalNavCardItemBackground"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
             android:scaleType="fitCenter"
@@ -31,6 +32,7 @@
 
         <ImageView
             android:id="@+id/globalNavCardItemLogo"
+            android:contentDescription="@string/content_desc_globalNavCardItemLogo"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
             android:adjustViewBounds="true"

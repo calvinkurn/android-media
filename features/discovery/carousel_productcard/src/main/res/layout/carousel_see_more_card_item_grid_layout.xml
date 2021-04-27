@@ -22,6 +22,7 @@
 
         <ImageView
             android:id="@+id/background_see_more_card"
+            android:contentDescription="@string/content_desc_carousel_product_card_background_see_more_card"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
@@ -47,6 +48,7 @@
 
         <ImageView
             android:id="@+id/arrow_see_more_card"
+            android:contentDescription="@string/content_desc_carousel_product_card_arrow_see_more_card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_see_more_card"

@@ -22,6 +22,7 @@
 
         <ImageView
             android:id="@+id/shopWidgetImageViewShopAvatar"
+            android:contentDescription="@string/content_desc_shopWidgetImageViewShopAvatar"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
             android:layout_marginStart="@dimen/dp_8"
@@ -53,6 +54,7 @@
 
         <ImageView
             android:id="@+id/shopWidgetImageViewShopBadge"
+            android:contentDescription="@string/content_desc_shopWidgetImageViewShopBadge"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_1"
@@ -98,6 +100,7 @@
 
         <ImageView
             android:id="@+id/shopWidgetImageViewShopReputation"
+            android:contentDescription="@string/content_desc_shopWidgetImageViewShopReputation"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_4"

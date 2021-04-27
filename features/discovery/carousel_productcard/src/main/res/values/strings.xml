@@ -3,4 +3,7 @@
     <string name="review_count_format">(%d)</string>
     <string name="product_card_module_label_add_to_card">+ Keranjang</string>
     <string name="see_more_card_see_all">Lihat Semua</string>
+
+    <string name="content_desc_carousel_product_card_background_see_more_card">background see more card</string>
+    <string name="content_desc_carousel_product_card_arrow_see_more_card">arrow see more card</string>
 </resources>
