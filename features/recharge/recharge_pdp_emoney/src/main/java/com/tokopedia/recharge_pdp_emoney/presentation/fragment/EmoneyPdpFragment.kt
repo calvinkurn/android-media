@@ -133,11 +133,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         })
 
         topUpBillsViewModel.favNumberData.observe(viewLifecycleOwner, Observer {
-            if (it is Success) {
-                it.data.favNumberList.firstOrNull()?.let { favNumber ->
-                    renderClientNumber(favNumber)
-                }
-            }
+            emoneyPdpViewModel.getPrefixOperator(detailPassData.menuId.toIntOrZero())
         })
 
         emoneyPdpViewModel.errorMessage.observe(viewLifecycleOwner, Observer {
@@ -150,8 +146,15 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         })
 
         emoneyPdpViewModel.catalogPrefixSelect.observe(viewLifecycleOwner, Observer {
-            if (it is Fail) {
-                renderFullPageError(it.throwable)
+            when (it) {
+                is Fail -> emoneyPdpViewModel.setErrorMessage(it.throwable)
+                is Success -> {
+                    topUpBillsViewModel.favNumberData.value?.let { favNumber ->
+                        if (favNumber is Success) {
+                            favNumber.data.favNumberList.firstOrNull()?.let { num -> renderClientNumber(num) }
+                        }
+                    }
+                }
             }
         })
 
@@ -202,8 +205,6 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         topUpBillsViewModel.getFavoriteNumbers(
                 CommonTopupBillsGqlMutation.favoriteNumber,
                 topUpBillsViewModel.createFavoriteNumbersParams(detailPassData.categoryId.toIntOrZero()))
-
-        emoneyPdpViewModel.getPrefixOperator(detailPassData.menuId.toIntOrZero())
     }
 
     private fun trackEventViewPdp(categoryName: String) {
