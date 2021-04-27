@@ -11,6 +11,7 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity
 import com.tokopedia.hotel.homepage.presentation.activity.mock.HotelHomepageMockResponseConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.Before
 import org.junit.Rule
@@ -25,6 +26,7 @@ class HotelHomepageScreenshotTesting {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(HotelHomepageMockResponseConfig())
+            setupDarkModeTest(false)
         }
 
         override fun getActivityIntent(): Intent {
@@ -40,9 +42,9 @@ class HotelHomepageScreenshotTesting {
     @Test
     fun screenShot(){
         val activity = activityRule.activity
+        turnOffDynamicCarousel()
 
         Thread.sleep(3000)
-        turnOffDynamicCarousel()
 
         CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "top")
 
@@ -56,13 +58,17 @@ class HotelHomepageScreenshotTesting {
 
         CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.widget_hotel_homepage_popular_cities, filePrefix(), "widget-popular-cities")
 
-        activity.finishAndRemoveTask()
+        activityRule.activity.finishAndRemoveTask()
     }
 
     private fun turnOffDynamicCarousel(){
         val carousel = activityRule.activity.findViewById<CarouselUnify>(com.tokopedia.hotel.R.id.banner_hotel_homepage_promo)
-        carousel.apply {
-            autoplay = false
+        activityRule.runOnUiThread {
+            carousel.apply {
+                autoplay = false
+                infinite = false
+                slideToShow = 0f
+            }
         }
     }
 
