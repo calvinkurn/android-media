@@ -11,8 +11,8 @@ import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
+import com.tokopedia.shop.product.domain.interactor.ClaimBenefitMembershipUseCase
+import com.tokopedia.shop.product.domain.interactor.GetMembershipUseCaseNew
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.util.ShopUtil.isFilterNotIgnored
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
@@ -23,7 +23,6 @@ import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopPageMapper
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
 import com.tokopedia.shop.product.view.datamodel.*
