@@ -15,13 +15,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.flight.R
-import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationViewImageDialogFragment
 import com.tokopedia.flight.cancellationV2.di.FlightCancellationComponent
 import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationChooseReasonActivity
 import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationReasonActivity
 import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationReviewActivity
 import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationAttachmentAdapter
 import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationAttachmentAdapterTypeFactory
+import com.tokopedia.flight.cancellationV2.presentation.bottomsheet.FlightCancellationViewImageDialogFragment
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationAttachmentModel
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellationV2.presentation.viewmodel.FlightCancellationReasonViewModel
