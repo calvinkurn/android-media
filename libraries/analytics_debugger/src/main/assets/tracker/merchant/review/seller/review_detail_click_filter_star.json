@@ -3,16 +3,16 @@
   "mode": "exact",
   "query": [
     {
-      "networkSpeed": "{{.*}}",
-      "clientId": "{{.*}}",
-      "productId": "{{.*}}",
-      "isLoggedInStatus": "{{true|false}}",
-      "appsflyerId": "{{.*}}",
-      "shopId": "{{.*}}",
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "productId": ".*",
+      "isLoggedInStatus": "true|false",
+      "appsflyerId": ".*",
+      "shopId": ".*",
       "screenName": "review detail page",
       "event": "openScreen",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "userId": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "clickReview",

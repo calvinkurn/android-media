@@ -13,7 +13,7 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
-class CassavaTestRule : TestRule {
+class CassavaTestRule(private val isFromNetwork: Boolean = false) : TestRule {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val dao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
@@ -32,8 +32,8 @@ class CassavaTestRule : TestRule {
         }
     }
 
-    fun validate(path: String): List<Validator> {
-        val cassavaQuery = getQuery(context, path)
+    fun validate(queryId: String): List<Validator> {
+        val cassavaQuery = getQuery(context, queryId, isFromNetwork)
         val validators = cassavaQuery.query.map { it.toDefaultValidator() }
         return runBlocking {
             ValidatorEngine(daoSource).computeCo(validators, cassavaQuery.mode.value)
