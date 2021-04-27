@@ -128,6 +128,17 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
+    fun viewHotelSearchMap(context: Context?, destType: String, destination: String, searchParam: SearchParam, screenName: String) {
+        val roomCount = searchParam.room
+        val guestCount = searchParam.guest.adult
+        val duration = HotelUtils.countDayDifference(searchParam.checkIn, searchParam.checkOut)
+
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
+        val eventLabel = "$HOTEL_LABEL - $destType - $destination - $roomCount - $guestCount - ${convertDate(searchParam.checkIn)} - $duration"
+        map.addGeneralEvent(VIEW_HOTEL_IRIS, VIEW_MAP_ON_SRP, eventLabel)
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
     fun searchCloseMap(context: Context?, destType: String, destination: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $destType - $destination"
