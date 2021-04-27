@@ -93,10 +93,12 @@ public class RouteManager {
     private static @Nullable
     Intent buildInternalExplicitIntent(@NonNull Context context, @NonNull String deeplink) {
         ApplinkLogger.getInstance(context).appendTrace("Building explicit intent...");
+        Uri uri = Uri.parse(deeplink);
+        if (uri.isOpaque()) {
+            return null;
+        }
         Intent intent = buildInternalImplicitIntent(context, deeplink, INTERNAL_VIEW);
         List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentActivities(intent, 0);
-
-        Uri uri = Uri.parse(deeplink);
         final boolean shouldRedirectToSellerApp = uri.getBooleanQueryParameter(KEY_REDIRECT_TO_SELLER_APP, false);
 
         if (shouldRedirectToSellerApp && !GlobalConfig.isSellerApp()) {

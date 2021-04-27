@@ -6,6 +6,7 @@
     <dimen name="dp_145">145dp</dimen>
     <dimen name="dp_116">116dp</dimen>
     <dimen name="dp_150">150dp</dimen>
+    <dimen name="dp_155">155dp</dimen>
     <dimen name="dp_140">140dp</dimen>
     <dimen name="dp_156">156dp</dimen>
     <dimen name="dp_68">68dp</dimen>
@@ -32,8 +33,10 @@
 
     <dimen name="shop_product_item_badge_deprecated_font">9sp</dimen>
     <dimen name="size_labelview">56sp</dimen>
+    <dimen name="dp_4">4dp</dimen>
     <dimen name="dp_8">8dp</dimen>
     <dimen name="dp_32">32dp</dimen>
+    <dimen name="dp_48">48dp</dimen>
     <dimen name="dp_18">18dp</dimen>
     <dimen name="dp_64">64dp</dimen>
     <dimen name="sp_4">4sp</dimen>

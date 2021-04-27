@@ -16,10 +16,8 @@ import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_MUTATION
-import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_OCC_MUTATION
+import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
@@ -71,12 +69,6 @@ class ShopPageHomeModule {
         return RestRequestInteractor.getInstance().restRepository.apply {
             updateInterceptors(interceptors, context)
         }
-    }
-
-    @ShopPageHomeScope
-    @Provides
-    fun getCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
     }
 
     @ShopPageHomeScope
