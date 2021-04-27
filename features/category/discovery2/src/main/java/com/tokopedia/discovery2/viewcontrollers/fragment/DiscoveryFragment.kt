@@ -873,6 +873,10 @@ class DiscoveryFragment :
 
     }
 
+    override fun getEventLabelHostPage(): String {
+        return analytics.getEventLabel()
+    }
+
     private fun fetchUserLatestAddressData() {
         context?.let {
             userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)

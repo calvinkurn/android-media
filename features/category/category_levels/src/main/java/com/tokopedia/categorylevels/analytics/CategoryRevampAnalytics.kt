@@ -308,4 +308,8 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     override fun getHostTrackingSource(): String {
         return CATEGORY_HOST_TRACKING_SOURCE
     }
+
+    override fun getEventLabel(): String {
+        return categoryPageIdentifier
+    }
 }

@@ -80,5 +80,6 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackBottomNavBarClick(buttonName: String, userID: String?) {}
     open fun getHostSource() : String { return ""}
     open fun getHostTrackingSource() : String {return ""}
+    open fun getEventLabel() : String {return ""}
 
 }
