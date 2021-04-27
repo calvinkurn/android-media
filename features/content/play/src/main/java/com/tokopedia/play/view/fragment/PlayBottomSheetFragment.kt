@@ -390,16 +390,12 @@ class PlayBottomSheetFragment @Inject constructor(
             if (productSheetState != null && !productSheetState.isPreviousStateSame) {
                 when (productSheetState) {
                     is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
-                    is BottomInsetsState.Shown -> {
-                        pushParentPlayBySheetHeight(productSheetState.estimatedInsetsHeight)
-                    }
+                    is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(productSheetState.estimatedInsetsHeight)
                 }
             }
 
             it[BottomInsetsType.ProductSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) {
-                    productSheetView.showWithHeight(state.estimatedInsetsHeight)
-                }
+                if (state is BottomInsetsState.Shown) productSheetView.showWithHeight(state.estimatedInsetsHeight)
                 else productSheetView.hide()
             }
 
