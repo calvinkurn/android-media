@@ -22,15 +22,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
-import com.tokopedia.flight.cancellation.view.activity.FlightCancellationTermsAndConditionsActivity
-import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationRefundBottomSheet
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationEstimateEntity
 import com.tokopedia.flight.cancellationV2.di.FlightCancellationComponent
 import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationReviewActivity
+import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationTermsAndConditionsActivity
 import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationAttachmentAdapter
 import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationAttachmentAdapterTypeFactory
 import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationReviewAdapterTypeFactory
 import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationReviewEstimationNotesAdapter
+import com.tokopedia.flight.cancellationV2.presentation.bottomsheet.FlightCancellationRefundBottomSheet
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellationV2.presentation.viewmodel.FlightCancellationReviewViewModel
