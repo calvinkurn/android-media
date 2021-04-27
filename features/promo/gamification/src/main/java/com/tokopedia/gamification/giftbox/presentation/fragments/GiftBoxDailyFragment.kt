@@ -506,7 +506,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     fun canShowRecomPage(recommendation: Recommendation?): Boolean {
         if (recommendation != null) {
-            return recommendation.isShow == true && !recommendation.pageName.isNullOrEmpty()
+            return recommendation.isShow == false && !recommendation.pageName.isNullOrEmpty()
         }
         return false
     }
