@@ -2590,6 +2590,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun refreshErrorPage() {
+        setTopLayoutVisibility(false)
         binding?.layoutGlobalError?.gone()
         binding?.rlContent?.show()
         refreshHandler?.isRefreshing = true
