@@ -16,6 +16,8 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.topchat.chatlist.di.ChatListScope
 import com.tokopedia.topchat.chatlist.viewmodel.DefaultTopChatWebSocket
+import com.tokopedia.topchat.chatlist.viewmodel.websocket.DefaultWebSocketParser
+import com.tokopedia.topchat.chatlist.viewmodel.websocket.WebSocketParser
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
@@ -50,6 +52,11 @@ class ChatListNetworkModuleStub(
         )
     }
 
+    @ChatListScope
+    @Provides
+    fun provideWebSocketParser(): WebSocketParser {
+        return DefaultWebSocketParser()
+    }
 
     @ChatListScope
     @Provides

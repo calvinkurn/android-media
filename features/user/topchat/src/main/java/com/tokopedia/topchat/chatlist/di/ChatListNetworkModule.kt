@@ -15,6 +15,8 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.topchat.chatlist.viewmodel.DefaultTopChatWebSocket
+import com.tokopedia.topchat.chatlist.viewmodel.websocket.DefaultWebSocketParser
+import com.tokopedia.topchat.chatlist.viewmodel.websocket.WebSocketParser
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
@@ -39,6 +41,12 @@ class ChatListNetworkModule {
     private val NET_WRITE_TIMEOUT = 60
     private val NET_CONNECT_TIMEOUT = 60
     private val NET_RETRY = 1
+
+    @ChatListScope
+    @Provides
+    fun provideWebSocketParser(): WebSocketParser {
+        return DefaultWebSocketParser()
+    }
 
     @ChatListScope
     @Provides
