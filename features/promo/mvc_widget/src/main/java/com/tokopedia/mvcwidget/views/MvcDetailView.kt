@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
@@ -23,7 +24,9 @@ import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.mvc_layout_bottomsheet_button.view.*
 import javax.inject.Inject
 
 class MvcDetailView @JvmOverloads constructor(
@@ -34,6 +37,9 @@ class MvcDetailView @JvmOverloads constructor(
     var viewFlipper: ViewFlipper
     var globalError: GlobalError
     var addBottomMarginOnToast = false
+    var buttonLayout: LinearLayout
+    var buttonContinue:UnifyButton
+
     private val widgetImpression = WidgetImpression()
 
     override fun getWidgetImpression(): WidgetImpression {
@@ -67,6 +73,8 @@ class MvcDetailView @JvmOverloads constructor(
         rv = findViewById(R.id.rv)
         viewFlipper = findViewById(R.id.viewFlipper)
         globalError = findViewById(R.id.mvcDetailGlobalError)
+        buttonLayout = findViewById(R.id.btn_layout)
+        buttonContinue = findViewById(R.id.btn_continue)
         rv.layoutParams.height = Resources.getSystem().displayMetrics.heightPixels
 
         rv.layoutManager = LinearLayoutManager(context)
@@ -270,6 +278,14 @@ class MvcDetailView @JvmOverloads constructor(
         if (addBottomMarginOnToast) {
             Toaster.toasterCustomBottomHeight = dpToPx(48).toInt()
         }
+    }
+
+    fun setTokoButtonVisibility(){
+        buttonLayout.visibility = View.VISIBLE
+    }
+
+    fun setTokoButtonClickListener(onClickListener: OnClickListener?) {
+        buttonContinue?.setOnClickListener(onClickListener)
     }
 }
 

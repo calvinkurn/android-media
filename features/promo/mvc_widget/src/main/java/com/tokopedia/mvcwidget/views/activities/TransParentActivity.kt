@@ -64,11 +64,11 @@ class TransParentActivity : BaseActivity() {
 
     fun showMvcDetailDialog() {
         val bottomSheet = BottomSheetUnify()
-        bottomSheet.isDragable = true
+        bottomSheet.isDragable = false
         bottomSheet.isHideable = true
         bottomSheet.showKnob = true
         bottomSheet.showCloseIcon = false
-        bottomSheet.customPeekHeight = (Resources.getSystem().displayMetrics.heightPixels / 2).toDp()
+        bottomSheet.isFullpage = true
         bottomSheet.bottomSheet.isGestureInsetBottomIgnored = true
 
         bottomSheet.setTitle(getString(R.string.mvc_daftar_kupon_toko))

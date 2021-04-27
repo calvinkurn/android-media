@@ -10,7 +10,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_52"
+        android:layout_marginTop="@dimen/dp_60"
         android:orientation="vertical">
 
         <include layout="@layout/categorylist_shimmer" />
@@ -45,6 +45,8 @@
             android:id="@+id/server_error_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <include layout="@layout/tp_mvc_notfound_error" />
     </ViewFlipper>
 
     <com.google.android.material.appbar.AppBarLayout
@@ -66,24 +68,24 @@
             app:expandedTitleTextAppearance="@style/ToolbarExpandedTitle3"
             app:layout_scrollFlags="noScroll">
 
-        <com.tokopedia.tokopoints.view.customview.MerchantRewardToolbar
-            android:id="@+id/toolbar_merchant"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"
-            app:layout_collapseMode="pin" />
+            <com.tokopedia.tokopoints.view.customview.MerchantRewardToolbar
+                android:id="@+id/toolbar_merchant"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp"
+                app:layout_collapseMode="pin" />
 
-        <View
-            android:id="@+id/status_bar_bg"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:background="@color/Unify_G500"
-            android:visibility="visible"
-            android:alpha="0"
-            app:layout_anchor="@id/list"
-            app:layout_collapseMode="pin" />
+            <View
+                android:id="@+id/status_bar_bg"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:alpha="0"
+                android:background="@color/Unify_G500"
+                android:visibility="visible"
+                app:layout_anchor="@id/list"
+                app:layout_collapseMode="pin" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 

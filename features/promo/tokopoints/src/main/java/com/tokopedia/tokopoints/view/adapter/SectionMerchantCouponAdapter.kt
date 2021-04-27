@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.mvcwidget.views.MvcDetailView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.merchantcoupon.AdInfo
@@ -21,9 +22,11 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.ImageUnify
 import java.util.Arrays
 
-class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProductsListItem>) : RecyclerView.Adapter<SectionMerchantCouponAdapter.CouponListViewHolder>() {
+class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProductsListItem>, context: Context) : RecyclerView.Adapter<SectionMerchantCouponAdapter.CouponListViewHolder>() {
 
     val eventSet = HashSet<String?>()
+    val mvcDetailView = MvcDetailView(context)
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CouponListViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.tp_layout_mvc_item_section, parent, false)
         return CouponListViewHolder(view)
@@ -117,7 +120,11 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_PRODUCT_CARD, vh, item?.AdInfo)
         }
 
+        mvcDetailView.setTokoButtonClickListener(View.OnClickListener {
+            RouteManager.route(vh.itemView.context, item?.shopInfo?.appLink)
+        })
         vh.itemView.setOnClickListener {
+            mvcDetailView.setTokoButtonVisibility()
             item?.shopInfo?.id?.let { it1 -> it.context.startActivity(TransParentActivity.getIntent(it.context, it1, 0)) }
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE, vh, item?.AdInfo)
 
@@ -165,7 +172,7 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
         AnalyticsTrackerUtil.sendEvent(
                 AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                eventAction, "mvc section - {$shopName}",
+                eventAction, "mvc section - $shopName",
                 AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
                 AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
         )
@@ -175,7 +182,7 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
         super.onViewAttachedToWindow(holder)
         val item: MutableMap<String, Any?> = HashMap()
         val (shopInfo, _, title, _, _) = arrayList[holder.adapterPosition] ?: return
-        val eventLabel = "mvc - {${holder.adapterPosition}} - {${shopInfo?.name}}"
+        val eventLabel = "mvc - {${holder.adapterPosition + 1}} - ${shopInfo?.name}}"
         item["item_name"] = shopInfo?.name
         item["position"] = holder.adapterPosition.toString()
         item["creative_name"] = title

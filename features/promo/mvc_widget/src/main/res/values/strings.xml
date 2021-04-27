@@ -8,4 +8,6 @@
     <string name="mvc_coba_lagi">Coba Lagi</string>
     <string name="mvc_tentang_toko_member">Tentang TokoMember</string>
     <string name="mvc_title_prefix">Kupon bisa dipilih lewat keranjang jika ada barang dari toko</string>
+    <string name="mvc_cek_toko">Cek Toko</string>
+
 </resources>

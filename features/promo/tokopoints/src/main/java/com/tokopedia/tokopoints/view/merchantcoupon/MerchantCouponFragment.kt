@@ -18,16 +18,23 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.adapter.MerchantCouponItemDecoration
+import com.tokopedia.tokopoints.view.coupondetail.CouponDetailFragment
 import com.tokopedia.tokopoints.view.customview.MerchantRewardToolbar
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.util.*
+import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
+import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_layout_merchat_coupon_list.*
+import kotlinx.android.synthetic.main.tp_layout_merchat_coupon_list.container
+import kotlinx.android.synthetic.main.tp_layout_merchat_coupon_list.server_error_view
 import javax.inject.Inject
 
 class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitoringListener, SwipeRefreshLayout.OnRefreshListener, AdapterCallback, View.OnClickListener {
@@ -37,7 +44,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
 
     private val mViewModel: MerchantCouponViewModel by lazy { ViewModelProvider(this, factory)[MerchantCouponViewModel::class.java] }
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
-    private val mCouponAdapter: MerchantCouponListAdapter by lazy { MerchantCouponListAdapter(mViewModel, this) }
+    private val mCouponAdapter: MerchantCouponListAdapter by lazy { MerchantCouponListAdapter(mViewModel, this, context) }
 
     private var merchantRewardToolbar: MerchantRewardToolbar? = null
     private lateinit var exploreCouponRv: RecyclerView
@@ -133,7 +140,11 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                     setOnRecyclerViewLayoutReady()
-                    it.data.merchantCouponResponse.productlist?.let { it1 -> mCouponAdapter.onSuccess(it1) }
+                    if (it.data.merchantCouponResponse.productlist?.catalogMVCWithProductsList.isNullOrEmpty()) {
+                        showEmptyView()
+                    } else {
+                        it.data.merchantCouponResponse.productlist?.let { it1 -> mCouponAdapter.onSuccess(it1) }
+                    }
                 }
                 is ErrorMessage -> {
                     mCouponAdapter.onError()
@@ -143,7 +154,6 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
             }
         }
     })
-
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
@@ -231,6 +241,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
         const val CONTAINER_LOADER = 0
         const val CONTAINER_DATA = 1
         const val CONTAINER_ERROR = 2
+        const val CONTAINER_EMPTY = 3
 
         @JvmStatic
         fun newInstance(bundle: Bundle?): MerchantCouponFragment {
@@ -258,6 +269,13 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
             server_error_view?.showErrorUi(NetworkDetector.isConnectedToInternet(context?.applicationContext))
         }
         swipe_refresh_layout.isRefreshing = false
+    }
+
+    private fun showEmptyView() {
+        container?.displayedChild = CONTAINER_EMPTY
+        btnError.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
+        }
     }
 
     override fun onEmptyList(rawObject: Any?) {

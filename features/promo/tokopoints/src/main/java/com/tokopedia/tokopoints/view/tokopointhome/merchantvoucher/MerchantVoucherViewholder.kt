@@ -61,7 +61,7 @@ class MerchantVoucherViewholder(val view: View)
         if (rvCarousel.itemDecorationCount == 0) {
             rvCarousel.addItemDecoration(NonCarouselItemDecoration(convertDpToPixel(10, rvCarousel.context)))
         }
-        rvCarousel.adapter = SectionMerchantCouponAdapter(arrayList as MutableList<CatalogMVCWithProductsListItem>)
+        rvCarousel.adapter = SectionMerchantCouponAdapter(arrayList as MutableList<CatalogMVCWithProductsListItem> , rvCarousel.context)
     }
 
     fun handledClick(appLink: String?, webLink: String?, action: String?) {

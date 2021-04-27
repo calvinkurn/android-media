@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
+import com.tokopedia.mvcwidget.views.MvcDetailView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.adapter.SectionMerchantCouponAdapter
@@ -26,9 +27,10 @@ import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
-class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback: AdapterCallback) : BaseAdapter<CatalogMVCWithProductsListItem>(callback) {
+class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback: AdapterCallback, context: Context?) : BaseAdapter<CatalogMVCWithProductsListItem>(callback) {
     private var mRecyclerView: RecyclerView? = null
     private var adIdImpression = HashSet<String>()
+    private val mvcDetailView = context?.let { MvcDetailView(it) }
 
     inner class CouponListViewHolder(view: View) : BaseVH(view) {
 
@@ -119,7 +121,12 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_PRODUCT_CARD, vh, item?.AdInfo)
         }
 
+        mvcDetailView?.setTokoButtonClickListener(View.OnClickListener {
+            RouteManager.route(vh.itemView.context, item?.shopInfo?.appLink)
+        })
+
         vh.itemView.setOnClickListener {
+            mvcDetailView?.setTokoButtonVisibility()
             item?.shopInfo?.id?.let { it1 -> it.context.startActivity(TransParentActivity.getIntent(it.context, it1, 0)) }
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE, vh, item?.AdInfo)
         }
@@ -147,13 +154,15 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
 
     fun sendCouponClickEvent(shopName: String?, eventAction: String, vh: CouponListViewHolder, adInfo: AdInfo?) {
         sendTopadsClick(vh.itemView.context, adInfo)
-        AnalyticsTrackerUtil.sendEvent(
-                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                AnalyticsTrackerUtil.CategoryKeys.KUPON_TOKO,
-                eventAction, "{$shopName}",
-                AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
-                AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
-        )
+        if (shopName != null) {
+            AnalyticsTrackerUtil.sendEvent(
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.KUPON_TOKO,
+                    eventAction, shopName,
+                    AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
+                    AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
+            )
+        }
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -192,7 +201,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
 
             val item: MutableMap<String, Any?> = HashMap()
             val (shopInfo, _, title, _, _) = data
-            val eventLabel = "mvc - {${holder.adapterPosition}} - {${shopInfo?.name}}"
+            val eventLabel = "mvc - {${holder.adapterPosition + 1}} - {${shopInfo?.name}}"
             item["item_name"] = shopInfo?.name
             item["position"] = holder.adapterPosition.toString()
             item["creative_name"] = title
