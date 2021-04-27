@@ -32,16 +32,19 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
+import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import junit.framework.Assert.assertNotNull
 import junit.framework.Assert.assertTrue
+import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert
 import org.junit.Test
@@ -52,7 +55,8 @@ class CommonTopupBillsViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = CoroutineTestDispatchersProvider
+    @get:Rule
+    val testCoroutineRule = CoroutineTestRule()
 
     @RelaxedMockK
     lateinit var graphqlRepository: GraphqlRepository
@@ -65,7 +69,7 @@ class CommonTopupBillsViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        topupBillsViewModel = TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, dispatcher)
+        topupBillsViewModel = TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, testCoroutineRule.dispatchers)
     }
 
     @Test
@@ -298,7 +302,7 @@ class CommonTopupBillsViewModelTest {
 
     @Test
     fun createMenuDetailParams_returnsCorrectMapContent() {
-       val params = topupBillsViewModel.createMenuDetailParams(5)
+        val params = topupBillsViewModel.createMenuDetailParams(5)
         assertTrue(params.containsKey(PARAM_MENU_ID))
         assertTrue(params[PARAM_MENU_ID] == 5)
     }
@@ -309,17 +313,21 @@ class CommonTopupBillsViewModelTest {
         assertTrue(params.containsKey(PARAM_FILTERS))
 
         val filters = params[PARAM_FILTERS] as MutableList<Map<String, Any>>
-        assertTrue(filters.any{ obj -> obj.containsKey(PLUGIN_PARAM_KEY)})
+        assertTrue(filters.any { obj -> obj.containsKey(PLUGIN_PARAM_KEY) })
 
-        assertTrue(filters.any{ obj ->
-            obj.containsKey(PLUGIN_PARAM_KEY) && obj[PLUGIN_PARAM_KEY] == PLUGIN_PARAM_OPERATOR})
-        assertTrue(filters.any{ obj ->
-            obj.containsKey(PLUGIN_PARAM_KEY) && obj[PLUGIN_PARAM_KEY] == PLUGIN_PARAM_CATEGORY})
+        assertTrue(filters.any { obj ->
+            obj.containsKey(PLUGIN_PARAM_KEY) && obj[PLUGIN_PARAM_KEY] == PLUGIN_PARAM_OPERATOR
+        })
+        assertTrue(filters.any { obj ->
+            obj.containsKey(PLUGIN_PARAM_KEY) && obj[PLUGIN_PARAM_KEY] == PLUGIN_PARAM_CATEGORY
+        })
 
-        assertTrue(filters.any{ obj ->
-            obj.containsKey(PLUGIN_PARAM_ID) && obj[PLUGIN_PARAM_ID] == 578})
-        assertTrue(filters.any{ obj ->
-            obj.containsKey(PLUGIN_PARAM_ID) && obj[PLUGIN_PARAM_ID] == 34})
+        assertTrue(filters.any { obj ->
+            obj.containsKey(PLUGIN_PARAM_ID) && obj[PLUGIN_PARAM_ID] == 578
+        })
+        assertTrue(filters.any { obj ->
+            obj.containsKey(PLUGIN_PARAM_ID) && obj[PLUGIN_PARAM_ID] == 34
+        })
     }
 
     @Test
@@ -350,7 +358,7 @@ class CommonTopupBillsViewModelTest {
 
     @Test
     fun createExpressCheckoutFieldParam_expressCheckoutInputNotEmpty_isCalled() {
-        val topupBillsViewModelSpyk = spyk(TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, dispatcher), recordPrivateCalls = true)
+        val topupBillsViewModelSpyk = spyk(TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, testCoroutineRule.dispatchers), recordPrivateCalls = true)
 
         every { topupBillsViewModelSpyk["createExpressCheckoutFieldParam"](allAny<String>(), allAny<String>()) } returns mapOf<String, String>()
 
@@ -426,4 +434,13 @@ class CommonTopupBillsViewModelTest {
 
     }
 
+    @Test
+    fun checkVoucher_callUseCaseExecute() = testCoroutineRule.runBlockingTest {
+        every { digitalCheckVoucherUseCase.execute(any(), any()) } returns Unit
+
+        topupBillsViewModel.checkVoucher("", PromoDigitalModel())
+        advanceTimeBy(1_000L)
+
+        verify { digitalCheckVoucherUseCase.execute(any(), any()) }
+    }
 }
