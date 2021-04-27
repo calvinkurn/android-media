@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_N0"
+    android:id="@+id/ggqq"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
@@ -10,7 +11,9 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/partial_shop_info_description"/>
+        <include
+            android:id="@+id/layout_partial_shop_info_description"
+            layout="@layout/partial_shop_info_description"/>
 
         <View
             android:layout_width="match_parent"
@@ -21,15 +24,21 @@
             android:background="@color/Unify_N75"
             />
 
-        <include layout="@layout/partial_shop_info_note"/>
+        <include
+            android:id="@+id/layout_partial_shop_info_note"
+            layout="@layout/partial_shop_info_note"/>
 
-        <include layout="@layout/partial_shop_info_statistics"/>
+        <include
+            android:id="@+id/layout_partial_shop_info_statistic"
+            layout="@layout/partial_shop_info_statistics"/>
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <include layout="@layout/partial_shop_info_delivery"/>
+        <include
+            android:id="@+id/layout_partial_shop_info_delivery"
+            layout="@layout/partial_shop_info_delivery"/>
 
     </LinearLayout>
 
