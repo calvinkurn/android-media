@@ -438,6 +438,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         }
     }
 
+    fun updateNotification() {
+        viewModel?.getNotification()
+    }
+
     private fun applyStatusBarPadding() {
         var pT = 0
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -446,7 +450,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         navToolbar?.updatePadding(top = pT)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     private fun onStartListener(owner: LifecycleOwner){
         this.lifecycleOwner = owner
         observeLiveData()
@@ -457,7 +461,6 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         if (::navSearchBarController.isInitialized) {
             navSearchBarController.startHintAnimation()
         }
-        viewModel?.getNotification()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
