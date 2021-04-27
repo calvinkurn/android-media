@@ -78,7 +78,7 @@ public class AlbumPickerActivity extends BaseSimpleActivity implements LoaderMan
     @Override
     public void onResume() {
         super.onResume();
-        String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
         if (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
             showLoading();
             LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, this);
