@@ -1959,8 +1959,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> showToastSuccess(
                         when (it.data) {
-                            PlayWidgetReminderType.Remind -> getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
-                            PlayWidgetReminderType.UnRemind -> getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
+                            PlayWidgetReminderType.Reminded -> getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                            PlayWidgetReminderType.NotReminded -> getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
                         }
                 )
                 is Fail -> showErrorToast(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder))
