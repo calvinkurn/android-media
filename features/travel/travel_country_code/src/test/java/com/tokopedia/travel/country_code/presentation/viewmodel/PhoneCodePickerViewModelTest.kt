@@ -58,4 +58,63 @@ class PhoneCodePickerViewModelTest {
         assertEquals(dataForFiltered[0].countryName, countryList[0].countryName)
         assertEquals(dataForFiltered[0].countryPhoneCode, countryList[0].countryPhoneCode)
     }
+
+    @Test
+    fun filterCountryList_isFiltered(){
+        //given
+        val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
+        val keyword = "Indo"
+        val countryList = listOf<TravelCountryPhoneCode>(TravelCountryPhoneCode(countryId = "ID", countryName = "Indonesia", countryPhoneCode = 62),
+                TravelCountryPhoneCode(countryId = "KR", countryName = "Korea Selatan", countryPhoneCode = 82),
+                TravelCountryPhoneCode(countryId = "JP", countryName = "Jepang", countryPhoneCode = 81))
+        coEvery { travelCountryCodeUseCase.execute(rawQuery) } returns Success(countryList)
+        phoneCodePickerViewModel.getCountryList(rawQuery)
+
+        //when
+        phoneCodePickerViewModel.filterCountryList(keyword)
+
+        //then
+        val data = (phoneCodePickerViewModel.countryList.value as Success<List<TravelCountryPhoneCode>>).data
+        assert(phoneCodePickerViewModel.countryList.value is Success)
+        assertEquals(data.size, countryList.size)
+        assertEquals(data, countryList)
+
+        val dataForFiltered = (phoneCodePickerViewModel.filteredCountryList.value as Success<List<TravelCountryPhoneCode>>).data
+        assert(phoneCodePickerViewModel.filteredCountryList.value is Success)
+        assertEquals(dataForFiltered[0].countryId, countryList[0].countryId)
+        assertEquals(dataForFiltered[0].countryName, countryList[0].countryName)
+        assertEquals(dataForFiltered[0].countryPhoneCode, countryList[0].countryPhoneCode)
+    }
+
+    @Test
+    fun filterCountryList_isReset(){
+        //given
+        val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
+        val keyword = ""
+        val countryList = listOf<TravelCountryPhoneCode>(TravelCountryPhoneCode(countryId = "ID", countryName = "Indonesia", countryPhoneCode = 62),
+                TravelCountryPhoneCode(countryId = "KR", countryName = "Korea Selatan", countryPhoneCode = 82),
+                TravelCountryPhoneCode(countryId = "JP", countryName = "Jepang", countryPhoneCode = 81))
+        coEvery { travelCountryCodeUseCase.execute(rawQuery) } returns Success(countryList)
+        phoneCodePickerViewModel.getCountryList(rawQuery)
+
+        //when
+        phoneCodePickerViewModel.filterCountryList(keyword)
+
+        //then
+        val data = (phoneCodePickerViewModel.countryList.value as Success<List<TravelCountryPhoneCode>>).data
+        assert(phoneCodePickerViewModel.countryList.value is Success)
+        assertEquals(data.size, countryList.size)
+        assertEquals(data, countryList)
+        assertEquals(data[0].countryId, countryList[0].countryId)
+        assertEquals(data[0].countryName, countryList[0].countryName)
+        assertEquals(data[0].countryPhoneCode, countryList[0].countryPhoneCode)
+
+        val dataForFiltered = (phoneCodePickerViewModel.filteredCountryList.value as Success<List<TravelCountryPhoneCode>>).data
+        assert(phoneCodePickerViewModel.filteredCountryList.value is Success)
+        assertEquals(dataForFiltered.size, countryList.size)
+        assertEquals(dataForFiltered, countryList)
+        assertEquals(dataForFiltered[0].countryId, countryList[0].countryId)
+        assertEquals(dataForFiltered[0].countryName, countryList[0].countryName)
+        assertEquals(dataForFiltered[0].countryPhoneCode, countryList[0].countryPhoneCode)
+    }
 }
