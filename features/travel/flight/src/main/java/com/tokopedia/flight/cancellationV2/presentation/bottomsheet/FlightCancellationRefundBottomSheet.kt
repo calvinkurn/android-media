@@ -1,4 +1,4 @@
-package com.tokopedia.flight.cancellation.view.fragment.customview
+package com.tokopedia.flight.cancellationV2.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
