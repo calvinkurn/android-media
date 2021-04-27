@@ -93,7 +93,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2";
     String KEY_P1_DONE_AS_NON_LOGIN = "KEY_P1_DONE_AS_NON_LOGIN";
 
-
     String PREF_KEY_HOME_COACHMARK = "PREF_KEY_HOME_COACHMARK";
     String PREF_KEY_HOME_COACHMARK_NAV = "PREF_KEY_HOME_COACHMARK_NAV";
     String PREF_KEY_HOME_COACHMARK_INBOX = "PREF_KEY_HOME_COACHMARK_INBOX";
@@ -325,6 +324,10 @@ public class DeveloperOptionActivity extends BaseActivity {
         Button alwaysNewHome = findViewById(R.id.buttonAlwaysNewHome);
         Button alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
         Button alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
+        Button alwaysOldLego4 = findViewById(R.id.buttonAlwaysOldLego4);
+        Button alwaysNewLego4 = findViewById(R.id.buttonAlwaysNewLego4);
+        Button alwaysOldCatWidget = findViewById(R.id.buttonAlwaysOldCatWidget);
+        Button alwaysNewCatWidget = findViewById(R.id.buttonAlwaysNewCatWidget);
 
         TextInputEditText inputRollenceKey = findViewById(R.id.input_rollence_key);
         TextInputEditText inputRollenceVariant = findViewById(R.id.input_rollence_variant);
@@ -367,6 +370,13 @@ public class DeveloperOptionActivity extends BaseActivity {
         String EXP_BALANCE_WIDGET = AbTestPlatform.BALANCE_EXP;
         String BALANCE_WIDGET_VARIANT_OLD = AbTestPlatform.BALANCE_VARIANT_OLD;
         String BALANCE_WIDGET_VARIANT_REVAMP = AbTestPlatform.BALANCE_VARIANT_NEW;
+
+        String HOME_COMPONENT_LEGO4BANNER_EXP= "lego4_test";
+        String HOME_COMPONENT_LEGO4BANNER_OLD = "lego_round";
+        String HOME_COMPONENT_LEGO4BANNER_VARIANT = "lego_bleeding";
+        String HOME_COMPONENT_CATEGORYWIDGET_EXP= "catwidget_test";
+        String HOME_COMPONENT_CATEGORYWIDGET_OLD = "current_design";
+        String HOME_COMPONENT_CATEGORYWIDGET_VARIANT = "new_design";
 
         alwaysOldButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -413,6 +423,38 @@ public class DeveloperOptionActivity extends BaseActivity {
             public void onClick(View view) {
                 RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_BALANCE_WIDGET, BALANCE_WIDGET_VARIANT_REVAMP);
                 Toast.makeText(DeveloperOptionActivity.this, "balance widget: Revamped", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alwaysOldLego4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RemoteConfigInstance.getInstance().getABTestPlatform().setString(HOME_COMPONENT_LEGO4BANNER_EXP, HOME_COMPONENT_LEGO4BANNER_OLD);
+                Toast.makeText(DeveloperOptionActivity.this, "lego4: Old", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alwaysNewLego4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RemoteConfigInstance.getInstance().getABTestPlatform().setString(HOME_COMPONENT_LEGO4BANNER_EXP, HOME_COMPONENT_LEGO4BANNER_VARIANT);
+                Toast.makeText(DeveloperOptionActivity.this, "lego4: Revamped", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alwaysOldCatWidget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RemoteConfigInstance.getInstance().getABTestPlatform().setString(HOME_COMPONENT_CATEGORYWIDGET_EXP, HOME_COMPONENT_CATEGORYWIDGET_OLD);
+                Toast.makeText(DeveloperOptionActivity.this, "category widget: Old", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alwaysNewCatWidget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RemoteConfigInstance.getInstance().getABTestPlatform().setString(HOME_COMPONENT_CATEGORYWIDGET_EXP, HOME_COMPONENT_CATEGORYWIDGET_VARIANT);
+                Toast.makeText(DeveloperOptionActivity.this, "category widget: Revamped", Toast.LENGTH_SHORT).show();
             }
         });
 

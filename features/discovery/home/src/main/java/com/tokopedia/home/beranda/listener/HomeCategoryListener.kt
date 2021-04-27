@@ -140,4 +140,8 @@ interface HomeCategoryListener {
     fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean)
 
     fun onChooseAddressServerDown()
+
+    fun isHomeComponentLego4BannerUsingRollenceVariant() : Boolean
+
+    fun isHomeComponentCategoryWidgetRollenceVariant() : Boolean
 }

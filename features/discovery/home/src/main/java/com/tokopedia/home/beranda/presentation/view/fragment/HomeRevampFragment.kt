@@ -82,7 +82,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
@@ -140,6 +139,12 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_EXP
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_OLD
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_VARIANT
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_LEGO4BANNER_EXP
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_LEGO4BANNER_OLD
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_LEGO4BANNER_VARIANT
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION
@@ -173,7 +178,6 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
-import kotlinx.android.synthetic.main.fragment_home_revamp.*
 import kotlinx.android.synthetic.main.home_header_ovo.view.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
 import rx.Observable
@@ -338,6 +342,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var useNewInbox = false
     private var coachmark: CoachMark2? = null
     private var bannerCarouselCallback: BannerComponentCallback? = null
+
+    private var rollenceLego4BannerValue: String = ""
+    private var rollenceCategoryWidgetValue: String = ""
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
@@ -537,6 +544,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView?.setHasFixedSize(true)
         homeRecyclerView?.itemAnimator?.moveDuration = 150
         initInboxAbTest()
+        fetchHomeComponentRollenceValue()
         navAbTestCondition(
                 ifNavOld = {
                     oldToolbar?.setAfterInflationCallable(afterInflationCallable)
@@ -2842,5 +2850,26 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 saveStateReset(false)
             }
         }).show()
+    }
+
+    private fun fetchHomeComponentRollenceValue() {
+        rollenceLego4BannerValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(HOME_COMPONENT_LEGO4BANNER_EXP, HOME_COMPONENT_LEGO4BANNER_OLD)
+        rollenceCategoryWidgetValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(HOME_COMPONENT_CATEGORYWIDGET_EXP, HOME_COMPONENT_CATEGORYWIDGET_OLD)
+    }
+
+    private fun getRollenceValueLego4Banner() : String {
+        return if (rollenceLego4BannerValue.isNotEmpty()) rollenceLego4BannerValue else HOME_COMPONENT_LEGO4BANNER_OLD
+    }
+
+    private fun getRollenceValueCategoryWidget() : String {
+        return if (rollenceCategoryWidgetValue.isNotEmpty()) rollenceCategoryWidgetValue else HOME_COMPONENT_CATEGORYWIDGET_OLD
+    }
+
+    override fun isHomeComponentLego4BannerUsingRollenceVariant(): Boolean {
+        return getRollenceValueLego4Banner() == HOME_COMPONENT_LEGO4BANNER_VARIANT
+    }
+
+    override fun isHomeComponentCategoryWidgetRollenceVariant(): Boolean {
+        return getRollenceValueCategoryWidget() == HOME_COMPONENT_CATEGORYWIDGET_VARIANT
     }
 }

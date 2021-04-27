@@ -2558,4 +2558,12 @@ open class HomeFragment : BaseDaggerFragment(),
             }
         }).show()
     }
+
+    override fun isHomeComponentLego4BannerUsingRollenceVariant(): Boolean {
+        return false
+    }
+
+    override fun isHomeComponentCategoryWidgetRollenceVariant(): Boolean {
+        return false
+    }
 }
