@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
@@ -57,7 +58,8 @@ class SubscriptionActivity : BaseActivity(), SubscriptionActivityInterface, HasC
     }
 
     private fun openPowerMerchantWebView() {
-        RouteManager.route(this, PMConstant.Urls.POWER_MERCHANT_PAGE)
+        val applink = String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, PMConstant.Urls.POWER_MERCHANT_PAGE)
+        RouteManager.route(this, applink)
         finish()
     }
 
