@@ -60,6 +60,7 @@
                 android:descendantFocusability="blocksDescendants">
             <com.tokopedia.flight.promo_chips.presentation.widget.FlightPromoChips
                 android:id="@+id/flight_promo_chips_view"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
