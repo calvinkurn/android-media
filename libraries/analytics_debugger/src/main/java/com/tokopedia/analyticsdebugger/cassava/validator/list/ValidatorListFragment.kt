@@ -14,7 +14,6 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,10 +41,7 @@ class ValidatorListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         initInjector()
-        viewModel.changeSource(true)
-        viewModel.fetchJourneyQueriesList(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -59,7 +55,7 @@ class ValidatorListFragment : Fragment() {
 
         listingAdapter = FileListingAdapter().also { adapter ->
             adapter.setOnItemClickListener {
-                listener?.goToTestPage(it.first, viewModel.getCassavaSource() == CassavaSource.NETWORK)
+                listener?.goToTestPage(it.first, viewModel.cassavaSource.value == CassavaSource.NETWORK)
             }
         }
 
@@ -75,7 +71,7 @@ class ValidatorListFragment : Fragment() {
         }
 
         with(view.findViewById<ToggleButton>(R.id.toggle_cassava_source)) {
-            setOnCheckedChangeListener { compoundButton, isChecked ->
+            setOnCheckedChangeListener { _, isChecked ->
                 viewModel.changeSource(isChecked)
             }
         }
@@ -118,23 +114,16 @@ class ValidatorListFragment : Fragment() {
     }
 
     private fun observeLiveData() {
-        viewModel.listFiles.observe(viewLifecycleOwner, Observer {
+        viewModel.listFiles.observe(viewLifecycleOwner, {
             Timber.d("List files: %s", it)
             listingAdapter.setItems(it)
         })
 
-        viewModel.cassavaSource.observe(viewLifecycleOwner, Observer {
+        viewModel.cassavaSource.observe(viewLifecycleOwner, {
             view?.let { mView ->
                 val toggleButton = mView.findViewById<ToggleButton>(R.id.toggle_cassava_source)
-                when (it) {
-                    CassavaSource.NETWORK -> {
-                        toggleButton.isChecked = true
-                    }
-                    CassavaSource.LOCAL -> {
-                        toggleButton.isChecked = false
-                    }
-                }
-                viewModel.fetchJourneyQueriesList(toggleButton.isChecked)
+                val isChecked = it == CassavaSource.NETWORK
+                toggleButton.isChecked = isChecked
             }
         })
     }
