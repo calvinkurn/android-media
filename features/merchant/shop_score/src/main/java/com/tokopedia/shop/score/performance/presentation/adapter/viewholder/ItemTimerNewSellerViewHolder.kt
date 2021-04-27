@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.timer_new_seller_before_transition.view.*
 
 
 class ItemTimerNewSellerViewHolder(view: View,
-                                   private val itemTimerNewSellerListener: ItemTimerNewSellerListener): AbstractViewHolder<ItemTimerNewSellerUiModel>(view) {
+                                   private val itemTimerNewSellerListener: ItemTimerNewSellerListener) : AbstractViewHolder<ItemTimerNewSellerUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.timer_new_seller_before_transition
@@ -61,18 +62,19 @@ class ItemTimerNewSellerViewHolder(view: View,
     }
 
     private fun setIconVideoClickListener() {
-        with(itemView) {
-            watchVideoGroup?.apply {
-                val refIds: IntArray = referencedIds
-                for (id in refIds) {
-                    findViewById<View>(id).setOnClickListener {
-                        itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
-                    }
-                }
-                addOnImpressionListener(impressHolderWatchVideo) {
-                    itemTimerNewSellerListener.onImpressWatchVideo()
-                }
+        itemView.watchVideoGroup?.apply {
+            addOnClickListener {
+                itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
             }
+            addOnImpressionListener(impressHolderWatchVideo) {
+                itemTimerNewSellerListener.onImpressWatchVideo()
+            }
+        }
+    }
+
+    private fun Group.addOnClickListener(listener: (view: View) -> Unit) {
+        referencedIds.forEach { id ->
+            rootView.findViewById<View>(id).setOnClickListener(listener)
         }
     }
 }
