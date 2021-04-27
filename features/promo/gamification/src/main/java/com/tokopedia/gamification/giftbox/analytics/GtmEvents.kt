@@ -273,7 +273,7 @@ object GtmEvents {
         } else {
             "login"
         }
-        map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap-tap - $loginText - rekomendasi untuk anda - $recommendationType - $isTopAds"
+        map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap_tap - $loginText - rekomendasi untuk anda - $recommendationType - $isTopAds"
         map[GiftBoxTrackerConstants.ITEMS] = getItemsMapList(productId,
                 productPositionIndex,
                 productBrand,
@@ -329,7 +329,7 @@ object GtmEvents {
             "login"
         }
 
-        map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap-tap - $loginText - rekomendasi untuk anda - $recommendationType - $isTopAds"
+        map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap_tap - $loginText - rekomendasi untuk anda - $recommendationType - $isTopAds"
         map[GiftBoxTrackerConstants.ITEMS] = getItemsMapList(productId,
                 productPositionIndex,
                 productBrand,
