@@ -7,6 +7,7 @@
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
+    app:cardBackgroundColor="@color/discovery_common_dms_card_background"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
