@@ -3,7 +3,7 @@ package com.tokopedia.flight.cancellationV2.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationEstimateEntity
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationEstimateRefundUseCase
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationRequestCancelUseCase
@@ -24,8 +24,8 @@ class FlightCancellationReviewViewModel @Inject constructor(
         private val requestUseCase: FlightCancellationRequestCancelUseCase,
         private val flightAnalytics: FlightAnalytics,
         private val userSession: UserSessionInterface,
-        private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+        private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     var invoiceId: String = ""
     lateinit var cancellationWrapperModel: FlightCancellationWrapperModel
@@ -62,7 +62,7 @@ class FlightCancellationReviewViewModel @Inject constructor(
     }
 
     fun fetchRefundEstimation() {
-        launchCatchError(dispatcherProvider.ui(), block = {
+        launchCatchError(dispatcherProvider.main, block = {
             val estimateRefundData = estimateUseCase.execute(
                     estimateUseCase.createRequestParams(
                             invoiceId,
@@ -97,7 +97,7 @@ class FlightCancellationReviewViewModel @Inject constructor(
     }
 
     fun requestCancellation() {
-        launchCatchError(dispatcherProvider.ui(), block = {
+        launchCatchError(dispatcherProvider.main, block = {
             requestUseCase.execute(requestUseCase.createRequestParams(
                     cancellationWrapperModel.invoiceId,
                     cancellationWrapperModel.cancellationReasonAndAttachmentModel.reason,

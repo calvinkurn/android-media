@@ -6,24 +6,28 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_3"
         android:lineSpacingExtra="8sp"
         android:text="@string/buyer_reputation"
-        style="@style/TextView.Title.Bold"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:lineSpacingExtra="7sp"
         android:text="@string/buyer_reputation_given_by_seller"
-        style="@style/TextView.Small.BlackDisabled"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:textColor="@color/Unify_N700_32"
+        app:typographyType="body_3"
         />
 
     <RelativeLayout
@@ -46,18 +50,21 @@
             android:maxHeight="@dimen/dp_24"
             android:maxWidth="@dimen/dp_24"
             android:scaleType="fitXY"
+            android:contentDescription="@null"
             app:srcCompat="@drawable/review_ic_smiley_good"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/score_good"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_toRightOf="@id/smiley_good"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
+            android:textColor="@color/Unify_N700_44"
             tools:text="248"
-            style="@style/TextView.Micro.BlackDisabled"
-            />
+            app:typographyType="body_3" />
 
         <ImageView
             android:id="@+id/smiley_neutral"
@@ -68,18 +75,21 @@
             android:maxHeight="@dimen/dp_24"
             android:maxWidth="@dimen/dp_24"
             android:scaleType="fitXY"
+            android:contentDescription="@null"
             app:srcCompat="@drawable/review_ic_smiley_neutral"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/score_netral"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_toRightOf="@id/smiley_neutral"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
-            style="@style/TextView.Micro.BlackDisabled"
+            android:textColor="@color/Unify_N700_44"
             tools:text="2"
-            />
+            app:typographyType="body_3" />
 
         <ImageView
             android:id="@+id/smiley_bad"
@@ -90,22 +100,26 @@
             android:maxHeight="@dimen/dp_24"
             android:maxWidth="@dimen/dp_24"
             android:scaleType="fitXY"
+            android:contentDescription="@null"
             app:srcCompat="@drawable/review_ic_smiley_bad"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/score_bad"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dp_10"
             android:layout_toRightOf="@id/smiley_bad"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
-            style="@style/TextView.Micro.BlackDisabled"
+            android:textColor="@color/Unify_N700_44"
             tools:text="0"
+            app:typographyType="body_3"
             />
 
     </RelativeLayout>
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/close_button"
         style="@style/Button.Submit.Green"
         android:layout_width="match_parent"

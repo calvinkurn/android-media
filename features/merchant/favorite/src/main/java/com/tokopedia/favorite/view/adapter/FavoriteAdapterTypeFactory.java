@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.favorite.view.adapter.viewholders.FavoriteShopViewHolder;
 import com.tokopedia.favorite.view.adapter.viewholders.TopAdsShopViewHolder;
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener;
-import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel;
+import com.tokopedia.favorite.view.viewmodel.FavoriteShopUiModel;
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopViewModel;
 
 /**
@@ -33,7 +33,7 @@ public class FavoriteAdapterTypeFactory
 
 
     @Override
-    public int type(FavoriteShopViewModel viewModel) {
+    public int type(FavoriteShopUiModel viewModel) {
         return FavoriteShopViewHolder.LAYOUT;
     }
 

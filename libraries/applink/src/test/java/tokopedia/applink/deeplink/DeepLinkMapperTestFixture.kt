@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.tokopedia.applink.DeeplinkMapper
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import com.tokopedia.config.GlobalConfig
 import io.mockk.mockkClass
@@ -21,6 +22,7 @@ open class DeepLinkMapperTestFixture {
     open fun setup() {
         context = ApplicationProvider.getApplicationContext()
         mockkObject(DeeplinkMapperUohOrder)
+        mockkObject(DeeplinkMapperMerchant)
         mockkClass(GlobalConfig::class)
     }
 

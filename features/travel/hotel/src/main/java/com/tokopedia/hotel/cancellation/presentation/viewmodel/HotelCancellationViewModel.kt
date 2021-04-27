@@ -3,7 +3,7 @@ package com.tokopedia.hotel.cancellation.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class HotelCancellationViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                      private val graphqlUseCase: MultiRequestGraphqlUseCase,
-                                                     val dispatcher: TravelDispatcherProvider) : BaseViewModel(dispatcher.io()) {
+                                                     val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.io) {
 
     private val mutableCancellationData = MutableLiveData<Result<HotelCancellationModel>>()
     val cancellationData: LiveData<Result<HotelCancellationModel>>
@@ -64,7 +64,7 @@ class HotelCancellationViewModel @Inject constructor(private val graphqlReposito
         val params = mapOf(GET_CANCELLATION_SUBMIT_DATA_PARAM to cancellationSubmitParam)
 
         launchCatchError(block = {
-            val data = withContext(dispatcher.ui()) {
+            val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(HotelCancellationQuery.getSubmitCancellationQuery(), HotelCancellationSubmitResponse::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelCancellationSubmitResponse>()

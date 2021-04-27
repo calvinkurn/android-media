@@ -3,7 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -30,7 +30,7 @@ import javax.inject.Inject
 class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUsePromoRevampUseCase: Lazy<ValidateUsePromoRevampUseCase>,
                                                          private val clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>,
                                                          private val orderSummaryAnalytics: OrderSummaryAnalytics,
-                                                         private val executorDispatchers: ExecutorDispatchers) {
+                                                         private val executorDispatchers: CoroutineDispatchers) {
 
     suspend fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest, lastValidateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Triple<Throwable?, ValidateUsePromoRevampUiModel?, Boolean> {
         if (!hasPromo(validateUsePromoRequest)) return Triple(null, null, false)
@@ -138,7 +138,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val promoRequest = PromoRequest()
 
         val ordersItem = Order()
-        ordersItem.shopId = orderCart.shop.shopId.toLong()
+        ordersItem.shopId = orderCart.shop.shopId
         ordersItem.uniqueId = orderCart.cartString
         ordersItem.product_details = listOf(ProductDetail(orderCart.product.productId, orderCart.product.quantity.orderQuantity))
         ordersItem.isChecked = true
@@ -197,7 +197,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val validateUsePromoRequest = lastValidateUsePromoRequest ?: ValidateUsePromoRequest()
 
         val ordersItem = OrdersItem()
-        ordersItem.shopId = orderCart.shop.shopId
+        ordersItem.shopId = orderCart.shop.shopId.toInt()
         ordersItem.uniqueId = orderCart.cartString
 
         ordersItem.productDetails = listOf(ProductDetailsItem(orderCart.product.quantity.orderQuantity, orderCart.product.productId))

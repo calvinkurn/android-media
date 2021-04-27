@@ -5,7 +5,7 @@ import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleAdapter
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleViewFromLayout
 import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
@@ -42,7 +42,7 @@ class BenchmarkTopadsShopViewHolder {
         val viewHolder = TopadsShopViewHolder(
                 itemView, null, null
         )
-        val data = TopadsShopViewModel(title = MockTitleModel.get(), dataList = mutableListOf((MockDataModel.get())))
+        val data = TopadsShopUiModel(title = MockTitleModel.get(), dataList = mutableListOf((MockDataModel.get())))
         benchmarkRule.measureRepeated {
             InstrumentationRegistry.getInstrumentation().runOnMainSync {
                 viewHolder.bind(data)

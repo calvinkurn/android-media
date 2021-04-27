@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
@@ -50,13 +49,16 @@ import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomS
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
+import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -581,15 +583,19 @@ class HotelHomepageFragment : HotelBaseFragment(),
                     val hotelSearchModel = HotelSearchModel(name = hotelHomepageModel.locName,
                             id = hotelHomepageModel.locId,
                             type = hotelHomepageModel.locType,
-                            lat = hotelHomepageModel.locLat.toFloat(),
-                            long = hotelHomepageModel.locLong.toFloat(),
+                            lat = hotelHomepageModel.locLat,
+                            long = hotelHomepageModel.locLong,
                             checkIn = hotelHomepageModel.checkInDate,
                             checkOut = hotelHomepageModel.checkOutDate,
                             room = hotelHomepageModel.roomCount,
                             adult = hotelHomepageModel.adultCount,
                             searchType = hotelHomepageModel.searchType,
                             searchId = hotelHomepageModel.searchId)
-                    startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
+                    if (remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_SEARCH_WITH_MAP, true) && isABTestHotelRevamp()) {
+                        startActivityForResult(HotelSearchMapActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
+                    } else {
+                        startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
+                    }
                 }
             }
         }
@@ -716,17 +722,17 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner?, position: Int) {
         promo?.let {
-            trackingHotelUtil.hotelClickBanner(context, it, position, HOMEPAGE_SCREEN_NAME)
-            context?.let { ctx ->
+            context?.let { contextNotNull ->
+                trackingHotelUtil.hotelClickBanner(contextNotNull, it, position, HOMEPAGE_SCREEN_NAME)
                 when {
-                    RouteManager.isSupportApplink(ctx, it.attribute.appUrl) -> {
-                        RouteManager.route(ctx, it.attribute.appUrl)
+                    RouteManager.isSupportApplink(contextNotNull, it.attribute.appUrl) -> {
+                        RouteManager.route(contextNotNull, it.attribute.appUrl)
                     }
-                    getRegisteredNavigation(ctx, it.attribute.appUrl).isNotEmpty() -> {
-                        RouteManager.route(ctx, getRegisteredNavigation(ctx, it.attribute.appUrl))
+                    getRegisteredNavigation(contextNotNull, it.attribute.appUrl).isNotEmpty() -> {
+                        RouteManager.route(contextNotNull, getRegisteredNavigation(contextNotNull, it.attribute.appUrl))
                     }
                     it.attribute.webUrl.isNotEmpty() -> {
-                        RouteManager.route(ctx, it.attribute.webUrl)
+                        RouteManager.route(contextNotNull, it.attribute.webUrl)
                     }
                     else -> {
                     }
@@ -742,6 +748,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private fun hideHotelLastSearchContainer() {
         hotel_container_last_search.visibility = View.GONE
     }
+
+    private fun isABTestHotelRevamp(): Boolean = (RemoteConfigInstance.getInstance().abTestPlatform
+            .getString(HOTEL_AB_TEST_KEY, HOTEL_AB_TEST_OLD_VARIANT)
+            == HOTEL_AB_TEST_NEW_VARIANT)
 
     companion object {
         const val REQUEST_CODE_DESTINATION = 101
@@ -768,6 +778,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
         const val HOMEPAGE_BG_IMAGE_URL = "https://ecs7.tokopedia.net/img/android/res/singleDpi/bg_hotel_homepage_background.png"
+        private const val HOTEL_AB_TEST_KEY = "Hotel_SearchByMap_An"
+        private const val HOTEL_AB_TEST_NEW_VARIANT = "new_map"
+        private const val HOTEL_AB_TEST_OLD_VARIANT = "old_map"
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 
