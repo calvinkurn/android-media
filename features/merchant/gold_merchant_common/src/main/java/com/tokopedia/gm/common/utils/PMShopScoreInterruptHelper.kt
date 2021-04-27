@@ -146,7 +146,6 @@ class PMShopScoreInterruptHelper @Inject constructor() {
 
     private fun showPmShopScoreInterrupt(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
         when (data.periodType) {
-            PeriodType.FINAL_PERIOD -> setupInterruptFinalPeriod(data, fm)
             PeriodType.TRANSITION_PERIOD -> setupInterruptTransitionPeriod(context, data, fm)
             PeriodType.COMMUNICATION_PERIOD -> setupInterruptCommunicationPeriod(context, data, fm)
         }
@@ -301,7 +300,7 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         )
         val url = UriUtil.buildUriAppendParams(PMConstant.Urls.SHOP_SCORE_INTERRUPT_PAGE, param)
         val encodedUrl = URLEncoder.encode(url, "UTF-8")
-        return String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        return String.format("%s?url=%s&titlebar=false", ApplinkConst.WEBVIEW, encodedUrl)
     }
 
     private fun hasConsentChecked(): Boolean {
