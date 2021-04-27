@@ -1,8 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="body_text_color">#f531353b</color>
-    <color name="body_text_error_color">#ff0000</color>
-
-    <color name="green_500">#03ac0e</color>
-
-</resources>
+<resources></resources>
