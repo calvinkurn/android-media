@@ -10,6 +10,20 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <ToggleButton
+            android:id="@+id/toggle_cassava_source"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/layout_lvl4"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:background="@color/Unify_G400"
+            android:checked="true"
+            android:textColor="@color/Unify_N0"
+            android:textOff="@string/cassava_local_label"
+            android:textOn="@string/cassava_network_label" />
+
         <LinearLayout
             android:id="@+id/searchbar"
             android:layout_width="0dp"
@@ -64,8 +78,8 @@
             android:layout_gravity="center"
             android:padding="12dp"
             app:srcCompat="@drawable/ic_delete_analytics" />
-    </LinearLayout>
 
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"

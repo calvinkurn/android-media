@@ -47,7 +47,7 @@ private fun Any.eq(v: Any): Boolean = when {
     this is LinkedTreeMap<*, *> && v is LinkedTreeMap<*, *> -> (this as Map<String, Any>).canValidate(v as Map<String, Any>)
     this is ArrayList<*> && v is ArrayList<*> -> (this as List<Map<String, Any>>).validateArray(v as List<Map<String, Any>>)
     this is String -> regexEquals(this, v)
-    else -> throw Exception("Type is not valid")
+    else -> this == v
 }
 
 fun regexEquals(s: String, v: Any): Boolean {
