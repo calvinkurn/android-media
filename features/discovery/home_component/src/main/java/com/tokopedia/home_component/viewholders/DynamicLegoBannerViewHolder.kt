@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.customview.ShimmeringImageView
@@ -32,11 +33,11 @@ import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
 class DynamicLegoBannerViewHolder(itemView: View,
                                   val legoListener: DynamicLegoBannerListener?,
                                   val homeComponentListener: HomeComponentListener?,
-                                  val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null,
-                                  val isLego4UsingRollenceVariant: Boolean = false):
+                                  val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null):
         AbstractViewHolder<DynamicLegoBannerDataModel>(itemView) {
 
     private var isCacheData = false
+    private var isLego4UsingRollenceVariant = false
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_lego_banner
@@ -44,6 +45,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
     override fun bind(element: DynamicLegoBannerDataModel) {
         isCacheData = element.isCache
+        isLego4UsingRollenceVariant = HomeComponentRollenceController.isHomeComponentLego4BannerUsingRollenceVariant()
         setHeaderComponent(element)
         setGrids(element)
     }

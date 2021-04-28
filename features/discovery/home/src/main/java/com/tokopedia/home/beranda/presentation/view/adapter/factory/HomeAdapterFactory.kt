@@ -366,8 +366,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                             view,
                             legoListener,
                             homeComponentListener,
-                            parentRecycledViewPool,
-                            listener.isHomeComponentLego4BannerUsingRollenceVariant()
+                            parentRecycledViewPool
                     )
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder =
                     RecommendationListCarouselViewHolder(

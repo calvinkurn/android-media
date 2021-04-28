@@ -104,6 +104,7 @@ import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.util.createProductCardOptionsModel
 import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
+import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
@@ -343,9 +344,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var coachmark: CoachMark2? = null
     private var bannerCarouselCallback: BannerComponentCallback? = null
 
-    private var rollenceLego4BannerValue: String = ""
-    private var rollenceCategoryWidgetValue: String = ""
-
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
 
@@ -544,7 +542,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView?.setHasFixedSize(true)
         homeRecyclerView?.itemAnimator?.moveDuration = 150
         initInboxAbTest()
-        fetchHomeComponentRollenceValue()
+        HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         navAbTestCondition(
                 ifNavOld = {
                     oldToolbar?.setAfterInflationCallable(afterInflationCallable)
@@ -2850,26 +2848,5 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 saveStateReset(false)
             }
         }).show()
-    }
-
-    private fun fetchHomeComponentRollenceValue() {
-        rollenceLego4BannerValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(HOME_COMPONENT_LEGO4BANNER_EXP, HOME_COMPONENT_LEGO4BANNER_OLD)
-        rollenceCategoryWidgetValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(HOME_COMPONENT_CATEGORYWIDGET_EXP, HOME_COMPONENT_CATEGORYWIDGET_OLD)
-    }
-
-    private fun getRollenceValueLego4Banner() : String {
-        return if (rollenceLego4BannerValue.isNotEmpty()) rollenceLego4BannerValue else HOME_COMPONENT_LEGO4BANNER_OLD
-    }
-
-    private fun getRollenceValueCategoryWidget() : String {
-        return if (rollenceCategoryWidgetValue.isNotEmpty()) rollenceCategoryWidgetValue else HOME_COMPONENT_CATEGORYWIDGET_OLD
-    }
-
-    override fun isHomeComponentLego4BannerUsingRollenceVariant(): Boolean {
-        return getRollenceValueLego4Banner() == HOME_COMPONENT_LEGO4BANNER_VARIANT
-    }
-
-    override fun isHomeComponentCategoryWidgetRollenceVariant(): Boolean {
-        return getRollenceValueCategoryWidget() == HOME_COMPONENT_CATEGORYWIDGET_VARIANT
     }
 }

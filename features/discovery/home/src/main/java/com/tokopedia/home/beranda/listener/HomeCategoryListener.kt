@@ -141,7 +141,4 @@ interface HomeCategoryListener {
 
     fun onChooseAddressServerDown()
 
-    fun isHomeComponentLego4BannerUsingRollenceVariant() : Boolean
-
-    fun isHomeComponentCategoryWidgetRollenceVariant() : Boolean
 }
