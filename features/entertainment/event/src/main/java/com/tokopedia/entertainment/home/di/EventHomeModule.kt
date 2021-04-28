@@ -46,34 +46,6 @@ class EventHomeModule {
 
     @EventHomeScope
     @Provides
-    fun provideRestRepository(interceptors: MutableList<Interceptor>,
-                              @ApplicationContext context: Context): RestRepository =
-            RestRequestInteractor.getInstance().restRepository.apply {
-                updateInterceptors(interceptors, context)
-            }
-
-    @EventHomeScope
-    @Provides
-    fun provideInterceptors(tkpdAuthInterceptor: TkpdAuthInterceptor,
-                            loggingInterceptor: HttpLoggingInterceptor,
-                            commonErrorResponseInterceptor: CommonErrorResponseInterceptor) =
-            mutableListOf(tkpdAuthInterceptor, loggingInterceptor, commonErrorResponseInterceptor)
-
-    @EventHomeScope
-    @Provides
-    fun provideAuthInterceptors(@ApplicationContext context: Context,
-                                userSession: UserSessionInterface): TkpdAuthInterceptor {
-        return TkpdAuthInterceptor(context, context as NetworkRouter, userSession)
-    }
-
-    @EventHomeScope
-    @Provides
-    fun provideErrorInterceptors(): CommonErrorResponseInterceptor {
-        return CommonErrorResponseInterceptor()
-    }
-
-    @EventHomeScope
-    @Provides
     fun provideTracking(): EventHomePageTracking {
         return EventHomePageTracking()
     }

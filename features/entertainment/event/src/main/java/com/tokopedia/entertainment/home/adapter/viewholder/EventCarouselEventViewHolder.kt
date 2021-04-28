@@ -81,11 +81,6 @@ class EventCarouselEventViewHolder(itemView: View,
             holder.view.event_title.text = item.title
             holder.view.event_date.text = formatedSchedule(item.date)
             holder.view.event_price.text = item.price
-            if (item.isLiked) {
-                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_active)
-            } else {
-                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_inactive)
-            }
             holder.view.setOnClickListener {
                 carouselListener.clickTopEventProduct(item, productNames,
                         position + 1)
@@ -95,9 +90,6 @@ class EventCarouselEventViewHolder(itemView: View,
                 carouselListener.impressionTopEventProduct(item, productNames,
                         position + 1)
             })
-            holder.view.iv_favorite.setOnClickListener {
-                clickCarouselListener.likeCarousel(item)
-            }
         }
 
         private fun formatedSchedule(schedule: String): String? {
@@ -122,6 +114,5 @@ class EventCarouselEventViewHolder(itemView: View,
 
     interface ClickCarouselListener{
         fun redirectCarouselToPDPEvent(applink: String)
-        fun likeCarousel(itemModel: EventItemModel)
     }
 }

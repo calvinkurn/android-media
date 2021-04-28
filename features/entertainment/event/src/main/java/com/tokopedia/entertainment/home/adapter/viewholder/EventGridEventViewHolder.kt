@@ -85,11 +85,6 @@ class EventGridEventViewHolder(itemView: View,
             holder.view.txt_location.text = item.location
             holder.view.txt_title.text = item.title
             holder.view.txt_price.text = item.price
-            if (item.isLiked) {
-                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_active)
-            } else {
-                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_inactive)
-            }
             holder.view.setOnClickListener {
                 gridlistener.clickSectionEventProduct(item, items, titleGrid,
                         position + 1)
@@ -100,10 +95,6 @@ class EventGridEventViewHolder(itemView: View,
                 gridlistener.impressionSectionEventProduct(item, items, titleGrid,
                         position + 1)
             })
-
-            holder.view.iv_favorite.setOnClickListener {
-                clickGridListener.likeProductGrid(item)
-            }
         }
 
         fun setList(list: MutableList<EventItemModel>) {
@@ -118,7 +109,6 @@ class EventGridEventViewHolder(itemView: View,
 
     interface ClickGridListener{
         fun redirectToPDPEvent(applink: String)
-        fun likeProductGrid(data: EventItemModel)
     }
 
 }

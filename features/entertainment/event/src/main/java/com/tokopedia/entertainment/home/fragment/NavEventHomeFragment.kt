@@ -276,22 +276,6 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
         redirectPdp(applink)
     }
 
-    override fun likeCarousel(itemModel: EventItemModel) {
-        if (userSession.isLoggedIn) {
-            viewModel.likeProduct(itemModel, userSession.userId)
-        } else {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_LOGIN_POST_LIKES)
-        }
-    }
-
-    override fun likeProductGrid(itemModel: EventItemModel) {
-        if (userSession.isLoggedIn) {
-            viewModel.likeProduct(itemModel, userSession.userId)
-        } else {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_LOGIN_POST_LIKES)
-        }
-    }
-
     private fun redirectPdp(applink: String){
         val destination = NavEventHomeFragmentDirections.actionHomeEventFragmentToPdpEventFragment(applink)
         NavigationEventController.navigate(this, destination)
