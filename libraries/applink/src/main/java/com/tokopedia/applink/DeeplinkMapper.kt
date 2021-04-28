@@ -113,7 +113,6 @@ object DeeplinkMapper {
             }
             DeeplinkConstant.SCHEME_SELLERAPP -> {
                 val query = uri.query
-                val query = uri.query
                 val tempDeeplink = getRegisteredNavigationFromSellerapp(uri, deeplink)
                 createAppendDeeplinkWithQuery(tempDeeplink, query)
             }
