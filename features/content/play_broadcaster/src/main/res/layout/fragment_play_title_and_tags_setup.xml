@@ -38,6 +38,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/play_tags_instruction_text"
         android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_field_title"

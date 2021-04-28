@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -54,6 +55,7 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
      * UI
      */
     private val bottomSheetHeader: PlayBottomSheetHeader by detachableView(R.id.bottom_sheet_header)
+    private val tvTagsInstruction: TextView by detachableView(R.id.tv_tags_instruction)
     private val titleFieldView by viewComponent(isEagerInit = true) { TextFieldTitleViewComponent(it, R.id.text_field_title, this) }
     private val tagListView by viewComponent { TagListViewComponent(it, R.id.rv_tags_recommendation, this) }
     private val bottomActionNextView by viewComponent { BottomActionNextViewComponent(it, this) }
@@ -144,6 +146,7 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
     private fun observeTags() {
         viewModel.observableRecommendedTagsModel.observe(viewLifecycleOwner, Observer {
             tagListView.setTags(it.toList())
+            tvTagsInstruction.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
         })
     }
 
