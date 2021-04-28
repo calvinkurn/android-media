@@ -56,7 +56,9 @@ class HotelHomepageScreenshotTesting {
 
         CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_container_last_search, filePrefix(), "recent-search")
 
-        scrollToBottom()
+        activityRule.runOnUiThread {
+            scrollToBottom()
+        }
 
         CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_container_promo, filePrefix(), "promo-container")
 
