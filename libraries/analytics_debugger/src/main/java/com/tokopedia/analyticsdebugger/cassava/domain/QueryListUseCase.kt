@@ -3,7 +3,6 @@ package com.tokopedia.analyticsdebugger.cassava.domain
 import android.content.Context
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaRepository
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
-import com.tokopedia.analyticsdebugger.cassava.di.CassavaQualifier
 import com.tokopedia.analyticsdebugger.cassava.validator.Utils
 import com.tokopedia.analyticsdebugger.cassava.validator.core.CassavaQuery
 import com.tokopedia.analyticsdebugger.cassava.validator.core.QueryMode
@@ -14,7 +13,7 @@ import javax.inject.Inject
  * @author by furqan on 07/04/2021
  */
 class QueryListUseCase @Inject constructor(
-        @CassavaQualifier private val context: Context,
+        private val context: Context,
         private val repository: CassavaRepository) {
 
     suspend fun execute(source: CassavaSource,
