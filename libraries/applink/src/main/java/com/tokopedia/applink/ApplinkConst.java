@@ -632,4 +632,8 @@ public interface ApplinkConst {
         String VALUE_ROLE_BUYER = "buyer";
         String VALUE_ROLE_SELLER = "seller";
     }
+
+    interface GeneralInfo {
+        String GENERAL_INFO_FORCE_CLOSE_PAGE = "tokopedia://general-info-close";
+    }
 }

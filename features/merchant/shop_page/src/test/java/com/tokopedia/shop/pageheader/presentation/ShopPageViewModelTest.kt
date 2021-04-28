@@ -8,20 +8,17 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestStatus
 import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
-import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
+import com.tokopedia.shop.common.domain.GetShopReputationUseCase
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
@@ -43,7 +40,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Subscriber
 import java.io.File
 
 class ShopPageViewModelTest {
