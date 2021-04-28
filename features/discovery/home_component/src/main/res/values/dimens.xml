@@ -8,6 +8,6 @@
     <dimen name="home_banner_mix_carousel_width">125dp</dimen>
     <dimen name="home_banner_mix_carousel_max_height">284dp</dimen>
     <dimen name="home_banner_mix_arrow_icon_size">50dp</dimen>
-    <dimen name="home_banner_mix_margin_start">4dp</dimen>
+    <dimen name="home_banner_mix_margin_start">6dp</dimen>
     <dimen name="home_component_margin_default">16dp</dimen>
 </resources>
