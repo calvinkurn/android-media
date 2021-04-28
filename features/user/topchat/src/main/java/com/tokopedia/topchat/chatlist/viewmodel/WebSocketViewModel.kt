@@ -16,8 +16,10 @@ import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketParser
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.websocket.WebSocketResponse
+import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import okio.ByteString
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -46,6 +48,21 @@ open class WebSocketViewModel @Inject constructor(
             override fun onMessage(webSocket: WebSocket, text: String) {
                 val response = webSocketParser.parseResponse(text)
                 handleOnMessageWebSocket(response)
+            }
+            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                Timber.d("$TAG - onFailure - ${t.message}")
+            }
+            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                Timber.d("$TAG - onClosed - $code - $reason")
+            }
+            override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
+                Timber.d("$TAG - onMessage - bytes")
+            }
+            override fun onOpen(webSocket: WebSocket, response: Response) {
+                Timber.d("$TAG - onOpen")
+            }
+            override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+                Timber.d("$TAG - onClosing - $code - $reason")
             }
         })
     }
