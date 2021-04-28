@@ -324,10 +324,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         Button alwaysNewHome = findViewById(R.id.buttonAlwaysNewHome);
         Button alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
         Button alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
-        Button alwaysOldLego4 = findViewById(R.id.buttonAlwaysOldLego4);
-        Button alwaysNewLego4 = findViewById(R.id.buttonAlwaysNewLego4);
-        Button alwaysOldCatWidget = findViewById(R.id.buttonAlwaysOldCatWidget);
-        Button alwaysNewCatWidget = findViewById(R.id.buttonAlwaysNewCatWidget);
 
         TextInputEditText inputRollenceKey = findViewById(R.id.input_rollence_key);
         TextInputEditText inputRollenceVariant = findViewById(R.id.input_rollence_variant);
@@ -423,38 +419,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             public void onClick(View view) {
                 RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_BALANCE_WIDGET, BALANCE_WIDGET_VARIANT_REVAMP);
                 Toast.makeText(DeveloperOptionActivity.this, "balance widget: Revamped", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        alwaysOldLego4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(HOME_COMPONENT_LEGO4BANNER_EXP, HOME_COMPONENT_LEGO4BANNER_OLD);
-                Toast.makeText(DeveloperOptionActivity.this, "lego4: Old", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        alwaysNewLego4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(HOME_COMPONENT_LEGO4BANNER_EXP, HOME_COMPONENT_LEGO4BANNER_VARIANT);
-                Toast.makeText(DeveloperOptionActivity.this, "lego4: Revamped", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        alwaysOldCatWidget.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(HOME_COMPONENT_CATEGORYWIDGET_EXP, HOME_COMPONENT_CATEGORYWIDGET_OLD);
-                Toast.makeText(DeveloperOptionActivity.this, "category widget: Old", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        alwaysNewCatWidget.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(HOME_COMPONENT_CATEGORYWIDGET_EXP, HOME_COMPONENT_CATEGORYWIDGET_VARIANT);
-                Toast.makeText(DeveloperOptionActivity.this, "category widget: Revamped", Toast.LENGTH_SHORT).show();
             }
         });
 

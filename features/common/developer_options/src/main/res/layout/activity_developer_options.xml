@@ -661,45 +661,5 @@
                 android:text="ALWAYS_NEW_BALANCE_WIDGET" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/buttonAlwaysOldLego4"
-                android:text="ALWAYS_OLD_LEGO_4" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/buttonAlwaysNewLego4"
-                android:text="ALWAYS_LEGO_4_BLEEDING" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/buttonAlwaysOldCatWidget"
-                android:text="ALWAYS_OLD_CATEGORY_WIDGET" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/buttonAlwaysNewCatWidget"
-                android:text="ALWAYS_CATEGORY_WIDGET_BLEEDING" />
-        </LinearLayout>
-
     </LinearLayout>
 </ScrollView>
