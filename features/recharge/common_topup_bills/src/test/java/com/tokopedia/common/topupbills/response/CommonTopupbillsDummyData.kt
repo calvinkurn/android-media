@@ -13,6 +13,12 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
+import com.tokopedia.common_digital.atc.data.response.AttributesCart
+import com.tokopedia.common_digital.atc.data.response.AutoApplyVoucher
+import com.tokopedia.common_digital.atc.data.response.CrossSellingConfig
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
+import com.tokopedia.common_digital.atc.data.response.RelationshipsCart
+import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 
 object CommonTopupbillsDummyData {
 
@@ -94,6 +100,13 @@ object CommonTopupbillsDummyData {
                                 )
                         )
                 )
+        )
+    }
+    fun getDummyCartData(isNull: Boolean): ResponseCartData {
+        val id = if (isNull) null else "17211378"
+        return ResponseCartData(
+                type = "cart",
+                id = id
         )
     }
 }
