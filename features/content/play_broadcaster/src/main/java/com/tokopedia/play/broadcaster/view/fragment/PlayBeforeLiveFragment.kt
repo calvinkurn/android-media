@@ -171,7 +171,6 @@ class PlayBeforeLiveFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         when (childFragment) {
             is ProductEditFragment -> childFragment.setListener(setupResultListener)
-            is EditCoverTitleBottomSheet -> childFragment.setListener(setupResultListener)
             is CoverEditFragment -> childFragment.setListener(setupResultListener)
             is SetupBroadcastScheduleBottomSheet -> childFragment.setListener(setupResultListener)
             is TitleAndTagsEditBottomSheet -> childFragment.setListener(setupResultListener)
@@ -211,7 +210,6 @@ class PlayBeforeLiveFragment @Inject constructor(
             analytic.clickEditProductTaggingOnFinalSetupPage()
         }
         tvChannelTitle.setOnClickListener {
-//            openEditCoverTitlePage()
             openEditTitleAndTagsPage()
             analytic.clickEditTitleOnFinalSetupPage()
         }
@@ -416,10 +414,6 @@ class PlayBeforeLiveFragment @Inject constructor(
                 .commit()
     }
 
-    private fun openEditCoverTitlePage() {
-        getEditTitleBottomSheet().show(childFragmentManager)
-    }
-
     private fun openEditTitleAndTagsPage() {
         val fragmentFactory = childFragmentManager.fragmentFactory
         val editTitleAndTagsBottomSheet = fragmentFactory.instantiate(requireContext().classLoader, TitleAndTagsEditBottomSheet::class.java.name) as TitleAndTagsEditBottomSheet
@@ -531,12 +525,6 @@ class PlayBeforeLiveFragment @Inject constructor(
                 bottomMargin = toasterBottomMargin,
                 actionListener = actionListener
         )
-    }
-
-    private fun getEditTitleBottomSheet(): EditCoverTitleBottomSheet {
-        val editTitleBottomSheet = EditCoverTitleBottomSheet()
-        editTitleBottomSheet.setShowListener { editTitleBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
-        return editTitleBottomSheet
     }
 
     private fun getSetupBroadcastScheduleBottomSheet(): SetupBroadcastScheduleBottomSheet {
