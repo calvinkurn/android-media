@@ -6,6 +6,7 @@
     android:layout_width="248dp"
     android:layout_height="wrap_content"
     android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/discovery_common_dms_card_background"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
@@ -125,6 +126,7 @@
 
         <ImageView
             android:id="@+id/optionListCardImageSalesRatingFloat"
+            android:contentDescription="@string/content_desc_search_optionListCardImageSalesRatingFloat"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             android:adjustViewBounds="true"
