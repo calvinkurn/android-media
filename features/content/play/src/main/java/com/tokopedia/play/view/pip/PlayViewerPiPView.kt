@@ -23,6 +23,7 @@ import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.type.PlaySource
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
+import com.tokopedia.play_common.player.state.ExoPlayerStateProcessorImpl
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSession
@@ -71,6 +72,8 @@ class PlayViewerPiPView : ConstraintLayout {
 
     private var mPauseOnDetached: Boolean = true
 
+    private val playerStateProcessor = ExoPlayerStateProcessorImpl()
+
     init {
         val view = View.inflate(context, R.layout.view_play_viewer_pip, this)
 
@@ -95,6 +98,13 @@ class PlayViewerPiPView : ConstraintLayout {
         }
 
         timePipAttached = System.currentTimeMillis()
+
+        videoListener.onPlayerStateChanged(
+                playerStateProcessor.processState(
+                        playWhenReady = mVideoPlayer.videoPlayer.playWhenReady,
+                        playbackState = mVideoPlayer.videoPlayer.playbackState,
+                )
+        )
     }
 
     override fun onDetachedFromWindow() {
@@ -124,7 +134,7 @@ class PlayViewerPiPView : ConstraintLayout {
 
         setBackgroundColor(
                 MethodChecker.getColor(rootView.context,
-                        if (pipInfo.videoStream.orientation.isHorizontal) com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                        if (pipInfo.videoStream.orientation.isHorizontal) R.color.play_dms_background
                         else R.color.transparent
                 )
         )
