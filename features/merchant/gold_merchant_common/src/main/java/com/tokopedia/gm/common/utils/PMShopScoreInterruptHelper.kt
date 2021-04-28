@@ -91,7 +91,7 @@ class PMShopScoreInterruptHelper @Inject constructor() {
 
     fun openInterruptPage(context: Context) {
         init(context)
-        val intent = RouteManager.getIntent(context, getInterruptPageUrl())
+        val intent = RouteManager.getIntent(context, getInterruptPageUrl(context))
         (context as? Activity)?.startActivityForResult(intent, REQUEST_CODE)
         val numberOfPageOpened = pmCommonPreferenceManager?.getInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, 0).orZero()
         pmCommonPreferenceManager?.putInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, numberOfPageOpened.plus(1))
@@ -291,7 +291,7 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         }
     }
 
-    private fun getInterruptPageUrl(): String {
+    private fun getInterruptPageUrl(context: Context): String {
         val numberOfPageOpened = pmCommonPreferenceManager?.getInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, 0).orZero()
         val hasConsentChecked = hasConsentChecked()
         val param = mapOf<String, Any>(
@@ -300,7 +300,8 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         )
         val url = UriUtil.buildUriAppendParams(PMConstant.Urls.SHOP_SCORE_INTERRUPT_PAGE, param)
         val encodedUrl = URLEncoder.encode(url, "UTF-8")
-        return String.format("%s?url=%s&titlebar=false", ApplinkConst.WEBVIEW, encodedUrl)
+        val backPressedMessage = context.getString(R.string.pm_on_back_pressed_disabled_message)
+        return String.format("%s?url=%s&titlebar=false&back_pressed_enabled=false&back_pressed_message=%s", ApplinkConst.WEBVIEW, encodedUrl, backPressedMessage)
     }
 
     private fun hasConsentChecked(): Boolean {
