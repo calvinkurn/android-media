@@ -45,6 +45,7 @@ class HotelHomepageScreenshotTesting {
         turnOffDynamicCarousel()
 
         Thread.sleep(3000)
+
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "top")
 
@@ -65,8 +66,6 @@ class HotelHomepageScreenshotTesting {
         val carousel = activityRule.activity.findViewById<CarouselUnify>(com.tokopedia.hotel.R.id.banner_hotel_homepage_promo)
         carousel.apply {
             autoplay = false
-            infinite = false
-            slideToShow = 0f
         }
     }
 
