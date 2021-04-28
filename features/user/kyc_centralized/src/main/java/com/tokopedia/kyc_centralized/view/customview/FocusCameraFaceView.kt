@@ -5,10 +5,9 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
-import android.os.Build
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 /**
  * @author by alvinatin on 07/11/18.
@@ -82,7 +81,7 @@ class FocusCameraFaceView : View {
 
         mSemiBlackPaint?.let { canvas.drawPath(mPath, it) }
         canvas.clipPath(mPath)
-        canvas.drawColor(Color.parseColor(KYCConstant.KYC_OVERLAY_COLOR))
+        canvas.drawColor(MethodChecker.getColor(this.context, com.tokopedia.user_identification_common.R.color.kyc_dms_overlay))
     }
 
     companion object {
