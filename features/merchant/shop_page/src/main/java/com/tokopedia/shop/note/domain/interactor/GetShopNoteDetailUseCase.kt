@@ -6,27 +6,43 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.ShopNoteQuery
-import com.tokopedia.shop.product.data.GQLQueryConstant.SHOP_NOTES
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 
 import javax.inject.Inject
 
 import rx.Observable
-import javax.inject.Named
 
 /**
  * Created by normansyahputa on 2/8/18.
  */
 
 class GetShopNoteDetailUseCase @Inject constructor(
-        @Named(SHOP_NOTES) val query: String,
         val graphqlUseCase: GraphqlUseCase
 ) : UseCase<ShopNoteModel>() {
 
     companion object {
         private const val SHOP_ID = "shopID"
         private const val NOTE_ID = "id"
+        private const val QUERY = """
+            query shopNotesByShopID(${'$'}shopID: String!, ${'$'}id: String!){
+              shopNotesByShopID(shopID: ${'$'}shopID, id: ${'$'}id){
+                  result {
+                      id
+                      title
+                      content
+                      isTerms
+                      updateTime
+                      updateTimeUTC
+                      url
+                      position
+                  }
+                  error {
+                    message
+                  }
+              }
+            }
+        """
         @JvmStatic
         fun createRequestParams(shopId: String, noteId: String): RequestParams {
             return RequestParams.create().apply {
@@ -37,7 +53,7 @@ class GetShopNoteDetailUseCase @Inject constructor(
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<ShopNoteModel> {
-        val graphqlRequest = GraphqlRequest(query, ShopNoteQuery::class.java, requestParams.parameters)
+        val graphqlRequest = GraphqlRequest(QUERY, ShopNoteQuery::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(requestParams).map {

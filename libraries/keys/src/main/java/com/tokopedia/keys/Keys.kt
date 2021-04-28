@@ -21,6 +21,9 @@ object Keys {
     private val AUTH_NEW_RELIC_USER_ID_SA = decodeKey(NEW_RELIC_USER_ID_SA)
 
     @JvmField
+    val NEW_RELIC = decodeKey(NEW_RELIC_APPLICATION_TOKEN_SA)
+
+    @JvmField
     val AUTH_TRADE_IN_API_KEY_MA = decodeKey(TRADE_IN_API_KEY_MA)
 
     @JvmStatic
