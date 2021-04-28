@@ -27,7 +27,7 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
                 if (subscription.isChecked) widgetMyBills.setDescription(subscription.bodyContentAfter)
                 else widgetMyBills.setDescription(subscription.bodyContentBefore)
 
-                if (!widgetMyBills.isChecked()) widgetMyBills.setChecked(subscription.isChecked)
+                if (!widgetMyBills.isChecked() && subscription.isChecked) widgetMyBills.setChecked(true)
                 listener.onSubscriptionChecked(subscription, widgetMyBills.isChecked())
 
                 widgetMyBills.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
