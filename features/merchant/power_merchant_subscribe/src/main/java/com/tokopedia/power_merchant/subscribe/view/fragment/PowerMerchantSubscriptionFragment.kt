@@ -683,7 +683,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         return WidgetRegistrationHeaderUiModel(
                 shopInfo = shopInfo,
                 pmTerms = PMRegistrationTermHelper.getPmRegistrationTerms(requireContext(), shopInfo),
-                pmProTerms = PMRegistrationTermHelper.getPmProRegistrationTerms(requireContext(), shopInfo)
+                pmProTerms = PMRegistrationTermHelper.getPmProRegistrationTerms(requireContext(), shopInfo),
+                isPmProSelected = shopInfo.isEligiblePmPro
         )
     }
 

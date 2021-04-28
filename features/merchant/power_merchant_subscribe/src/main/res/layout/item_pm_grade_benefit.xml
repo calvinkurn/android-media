@@ -14,8 +14,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icPmBenefitItem"
-        android:layout_width="@dimen/pm_spacing_18dp"
-        android:layout_height="@dimen/pm_spacing_18dp" />
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmBenefitItem"
