@@ -434,33 +434,6 @@ open class ProductAttachmentViewModel : SendableViewModel,
         return "$role - $productId - $isWarehouse - $isCampaign"
     }
 
-    fun getProductSource(): String {
-        return if (fromBroadcast()) {
-            "broadcast"
-        } else {
-            "buyer attached"
-        }
-    }
-
-    fun getEventLabelImpression(amISeller: Boolean): String {
-        val role = if (amISeller) {
-            "seller"
-        } else {
-            "buyer"
-        }
-        val isWarehouse = if (isFullfilment) {
-            "warehouse"
-        } else {
-            "notwarehouse"
-        }
-        val isCampaign = if (isProductCampaign()) {
-            "campaign"
-        } else {
-            "notcampaign"
-        }
-        return "$role - $productId - $isWarehouse - $isCampaign"
-    }
-
     companion object {
         const val statusDeleted = 0
         const val statusActive = 1
