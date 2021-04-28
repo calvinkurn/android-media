@@ -43,7 +43,7 @@ class CarouselViewHolder(
             null == data -> setOnLoadingState()
             data.error.isNotBlank() -> {
                 setOnErrorState()
-                listener.setOnErrorWidget(adapterPosition, element)
+                listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> setOnSuccessState(element)
         }

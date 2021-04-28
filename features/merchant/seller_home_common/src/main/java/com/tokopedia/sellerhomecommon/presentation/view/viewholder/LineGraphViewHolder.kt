@@ -85,7 +85,7 @@ class LineGraphViewHolder(
                 onStateLoading(false)
                 showViewComponent(false, element)
                 onStateError(true)
-                listener.setOnErrorWidget(adapterPosition, element)
+                listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> {
                 onStateLoading(false)
