@@ -259,10 +259,17 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
+                <data android:scheme="sellerapp" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="tokopedia"
                     android:sspPattern="//.*?.*redirect_to_sellerapp=true.*" />
-                <data android:scheme="sellerapp" />
             </intent-filter>
         </activity>
         <service android:name="com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService"

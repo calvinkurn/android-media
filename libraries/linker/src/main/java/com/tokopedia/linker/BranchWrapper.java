@@ -148,13 +148,8 @@ public class BranchWrapper implements WrapperInterface {
                         deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
                     }
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
-                        if (isSkipDeeplink(context)) {
-                            linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
-                                    LinkerUtils.createLinkerError(BranchError.ERR_BRANCH_NO_SHARE_OPTION, null));
-                        } else {
-                            linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
-                                    LinkerUtils.createDeeplinkData(deeplink, promoCode));
-                        }
+                        linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
+                                LinkerUtils.createDeeplinkData(deeplink, promoCode));
                     }
                     checkAndSendUtmParams(context, referringParams);
                     if (!TextUtils.isEmpty(deeplink)) {
@@ -536,10 +531,6 @@ public class BranchWrapper implements WrapperInterface {
         return getBooleanValue(context, RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK);
     }
 
-    private Boolean isSkipDeeplinkNonBranchLinkActivated(Context context) {
-        return getBooleanValue(context, RemoteConfigKey.ENABLE_SKIP_DEEPLINK_FRON_NON_BRANCH_LINK);
-    }
-
     private Boolean getBooleanValue(Context context, String key) {
         if (remoteConfig == null)
             remoteConfig = new FirebaseRemoteConfigImpl(context);
@@ -552,15 +543,6 @@ public class BranchWrapper implements WrapperInterface {
             return true;
         }
         return false;
-    }
-
-
-    private boolean isSkipDeeplink(Context context) {
-        if (APP_OPEN_FROM_BRANCH_LINK || isFirstOpen(context)) {
-            return false;
-        }
-        return isSkipDeeplinkNonBranchLinkActivated(context);
-
     }
 
     private void logNonBranchLinkData(Context context, JSONObject referringParams) {

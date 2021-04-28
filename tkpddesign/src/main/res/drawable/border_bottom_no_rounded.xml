@@ -12,7 +12,7 @@
     <!-- content background -->
     <item>
         <shape>
-            <solid android:color="@color/tkpd_main_green" />
+            <solid android:color="@color/Unify_G500" />
         </shape>
     </item>
 

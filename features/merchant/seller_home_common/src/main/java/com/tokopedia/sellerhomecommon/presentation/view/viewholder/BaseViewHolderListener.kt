@@ -13,5 +13,5 @@ interface BaseViewHolderListener {
 
     fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>)
 
-    fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>)
+    fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>, error: String)
 }
