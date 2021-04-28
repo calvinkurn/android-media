@@ -8,6 +8,7 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
@@ -266,6 +267,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var filterDate = ""
     private var somFilterBottomSheet: SomFilterBottomSheet? = null
     private var pendingAction: SomPendingAction? = null
+    private var tickerIsReady = false
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + masterJob
@@ -873,6 +875,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             somListLoadTimeMonitoring?.startRenderPerformanceMonitoring()
             rvSomList.addOneTimeGlobalLayoutListener {
                 stopLoadTimeMonitoring()
+                if (tickerIsReady) {
+                    Handler().postDelayed({
+                        animateOrderTicker()
+                    }, 200)
+                }
             }
             when (result) {
                 is Success -> renderOrderList(result.data)
@@ -1515,7 +1522,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             this.tickerPagerAdapter = tickerPagerAdapter
         }
         tickerSomList?.addPagerView(tickerPagerAdapter, activeTickers)
-        tickerSomList?.showWithCondition(data.isNotEmpty())
+        tickerIsReady = data.isNotEmpty()
     }
 
     private fun renderOrderList(data: List<SomListOrderUiModel>) {
@@ -2085,6 +2092,33 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
             override fun onAnimationStart(animation: Animator?) {}
         })
+    }
+
+    private fun animateOrderTicker() {
+        tickerSomList?.run {
+            val height = height.toFloat().orZero()
+            translationY = -height
+            val animator = ValueAnimator.ofFloat(-1.0f, 0f)
+            animator.duration = 300
+            animator.addUpdateListener { valueAnimator ->
+                context?.let {
+                    val animValue = (valueAnimator.animatedValue as? Float).orZero()
+                    val translation = animValue * height
+                    translationY = translation
+                    alpha = animValue + 1f
+                    searchBarSomList?.translationY = translation
+                    sortFilterSomList?.translationY = translation
+                    shimmerViews?.translationY = translation
+                    multiEditViews?.translationY = translation
+                    swipeRefreshLayoutSomList?.translationY = translation
+                    containerBtnBulkAction?.translationY = translation
+                    scrollViewErrorState?.translationY = translation
+                    somAdminPermissionView?.translationY = translation
+                }
+            }
+            show()
+            animator.start()
+        }
     }
 
     private fun refreshOrdersOnTabClicked(shouldScrollToTop: Boolean, refreshFilter: Boolean) {
