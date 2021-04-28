@@ -69,7 +69,6 @@ import com.tokopedia.cart.view.mapper.ViewHolderDataMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
-import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
@@ -406,21 +405,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
 
         when (resultCode) {
-            PaymentConstant.PAYMENT_CANCELLED -> {
-                showToastMessageRed(getString(R.string.alert_payment_canceled_or_failed_transaction_module))
-                refreshCartWithProgressDialog()
-            }
-            PaymentConstant.PAYMENT_SUCCESS -> {
-                showToastMessageGreen(getString(R.string.message_payment_success))
-                refreshCartWithProgressDialog()
-            }
-            PaymentConstant.PAYMENT_FAILED -> {
-                showToastMessageRed(getString(R.string.default_request_error_unknown))
-                refreshCartWithProgressDialog()
-            }
-            CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED -> {
-                refreshCartWithProgressDialog()
-            }
             CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED -> {
                 val message = data?.getStringExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE)
                 showToastMessageRed(message ?: "")
