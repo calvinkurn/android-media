@@ -40,6 +40,7 @@ import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
 import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.ToasterActivityLifecycle;
+import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -296,6 +297,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
+        registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
     }
 
     @Override

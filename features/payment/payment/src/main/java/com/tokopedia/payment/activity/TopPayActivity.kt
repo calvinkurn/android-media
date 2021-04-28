@@ -202,11 +202,15 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     override fun renderWebViewPostUrl(url: String, postData: ByteArray, isGet: Boolean) {
-        if (isGet) {
+        if (isGet || isInsufficientBookingStockUrl(url)) {
             scroogeWebView?.loadUrl(url)
         } else {
             scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this), postData)
         }
+    }
+
+    private fun isInsufficientBookingStockUrl(url: String): Boolean {
+        return url.startsWith(INSUFFICIENT_STOCK_URL, ignoreCase = true)
     }
 
     override fun showToastMessageWithForceCloseView(message: String) {
@@ -671,6 +675,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         private const val HCI_CAMERA_SELFIE = "android-js-call://selfie"
         private const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
         private val THANK_PAGE_URL_LIST = arrayOf("thanks", "thank")
+        private const val INSUFFICIENT_STOCK_URL = "https://www.tokopedia.com/cart/insufficient_booking_stock"
 
         private const val BACK_DIALOG_URL = "javascript:handlePopAndroid();"
 

@@ -16,6 +16,11 @@
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_user_inbox"
                     android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_user_inbox_with_query"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
     </application>

@@ -49,7 +49,7 @@ class PieChartViewHolder(
             data == null -> setOnLoading()
             data.error.isNotBlank() -> {
                 setOnError()
-                listener.setOnErrorWidget(adapterPosition, element)
+                listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> setOnSuccess(element)
         }
