@@ -569,10 +569,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         launchCatchError(dispatcher.io, block = {
             val requestParams = ToggleFavoriteUseCase.createParams(shopID, if (isNplFollowerType) ToggleFavoriteUseCase.FOLLOW_ACTION else null)
             val favoriteData = toggleFavoriteUseCase.get().executeOnBackground(requestParams).followShop
-            if (favoriteData.isSuccess) {
+            if (favoriteData?.isSuccess == true) {
                 _toggleFavoriteResult.postValue((favoriteData.isSuccess to isNplFollowerType).asSuccess())
             } else {
-                _toggleFavoriteResult.postValue(Throwable(favoriteData.message).asFail())
+                _toggleFavoriteResult.postValue(Throwable(favoriteData?.message.orEmpty()).asFail())
             }
         }) {
             _toggleFavoriteResult.postValue(it.asFail())
