@@ -3,17 +3,19 @@ package com.tokopedia.shop.score.penalty.domain.mapper
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.ShopScoreConstant.FINISHED_IN
 import com.tokopedia.shop.score.common.ShopScoreConstant.ON_GOING
-import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM
+import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_DONE
 import com.tokopedia.shop.score.common.ShopScoreConstant.POINTS_NOT_YET_DEDUCTED
+import com.tokopedia.shop.score.common.ShopScoreConstant.SINCE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST_VALUE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST_VALUE
+import com.tokopedia.shop.score.common.ShopScoreConstant.START
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_SORT
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
 import com.tokopedia.shop.score.common.formatDate
@@ -26,14 +28,14 @@ import javax.inject.Inject
 
 class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context?) {
 
-    fun mapToPenaltyDetailDummy(statusPenalty: String): ShopPenaltyDetailUiModel {
+    fun mapToPenaltyDetailDummy(itemPenaltyUiModel: ItemPenaltyUiModel, ): ShopPenaltyDetailUiModel {
         return ShopPenaltyDetailUiModel(
                 titleDetail = "Cash advance",
-                dateDetail = "31 Des 2020",
+                dateDetail = itemPenaltyUiModel.startDate,
                 summaryDetail = "Seller melakukan cash advance pada transaksi INV/20210126/XX/V/553738330",
-                deductionPointPenalty = "5",
-                statusDate = "31 Des 2020",
-                stepperPenaltyDetailList = mapToStepperPenaltyDetail(statusPenalty)
+                deductionPointPenalty = itemPenaltyUiModel.deductionPoint.toString(),
+                statusDate = itemPenaltyUiModel.endDate,
+                stepperPenaltyDetailList = mapToStepperPenaltyDetail(itemPenaltyUiModel.statusPenalty)
         )
     }
 
@@ -138,7 +140,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                                          typeId: Int
     ): ItemDetailPenaltyFilterUiModel {
         return ItemDetailPenaltyFilterUiModel(
-                periodDetail = "${dateFilter.first.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_DATE_TEXT)} - ${dateFilter.second.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_DATE_TEXT)}",
+                periodDetail = "${dateFilter.first.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT)} - ${dateFilter.second.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT)}",
                 itemSortFilterWrapperList = mapToSortFilterPenalty(penaltyTypes, typeId))
     }
 
@@ -164,10 +166,24 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                         null
                     }
                 }
+                val endDateText = when (it.status) {
+                    ON_GOING -> {
+                        "$FINISHED_IN ${it.penaltyExpirationDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT)}"
+                    }
+                    PENALTY_DONE -> {
+                        "$SINCE ${it.penaltyExpirationDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT)}"
+                    }
+                    POINTS_NOT_YET_DEDUCTED -> {
+                        "$START ${it.penaltyExpirationDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT)}"
+                    }
+                    else -> it.penaltyExpirationDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT)
+                }
+
                 add(ItemPenaltyUiModel(
                         statusPenalty = it.status,
-                        startDate = it.penaltyStartDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_DATE_TEXT),
-                        endDate = it.penaltyExpirationDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_DATE_TEXT),
+                        deductionPoint = it.score,
+                        startDate = it.penaltyStartDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT),
+                        endDate = endDateText,
                         typePenalty = it.typeName,
                         descPenalty = it.reason,
                         colorPenalty = colorTypePenalty

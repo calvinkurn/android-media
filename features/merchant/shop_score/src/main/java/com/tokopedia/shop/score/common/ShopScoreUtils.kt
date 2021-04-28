@@ -14,8 +14,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,7 +33,7 @@ object ShopScoreUtils {
 }
 
 fun GlobalError.setTypeGlobalError(throwable: Throwable?) {
-    if (throwable is UnknownHostException || throwable is SocketTimeoutException) {
+    if (throwable is IOException) {
         setType(GlobalError.NO_CONNECTION)
     } else {
         setType(GlobalError.SERVER_ERROR)

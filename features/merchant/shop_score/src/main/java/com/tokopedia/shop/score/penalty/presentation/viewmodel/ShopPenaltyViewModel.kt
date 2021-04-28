@@ -26,6 +26,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -104,6 +105,7 @@ class ShopPenaltyViewModel @Inject constructor(
                 getShopPenaltySummaryTypesUseCase.executeOnBackground()
             }, onError = {
                 _penaltyPageData.postValue(Fail(it))
+                null
             })
 
             val penaltyDetailResponse = asyncCatchError(block = {
@@ -113,10 +115,11 @@ class ShopPenaltyViewModel @Inject constructor(
                 getShopPenaltyDetailUseCase.executeOnBackground()
             }, onError = {
                 _penaltyPageData.postValue(Fail(it))
+                null
             })
 
-            val penaltySummaryTypeData = penaltySummaryTypeResponse.await() as? ShopPenaltySummaryTypeWrapper
-            val penaltyDetailData = penaltyDetailResponse.await() as? ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail
+            val penaltySummaryTypeData = penaltySummaryTypeResponse.await()
+            val penaltyDetailData = penaltyDetailResponse.await()
 
             penaltySummaryTypeData?.let { penaltySummary ->
                 penaltyDetailData?.also { penaltyDetail ->
@@ -128,14 +131,13 @@ class ShopPenaltyViewModel @Inject constructor(
                             typeId
                     )
 
-                    penaltyFilterUiModel = penaltyMapperData.penaltyFilterList?.toMutableList() ?: mutableListOf()
+                    penaltyFilterUiModel = penaltyMapperData.penaltyFilterList?.toMutableList()
+                            ?: mutableListOf()
                     itemSortFilterWrapperList = penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterUiModel).toMutableList()
                     _penaltyPageData.postValue(Success(penaltyMapperData))
                 }
             }
-
-        }, onError = {
-        })
+        }, onError = {})
     }
 
     private fun initPenaltyDetail() {
@@ -227,7 +229,6 @@ class ShopPenaltyViewModel @Inject constructor(
                         it.isSelected = false
                     }
                 }
-
             }
             _resetFilterResult.value = Success(penaltyFilterUiModel)
         }, onError = {

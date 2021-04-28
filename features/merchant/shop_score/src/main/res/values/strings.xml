@@ -132,6 +132,11 @@
     <string name="desc_level_4"><![CDATA[Mulai dari <b>Rp300juta</b> dan <b>1.500</b> produk terjual]]></string>
 
     <!-- Summary Shop Performance -->
+    <string name="title_tenure_new_seller_score_under_60">Potensi skormu masih bisa ditingkatkan. Tingkatkan, yuk!</string>
+    <string name="title_tenure_new_seller_score_between_60_to_79">Potensi skormu cukup baik. Mulai tingkatkan lagi, yuk!</string>
+    <string name="title_tenure_new_seller_score_more_80">Potensi skor baik dan masih bisa ditingkatkan. Pertahankan, ya!</string>
+    <string name="desc_tenure_new_seller">Skor akan disesuaikan berdasarkan Performa setelah 90 hari. Tingkatkan Performa dengan baca tips, ya!</string>
+
     <string name="title_new_seller_level_0">Belum ada level &amp; skor untuk tokomu</string>
     <string name="desc_new_seller_level_0">Level &amp; skor Performa Tokomu akan ditampilkan jika sudah 90 hari bergabung. Kamu akan dapat proyeksi skor di hari ke-60, pada %s, ya.</string>
     <string name="title_keep_up_level_1">Tingkatkan terus kualitas tokomu, yuk!</string>

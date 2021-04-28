@@ -7,6 +7,9 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailParam
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
 import com.tokopedia.usecase.coroutines.UseCase
+import java.io.IOException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class GetShopPenaltyDetailUseCase @Inject constructor(
@@ -53,8 +56,12 @@ class GetShopPenaltyDetailUseCase @Inject constructor(
         try {
             return gqlResponse.getData<ShopScorePenaltyDetailResponse>(ShopScorePenaltyDetailResponse::class.java).shopScorePenaltyDetail
         } catch (e: Throwable) {
-            val error = gqlResponse.getError(ShopScorePenaltyDetailResponse::class.java)
-            throw MessageErrorException(error.joinToString(", ") { it.message })
+            if (e is SocketTimeoutException || e is UnknownHostException) {
+                throw IOException(e.message)
+            } else {
+                val error = gqlResponse.getError(ShopScorePenaltyDetailResponse::class.java)
+                throw MessageErrorException(error.joinToString(", ") { it.message })
+            }
         }
     }
 }

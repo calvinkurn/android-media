@@ -184,6 +184,24 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     descHeaderShopService = context?.getString(R.string.desc_new_seller_level_0, dateNewSellerProjection)
                             ?: ""
                 }
+                shopAge in SHOP_AGE_SIXTY..COUNT_DAYS_NEW_SELLER -> {
+                    shopScoreLevelResponse?.let {
+                        when {
+                            it.shopScore < SHOP_SCORE_SIXTY -> {
+                                titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_under_60)
+                                        ?: ""
+                            }
+                            it.shopScore in SHOP_SCORE_SIXTY..SHOP_SCORE_SEVENTY_NINE -> {
+                                titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_between_60_to_79)
+                                        ?: ""
+                            }
+                            it.shopScore >= SHOP_SCORE_EIGHTY -> {
+                                titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_more_80) ?: ""
+                            }
+                        }
+                        descHeaderShopService = context?.getString(R.string.desc_tenure_new_seller) ?: ""
+                    }
+                }
                 else -> {
                     when (shopScoreLevelResponse?.shopScore) {
                         in SHOP_SCORE_SIXTY..SHOP_SCORE_SIXTY_NINE -> {

@@ -20,7 +20,7 @@ class ItemShopPerformanceErrorViewHolder(view: View, private val globalErrorList
 
     override fun bind(element: ItemShopPerformanceErrorUiModel?) {
         with(itemView) {
-            globalErrorShopPerformance.setTypeGlobalError(element?.throwable)
+            globalErrorShopPerformance?.setTypeGlobalError(element?.throwable)
             globalErrorShopPerformance?.errorAction?.setOnClickListener {
                 globalErrorListener.onBtnErrorStateClicked()
             }
