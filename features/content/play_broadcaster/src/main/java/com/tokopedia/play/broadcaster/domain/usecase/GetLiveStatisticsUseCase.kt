@@ -19,7 +19,7 @@ class GetLiveStatisticsUseCase @Inject constructor(
 
     private val query = """
         query liveReport(${'$'}channelId: String!){
-          broadcasterReportLiveSummaries(channelID: ${'$'}channelId) {
+          broadcasterReportLiveSummaries(channelID: ${'$'}channelId, useDashboardFormat: true) {
             channel {
               channelID
               metrics {
