@@ -36,8 +36,6 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
                 result {
                   shopScore
                   shopLevel
-                  period
-                  nextUpdate
                   shopScoreDetail{
                     title
                     identifier

@@ -30,12 +30,6 @@ data class ShopScoreLevelResponse(
                 @SerializedName("shopScore")
                 val shopScore: Int = 0,
                 @Expose
-                @SerializedName("period")
-                val period: String = "",
-                @Expose
-                @SerializedName("nextUpdate")
-                val nextUpdate: String = "",
-                @Expose
                 @SerializedName("shopScoreDetail")
                 val shopScoreDetail: List<ShopScoreDetail> = listOf()
         ) {
