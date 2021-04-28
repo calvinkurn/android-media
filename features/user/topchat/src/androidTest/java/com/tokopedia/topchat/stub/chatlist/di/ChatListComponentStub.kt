@@ -1,11 +1,10 @@
 package com.tokopedia.topchat.stub.chatlist.di
 
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.topchat.chatlist.di.*
-import com.tokopedia.topchat.stub.chatlist.di.module.ChatListDispatcherModuleStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListNetworkModuleStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListQueryModuleStub
 import com.tokopedia.topchat.stub.chatlist.di.module.ChatListSettingModuleStub
+import com.tokopedia.topchat.stub.common.di.FakeBaseAppComponent
 import dagger.Component
 
 @ChatListScope
@@ -17,11 +16,10 @@ import dagger.Component
             ChatNotificationsQueryModule::class,
             ChatListViewsModelModule::class,
             ChatNotificationsViewsModelModule::class,
-            ChatListContextModule::class,
-            ChatListDispatcherModuleStub::class
+            ChatListContextModule::class
         ],
-        dependencies = [BaseAppComponent::class]
+        dependencies = [FakeBaseAppComponent::class]
 )
-interface ChatListComponentStub: ChatListComponent {
+interface ChatListComponentStub : ChatListComponent {
 
 }
