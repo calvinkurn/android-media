@@ -12,7 +12,6 @@ import dagger.Component
 @CassavaScope
 @Component(
         modules = [CassavaModule::class, CassavaViewModelModule::class],
-        dependencies = [BaseAppComponent::class]
 )
 interface CassavaComponent {
     fun inject(mainValidatorActivity: MainValidatorActivity)

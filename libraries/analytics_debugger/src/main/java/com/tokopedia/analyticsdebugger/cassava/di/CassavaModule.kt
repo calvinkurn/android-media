@@ -7,6 +7,8 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaApi
+import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
+import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDao
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.url.TokopediaUrl
 import dagger.Module
@@ -25,51 +27,40 @@ class CassavaModule(private val context: Context) {
 
     @CassavaScope
     @Provides
-    @CassavaQualifier
     fun provideContext(): Context = context
 
     @CassavaScope
     @Provides
-    fun provideApplication(@CassavaQualifier context: Context): Application =
+    fun provideApplication(context: Context): Application =
             (context as Activity).application
 
-    @CassavaScope
-    @Provides
-    @CassavaQualifier
-    fun provideChuckInterceptor(@CassavaQualifier context: Context): Interceptor =
-            ChuckerInterceptor(context)
 
     @CassavaScope
     @Provides
-    fun provideOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                            @CassavaQualifier chuckerInterceptor: Interceptor): OkHttpClient {
-        val builder = OkHttpClient.Builder()
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(httpLoggingInterceptor)
-                    .addInterceptor(chuckerInterceptor)
-        }
-        return builder.build()
+    fun provideOkHttpClient(): OkHttpClient {
+        val chucker = ChuckerInterceptor(context)
+        return OkHttpClient.Builder()
+                .addInterceptor(chucker)
+                .build()
     }
 
     @CassavaScope
     @Provides
-    @CassavaQualifier
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
-            Retrofit.Builder()
-                    .addConverterFactory(GsonConverterFactory.create(GsonBuilder()
-                            .setPrettyPrinting()
-                            .serializeNulls()
-                            .create()))
-                    .baseUrl(TokopediaUrl.getInstance().API)
-                    .client(okHttpClient)
-                    .build()
+    fun provideCassavaApi(okHttpClient: OkHttpClient): CassavaApi {
+        val retrofit = Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(GsonBuilder()
+                        .setPrettyPrinting()
+                        .serializeNulls()
+                        .create()))
+                .baseUrl(TokopediaUrl.getInstance().API)
+                .client(okHttpClient)
+                .build()
+        return retrofit.create(CassavaApi::class.java)
+    }
 
-    @CassavaScope
     @Provides
-    fun provideCassavaApi(@CassavaQualifier retrofit: Retrofit): CassavaApi =
-            retrofit.create(CassavaApi::class.java)
-
-    companion object {
+    fun provideGtmDao(): GtmLogDao {
+        return TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
     }
 
 }
