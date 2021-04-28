@@ -48,6 +48,7 @@ class HotelHomepageScreenshotTesting {
 
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "top")
+        }
 
             CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_search_form_container, filePrefix(), "search-container")
 
@@ -58,7 +59,7 @@ class HotelHomepageScreenshotTesting {
             CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_homepage_video_banner, filePrefix(), "video-banner")
 
             CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.widget_hotel_homepage_popular_cities, filePrefix(), "widget-popular-cities")
-        }
+
         activityRule.activity.finishAndRemoveTask()
     }
 
