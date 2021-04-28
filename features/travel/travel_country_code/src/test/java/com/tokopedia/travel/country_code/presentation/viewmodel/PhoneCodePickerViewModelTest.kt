@@ -8,6 +8,7 @@ import com.tokopedia.travel.country_code.util.TravelCountryCodeGqlQuery
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
 import org.junit.Before
@@ -116,5 +117,39 @@ class PhoneCodePickerViewModelTest {
         assertEquals(dataForFiltered[0].countryId, countryList[0].countryId)
         assertEquals(dataForFiltered[0].countryName, countryList[0].countryName)
         assertEquals(dataForFiltered[0].countryPhoneCode, countryList[0].countryPhoneCode)
+    }
+
+    @Test
+    fun convertKeywordToInt_isSuccess(){
+        //given
+        val keyword = "62"
+        val expected = keyword.toInt()
+        val method = phoneCodePickerViewModel.javaClass.getDeclaredMethod("convertKeywordToInt", String::class.java)
+        method.isAccessible = true
+        val param = arrayOfNulls<String>(1)
+        param[0] = keyword
+
+        //when
+        val result: Int = method.invoke(phoneCodePickerViewModel, *param) as Int
+
+        //then
+        assertEquals(result, expected)
+    }
+
+    @Test
+    fun convertKeywordToInt_isFailed(){
+        //given
+        val keyword = "*(&"
+        val expected = 0
+        val method = phoneCodePickerViewModel.javaClass.getDeclaredMethod("convertKeywordToInt", String::class.java)
+        method.isAccessible = true
+        val param = arrayOfNulls<String>(1)
+        param[0] = keyword
+
+        //when
+        val result: Int = method.invoke(phoneCodePickerViewModel, *param) as Int
+
+        //then
+        assertEquals(result, expected)
     }
 }
