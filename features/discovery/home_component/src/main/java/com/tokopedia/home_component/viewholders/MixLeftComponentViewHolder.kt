@@ -123,6 +123,10 @@ class MixLeftComponentViewHolder (itemView: View,
         if (channel.channelBanner.imageUrl.isNotEmpty()) {
             loadingBackground.show()
             image.invisible()
+
+            //reset layout to 0,0,0,0. There is possibility where view is being reused, makes image
+            //becomes stretched.
+            //https://github.com/bumptech/glide/issues/1591
             image.layout(0,0,0,0)
             image.addOnImpressionListener(channel){
                 if (!isCacheData)
