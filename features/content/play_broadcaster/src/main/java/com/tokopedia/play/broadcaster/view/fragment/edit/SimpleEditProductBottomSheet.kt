@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -86,9 +86,9 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayEditProductViewModel::class.java)
-        dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
+        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayEditProductViewModel::class.java)
+        dataStoreViewModel = ViewModelProvider(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -101,13 +101,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        observeSelectedProducts()
-        observeUploadProduct()
+        setupObserve()
     }
 
     override fun onDestroyView() {
@@ -148,6 +142,11 @@ class SimpleEditProductBottomSheet @Inject constructor(
         tvChooseOver.setOnClickListener { mListener?.onChooseOver(this@SimpleEditProductBottomSheet) }
 
         setSelectedProductList(viewModel.selectedProducts)
+    }
+
+    private fun setupObserve() {
+        observeSelectedProducts()
+        observeUploadProduct()
     }
 
     private fun setSelectedProductList(productList: List<ProductContentUiModel>) {

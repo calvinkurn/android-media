@@ -14,9 +14,7 @@ import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -103,13 +101,7 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        observeUpdateTitle()
-        observeSelectedCover()
+        setupObserve()
     }
 
     override fun onDestroyView() {
@@ -192,6 +184,11 @@ class EditCoverTitleBottomSheet : BottomSheetUnify() {
             etCoverTitle.clearFocus()
             analytic.clickSubmitOnEditTitleBottomSheet()
         }
+    }
+
+    private fun setupObserve() {
+        observeUpdateTitle()
+        observeSelectedCover()
     }
 
     private fun setupTitleCounter() {

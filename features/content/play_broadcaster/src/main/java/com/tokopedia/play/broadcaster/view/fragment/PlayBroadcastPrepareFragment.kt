@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -29,6 +29,9 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragme
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.detachableview.FragmentViewContainer
+import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
+import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -44,14 +47,14 @@ import javax.inject.Inject
 class PlayBroadcastPrepareFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val analytic: PlayBroadcastAnalytic
-) : PlayBaseBroadcastFragment() {
+) : PlayBaseBroadcastFragment(), FragmentWithDetachableView {
 
     private lateinit var viewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
-    private lateinit var btnSetup: UnifyButton
-    private lateinit var followerView: PlayShareFollowerView
-    private lateinit var tvTermsCondition: TextView
+    private val btnSetup: UnifyButton by detachableView(R.id.btn_setup)
+    private val followerView: PlayShareFollowerView by detachableView(R.id.follower_view)
+    private val tvTermsCondition: TextView by detachableView(R.id.tv_terms_condition)
 
     private val actionBarView by viewComponent {
         ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {
@@ -70,6 +73,8 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     private val isFirstStreaming: Boolean
         get() = parentViewModel.isFirstStreaming
 
+    private val fragmentViewContainer = FragmentViewContainer()
+
     private val setupListener = object : SetupResultListener {
         override fun onSetupCanceled() {
 
@@ -85,8 +90,8 @@ class PlayBroadcastPrepareFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
-        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
+        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -95,16 +100,9 @@ class PlayBroadcastPrepareFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
         setupView(view)
         setupInsets(view)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        observeFollowers()
-        observeChannelInfo()
+        setupObserve()
     }
 
     override fun onStart() {
@@ -120,12 +118,8 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         }
     }
 
-    private fun initView(view: View) {
-        with (view) {
-            btnSetup = findViewById(R.id.btn_setup)
-            followerView = findViewById(R.id.follower_view)
-            tvTermsCondition = findViewById(R.id.tv_terms_condition)
-        }
+    override fun getViewContainer(): FragmentViewContainer {
+        return fragmentViewContainer
     }
 
     private fun setupView(view: View) {
@@ -142,6 +136,11 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         view.doOnApplyWindowInsets { v, insets, padding, _ ->
             v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
         }
+    }
+
+    private fun setupObserve() {
+        observeFollowers()
+        observeChannelInfo()
     }
 
     private fun setupTermsCondition() {

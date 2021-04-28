@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -58,8 +58,8 @@ class ProductEditFragment : TkpdBaseV4Fragment() {
         inject()
         childFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
-        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
+        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
