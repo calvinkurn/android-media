@@ -20,15 +20,13 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-class ValidatorViewModel @Inject constructor(private val context: Application,
-                                             private val queryListUseCase: QueryListUseCase,
-                                             private val validationResultUseCase: ValidationResultUseCase,
-                                             private val journeyListUseCase: JourneyListUseCase)
-    : AndroidViewModel(context) {
-
-    private val dao: GtmLogDBSource by lazy { GtmLogDBSource(context) }
-    private val engine: ValidatorEngine by lazy { ValidatorEngine(dao) }
-    private val repo: GtmRepo by lazy { GtmRepo(TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()) }
+class ValidatorViewModel @Inject constructor(
+        private val queryListUseCase: QueryListUseCase,
+        private val validationResultUseCase: ValidationResultUseCase,
+        private val journeyListUseCase: JourneyListUseCase,
+        private val engine: ValidatorEngine,
+        private val repo: GtmRepo,
+) : ViewModel() {
 
     private var journeyId: String = ""
 

@@ -6,10 +6,11 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import javax.inject.Inject
 
 const val PER_PAGE = 50
 
-class GtmRepo(val dao: GtmLogDao) {
+class GtmRepo @Inject constructor(val dao: GtmLogDao) {
 
     private val inMemoryCache = mutableListOf<GtmLogDB>()
     private var searchIndex = 0
