@@ -54,7 +54,6 @@ import kotlin.collections.set
 
 const val CLICK_GRUP_AKTIF_IKLANKAN = "click - iklankan - grup iklan aktif"
 const val BUAT_GRUP_IKLANKAN = "click - iklankan - buat grup iklan"
-const val EVENT_LABEL_IKLANKAN = "jumlah pencarian - potensi tampil - rekomendasi biaya - biaya iklan"
 class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: TopadsProductRecomAdapter
@@ -211,17 +210,23 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
 
     private fun onSuccessGroupList(list: List<GroupListDataItem>) {
         val selectedProductIds = TextUtils.join("," ,adapter.getSelectedIds())
-        val eventLabel = "$selectedProductIds - $EVENT_LABEL_IKLANKAN"
+
         sheet.show(childFragmentManager, list)
         sheet.onNewGroup = { groupName ->
             currentGroupName = groupName
             getBidInfo()
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(BUAT_GRUP_IKLANKAN, eventLabel, userSession.userId)
+            adapter.items?.forEach {
+                val eventLabel = "$selectedProductIds - ${it.searchCount} - ${it.searchPercentage} - ${it.recomBid} - ${it.setCurrentBid}"
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(BUAT_GRUP_IKLANKAN, eventLabel, userSession.userId)
+            }
         }
         sheet.onItemClick = { groupId ->
             getBidInfo()
             currentGroupId = groupId
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_GRUP_AKTIF_IKLANKAN, eventLabel, userSession.userId)
+            adapter.items?.forEach {
+                val eventLabel = "$selectedProductIds - ${it.searchCount} - ${it.searchPercentage} - ${it.recomBid} - ${it.setCurrentBid}"
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_GRUP_AKTIF_IKLANKAN, eventLabel, userSession.userId)
+            }
         }
 
     }
