@@ -2,6 +2,9 @@ package com.tokopedia.pms.clickbca.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.view.WindowManager;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -12,6 +15,16 @@ import com.tokopedia.pms.common.Constant;
  */
 
 public class ChangeClickBcaActivity extends BaseSimpleActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setSecureWindowFlag();
+    }
+
+    private void setSecureWindowFlag() {
+        runOnUiThread(() -> getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE));
+    }
 
     public static Intent createIntent(Context context, String transactionId, String merchantCode, String userIdKlikBca){
         Intent intent = new Intent(context, ChangeClickBcaActivity.class);

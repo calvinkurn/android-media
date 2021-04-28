@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -77,6 +78,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setSecureWindowFlag();
         mPostParams = getIntent().getStringExtra(EXTRA_KEY_POST_PARAMS);
         mURl = getIntent().getStringExtra(EXTRA_KEY_URL);
         isPostRequest = getIntent().getBooleanExtra(EXTRA_IS_POST_REQUEST, false);
@@ -90,6 +92,11 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         this.mWebView.postUrl(mURl, mPostParams.getBytes());
 
     }
+
+    private void setSecureWindowFlag() {
+        runOnUiThread(() -> getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE));
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

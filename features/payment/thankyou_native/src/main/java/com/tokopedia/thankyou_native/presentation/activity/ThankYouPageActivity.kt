@@ -2,6 +2,7 @@ package com.tokopedia.thankyou_native.presentation.activity
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -69,12 +70,19 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setSecureWindowFlag()
         updateTitle("")
         component.inject(this)
         sendOpenScreenEvent(intent.data)
         idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
         idlingResource?.increment()
     }
+
+
+    private fun setSecureWindowFlag() {
+        runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
+    }
+
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
 

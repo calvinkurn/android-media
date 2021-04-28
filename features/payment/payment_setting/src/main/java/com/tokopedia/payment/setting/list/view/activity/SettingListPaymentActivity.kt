@@ -1,5 +1,7 @@
 package com.tokopedia.payment.setting.list.view.activity
 
+import android.os.Bundle
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -10,6 +12,15 @@ import com.tokopedia.payment.setting.di.SettingPaymentModule
 import com.tokopedia.payment.setting.list.view.fragment.SettingListPaymentFragment
 
 class SettingListPaymentActivity : BaseSimpleActivity(), HasComponent<SettingPaymentComponent> {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setSecureWindowFlag()
+    }
+
+    private fun setSecureWindowFlag() {
+        runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
+    }
 
     override fun getNewFragment(): Fragment {
         return SettingListPaymentFragment.createInstance()

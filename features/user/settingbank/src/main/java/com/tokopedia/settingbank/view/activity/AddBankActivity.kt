@@ -3,6 +3,7 @@ package com.tokopedia.settingbank.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -18,6 +19,18 @@ class AddBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>
         OnBankSelectedListener {
 
     private lateinit var settingBankComponent: SettingBankComponent
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setSecureWindowFlag()
+    }
+
+    private fun setSecureWindowFlag() {
+        runOnUiThread {
+            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
+    }
+
 
     override fun getComponent(): SettingBankComponent {
         if (!::settingBankComponent.isInitialized)

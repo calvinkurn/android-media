@@ -2,6 +2,9 @@ package com.tokopedia.pms.bankaccount.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.view.WindowManager;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -19,6 +22,17 @@ public class ChangeBankAccountActivity extends BaseSimpleActivity {
         intent.putExtra(Constant.PAYMENT_LIST_MODEL_EXTRA, paymentListModel);
         return intent;
     }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setSecureWindowFlag();
+    }
+
+    private void setSecureWindowFlag() {
+        runOnUiThread(() -> getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE));
+    }
+
 
     @Override
     protected Fragment getNewFragment() {
