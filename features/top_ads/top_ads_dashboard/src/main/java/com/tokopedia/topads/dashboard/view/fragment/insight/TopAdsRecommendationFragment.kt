@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.model.InsightProductRecommendationModel
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
@@ -49,6 +50,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private var countProduct = 0
     private var countBid = 0
     private var index = 0
+    private var insightRecommendationModel= mutableListOf<InsightProductRecommendationModel>()
     var productids = mutableListOf<String>()
     var productnames = mutableListOf<String>()
 
@@ -116,10 +118,16 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         productids?.clear()
         productnames?.clear()
         productRecommendationModel.topadsGetProductRecommendation?.data?.products?.forEach {
-            productids?.add(it.productId)
-            productnames?.add(it.productName)
+            var insightProductRecommendationModel = InsightProductRecommendationModel().apply {
+                productid = it.productId
+                productname = it.productName
+                searchCount = it.searchCount
+                serachPercentage = it.searchPercentage
+                recommendedBid = it.recomBid
+            }
+            insightRecommendationModel.add(insightProductRecommendationModel)
         }
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightProductEcommerceViewEvent(VIEW_RECOMMENDED_PRODUK, "", productids, productnames, userSession.userId)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightProductEcommerceViewEvent(VIEW_RECOMMENDED_PRODUK, "", insightRecommendationModel, userSession.userId)
     }
 
     private fun checkAllData() {
@@ -150,9 +158,9 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         topAdsInsightTabAdapter?.setListener(object : TopAdsInsightTabAdapter.OnRecyclerTabItemClick {
             override fun onTabItemClick(position: Int) {
                 if(position == 0) {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_PRODUK_BERPOTENSI, "", userSession.userId)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_PRODUK_BERPOTENSI, userSession.userId, userSession.userId)
                 } else if(position == 1){
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_ANGARRAN_HARIAN, "", userSession.userId)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_ANGARRAN_HARIAN, userSession.userId, userSession.userId)
                 }
                 view_pager.currentItem = position
                 if (position == 0 && topAdsInsightTabAdapter?.getTab()?.get(position)?.contains(PRODUK) == true && countProduct != 0) {

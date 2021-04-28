@@ -16,6 +16,7 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
+import com.tokopedia.topads.common.data.model.InsightDailyBudgetModel
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.dashboard.R
@@ -51,8 +52,7 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var groupIds = mutableListOf<String>()
-    private var groupNames = mutableListOf<String>()
+    private var dailyRecommendationModel = mutableListOf<InsightDailyBudgetModel>()
 
 
     companion object {
@@ -119,14 +119,6 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
     private fun onSuccessDailyBudgetRecom(dailyBudgetRecommendationModel: DailyBudgetRecommendationModel) {
         swipeRefreshLayout.isRefreshing = false
         setAdapterData(dailyBudgetRecommendationModel.topadsGetDailyBudgetRecommendation)
-        groupIds?.clear()
-        groupNames?.clear()
-
-        dailyBudgetRecommendationModel.topadsGetDailyBudgetRecommendation.data.forEach {
-            groupIds?.add(it.groupId)
-            groupNames?.add(it.groupName)
-        }
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightDailyProductEcommerceViewEvent(VIEW_DAILY_RECOMMENDATION_PRODUKS, "", groupIds, groupNames, userSession.userId)
     }
 
     private fun setAdapterData(topadsGetDailyBudgetRecommendation: TopadsGetDailyBudgetRecommendation) {
@@ -137,6 +129,17 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
         (parentFragment as TopAdsRecommendationFragment).setCount(adapter.items.size, 1)
         setTitle(topadsGetDailyBudgetRecommendation.data)
+
+        topadsGetDailyBudgetRecommendation?.data?.forEach {
+            var dailyBudgetModel = InsightDailyBudgetModel().apply {
+                groupId = it.groupId
+                groupName = it.groupName
+                dailyPrice = it.suggestedPriceDaily
+                potentialClick = calculatePotentialClick(topadsGetDailyBudgetRecommendation.data)
+            }
+            dailyRecommendationModel.add(dailyBudgetModel)
+        }
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightDailyProductEcommerceViewEvent(VIEW_DAILY_RECOMMENDATION_PRODUKS, "", dailyRecommendationModel, userSession.userId)
     }
 
     private fun setTitle(data: List<DataBudget>) {

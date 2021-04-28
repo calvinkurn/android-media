@@ -216,12 +216,12 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
         sheet.onNewGroup = { groupName ->
             currentGroupName = groupName
             getBidInfo()
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_GRUP_AKTIF_IKLANKAN, eventLabel, userSession.userId)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(BUAT_GRUP_IKLANKAN, eventLabel, userSession.userId)
         }
         sheet.onItemClick = { groupId ->
             getBidInfo()
             currentGroupId = groupId
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(BUAT_GRUP_IKLANKAN, eventLabel, userSession.userId)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_GRUP_AKTIF_IKLANKAN, eventLabel, userSession.userId)
         }
 
     }
