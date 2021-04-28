@@ -291,6 +291,12 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
         }
     }
 
+    public void refreshItemAtIndex(int index) {
+        if (index < 0 || index >= list.size()) return;
+
+        notifyItemChanged(index);
+    }
+
     public List<Visitable> getItemList() {
         return list;
     }

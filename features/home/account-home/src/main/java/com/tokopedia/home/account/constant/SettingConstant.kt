@@ -20,7 +20,6 @@ object SettingConstant {
     const val SETTING_ACCOUNT_SAMPAI_ID = 15
     const val SETTING_TEMPLATE_ID = 16
     const val SETTING_PIN = 17
-    const val SETTING_OCC_PREFERENCE_ID = 18
     const val SETTING_SHOP_INFO_ID = 21
     const val SETTING_SHOP_ETALASE_ID = 22
     const val SETTING_SHOP_PRODUCT_ID = 23
@@ -40,6 +39,7 @@ object SettingConstant {
     const val SETTING_APP_ADVANCED_PUSH_NOTIFICATION = 2
     const val SETTING_ABOUT_US = 36
     const val SETTING_PUSH_NOTIF= 37
+    const val SETTING_IMAGE_QUALITY = 38
     const val PLAYSTORE_URL = "https://play.google.com/store/apps/details?id="
     const val RESCENTER_SELLER = "https://m.tokopedia.com/resolution-center/inbox/seller"
     const val RESCENTER_BUYER = "https://m.tokopedia.com/resolution-center/inbox/buyer"

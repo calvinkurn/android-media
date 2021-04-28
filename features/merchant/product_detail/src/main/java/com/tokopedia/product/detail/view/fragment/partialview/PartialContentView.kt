@@ -2,13 +2,11 @@ package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.Paint
 import android.view.View
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -27,13 +25,8 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
         product_name.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.productName))
         product_name.text = MethodChecker.fromHtml(data.productName)
 
-        img_free_ongkir.shouldShowWithAction(freeOngkirImgUrl.isNotEmpty()) {
-            //If !enableBoe render image from p1
-            Glide.with(view.context)
-                    .load(freeOngkirImgUrl)
-                    .diskCacheStrategy(DiskCacheStrategy.DATA)
-                    .dontAnimate()
-                    .into(view.img_free_ongkir)
+        view.img_free_ongkir.shouldShowWithAction(freeOngkirImgUrl.isNotEmpty()) {
+            view.img_free_ongkir.loadIcon(freeOngkirImgUrl)
         }
 
         text_cashback_green.shouldShowWithAction(data.cashbackPercentage > 0) {
@@ -90,25 +83,11 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
         }
     }
 
-    fun renderShareButton(componentTrackDataModel: ComponentTrackDataModel?) = with(view) {
-        if (!listener.isNavOld()) {
-            share_product_pdp.show()
-            share_product_pdp.setOnClickListener {
-                listener.shareProductFromContent(componentTrackDataModel)
-            }
-        } else {
-            share_product_pdp.hide()
-        }
-    }
-
     fun renderFreeOngkir(freeOngkirUrl: String) = with(view) {
         img_free_ongkir.shouldShowWithAction(freeOngkirUrl.isNotEmpty()) {
-            Glide.with(view.context)
-                    .load(freeOngkirUrl)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .dontAnimate()
-                    .fitCenter()
-                    .into(view.img_free_ongkir)
+            view.img_free_ongkir.loadIcon(freeOngkirUrl) {
+                fitCenter()
+            }
         }
     }
 

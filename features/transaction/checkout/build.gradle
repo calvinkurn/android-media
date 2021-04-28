@@ -32,8 +32,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    //noinspection GradleNotAllowed
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.akamaiBotLib)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.analytics)
@@ -55,10 +53,6 @@ dependencies {
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 
-    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
-        exclude group: "com.android.support"
-    }
-
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.unifyDependencies.components
@@ -67,6 +61,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.coach_mark
 
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.miscDependencies.flexBoxLayout

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.R
@@ -14,6 +15,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.OtherAddressModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 class AddressListItemAdapter(private val listener: AddressListItemAdapterListener): RecyclerView.Adapter<AddressListItemAdapter.BaseViewHolder<*>>() {
@@ -101,11 +103,12 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
 
             if (dataIsSame(localAddr, data)) {
                 cardAddress.hasCheckIcon = true
-                cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
+                cardAddress.cardType = CardUnify.TYPE_SHADOW_ACTIVE
+                cardAddress.setPadding(0, 0, 10.toPx(), 0)
                 cardAddress.setOnClickListener(null)
             } else {
                 cardAddress.hasCheckIcon = false
-                cardAddress.cardType = CardUnify.TYPE_BORDER
+                cardAddress.cardType = CardUnify.TYPE_SHADOW
                 cardAddress.setOnClickListener { listener.onItemClicked(data) }
             }
         }

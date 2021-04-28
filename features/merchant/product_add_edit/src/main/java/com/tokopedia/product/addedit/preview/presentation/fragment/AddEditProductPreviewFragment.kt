@@ -51,14 +51,14 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISDRAFTING
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_PREVIEW
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE
 import com.tokopedia.product.addedit.common.util.*
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_IS_DRAFTING
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_SHOP_ID
@@ -80,8 +80,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
 import com.tokopedia.product.addedit.preview.data.source.api.response.Cashback
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
@@ -105,6 +103,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LONGITUDE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.POSTAL_CODE
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_LIMITATION_START_DATE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_STATUS_ACTIVE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHOP_ID
@@ -114,6 +113,9 @@ import com.tokopedia.product.addedit.preview.presentation.model.SetCashbackResul
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService
 import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
+import com.tokopedia.product.addedit.productlimitation.domain.mapper.ProductLimitationMapper
+import com.tokopedia.product.addedit.productlimitation.presentation.dialog.ProductLimitationBottomSheet
+import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
@@ -159,6 +161,9 @@ class AddEditProductPreviewFragment :
     private var formattedAddress: String = ""
     private var productInputModel: ProductInputModel? = null
     private var isFragmentVisible = false
+    private var isFragmentFirstTimeLoaded = true
+    private var isAdminEligible = true
+    private var isProductLimitEligible: Boolean = true
 
     private var toolbar: Toolbar? = null
 
@@ -203,7 +208,7 @@ class AddEditProductPreviewFragment :
     private var editProductStatusLayout: ViewGroup? = null
     private var productStatusSwitch: SwitchUnify? = null
 
-    //loading
+    // loading
     private var loadingLayout: MotionLayout? = null
 
     // admin revamp
@@ -211,10 +216,12 @@ class AddEditProductPreviewFragment :
     private var adminRevampErrorLayout: FrameLayout? = null
     private var adminRevampGlobalError: GlobalError? = null
 
+    // product limitation
+    private var productLimitationTicker: Ticker? = null
+    private var productLimitationBottomSheet: ProductLimitationBottomSheet? = null
+
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
-
-    private var isAdminEligible = true
 
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
@@ -286,7 +293,7 @@ class AddEditProductPreviewFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.product.addedit.R.layout.fragment_add_edit_product_preview, container, false)
+        return inflater.inflate(R.layout.fragment_add_edit_product_preview, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -349,13 +356,16 @@ class AddEditProductPreviewFragment :
         editProductStatusLayout = view.findViewById(R.id.edit_product_status_layout)
         productStatusSwitch = view.findViewById(R.id.su_product_status)
 
-        //loading
+        // loading
         loadingLayout = view.findViewById(R.id.loading_layout)
 
         // admin revamp
         multiLocationTicker = view.findViewById(R.id.ticker_add_edit_multi_location)
         adminRevampErrorLayout = view.findViewById(R.id.add_edit_error_layout)
         adminRevampGlobalError = view.findViewById(R.id.add_edit_admin_global_error)
+
+        // product limitation
+        productLimitationTicker = view.findViewById(R.id.ticker_add_edit_product_limitation)
 
         addEditProductPhotoButton?.setOnClickListener {
             val ctx = context ?: return@setOnClickListener
@@ -393,10 +403,17 @@ class AddEditProductPreviewFragment :
             if (isEditing()) {
                 ProductEditStepperTracking.trackFinishButton(shopId)
             }
+
             val validateMessage = viewModel.validateProductInput(viewModel.productInputModel.value?.detailInputModel
                     ?: DetailInputModel())
+            val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
+
             if (validateMessage.isNotEmpty()) {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            } else if (isAddingOrDuplicating && !isProductLimitEligible) {
+                productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
+                productLimitationBottomSheet?.setIsSavingToDraft(true)
+                productLimitationBottomSheet?.show(childFragmentManager)
             } else {
                 viewModel.productInputModel.value?.detailInputModel?.productName?.let {
                     viewModel.validateProductNameInput(it)
@@ -492,6 +509,9 @@ class AddEditProductPreviewFragment :
         multiLocationTicker?.showWithCondition(viewModel.shouldShowMultiLocationTicker)
 
         context?.let { UpdateShopActiveService.startService(it) }
+
+        setupProductLimitationViews()
+
         //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
         observeProductData()
@@ -504,6 +524,7 @@ class AddEditProductPreviewFragment :
         observeGetShopInfoLocation()
         observeSaveShipmentLocationData()
         observeAdminPermission()
+        observeProductLimitationData()
 
         // validate whether shop has location
         validateShopLocationWhenPageOpened()
@@ -534,6 +555,7 @@ class AddEditProductPreviewFragment :
     override fun onDestroyView() {
         super.onDestroyView()
         isFragmentVisible = false
+        isFragmentFirstTimeLoaded = false
         removeObservers()
     }
 
@@ -948,6 +970,10 @@ class AddEditProductPreviewFragment :
                     showEmptyVariantState(isVariantEmpty)
                     showProductStatus(result.data)
                     handleSetCashBackResult()
+
+                    // set temporary price when first loaded
+                    SharedPreferencesUtil.setPriceWhenLoaded(requireActivity(), result.data.price)
+
                     // continue to PLT monitoring render
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
@@ -1139,6 +1165,27 @@ class AddEditProductPreviewFragment :
                 }
             }
 
+        }
+    }
+
+    private fun observeProductLimitationData() {
+        if (!RollenceUtil.getProductLimitationRollence()) return
+        if (isAdding() || viewModel.isDuplicate) {
+            if (isFragmentFirstTimeLoaded && !isDrafting()) viewModel.getProductLimitation()
+            viewModel.productLimitationData.observe(viewLifecycleOwner) {
+                when(it) {
+                    is Success -> {
+                        val productLimitationModel = ProductLimitationMapper.mapToProductLimitationModel(requireContext(), it.data)
+                        setupBottomSheetProductLimitation(productLimitationModel)
+
+                        // store to shared preferences, to reuse at another fragment
+                        SharedPreferencesUtil.setProductLimitationModel(requireActivity(), productLimitationModel)
+                    }
+                    is Fail -> {
+                        AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    }
+                }
+            }
         }
     }
 
@@ -1587,5 +1634,58 @@ class AddEditProductPreviewFragment :
             }
         }
         adminRevampErrorLayout?.show()
+    }
+
+    private fun setupProductLimitationViews() {
+        if (!RollenceUtil.getProductLimitationRollence()) return
+        val htmlDescription = getString(R.string.label_product_limitation_ticker, PRODUCT_LIMITATION_START_DATE)
+        productLimitationTicker?.apply {
+            setHtmlDescription(htmlDescription)
+            showWithCondition((isAdding() && !isDrafting()) || viewModel.isDuplicate)
+        }
+    }
+
+    private fun setupBottomSheetProductLimitation(productLimitationModel: ProductLimitationModel) {
+        if (productLimitationModel.limitAmount <= 0 || productLimitationModel.isUnlimited) {
+            productLimitationTicker?.gone()
+            return
+        }
+
+        productLimitationModel.apply {
+            productLimitationBottomSheet = ProductLimitationBottomSheet(actionItems, isEligible, limitAmount)
+            isProductLimitEligible = isEligible
+        }
+
+        productLimitationBottomSheet?.setOnBottomSheetResult { urlResult ->
+            when {
+                urlResult.startsWith(ProductLimitationBottomSheet.RESULT_FINISH_ACTIVITY) -> {
+                    activity?.finish()
+                }
+                urlResult.startsWith(ProductLimitationBottomSheet.RESULT_SAVING_DRAFT) -> {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
+                    startActivity(intent)
+                    saveProductToDraft()
+                    activity?.finish()
+                }
+                urlResult.startsWith(HTTP_PREFIX) -> {
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResult))
+                }
+                else -> {
+                    val intent = RouteManager.getIntent(context, urlResult)
+                    startActivity(intent)
+                }
+            }
+        }
+
+        productLimitationTicker?.setOnClickListener {
+            productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button))
+            productLimitationBottomSheet?.setIsSavingToDraft(false)
+            productLimitationBottomSheet?.show(childFragmentManager)
+        }
+
+        // launch bottomsheet automatically when fragment loaded
+        if (!isProductLimitEligible && isFragmentFirstTimeLoaded) {
+            productLimitationTicker?.performClick()
+        }
     }
 }

@@ -10,12 +10,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
+import com.tokopedia.home_component.listener.MixTopComponentListener
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
-import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
+import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
 
 class OfficialHomeAdapterTypeFactory(
@@ -24,6 +25,7 @@ class OfficialHomeAdapterTypeFactory(
         private val homeComponentListener: HomeComponentListener,
         private val legoBannerListener: DynamicLegoBannerListener,
         private val mixLeftComponentListener: MixLeftComponentListener,
+        private val mixTopComponentListener: MixTopComponentListener,
         private val recycledViewPool: RecyclerView.RecycledViewPool? = null
 ) : OfficialHomeTypeFactory, BaseAdapterTypeFactory() {
 
@@ -132,7 +134,7 @@ class OfficialHomeAdapterTypeFactory(
                     homeComponentListener,
                     recycledViewPool
             )
-            DynamicChannelMixTopViewHolder.LAYOUT -> DynamicChannelMixTopViewHolder(view, dcEventHandler)
+            MixTopComponentViewHolder.LAYOUT -> MixTopComponentViewHolder(view, homeComponentListener, mixTopComponentListener)
             OfficialProductRecommendationTitleViewHolder.LAYOUT -> OfficialProductRecommendationTitleViewHolder(view)
             OfficialProductRecommendationViewHolder.LAYOUT -> OfficialProductRecommendationViewHolder(view)
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(view)

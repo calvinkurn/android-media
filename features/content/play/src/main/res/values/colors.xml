@@ -33,6 +33,8 @@
     <color name="play_dms_voucher_bg">#AD31353B</color>
     <color name="play_dms_voucher_placeholder_bg">#31353B</color>
 
+    <color name="play_dms_out_of_stock_bg">#AD31353B</color>
+
     <!--General Color-->
     <color name="play_dms_R100">#FFEAEF</color>
     <color name="play_dms_G300">#82EF95</color>

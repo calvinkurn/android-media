@@ -86,6 +86,10 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         return UserSession(application).isLoggedIn
     }
 
+    fun getUserID():String? {
+        return UserSession(application).userId
+    }
+
     fun getDataItemValue() = dataItem
 
     fun chooseShopBadge(): Int {

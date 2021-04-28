@@ -22,7 +22,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="spread_inside"
-            tools:src="@tools:sample/backgrounds/scenic" />
+            tools:src="@tools:sample/backgrounds/scenic"
+            tools:ignore="ContentDescription"/>
 
         <RelativeLayout
             android:layout_width="@dimen/spacing_lvl6"
@@ -38,7 +39,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                app:srcCompat="@drawable/ent_ic_wishlist_inactive" />
+                app:srcCompat="@drawable/ent_ic_wishlist_inactive"
+                tools:ignore="ContentDescription"/>
         </RelativeLayout>
 
         <com.tokopedia.unifyprinciples.Typography

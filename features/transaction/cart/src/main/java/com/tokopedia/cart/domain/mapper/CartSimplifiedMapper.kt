@@ -10,7 +10,6 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_SHOW
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_SHOWMORE
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
@@ -71,7 +70,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartListData.shoppingSummaryData = mapShoppingSummaryData(cartDataListResponse.shoppingSummary)
         cartListData.promoSummaryData = mapPromoSummaryData(cartDataListResponse.promoSummary)
         cartListData.outOfServiceData = mapOutOfServiceData(cartDataListResponse.outOfService)
-        cartListData.abTestButton = ABTestButton(cartDataListResponse.abTestButton.enable)
         cartListData.localizationChooseAddressData = mapLocalizationChooseAddressData(cartDataListResponse.localizationChooseAddress)
         cartListData.popUpMessage = cartDataListResponse.popUpMessage
 
@@ -217,6 +215,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, it, cartDataListResponse, false, actionsData, 0, "")
 
             it.preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
+            it.isFreeShippingExtra = availableGroup.shipmentInformation.freeShippingExtra.eligible
             it.freeShippingBadgeUrl = when {
                 availableGroup.shipmentInformation.freeShippingExtra.eligible -> availableGroup.shipmentInformation.freeShippingExtra.badgeUrl
                 availableGroup.shipmentInformation.freeShipping.eligible -> availableGroup.shipmentInformation.freeShipping.badgeUrl

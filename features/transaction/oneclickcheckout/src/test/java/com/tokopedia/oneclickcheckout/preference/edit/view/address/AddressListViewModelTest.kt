@@ -5,7 +5,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.oneclickcheckout.common.dispatchers.TestDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import io.mockk.every
@@ -27,7 +27,7 @@ class AddressListViewModelTest {
 
     @Before
     fun setUp() {
-        addressListViewModel = AddressListViewModel(getAddressCornerUseCase, TestDispatchers)
+        addressListViewModel = AddressListViewModel(getAddressCornerUseCase, CoroutineTestDispatchersProvider)
     }
 
     @Test
@@ -55,6 +55,8 @@ class AddressListViewModelTest {
                     latitude = "1"
                     longitude = "1"
                     postalCode = "1"
+                    addressName = "1"
+                    recipientName = "1"
                 },
                 RecipientAddressModel().apply {
                     id = "2"
@@ -62,6 +64,8 @@ class AddressListViewModelTest {
                     latitude = "2"
                     longitude = "2"
                     postalCode = "2"
+                    addressName = "2"
+                    recipientName = "2"
                 }))
         every { getAddressCornerUseCase.execute(any(), any(), any(), any()) } returns Observable.just(response)
 
@@ -86,6 +90,8 @@ class AddressListViewModelTest {
                     latitude = "1"
                     longitude = "1"
                     postalCode = "1"
+                    addressName = "1"
+                    recipientName = "1"
                 },
                 RecipientAddressModel().apply {
                     id = "2"
@@ -94,6 +100,8 @@ class AddressListViewModelTest {
                     longitude = "2"
                     postalCode = "2"
                     isStateChosenAddress = true
+                    addressName = "2"
+                    recipientName = "2"
                 }))
         every { getAddressCornerUseCase.execute(any(), any(), any(), any()) } returns Observable.just(response)
 

@@ -18,28 +18,29 @@
         app:layout_constraintBottom_toTopOf="@id/choosee_address_widget_bottom_shadow"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <ImageView
+    <View
         android:id="@+id/choosee_address_widget_bottom_shadow"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:src="@drawable/bottom_sheet_filter_bottom_bar_shadow"
+        android:background="@color/Unify_N75"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@id/shop_page_header_content" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/shop_page_header_content"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_140"
-        app:layout_constraintBottom_toTopOf="@id/tickerShopStatus"
+        android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/choosee_address_widget_bottom_shadow"
         app:layout_constraintVertical_bias="0"
+        android:paddingBottom="@dimen/dp_16"
         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shop_page_main_profile_background"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_140"
+            android:layout_height="0dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -209,7 +210,7 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_14"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/shop_page_main_profile_image"
@@ -224,13 +225,14 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/dp_16"
             android:gravity="center_vertical"
             android:minWidth="@dimen/dp_80"
             android:visibility="gone"
             android:text="@string/follow_button_label"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/image_view_shop_reputation_badge"
+            app:layout_constraintVertical_bias="0"
             app:layout_constraintLeft_toRightOf="@id/image_view_shop_reputation_badge"
             app:unifyButtonSize="micro"
             app:unifyButtonType="main"
@@ -261,12 +263,14 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toBottomOf="@id/shop_page_header_content"
+        app:layout_constraintBottom_toTopOf="@id/tickerShopStatus"
+        app:layout_constraintVertical_chainStyle="packed"
         android:visibility="gone"
+        app:layout_constraintVertical_bias="0"
         app:cardCornerRadius="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toTopOf="@+id/tickerShopStatus"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shop_page_header_content"
         tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -328,6 +332,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        app:layout_constraintVertical_bias="0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

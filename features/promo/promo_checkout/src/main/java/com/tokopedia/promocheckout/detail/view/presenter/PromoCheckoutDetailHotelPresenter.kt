@@ -18,12 +18,13 @@ class PromoCheckoutDetailHotelPresenter(private val getDetailCouponMarketplaceUs
                                         private val cancelVoucherUseCase: FlightCancelVoucherUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailHotelContract.Presenter {
 
-    override fun checkVoucher(promoCode: String, cartID: String) {
+    override fun checkVoucher(promoCode: String, cartID: String, hexColor: String) {
         view.showProgressLoading()
         checkVoucherUseCase.execute(checkVoucherUseCase.createRequestParams(promoCode, cartID), object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
                 val checkVoucherData = objects.getData<HotelCheckVoucher.Response>(HotelCheckVoucher.Response::class.java).response
+                checkVoucherData.messageColor = hexColor
                 if (checkVoucherData.isSuccess) {
                     view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData))
                 } else {

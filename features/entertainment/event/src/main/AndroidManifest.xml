@@ -11,7 +11,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" >
 
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -28,7 +28,7 @@
             android:label="@string/ent_search_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -45,7 +45,7 @@
             android:label="@string/ent_search_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -62,7 +62,7 @@
             android:label="@string/ent_search_event_location"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -80,7 +80,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             >
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -98,7 +98,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             >
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -117,7 +117,7 @@
             android:theme="@style/Theme.WhiteUnify"
             android:label="@string/ent_event_checkout_title_page"
             >
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -135,7 +135,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             >
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -152,7 +152,7 @@
             android:label="@string/ent_redeem_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />

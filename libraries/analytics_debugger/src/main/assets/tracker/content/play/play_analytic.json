@@ -14,6 +14,16 @@
       "sessionIris": "{{.*}}"
     },
     {
+      "businessUnit": "play",
+      "eventCategory": "groupchat room",
+      "currentSite": "{{.*}}",
+      "event": "clickGroupChat",
+      "userId": "{{.*}}",
+      "eventAction": "swipe channel",
+      "eventLabel": "{{.+}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
       "eventAction": "leave room",
       "event": "clickBack",
       "eventCategory": "groupchat room",
@@ -190,7 +200,7 @@
           "item_name": "{{.*}}",
           "item_brand": "{{.*}}",
           "item_category": "{{.*}}",
-          "price": "{{\\d+.\\d+}}",
+          "price": "{{.*}}",
           "item_variant": "{{.*}}",
           "index": "{{\\d+(.\\d+)?}}"
         }
@@ -270,13 +280,6 @@
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
       "eventLabel": "{{\\d+ - (live|vod)}}",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "eventAction": "click product pinned message",
-      "event": "clickGroupChat",
-      "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+}}",
       "sessionIris": "{{.*}}"
     },
     {

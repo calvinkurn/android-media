@@ -215,7 +215,7 @@ class BannerComponentViewHolder(itemView: View,
             element.channelModel.let {
                 itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
                     override fun onSeeAllClick(link: String) {
-                        bannerListener?.onPromoAllClick(link)
+                        bannerListener?.onPromoAllClick(element.channelModel)
                     }
 
                     override fun onChannelExpired(channelModel: ChannelModel) {

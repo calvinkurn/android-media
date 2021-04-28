@@ -377,9 +377,9 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             (it is RechargeHomepageSectionModel && it.visitableId().equals(sectionID)) ||
                     (it is HomeComponentVisitable && it.visitableId().equals(sectionID))
         }
-        if (index >= 0) {
-            recycler_view.post {
-                adapter.apply {
+        recycler_view.post {
+            adapter.apply {
+                if (index >= 0 && index < adapter.data.size) {
                     data.removeAt(index)
                     notifyItemRemoved(index)
                 }

@@ -96,7 +96,7 @@ class PlayYouTubeFragment @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        if (isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic()
+        if (isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(channelId)
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {

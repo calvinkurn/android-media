@@ -2,14 +2,11 @@ package com.tokopedia.settingnotif.usersetting.view.fragment.base
 
 import android.app.Activity
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -33,6 +30,7 @@ import com.tokopedia.settingnotif.usersetting.view.activity.ParentActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactoryImpl
+import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.listener.ActivationItemListener
 import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
@@ -54,7 +52,12 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var userSession: UserSessionInterface
 
-    protected val settingViewModel: UserSettingViewModel by viewModels { viewModelFactory }
+    protected val settingViewModel: UserSettingViewModel by lazy {
+        ViewModelProvider(
+                this,
+                viewModelFactory
+        ).get(UserSettingViewModel::class.java)
+    }
 
     /*
     * a flag for preventing request network if needed
@@ -75,19 +78,12 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         adapter as SettingFieldAdapter
     }
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-        initObservable()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar()
         setupRecyclerView(view)
+
+        initObservable()
     }
 
     private fun initObservable() {
@@ -110,8 +106,17 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
             updatedSettingIds: List<Map<String, Any>>
     ) {
         if (!isRequestData) return
+
         settingViewModel.requestUpdateUserSetting(notificationType, updatedSettingIds)
-        settingViewModel.requestUpdateMoengageUserSetting(updatedSettingIds)
+
+        for (setting in updatedSettingIds) {
+            val name = setting[SettingViewHolder.PARAM_SETTING_KEY]
+            val value = setting[SettingViewHolder.PARAM_SETTING_VALUE]
+
+            if (name !is String || value !is Boolean) return
+
+            settingViewModel.requestUpdateMoengageUserSetting(name, value)
+        }
     }
 
     override fun loadData(page: Int) {
@@ -209,7 +214,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun setupRecyclerView(view: View?) {
-        getRecyclerView(view).also {
+        getRecyclerView(view)?.also {
             if (it is VerticalRecyclerView) {
                 it.clearItemDecoration()
                 it.addItemDecoration(NotifSettingDividerDecoration(context))

@@ -39,7 +39,6 @@ class ProductContentViewHolder(private val view: View,
 
         header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
         header?.renderTradein(element.showTradeIn())
-        header?.renderShareButton(getComponentTrackData(element))
     }
 
     override fun bind(element: ProductContentDataModel?, payloads: MutableList<Any>) {
@@ -53,6 +52,7 @@ class ProductContentViewHolder(private val view: View,
             ProductDetailConstant.PAYLOAD_TRADEIN_AND_BOE -> {
                 header?.renderTradein(element.showTradeIn())
 
+                header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
                 //only triggered when get data from p2, will update with boe/bo imageurl from Restriction Engine p2
                 header?.renderFreeOngkir(element.freeOngkirImgUrl)
             }

@@ -39,7 +39,7 @@ object UnifyComponentsList {
                 SEARCH_BAR_VIEW to UnifyMapping(SEARCH_BAR),
                 BOTTOM_SHEET_DIALOG to UnifyMapping(BOTTOM_SHEET),
                 LinterConstants.Classes.DATE_PICKER to UnifyMapping(LinterConstants.UnifyClasses.DATE_PICKER),
-                DATE_PICKER_UNIFY to UnifyMapping(LinterConstants.UnifyClasses.DATE_PICKER),
+                DATE_PICKER_UNIFY to UnifyMapping(LinterConstants.UnifyClasses.DATE_TIME_PICKER_UNIFY),
                 DIALOG_CLASS_NAME to UnifyMapping(DIALOG),
                 SNACK_BAR to UnifyMapping(TOASTER)
 

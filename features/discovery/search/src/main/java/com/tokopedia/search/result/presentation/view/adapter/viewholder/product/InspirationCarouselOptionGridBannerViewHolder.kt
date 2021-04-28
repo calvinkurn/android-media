@@ -3,9 +3,9 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
@@ -34,7 +34,9 @@ class InspirationCarouselOptionGridBannerViewHolder(
 
     private fun bindBannerImage(item: InspirationCarouselDataView.Option) {
         itemView.optionGridCardViewBannerImage?.shouldShowWithAction(item.bannerImageUrl.isNotEmpty()) {
-            ImageHandler.loadImageWithoutPlaceholder(itemView.optionGridCardViewBannerImage, item.bannerImageUrl)
+            itemView.optionGridCardViewBannerImage.loadImage(item.bannerImageUrl) {
+                setPlaceHolder(-1)
+            }
         }
     }
 

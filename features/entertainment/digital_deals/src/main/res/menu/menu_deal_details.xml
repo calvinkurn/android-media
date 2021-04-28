@@ -7,7 +7,6 @@
         android:icon="@drawable/ic_share_via"
         android:orderInCategory="100"
         android:title="@string/favourite"
-        android:visible="false"
         app:showAsAction="always"
         tools:ignore="AppCompatResource" />
 

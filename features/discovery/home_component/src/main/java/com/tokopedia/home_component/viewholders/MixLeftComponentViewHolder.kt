@@ -16,6 +16,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
+import com.tokopedia.home_component.mapper.ChannelModelMapper
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
@@ -71,6 +72,7 @@ class MixLeftComponentViewHolder (itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_dc_mix_left
+        val RECYCLER_VIEW_ID = R.id.rv_product
         private const val FPM_MIX_LEFT = "home_mix_left"
     }
 
@@ -125,7 +127,7 @@ class MixLeftComponentViewHolder (itemView: View,
                 if (!isCacheData)
                     mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)
             }
-            image.loadImage(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
+            image.loadImageWithoutPlaceholder(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {
                     parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
                     loadingBackground.hide()
@@ -155,7 +157,6 @@ class MixLeftComponentViewHolder (itemView: View,
         launch {
             try {
                 recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
-                parentRecycledViewPool?.let {recyclerView.setRecycledViewPool(it) }
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
@@ -200,39 +201,7 @@ class MixLeftComponentViewHolder (itemView: View,
         val list :MutableList<CarouselProductCardDataModel> = mutableListOf()
         for (element in channel.channelGrids) {
             list.add(CarouselProductCardDataModel(
-                    ProductCardModel(
-                            slashedPrice = element.slashedPrice,
-                            productName = element.name,
-                            formattedPrice = element.price,
-                            productImageUrl = element.imageUrl,
-                            discountPercentage = element.discount,
-                            pdpViewCount = element.productViewCountFormatted,
-                            stockBarLabel = element.label,
-                            isTopAds = element.isTopads,
-                            stockBarPercentage = element.soldPercentage,
-                            shopLocation = element.shop.shopLocation,
-                            shopBadgeList = listOf(
-                                    ProductCardModel.ShopBadge(
-                                            true, element.shop.shopBadgeUrl
-                                    )
-                            ),
-                            labelGroupList = element.labelGroup.map {
-                                ProductCardModel.LabelGroup(
-                                        position = it.position,
-                                        title = it.title,
-                                        type = it.type,
-                                        imageUrl = it.url
-                                )
-                            },
-                            freeOngkir = ProductCardModel.FreeOngkir(
-                                    element.isFreeOngkirActive,
-                                    element.freeOngkirImageUrl
-                            ),
-                            isOutOfStock = element.isOutOfStock,
-                            ratingCount = element.rating,
-                            countSoldRating = element.ratingFloat,
-                            reviewCount = element.countReview
-                    ),
+                    ChannelModelMapper.mapToProductCardModel(element),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,

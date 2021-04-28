@@ -24,7 +24,7 @@ open class BaseShadowLayout : ConstraintLayout {
 
     var porterDuffXfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
 
-    open var shadowColor = Color.BLACK
+    open var shadowColor = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900)
 
     var shadowStrokeWidth = 15f
 
@@ -72,7 +72,7 @@ open class BaseShadowLayout : ConstraintLayout {
                     R.styleable.BaseShadowLayout_shadowStartY,
                     java.lang.Float.MIN_VALUE
             )
-            shadowColor = typedArray.getColor(R.styleable.BaseShadowLayout_shadowColor, Color.BLACK)
+            shadowColor = typedArray.getColor(R.styleable.BaseShadowLayout_shadowColor, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900))
             shadowStrokeWidth =
                     typedArray.getDimension(
                             R.styleable.BaseShadowLayout_shadowStrokeWidth,
@@ -113,7 +113,7 @@ open class BaseShadowLayout : ConstraintLayout {
 
     private fun drawBorder(canvas: Canvas) {
 
-        val borderColor = Color.BLACK
+        val borderColor = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900)
 
         borderPaint.style = Paint.Style.STROKE
         borderPaint.color = borderColor
@@ -130,7 +130,7 @@ open class BaseShadowLayout : ConstraintLayout {
     private fun drawRectBackground(canvas: Canvas) {
 
         rectPaint.style = Paint.Style.FILL
-        rectPaint.color = Color.WHITE
+        rectPaint.color = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         rectPaint.xfermode = porterDuffXfermode
         rectBackgroundRectF.top = 0f
         rectBackgroundRectF.left = 40f
@@ -144,7 +144,7 @@ open class BaseShadowLayout : ConstraintLayout {
     private fun drawRectBackground2(canvas: Canvas) {
 
         rectPaint.style = Paint.Style.FILL
-        rectPaint.color = Color.WHITE
+        rectPaint.color = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         rectPaint.xfermode = porterDuffXfermode
         rectBackgroundRectF.top = 0f
         rectBackgroundRectF.left = 0f

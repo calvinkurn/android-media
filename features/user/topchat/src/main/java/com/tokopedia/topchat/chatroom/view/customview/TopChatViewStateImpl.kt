@@ -3,9 +3,9 @@ package com.tokopedia.topchat.chatroom.view.customview
 import android.content.Context
 import android.os.Parcelable
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.NonNull
@@ -24,6 +24,7 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
@@ -35,14 +36,15 @@ import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
+import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -67,13 +69,14 @@ class TopChatViewStateImpl constructor(
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(com.tokopedia.chat_common.R.id.header_menu)
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
-    private var attachmentPreviewContainer: FrameLayout = view.findViewById(com.tokopedia.chat_common.R.id.cl_attachment_preview)
-    private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(com.tokopedia.chat_common.R.id.rv_attachment_preview)
-    var chatStickerMenuButton: ImageView? = view.findViewById(R.id.iv_chat_sticker)
+    private var attachmentPreviewContainer: LinearLayout = view.findViewById(R.id.cl_attachment_preview)
+    private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(R.id.rv_attachment_preview)
+    var chatStickerMenuButton: IconUnify? = view.findViewById(R.id.iv_chat_sticker)
     var chatMenu: ChatMenuView? = view.findViewById(R.id.fl_chat_menu)
     private var userStatus: Typography? = null
     private var typingImage: ImageUnify? = null
     private var typingText: Typography? = null
+    private var fragmentView: TopChatContract.View? = null
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
     lateinit var templateAdapter: TemplateChatAdapter
@@ -93,7 +96,10 @@ class TopChatViewStateImpl constructor(
     override fun getSendButtonId() = R.id.send_but
     override fun getNotifierId() = R.id.notifier
     override fun getChatMenuId() = R.id.iv_chat_menu
+    override fun getAttachmentMenuId(): Int = View.NO_ID
+    override fun getAttachmentMenuContainer(): Int = View.NO_ID
     override fun getRootViewId() = R.id.main
+
     override fun shouldShowSellerLabel(): Boolean = false
 
     init {
@@ -125,6 +131,9 @@ class TopChatViewStateImpl constructor(
         typingImage = toolbar.findViewById(com.tokopedia.chat_common.R.id.iv_typing)
         typingText = toolbar.findViewById(com.tokopedia.chat_common.R.id.tv_typing)
 
+        typingImage?.let {
+            ImageUtil.setTypingAnimation(it)
+        }
         initProductPreviewLayout()
         initHeaderLayout()
         setupChatStickerMenu()
@@ -150,7 +159,7 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun onStickerOpened() {
-        chatStickerMenuButton?.setImageResource(R.drawable.ic_topchat_keyboard)
+        chatStickerMenuButton?.setImage(IconUnify.KEYBOARD)
         chatStickerMenuButton?.setOnClickListener {
             replyEditText.requestFocus()
             chatMenu?.showKeyboard(replyEditText)
@@ -158,7 +167,7 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun onStickerClosed() {
-        chatStickerMenuButton?.setImageResource(R.drawable.ic_topchat_sticker)
+        chatStickerMenuButton?.setImage(IconUnify.STICKER)
         chatStickerMenuButton?.setOnClickListener {
             chatMenu?.toggleStickerMenu()
         }
@@ -174,13 +183,19 @@ class TopChatViewStateImpl constructor(
     }
 
     override fun onKeyboardOpened() {
-        chatMenu?.isKeyboardOpened = true
-        hideChatMenu()
+        if (chatMenu?.isKeyboardOpened == false) {
+            chatMenu?.isKeyboardOpened = true
+            hideChatMenu()
+            fragmentView?.collapseSrw()
+        }
     }
 
     override fun onKeyboardClosed() {
-        chatMenu?.isKeyboardOpened = false
-        showChatMenu()
+        if (chatMenu?.isKeyboardOpened == true) {
+            chatMenu?.isKeyboardOpened = false
+            showChatMenu()
+            fragmentView?.expandSrw()
+        }
     }
 
     override fun hideChatMenu() {
@@ -220,29 +235,11 @@ class TopChatViewStateImpl constructor(
         attachmentPreviewAdapter.clear()
         sendListener.onEmptyProductPreview()
         hideProductPreviewLayout()
+        fragmentView?.updateSrwState()
     }
 
     override fun hideProductPreviewLayout() {
         attachmentPreviewContainer.hide()
-        setChatTemplatesBottomPadding(0)
-    }
-
-    private fun setChatTemplatesBottomPadding(bottomPadding: Int) {
-        if (!templateRecyclerView.isVisible) return
-        addBottomPaddingTemplateChat(bottomPadding)
-    }
-
-    private fun addBottomPaddingTemplateChat(bottomPadding: Int) {
-        templateRecyclerView.post {
-            with(templateRecyclerView) {
-                setPadding(
-                        paddingLeft,
-                        paddingTop,
-                        paddingRight,
-                        bottomPadding
-                )
-            }
-        }
     }
 
     override fun onSetCustomMessage(customMessage: String) {
@@ -276,6 +273,10 @@ class TopChatViewStateImpl constructor(
         showReplyBox(viewModel.replyable)
         initListPadding(viewModel)
         onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel.blockedStatus)
+    }
+
+    override fun scrollToBottom() {
+        recyclerView.scrollToPosition(0)
     }
 
     private fun initListPadding(viewModel: ChatroomViewModel) {
@@ -596,10 +597,22 @@ class TopChatViewStateImpl constructor(
         }
     }
 
-    override fun updateTemplateState() {
-        if (!templateRecyclerView.isVisible && templateAdapter.hasTemplateChat()) {
+    override fun hasProductPreviewShown(): Boolean {
+        return attachmentPreviewContainer.isVisible && attachmentPreviewAdapter.isShowingProduct()
+    }
+
+    override fun showTemplateChatIfReady(lastMessageBroadcast: Boolean, amIBuyer: Boolean) {
+        val isLastMsgFromBroadcastAndIamBuyer = lastMessageBroadcast && amIBuyer
+        if (!templateRecyclerView.isVisible &&
+                templateAdapter.hasTemplateChat() &&
+                !isLastMsgFromBroadcastAndIamBuyer &&
+                fragmentView?.shouldShowSrw() == false) {
             showTemplateChat()
         }
+    }
+
+    override fun attachFragmentView(fragmentView: TopChatContract.View) {
+        this.fragmentView = fragmentView
     }
 
     fun setTemplate(
@@ -611,7 +624,12 @@ class TopChatViewStateImpl constructor(
         templateRecyclerView.visibility = View.GONE
         listTemplate?.let {
             templateAdapter.list = listTemplate
-            if (templateAdapter.hasTemplateChat() && !isLastMsgFromBroadcastAndIamBuyer) {
+            if (
+                    templateAdapter.hasTemplateChat() &&
+                    !isLastMsgFromBroadcastAndIamBuyer &&
+                    (fragmentView?.hasProductPreviewShown() == false ||
+                            fragmentView?.hasNoSrw() == true)
+            ) {
                 showTemplateChat()
             } else {
                 hideTemplateChat()
@@ -619,12 +637,11 @@ class TopChatViewStateImpl constructor(
         }
     }
 
-    private fun showTemplateChat() {
+    fun showTemplateChat() {
         templateRecyclerView.show()
-        addBottomPaddingTemplateChat(8.toPx())
     }
 
-    private fun hideTemplateChat() {
+    fun hideTemplateChat() {
         templateRecyclerView.hide()
     }
 
@@ -643,7 +660,6 @@ class TopChatViewStateImpl constructor(
 
     override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {
         attachmentPreviewContainer.show()
-        setChatTemplatesBottomPadding(8.toPx())
         attachmentPreviewAdapter.updateAttachments(attachmentPreview)
     }
 
@@ -656,7 +672,7 @@ class TopChatViewStateImpl constructor(
         typingImage?.show()
         typingText?.show()
         typingImage?.let {
-            MethodChecker.animateVectorDrawable(true, it.drawable, view.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
+            ImageUtil.startAVDTypingAnimation(it)
         }
     }
 
@@ -665,7 +681,7 @@ class TopChatViewStateImpl constructor(
         typingImage?.hide()
         typingText?.hide()
         typingImage?.let {
-            MethodChecker.animateVectorDrawable(false, it.drawable, view.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
+            ImageUtil.stopAVDTypingAnimation(it)
         }
     }
 }

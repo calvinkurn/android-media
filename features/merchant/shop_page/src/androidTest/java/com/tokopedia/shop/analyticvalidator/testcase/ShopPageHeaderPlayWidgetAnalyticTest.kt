@@ -72,7 +72,7 @@ class ShopPageHeaderPlayWidgetAnalyticTest {
 
         gtmLogDbSource.deleteAll().toBlocking().first()
 
-        mockLogin()
+//        mockLogin()
     }
 
     @Test

@@ -15,9 +15,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.UserNotLoginException
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -41,7 +39,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
+import com.tokopedia.shop.common.domain.GetShopReputationUseCase
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
@@ -87,13 +85,8 @@ class ShopPageViewModel @Inject constructor(
         private val shopRequestUnmoderateUseCase: Lazy<ShopRequestUnmoderateUseCase>,
         private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
         private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
-        private val firebaseRemoteConfig: RemoteConfig,
         private val dispatcherProvider: CoroutineDispatchers)
     : BaseViewModel(dispatcherProvider.main) {
-
-    companion object {
-        private const val DATA_NOT_FOUND = "Data not found"
-    }
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 

@@ -11,7 +11,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,11 +23,11 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -133,7 +132,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
             }
         }
 
-        viewModel.addressList.observe(viewLifecycleOwner, Observer {
+        viewModel.addressList.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.FirstLoad -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -260,7 +259,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
     private fun goBack() {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            val selectedId = viewModel.selectedId.toIntOrZero()
+            val selectedId = viewModel.selectedId.toLongOrZero()
             if (selectedId > 0) {
                 preferenceListAnalytics.eventClickSimpanAlamatInPilihAlamatPage()
                 parent.setAddressId(selectedId)
@@ -375,8 +374,11 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
     private fun goToNextStep() {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            val selectedId = viewModel.selectedId.toIntOrZero()
+            val selectedId = viewModel.selectedId.toLongOrZero()
             if (selectedId > 0) {
+                viewModel.selectedAddressModel?.let {
+                    parent.setNewlySelectedAddressModel(it)
+                }
                 preferenceListAnalytics.eventClickSimpanAlamatInPilihAlamatPage()
                 parent.setAddressId(selectedId)
                 setShippingParam()

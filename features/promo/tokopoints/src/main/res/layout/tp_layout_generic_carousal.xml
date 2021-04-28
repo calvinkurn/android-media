@@ -5,7 +5,7 @@
     android:id="@+id/parent_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:paddingTop="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16">
 
@@ -17,7 +17,7 @@
         android:ellipsize="end"
         android:lineSpacingExtra="6sp"
         android:maxLines="2"
-        android:textColor="#f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
         android:visibility="gone"
@@ -38,9 +38,9 @@
         app:layout_constraintBottom_toBottomOf="@+id/text_title"
         app:layout_constraintStart_toEndOf="@id/text_title"
         app:layout_constraintTop_toTopOf="parent"
-        app:unify_timer_background_color="#FFEAEF"
-        app:unify_timer_colon_color="#FF5C84"
-        app:unify_timer_text_color="#FF5C84"
+        app:unify_timer_background_color="@color/Unify_R100"
+        app:unify_timer_colon_color="@color/Unify_R400"
+        app:unify_timer_text_color="@color/Unify_R400"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -50,7 +50,7 @@
         android:layout_marginEnd="@dimen/dp_14"
         android:layout_marginRight="@dimen/dp_14"
         android:layout_marginTop="@dimen/dp_4"
-        android:textColor="@color/medium_green"
+        android:textColor="@color/Unify_G400"
         app:typographyType="heading_6"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
         android:lineSpacingExtra="6sp"
-        android:textColor="#8f000000"
+        android:textColor="@color/Unify_N700_68"
         android:textSize="12sp"
         app:layout_constraintLeft_toLeftOf="@+id/text_title"
         app:layout_constraintStart_toStartOf="@+id/text_title"

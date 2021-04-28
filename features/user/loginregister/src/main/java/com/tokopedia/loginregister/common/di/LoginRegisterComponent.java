@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
@@ -61,4 +62,6 @@ public interface LoginRegisterComponent {
     PermissionCheckerHelper providePermissionCheckerHelper();
 
     SeamlessLoginAnalytics provideSeamlessLoginAnalytics();
+
+    CoroutineDispatchers provideCoroutineDispatchers();
 }

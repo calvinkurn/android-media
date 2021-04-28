@@ -1,6 +1,6 @@
 <resources>
     <string name="title_search_result" >Pencarian</string>
-    <string name="app_name">Search</string>
+    <string name="app_name_search">Search</string>
     <string name="search_result_page">Search Result Page</string>
     <string name="OK">OK</string>
 
@@ -79,6 +79,7 @@
 
     <string name="broad_match_title">Pot tanaman alumunium IKEA</string>
     <string name="broad_match_see_more">Lihat Semua</string>
+    <string name="broad_match_in_tokopedia">di Tokopedia</string>
 
     <string name="search_product_boe_label_onboarding_title">Pengiriman gratis &amp; cepat dengan TokoCabang</string>
     <string name="search_product_boe_label_onboarding_description">Dikirim dari penyimpanan Tokopedia terdekat, dan dapatkan Bebas Ongkir Extra sepuasnya</string>
@@ -99,4 +100,5 @@
 
     <string name="search_result_global_search_text">Belum nemu barang yang cocok?</string>
     <string name="search_result_global_search_button_text">Cari di Tokopedia</string>
+    <string name="search_result_local_search_other_products">Barang lainnya di %s</string>
 </resources>

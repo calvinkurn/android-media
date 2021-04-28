@@ -15,5 +15,6 @@ data class OrderData(
         var prompt: OccPrompt = OccPrompt(),
         val revampData: OccRevampData = OccRevampData(),
         val errorCode: String = "",
-        val popUpMessage: String = ""
+        val popUpMessage: String = "",
+        val removeProfileData: OccRemoveProfileData = OccRemoveProfileData()
 )

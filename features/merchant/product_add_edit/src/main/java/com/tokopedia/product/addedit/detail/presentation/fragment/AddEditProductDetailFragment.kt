@@ -47,6 +47,8 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.*
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailModule
 import com.tokopedia.product.addedit.detail.di.DaggerAddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
@@ -73,8 +75,6 @@ import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
@@ -915,7 +915,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         }
                     }
                     productCategoryLayout?.show()
-                    productCategoryRecListView?.setToDisplayText(categoryName, requireContext())
+                    productCategoryRecListView?.setToDisplayText(categoryName.orEmpty(), requireContext())
 
                     // clear specification, get new annotation spec
                     getAnnotationCategory()
@@ -1294,6 +1294,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             } else {
                 // show empty recommendations for input with error
                 productNameRecAdapter?.setProductNameRecommendations(emptyList())
+                hideProductNameLoadingIndicator()
                 // keep the category
                 if (viewModel.isAdding && !viewModel.hasVariants) {
                     productCategoryRecListView?.setData(ArrayList(emptyList()))
@@ -1460,8 +1461,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.productPriceRecommendation.observe(viewLifecycleOwner) {
             val productPrice = viewModel.productInputModel.detailInputModel.price
             val productSuggestedPrice = it.suggestedPrice.toBigDecimal().toBigInteger()
+            val priceWhenLoaded = SharedPreferencesUtil.getPriceWhenLoaded(requireActivity())
 
-            productPriceRecommendation?.isVisible = it.suggestedPrice > 0.0 && it.price > it.suggestedPrice
+            // hide/ show price recommendation
+            productPriceRecommendation?.isVisible = it.suggestedPrice > 0.0
+                    && priceWhenLoaded > it.suggestedPrice.toBigDecimal().toBigInteger()
+
+            // display suggestion only when price recomendation visible
             if (productPriceRecommendation?.isVisible == true) {
                 val minText = it.suggestedPriceMin.getCurrencyFormatted()
                 val maxText = it.suggestedPriceMax.getCurrencyFormatted()
@@ -1471,6 +1477,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 productPriceRecommendation?.description = descriptionText
             }
 
+            // expand/ collapse price recommendation
             if (productPrice <= productSuggestedPrice) {
                 productPriceRecommendation?.setSuggestedPriceSelected()
             }
@@ -1729,24 +1736,26 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         observe(viewModel.productNameRecommendations) {
             when (it) {
                 is Success -> {
-                    productNameRecAdapter?.setProductNameRecommendations(it.data)
-                    productNameRecLoader?.hide()
-                    productNameRecShimmering?.hide()
                     productNameRecView?.visible()
+                    productNameRecAdapter?.setProductNameRecommendations(it.data)
                 }
                 is Fail -> {
-                    productNameRecLoader?.hide()
-                    productNameRecShimmering?.hide()
                     productNameRecView?.hide()
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
+            hideProductNameLoadingIndicator()
         }
     }
 
     private fun showProductNameLoadingIndicator() {
         productNameRecLoader?.visible()
         productNameRecShimmering?.visible()
+    }
+
+    private fun hideProductNameLoadingIndicator() {
+        productNameRecLoader?.hide()
+        productNameRecShimmering?.hide()
     }
 
     private fun showImmutableCategoryDialog() {

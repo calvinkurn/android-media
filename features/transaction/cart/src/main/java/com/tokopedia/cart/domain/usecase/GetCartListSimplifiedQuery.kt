@@ -729,9 +729,6 @@ fun getQueryCartRevamp(): String {
                   description
                 }
               }
-              ab_test_button {
-                enable
-              }
             }
           }
         }

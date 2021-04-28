@@ -18,20 +18,22 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.graphql.util.LoggingUtils;
+import com.tokopedia.keys.Keys;
+import com.tokopedia.logger.LogManager;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
-import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import com.newrelic.agent.android.NewRelic;
+
 import java.util.ArrayList;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION;
-import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
 /**
  * Created by normansyahputa on 11/29/16.
@@ -45,6 +47,12 @@ public class SplashScreenActivity extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        boolean defaultInteraction = false;
+        NewRelic
+                .withApplicationToken(Keys.NEW_RELIC)
+                .withDefaultInteractions(defaultInteraction)
+                .start(this.getApplication());
+        
         isApkTempered = false;
         try {
             getResources().getDrawable(R.drawable.launch_screen);
@@ -175,7 +183,10 @@ public class SplashScreenActivity extends SplashScreen {
         return new RemoteConfig.Listener() {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
-                TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
+                LogManager logManager = LogManager.instance;
+                if(logManager!= null) {
+                    logManager.refreshConfig();
+                }
                 LoggingUtils.setResponseSize(remoteConfig.getLong(KEY_CONFIG_RESPONSE_SIZE_LOG));
             }
 

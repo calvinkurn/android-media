@@ -36,13 +36,10 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.PRODUCT_DETAIL -> {
                     listOfComponent.add(ProductDetailInfoDataModel(type = component.type, name = component.componentName, dataContent = mapToProductDetailInfoContent(component.componentData.firstOrNull())))
                 }
-                ProductDetailConstant.SHOP_INFO -> {
-                    listOfComponent.add(ProductShopInfoDataModel(type = component.type, name = component.componentName))
-                }
                 ProductDetailConstant.MINI_SOCIAL_PROOF -> {
                     listOfComponent.add(ProductMiniSocialProofDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.MOST_HELPFUL_REVIEW, ProductDetailConstant.REVIEW -> {
+                ProductDetailConstant.REVIEW -> {
                     listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.INFO -> {
@@ -63,9 +60,6 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.VARIANT -> {
                     listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
-                }
-                ProductDetailConstant.MINI_SHOP_INFO -> {
-                    listOfComponent.add(ProductMiniShopInfoDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.PRODUCT_CONTENT -> {
                     listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))

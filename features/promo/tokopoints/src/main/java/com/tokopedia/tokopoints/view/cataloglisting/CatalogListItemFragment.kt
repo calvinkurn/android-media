@@ -418,13 +418,13 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     private fun decorateDialog(dialog: AlertDialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(activityContext,
-                    com.tokopedia.design.R.color.tkpd_main_green))
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400))
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isAllCaps = false
         }
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).isAllCaps = false
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(activityContext,
-                    com.tokopedia.design.R.color.grey_warm))
+                    com.tokopedia.unifyprinciples.R.color.Unify_N200))
         }
     }
 

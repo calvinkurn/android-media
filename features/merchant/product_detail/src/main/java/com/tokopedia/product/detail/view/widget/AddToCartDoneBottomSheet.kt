@@ -427,7 +427,6 @@ open class AddToCartDoneBottomSheet :
     }
 
     override fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
-
         recomWishlistItem = item
         showProductCardOptions(
                 this,

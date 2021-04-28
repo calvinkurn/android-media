@@ -47,6 +47,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.DarkModeUtil
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -147,7 +149,6 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     private fun initView() {
         initInjector()
         updateDarkMode()
-        setContent(content, highlight)
 
         if (leftImage != null) {
             imageViewLeft.setImageDrawable(leftImage)
@@ -400,14 +401,12 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     }
 
     private fun updateDarkMode() {
-        if (isDarkModeOn()) {
+        if (context.isDarkMode()) {
             onDarkMode()
         } else {
             onLightMode()
         }
     }
-
-    override fun isDarkModeOn(): Boolean = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 
     override fun onDarkMode() {
         if (isLoginReminder()) {

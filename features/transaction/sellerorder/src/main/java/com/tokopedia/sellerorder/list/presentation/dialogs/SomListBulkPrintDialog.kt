@@ -20,6 +20,9 @@ class SomListBulkPrintDialog(context: Context) {
         dialogUnify = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
             dialogPrimaryCTA.gone()
             dialogSecondaryCTA.gone()
+            dialogSecondaryLongCTA.gone()
+            dialogCTAContainer.gone()
+            setUnlockVersion()
             setOverlayClose(false)
             setCancelable(false)
             setChild(childViews)

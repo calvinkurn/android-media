@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.discovery.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.State
@@ -31,7 +31,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 
 internal class SearchShopViewModel(
-        dispatcher: DispatcherProvider,
+        dispatcher: CoroutineDispatchers,
         searchParameter: Map<String, Any>,
         private val searchShopFirstPageUseCase: Lazy<UseCase<SearchShopModel>>,
         private val searchShopLoadMoreUseCase: Lazy<UseCase<SearchShopModel>>,
@@ -40,7 +40,7 @@ internal class SearchShopViewModel(
         private val shopCpmDataViewMapper: Lazy<Mapper<SearchShopModel, ShopCpmDataView>>,
         private val shopDataViewMapper: Lazy<Mapper<SearchShopModel, ShopDataView>>,
         private val userSession: Lazy<UserSessionInterface>
-) : BaseViewModel(dispatcher.ui()) {
+) : BaseViewModel(dispatcher.main) {
 
     companion object {
         const val START_ROW_FIRST_TIME_LOAD = 0

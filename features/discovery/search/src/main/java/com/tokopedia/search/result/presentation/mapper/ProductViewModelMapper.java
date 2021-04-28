@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.mapper;
 
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView;
+import com.tokopedia.search.result.presentation.model.BannerDataView;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView;
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView;
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView;
@@ -27,7 +28,8 @@ public class ProductViewModelMapper {
     public ProductDataView convertToProductViewModel(
             int lastProductItemPositionFromCache,
             SearchProductModel searchProductModel,
-            String pageTitle
+            String pageTitle,
+            boolean isLocalSearch
     ) {
         SearchProductModel.SearchProduct aceSearchProduct = searchProductModel.getSearchProduct();
         SearchProductModel.SearchProductHeader searchProductHeader = aceSearchProduct.getHeader();
@@ -39,7 +41,7 @@ public class ProductViewModelMapper {
             productDataView.setGlobalNavDataView(convertToViewModel(searchProductModel.getGlobalSearchNavigation()));
         }
         productDataView.setCpmModel(searchProductModel.getCpmModel());
-        productDataView.setRelatedDataView(convertToRelatedViewModel(searchProductData.getRelated()));
+        productDataView.setRelatedDataView(convertToRelatedViewModel(searchProductData.getRelated(), isLocalSearch));
         productDataView.setProductList(convertToProductItemViewModelList(
                 lastProductItemPositionFromCache, searchProductData.getProductList(), pageTitle
         ));
@@ -61,6 +63,7 @@ public class ProductViewModelMapper {
         productDataView.setAdditionalParams(searchProductHeader.getAdditionalParams());
         productDataView.setAutocompleteApplink(searchProductData.getAutocompleteApplink());
         productDataView.setDefaultView(searchProductHeader.getDefaultView());
+        productDataView.setBannerDataView(convertToBannerDataView(searchProductData.getBanner()));
 
         return productDataView;
     }
@@ -107,10 +110,10 @@ public class ProductViewModelMapper {
         return itemList;
     }
 
-    private RelatedDataView convertToRelatedViewModel(SearchProductModel.Related related) {
+    private RelatedDataView convertToRelatedViewModel(SearchProductModel.Related related, boolean isLocalSearch) {
         List<BroadMatchDataView> broadMatchDataViewList = new ArrayList<>();
         for (SearchProductModel.OtherRelated otherRelated: related.getOtherRelatedList()) {
-            broadMatchDataViewList.add(convertToBroadMatchViewModel(otherRelated));
+            broadMatchDataViewList.add(convertToBroadMatchViewModel(otherRelated, isLocalSearch));
         }
 
         return new RelatedDataView(
@@ -120,7 +123,7 @@ public class ProductViewModelMapper {
         );
     }
 
-    private BroadMatchDataView convertToBroadMatchViewModel(SearchProductModel.OtherRelated otherRelated) {
+    private BroadMatchDataView convertToBroadMatchViewModel(SearchProductModel.OtherRelated otherRelated, boolean isLocalSearch) {
         List<BroadMatchItemDataView> broadMatchItemDataViewList = new ArrayList<>();
         int position = 0;
         for (SearchProductModel.OtherRelatedProduct otherRelatedProduct: otherRelated.getProductList()) {
@@ -132,6 +135,7 @@ public class ProductViewModelMapper {
                 otherRelated.getKeyword(),
                 otherRelated.getUrl(),
                 otherRelated.getApplink(),
+                isLocalSearch,
                 broadMatchItemDataViewList
         );
     }
@@ -351,9 +355,12 @@ public class ProductViewModelMapper {
             SearchProductModel.InspirationCarouselData data
     ) {
         List<InspirationCarouselDataView.Option> options = new ArrayList<>();
+        InspirationCarouselProductDataViewMapper mapper = new InspirationCarouselProductDataViewMapper();
 
         for (SearchProductModel.InspirationCarouselOption opt : data.getInspirationCarouselOptions()) {
-            int position = data.getInspirationCarouselOptions().indexOf(opt) + 1;
+            int index = data.getInspirationCarouselOptions().indexOf(opt);
+            int position = index + 1;
+            boolean isChipsActive = index == 0;
             options.add(new InspirationCarouselDataView.Option(
                     opt.getTitle(),
                     opt.getUrl(),
@@ -361,48 +368,25 @@ public class ProductViewModelMapper {
                     opt.getBannerImageUrl(),
                     opt.getBannerLinkUrl(),
                     opt.getBannerApplinkUrl(),
-                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, data.getType(), data.getLayout()),
+                    opt.getIdentifier(),
+                    mapper.convertToInspirationCarouselProductDataView(
+                            opt.getInspirationCarouselProducts(),
+                            position,
+                            data.getType(),
+                            data.getLayout(),
+                            this::convertToLabelGroupList,
+                            opt.getTitle()
+                    ),
                     data.getType(),
                     data.getLayout(),
                     data.getPosition(),
-                    data.getTitle()
+                    data.getTitle(),
+                    position,
+                    isChipsActive
             ));
         }
 
         return options;
-    }
-
-    private  List<InspirationCarouselDataView.Option.Product> convertToInspirationCarouselProductViewModel(
-            List<SearchProductModel.InspirationCarouselProduct> inspirationCarouselProduct,
-            int position,
-            String inspirationCarouselType,
-            String layout
-    ) {
-        List<InspirationCarouselDataView.Option.Product> products = new ArrayList<>();
-
-        for (SearchProductModel.InspirationCarouselProduct product : inspirationCarouselProduct) {
-            products.add(new InspirationCarouselDataView.Option.Product(
-                    product.getId(),
-                    product.getName(),
-                    product.getPrice(),
-                    product.getPriceStr(),
-                    product.getImgUrl(),
-                    product.getRating(),
-                    product.getCountReview(),
-                    product.getUrl(),
-                    product.getApplink(),
-                    product.getDescription(),
-                    position,
-                    inspirationCarouselType,
-                    product.getRatingAverage(),
-                    convertToLabelGroupList(product.getLabelGroupList()),
-                    layout,
-                    product.getOriginalPrice(),
-                    product.getDiscountPercentage()
-            ));
-        }
-
-        return products;
     }
 
     private List<InspirationCardDataView> convertToInspirationCardViewModel(SearchProductModel.SearchInspirationWidget searchInspirationWidget) {
@@ -435,5 +419,14 @@ public class ProductViewModelMapper {
         }
 
         return options;
+    }
+
+    private BannerDataView convertToBannerDataView(SearchProductModel.Banner bannerModel) {
+        return new BannerDataView(
+                bannerModel.getPosition(),
+                bannerModel.getText(),
+                bannerModel.getApplink(),
+                bannerModel.getImageUrl()
+        );
     }
 }

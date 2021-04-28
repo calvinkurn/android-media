@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.floatingwindow.exception.FloatingWindowException
@@ -26,13 +27,16 @@ import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
+import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.pip.PlayViewerPiPView
+import com.tokopedia.play.view.storage.PiPSessionStorage
 import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.type.PiPState
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
@@ -45,7 +49,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
@@ -61,9 +65,10 @@ import javax.inject.Inject
  */
 class PlayVideoFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
-        dispatchers: CoroutineDispatcherProvider,
+        dispatchers: CoroutineDispatchers,
         private val pipAnalytic: PlayPiPAnalytic,
-        private val analytic: PlayAnalytic
+        private val analytic: PlayAnalytic,
+        private val pipSessionStorage: PiPSessionStorage
 ) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
 
     private val job = SupervisorJob()
@@ -92,25 +97,57 @@ class PlayVideoFragment @Inject constructor(
 
     private val playViewerPiPCoordinatorListener = object : PlayViewerPiPCoordinator.Listener {
 
-        override fun onShouldRequestPermission(requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow) {
-            if (playViewModel.pipState.mode == PiPMode.WatchInPip) {
-                DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-                        .apply {
-                            setTitle(getString(R.string.play_pip_permission_rationale_title))
-                            setDescription(getString(R.string.play_pip_permission_rationale_desc))
-                            setPrimaryCTAText(getString(R.string.play_pip_activate))
-                            setPrimaryCTAClickListener {
-                                requestPermissionFlow.requestPermission()
-                                dismiss()
-                            }
-                            setSecondaryCTAText(getString(R.string.play_pip_cancel))
-                            setSecondaryCTAClickListener {
-                                requestPermissionFlow.cancel()
-                                dismiss()
-                            }
-                        }.show()
-            } else {
-                requestPermissionFlow.cancel()
+        private fun openDialog(requestHandler: () -> Unit, cancelHandler: () -> Unit, dismissHandler: () -> Unit) {
+            DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+                    .apply {
+                        setTitle(getString(R.string.play_pip_permission_rationale_title))
+                        setDescription(getString(R.string.play_pip_permission_rationale_desc))
+                        setPrimaryCTAText(getString(R.string.play_pip_activate))
+                        setPrimaryCTAClickListener {
+                            requestHandler()
+                            dismiss()
+                        }
+                        setSecondaryCTAText(getString(R.string.play_pip_cancel))
+                        setSecondaryCTAClickListener {
+                            cancelHandler()
+                            dismiss()
+                        }
+                        dialogOverlay.setOnClickListener {
+                            dismissHandler()
+                        }
+                    }.show()
+        }
+
+        override fun onShouldRequestPermission(pipMode: PiPMode, requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow) {
+            val dialogHandler = { openDialog(
+                    requestHandler = {
+                        requestPermissionFlow.requestPermission()
+                        if (pipMode is PiPMode.BrowsingOtherPage) {
+                            pipSessionStorage.setHasRequestedPiPBrowsing(true)
+                        }
+                     },
+                    cancelHandler = {
+                        requestPermissionFlow.cancel()
+                        if (pipMode is PiPMode.BrowsingOtherPage) {
+                            pipSessionStorage.setHasRequestedPiPBrowsing(true)
+                            onShouldOpenApplink(pipMode.applinkModel)
+                        }
+                    },
+                    dismissHandler = {
+                        requestPermissionFlow.cancel()
+                    }
+            ) }
+
+            when (pipMode) {
+                PiPMode.WatchInPiP -> dialogHandler()
+                is PiPMode.BrowsingOtherPage -> {
+                    if (!pipSessionStorage.hasRequestedPiPBrowsing()) {
+                        dialogHandler()
+                    } else {
+                        onShouldOpenApplink(pipMode.applinkModel)
+                        requestPermissionFlow.cancel()
+                    }
+                }
             }
         }
 
@@ -125,7 +162,7 @@ class PlayVideoFragment @Inject constructor(
             val videoPlayer = playViewModel.videoPlayer as? PlayVideoPlayerUiModel.General.Complete ?: return
             PlayerView.switchTargetView(videoPlayer.exoPlayer, videoView.getPlayerView(), view.getPlayerView())
 
-            if (playViewModel.pipState.mode == PiPMode.WatchInPip) {
+            if (playViewModel.pipState.mode == PiPMode.WatchInPiP) {
                 playPiPCoordinator.onEnterPiPMode()
                 pipAnalytic.enterPiP(
                         channelId = channelId,
@@ -134,9 +171,18 @@ class PlayVideoFragment @Inject constructor(
                 )
             }
         }
+
+        override fun onShouldOpenApplink(applinkModel: OpenApplinkUiModel) {
+            openApplink(
+                    applink = applinkModel.applink,
+                    requestCode = applinkModel.requestCode,
+                    shouldFinish = applinkModel.shouldFinish,
+                    params = applinkModel.params.toTypedArray(),
+            )
+        }
     }
 
-    private lateinit var piPCoordinator: PlayViewerPiPCoordinator
+    private lateinit var pipCoordinator: PlayViewerPiPCoordinator
 
     private val cornerRadius = 16f.dpToPx()
 
@@ -161,7 +207,11 @@ class PlayVideoFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
-        playParentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayParentViewModel::class.java)
+
+        val theActivity = requireActivity()
+        if (theActivity is PlayActivity) {
+            playParentViewModel = ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -171,8 +221,8 @@ class PlayVideoFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
         if (!isEnterPiPAfterPermission) {
-            if (::piPCoordinator.isInitialized) {
-                piPCoordinator.view.setPauseOnDetached(false)
+            if (::pipCoordinator.isInitialized) {
+                pipCoordinator.view.setPauseOnDetached(false)
             }
             playViewModel.stopPiP()
         }
@@ -199,7 +249,7 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic()
+        if (!isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(channelId)
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -221,7 +271,7 @@ class PlayVideoFragment @Inject constructor(
         val videoMeta = playViewModel.observableVideoMeta.value ?: return
         if (videoMeta.videoPlayer !is PlayVideoPlayerUiModel.General) return
 
-        piPCoordinator = PlayViewerPiPCoordinator(
+        pipCoordinator = PlayViewerPiPCoordinator(
                 context = requireContext(),
                 videoPlayer = playViewModel.getVideoPlayer(),
                 videoOrientation = playViewModel.videoOrientation,
@@ -232,12 +282,13 @@ class PlayVideoFragment @Inject constructor(
                         channelType = playViewModel.channelType,
                         videoPlayer = videoMeta.videoPlayer,
                         videoStream = videoMeta.videoStream,
-                        stopOnClose = pipState.mode == PiPMode.WatchInPip
+                        stopOnClose = pipState.mode == PiPMode.WatchInPiP,
+                        pipMode = pipState.mode!!
                 ),
                 pipAdapter = pipAdapter,
                 listener = playViewerPiPCoordinatorListener
         )
-        piPCoordinator.startPip()
+        pipCoordinator.startPip()
     }
 
     /**
@@ -335,6 +386,19 @@ class PlayVideoFragment @Inject constructor(
         })
     }
     //endregion
+
+    private fun openApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
+        if (requestCode == null) {
+            RouteManager.route(context, applink, *params)
+        } else {
+            val intent = RouteManager.getIntent(context, applink, *params)
+            startActivityForResult(intent, requestCode)
+        }
+
+        activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
+
+        if (shouldFinish) activity?.finish()
+    }
 
     private fun handleVideoStateChanged(state: PlayViewerVideoState) {
         when (state) {

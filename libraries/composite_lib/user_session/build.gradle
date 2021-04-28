@@ -16,7 +16,7 @@ buildscript {
 project.ext {
     artifactId = 'user_session'
     groupId = 'com.tokopedia.user.session'
-    versionName = "1.0.32"
+    versionName = "1.0.35"
     artifactName = "user_session-debug"
 }
 
