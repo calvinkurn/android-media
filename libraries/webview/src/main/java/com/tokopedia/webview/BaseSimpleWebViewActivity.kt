@@ -35,7 +35,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     protected var allowOverride = true
     protected var needLogin = false
     protected var backPressedEnabled = true
-    protected var backPressedMessage = ""
+    protected var backPressedMessage = "Tombol kembali tidak dapat digunakan sekarang"
     var webViewTitle = ""
     var whiteListedDomains = WhiteListedDomains()
 
@@ -167,7 +167,10 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         val uri = intent.data
         uri?.let {
             backPressedEnabled = it.getBooleanQueryParameter(KEY_BACK_PRESSED_ENABLED, true)
-            backPressedMessage = it.getQueryParameter(KEY_ON_DISABLED_MESSAGE).orEmpty()
+            val message = it.getQueryParameter(KEY_BACK_PRESSED_MESSAGE)
+            if (!message.isNullOrBlank()) {
+                backPressedMessage = message
+            }
         }
     }
 
