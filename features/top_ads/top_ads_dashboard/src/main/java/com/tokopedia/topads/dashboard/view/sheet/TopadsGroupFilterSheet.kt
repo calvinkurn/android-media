@@ -92,7 +92,7 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
             onSubmitClick?.invoke()
             dismiss()
         }
-        
+
     }
 
     fun getFilterCount(): Int {
@@ -100,14 +100,14 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
     }
 
     fun removeStatusFilter() {
-        dialog.let {
-            view?.status?.visibility = View.GONE
-            view?.status_title?.visibility = View.GONE
-        }
+
+        view?.status?.visibility = View.GONE
+        view?.status_title?.visibility = View.GONE
+
     }
 
     fun getSelectedSortId(): String {
-        return when (dialog?.sortFilter?.checkedRadioButtonId) {
+        return when (view?.sortFilter?.checkedRadioButtonId) {
             R.id.filter1 -> list[0]
             R.id.filter2 -> list[1]
             R.id.filter3 -> list[2]
