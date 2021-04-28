@@ -669,7 +669,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 super.onScrolled(recyclerView, dx, dy)
 
                 val currentPosition = getCurrentItemCardList()
-                if (currentPosition != lastHorizontalTrackingPositionSent &&
+                if (currentPosition != -1 &&
+                        currentPosition != lastHorizontalTrackingPositionSent &&
                         adapterCardList.data[currentPosition] is Property) {
 
                     lastHorizontalTrackingPositionSent = currentPosition
