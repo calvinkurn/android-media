@@ -47,6 +47,7 @@ import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.coachmark.CoachMark2;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.R;
 import com.tokopedia.developer_options.ab_test_rollence.AbTestRollenceConfigFragmentActivity;
@@ -214,25 +215,14 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private void handleCoachmarkUri(Uri uri) {
         if (uri.getLastPathSegment().startsWith(URI_COACHMARK_DISABLE)) {
-            //soon will be replaced with global coachmark disable provided by unify team
+            CoachMark2.Companion.setCoachmmarkShowAllowed(false);
+
             SharedPreferences sharedPrefs = getSharedPreferences(
                     KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE);
             sharedPrefs.edit().putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false)
                     .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1, false)
                     .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, false)
                     .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply();
-
-
-            SharedPreferences homePref = getSharedPreferences(
-                    PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE);
-            homePref.edit().putBoolean(PREF_KEY_HOME_COACHMARK_NAV, true)
-                    .putBoolean(PREF_KEY_HOME_COACHMARK_INBOX, true)
-                    .putBoolean(PREF_KEY_HOME_COACHMARK_BALANCE, true).apply();
-
-
-            SharedPreferences chooseAddressPref = getSharedPreferences(
-                    PREFERENCE_NAME, Context.MODE_PRIVATE);
-            chooseAddressPref.edit().putBoolean(EXTRA_IS_COACHMARK, false).apply();
         }
         finish();
     }
