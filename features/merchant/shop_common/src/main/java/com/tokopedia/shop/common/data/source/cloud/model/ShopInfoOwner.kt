@@ -18,10 +18,6 @@ class ShopInfoOwner {
     @Expose
     var ownerEmail: Long = 0
 
-    @SerializedName("owner_id")
-    @Expose
-    var ownerId: Long = 0
-
     @SerializedName("owner_image")
     @Expose
     var ownerImage: String? = null

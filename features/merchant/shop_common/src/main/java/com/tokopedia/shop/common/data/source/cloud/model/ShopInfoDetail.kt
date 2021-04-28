@@ -113,10 +113,6 @@ class ShopInfoDetail {
     @Expose
     var shopOpenSince: String? = null
 
-    @SerializedName("shop_owner_id")
-    @Expose
-    var shopOwnerId: Long = 0
-
     @SerializedName("shop_owner_last_login")
     @Expose
     var shopOwnerLastLogin: String? = null
