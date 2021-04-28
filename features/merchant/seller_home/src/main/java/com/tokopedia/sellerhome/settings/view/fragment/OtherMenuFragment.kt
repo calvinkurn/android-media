@@ -213,6 +213,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     override fun onRefreshShopInfo() {
         showAllLoadingShimmering()
         otherMenuViewModel.getAllSettingShopInfo()
+        otherMenuViewModel.getShopPeriodType()
     }
 
     override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {

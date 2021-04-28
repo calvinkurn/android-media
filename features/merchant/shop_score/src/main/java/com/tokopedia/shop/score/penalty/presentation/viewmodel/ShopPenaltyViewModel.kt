@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST
@@ -101,14 +102,18 @@ class ShopPenaltyViewModel @Inject constructor(
                 getShopPenaltySummaryTypesUseCase.requestParams = GetShopPenaltySummaryTypesUseCase.createParams(
                         startDate, endDate)
                 getShopPenaltySummaryTypesUseCase.executeOnBackground()
-            }, onError = {})
+            }, onError = {
+                _penaltyPageData.postValue(Fail(it))
+            })
 
             val penaltyDetailResponse = asyncCatchError(block = {
                 getShopPenaltyDetailUseCase.params = GetShopPenaltyDetailUseCase.crateParams(
                         ShopScorePenaltyDetailParam(startDate = startDate, endDate = endDate, typeID = typeId, sort = sortBy
                         ))
                 getShopPenaltyDetailUseCase.executeOnBackground()
-            }, onError = {})
+            }, onError = {
+                _penaltyPageData.postValue(Fail(it))
+            })
 
             val penaltySummaryTypeData = penaltySummaryTypeResponse.await() as? ShopPenaltySummaryTypeWrapper
             val penaltyDetailData = penaltyDetailResponse.await() as? ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail
