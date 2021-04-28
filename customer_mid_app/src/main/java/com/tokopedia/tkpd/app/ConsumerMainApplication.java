@@ -61,6 +61,7 @@ import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.ToasterActivityLifecycle;
 import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.notifications.inApp.CMInAppManager;
+import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -319,6 +320,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
+        registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
     }
 
 

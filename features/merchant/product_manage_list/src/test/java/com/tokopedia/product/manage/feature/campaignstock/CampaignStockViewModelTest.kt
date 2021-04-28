@@ -164,6 +164,158 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
     }
 
     @Test
+    fun `given edit status response is NULL when edit status NOT success should return initial product status`() = runBlocking {
+        val isSuccess = false
+        val productStatusResponse = null
+        val initialProductStatus = ProductStatus.INACTIVE
+
+        val shopId = "1"
+        val productId = "1"
+        val productName = "Name"
+
+        val stockAllocationSummary = GetStockAllocationSummary(productName = productName, isVariant = false)
+        val getStockAllocationData = GetStockAllocationData(summary = stockAllocationSummary)
+
+        val editStatusResponse = ProductUpdateV3Response(ProductUpdateV3Data(isSuccess = isSuccess))
+        val editStockResponse = ProductStockWarehouse(status = productStatusResponse)
+        val otherCampaignStockData = OtherCampaignStockData(status = initialProductStatus)
+
+        onEditStatus_thenReturn(editStatusResponse)
+        onEditStock_thenReturn(editStockResponse)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+
+        viewModel.run {
+            setShopId(shopId)
+            getStockAllocation(listOf(productId))
+        }
+
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetOtherCampaignStockDataCalled()
+
+        viewModel.run {
+            updateNonVariantIsActive(true)
+            updateNonVariantStockCount(1)
+            updateStockData()
+        }
+
+        verifyEditStatusCalled()
+        verifyEditStockCalled()
+
+        val totalStock = 1
+        val expectedResult = Success(UpdateCampaignStockResult(
+            productId,
+            productName,
+            totalStock,
+            initialProductStatus,
+            true
+        ))
+
+        verifyProductUpdateResponseResult(expectedResult)
+    }
+
+    @Test
+    fun `given edit status response is NULL when edit status success should return product status input`() = runBlocking {
+        val productStatusResponse = null
+        val isSuccess = true
+        val isActive = true // input = ProductStatus.ACTIVE
+
+        val shopId = "1"
+        val productId = "1"
+        val productName = "Name"
+
+        val stockAllocationSummary = GetStockAllocationSummary(productName = productName, isVariant = false)
+        val getStockAllocationData = GetStockAllocationData(summary = stockAllocationSummary)
+
+        val editStatusResponse = ProductUpdateV3Response(ProductUpdateV3Data(isSuccess = isSuccess))
+        val editStockResponse = ProductStockWarehouse(status = productStatusResponse)
+        val otherCampaignStockData = OtherCampaignStockData(status = ProductStatus.INACTIVE)
+
+        onEditStatus_thenReturn(editStatusResponse)
+        onEditStock_thenReturn(editStockResponse)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+
+        viewModel.run {
+            setShopId(shopId)
+            getStockAllocation(listOf(productId))
+        }
+
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetOtherCampaignStockDataCalled()
+
+        viewModel.run {
+            updateNonVariantIsActive(isActive)
+            updateNonVariantStockCount(1)
+            updateStockData()
+        }
+
+        verifyEditStatusCalled()
+        verifyEditStockCalled()
+
+        val totalStock = 1
+        val expectedResult = Success(UpdateCampaignStockResult(
+            productId,
+            productName,
+            totalStock,
+            ProductStatus.ACTIVE,
+            true
+        ))
+
+        verifyProductUpdateResponseResult(expectedResult)
+    }
+
+    @Test
+    fun `given edit product status is NOT success when updateStockData should return initial product status`() = runBlocking {
+        val isSuccess = false
+        val productStatus = ProductStatus.INACTIVE //initial status
+
+        val shopId = "1"
+        val productId = "1"
+        val productName = "Name"
+
+        val stockAllocationSummary = GetStockAllocationSummary(productName = productName, isVariant = false)
+        val getStockAllocationData = GetStockAllocationData(summary = stockAllocationSummary)
+
+        val editStatusResponse = ProductUpdateV3Response(ProductUpdateV3Data(isSuccess = isSuccess))
+        val editStockResponse = ProductStockWarehouse(status = null)
+        val otherCampaignStockData = OtherCampaignStockData(status = productStatus)
+
+        onEditStatus_thenReturn(editStatusResponse)
+        onEditStock_thenReturn(editStockResponse)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+
+        viewModel.run {
+            setShopId(shopId)
+            getStockAllocation(listOf(productId))
+        }
+
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetOtherCampaignStockDataCalled()
+
+        viewModel.run {
+            updateNonVariantIsActive(true)
+            updateNonVariantStockCount(1)
+            updateStockData()
+        }
+
+        verifyEditStatusCalled()
+        verifyEditStockCalled()
+
+        val totalStock = 1
+        val expectedResult = Success(UpdateCampaignStockResult(
+            productId,
+            productName,
+            totalStock,
+            ProductStatus.INACTIVE,
+            true
+        ))
+
+        verifyProductUpdateResponseResult(expectedResult)
+    }
+
+    @Test
     fun `given edit status response INACTIVE when update non-variant stock should return status result INACTIVE`() = runBlocking {
         val shopId = "1"
         val productId = "1"
