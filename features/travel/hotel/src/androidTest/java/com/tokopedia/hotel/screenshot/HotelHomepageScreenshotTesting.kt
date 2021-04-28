@@ -3,11 +3,13 @@ package com.tokopedia.hotel.screenshot
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import androidx.core.widget.NestedScrollView
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity
 import com.tokopedia.hotel.homepage.presentation.activity.mock.HotelHomepageMockResponseConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -50,15 +52,17 @@ class HotelHomepageScreenshotTesting {
             CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "top")
         }
 
-            CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_search_form_container, filePrefix(), "search-container")
+        CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_search_form_container, filePrefix(), "search-container")
 
-            CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_container_last_search, filePrefix(), "recent-search")
+        CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_container_last_search, filePrefix(), "recent-search")
 
-            CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_container_promo, filePrefix(), "promo-container")
+        scrollToBottom()
 
-            CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_homepage_video_banner, filePrefix(), "video-banner")
+        CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_container_promo, filePrefix(), "promo-container")
 
-            CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.widget_hotel_homepage_popular_cities, filePrefix(), "widget-popular-cities")
+        CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.hotel_homepage_video_banner, filePrefix(), "video-banner")
+
+//            CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.widget_hotel_homepage_popular_cities, filePrefix(), "widget-popular-cities")
 
         activityRule.activity.finishAndRemoveTask()
     }
@@ -68,6 +72,12 @@ class HotelHomepageScreenshotTesting {
         carousel.apply {
             autoplay = false
         }
+    }
+
+    private fun scrollToBottom() {
+        val bottomView = activityRule.activity.findViewById<TravelVideoBannerWidget>(com.tokopedia.hotel.R.id.hotel_homepage_video_banner)
+        val hotelHomepage = activityRule.activity.findViewById<NestedScrollView>(com.tokopedia.hotel.R.id.hotelHomepageScrollView)
+        hotelHomepage.requestChildFocus(bottomView, bottomView)
     }
 
     private fun filePrefix(): String = "hotel-homepage"
