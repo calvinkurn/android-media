@@ -156,7 +156,7 @@ class DigitalAddToCartViewModelTest {
         } answers {
             secondArg<Subscriber<Map<Type, RestResponse>>>().onStart()
             secondArg<Subscriber<Map<Type, RestResponse>>>().onCompleted()
-            secondArg<Subscriber<Map<Type, RestResponse>>>().onError(Throwable(SocketTimeoutException()))
+            secondArg<Subscriber<Map<Type, RestResponse>>>().onError(Throwable())
         }
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
