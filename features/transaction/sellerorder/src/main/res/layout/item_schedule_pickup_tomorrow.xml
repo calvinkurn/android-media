@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         app:typographyType="body_2"
         android:textColor="@color/Unify_N700_96"
-        android:text="asdada"
+        android:text="Tomorrow"
         android:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography

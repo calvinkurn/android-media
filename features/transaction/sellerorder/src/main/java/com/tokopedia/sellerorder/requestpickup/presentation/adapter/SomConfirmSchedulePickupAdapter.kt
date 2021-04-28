@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.requestpickup.data.model.*
 import com.tokopedia.unifyprinciples.Typography
@@ -46,6 +48,12 @@ class SomConfirmSchedulePickupAdapter(private val listener: SomConfirmSchedulePi
         }
     }
 
+    fun setData(data: SchedulePickupModel) {
+        scheduleTime.clear()
+        scheduleTime.addAll(data.today)
+        scheduleTime.addAll(data.tomorrow)
+        notifyDataSetChanged()
+    }
 
     abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
         abstract fun bind(item: T, position: Int)
@@ -53,10 +61,18 @@ class SomConfirmSchedulePickupAdapter(private val listener: SomConfirmSchedulePi
 
     inner class ScheduleTodayViewHolder(itemView: View) : SomConfirmSchedulePickupAdapter.BaseViewHolder<SchedulePickupModelVisitable>(itemView) {
 
+        private val tvToday = itemView.findViewById<Typography>(R.id.tv_today)
         private val timeToday = itemView.findViewById<Typography>(R.id.time_today)
+        private var showTitle = true
 
         override fun bind(item: SchedulePickupModelVisitable, position: Int) {
             if (item is Today) {
+                if (showTitle) {
+                    tvToday.visible()
+                    showTitle = false
+                } else {
+                    tvToday.gone()
+                }
                 val time = item.startToday + "-" + item.endToday
                 timeToday.text = time
 
@@ -69,10 +85,18 @@ class SomConfirmSchedulePickupAdapter(private val listener: SomConfirmSchedulePi
 
     inner class ScheduleTomorrowViewHolder(itemView: View) : SomConfirmSchedulePickupAdapter.BaseViewHolder<SchedulePickupModelVisitable>(itemView) {
 
+        private val tvTomorrow = itemView.findViewById<Typography>(R.id.tv_tomorrow)
         private val timeTomorrow = itemView.findViewById<Typography>(R.id.time_tomorrow)
+        private var showTitle = true
 
         override fun bind(item: SchedulePickupModelVisitable, position: Int) {
             if (item is Tomorrow) {
+                if (showTitle) {
+                    tvTomorrow.visible()
+                    showTitle = false
+                } else {
+                    tvTomorrow.gone()
+                }
                 val time = item.startTomorrow + "-" + item.endTomorrow
                 timeTomorrow.text = time
 

@@ -9,23 +9,13 @@
     android:layout_marginRight="@dimen/dp_10"
     android:layout_marginTop="@dimen/dp_20">
 
-    <RelativeLayout
-        android:id="@+id/rl_index_notes"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:background="@drawable/green_circle_background"
-        android:layout_centerVertical="true">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/label_index"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N0"
-            app:typographyType="heading_5"
-            app:typographyWeight="bold"
-            android:layout_centerInParent="true"/>
-
-    </RelativeLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_index"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_notes"
@@ -38,7 +28,7 @@
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_10"
-        android:layout_toEndOf="@id/rl_index_notes"
+        android:layout_toEndOf="@id/label_index"
         android:layout_centerVertical="true"/>
 
 </RelativeLayout>

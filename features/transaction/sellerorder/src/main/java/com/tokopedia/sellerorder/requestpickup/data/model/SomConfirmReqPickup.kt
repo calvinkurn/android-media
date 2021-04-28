@@ -72,7 +72,11 @@ data class SomConfirmReqPickup (
 
                                     @SerializedName("shippers")
                                     @Expose
-                                    val listShippers: List<Shipper> = listOf()) : Parcelable {
+                                    val listShippers: List<Shipper> = listOf(),
+
+                                    @SerializedName("orchestra_partner")
+                                    @Expose
+                                    val orchestraPartner: String = "") : Parcelable {
 
                                 @Parcelize
                                 data class Shipper(
@@ -115,7 +119,7 @@ data class SomConfirmReqPickup (
                             data class ScheduleTime(
                                     @SerializedName("today")
                                     val today: List<Today> = listOf(),
-                                    @SerializedName("tommorow")
+                                    @SerializedName("tomorrow")
                                     val tomorrow: List<Tomorrow> = listOf()
                             ) : Parcelable {
 

@@ -19,9 +19,11 @@
             android:layout_height="0dp"
             android:isScrollContainer="false"
             android:background="@color/Unify_N0"
+            android:layout_marginBottom="@dimen/unify_space_16"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent">
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/ll_btn">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -224,7 +226,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     app:typographyType="body_2"
-                                    tools:text="Butuh pick-up untuk kapan?"/>
+                                    android:text="Butuh pick-up untuk kapan?"/>
 
                                 <LinearLayout
                                     android:id="@+id/ll_pickup"
@@ -262,7 +264,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     app:typographyType="body_3"
-                                    tools:text="Waktu Penjemputan"
+                                    android:text="Waktu Penjemputan"
                                     android:layout_marginTop="@dimen/unify_space_24"
                                     android:layout_below="@id/ll_pickup"/>
 

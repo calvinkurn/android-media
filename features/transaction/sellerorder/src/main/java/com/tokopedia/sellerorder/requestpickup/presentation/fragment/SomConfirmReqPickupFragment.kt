@@ -20,6 +20,7 @@ import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.requestpickup.data.mapper.SchedulePickupMapper
 import com.tokopedia.sellerorder.requestpickup.data.model.*
 import com.tokopedia.sellerorder.requestpickup.di.SomConfirmReqPickupComponent
 import com.tokopedia.sellerorder.requestpickup.presentation.adapter.SomConfirmReqPickupCourierNotesAdapter
@@ -149,7 +150,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                 val htmlCourierCountService = HtmlLinkHelper(it, "${shipper.countText} <b>${shipper.count}</b>")
                 tv_courier_count?.text = htmlCourierCountService.spannedString
             }
-            tv_courier_notes?.text = shipper.note
+            tv_courier_notes?.text = confirmReqPickupResponse.dataSuccess.detail.orchestraPartner
         }
 
         if (confirmReqPickupResponse.dataSuccess.notes.listNotes.isNotEmpty()) {
@@ -173,6 +174,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
             rl_schedule_pickup?.visibility = View.VISIBLE
             pickup_now?.centerText = true
             pickup_schedule?.centerText = true
+            tv_schedule?.text = confirmReqPickupResponse.dataSuccess.detail.listShippers[0].note
             setActiveChips(pickup_now, pickup_schedule)
 
             pickup_now?.setOnClickListener {
@@ -187,7 +189,8 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                 btn_arrow?.visibility = View.VISIBLE
                 divider_schedule?.visibility = View.VISIBLE
                 btn_arrow.setOnClickListener {
-                    //bottomSheetFeatureInfoAdapter.setData()
+                    val schedulePickupMapper = SchedulePickupMapper()
+                    bottomSheetSchedulePickupAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time))
                     openBottomSheetSchedulePickup()
                 }
             }
@@ -206,19 +209,13 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
 
     private fun openBottomSheetSchedulePickup() {
         bottomSheetSchedulePickup = BottomSheetUnify()
-        val viewBottomSheetSchedulePickup = View.inflate(context, R.layout.bottomsheet_schedule_pickup, null).apply {
-            rvSchedulePickup = findViewById(R.id.rv_schedule_pickup)
-
-            rvSchedulePickup?.apply {
-                layoutManager = LinearLayoutManager(this.context)
-                adapter = bottomSheetSchedulePickupAdapter
-            }
-        }
+        bottomSheetSchedulePickup?.setTitle(getString(R.string.som_request_pickup_bottomsheet_title))
+        val viewBottomSheetSchedulePickup = View.inflate(context, R.layout.bottomsheet_schedule_pickup, null)
+        setupChild(viewBottomSheetSchedulePickup)
 
         bottomSheetSchedulePickup?.apply {
-            setTitle(getString(R.string.som_request_pickup_bottomsheet_title))
             setCloseClickListener { dismiss() }
-            setCloseClickListener { viewBottomSheetSchedulePickup }
+            setChild(viewBottomSheetSchedulePickup)
             setOnDismissListener { dismiss() }
         }
 
@@ -227,6 +224,14 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
         }
     }
 
+    private fun setupChild(child: View) {
+        rvSchedulePickup = child.findViewById(R.id.rv_schedule_pickup)
+
+        rvSchedulePickup?.apply {
+            layoutManager = LinearLayoutManager(this.context)
+            adapter = bottomSheetSchedulePickupAdapter
+        }
+    }
 
 
     private fun setActiveChips(selected: ChipsUnify?, deselected: ChipsUnify?) {
