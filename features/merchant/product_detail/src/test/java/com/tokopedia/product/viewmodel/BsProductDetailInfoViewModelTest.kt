@@ -18,6 +18,7 @@ import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.user.session.UserSessionInterface
 import org.junit.*
 
 /**
@@ -28,6 +29,9 @@ class BsProductDetailInfoViewModelTest {
 
     @RelaxedMockK
     lateinit var getProductDetailBottomSheetUseCase: GetProductDetailBottomSheetUseCase
+
+    @RelaxedMockK
+    lateinit var userSessionInterface: UserSessionInterface
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -43,7 +47,7 @@ class BsProductDetailInfoViewModelTest {
     }
 
     private val viewModel by lazy {
-        BsProductDetailInfoViewModel(CoroutineTestDispatchersProvider, getProductDetailBottomSheetUseCase)
+        BsProductDetailInfoViewModel(CoroutineTestDispatchersProvider, getProductDetailBottomSheetUseCase, userSessionInterface)
     }
 
     private val bottomSheetOrderItem by lazy {

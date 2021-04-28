@@ -350,7 +350,9 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
                         updateBottomMargin()
                         viewModel.getRecommendationOnEmptyWishlist(page + 1)
                     } else {
-                        viewModel.getNextPageWishlistData()
+                        if (!state.isDone()) {
+                            viewModel.getNextPageWishlistData()
+                        }
                     }
                 }
             }
