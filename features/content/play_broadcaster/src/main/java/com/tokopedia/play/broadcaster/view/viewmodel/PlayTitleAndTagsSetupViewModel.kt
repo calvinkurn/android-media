@@ -27,6 +27,9 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
 ) : ViewModel(), TitleSetupValidator, TagSetupValidator {
 
+    val addedTags: Set<String>
+        get() = _observableAddedTags.value.orEmpty()
+
     val observableRecommendedTagsModel: LiveData<List<PlayTagUiModel>>
         get() = _observableRecommendedTagsModel
     val observableUploadEvent: LiveData<Event<NetworkResult<Unit>>>
@@ -61,9 +64,6 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
     private val _observableUploadEvent = MutableLiveData<Event<NetworkResult<Unit>>>()
 
     private val validTagRegex = Regex("[a-zA-Z0-9 ]+")
-
-    private val addedTags: Set<String>
-        get() = _observableAddedTags.value.orEmpty()
 
     init {
         getTags()

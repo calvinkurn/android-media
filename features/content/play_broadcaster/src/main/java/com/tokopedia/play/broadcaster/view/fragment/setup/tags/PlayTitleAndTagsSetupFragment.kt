@@ -12,12 +12,15 @@ import androidx.transition.*
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.partial.*
+import com.tokopedia.play.broadcaster.view.partial.BottomActionNextViewComponent
+import com.tokopedia.play.broadcaster.view.partial.TagListViewComponent
+import com.tokopedia.play.broadcaster.view.partial.TextFieldTitleViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayTitleAndTagsSetupViewModel
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
@@ -36,6 +39,7 @@ import javax.inject.Inject
 class PlayTitleAndTagsSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val dispatcher: CoroutineDispatchers,
+        private val analytic: PlayBroadcastContentTaggingAnalytic,
 ) : PlayBaseSetupFragment(), FragmentWithDetachableView,
         BottomActionNextViewComponent.Listener,
         TextFieldTitleViewComponent.Listener,
@@ -110,8 +114,9 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
      * Bottom Action Next View Component
      */
     override fun onNextButtonClicked(view: BottomActionNextViewComponent) {
-        //Next
         viewModel.finishSetup(titleFieldView.getText())
+        analytic.selectRecommendedTags(viewModel.addedTags)
+        analytic.proceedFromContentTagging()
     }
 
     fun setListener(listener: Listener?) {

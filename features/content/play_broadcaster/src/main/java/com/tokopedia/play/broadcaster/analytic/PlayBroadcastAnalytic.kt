@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.analytic
 
+import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -11,7 +12,10 @@ import com.tokopedia.user.session.UserSessionInterface
  * Save Live to VOD https://mynakama.tokopedia.com/datatracker/product/requestdetail/161
  * Channel Scheduling https://mynakama.tokopedia.com/datatracker/product/requestdetail/247
  */
-class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
+class PlayBroadcastAnalytic(
+        private val userSession: UserSessionInterface,
+        private val contentTaggingAnalytic: PlayBroadcastContentTaggingAnalytic,
+) : PlayBroadcastContentTaggingAnalytic by contentTaggingAnalytic {
 
     /**
      * View Camera and Microphone Permission Page
