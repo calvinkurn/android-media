@@ -46,65 +46,46 @@ class FocusCameraFaceView : View {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         mPath.reset()
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mPath.addRect(left + (right - left) / LEFT_DIMEN_DIVIDER_KK,
-                    (top + (bottom - top) / TOP_DIMEN_DIVIDER_KK).toFloat(),
-                    right - (right - left) / RIGHT_DIMEN_DIVIDER_KK,
-                    (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER_KK).toFloat(),
-                    Path.Direction.CW)
-        } else {
-            mPath.addRoundRect(
-                    left + (right - left) / LEFT_DIMEN_DIVIDER,
+        mPath.addRoundRect(
+                left + (right - left) / LEFT_DIMEN_DIVIDER,
+                (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
+                right - (right - left) / RIGHT_DIMEN_DIVIDER,
+                (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
+                CONST_RADIUS.toFloat(),
+                CONST_RADIUS.toFloat(),
+                Path.Direction.CW
+        )
+        mPath.addOval(left + (right - left) / LEFT_OVAL_DIMEN_DIVIDER,
+                (top + (bottom - top) / TOP_OVAL_DIMEN_DIVIDER).toFloat(),
+                right - (right - left) / RIGHT_OVAL_DIMEN_DIVIDER,
+                (bottom - (bottom - top) / BOTTOM_OVAL_DIMEN_DIVIDER).toFloat(),
+                Path.Direction.CW)
+
+        mPath.fillType = Path.FillType.INVERSE_EVEN_ODD
+
+        mTransparentPaint?.let {
+            canvas.drawRoundRect(left + (right - left) / LEFT_DIMEN_DIVIDER,
                     (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
                     right - (right - left) / RIGHT_DIMEN_DIVIDER,
                     (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
                     CONST_RADIUS.toFloat(),
                     CONST_RADIUS.toFloat(),
-                    Path.Direction.CW
-            )
-            mPath.addOval(left + (right - left) / LEFT_OVAL_DIMEN_DIVIDER,
+                    it)
+        }
+        mTransparentPaint?.let {
+            canvas.drawOval(left + (right - left) / LEFT_OVAL_DIMEN_DIVIDER,
                     (top + (bottom - top) / TOP_OVAL_DIMEN_DIVIDER).toFloat(),
                     right - (right - left) / RIGHT_OVAL_DIMEN_DIVIDER,
                     (bottom - (bottom - top) / BOTTOM_OVAL_DIMEN_DIVIDER).toFloat(),
-                    Path.Direction.CW)
+                    it)
         }
-        mPath.fillType = Path.FillType.INVERSE_EVEN_ODD
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mTransparentPaint?.let {
-                canvas.drawRect(left + (right - left) / LEFT_DIMEN_DIVIDER_KK,
-                        (top + (bottom - top) / TOP_DIMEN_DIVIDER_KK).toFloat(),
-                        right - (right - left) / RIGHT_DIMEN_DIVIDER_KK,
-                        (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER_KK).toFloat(),
-                        it)
-            }
-        } else {
-            mTransparentPaint?.let {
-                canvas.drawRoundRect(left + (right - left) / LEFT_DIMEN_DIVIDER,
-                        (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
-                        right - (right - left) / RIGHT_DIMEN_DIVIDER,
-                        (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
-                        CONST_RADIUS.toFloat(),
-                        CONST_RADIUS.toFloat(),
-                        it)
-            }
-            mTransparentPaint?.let {
-                canvas.drawOval(left + (right - left) / LEFT_OVAL_DIMEN_DIVIDER,
-                        (top + (bottom - top) / TOP_OVAL_DIMEN_DIVIDER).toFloat(),
-                        right - (right - left) / RIGHT_OVAL_DIMEN_DIVIDER,
-                        (bottom - (bottom - top) / BOTTOM_OVAL_DIMEN_DIVIDER).toFloat(),
-                        it)
-            }
-        }
+
         mSemiBlackPaint?.let { canvas.drawPath(mPath, it) }
         canvas.clipPath(mPath)
         canvas.drawColor(Color.parseColor(KYCConstant.KYC_OVERLAY_COLOR))
     }
 
     companion object {
-        private const val LEFT_DIMEN_DIVIDER_KK = 20f
-        private const val TOP_DIMEN_DIVIDER_KK = 3.55
-        private const val RIGHT_DIMEN_DIVIDER_KK = 20f
-        private const val BOTTOM_DIMEN_DIVIDER_KK = 4.73
         private const val LEFT_DIMEN_DIVIDER = 1.4f
         private const val TOP_DIMEN_DIVIDER = 1.25
         private const val RIGHT_DIMEN_DIVIDER = 1.4f
