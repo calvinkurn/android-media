@@ -87,7 +87,7 @@
     <string name="title_calculation_shop_performance">Perhitungan</string>
     <string name="title_tips_shop_performance">Tips</string>
     <string name="desc_calculation_shop_performance">Skor melambangkan kualitas layanan dan produkmu. Target disesuaikan dengan levelmu.</string>
-    <string name="update_calculation_shop_performance">Skor dihitung dari median Performa skor dalam 90 hari terakhir dan akan di-update setiap minggunya (Senin).</string>
+    <string name="update_calculation_shop_performance">Skor dihitung dari median Performa skor dalam 90 hari terakhir dan akan diperbarui setiap minggunya (Senin).</string>
     <string name="desc_calculation_success_order">Persentase jumlah pesanan berhasil dibanding total pesanan masuk.</string>
     <string name="desc_calculation_speed_reply_chat">Waktu yang diperlukan Seller untuk membalas Chat dan diskusi.</string>
     <string name="desc_calculation_level_reply_chat">Persentase jumlah chat dan diskusi yang dibalas oleh Seller dibandingkan total chat (50%) dan diskusi (50%) yang masuk.</string>

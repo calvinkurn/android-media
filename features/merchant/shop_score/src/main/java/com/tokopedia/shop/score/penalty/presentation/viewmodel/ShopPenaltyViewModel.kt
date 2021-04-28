@@ -135,7 +135,6 @@ class ShopPenaltyViewModel @Inject constructor(
             }
 
         }, onError = {
-            _penaltyPageData.postValue(Fail(it))
         })
     }
 

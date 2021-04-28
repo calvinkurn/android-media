@@ -308,8 +308,8 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     }
 
     private fun setupGlobalErrorState(throwable: Throwable) {
-        globalErrorPenalty.show()
-        globalErrorPenalty.setTypeGlobalError(throwable)
+        globalErrorPenalty?.show()
+        globalErrorPenalty?.setTypeGlobalError(throwable)
         globalErrorPenalty?.errorAction?.setOnClickListener {
             onSwipeRefresh()
         }
