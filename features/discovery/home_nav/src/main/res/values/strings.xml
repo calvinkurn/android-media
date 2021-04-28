@@ -42,9 +42,9 @@
     <string name="menu_user_menu_tokopedia_care_tracker_name">Bantuan Tokopedia Care</string>
     <string name="menu_user_menu_qr_code_tracker_name">Scan QR Code</string>
 
-    <string name="title_transaction_section">Aktivitas Saya</string>
+    <string name="title_transaction_section">Aktivitas saya</string>
     <string name="title_category_section">Semua Kategori</string>
-    <string name="title_helpcenter_section">Pusat Bantuan</string>
+    <string name="title_helpcenter_section">Pusat bantuan</string>
     <string name="menu_transaction_menu_all_transaction">Daftar Transaksi</string>
     <string name="menu_transaction_menu_ticket">E-tiket &#38; E-voucher Aktif</string>
     <string name="menu_transaction_menu_review">Ulasan</string>
