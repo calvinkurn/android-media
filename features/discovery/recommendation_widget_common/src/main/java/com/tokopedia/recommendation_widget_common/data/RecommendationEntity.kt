@@ -138,6 +138,8 @@ data class RecommendationEntity (
             val source: String = "",
             @SerializedName("title")
             val title: String = "",
+            @SerializedName("subtitle")
+            val subtitle: String = "",
             @SerializedName("foreignTitle")
             val foreignTitle: String = "",
             @SerializedName("widgetUrl")
