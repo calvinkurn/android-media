@@ -142,7 +142,7 @@
 
             <ImageView
                 android:id="@+id/imageViewRating2"
-                android:contentDescription="@string/content_desc_similar_search_imageRating"
+                tools:ignore="ContentDescription"
                 android:layout_width="@dimen/dp_12"
                 android:layout_height="@dimen/dp_12"
                 android:adjustViewBounds="true"
@@ -152,7 +152,7 @@
 
             <ImageView
                 android:id="@+id/imageViewRating3"
-                android:contentDescription="@string/content_desc_similar_search_imageRating"
+                tools:ignore="ContentDescription"
                 android:layout_width="@dimen/dp_12"
                 android:layout_height="@dimen/dp_12"
                 android:adjustViewBounds="true"
@@ -162,7 +162,7 @@
 
             <ImageView
                 android:id="@+id/imageViewRating4"
-                android:contentDescription="@string/content_desc_similar_search_imageRating"
+                tools:ignore="ContentDescription"
                 android:layout_width="@dimen/dp_12"
                 android:layout_height="@dimen/dp_12"
                 android:adjustViewBounds="true"
@@ -172,7 +172,7 @@
 
             <ImageView
                 android:id="@+id/imageViewRating5"
-                android:contentDescription="@string/content_desc_similar_search_imageRating"
+                tools:ignore="ContentDescription"
                 android:layout_width="@dimen/dp_12"
                 android:layout_height="@dimen/dp_12"
                 android:adjustViewBounds="true"
