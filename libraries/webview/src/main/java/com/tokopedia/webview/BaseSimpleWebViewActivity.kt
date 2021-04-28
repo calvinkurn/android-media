@@ -34,8 +34,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         private set
     protected var allowOverride = true
     protected var needLogin = false
-    private var backPressedEnabled = true
-    private var backPressedMessage = ""
+    protected var backPressedEnabled = true
+    protected var backPressedMessage = ""
     var webViewTitle = ""
     var whiteListedDomains = WhiteListedDomains()
 
@@ -173,7 +173,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     fun enableBackButton() {
         val f = fragment
-        if (f is BaseSessionWebViewFragment && !f.webView.canGoBack()) {
+        if (f is BaseWebViewFragment && !f.webView.canGoBack()) {
             backPressedEnabled = true
         }
     }
