@@ -62,7 +62,7 @@ class PatchLogger : PatchCallBack {
     }
 
     override fun logMessage(context: Context, log: String) {
-        Timber.i("P1#ROBUST#$log")
+        Timber.i(log)
     }
 
     override fun exceptionNotify(context: Context, throwable: Throwable, where: String) {

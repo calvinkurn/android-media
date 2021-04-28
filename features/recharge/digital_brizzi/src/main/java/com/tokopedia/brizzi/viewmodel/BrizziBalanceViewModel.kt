@@ -24,6 +24,7 @@ import id.co.bri.sdk.Callback
 import id.co.bri.sdk.exception.BrizziException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
@@ -81,7 +82,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
                         balanceInquiry.attributesEmoneyInquiry?.let { attributes ->
                             if (attributes.pendingBalance == 0) {
-                                ServerLogger.log(Priority.P2, BRIZZI_TAG, mapOf("msg" to "SUCCESS_GET_BALANCE", "no" to it.cardNumber, "data" to attributes.lastBalance.toDouble().toString()))
+                                Timber.d("BRIZZI#SUCCESS_GET_BALANCE#${it.cardNumber}, ${attributes.lastBalance.toDouble()}")
                                 emoneyInquiry.postValue(balanceInquiry)
                             } else {
                                 writeBalanceToCard(intent, rawLogBrizzi, brizziInstance)
@@ -151,7 +152,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
                 if (inquiryIdBrizzi > -1) {
                     balanceInquiry.attributesEmoneyInquiry?.let {
-                        ServerLogger.log(Priority.P2, BRIZZI_TAG, mapOf("msg" to "SUCCESS_GET_BALANCE", "no" to it.cardNumber, "data" to it.lastBalance.toDouble().toString()))
+                        Timber.d("BRIZZI#SUCCESS_UPDATE_BALANCE#${it.cardNumber}, ${it.lastBalance.toDouble()}")
                         logBrizzi(inquiryIdBrizzi, it.cardNumber, logRawQuery, "success", it.lastBalance.toDouble())
                     }
                 }
