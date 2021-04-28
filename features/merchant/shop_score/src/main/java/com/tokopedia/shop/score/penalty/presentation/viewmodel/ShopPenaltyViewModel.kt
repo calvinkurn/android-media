@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST
+import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
 import com.tokopedia.shop.score.common.format
 import com.tokopedia.shop.score.common.getNPastMonthTimeStamp
@@ -213,9 +215,15 @@ class ShopPenaltyViewModel @Inject constructor(
     fun resetFilterSelected() {
         launchCatchError(block = {
             penaltyFilterUiModel.map { penaltyFilterUiModel ->
-                penaltyFilterUiModel.chipsFilerList.map {
-                    it.isSelected = false
+                if (penaltyFilterUiModel.title == ShopScoreConstant.TITLE_SORT) {
+                    penaltyFilterUiModel.chipsFilerList.find { it.title == SORT_LATEST }?.isSelected = true
+                    penaltyFilterUiModel.chipsFilerList.find { it.title == SORT_OLDEST }?.isSelected = false
+                } else {
+                    penaltyFilterUiModel.chipsFilerList.map {
+                        it.isSelected = false
+                    }
                 }
+
             }
             _resetFilterResult.value = Success(penaltyFilterUiModel)
         }, onError = {
