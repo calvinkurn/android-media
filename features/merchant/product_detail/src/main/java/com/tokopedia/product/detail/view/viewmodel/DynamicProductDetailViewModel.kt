@@ -572,7 +572,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             if (favoriteData?.isSuccess == true) {
                 _toggleFavoriteResult.postValue((favoriteData.isSuccess to isNplFollowerType).asSuccess())
             } else {
-                _toggleFavoriteResult.postValue(Throwable(favoriteData?.message).asFail())
+                _toggleFavoriteResult.postValue(Throwable(favoriteData?.message.orEmpty()).asFail())
             }
         }) {
             _toggleFavoriteResult.postValue(it.asFail())
