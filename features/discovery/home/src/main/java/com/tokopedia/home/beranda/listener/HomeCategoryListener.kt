@@ -140,5 +140,4 @@ interface HomeCategoryListener {
     fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean)
 
     fun onChooseAddressServerDown()
-
 }
