@@ -22,6 +22,7 @@ import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.DEFAULT_PING
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -151,6 +152,7 @@ class ChatListNetworkModule {
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
+                .pingInterval(DEFAULT_PING, TimeUnit.MILLISECONDS)
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)

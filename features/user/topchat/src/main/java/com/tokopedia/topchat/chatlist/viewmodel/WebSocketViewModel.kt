@@ -28,7 +28,7 @@ import javax.inject.Inject
  */
 
 open class WebSocketViewModel @Inject constructor(
-        protected val webSocket: DefaultTopChatWebSocket,
+        protected val chatWebSocket: DefaultTopChatWebSocket,
         protected val webSocketParser: WebSocketParser,
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io), LifecycleObserver {
@@ -44,7 +44,7 @@ open class WebSocketViewModel @Inject constructor(
     }
 
     fun connectWebSocket() {
-        webSocket.connectWebSocket(object : WebSocketListener() {
+        chatWebSocket.connectWebSocket(object : WebSocketListener() {
             override fun onMessage(webSocket: WebSocket, text: String) {
                 val response = webSocketParser.parseResponse(text)
                 handleOnMessageWebSocket(response)
@@ -93,7 +93,7 @@ open class WebSocketViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        webSocket.cancel()
+        chatWebSocket.cancel()
         Timber.d(" OnCleared")
     }
 
