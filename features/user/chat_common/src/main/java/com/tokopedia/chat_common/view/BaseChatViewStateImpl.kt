@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit
 /**
  * @author : Steven 29/11/18
  */
-open class BaseChatViewStateImpl(
+abstract class BaseChatViewStateImpl(
         @NonNull open val view: View,
         open val toolbar: Toolbar,
         private val typingListener: TypingListener,
@@ -336,14 +336,15 @@ open class BaseChatViewStateImpl(
     override fun showErrorWebSocket(isWebSocketError: Boolean) {}
 
     open fun getInterlocutorName(headerName: String): String = headerName
-    open fun getRecyclerViewId() = R.id.recycler_view
-    open fun getNewCommentId() = R.id.new_comment
-    open fun getReplyBoxId() = R.id.reply_box
-    open fun getActionBoxId() = R.id.add_comment_area
-    open fun getSendButtonId() = R.id.send_but
-    open fun getNotifierId() = R.id.notifier
-    open fun getChatMenuId() = R.id.iv_chat_menu
-    open fun getAttachmentMenuId() = R.id.rv_attachment_menu
-    open fun getRootViewId() = R.id.main
-    open fun getAttachmentMenuContainer(): Int = R.id.rv_attachment_menu_container
+
+    abstract fun getRecyclerViewId(): Int
+    abstract fun getNewCommentId(): Int
+    abstract fun getReplyBoxId(): Int
+    abstract fun getActionBoxId(): Int
+    abstract fun getSendButtonId(): Int
+    abstract fun getNotifierId(): Int
+    abstract fun getChatMenuId(): Int
+    abstract fun getAttachmentMenuId(): Int
+    abstract fun getRootViewId(): Int
+    abstract fun getAttachmentMenuContainer(): Int
 }

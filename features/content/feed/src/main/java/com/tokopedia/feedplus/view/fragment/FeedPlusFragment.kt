@@ -74,7 +74,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecomme
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
@@ -115,6 +115,7 @@ import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -530,8 +531,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 if (intent != null && intent.action != null && intent.action == BROADCAST_FEED) {
                     val isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false)
                     if (isHaveNewFeed) {
-                        onRefresh()
-                        scrollToTop()
+                        newFeed.visible()
                         triggerNewFeedNotification()
                     }
                 }
@@ -1107,8 +1107,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun visitShopPageWithAnalytics(positionInFeed: Int, shop: Shop) {
         goToShopPage(shop.id)
-        if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
-            val (_, dataList, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+        if (adapter.getlist()[positionInFeed] is TopadsShopUiModel) {
+            val (_, dataList, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopUiModel
             for ((templateType, _, _, _, authorName, _, authorId, cardPosition, adId) in trackingList) {
                 if (TextUtils.equals(authorName, shop.name)) {
                     analytics.eventTopadsRecommendationClick(
@@ -1135,8 +1135,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun trackShopClickImpression(positionInFeed: Int, adapterPosition: Int, shop: Shop) {
-        if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
-            val (_, dataList, _, _) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+        if (adapter.getlist()[positionInFeed] is TopadsShopUiModel) {
+            val (_, dataList, _, _) = adapter.getlist()[positionInFeed] as TopadsShopUiModel
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 feedViewModel.doTopAdsTracker(dataList[adapterPosition].shopClickUrl, shop.id, shop.name, dataList[adapterPosition].shop.imageShop.xsEcs, true)
             }
@@ -1150,8 +1150,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data) {
         feedViewModel.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
 
-        if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
-            val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+        if (adapter.getlist()[positionInFeed] is TopadsShopUiModel) {
+            val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopUiModel
 
             for (tracking in trackingList) {
                 if (TextUtils.equals(tracking.authorName, data.shop.name)) {
@@ -1739,8 +1739,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 adapter.notifyItemChanged(rowNumber, adapterPosition)
             }
 
-            if (adapter.getlist()[rowNumber] is TopadsShopViewModel) {
-                val (_, dataList) = adapter.getlist()[rowNumber] as TopadsShopViewModel
+            if (adapter.getlist()[rowNumber] is TopadsShopUiModel) {
+                val (_, dataList) = adapter.getlist()[rowNumber] as TopadsShopUiModel
                 dataList[adapterPosition].isFavorit = !dataList[adapterPosition].isFavorit
                 adapter.notifyItemChanged(rowNumber, adapterPosition)
             }
@@ -1965,7 +1965,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         trackingList,
                         userId
                 )
-            } else if (visitable is TopadsShopViewModel) {
+            } else if (visitable is TopadsShopUiModel) {
                 val (_, _, _, trackingList, _) = visitable
                 analytics.eventTopadsRecommendationImpression(
                         trackingList,

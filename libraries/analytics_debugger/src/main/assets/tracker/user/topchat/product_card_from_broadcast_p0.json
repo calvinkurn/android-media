@@ -3,7 +3,7 @@
   "mode": "subset",
   "query": [
     {
-      "businessUnit": "",
+      "businessUnit": "communication",
       "clientId": "{{.+}}",
       "eventCategory": "chat detail",
       "currentSite": "",
@@ -13,6 +13,7 @@
       "userId": "{{.*}}",
       "eventAction": "view on product thumbnail",
       "sessionIris": "{{.+}}",
+      "eventLabel": "{{.+}}",
       "items": [
         {
           "dimension87": "",

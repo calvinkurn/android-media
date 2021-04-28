@@ -43,7 +43,7 @@ class TableViewHolder(
             data == null -> showLoadingState()
             data.error.isNotBlank() -> {
                 showErrorState()
-                listener.setOnErrorWidget(adapterPosition, element)
+                listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> setOnSuccess(element)
         }
