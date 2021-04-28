@@ -76,7 +76,6 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/product_card_label_campaign_height"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_16"
             android:visibility="gone"
             android:contentDescription="null"
             app:layout_constraintStart_toEndOf="@id/imageProduct"
