@@ -5,21 +5,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_TYPING
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
 import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket
-import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
+import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket.Companion.CODE_NORMAL_CLOSURE
 import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketParser
+import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketStateHandler
+import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.websocket.WebSocketResponse
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.withContext
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import okio.ByteString
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -30,7 +34,8 @@ import javax.inject.Inject
 open class WebSocketViewModel @Inject constructor(
         protected val chatWebSocket: DefaultTopChatWebSocket,
         protected val webSocketParser: WebSocketParser,
-        dispatchers: CoroutineDispatchers
+        protected val webSocketStateHandler: WebSocketStateHandler,
+        protected val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io), LifecycleObserver {
 
     protected val _itemChat = MutableLiveData<Result<BaseIncomingItemWebSocketModel>>()
@@ -45,26 +50,34 @@ open class WebSocketViewModel @Inject constructor(
 
     fun connectWebSocket() {
         chatWebSocket.connectWebSocket(object : WebSocketListener() {
+            override fun onOpen(webSocket: WebSocket, response: Response) {
+                Timber.d("$TAG - onOpen")
+                handleOnOpenWebSocket()
+            }
+
             override fun onMessage(webSocket: WebSocket, text: String) {
                 val response = webSocketParser.parseResponse(text)
                 handleOnMessageWebSocket(response)
             }
-            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                Timber.d("$TAG - onFailure - ${t.message}")
-            }
-            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                Timber.d("$TAG - onClosed - $code - $reason")
-            }
-            override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-                Timber.d("$TAG - onMessage - bytes")
-            }
-            override fun onOpen(webSocket: WebSocket, response: Response) {
-                Timber.d("$TAG - onOpen")
-            }
+
             override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
                 Timber.d("$TAG - onClosing - $code - $reason")
             }
+
+            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                Timber.d("$TAG - onClosed - $code - $reason")
+                handleOnClosedWebSocket(code)
+            }
+
+            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                Timber.d("$TAG - onFailure - ${t.message}")
+                handleOnFailureWebSocket()
+            }
         })
+    }
+
+    private fun handleOnOpenWebSocket() {
+        webSocketStateHandler.retrySucceed()
     }
 
     private fun handleOnMessageWebSocket(response: WebSocketResponse) {
@@ -74,6 +87,16 @@ open class WebSocketViewModel @Inject constructor(
             EVENT_TOPCHAT_TYPING -> onResponseTyping(response)
             EVENT_TOPCHAT_END_TYPING -> onResponseEndTyping(response)
         }
+    }
+
+    private fun handleOnClosedWebSocket(code: Int) {
+        if (code != CODE_NORMAL_CLOSURE) {
+            retryConnectWebSocket()
+        }
+    }
+
+    private fun handleOnFailureWebSocket() {
+        retryConnectWebSocket()
     }
 
     protected open fun onResponseReplyMessage(response: WebSocketResponse) {
@@ -91,10 +114,29 @@ open class WebSocketViewModel @Inject constructor(
         _itemChat.postValue(stateEndTyping)
     }
 
+    private fun retryConnectWebSocket() {
+        launchCatchError(
+                dispatchers.io,
+                {
+                    Timber.d("$TAG - scheduleForRetry")
+                    webSocketStateHandler.scheduleForRetry {
+                        withContext(dispatchers.main) {
+                            Timber.d("$TAG - reconnecting websocket")
+                            connectWebSocket()
+                        }
+                    }
+                },
+                {
+                    Timber.d("$TAG - ${it.message}")
+                }
+        )
+    }
+
     override fun onCleared() {
         super.onCleared()
-        chatWebSocket.cancel()
-        Timber.d(" OnCleared")
+        chatWebSocket.close()
+        cancel()
+        Timber.d("$TAG OnCleared")
     }
 
     fun clearItemChatValue() {

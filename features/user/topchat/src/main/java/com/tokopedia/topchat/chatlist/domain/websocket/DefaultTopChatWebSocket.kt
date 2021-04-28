@@ -21,6 +21,10 @@ class DefaultTopChatWebSocket @Inject constructor(
         webSocket = okHttpClient.newWebSocket(request, listener)
     }
 
+    override fun close() {
+        webSocket?.close(CODE_NORMAL_CLOSURE, "Bye!")
+    }
+
     private fun generateWsRequest(): Request {
         val requestBuilder = Request.Builder().url(webSocketUrl)
                 .header(HEADER_KEY_ORIGIN, TokopediaUrl.getInstance().WEB)
@@ -31,10 +35,6 @@ class DefaultTopChatWebSocket @Inject constructor(
         return requestBuilder.build()
     }
 
-    fun cancel() {
-        webSocket?.close(1000, "Bye!")
-    }
-
     companion object {
         private const val HEADER_KEY_ORIGIN = "Origin"
         private const val HEADER_KEY_AUTH = "Accounts-Authorization"
@@ -42,6 +42,8 @@ class DefaultTopChatWebSocket @Inject constructor(
 
         private const val HEADER_VALUE_BEARER = "Bearer"
         private const val HEADER_VALUE_CHATLIST = "chatlist"
+
+        const val CODE_NORMAL_CLOSURE = 1000
     }
 
 }
