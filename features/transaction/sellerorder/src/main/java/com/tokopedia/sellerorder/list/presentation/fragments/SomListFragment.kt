@@ -15,6 +15,7 @@ import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -119,6 +120,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         private const val DELAY_SEARCH = 500L
         private const val DELAY_COACHMARK = 500L
         private const val BUTTON_ENTER_LEAVE_ANIMATION_DURATION = 300L
+        private const val TICKER_ENTER_LEAVE_ANIMATION_DURATION = 300L
+        private const val TICKER_ENTER_LEAVE_ANIMATION_DELAY = 10L
         private const val COACHMARK_INDEX_ITEM_NEW_ORDER = 0
         private const val COACHMARK_INDEX_ITEM_FILTER = 1
         private const val COACHMARK_INDEX_ITEM_WAITING_PAYMENT = 2
@@ -281,7 +284,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun getRecyclerView(view: View?) = view?.findViewById<RecyclerView>(recyclerViewResourceId)
     override fun getScreenName(): String = ""
     override fun initInjector() = inject()
-    override fun onDismiss() {}
+    override fun onDismiss() {
+        animateOrderTicker(false)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -875,11 +880,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             somListLoadTimeMonitoring?.startRenderPerformanceMonitoring()
             rvSomList.addOneTimeGlobalLayoutListener {
                 stopLoadTimeMonitoring()
-                if (tickerIsReady) {
-                    Handler().postDelayed({
-                        animateOrderTicker()
-                    }, 200)
-                }
+                animateOrderTicker(true)
             }
             when (result) {
                 is Success -> renderOrderList(result.data)
@@ -1161,6 +1162,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun showEmptyState() {
         val newItems = arrayListOf(createSomListEmptyStateModel(viewModel.isTopAdsActive()))
+        rvSomList?.itemAnimator = null
         (adapter as? SomListOrderAdapter)?.updateOrders(newItems)
     }
 
@@ -1523,6 +1525,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
         tickerSomList?.addPagerView(tickerPagerAdapter, activeTickers)
         tickerIsReady = data.isNotEmpty()
+        animateOrderTicker(true)
     }
 
     private fun renderOrderList(data: List<SomListOrderUiModel>) {
@@ -1534,6 +1537,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             multiEditViews?.gone()
             toggleBulkActionButtonVisibility()
         } else if (data.firstOrNull()?.searchParam == searchBarSomList.searchBarTextField.text.toString()) {
+            if (rvSomList?.itemAnimator == null) {
+                rvSomList?.itemAnimator = DefaultItemAnimator()
+            }
             if (isLoadingInitialData) {
                 (adapter as SomListOrderAdapter).updateOrders(data)
                 tvSomListOrderCounter?.text = getString(R.string.som_list_order_counter, somListSortFilterTab?.getSelectedFilterOrderCount().orZero())
@@ -2094,31 +2100,74 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         })
     }
 
-    private fun animateOrderTicker() {
-        tickerSomList?.run {
-            val height = height.toFloat().orZero()
-            translationY = -height
-            val animator = ValueAnimator.ofFloat(-1.0f, 0f)
-            animator.duration = 300
-            animator.addUpdateListener { valueAnimator ->
-                context?.let {
-                    val animValue = (valueAnimator.animatedValue as? Float).orZero()
-                    val translation = animValue * height
-                    translationY = translation
-                    alpha = animValue + 1f
-                    searchBarSomList?.translationY = translation
-                    sortFilterSomList?.translationY = translation
-                    shimmerViews?.translationY = translation
-                    multiEditViews?.translationY = translation
-                    swipeRefreshLayoutSomList?.translationY = translation
-                    containerBtnBulkAction?.translationY = translation
-                    scrollViewErrorState?.translationY = translation
-                    somAdminPermissionView?.translationY = translation
+    private fun animateOrderTicker(isEnter: Boolean) {
+        Handler().postDelayed({
+            val shouldAnimateTicker = (isEnter && tickerIsReady && (tickerSomList?.visibility == View.INVISIBLE || tickerSomList?.visibility == View.GONE)) || !isEnter
+            if (adapter.data.isNotEmpty() && shouldAnimateTicker) {
+                val enterValue: Float
+                val exitValue: Float
+                if (isEnter) {
+                    enterValue = 0f
+                    exitValue = 1f
+                } else {
+                    enterValue = 1f
+                    exitValue = 0f
+                }
+                tickerSomList?.run {
+                    val height = height.toFloat().orZero()
+                    translationY = enterValue * height
+
+                    show()
+
+                    val animator = ValueAnimator.ofFloat(enterValue, exitValue).apply {
+                        duration = TICKER_ENTER_LEAVE_ANIMATION_DURATION
+                        addUpdateListener { valueAnimator ->
+                            context?.let {
+                                val animValue = (valueAnimator.animatedValue as? Float).orZero()
+                                val translation = animValue * height
+                                translationY = translation
+                                alpha = animValue
+                                translateTickerConstrainedLayout(translation)
+                            }
+                        }
+                        addListener(object : Animator.AnimatorListener {
+                            override fun onAnimationStart(p0: Animator?) {}
+
+                            override fun onAnimationEnd(p0: Animator?) {
+                                tickerIsReady = false
+                                if (!isEnter) {
+                                    this@run.invisible()
+                                }
+                            }
+
+                            override fun onAnimationCancel(p0: Animator?) {}
+
+                            override fun onAnimationRepeat(p0: Animator?) {}
+                        })
+                    }
+
+                    animator.start()
                 }
             }
-            show()
-            animator.start()
-        }
+        }, TICKER_ENTER_LEAVE_ANIMATION_DELAY)
+    }
+
+    private fun translateTickerConstrainedLayout(translation: Float) {
+        searchBarSomList?.translationY = translation
+        sortFilterSomList?.translationY = translation
+        sortFilterShimmer1?.translationY = translation
+        sortFilterShimmer2?.translationY = translation
+        sortFilterShimmer3?.translationY = translation
+        sortFilterShimmer4?.translationY = translation
+        sortFilterShimmer5?.translationY = translation
+        bulkActionCheckBoxContainer?.translationY = translation
+        bulkActionCheckBoxContainer?.translationY = translation
+        val params = (swipeRefreshLayoutSomList?.layoutParams as? ViewGroup.MarginLayoutParams)
+        params?.topMargin = translation.toInt()
+        swipeRefreshLayoutSomList?.layoutParams = params
+        containerBtnBulkAction?.translationY = translation
+        scrollViewErrorState?.translationY = translation
+        somAdminPermissionView?.translationY = translation
     }
 
     private fun refreshOrdersOnTabClicked(shouldScrollToTop: Boolean, refreshFilter: Boolean) {
