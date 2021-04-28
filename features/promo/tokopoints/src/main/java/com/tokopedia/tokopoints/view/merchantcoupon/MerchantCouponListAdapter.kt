@@ -62,7 +62,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
 
     private fun setData(vh: CouponListViewHolder, item: CatalogMVCWithProductsListItem?) {
 
-        item?.shopInfo?.iconUrl?.let {
+        item?.shopInfo?.shopStatusIconURL?.let {
             if (it.isNotEmpty()) {
                 vh.ivShopIcon.loadImage(it)
             }
@@ -201,7 +201,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
 
             val item: MutableMap<String, Any?> = HashMap()
             val (shopInfo, _, title, _, _) = data
-            val eventLabel = "mvc - {${holder.adapterPosition + 1}} - {${shopInfo?.name}}"
+            val eventLabel = "mvc - {${holder.adapterPosition + 1}} - ${shopInfo?.name}"
             item["item_name"] = shopInfo?.name
             item["position"] = holder.adapterPosition.toString()
             item["creative_name"] = title
