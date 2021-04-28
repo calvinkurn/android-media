@@ -8,8 +8,8 @@
 
     <fragment
         android:id="@+id/homeEventFragment"
-        android:name="com.tokopedia.entertainment.home.fragment.EventHomeFragment"
-        tools:layout="@layout/ent_home_activity"
+        android:name="com.tokopedia.entertainment.home.fragment.NavEventHomeFragment"
+        tools:layout="@layout/fragment_home_event"
         >
         <action
             android:id="@+id/action_homeEventFragment_to_pdpEventFragment"

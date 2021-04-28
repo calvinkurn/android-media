@@ -1,23 +1,20 @@
 package com.tokopedia.entertainment.home.adapter.factory
 
-import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
-import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
+import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewholder.*
 import com.tokopedia.entertainment.home.adapter.viewmodel.*
-import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 
 /**
  * Author errysuprayogi on 29,January,2020
  */
-class HomeTypeFactoryImpl(val action: ((data: EventItemModel,
-                                        onSuccess: (EventItemModel) -> Unit,
-                                        onError: (Throwable) -> Unit) -> Unit),
-                          val trackingListener: TrackingListener,
-                          val clickGridListener: EventGridEventViewHolder.ClickGridListener,
-                          val clickCarouselListener: EventCarouselEventViewHolder.ClickCarouselListener
-) : HomeTypeFactory {
+class HomeTypeFactoryImpl(private val trackingListener: TrackingListener,
+                          private val clickGridListener: EventGridEventViewHolder.ClickGridListener,
+                          private val clickCarouselListener: EventCarouselEventViewHolder.ClickCarouselListener
+) : BaseAdapterTypeFactory(),HomeTypeFactory {
 
     override fun type(model: BannerModel): Int {
         return BannerEventViewHolder.LAYOUT
@@ -39,21 +36,23 @@ class HomeTypeFactoryImpl(val action: ((data: EventItemModel,
         return EventLocationEventViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(view: ViewGroup, type: Int): HomeEventViewHolder<*> {
-        val creatEventViewHolder: HomeEventViewHolder<*>
-        creatEventViewHolder = if (type == BannerEventViewHolder.LAYOUT) {
+    override fun type(model: LoadingHomeModel): Int {
+        return LoadingHomeEventViewHolder.LAYOUT
+    }
+
+    override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
+        return if (type == BannerEventViewHolder.LAYOUT) {
             BannerEventViewHolder(view, trackingListener)
         } else if (type == CategoryEventViewHolder.LAYOUT) {
             CategoryEventViewHolder(view, trackingListener)
         } else if (type == EventGridEventViewHolder.LAYOUT) {
-            EventGridEventViewHolder(view, action, trackingListener, clickGridListener)
+            EventGridEventViewHolder(view, trackingListener, clickGridListener)
         } else if (type == EventCarouselEventViewHolder.LAYOUT) {
-            EventCarouselEventViewHolder(view, action, trackingListener, clickCarouselListener)
+            EventCarouselEventViewHolder(view, trackingListener, clickCarouselListener)
         } else if (type == EventLocationEventViewHolder.LAYOUT) {
             EventLocationEventViewHolder(view, trackingListener)
-        } else {
-            throw TypeNotSupportedException.create("Layout not supported")
-        }
-        return creatEventViewHolder
+        } else if (type == LoadingHomeEventViewHolder.LAYOUT){
+            LoadingHomeEventViewHolder(view)
+        } else super.createViewHolder(view, type)
     }
 }

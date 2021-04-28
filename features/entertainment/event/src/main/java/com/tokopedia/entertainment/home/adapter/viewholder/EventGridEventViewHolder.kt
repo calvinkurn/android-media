@@ -1,6 +1,5 @@
 package com.tokopedia.entertainment.home.adapter.viewholder
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +8,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventGridModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
@@ -24,15 +23,13 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_i
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
-                                                         onSuccess: (EventItemModel) -> Unit,
-                                                         onError: (Throwable) -> Unit) -> Unit),
+class EventGridEventViewHolder(itemView: View,
                                val gridlistener: TrackingListener,
                                val clickGridListener: ClickGridListener
 )
-    : HomeEventViewHolder<EventGridModel>(itemView) {
+    : AbstractViewHolder<EventGridModel>(itemView) {
 
-    var itemAdapter = InnerItemAdapter(action, gridlistener, clickGridListener)
+    var itemAdapter = InnerItemAdapter(gridlistener, clickGridListener)
 
     init {
         itemView.ent_recycle_view_grid.apply {
@@ -65,10 +62,7 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
         val TAG = EventGridEventViewHolder::class.java.simpleName
     }
 
-    class InnerItemAdapter(val action: (data: EventItemModel,
-                                        onSuccess: (EventItemModel) -> Unit,
-                                        onError: (Throwable) -> Unit) -> Unit,
-                           val gridlistener: TrackingListener,
+    class InnerItemAdapter(val gridlistener: TrackingListener,
                            val clickGridListener: ClickGridListener
     )
         : RecyclerView.Adapter<InnerViewHolder>() {
@@ -91,11 +85,6 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
             holder.view.txt_location.text = item.location
             holder.view.txt_title.text = item.title
             holder.view.txt_price.text = item.price
-            if (item.isLiked) {
-                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_active)
-            } else {
-                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_inactive)
-            }
             holder.view.setOnClickListener {
                 gridlistener.clickSectionEventProduct(item, items, titleGrid,
                         position + 1)
@@ -106,18 +95,6 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
                 gridlistener.impressionSectionEventProduct(item, items, titleGrid,
                         position + 1)
             })
-            holder.view.iv_favorite.setOnClickListener {
-                action.invoke(item, ::onSuccessPostLiked, ::onErrorPostLiked)
-            }
-        }
-
-        fun onSuccessPostLiked(data: EventItemModel) {
-            notifyItemChanged(pos)
-        }
-
-        fun onErrorPostLiked(throwable: Throwable) {
-            notifyItemChanged(pos)
-            Log.e(TAG, throwable.localizedMessage)
         }
 
         fun setList(list: MutableList<EventItemModel>) {
