@@ -47,7 +47,7 @@ class CardViewHolder(
             data.error.isNotBlank() -> {
                 showShimmer(false)
                 showOnError(true)
-                listener.setOnErrorWidget(adapterPosition, element)
+                listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> {
                 showOnError(false)
