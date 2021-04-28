@@ -23,6 +23,7 @@ object ShopScoreConstant {
 
     const val COUNT_DAYS_NEW_SELLER = 90
     const val PATTERN_DATE_NEW_SELLER = "dd MMMM yyyy"
+    const val ONE_HUNDRED_PERCENT = 100
 
     const val CHAT_DISCUSSION_REPLY_SPEED_KEY = "chat_and_discussion_reply_speed"
     const val CHAT_DISCUSSION_SPEED_KEY = "chat_and_discussion_reply_rate"

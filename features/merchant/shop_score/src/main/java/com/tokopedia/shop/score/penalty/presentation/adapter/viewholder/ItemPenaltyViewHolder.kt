@@ -32,10 +32,10 @@ class ItemPenaltyViewHolder(view: View,
             tv_invoice_transaction_penalty?.text = element.descPenalty
 
             ic_transaction_penalty_to_detail?.setOnClickListener {
-                itemDetailPenaltyListener.onItemPenaltyClick(element.statusPenalty)
+                itemDetailPenaltyListener.onItemPenaltyClick(element)
             }
             setOnClickListener {
-                itemDetailPenaltyListener.onItemPenaltyClick(element.statusPenalty)
+                itemDetailPenaltyListener.onItemPenaltyClick(element)
             }
         }
     }

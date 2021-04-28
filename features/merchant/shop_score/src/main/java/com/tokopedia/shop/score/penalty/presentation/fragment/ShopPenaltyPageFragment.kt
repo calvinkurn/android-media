@@ -183,9 +183,11 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         endlessRecyclerViewScrollListener.resetState()
     }
 
-    override fun onItemPenaltyClick(statusPenalty: String) {
+    override fun onItemPenaltyClick(itemPenaltyUiModel: ItemPenaltyUiModel) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
-        intent.putExtra(ShopPenaltyDetailFragment.STATUS_PENALTY, statusPenalty)
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+        cacheManager?.put(ShopPenaltyDetailFragment.KEY_ITEM_PENALTY_DETAIL, itemPenaltyUiModel)
+        intent.putExtra(ShopPenaltyDetailFragment.KEY_CACHE_MANAGE_ID, cacheManager?.id)
         startActivity(intent)
     }
 

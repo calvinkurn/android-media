@@ -5,6 +5,7 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterF
 
 data class ItemPenaltyUiModel(val statusPenalty: String = "",
                               val endDate: String = "",
+                              val endDateDetail: String = "",
                               val startDate: String = "",
                               val typePenalty: String = "",
                               val descPenalty: String = "",

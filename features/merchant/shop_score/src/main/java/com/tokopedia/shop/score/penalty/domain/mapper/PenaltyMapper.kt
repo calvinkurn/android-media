@@ -28,13 +28,13 @@ import javax.inject.Inject
 
 class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context?) {
 
-    fun mapToPenaltyDetailDummy(itemPenaltyUiModel: ItemPenaltyUiModel, ): ShopPenaltyDetailUiModel {
+    fun mapToPenaltyDetail(itemPenaltyUiModel: ItemPenaltyUiModel, ): ShopPenaltyDetailUiModel {
         return ShopPenaltyDetailUiModel(
-                titleDetail = "Cash advance",
+                titleDetail = itemPenaltyUiModel.typePenalty,
                 dateDetail = itemPenaltyUiModel.startDate,
-                summaryDetail = "Seller melakukan cash advance pada transaksi INV/20210126/XX/V/553738330",
+                summaryDetail = itemPenaltyUiModel.descPenalty,
                 deductionPointPenalty = itemPenaltyUiModel.deductionPoint.toString(),
-                statusDate = itemPenaltyUiModel.endDate,
+                statusDate = itemPenaltyUiModel.endDateDetail,
                 stepperPenaltyDetailList = mapToStepperPenaltyDetail(itemPenaltyUiModel.statusPenalty)
         )
     }
@@ -184,6 +184,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                         deductionPoint = it.score,
                         startDate = it.penaltyStartDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT),
                         endDate = endDateText,
+                        endDateDetail = it.penaltyExpirationDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT),
                         typePenalty = it.typeName,
                         descPenalty = it.reason,
                         colorPenalty = colorTypePenalty

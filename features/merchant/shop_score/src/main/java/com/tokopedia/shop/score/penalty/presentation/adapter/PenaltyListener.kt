@@ -1,7 +1,9 @@
 package com.tokopedia.shop.score.penalty.presentation.adapter
 
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
+
 interface ItemDetailPenaltyListener {
-    fun onItemPenaltyClick(statusPenalty: String)
+    fun onItemPenaltyClick(itemPenaltyUiModel: ItemPenaltyUiModel)
 }
 
 interface FilterPenaltyBottomSheetListener {

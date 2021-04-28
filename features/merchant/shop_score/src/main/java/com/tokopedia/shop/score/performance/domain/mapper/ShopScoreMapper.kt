@@ -14,6 +14,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.IC_INCOME_PM_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.IC_ORDER_PM_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.IC_PM_VISITED_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.IC_SELLER_ANNOUNCE
+import com.tokopedia.shop.score.common.ShopScoreConstant.ONE_HUNDRED_PERCENT
 import com.tokopedia.shop.score.common.ShopScoreConstant.OPEN_TOKOPEDIA_SELLER_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_SUCCESS_RATE_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_NEW_SELLER
@@ -369,7 +370,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                         when (shopScoreDetail.identifier) {
                             CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> Pair("${shopScoreDetail.nextMinValue} $minuteText", minuteText)
                             ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY, TOTAL_BUYER_KEY ->
-                                Pair("${shopScoreDetail.nextMinValue}$percentText", percentText)
+                                Pair("${shopScoreDetail.nextMinValue * ONE_HUNDRED_PERCENT}$percentText", percentText)
                             OPEN_TOKOPEDIA_SELLER_KEY -> Pair("${shopScoreDetail.nextMinValue} $dayText", dayText)
                             else -> Pair("-", "")
                         }
