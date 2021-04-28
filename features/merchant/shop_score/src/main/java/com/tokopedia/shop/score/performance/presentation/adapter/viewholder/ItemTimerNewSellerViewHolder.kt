@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -15,8 +16,9 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ItemTimerNewSel
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
 import kotlinx.android.synthetic.main.timer_new_seller_before_transition.view.*
 
+
 class ItemTimerNewSellerViewHolder(view: View,
-                                   private val itemTimerNewSellerListener: ItemTimerNewSellerListener): AbstractViewHolder<ItemTimerNewSellerUiModel>(view) {
+                                   private val itemTimerNewSellerListener: ItemTimerNewSellerListener) : AbstractViewHolder<ItemTimerNewSellerUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.timer_new_seller_before_transition
@@ -27,7 +29,7 @@ class ItemTimerNewSellerViewHolder(view: View,
 
     override fun bind(element: ItemTimerNewSellerUiModel?) {
         with(itemView) {
-            containerTimerNewSeller?.loadImage(if (element?.isTenureDate == true) BG_ORANGE_TIMER  else  BG_GREEN_TIMER)
+            containerTimerNewSeller?.loadImage(if (element?.isTenureDate == true) BG_ORANGE_TIMER else BG_GREEN_TIMER)
             timerNewSeller?.targetDate = element?.effectiveDate
 
             tv_shop_performance_new_seller?.text = getString(R.string.title_shop_performance_become_existing_seller,
@@ -60,15 +62,19 @@ class ItemTimerNewSellerViewHolder(view: View,
     }
 
     private fun setIconVideoClickListener() {
-        with(itemView) {
-            watchVideoGroup?.apply {
-                addOnImpressionListener(impressHolderWatchVideo) {
-                    itemTimerNewSellerListener.onImpressWatchVideo()
-                }
-                setOnClickListener {
-                    itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
-                }
+        itemView.watchVideoGroup?.apply {
+            addOnClickListener {
+                itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
             }
+            addOnImpressionListener(impressHolderWatchVideo) {
+                itemTimerNewSellerListener.onImpressWatchVideo()
+            }
+        }
+    }
+
+    private fun Group.addOnClickListener(listener: (view: View) -> Unit) {
+        referencedIds.forEach { id ->
+            rootView.findViewById<View>(id).setOnClickListener(listener)
         }
     }
 }

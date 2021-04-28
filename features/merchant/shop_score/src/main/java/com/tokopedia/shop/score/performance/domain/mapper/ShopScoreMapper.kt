@@ -128,7 +128,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             shopInfoPeriodUiModel.isNewSeller
         } ?: false
         shopScoreVisitableList.apply {
-            if (isNewSeller) {
+            if (isNewSeller || shopAge < SHOP_AGE_SIXTY) {
                 val mapTimerNewSeller = mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller)
                 if (mapTimerNewSeller.second) {
                     add(mapTimerNewSeller.first)
@@ -139,7 +139,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             add(mapToHeaderShopPerformance(shopScoreWrapperResponse.shopScoreLevelResponse?.result, shopAge))
             add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreWrapperResponse.shopScoreTooltipResponse?.result))
             if (shopScoreResult?.shopScoreDetail?.isNotEmpty() == true) {
-                addAll(mapToItemDetailPerformanceUiModel(shopScoreResult.shopScoreDetail))
+                addAll(mapToItemDetailPerformanceUiModel(shopScoreResult.shopScoreDetail, shopAge))
             }
 
             if (shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools?.isNotEmpty() == true) {
@@ -313,8 +313,18 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     }
                 }
             }
-            this.shopLevel = if (shopScoreLevelResponse?.shopLevel?.isZero() == true) "-" else shopScoreLevelResponse?.shopLevel?.toString().orEmpty()
-            this.shopScore = if (shopScoreLevelResponse?.shopScore?.isZero() == true) "-" else shopScoreLevelResponse?.shopScore?.toString().orEmpty()
+            this.shopLevel =
+                    if (shopAge < SHOP_AGE_SIXTY) {
+                        "-"
+                    } else {
+                        if (shopScoreLevelResponse?.shopLevel?.isZero() == true) "-" else shopScoreLevelResponse?.shopLevel?.toString().orEmpty()
+                    }
+            this.shopScore =
+                    if (shopAge < SHOP_AGE_SIXTY) {
+                        "-"
+                    } else {
+                        if (shopScoreLevelResponse?.shopScore?.isZero() == true) "-" else shopScoreLevelResponse?.shopScore?.toString().orEmpty()
+                    }
             this.scorePenalty = shopScoreLevelResponse?.shopScoreDetail?.find { it.identifier == PENALTY_IDENTIFIER }?.rawValue
         }
         return headerShopPerformanceUiModel
@@ -326,7 +336,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return shopInfoLevelUiModel
     }
 
-    private fun mapToItemDetailPerformanceUiModel(shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?): List<ItemDetailPerformanceUiModel> {
+    private fun mapToItemDetailPerformanceUiModel(shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?, shopAge: Int): List<ItemDetailPerformanceUiModel> {
         return mutableListOf<ItemDetailPerformanceUiModel>().apply {
 
             val multipleFilterShopScore = listOf(CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY,
@@ -337,17 +347,18 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             val shopScoreLevelSize = shopScoreLevelFilter?.size.orZero()
             val sortShopScoreLevelParam = sortItemDetailPerformanceFormatted(shopScoreLevelFilter)
             sortShopScoreLevelParam.forEachIndexed { index, shopScoreDetail ->
-                val (targetDetailPerformanceText, parameterItemDetailPerformance) = when (shopScoreDetail.identifier) {
-                    CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> Pair("${shopScoreDetail.nextMinValue} $minuteText", minuteText)
-                    ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY, TOTAL_BUYER_KEY ->
-                        Pair("${shopScoreDetail.nextMinValue}$percentText", percentText)
-                    OPEN_TOKOPEDIA_SELLER_KEY -> Pair("${shopScoreDetail.nextMinValue} $dayText", dayText)
-                    else -> Pair("", "")
-                }
+                val (targetDetailPerformanceText, parameterItemDetailPerformance) =
+                        when (shopScoreDetail.identifier) {
+                            CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> Pair("${shopScoreDetail.nextMinValue} $minuteText", minuteText)
+                            ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY, TOTAL_BUYER_KEY ->
+                                Pair("${shopScoreDetail.nextMinValue}$percentText", percentText)
+                            OPEN_TOKOPEDIA_SELLER_KEY -> Pair("${shopScoreDetail.nextMinValue} $dayText", dayText)
+                            else -> Pair("-", "")
+                        }
 
                 add(ItemDetailPerformanceUiModel(
                         titleDetailPerformance = shopScoreDetail.title,
-                        valueDetailPerformance = shopScoreDetail.rawValue.toString(),
+                        valueDetailPerformance = if (shopAge < SHOP_AGE_SIXTY) "-" else shopScoreDetail.rawValue.toString(),
                         colorValueDetailPerformance = shopScoreDetail.colorText,
                         targetDetailPerformance = targetDetailPerformanceText,
                         isDividerHide = index + 1 == shopScoreLevelSize,

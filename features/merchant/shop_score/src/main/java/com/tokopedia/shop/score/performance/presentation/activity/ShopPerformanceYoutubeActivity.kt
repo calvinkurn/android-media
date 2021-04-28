@@ -9,7 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
-import com.google.android.youtube.player.YouTubePlayerFragment
+import com.google.android.youtube.player.YouTubePlayerSupportFragment
 import com.tokopedia.shop.score.R
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 
@@ -40,7 +40,7 @@ class ShopPerformanceYoutubeActivity : AppCompatActivity(), YouTubePlayer.OnInit
 
         videoUrl = intent?.getStringExtra(EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE)
 
-        val youtubePlayerFragment = supportFragmentManager.findFragmentById(R.id.youtube_player_fragment) as? YouTubePlayerFragment
+        val youtubePlayerFragment = supportFragmentManager.findFragmentById(R.id.youtube_player_fragment) as? YouTubePlayerSupportFragment
         youtubePlayerFragment?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
     }
 

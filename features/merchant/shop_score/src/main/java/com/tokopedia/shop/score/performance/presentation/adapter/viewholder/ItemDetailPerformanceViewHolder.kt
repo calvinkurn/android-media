@@ -20,6 +20,7 @@ class ItemDetailPerformanceViewHolder(view: View,
     companion object {
         val LAYOUT = R.layout.item_detail_shop_performance
         const val PERCENT = "%"
+        const val MINUS_SIGN = "-"
     }
 
     override fun bind(element: ItemDetailPerformanceUiModel?) {
@@ -63,11 +64,15 @@ class ItemDetailPerformanceViewHolder(view: View,
             }
             tvTitlePerformanceProgress?.text = element?.titleDetailPerformance.orEmpty()
             tvPerformanceValue?.text =
-                    if (element?.parameterValueDetailPerformance == PERCENT)
-                        StringBuilder("${element.valueDetailPerformance}${element.parameterValueDetailPerformance}")
-                    else
-                        StringBuilder("${element?.valueDetailPerformance} ${element?.parameterValueDetailPerformance}")
-            if (element?.colorValueDetailPerformance?.isNotBlank() == true) {
+                    if (element?.valueDetailPerformance == MINUS_SIGN) {
+                        element.valueDetailPerformance
+                    } else {
+                        if (element?.parameterValueDetailPerformance == PERCENT)
+                            StringBuilder("${element.valueDetailPerformance}${element.parameterValueDetailPerformance}")
+                        else
+                            StringBuilder("${element?.valueDetailPerformance} ${element?.parameterValueDetailPerformance}")
+                    }
+            if (element?.colorValueDetailPerformance?.isNotBlank() == true && element.valueDetailPerformance != MINUS_SIGN) {
                 tvPerformanceValue.setTextColor(Color.parseColor(element.colorValueDetailPerformance))
             }
             tvPerformanceTarget?.text = getString(R.string.item_detail_performance_target, element?.targetDetailPerformance.orEmpty())

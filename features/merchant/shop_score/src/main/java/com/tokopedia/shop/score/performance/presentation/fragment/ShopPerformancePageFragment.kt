@@ -397,9 +397,15 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         coachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                 when (currentIndex) {
-                    COACHMARK_HEADER_POSITION -> scrollToItemHeaderCoachMark()
-                    COACHMARK_ITEM_DETAIL_POSITION -> scrollToItemDetailCoachMark()
-                    COACHMARK_LAST_POSITION_PM_RM -> scrollToLastItemCoachMark()
+                    COACHMARK_HEADER_POSITION -> {
+                        scrollToItemHeaderCoachMark()
+                    }
+                    COACHMARK_ITEM_DETAIL_POSITION -> {
+                        scrollToItemDetailCoachMark()
+                    }
+                    COACHMARK_LAST_POSITION_PM_RM -> {
+                        scrollToLastItemCoachMark()
+                    }
                     else -> {
                     }
                 }
