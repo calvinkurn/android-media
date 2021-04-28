@@ -10,6 +10,7 @@ import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModelTest.Companion.eventReplyMessage
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModelTest.Companion.eventReplyMessageString
 import com.tokopedia.topchat.chatlist.domain.websocket.DefaultWebSocketParser
+import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketStateHandler
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -31,10 +32,12 @@ class ChatListWebSocketViewModelTest {
     private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val pendingMessageHandler: PendingMessageHandler = mockk(relaxed = true)
     private val webSocket: WebSocket = mockk(relaxed = true)
+    private val webSocketStateHandler: WebSocketStateHandler = mockk(relaxed = true)
 
     private val viewModel = ChatListWebSocketViewModel(
             topchatWebSocket,
             DefaultWebSocketParser(),
+            webSocketStateHandler,
             userSession,
             dispatchers,
             pendingMessageHandler

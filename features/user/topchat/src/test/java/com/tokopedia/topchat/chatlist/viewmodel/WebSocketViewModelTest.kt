@@ -7,6 +7,7 @@ import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingT
 import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
 import com.tokopedia.topchat.chatlist.domain.websocket.DefaultWebSocketParser
+import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketStateHandler
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,8 +28,9 @@ class WebSocketViewModelTest {
     private val topchatWebSocket: DefaultTopChatWebSocket = mockk(relaxed = true)
     private val webSocket: WebSocket = mockk(relaxed = true)
     private val dispatchers = CoroutineTestDispatchersProvider
+    private val webSocketStateHandler: WebSocketStateHandler = mockk(relaxed = true)
     private val viewModel = WebSocketViewModel(
-            topchatWebSocket, DefaultWebSocketParser(), dispatchers
+            topchatWebSocket, DefaultWebSocketParser(), webSocketStateHandler, dispatchers
     )
 
     private val itemChatObserver: Observer<Result<BaseIncomingItemWebSocketModel>> = mockk(relaxed = true)
