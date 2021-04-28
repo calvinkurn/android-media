@@ -226,6 +226,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     ShipmentButtonPaymentModel savedShipmentButtonPaymentModel;
     LastApplyUiModel savedLastApplyData;
 
+    private boolean hasClearPromoBeforeCheckout = false;
     private boolean hasRunningApiCall = false;
     private ArrayList<String> bboPromoCodes = new ArrayList<>();
 
@@ -772,6 +773,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPayment.PAYMENT_CHECKOUT);
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
+        intent.putExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, hasClearPromoBeforeCheckout);
         startActivityForResult(intent, PaymentConstant.REQUEST_CODE);
     }
 
@@ -1071,7 +1073,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         super.onActivityResult(requestCode, resultCode, data);
         hideLoading();
         if (requestCode == PaymentConstant.REQUEST_CODE) {
-            onResultFromPayment(resultCode);
+            onResultFromPayment(resultCode, data);
         } else if (requestCode == LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY) {
             onResultFromAddNewAddress(resultCode, data);
         } else if (requestCode == CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS) {
@@ -1189,12 +1191,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private void onResultFromPayment(int resultCode) {
-        if (getActivity() != null) {
-            if (resultCode != PaymentConstant.PAYMENT_CANCELLED && resultCode != PaymentConstant.PAYMENT_FAILED) {
-                getActivity().setResult(PaymentConstant.PAYMENT_SUCCESS);
-                getActivity().finish();
-            }
+    private void onResultFromPayment(int resultCode, Intent data) {
+        switch (resultCode) {
+            case PaymentConstant.PAYMENT_FAILED:
+            case PaymentConstant.PAYMENT_CANCELLED:
+                if (data != null && data.getBooleanExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, false)) {
+                    shipmentPresenter.processInitialLoadCheckoutPage(
+                            true, isOneClickShipment(), isTradeIn(), true,
+                            false, null, getDeviceId(), getCheckoutLeasingId()
+                    );
+                }
+                break;
+            default:
+                Activity activity = getActivity();
+                if (activity != null) activity.finish();
+                break;
         }
     }
 
@@ -1574,8 +1585,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
 
                 if (notEligiblePromoHolderdataList.size() > 0) {
+                    hasClearPromoBeforeCheckout = true;
                     shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataList);
                 } else {
+                    hasClearPromoBeforeCheckout = false;
                     doCheckout();
                 }
             } else {
