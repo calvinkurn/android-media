@@ -22,4 +22,8 @@ object CassavaComponentInstance {
 
         return cassavaComponent!!
     }
+
+    fun clear() {
+        cassavaComponent = null
+    }
 }

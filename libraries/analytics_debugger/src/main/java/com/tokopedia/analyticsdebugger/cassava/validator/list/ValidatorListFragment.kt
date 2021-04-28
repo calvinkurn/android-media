@@ -137,6 +137,11 @@ class ValidatorListFragment : Fragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        CassavaComponentInstance.clear()
+    }
+
     interface Listener {
         fun goToTestPage(filepath: String, isFromNetwork: Boolean)
     }
