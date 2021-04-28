@@ -71,6 +71,7 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomNewOrderAp
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShipAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
+import com.tokopedia.applink.travel.DeeplinkMapperTravel
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -459,6 +460,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.ADD_PIN_ONBOARD, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING),
             DLP.exact(ApplinkConst.ADD_FINGERPRINT_ONBOARDING, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING),
             DLP.exact(ApplinkConst.FLIGHT, ApplinkConstInternalTravel.DASHBOARD_FLIGHT),
+            DLP.startWith(ApplinkConst.HOTEL_SRP) { ctx, _, deeplink -> DeeplinkMapperTravel.getRegisteredNavigationTravel(ctx, deeplink) },
             DLP.exact(ApplinkConst.SALDO, ApplinkConstInternalGlobal.SALDO_DEPOSIT),
             DLP.exact(ApplinkConst.SALDO_INTRO, ApplinkConstInternalGlobal.SALDO_INTRO),
             DLP.exact(ApplinkConst.DigitalInstantDebit.INSTANT_DEBIT_BCA_APPLINK, ApplinkConstInternalGlobal.INSTANT_DEBIT_BCA_ENTRY_PATTERN),
