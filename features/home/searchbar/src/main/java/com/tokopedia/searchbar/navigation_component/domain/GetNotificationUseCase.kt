@@ -17,6 +17,7 @@ class GetNotificationUseCase @Inject constructor(
     private val params = RequestParams.create()
 
     init {
+        graphqlUseCase.setGraphqlQuery(QueryNotification.query)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(NotificationResponse::class.java)
     }
