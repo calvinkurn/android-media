@@ -7,8 +7,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kyc_centralized.R
-import com.tokopedia.kyc_centralized.util.AppDispatcherProvider
-import com.tokopedia.kyc_centralized.util.DispatcherProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
@@ -55,10 +53,4 @@ class UserIdentificationCommonModule {
     @StringKey(KYCConstant.QUERY_GET_KYC_PROJECT_INFO)
     fun provideRawQueryGetKycProjectInfo(@UserIdentificationCommonScope context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_get_kyc_project_info)
-
-    @UserIdentificationCommonScope
-    @Provides
-    fun provideMainDispatcher(): DispatcherProvider {
-        return AppDispatcherProvider()
-    }
 }

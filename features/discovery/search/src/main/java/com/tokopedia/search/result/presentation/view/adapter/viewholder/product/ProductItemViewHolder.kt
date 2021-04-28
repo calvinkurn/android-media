@@ -15,7 +15,10 @@ abstract class ProductItemViewHolder(
 
     protected val context = itemView.context!!
 
-    protected fun ProductItemDataView.toProductCardModel(productImage: String): ProductCardModel {
+    protected fun ProductItemDataView.toProductCardModel(
+            productImage: String,
+            isWideContent: Boolean,
+    ): ProductCardModel {
         return ProductCardModel(
                 productImageUrl = productImage,
                 productName = productName,
@@ -30,7 +33,8 @@ abstract class ProductItemViewHolder(
                 countSoldRating = ratingString,
                 hasThreeDots = true,
                 labelGroupList = labelGroupList.toProductCardModelLabelGroup(),
-                labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant()
+                labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant(),
+                isWideContent = isWideContent,
         )
     }
 

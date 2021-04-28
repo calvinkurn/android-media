@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.stub.chatroom.usecase
 
-import com.tokopedia.topchat.TopchatAndroidTestCoroutineContextDispatcher
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.ChatAttachmentUseCase
@@ -10,7 +10,7 @@ import javax.inject.Inject
 class ChatAttachmentUseCaseStub @Inject constructor(
         private val gqlUseCase: GraphqlUseCaseStub<ChatAttachmentResponse>,
         mapper: ChatAttachmentMapper,
-        dispatchers: TopchatAndroidTestCoroutineContextDispatcher
+        dispatchers: CoroutineDispatchers
 ) : ChatAttachmentUseCase(gqlUseCase, mapper, dispatchers) {
 
     var response = ChatAttachmentResponse()

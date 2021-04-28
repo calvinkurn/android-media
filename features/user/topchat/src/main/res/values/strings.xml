@@ -163,7 +163,6 @@ yang ditemukan</string>
     <string name="tittle_load_more">Lihat Lebih</string>
     <string name="tittle_header_smart_reply">Dibalas oleh Smart Reply</string>
     <string name="tittle_header_auto_reply">Dibalas oleh Balasan Otomatis</string>
-    <string name="tittle_info_auto_reply">Pesan ini dibalas oleh sistem</string>
     <string name="title_topchat_tooltip_sticker_onboarding">Kami punya stiker lucu buatmu, lho. Cobain, yuk!</string>
     <string name="title_topchat_tooltip_search_onboarding">Kamu bisa cari pengguna, pesan, atau produk. Coba ketik sesuatu.</string>
     <string name="title_broadcast_handle_not_follow">Kamu menerima chat promosi ini karena pernah melihat produk toko ini</string>
@@ -200,10 +199,23 @@ yang ditemukan</string>
     <string name="title_topchat_review_other">Ulasan Lain</string>
     <string name="title_topchat_review_success">Terima kasih sudah bantu calon pembeli lain lewat ulasanmu.</string>
     <string name="title_topchat_see_cart">Lihat Keranjang</string>
+    <string name="title_topchat_update_stock">Ubah Stok</string>
 
     <string name="topchat_dms_hex_empty_stock_color_bg">#AD31353B</string>
     <string name="topchat_desc_dual_announcement_first_image">First Banner Announcement</string>
     <string name="topchat_desc_dual_announcement_second_image">Second Banner Announcement</string>
     <string name="topchat_desc_close_invoice_preview">Close Invoice Preview</string>
     <string name="topchat_desc_voucher_type">Voucher Type</string>
+    <string name="title_topchat_srw_load_failed">Oops, konten gagal ditampilkan</string>
+    <string name="desc_topchat_srw_load_failed">Yuk, klik ikon disamping untuk coba lagi!</string>
+    <string name="content_desc_close_voucher_btn">Close Voucher Button</string>
+
+    <string name="title_regular_stock">Stok:</string>
+    <string name="title_campaign_stock">Stok campaign:</string>
+    <string name="title_success_update_stock">Stok produk \"%1$s\" berhasil diubah.</string>
+    <string name="title_success_activate_product_status">produk \"%1$s\" berhasil diaktifkan.</string>
+    <string name="title_success_deactivate_product_status">produk \"%1$s\" berhasil dinonaktifkan.</string>
+    <string name="title_topchat_dilayani_tokocabang">Dilayani TokoCabang</string>
+
+    <string name="topchat_desc_empty_text_box">Oops, tulis pesan dulu ya sebelum kirim chat.</string>
 </resources>

@@ -1,7 +1,7 @@
 package com.tokopedia.brandlist.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.brandlist.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreAllBrands
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreBrandsRecommendation
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistAllBrandUseCase
@@ -35,7 +35,7 @@ class BrandlistSearchViewModelTest {
         BrandlistSearchViewModel(
                 getBrandlistPopularBrandUseCase,
                 getBrandlistAllBrandUseCase,
-                TestDispatcherProvider()
+                CoroutineTestDispatchersProvider
         )
     }
 

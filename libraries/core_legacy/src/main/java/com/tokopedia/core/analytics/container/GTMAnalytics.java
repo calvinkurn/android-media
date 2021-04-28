@@ -24,6 +24,9 @@ import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.relic.track.NewRelicUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -81,7 +84,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private final Long DELAY_GET_CONN = 120000L; //2 minutes
     private TetraDebugger tetraDebugger;
     private String clientIdString = "";
-    private UserSessionInterface userSession;
+    private final UserSessionInterface userSession;
     private String connectionTypeString = "";
     private Long lastGetConnectionTimeStamp = 0L;
     private String mGclid = "";
@@ -888,20 +891,39 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         String eventCategory = (String) values.get("eventCategory");
         if (!TextUtils.isEmpty(eventCategory)) {
-            Timber.w("P1#GTM_SIZE#event_cat;name='%s';size=%s;value='%s'", eventName, size, eventCategory);
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "event_cat");
+            messageMap.put("name", eventName);
+            messageMap.put("size", String.valueOf(size));
+            messageMap.put("value", eventCategory);
+            ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
             return;
         }
         String screenName = (String) values.get("screenName");
         if (!TextUtils.isEmpty(screenName)) {
-            Timber.w("P1#GTM_SIZE#event_screen;name='%s';size=%s;value='%s'", eventName, size, screenName);
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "event_screen");
+            messageMap.put("name", eventName);
+            messageMap.put("size", String.valueOf(size));
+            messageMap.put("value", screenName);
+            ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
             return;
         }
         String pageType = (String) values.get("pageType");
         if (!TextUtils.isEmpty(pageType)) {
-            Timber.w("P1#GTM_SIZE#event_page;name='%s';size=%s;value='%s'", eventName, size, pageType);
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "event_screen");
+            messageMap.put("name", eventName);
+            messageMap.put("size", String.valueOf(size));
+            messageMap.put("value", pageType);
+            ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
             return;
         }
-        Timber.w("P1#GTM_SIZE#event_others;name='%s';size=%s", eventName, size);
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "event_others");
+        messageMap.put("name", eventName);
+        messageMap.put("size", String.valueOf(size));
+        ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
     }
 
     public void sendScreenAuthenticated(String screenName) {
@@ -1072,10 +1094,28 @@ public class GTMAnalytics extends ContextAnalytics {
             if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
                 bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
             }
+            publishNewRelic(eventName, bundle);
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public void publishNewRelic(String eventName, Bundle bundle) {
+        Map<String, Object> map = bundleToMap(bundle);
+        for(Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<String, Object> entry = it.next();
+            Object value = entry.getValue();
+            if (value != null & value instanceof String){
+                String value2 = (String)value;
+                if(TextUtils.isEmpty(value2)) {
+                    it.remove();
+                }
+            }
+        }
+        if(GlobalConfig.isSellerApp()){
+            NewRelicUtil.sendTrack(eventName, map);
         }
     }
 

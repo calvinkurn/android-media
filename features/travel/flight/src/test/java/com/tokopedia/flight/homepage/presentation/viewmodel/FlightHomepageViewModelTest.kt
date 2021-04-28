@@ -3,9 +3,10 @@ package com.tokopedia.flight.homepage.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
+import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
@@ -37,7 +38,7 @@ class FlightHomepageViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
-    private val testDispatcherProvider = TravelTestDispatcherProvider()
+    private val testDispatcherProvider = CoroutineTestDispatchersProvider
 
     private val travelTickerUseCase = mockk<TravelTickerCoroutineUseCase>()
     private val travelCollectiveBannerUseCase = mockk<GetTravelCollectiveBannerUseCase>()
@@ -1047,4 +1048,61 @@ class FlightHomepageViewModelTest {
         // then
     }
 
+    @Test
+    fun validateSendTrackingVideoBannerImpression_LoggedIn(){
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns true
+        coEvery { userSessionInterface.userId } returns "dummy user id"
+
+        flightHomepageViewModel.sendTrackingVideoBannerImpression(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel,
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
+        }
+    }
+
+    @Test
+    fun validateSendTrackingVideoBannerImpression_NotLoggedIn(){
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns false
+
+        flightHomepageViewModel.sendTrackingVideoBannerImpression(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel,
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
+        }
+    }
+
+    @Test
+    fun validateSendTrackingVideoBannerClick_LoggedIn(){
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns true
+        coEvery { userSessionInterface.userId } returns "dummy user id"
+
+        flightHomepageViewModel.sendTrackingVideoBannerClick(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerClick(travelVideoBannerModel,
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
+        }
+    }
+
+    @Test
+    fun validateSendTrackingVideoBannerClick_NotLoggedIn(){
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns false
+
+        flightHomepageViewModel.sendTrackingVideoBannerClick(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerClick(travelVideoBannerModel,
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
+        }
+    }
 }

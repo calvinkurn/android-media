@@ -163,6 +163,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                                 putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME, productName)
                                 putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STOCK, stock)
                                 putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STATUS, status.name)
+                                putExtra(ProductManageCommonConstant.EXTRA_UPDATE_VARIANTS_MAP, variantsMap)
                             }
                             activity?.run {
                                 setResult(Activity.RESULT_OK, resultIntent)
@@ -355,6 +356,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                 errorMessage?.run {
                     putExtra(ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE, this)
                 }
+                putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_ID, productIds?.firstOrNull().orEmpty())
             }
             setResult(Activity.RESULT_CANCELED, intent)
             finish()

@@ -1,7 +1,7 @@
 package com.tokopedia.flight.orderdetail.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.dummy.DUMMY_ORDER_DETAIL_DATA
 import com.tokopedia.flight.dummy.DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE
@@ -35,7 +35,7 @@ class FlightOrderDetailWebCheckInViewModelTest {
 
     private val orderDetailUseCase: FlightOrderDetailUseCase = mockk()
     private val userSession: UserSessionInterface = mockk()
-    private val dispatcherProvider = TravelTestDispatcherProvider()
+    private val dispatcherProvider = CoroutineTestDispatchersProvider
 
     private lateinit var viewModel: FlightOrderDetailWebCheckInViewModel
 
