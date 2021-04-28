@@ -172,7 +172,6 @@ class CommonTopupBillsViewModelTest {
 
         // Then
         val actualData = topupBillsViewModel.catalogPluginData.value
-        println(actualData)
         assertNotNull(actualData)
         assert(actualData is Success)
 
@@ -194,7 +193,6 @@ class CommonTopupBillsViewModelTest {
 
         // Then
         val actualData = topupBillsViewModel.catalogPluginData.value
-        println(actualData)
         assert(actualData is Fail)
 
         val resultData = (actualData as Fail).throwable

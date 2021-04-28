@@ -62,9 +62,6 @@ class DigitalAddToCartViewModelTest {
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
-//    @RelaxedMockK
-//    lateinit var restRepository: RestRepository
-
     @RelaxedMockK
     lateinit var rechargeAnalytics: RechargeAnalytics
 
@@ -148,7 +145,6 @@ class DigitalAddToCartViewModelTest {
         assert(resultData is Fail)
 
         val throwable = (resultData as Fail).throwable
-        println(resultData)
         assertTrue(throwable.cause is DigitalAddToCartViewModel.DigitalFailGetCartId)
     }
 
@@ -177,7 +173,6 @@ class DigitalAddToCartViewModelTest {
         assert(resultData is Fail)
 
         val throwable = (resultData as Fail).throwable
-        println(throwable)
         assert(throwable.message == ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
     }
 }
