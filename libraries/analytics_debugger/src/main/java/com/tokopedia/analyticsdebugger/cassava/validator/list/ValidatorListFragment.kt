@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,7 +35,7 @@ class ValidatorListFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     val viewModel: ValidatorViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)
+        ViewModelProvider(requireActivity(), viewModelFactory)
                 .get(ValidatorViewModel::class.java)
     }
 
@@ -49,7 +50,6 @@ class ValidatorListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         observeLiveData()
 
         listingAdapter = FileListingAdapter().also { adapter ->

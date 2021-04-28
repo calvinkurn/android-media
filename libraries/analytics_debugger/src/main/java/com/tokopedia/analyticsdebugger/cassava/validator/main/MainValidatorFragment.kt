@@ -35,7 +35,7 @@ class MainValidatorFragment : Fragment() {
     }
 
     val viewModel: ValidatorViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)
+        ViewModelProvider(requireActivity(), viewModelFactory)
                 .get(ValidatorViewModel::class.java)
     }
 
