@@ -10,8 +10,9 @@ import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCH
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_TYPING
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
+import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
-import com.tokopedia.topchat.chatlist.viewmodel.websocket.WebSocketParser
+import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketParser
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.websocket.WebSocketResponse

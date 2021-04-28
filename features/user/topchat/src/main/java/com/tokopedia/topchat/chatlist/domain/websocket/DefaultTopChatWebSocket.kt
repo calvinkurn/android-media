@@ -1,7 +1,6 @@
-package com.tokopedia.topchat.chatlist.viewmodel
+package com.tokopedia.topchat.chatlist.domain.websocket
 
 import com.tokopedia.topchat.BuildConfig
-import com.tokopedia.topchat.chatlist.viewmodel.websocket.TopchatWebSocket
 import com.tokopedia.url.TokopediaUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
