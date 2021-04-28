@@ -70,7 +70,6 @@ class PatchLogger : PatchCallBack {
     }
 
     companion object {
-        const val TAG = "ROBUST_LOGS"
         val instance: PatchLogger by lazy { HOLDER.INSTANCE }
     }
 }
