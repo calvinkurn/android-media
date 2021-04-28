@@ -147,12 +147,16 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun processingError(it: Fail) {
         val errorMessage = it.throwable.message.toString()
-        if(errorMessage == INVALID_TOKEN) {
+        if(isByPassClearData(errorMessage)) {
             clearData()
         } else {
             showErrorDialog(errorMessage)
         }
 
+    }
+
+    private fun isByPassClearData(errorMessage: String): Boolean {
+        return errorMessage == INVALID_TOKEN
     }
 
     private fun showErrorDialog(errorMessage: String) {
