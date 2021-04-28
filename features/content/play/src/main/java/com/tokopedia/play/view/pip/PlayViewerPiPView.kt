@@ -87,6 +87,7 @@ class PlayViewerPiPView : ConstraintLayout {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+        mVideoPlayer.addListener(videoListener)
 
         val pipInfo = mPiPInfo
         if (pipInfo != null) {
@@ -147,7 +148,6 @@ class PlayViewerPiPView : ConstraintLayout {
     }
 
     private fun setupView() {
-        mVideoPlayer.addListener(videoListener)
         flCloseArea.setOnClickListener {
             removePiP()
         }
