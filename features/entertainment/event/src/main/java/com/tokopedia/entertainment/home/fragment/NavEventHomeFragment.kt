@@ -3,7 +3,6 @@ package com.tokopedia.entertainment.home.fragment
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -34,6 +33,7 @@ import com.tokopedia.entertainment.home.utils.NavigationEventController
 import com.tokopedia.entertainment.home.viewmodel.EventHomeViewModel
 import com.tokopedia.entertainment.home.widget.MenuSheet
 import com.tokopedia.entertainment.navigation.EventNavigationActivity
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -101,7 +101,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
                 }
 
                 is Fail -> {
-                    onErrorGetData(it.throwable)
+                    onErrorGetData()
                 }
             }
         })
@@ -135,11 +135,10 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
         startShowCase()
     }
 
-    private fun onErrorGetData(throwable: Throwable) {
+    private fun onErrorGetData() {
         swipe_refresh_layout_home?.isRefreshing = false
-        errorHandler()
         performanceMonitoring.stopTrace()
-        Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
+        errorHandler()
     }
 
     private fun errorHandler(){
