@@ -729,28 +729,4 @@ class PlayBroadcastAnalytic(
                 )
         )
     }
-
-    companion object {
-        private const val KEY_EVENT = "event"
-
-        private const val KEY_EVENT_CATEGORY = "eventCategory"
-        private const val KEY_EVENT_ACTION = "eventAction"
-        private const val KEY_EVENT_LABEL = "eventLabel"
-
-        private const val KEY_USER_ID = "userId"
-        private const val KEY_SHOP_ID = "shopId"
-
-        private const val KEY_BUSINESS_UNIT = "businessUnit"
-        private const val KEY_CURRENT_SITE = "currentSite"
-
-        private const val KEY_TRACK_CURRENT_SITE = "tokopediaseller"
-        private const val KEY_TRACK_BUSINESS_UNIT = "play"
-        private const val KEY_TRACK_CATEGORY = "seller broadcast"
-
-        private const val KEY_TRACK_CLICK_EVENT = "clickSellerBroadcast"
-        private const val KEY_TRACK_VIEW_EVENT = "viewSellerBroadcastIris"
-
-        private const val KEY_TRACK_CLICK = "click"
-        private const val KEY_TRACK_VIEW = "view"
-    }
 }
