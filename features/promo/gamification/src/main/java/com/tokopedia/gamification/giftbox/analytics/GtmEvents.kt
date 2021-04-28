@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import timber.log.Timber
 
 object GtmEvents {
@@ -76,13 +77,13 @@ object GtmEvents {
     }
 
     //8 && 13
-    fun viewRewards(benefitType: String?,catalogId: String, userId: String?) {
+    fun viewRewards(benefitType: String?, catalogId: String, userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_REWARDS
         var eventLabelPrefix = "coupon"
-        if(benefitType!=null && benefitType == BenefitType.COUPON_RP_0){
+        if (benefitType != null && benefitType == BenefitType.COUPON_RP_0) {
             eventLabelPrefix = "produk gratis"
         }
         map[GiftBoxTrackerConstants.EVENT_LABEL] = "$eventLabelPrefix - $catalogId"
@@ -93,13 +94,13 @@ object GtmEvents {
     }
 
     //9
-    fun viewRewardsPoints(@BenefitType benefitType: String? ,pointsAmount: String, userId: String?) {
+    fun viewRewardsPoints(@BenefitType benefitType: String?, pointsAmount: String, userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_REWARDS
         var eventLabelPrefix = "points"
-        if(benefitType!=null && benefitType == BenefitType.REWARD_POINT){
+        if (benefitType != null && benefitType == BenefitType.REWARD_POINT) {
             eventLabelPrefix = "tokopoints"
         }
         map[GiftBoxTrackerConstants.EVENT_LABEL] = "$eventLabelPrefix - $pointsAmount"
@@ -218,7 +219,7 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_INFO_BUTTON
-        updateCommonItems(userId,map)
+        updateCommonItems(userId, map)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -228,7 +229,7 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_REWARD_DETAIL
-        updateCommonItems(userId,map)
+        updateCommonItems(userId, map)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -238,7 +239,7 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_T_AND_C
-        updateCommonItems(userId,map)
+        updateCommonItems(userId, map)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -248,54 +249,63 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_PRODUCT_RECOM
-        updateCommonItems(userId,map)
+        updateCommonItems(userId, map)
         getTracker().sendGeneralEvent(map)
     }
 
     fun clickProductRecomItem(userId: String?, productId: String,
                               recommendationType: String,
-                              productPositionIndex:Int,
-                              productBrand:String,
-                              itemCategory:String,
-                              productName:String,
-                              productVariant:String,
-                              productPrice:String,
-                              isTopAds:Boolean
+                              productPositionIndex: Int,
+                              productBrand: String,
+                              itemCategory: String,
+                              productName: String,
+                              productVariant: String,
+                              productPrice: String,
+                              isTopAds: Boolean
     ) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.SELECT_CONTENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_PRODUCT
         map[GiftBoxTrackerConstants.EVENT_LABEL] = productId
-        updateCommonItems(userId,map)
-        val loginText:String = if (userId.isNullOrEmpty()) {
-            "nonlogin"
+        updateCommonItems(userId, map)
+        val loginText: String = if (userId.isNullOrEmpty()) {
+            "- nonlogin"
         } else {
-            "login"
+            ""
         }
-        map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap_tap - $loginText - rekomendasi untuk anda - $recommendationType - $isTopAds"
+
+        val productToads = if (isTopAds) {
+            "- product topads"
+        } else {
+            ""
+        }
+
+        val price = CurrencyFormatHelper?.convertRupiahToInt(productPrice)
+        map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap_tap$loginText - rekomendasi untuk anda - $recommendationType $productToads"
         map[GiftBoxTrackerConstants.ITEMS] = getItemsMapList(productId,
                 productPositionIndex,
                 productBrand,
                 itemCategory,
                 productName,
                 productVariant,
-                productPrice)
+                price
+        )
 
         try {
             getTracker().sendEnhanceEcommerceEvent(map[GiftBoxTrackerConstants.EVENT] as String, convertToBundle(map))
-        }catch (th:Throwable){
+        } catch (th: Throwable) {
             Timber.e(th)
         }
     }
 
     private fun getItemsMapList(productId: String,
-                            productPositionIndex:Int,
-                            productBrand:String,
-                            itemCategory:String,
-                            productName:String,
-                            productVariant:String,
-                            productPrice:String):List<Map<String,Any>>{
+                                productPositionIndex: Int,
+                                productBrand: String,
+                                itemCategory: String,
+                                productName: String,
+                                productVariant: String,
+                                productPrice: Int): List<Map<String, Any>> {
 
         val itemsMap = HashMap<String, Any>()
         itemsMap["index"] = productPositionIndex
@@ -308,39 +318,46 @@ object GtmEvents {
         return arrayListOf<Map<String, Any>>(itemsMap)
     }
 
-    fun impressionProductRecomItem(userId: String?,productId: String,
+    fun impressionProductRecomItem(userId: String?, productId: String,
                                    recommendationType: String,
-                                   productPositionIndex:Int,
-                                   productBrand:String,
-                                   itemCategory:String,
-                                   productName:String,
-                                   productVariant:String,
-                                   productPrice:String,
-                                   isTopAds:Boolean) {
+                                   productPositionIndex: Int,
+                                   productBrand: String,
+                                   itemCategory: String,
+                                   productName: String,
+                                   productVariant: String,
+                                   productPrice: String,
+                                   isTopAds: Boolean) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_ITEM_LIST
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_PRODUCT
         map[GiftBoxTrackerConstants.EVENT_LABEL] = productId
-        updateCommonItems(userId,map)
+        updateCommonItems(userId, map)
         val loginText = if (userId.isNullOrEmpty()) {
-            "nonlogin"
+            " - nonlogin"
         } else {
-            "login"
+            ""
         }
 
-        map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap_tap - $loginText - rekomendasi untuk anda - $recommendationType - $isTopAds"
+        val price = CurrencyFormatHelper.convertRupiahToInt(productPrice)
+        val productToads = if (isTopAds) {
+            "- product topads"
+        } else {
+            ""
+        }
+
+        map[GiftBoxTrackerConstants.ITEM_LIST] = "/tap_tap$loginText - rekomendasi untuk anda - $recommendationType $productToads"
         map[GiftBoxTrackerConstants.ITEMS] = getItemsMapList(productId,
                 productPositionIndex,
                 productBrand,
                 itemCategory,
                 productName,
                 productVariant,
-                productPrice)
+                price)
 
         try {
             getTracker().sendEnhanceEcommerceEvent(map[GiftBoxTrackerConstants.EVENT] as String, convertToBundle(map))
-        }catch (th:Throwable){
+        } catch (th: Throwable) {
             Timber.e(th)
         }
     }
@@ -371,43 +388,43 @@ object GtmEvents {
     }
 
     //1
-    fun clickGreenCtaOnBackButtonDialog(userId: String?){
-        val map = mutableMapOf<String,Any>()
+    fun clickGreenCtaOnBackButtonDialog(userId: String?) {
+        val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_CEK_DAFTAR_HADIAH_BUTTON
         updateCommonItemsForBackButtonDialog(map)
-        updateCommonItems(userId,map)
+        updateCommonItems(userId, map)
         getTracker().sendGeneralEvent(map)
     }
 
     //2
-    fun clickCancelCtaOnBackButtonDialog(userId: String?){
-        val map = mutableMapOf<String,Any>()
+    fun clickCancelCtaOnBackButtonDialog(userId: String?) {
+        val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.CLICK_KE_HOME_BUTTON
         updateCommonItemsForBackButtonDialog(map)
-        updateCommonItems(userId,map)
+        updateCommonItems(userId, map)
         getTracker().sendGeneralEvent(map)
     }
 
     //3
-    fun impressionRpZeroDialog(userId: String?){
-        val map = mutableMapOf<String,Any>()
+    fun impressionRpZeroDialog(userId: String?) {
+        val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_RP_0_POP_UP
         updateCommonItemsForBackButtonDialog(map)
-        updateCommonItems(userId,map)
+        updateCommonItems(userId, map)
         getTracker().sendGeneralEvent(map)
     }
 
-    private fun updateCommonItemsForBackButtonDialog(map:MutableMap<String,Any>){
+    private fun updateCommonItemsForBackButtonDialog(map: MutableMap<String, Any>) {
         map[GiftBoxTrackerConstants.EVENT_LABEL] = ""
     }
 
-    private fun updateCommonItems(userId: String?,map:MutableMap<String,Any>){
+    private fun updateCommonItems(userId: String?, map: MutableMap<String, Any>) {
         map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
         map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
         userId?.let {
@@ -415,23 +432,23 @@ object GtmEvents {
         }
     }
 
-    fun openDailyGiftBoxPage(userId: String?){
-        val map = mutableMapOf<String,String>()
+    fun openDailyGiftBoxPage(userId: String?) {
+        val map = mutableMapOf<String, String>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.OPEN_SCREEN
         map[GiftBoxTrackerConstants.BUSINESS_UNIT] = GiftBoxTrackerConstants.BGP_ENGAGEMENT
         map[GiftBoxTrackerConstants.CURRENT_SITE] = GiftBoxTrackerConstants.TOKOPEDIA_MARKET_PLACE
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
         }
-        getTracker().sendScreenAuthenticated(GiftBoxTrackerConstants.DAILY_GIFT_BOX,map)
+        getTracker().sendScreenAuthenticated(GiftBoxTrackerConstants.DAILY_GIFT_BOX, map)
     }
 
-    fun impressionProductRecom(userId: String?){
-        val map = mutableMapOf<String,Any>()
+    fun impressionProductRecom(userId: String?) {
+        val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_PRODUCT_RECOM
-        updateCommonItems(userId,map)
+        updateCommonItems(userId, map)
         getTracker().sendGeneralEvent(map)
     }
 
