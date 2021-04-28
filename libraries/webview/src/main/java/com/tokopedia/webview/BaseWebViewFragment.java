@@ -530,6 +530,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         activity.updateTitle(title);
                     }
                 }
+                activity.setOnWebViewPageFinished();
             } else if (activityInstance != null && !activityInstance.isFinishing() && activityInstance instanceof BaseSimpleActivity) {
                 ActionBar actionBar = ((AppCompatActivity) activityInstance).getSupportActionBar();
                 if (actionBar != null) {
@@ -601,6 +602,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             super.onReceivedError(view, errorCode, description, failingUrl);
             String webUrl = view.getUrl();
             onWebPageReceivedError(failingUrl, errorCode, description, webUrl);
+            enableBackButton();
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
@@ -610,6 +612,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             String webUrl = view.getUrl();
             onWebPageReceivedError(request.getUrl().toString(), error.getErrorCode(),
                     error.getDescription().toString(), webUrl);
+            enableBackButton();
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
@@ -619,6 +622,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             String webUrl = view.getUrl();
             Timber.w("P1#WEBVIEW_ERROR_RESPONSE#'%s';status_code=%s;reason='%s';web_url='%s'",
                     request.getUrl(), errorResponse.getStatusCode(), errorResponse.getReasonPhrase(), webUrl);
+            enableBackButton();
+        }
+    }
+
+    private void enableBackButton() {
+        Activity activityInstance = getActivity();
+        if (activityInstance instanceof BaseSimpleWebViewActivity) {
+            ((BaseSimpleWebViewActivity)activityInstance).enableBackButton();
         }
     }
 
