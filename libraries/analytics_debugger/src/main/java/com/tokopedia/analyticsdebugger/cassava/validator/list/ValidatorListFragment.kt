@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
 import com.tokopedia.analyticsdebugger.cassava.di.CassavaComponentInstance
 import com.tokopedia.analyticsdebugger.cassava.validator.main.ValidatorViewModel
 import timber.log.Timber
@@ -55,7 +54,8 @@ class ValidatorListFragment : Fragment() {
 
         listingAdapter = FileListingAdapter().also { adapter ->
             adapter.setOnItemClickListener {
-                listener?.goToTestPage(it.first, viewModel.cassavaSource.value == CassavaSource.NETWORK)
+                listener?.goToTestPage(it.first,
+                        view.findViewById<ToggleButton>(R.id.toggle_cassava_source).isChecked)
             }
         }
 
@@ -71,6 +71,7 @@ class ValidatorListFragment : Fragment() {
         }
 
         with(view.findViewById<ToggleButton>(R.id.toggle_cassava_source)) {
+            viewModel.changeSource(isChecked)
             setOnCheckedChangeListener { _, isChecked ->
                 viewModel.changeSource(isChecked)
             }
@@ -117,14 +118,6 @@ class ValidatorListFragment : Fragment() {
         viewModel.listFiles.observe(viewLifecycleOwner, {
             Timber.d("List files: %s", it)
             listingAdapter.setItems(it)
-        })
-
-        viewModel.cassavaSource.observe(viewLifecycleOwner, {
-            view?.let { mView ->
-                val toggleButton = mView.findViewById<ToggleButton>(R.id.toggle_cassava_source)
-                val isChecked = it == CassavaSource.NETWORK
-                toggleButton.isChecked = isChecked
-            }
         })
     }
 

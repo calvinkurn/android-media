@@ -19,7 +19,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginRight="@dimen/spacing_lvl3"
             android:background="@color/Unify_G400"
-            android:checked="true"
+            android:checked="false"
             android:textColor="@color/Unify_N0"
             android:textOff="@string/cassava_local_label"
             android:textOn="@string/cassava_network_label" />

@@ -40,7 +40,9 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
     val snackBarMessage: LiveData<String>
         get() = _snackBarMessage
 
-    val listFiles = cassavaSource.switchMap {
+    private val _cassavaSource = MutableLiveData<CassavaSource>()
+
+    val listFiles = _cassavaSource.switchMap {
         liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
             runCatching { emit(journeyListUseCase.execute(it)) }
                     .onFailure { _snackBarMessage.postValue(it.message ?: "") }
@@ -50,10 +52,6 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
     private val _cassavaQuery = MutableLiveData<CassavaQuery>()
     val cassavaQuery: LiveData<CassavaQuery>
         get() = _cassavaQuery
-
-    private val _cassavaSource = MutableLiveData(CassavaSource.LOCAL)
-    val cassavaSource: LiveData<CassavaSource>
-        get() = _cassavaSource
 
     fun changeSource(isFromNetwork: Boolean) {
         _cassavaSource.value = if (isFromNetwork) CassavaSource.NETWORK else CassavaSource.LOCAL
@@ -69,7 +67,7 @@ class ValidatorViewModel @Inject constructor(private val context: Application,
                 val testResult = engine.computeCo(v, mode)
                 _testCases.value = testResult
                 val endTime = System.currentTimeMillis()
-                if (cassavaSource.value == CassavaSource.NETWORK) {
+                if (_cassavaSource.value == CassavaSource.NETWORK) {
                     sendValidationResult(testResult)
                 }
                 Timber.i("Retrieved in: ${endTime - startTime} Got ${testResult.size} results")
