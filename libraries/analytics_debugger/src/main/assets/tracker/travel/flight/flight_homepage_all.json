@@ -5,44 +5,44 @@
     {
       "promotions": [
         {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{\\d*}}",
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}"
+          "creative_name": ".*",
+          "creative_slot": "\\d*",
+          "item_id": ".*",
+          "item_name": ".*"
         }
       ],
       "businessUnit" : "travel & entertainment",
-      "clientId" : "{{.*}}",
+      "clientId" : ".*",
       "eventCategory": "digital - flight",
       "currentSite" : "tokopediadigitalflight",
       "screenName" : "/flight/homepage",
       "category" : "flight",
       "event": "view_item",
-      "userId" : "{{.*}}",
+      "userId" : ".*",
       "eventAction": "view travel video",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.* - .*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".* - .*"
     },
     {
       "promotions": [
         {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{\\d*}}",
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}"
+          "creative_name": ".*",
+          "creative_slot": "\\d*",
+          "item_id": ".*",
+          "item_name": ".*"
         }
       ],
       "businessUnit" : "travel & entertainment",
-      "clientId" : "{{.*}}",
+      "clientId" : ".*",
       "eventCategory": "digital - flight",
       "currentSite" : "tokopediadigitalflight",
       "screenName" : "/flight/homepage",
       "category" : "flight",
       "event": "select_content",
-      "userId" : "{{.*}}",
+      "userId" : ".*",
       "eventAction": "click travel video",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.* - .*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".* - .*"
     },
     {
       "event": "genericFlightEvent",
