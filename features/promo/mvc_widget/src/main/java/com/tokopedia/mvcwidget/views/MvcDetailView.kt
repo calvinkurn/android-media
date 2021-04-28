@@ -37,8 +37,6 @@ class MvcDetailView @JvmOverloads constructor(
     var viewFlipper: ViewFlipper
     var globalError: GlobalError
     var addBottomMarginOnToast = false
-    var buttonLayout: LinearLayout
-    var buttonContinue:UnifyButton
 
     private val widgetImpression = WidgetImpression()
 
@@ -73,10 +71,6 @@ class MvcDetailView @JvmOverloads constructor(
         rv = findViewById(R.id.rv)
         viewFlipper = findViewById(R.id.viewFlipper)
         globalError = findViewById(R.id.mvcDetailGlobalError)
-        buttonLayout = findViewById(R.id.btn_layout)
-        buttonContinue = findViewById(R.id.btn_continue)
-        rv.layoutParams.height = Resources.getSystem().displayMetrics.heightPixels
-
         rv.layoutManager = LinearLayoutManager(context)
         rv.adapter = adapter
 
@@ -278,14 +272,6 @@ class MvcDetailView @JvmOverloads constructor(
         if (addBottomMarginOnToast) {
             Toaster.toasterCustomBottomHeight = dpToPx(48).toInt()
         }
-    }
-
-    fun setTokoButtonVisibility(){
-        buttonLayout.visibility = View.VISIBLE
-    }
-
-    fun setTokoButtonClickListener(onClickListener: OnClickListener?) {
-        buttonContinue?.setOnClickListener(onClickListener)
     }
 }
 

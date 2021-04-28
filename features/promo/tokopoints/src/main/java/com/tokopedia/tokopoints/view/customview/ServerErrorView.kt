@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
 
 class ServerErrorView : NestedScrollView {
     private var imageError: AppCompatImageView? = null
@@ -23,7 +24,7 @@ class ServerErrorView : NestedScrollView {
     private var btnError: RoundButton? = null
     private var errorTitle: CharSequence? = null
     private var errorSubTitle: CharSequence? = null
-    private var errorBackArrow: ImageButton? = null
+    private var errorBackArrow: UnifyButton? = null
     private var buttonFontSize: Int? = null
     private var buttonColor: Int? = null
     private var buttonFontColor: Int? = null
@@ -77,6 +78,8 @@ class ServerErrorView : NestedScrollView {
         btnError = findViewById(R.id.text_failed_action)
         errorBackArrow = findViewById(R.id.iv_back_error)
         containerToolbar = findViewById(R.id.top_container)
+
+        errorBackArrow?.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_tp_arrow_back,0,0,0)
     }
 
     fun showErrorUi(hasInternet: Boolean, error: Int = 0) {

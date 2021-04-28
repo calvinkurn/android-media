@@ -25,6 +25,7 @@ import java.util.Arrays
 class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProductsListItem>, context: Context) : RecyclerView.Adapter<SectionMerchantCouponAdapter.CouponListViewHolder>() {
 
     val eventSet = HashSet<String?>()
+    val transParentActivity = TransParentActivity()
     val mvcDetailView = MvcDetailView(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CouponListViewHolder {
@@ -120,16 +121,13 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_PRODUCT_CARD, vh, item?.AdInfo)
         }
 
-        mvcDetailView.setTokoButtonClickListener(View.OnClickListener {
-            RouteManager.route(vh.itemView.context, item?.shopInfo?.appLink)
-        })
         vh.itemView.setOnClickListener {
-            mvcDetailView.setTokoButtonVisibility()
-            item?.shopInfo?.id?.let { it1 -> it.context.startActivity(TransParentActivity.getIntent(it.context, it1, 0)) }
+            item?.shopInfo?.id?.let { it1 -> it.context.startActivity(item?.shopInfo?.appLink?.let { it2 -> TransParentActivity.getIntent(it.context, it1, 0 , true, it2) }) }
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE, vh, item?.AdInfo)
 
         }
     }
+
 
     private fun shopClickListener(vh: CouponListViewHolder, item: CatalogMVCWithProductsListItem?) {
         RouteManager.route(vh.itemView.context, item?.shopInfo?.appLink)
