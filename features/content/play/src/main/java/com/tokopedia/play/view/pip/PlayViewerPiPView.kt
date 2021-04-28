@@ -164,6 +164,7 @@ class PlayViewerPiPView : ConstraintLayout {
                         pipInfo.channelId
                 ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         .putExtra(EXTRA_PLAY_START_VOD_MILLIS, mVideoPlayer.getCurrentPosition())
+                        .putExtra(EXTRA_PLAY_IS_FROM_PIP, true)
 
                 context.startActivity(intent)
             }
@@ -219,5 +220,6 @@ class PlayViewerPiPView : ConstraintLayout {
     companion object {
 
         private const val EXTRA_PLAY_START_VOD_MILLIS = "start_vod_millis"
+        private const val EXTRA_PLAY_IS_FROM_PIP = "is_from_pip"
     }
 }
