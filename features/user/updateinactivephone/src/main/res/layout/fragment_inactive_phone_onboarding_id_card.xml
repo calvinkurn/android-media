@@ -5,7 +5,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/Neutral_N0"
+  android:background="@color/Unify_N0"
   android:scrollbars="none"
   tools:ignore="MissingDefaultResource">
   
@@ -76,7 +76,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_onboarding_protected"
-        android:textColor="@color/dark_N200"
+        android:textColor="@color/Unify_N400"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:textSize="@dimen/fontSize_lvl2"
         app:typographyType="body_3"

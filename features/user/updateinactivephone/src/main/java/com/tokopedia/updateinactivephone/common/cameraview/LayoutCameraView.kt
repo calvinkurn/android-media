@@ -6,6 +6,7 @@ import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.updateinactivephone.R
 
 class LayoutCameraView @JvmOverloads constructor(
@@ -48,7 +49,7 @@ class LayoutCameraView @JvmOverloads constructor(
             }
 
             canvas?.clipPath(path)
-            canvas?.drawColor(ContextCompat.getColor(context, R.color.overlay_color))
+            canvas?.drawColor(MethodChecker.getColor(context, R.color.updateinactivephone_dms_overlay_color))
         }
     }
 
