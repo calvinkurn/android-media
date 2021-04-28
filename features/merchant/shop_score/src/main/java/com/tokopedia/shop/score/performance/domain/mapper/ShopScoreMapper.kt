@@ -138,7 +138,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             }
 
             add(mapToHeaderShopPerformance(shopScoreWrapperResponse.shopScoreLevelResponse?.result, shopAge))
-            add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreWrapperResponse.shopScoreTooltipResponse?.result))
+            add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreWrapperResponse.shopScoreLevelResponse?.result))
             if (shopScoreResult?.shopScoreDetail?.isNotEmpty() == true) {
                 addAll(mapToItemDetailPerformanceUiModel(shopScoreResult.shopScoreDetail, shopAge))
             }
@@ -416,9 +416,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 transitionEndDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT))
     }
 
-    private fun mapToSectionPeriodDetailPerformanceUiModel(shopScoreTooltipResponse: ShopLevelTooltipResponse.ShopLevel.Result?): PeriodDetailPerformanceUiModel {
-        return PeriodDetailPerformanceUiModel(period = shopScoreTooltipResponse?.period
-                ?: "-", nextUpdate = shopScoreTooltipResponse?.nextUpdate ?: "-")
+    private fun mapToSectionPeriodDetailPerformanceUiModel(shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?): PeriodDetailPerformanceUiModel {
+        return PeriodDetailPerformanceUiModel(period = shopScoreLevelResponse?.period
+                ?: "-", nextUpdate = shopScoreLevelResponse?.nextUpdate ?: "-")
     }
 
     private fun mapToTransitionPeriodReliefUiModel(endDate: String): TransitionPeriodReliefUiModel {
