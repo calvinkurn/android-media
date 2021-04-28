@@ -28,11 +28,13 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
     var isRegistered = false
 
     fun registerReceiver(context: Context?, listener: OnCallStateChange) {
+        this.listener = listener
+
         if (!isRegistered) {
-            this.listener = listener
             context?.registerReceiver(this, getIntentFilter())
             isRegistered = true
         } else {
+            this.listener?.onErrorPhoneCallReceiverMessage("PhoneCallBroadcastReceiver already registered")
             sendLogTracker("PhoneCallBroadcastReceiver already registered")
         }
     }
@@ -54,6 +56,7 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
             }, PhoneStateListener.LISTEN_CALL_STATE)
         } catch (e: Exception) {
             sendLogTracker("error [PhoneCallBroadcastReceiver#onReceive(); msg=$e]")
+            listener?.onErrorPhoneCallReceiverMessage("PhoneCall : ${e.printStackTrace()}")
             e.printStackTrace()
         }
     }
@@ -90,6 +93,7 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
         fun onIncomingCallStart(phoneNumber: String)
         fun onIncomingCallEnded(phoneNumber: String)
         fun onMissedCall(phoneNumber: String)
+        fun onErrorPhoneCallReceiverMessage(message: String)
     }
 
     companion object {
