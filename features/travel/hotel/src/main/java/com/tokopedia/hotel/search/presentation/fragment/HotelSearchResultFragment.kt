@@ -166,10 +166,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = getRecyclerView(view)
         recyclerView?.removeItemDecorationAt(0)
-        context?.let {
-            recyclerView?.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(R.dimen.hotel_12dp),
-                    LinearLayoutManager.VERTICAL))
-        }
         searchResultviewModel.fetchTickerData()
     }
 

@@ -344,7 +344,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun isNavRevamp(): Boolean {
         return try {
-            getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_REVAMP
+            return (context as? MainParentStateListener)?.isNavigationRevamp?:false
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -1351,12 +1351,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
                         ?: false
                 if (isBalanceWidgetNotEmpty) {
-                    var isTokopointsOrOvoFailed = false
-                    it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.values?.forEach { data ->
-                        if (data.state != BalanceDrawerItemModel.STATE_SUCCESS) {
-                            isTokopointsOrOvoFailed = true
-                        }
-                    }
+                    val isTokopointsOrOvoFailed = it.headerDataModel?.homeBalanceModel?.isTokopointsOrOvoFailed ?: false
                     if (!isTokopointsOrOvoFailed) {
                         Handler().postDelayed({
                             if (!coachMarkIsShowing && !bottomSheetIsShowing)

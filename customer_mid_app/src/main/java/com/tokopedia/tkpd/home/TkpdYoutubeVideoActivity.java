@@ -131,8 +131,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RECOVERY_DIALOG_REQUEST) {
             // Retry initialization if user performed a recovery action
-            // TODO need to check in the future, map api is used for youtube?
-            getYouTubePlayerProvider().initialize(Keys.getGoogleGeoApiKey(this), this);
+            getYouTubePlayerProvider().initialize(Keys.getAUTH_GOOGLE_YOUTUBE_API_KEY(), this);
         }
     }
 
@@ -158,8 +157,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
 
 
         }
-        // TODO need to check in the future, map api is used for youtube?
-        youTubeView.initialize(Keys.getGoogleGeoApiKey(this), this);
+        youTubeView.initialize(Keys.getAUTH_GOOGLE_YOUTUBE_API_KEY(), this);
     }
 
     private void setBannerAdapter(String jsonArray) {

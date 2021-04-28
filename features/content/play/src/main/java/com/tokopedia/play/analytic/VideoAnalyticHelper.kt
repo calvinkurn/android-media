@@ -81,7 +81,9 @@ class VideoAnalyticHelper(
     /**
      * Send Analytic
      */
-    fun sendLeaveRoomAnalytic() {
+    fun sendLeaveRoomAnalytic(channelId: String) {
+        if (channelId != analytic.channelId) return
+
         val currentWatchDuration = watchDurationModel.watchTime?.let { abs(System.currentTimeMillis() - it) }.orZero()
         val totalDuration = watchDurationModel.cumulationDuration + currentWatchDuration
         analytic.clickLeaveRoom(totalDuration)

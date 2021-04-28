@@ -287,7 +287,7 @@
     <string name="email_not_registered_info">Lanjut daftar dengan email ini %1$s?</string>
     <string name="not_registered_yes">Ya, Daftar</string>
     <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
-    <string name="social_media">Akun Media Sosial</string>
+    <string name="another_method">Metode lain</string>
     <string name="fingerprint_login">Sidik Jari</string>
 
     <string name="choose_social_media">Pilih akun untuk masuk</string>
