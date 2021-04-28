@@ -367,13 +367,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         String BALANCE_WIDGET_VARIANT_OLD = AbTestPlatform.BALANCE_VARIANT_OLD;
         String BALANCE_WIDGET_VARIANT_REVAMP = AbTestPlatform.BALANCE_VARIANT_NEW;
 
-        String HOME_COMPONENT_LEGO4BANNER_EXP= "lego4_test";
-        String HOME_COMPONENT_LEGO4BANNER_OLD = "lego_round";
-        String HOME_COMPONENT_LEGO4BANNER_VARIANT = "lego_bleeding";
-        String HOME_COMPONENT_CATEGORYWIDGET_EXP= "catwidget_test";
-        String HOME_COMPONENT_CATEGORYWIDGET_OLD = "current_design";
-        String HOME_COMPONENT_CATEGORYWIDGET_VARIANT = "new_design";
-
         alwaysOldButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
