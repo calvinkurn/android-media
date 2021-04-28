@@ -2,17 +2,18 @@ package com.tokopedia.kyc.view.activity;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -66,7 +67,7 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
 
     private void initInjector() {
         KYCComponent = DaggerKYCComponent.builder().baseAppComponent(
-                ((BaseMainApplication)getApplicationContext()).getBaseAppComponent()).build();
+                ((BaseMainApplication) getApplicationContext()).getBaseAppComponent()).build();
     }
 
     @Override
@@ -86,18 +87,17 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    public void addReplaceFragmentWithCustAnim(BaseDaggerFragment baseDaggerFragment, boolean replace, String tag, int entryAnimId, int exitAnimId){
+    public void addReplaceFragmentWithCustAnim(BaseDaggerFragment baseDaggerFragment, boolean replace, String tag, int entryAnimId, int exitAnimId) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(entryAnimId, exitAnimId);
         executeFragmentTrxn(fragmentTransaction, baseDaggerFragment, replace, tag);
     }
 
-    private void executeFragmentTrxn(FragmentTransaction fragmentTransaction, BaseDaggerFragment baseDaggerFragment, boolean replace, String tag){
+    private void executeFragmentTrxn(FragmentTransaction fragmentTransaction, BaseDaggerFragment baseDaggerFragment, boolean replace, String tag) {
         retryCount = 3;
-        if(replace) {
+        if (replace) {
             fragmentTransaction.replace(R.id.parent_view, baseDaggerFragment, tag);
-        }
-        else {
+        } else {
             fragmentTransaction.add(R.id.parent_view, baseDaggerFragment, tag);
         }
         fragmentTransaction.addToBackStack(tag);
@@ -105,14 +105,14 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    public void showHideActionbar(boolean show){
-        if(show) getSupportActionBar().show();
+    public void showHideActionbar(boolean show) {
+        if (show) getSupportActionBar().show();
         else getSupportActionBar().hide();
     }
 
     @Override
     public ConfirmRequestDataContainer getDataContatainer() {
-        if(kycViewModel == null) {
+        if (kycViewModel == null) {
             kycViewModel = ViewModelProviders.of(this).get(KycViewModel.class);
         }
         return kycViewModel.getConfirmRequestDataContainer();
@@ -120,7 +120,7 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
 
     @Override
     public boolean isRetryValid() {
-        if(retryCount > 0){
+        if (retryCount > 0) {
             retryCount--;
             return true;
         }
@@ -128,14 +128,14 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    public void hideProgressDialog(){
-        if(loading != null)
+    public void hideProgressDialog() {
+        if (loading != null)
             loading.dismiss();
     }
 
     @Override
     public void showProgressDialog() {
-        if(loading == null) loading = new ProgressDialog(this);
+        if (loading == null) loading = new ProgressDialog(this);
         loading.setCancelable(false);
         loading.setMessage(getString(R.string.title_loading));
         loading.show();
@@ -167,16 +167,13 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
             return;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            String[] permissions;
-            permissions = new String[]{
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            String permission = Manifest.permission.CAMERA;
             permissionsToRequest = new ArrayList<>();
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                    permissionsToRequest.add(permission);
-                }
+
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(permission);
             }
+
             if (!permissionsToRequest.isEmpty()) {
                 ActivityCompat.requestPermissions(this,
                         permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
