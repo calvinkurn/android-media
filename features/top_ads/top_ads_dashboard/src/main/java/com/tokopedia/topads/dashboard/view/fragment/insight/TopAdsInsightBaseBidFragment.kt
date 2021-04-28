@@ -40,7 +40,6 @@ import javax.inject.Inject
 
 const val VIEW_DAILY_RECOMMENDATION_PRODUKS = "view - rekomendasi anggaran - grup iklan"
 const val CLICK_TERAPKAN = "click - terapkan"
-const val EVENT_LABEL_TERAPKAN = "rekomendasi anggaran - potensi klik - atur anggaran"
 class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
     private var dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendation? = null
@@ -134,7 +133,7 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
             var dailyBudgetModel = InsightDailyBudgetModel().apply {
                 groupId = it.groupId
                 groupName = it.groupName
-                dailyPrice = it.suggestedPriceDaily
+                dailySuggestedPrice = it.suggestedPriceDaily
                 potentialClick = calculatePotentialClick(topadsGetDailyBudgetRecommendation.data)
             }
             dailyRecommendationModel.add(dailyBudgetModel)
@@ -169,7 +168,7 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
     private fun onButtonClick(pos: Int) {
         currentPosition = pos
         topAdsDashboardPresenter.getGroupInfo(resources, adapter.items[pos].groupId.toString(), ::onSuccessGroupInfo)
-        val eventLabel = "${adapter.items[pos].groupId} - $EVENT_LABEL_TERAPKAN"
+        val eventLabel = "${adapter.items[pos].groupId} - ${adapter.items[pos].suggestedPriceDaily} - ${calculatePotentialClick(adapter.items)} - ${adapter.items[pos].priceDaily}"
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_TERAPKAN, eventLabel, userSession.userId)
     }
 
