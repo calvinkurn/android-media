@@ -1162,7 +1162,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun showEmptyState() {
         val newItems = arrayListOf(createSomListEmptyStateModel(viewModel.isTopAdsActive()))
-        rvSomList?.itemAnimator = null
         (adapter as? SomListOrderAdapter)?.updateOrders(newItems)
     }
 
@@ -1537,9 +1536,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             multiEditViews?.gone()
             toggleBulkActionButtonVisibility()
         } else if (data.firstOrNull()?.searchParam == searchBarSomList.searchBarTextField.text.toString()) {
-            if (rvSomList?.itemAnimator == null) {
-                rvSomList?.itemAnimator = DefaultItemAnimator()
-            }
             if (isLoadingInitialData) {
                 (adapter as SomListOrderAdapter).updateOrders(data)
                 tvSomListOrderCounter?.text = getString(R.string.som_list_order_counter, somListSortFilterTab?.getSelectedFilterOrderCount().orZero())
