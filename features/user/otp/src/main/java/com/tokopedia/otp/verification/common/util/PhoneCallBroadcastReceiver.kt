@@ -26,12 +26,16 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
     private var isIncomingCall = false
 
     var isRegistered = false
+    private var telephony: TelephonyManager? = null
 
     fun registerReceiver(context: Context?, listener: OnCallStateChange) {
         this.listener = listener
 
         if (!isRegistered) {
-            context?.registerReceiver(this, getIntentFilter())
+            context?.let {
+                it.registerReceiver(this, getIntentFilter())
+                setTelephonyListener(it)
+            }
             isRegistered = true
         } else {
             this.listener?.onErrorPhoneCallReceiverMessage("PhoneCallBroadcastReceiver already registered")
@@ -46,10 +50,17 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
         }
     }
 
+    private fun setTelephonyListener(context: Context) {
+        try {
+            telephony = context?.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        } catch (e: Exception) {
+             e.printStackTrace()
+        }
+    }
+
     override fun onReceive(context: Context?, intent: Intent?) {
         try {
-            val telephony = context?.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            telephony.listen(object : PhoneStateListener() {
+            telephony?.listen(object : PhoneStateListener() {
                 override fun onCallStateChanged(state: Int, phoneNumber: String?) {
                     onStateChanged(state, phoneNumber.orEmpty())
                 }

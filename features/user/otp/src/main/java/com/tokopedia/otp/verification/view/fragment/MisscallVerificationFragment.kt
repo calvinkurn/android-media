@@ -73,6 +73,15 @@ class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastR
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        context?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                registerIncomingPhoneCall(it)
+            }
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         if (::phoneCallBroadcastReceiver.isInitialized) {
@@ -113,6 +122,10 @@ class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastR
     }
 
     private fun registerIncomingPhoneCall(context: Context) {
+        if (phoneCallBroadcastReceiver.isRegistered) {
+            return
+        }
+
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
         val disableAutoReadMissCall = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_DISABLE_AUTOREAD_MISSCALL, false)
         if (disableAutoReadMissCall) {
