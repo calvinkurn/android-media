@@ -127,8 +127,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun getRecyclerViewResourceId(): Int = R.id.rvVerticalPropertiesHotelSearchMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
         localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
 
         activity?.run {
@@ -157,6 +155,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
 
         setCardListViewAdapter()
+
+        super.onCreate(savedInstanceState)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
