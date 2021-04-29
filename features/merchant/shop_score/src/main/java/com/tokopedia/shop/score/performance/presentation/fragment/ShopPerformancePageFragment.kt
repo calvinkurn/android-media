@@ -472,18 +472,18 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         var position = -1
 
         when {
-            positionPMPro != -1 -> {
+            positionPMPro != RecyclerView.NO_POSITION -> {
                 position = positionPMPro
             }
-            positionPM != -1 -> {
+            positionPM != RecyclerView.NO_POSITION -> {
                 position = positionPM
             }
-            positionRMNonEligible != -1 -> {
+            positionRMNonEligible != RecyclerView.NO_POSITION -> {
                 position = positionRMNonEligible
             }
         }
 
-        if (position != -1) {
+        if (position != RecyclerView.NO_POSITION) {
             val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
                 override fun getVerticalSnapPreference(): Int {
                     return SNAP_TO_END
