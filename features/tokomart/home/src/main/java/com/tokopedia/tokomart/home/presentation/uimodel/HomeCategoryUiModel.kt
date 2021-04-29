@@ -2,7 +2,7 @@ package com.tokopedia.tokomart.home.presentation.uimodel
 
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeTypeFactory
 
-data class HomeAllCategoryUiModel(
+data class HomeCategoryUiModel(
     val id: String,
     val title: String
 ): HomeLayoutUiModel {
