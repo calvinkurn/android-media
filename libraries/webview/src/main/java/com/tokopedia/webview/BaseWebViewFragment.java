@@ -528,7 +528,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         activity.updateTitle(title);
                     }
                 }
-                if (url.contains(BaseWebViewFragment.this.url)) {
+                if (url.startsWith(BaseWebViewFragment.this.url)) {
                     activity.setOnWebViewPageFinished();
                 } else {
                     activity.enableBackButton();
