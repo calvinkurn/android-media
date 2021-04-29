@@ -100,6 +100,9 @@
       "event": "view_item_list",
       "eventAction": "{{impression on product dynamic channel top carousel|impression on product dynamic channel left carousel}}",
       "sessionIris" : "{{.*}}",
+      "businessUnit" : "{{.*}}",
+      "userId" : "{{.*}}",
+      "currentSite" : "{{.*}}",
       "items": [{
         "item_id": "{{.*}}",
         "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
