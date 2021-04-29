@@ -579,7 +579,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private fun prepareView() {
 
         partialRegisterInputView?.showForgotPassword()
-
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(
+                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            )
+        }
         socmedBottomSheet = SocmedBottomSheet(context)
         socmedButtonsContainer = socmedBottomSheet?.getSocmedButtonContainer()
         socmedBottomSheet?.setCloseClickListener {
