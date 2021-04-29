@@ -104,6 +104,7 @@ interface ProductListSectionContract {
         fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean
         fun refreshItemAtIndex(index: Int)
         fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option)
+        fun showPowerMerchantProPopUp()
     }
 
     interface Presenter : CustomerPresenter<View> {
