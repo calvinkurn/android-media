@@ -51,4 +51,5 @@ object ShopPageConstant {
     const val AB_TEST_NEW_SHOP_HEADER_KEY = "shop_header_revamp"
     const val AB_TEST_NEW_SHOP_HEADER_OLD_VALUE = "old_shop_header"
     const val AB_TEST_NEW_SHOP_HEADER_NEW_VALUE = "new_shop_header"
+    const val AB_TEST_ROLLOUT_NEW_SHOP_ETALASE = "etalase_revamp_new"
 }

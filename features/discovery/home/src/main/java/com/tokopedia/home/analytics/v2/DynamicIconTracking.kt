@@ -12,27 +12,27 @@ import java.util.*
 object DynamicIconTracking : BaseTracking(){
     private const val DYNAMIC_ICON = "dynamic icon"
     private const val DYNAMIC_ICON_PROMOTION_NAME = "/ - p%s - dynamic icon"
-    fun sendDynamicIconImpress(userId: String, dynamicIcons: List<DynamicIconComponent.DynamicIcon>, position: Int, type: Int){
+    fun sendDynamicIconImpress(userId: String, dynamicIcon: DynamicIconComponent.DynamicIcon, iconPosition: Int, adapterPposition: Int, type: Int): HashMap<String, Any> {
         val tracker = BaseTrackerBuilder().constructBasicPromotionView(
                 event = Event.PROMO_VIEW,
                 eventAction = Action.IMPRESSION_ON.format(DYNAMIC_ICON),
                 eventCategory = Category.HOMEPAGE,
                 eventLabel = Label.NONE,
-                promotions = dynamicIcons.mapIndexed { index, dynamicIcon ->
-                    BaseTrackerConst.Promotion(
-                            id = dynamicIcon.id,
-                            name = DYNAMIC_ICON_PROMOTION_NAME.format(position),
-                            position = type.toString() + " - " + (index + 1).toString(),
-                            creative = dynamicIcon.businessUnitIdentifier,
-                            creativeUrl = dynamicIcon.imageUrl
-                    )
-                }
+                promotions = listOf(
+                        BaseTrackerConst.Promotion(
+                                id = dynamicIcon.id,
+                                name = DYNAMIC_ICON_PROMOTION_NAME.format(adapterPposition),
+                                position = type.toString() + " - " + (iconPosition + 1).toString(),
+                                creative = dynamicIcon.businessUnitIdentifier,
+                                creativeUrl = dynamicIcon.imageUrl
+                        )
+                )
         )
         .appendBusinessUnit(BusinessUnit.DEFAULT)
         .appendCurrentSite(CurrentSite.DEFAULT)
         .appendUserId(userId)
         .build()
-        getTracker().sendEnhanceEcommerceEvent(tracker as HashMap<String, Any>)
+        return tracker as HashMap<String, Any>
     }
 
     fun sendDynamicIconClick(userId: String, dynamicIcon: DynamicIconComponent.DynamicIcon, position: Int, iconPosition: Int, type: Int){

@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
@@ -25,6 +24,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -243,7 +243,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private fun showFreeOngKir(dataItem: DataItem) {
         val freeOngkirImage = productCardItemViewModel.getFreeOngkirImage(dataItem)
         if (freeOngkirImage.isNotEmpty()) {
-            ImageHandler.LoadImage(imageFreeOngkirPromo, freeOngkirImage)
+            imageFreeOngkirPromo.loadIcon(freeOngkirImage)
             imageFreeOngkirPromo.show()
         } else {
             imageFreeOngkirPromo.hide()

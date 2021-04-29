@@ -4,7 +4,4 @@ sealed class ReviewInboxTabs {
     data class ReviewInboxPending(val counter: String = "") : ReviewInboxTabs()
     object ReviewInboxHistory : ReviewInboxTabs()
     object ReviewInboxSeller : ReviewInboxTabs()
-    object ReviewRatingProduct: ReviewInboxTabs()
-    object ReviewBuyer: ReviewInboxTabs()
-    object ReviewPenaltyAndReward: ReviewInboxTabs()
 }

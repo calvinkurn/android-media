@@ -144,6 +144,7 @@ dependencies {
     implementation project(rootProject.ext.features.youtubeCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.attachcommon)
+    implementation project(rootProject.ext.features.mediaCommon)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.linker)
@@ -191,6 +192,9 @@ dependencies {
     } else {
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
+
+    implementation project(rootProject.ext.libraries.pageInfoPusher)
+
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.preReleaseInspector)
     } else {

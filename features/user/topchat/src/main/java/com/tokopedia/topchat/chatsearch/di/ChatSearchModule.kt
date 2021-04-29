@@ -1,7 +1,5 @@
 package com.tokopedia.topchat.chatsearch.di
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -28,8 +26,4 @@ class ChatSearchModule {
     fun provideGqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<GetChatSearchResponse> {
         return GraphqlUseCase(graphqlRepository)
     }
-
-    @ChatSearchScope
-    @Provides
-    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 }

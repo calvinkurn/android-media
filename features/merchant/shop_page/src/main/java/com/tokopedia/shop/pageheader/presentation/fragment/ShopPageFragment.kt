@@ -38,7 +38,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
@@ -105,6 +104,7 @@ import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_FOLLOW
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_UNFOLLOW
+import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.pageheader.presentation.ShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
@@ -416,13 +416,6 @@ class ShopPageFragment :
                 }
                 is Fail -> {
                     onErrorGetShopPageTabData(result.throwable)
-                    val throwable = result.throwable
-                    ShopUtil.logTimberWarning(
-                            "SHOP_PAGE_P1_ERROR",
-                            mapOf("shop_id" to shopId,
-                                    "error_message" to ErrorHandler.getErrorMessage(context, throwable),
-                                    "error_trace" to Log.getStackTraceString(throwable))
-                    )
                 }
             }
             stopMonitoringPltCustomMetric(SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER)
@@ -450,27 +443,6 @@ class ShopPageFragment :
                 }
                 is Fail -> {
                     onErrorGetShopPageHeaderContentData(result.throwable)
-                }
-            }
-        })
-
-        shopViewModel?.shopShareTracker?.observe(owner, Observer {
-            when (it) {
-                is Success -> {
-                    if (!it.data.success) {
-                        ShopUtil.logTimberWarning(
-                                "SHOP_PAGE_SHARING_SEND_GQL_TRACKER_ERROR",
-                                mapOf("shop_id" to shopId,
-                                        "error_message" to it.data.message)
-                        )
-                    }
-                }
-                is Fail -> {
-                    ShopUtil.logTimberWarning(
-                            "SHOP_PAGE_SHARING_SEND_GQL_TRACKER_ERROR",
-                            mapOf("shop_id" to shopId,
-                                    "error_message" to it.throwable.message.orEmpty())
-                    )
                 }
             }
         })
@@ -503,13 +475,6 @@ class ShopPageFragment :
                 is Fail -> {
                     onCompleteSendRequestOpenModerate()
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
-                    ShopUtil.logTimberWarning(
-                            "SHOP_PAGE_REQ_UNMODERATE_ERROR",
-                            mapOf("shop_id" to shopId,
-                                    "error_message" to errorMessage,
-                                    "error_trace" to Log.getStackTraceString(it.throwable)
-                            )
-                    )
                     showToasterShopUnmoderate(errorMessage, Toaster.TYPE_ERROR)
                 }
             }
@@ -527,13 +492,6 @@ class ShopPageFragment :
                 }
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
-                    ShopUtil.logTimberWarning(
-                            "SHOP_PAGE_CHECK_MODERATE_STATUS_ERROR",
-                            mapOf("shop_id" to shopId,
-                                    "error_message" to errorMessage,
-                                    "error_trace" to Log.getStackTraceString(it.throwable)
-                            )
-                    )
                     showToasterShopUnmoderate(errorMessage, Toaster.TYPE_ERROR)
                 }
             }
@@ -928,12 +886,12 @@ class ShopPageFragment :
         context?.let {
             val drawable = ContextCompat.getDrawable(it, R.drawable.ic_cart_menu)
             if (drawable is LayerDrawable) {
-                val countDrawable = CountDrawable(it)
+                val countDrawable = ShopPageCountDrawable(it)
                 val cartCount = cartLocalCacheHandler?.getInt(TOTAL_CART_CACHE_KEY, 0).orZero()
                 countDrawable.setCount(cartCount.toString())
                 drawable.mutate()
                 drawable.setDrawableByLayerId(R.id.ic_cart_count, countDrawable)
-                menu?.findItem(R.id.action_cart)?.icon = drawable
+                menu?.findItem(R.id.menu_action_cart)?.icon = drawable
             }
         }
     }
