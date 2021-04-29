@@ -36,6 +36,5 @@ class AddEditProductPreviewConstants {
         const val ADDRESS_STREET = "addr_street"
         const val LATITUDE = "latitude"
         const val LONGITUDE = "longitude"
-        const val PRODUCT_LIMITATION_START_DATE = "10 Mei 2021"
     }
 }
