@@ -1,6 +1,6 @@
 package com.tokopedia.tokomart.home.domain.mapper
 
-import com.tokopedia.tokomart.home.base.uimodel.BaseHomeUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokomart.home.constant.HomeLayoutType
 import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeAllCategoryUiModel
@@ -14,7 +14,7 @@ object HomeLayoutMapper {
         HomeLayoutType.DYNAMIC_CHANNEL
     )
 
-    fun mapToHomeUiModel(response: List<HomeLayoutResponse>): List<BaseHomeUiModel> {
+    fun mapToHomeUiModel(response: List<HomeLayoutResponse>): List<HomeLayoutUiModel> {
         return response.filter { SUPPORTED_TYPE.contains(it.type) }.map {
             when(it.type) {
                 HomeLayoutType.ALL_CATEGORY -> HomeAllCategoryUiModel(it.id, it.title)
