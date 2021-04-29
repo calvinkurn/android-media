@@ -48,10 +48,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
         private const val TOGGLE_OFF = "toggle_off"
         private const val AUTO_ADS_DISABLED = 111
-        private const val MANUAL = 3
         private const val AUTO = 4
-        private const val NO_ADS = 2
-        private const val NO_PRODUCTS = 1
 
         fun newInstance(): AdCreationChooserFragment {
             val args = Bundle()
