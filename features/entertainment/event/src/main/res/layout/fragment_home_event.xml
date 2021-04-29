@@ -10,19 +10,19 @@
         android:background="@color/Unify_N0">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/toolbar_home"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            app:elevation="@dimen/unify_space_0"
             android:elevation="@dimen/unify_space_0"
             app:contentInsetLeft="@dimen/unify_space_0"
             app:contentInsetStart="@dimen/unify_space_0"
             app:contentInsetStartWithNavigation="@dimen/unify_space_0"
+            app:elevation="@dimen/unify_space_0"
             app:subtitleTextAppearance="?subtitleTextAppearance"
             app:titleTextAppearance="?titleTextAppearance" />
 
         <com.tokopedia.unifycomponents.SearchBarUnify
-            android:id="@+id/txt_search"
+            android:id="@+id/txt_search_home"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
@@ -37,9 +37,23 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
-        android:id="@+id/parent_view"
+        android:layout_marginTop="@dimen/dimen_dp_110"
+        android:id="@+id/event_home_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:background="@color/Unify_N0">
 
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout_home"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_home"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="true" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
