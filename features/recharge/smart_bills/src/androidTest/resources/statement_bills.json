@@ -1,7 +1,7 @@
 [
   {
     "data": {
-      "rechargeStatementBills": {
+      "rechargeSBMList": {
         "total": 949600,
         "totalText": "Rp 949.600",
         "month": 12,
@@ -24,64 +24,64 @@
             "percentage": 8.424599647521973
           }
         ],
-        "Sections": [
+        "sections": [
           {
-            "Title": "Pilih Tagihan",
-            "Type": 2,
-            "Text": "",
-            "Bills": [
+            "title": "Pilih Tagihan",
+            "type": 2,
+            "text": "",
+            "bills": [
               {
-                "Index": 0,
+                "index": 0,
                 "UUID": "uuid_sbm_8940072_31_0877171717711",
-                "ProductID": 1976,
-                "ProductName": "ATB BATAM",
-                "CategoryID": 5,
-                "CategoryName": "Air PDAM",
-                "OperatorID": 623,
-                "OperatorName": "ATB BATAM",
-                "ClientNumber": "13111516111",
-                "Amount": 102500,
-                "AmountText": "Rp 102.500",
-                "IconURL": "https://ecs7.tokopedia.net/img/recharge/operator/pdamatb.png",
-                "Date": "",
-                "DateText": "",
-                "Disabled": false,
-                "DisabledText": "",
-                "CheckoutFields": [
+                "productID": 1976,
+                "productName": "ATB BATAM",
+                "categoryID": 5,
+                "categoryName": "Air PDAM",
+                "operatorID": 623,
+                "operatorName": "ATB BATAM",
+                "clientNumber": "13111516111",
+                "amount": 102500,
+                "amountText": "Rp 102.500",
+                "iconURL": "https://ecs7.tokopedia.net/img/recharge/operator/pdamatb.png",
+                "date": "",
+                "dateText": "",
+                "disabled": false,
+                "disabledText": "",
+                "checkoutFields": [
                   {
-                    "Name": "product_id",
-                    "Value": "1976"
+                    "name": "product_id",
+                    "value": "1976"
                   },
                   {
-                    "Name": "client_number",
-                    "Value": "13111516111"
+                    "name": "client_number",
+                    "value": "13111516111"
                   }
                 ],
-                "BillName": "",
-                "IsChecked": false
+                "billName": "",
+                "isChecked": false
               },
               {
-                "Index": 1,
+                "index": 1,
                 "UUID": "uuid_sbm_8940072_938_081319695557",
-                "Notables": "",
-                "IsSubscribed": false,
-                "ProductID": 938,
-                "ProductName": "Rp 15.000",
-                "CategoryID": 48,
-                "CategoryName": "OVO",
-                "OperatorID": 464,
-                "OperatorName": "OVO",
-                "ClientNumber": "081319695557",
-                "Amount": 15000,
-                "AmountText": "Rp 15.000",
-                "IconURL": "https://ecs7.tokopedia.net/img/recharge/operator/uob.png",
-                "Date": "",
-                "DateText": "",
-                "Disabled": false,
-                "DisabledText": "",
-                "BillName": "",
-                "IsChecked": false,
-                "DueDate": "",
+                "notables": "",
+                "isSubscribed": false,
+                "productID": 938,
+                "productName": "Rp 15.000",
+                "categoryID": 48,
+                "categoryName": "OVO",
+                "operatorID": 464,
+                "operatorName": "OVO",
+                "clientNumber": "081319695557",
+                "amount": 15000,
+                "amountText": "Rp 15.000",
+                "iconURL": "https://ecs7.tokopedia.net/img/recharge/operator/uob.png",
+                "date": "",
+                "dateText": "",
+                "disabled": false,
+                "disabledText": "",
+                "billName": "",
+                "isChecked": false,
+                "dueDate": "",
                 "DueMessage": {
                   "Type": 0,
                   "Text": ""
@@ -90,14 +90,14 @@
                   "Type": 0,
                   "Text": ""
                 },
-                "CheckoutFields": [
+                "checkoutFields": [
                   {
-                    "Name": "product_id",
-                    "Value": "938"
+                    "name": "product_id",
+                    "value": "938"
                   },
                   {
-                    "Name": "client_number",
-                    "Value": "081319695557"
+                    "name": "client_number",
+                    "value": "081319695557"
                   }
                 ]
               }
@@ -105,39 +105,39 @@
           }
         ,
           {
-            "Title": "Tagihan perlu dibayar",
-            "Type": 3,
-            "Text": "",
-            "Bills": [
+            "title": "Tagihan perlu dibayar",
+            "type": 3,
+            "text": "",
+            "bills": [
               {
-                "Index": 0,
+                "index": 0,
                 "UUID": "uuid_sbm_8940072_31_0877171717712",
-                "ProductID": 1976,
-                "ProductName": "ATB BATA",
-                "CategoryID": 5,
-                "CategoryName": "Air PDA",
-                "OperatorID": 623,
-                "OperatorName": "ATB BATA",
-                "ClientNumber": "1311151611",
-                "Amount": 102500,
-                "AmountText": "Rp 102.501",
-                "IconURL": "https://ecs7.tokopedia.net/img/recharge/operator/pdamatb.png",
-                "Date": "",
-                "DateText": "",
-                "Disabled": false,
-                "DisabledText": "",
-                "CheckoutFields": [
+                "productID": 1976,
+                "productName": "ATB BATA",
+                "categoryID": 5,
+                "categoryName": "Air PDA",
+                "operatorID": 623,
+                "operatorName": "ATB BATA",
+                "clientNumber": "1311151611",
+                "amount": 102500,
+                "amountText": "Rp 102.501",
+                "iconURL": "https://ecs7.tokopedia.net/img/recharge/operator/pdamatb.png",
+                "date": "",
+                "dateText": "",
+                "disabled": false,
+                "disabledText": "",
+                "checkoutFields": [
                   {
-                    "Name": "product_id",
-                    "Value": "1976"
+                    "name": "product_id",
+                    "value": "1976"
                   },
                   {
-                    "Name": "client_number",
-                    "Value": "13111516111"
+                    "name": "client_number",
+                    "value": "13111516111"
                   }
                 ],
-                "BillName": "",
-                "IsChecked": false
+                "billName": "",
+                "isChecked": false
               }
             ]
           }
