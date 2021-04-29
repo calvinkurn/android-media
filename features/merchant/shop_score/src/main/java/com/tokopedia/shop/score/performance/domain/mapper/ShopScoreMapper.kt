@@ -487,10 +487,6 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     desc_first = context?.getString(R.string.desc_shop_score_benefit).orEmpty(),
             ))
             add(ItemFaqUiModel(
-                    title = context?.getString(R.string.title_shop_score_benefit).orEmpty(),
-                    desc_first = context?.getString(R.string.desc_shop_score_benefit).orEmpty(),
-            ))
-            add(ItemFaqUiModel(
                     title = context?.getString(R.string.title_shop_score_calculation).orEmpty(),
                     desc_first = context?.getString(R.string.desc_section_1_shop_score_calculation).orEmpty(),
                     desc_second = context?.getString(R.string.desc_section_2_shop_score_calculation).orEmpty(),
