@@ -1,5 +1,6 @@
 package com.tokopedia.searchbar.navigation_component.icons
 
+import android.net.Uri
 import android.os.Bundle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -40,12 +41,14 @@ object IconList {
     const val ID_NAV_LOTTIE_WISHLIST = 91
     const val ID_NAV_ANIMATED_WISHLIST = 92
 
+    const val SOURCE_INBOX = "review_inbox"
+
     //Image icon
     internal object MessageIcon: IconConfigItem {
         override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_MESSAGE,
-                    applink = ApplinkConst.INBOX,
+                    applink = getInboxApplink(),
                     disableRouteManager = disableRouteManager,
                     nonLoginApplink = ApplinkConst.LOGIN,
                     name = NAME_MESSAGE,
@@ -64,7 +67,7 @@ object IconList {
             return IconToolbar(
                     id = ID_INBOX,
                     imageRes = ID_INBOX,
-                    applink = ApplinkConst.INBOX,
+                    applink = getInboxApplink(),
                     disableRouteManager = disableRouteManager,
                     nonLoginApplink = ApplinkConst.LOGIN,
                     name = NAME_MESSAGE,
@@ -216,6 +219,10 @@ object IconList {
                 onClick.invoke()
             }
         }
+    }
+
+    private fun getInboxApplink(): String {
+        return Uri.parse(ApplinkConst.INBOX).buildUpon().appendQueryParameter(ApplinkConst.Inbox.PARAM_SOURCE, SOURCE_INBOX).build().toString()
     }
 
 }
