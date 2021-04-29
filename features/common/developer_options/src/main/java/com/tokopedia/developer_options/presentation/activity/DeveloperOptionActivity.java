@@ -144,6 +144,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private CheckBox toggleFpmNotif;
     private CheckBox toggleFpmAutoLogFile;
     private CheckBox toggleSellerAppReview;
+    private CheckBox toggleLeakCanary;
 
     private AppCompatEditText ipGroupChat;
     private View saveIpGroupChat;
@@ -278,6 +279,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleFpmNotif = findViewById(R.id.toggle_fpm_notif);
         toggleFpmAutoLogFile = findViewById(R.id.toggle_fpm_auto_file_log);
         toggleSellerAppReview = findViewById(R.id.toggle_seller_app_review);
+        toggleLeakCanary = findViewById(R.id.toggle_leak_canary);
 
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
@@ -697,6 +699,15 @@ public class DeveloperOptionActivity extends BaseActivity {
             new FakeResponseActivityProvider().startActivity(this);
         });
 
+        toggleLeakCanary.setChecked(getLeakCanaryToggleValue());
+        toggleLeakCanary.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            getSharedPreferences("app_leakcanary_toggle", MODE_PRIVATE).edit().putBoolean("leakcanary_toggle", isChecked).apply();
+            Toast.makeText(DeveloperOptionActivity.this, "Please restart app!", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private boolean getLeakCanaryToggleValue() {
+        return getSharedPreferences("app_leakcanary_toggle", MODE_PRIVATE).getBoolean("leakcanary_toggle", false);
     }
 
     public Object getOrNull(String[] list, int index) {

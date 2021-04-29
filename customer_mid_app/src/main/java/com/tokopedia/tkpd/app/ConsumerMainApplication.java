@@ -420,11 +420,16 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         devMonitoring.initANRWatcher();
         devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
         devMonitoring.initBlockCanary();
+        devMonitoring.initLeakCanary(getLeakCanaryToggleValue());
 
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
         getAmplificationPushData();
         return true;
+    }
+
+    private boolean getLeakCanaryToggleValue() {
+        return getSharedPreferences("app_leakcanary_toggle", MODE_PRIVATE).getBoolean("leakcanary_toggle", false);
     }
 
     private void initLogManager() {
