@@ -23,20 +23,22 @@ object DigitalCheckoutTrackingConst {
         const val CLICK_CANCEL_APPLY_COUPON = "click x on ticker"
         const val VIEW_CHECKOUT = "view checkout"
         const val CLICK_PROCEED_PAYMENT = "click proceed to payment"
+        const val CLICK_PROCEED_PAYMENT_CROSSELL = "click proceed to payment crossell"
         const val CLICK_PROCEED_PAYMENT_TEBUS_MURAH = "click proceed to payment - tebus murah"
         const val CLICK_PROMO = "click promo button"
         const val CLICK_USE_COUPON = "click gunakan kode promo atau kupon"
 
         const val TICK_AUTODEBIT = "tick auto debit"
-        const val TICK_CROSSSELL = "tick cross sell"
-        const val TICK_PROTECTION = "tick protection"
+        const val TICK_CROSSSELL = "click crossell ticker"
+        const val UNTICK_CROSSSELL = "uncheck crossell ticker"
         const val UNTICK_AUTODEBIT = "untick auto debit"
-        const val UNTICK_CROSSSELL = "untick cross sell"
-        const val UNTICK_PROTECTION = "untick protection"
 
         const val IMPRESSION_TEBUS_MURAH_ICON = "impression tebus murah icon"
         const val CLICK_TEBUS_MURAH_ICON = "click tebus murah icon"
         const val UNCHECK_TEBUS_MURAH_ICON = "uncheck tebus murah icon"
+
+
+        const val IMPRESSION_CROSSELL_ICON = "impression crossell icon"
     }
 
     object Label {
@@ -61,6 +63,7 @@ object DigitalCheckoutTrackingConst {
         const val PROMO = "no promo"
 
         const val NONE = "none"
+        const val CROSSELL_CART_TYPE = "crossell icon"
     }
 
     object Misc {

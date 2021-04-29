@@ -328,6 +328,8 @@ class DigitalCartViewModel @Inject constructor(
                             fintech.values.forEach {
                                 if (it.info.iconUrl.isNotEmpty()) {
                                     analytics.eventProceedCheckoutTebusMurah(it, cartDigitalInfoData.attributes.categoryName, userSession.userId)
+                                } else {
+                                    analytics.eventProceedCheckoutCrossell(it, cartDigitalInfoData.attributes.categoryName, userSession.userId)
                                 }
                             }
                         }
