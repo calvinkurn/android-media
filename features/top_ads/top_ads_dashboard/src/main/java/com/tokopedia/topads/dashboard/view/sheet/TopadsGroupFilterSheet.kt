@@ -100,14 +100,14 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
     }
 
     fun removeStatusFilter() {
-
-        view?.status?.visibility = View.GONE
-        view?.status_title?.visibility = View.GONE
-
+        dialog.let {
+            view?.status?.visibility = View.GONE
+            view?.status_title?.visibility = View.GONE
+        }
     }
 
     fun getSelectedSortId(): String {
-        return when (view?.sortFilter?.checkedRadioButtonId) {
+        return when (dialog?.sortFilter?.checkedRadioButtonId) {
             R.id.filter1 -> list[0]
             R.id.filter2 -> list[1]
             R.id.filter3 -> list[2]
