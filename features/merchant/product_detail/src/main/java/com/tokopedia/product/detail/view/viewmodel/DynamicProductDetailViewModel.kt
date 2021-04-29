@@ -279,10 +279,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID ?: "")
     }
 
-    fun getReExclusiveData(): RestrictionData? {
-        return p2Data.value?.restrictionInfo?.restrictionData?.firstOrNull { it.productId == getDynamicProductInfoP1?.basic?.productID }
-    }
-
     fun updateLastAction(talkLastAction: DynamicProductDetailTalkLastAction) {
         this.talkLastAction = talkLastAction
     }
