@@ -56,6 +56,7 @@ import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinde
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 import javax.inject.Inject
 
@@ -68,6 +69,7 @@ typealias SectionItemBinder = SectionItemViewBinder<Any, RecyclerView.ViewHolder
 class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener, TopSectionVH.CardRuntimeHeightListener {
     private var mContainerMain: ViewFlipper? = null
     private var mPagerPromos: RecyclerView? = null
+    private var persistentAdsData: PersistentAdsData? = null
 
     @Inject
     lateinit var viewFactory: ViewModelFactory
@@ -87,9 +89,12 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private val viewBinders = mutableMapOf<String, SectionItemBinder>()
     private val sectionList: ArrayList<Any> = ArrayList()
     lateinit var sectionListViewBinder: SectionHorizontalViewBinder
+    lateinit var mUsersession: UserSession
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
+        mUsersession = UserSession(context)
+        persistentAdsData = context?.let { PersistentAdsData(it) }
         super.onCreate(savedInstanceState)
     }
 
@@ -441,6 +446,13 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 mPagerPromos?.adapter = adapter
             }
         }
+
+        AnalyticsTrackerUtil.sendEvent(mUsersession.userId,
+                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT_IRIS,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                AnalyticsTrackerUtil.ActionKeys.VIEW_HOMEPAGE,
+                "", AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
+                AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE)
     }
 
     override fun onResume() {
@@ -454,6 +466,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         mPagerPromos?.adapter = null
         mPagerPromos?.layoutManager = null
         adapter = null
+        persistentAdsData?.deletePreference()
+        persistentAdsData = null
     }
 
     override fun showLoading() {

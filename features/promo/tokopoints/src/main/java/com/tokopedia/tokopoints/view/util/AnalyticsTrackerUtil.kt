@@ -28,6 +28,21 @@ object AnalyticsTrackerUtil {
     }
 
     @JvmStatic
+    fun sendEvent(userId: String, event: String, category: String,
+                  action: String, label: String, businessUnit: String, currentSite: String) {
+        val eventDataLayer = HashMap<String, Any>()
+        eventDataLayer[EventKeys.EVENT] = event
+        eventDataLayer[EventKeys.EVENT_CATEGORY] = category
+        eventDataLayer[EventKeys.EVENT_ACTION] = action
+        eventDataLayer[EventKeys.EVENT_LABEL] = label
+        eventDataLayer[EventKeys.EVENT_BUSINESSUNIT] = businessUnit
+        eventDataLayer[EventKeys.EVENT_CURRENTSITE] = currentSite
+        eventDataLayer[EcommerceKeys.USERID] = userId
+
+        getTracker().sendGeneralEvent(eventDataLayer)
+    }
+
+    @JvmStatic
     fun sendEvent(event: String, category: String,
                   action: String, label: String, businessUnit: String, currentSite: String) {
         val eventDataLayer = Bundle()
@@ -99,6 +114,7 @@ object AnalyticsTrackerUtil {
             const val EVENT_LABEL = "eventLabel"
             const val ECOMMERCE = "ecommerce"
             const val EVENT_TOKOPOINT = "eventTokopoint"
+            const val EVENT_TOKOPOINT_IRIS = "viewTokopointIris"
             const val EVENT_VIEW_TOKOPOINT = "eventViewTokopoint"
             const val EVENT_CLICK_COUPON = "clickCoupon"
             const val EVENT_VIEW_COUPON = "viewCoupon"
@@ -179,7 +195,7 @@ object AnalyticsTrackerUtil {
             const val CLICK_COUPON_TITLE = "click coupon title"
             const val CLICK_SHOP_NAME = "click shop name"
             const val CLICK_PRODUCT_CARD = "click product card"
-            const val CLICK_CHIP_FILTER = "click chip filter"
+            const val VIEW_HOMEPAGE = "view homepage"
 
         }
     }
@@ -189,7 +205,7 @@ object AnalyticsTrackerUtil {
             const val POSITION = "position"
             const val NAME = "name"
             const val CREATIVE = "creative"
-            const val ID = "id"
+            const val USERID = "userId"
             const val PROMOTIONS = "promotions"
             const val BUSINESSUNIT = " buyer growth platform"
             const val CURRENTSITE = " tokopediamarketplace"

@@ -122,7 +122,7 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
         }
 
         vh.itemView.setOnClickListener {
-            item?.shopInfo?.id?.let { it1 -> it.context.startActivity(item?.shopInfo?.appLink?.let { it2 -> TransParentActivity.getIntent(it.context, it1, 0 , true, it2) }) }
+            item?.shopInfo?.id?.let { it1 -> it.context.startActivity(item?.shopInfo?.appLink?.let { it2 -> TransParentActivity.getIntent(it.context, it1, 0 , it2) }) }
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE, vh, item?.AdInfo)
 
         }

@@ -43,9 +43,6 @@ class MerchantCouponActivity : BaseSimpleActivity() , HasComponent<TokopointBund
     private fun checkForDeeplink() {
         bundle = intent.extras
         if (bundle == null) bundle = Bundle()
-        if (intent.data != null) {
-            UriUtil.destructiveUriBundle(ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_DETAIL, intent.data, bundle)
-        }
     }
 
     companion object {
