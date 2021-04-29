@@ -266,10 +266,7 @@ class TestMainNavViewModel {
     //user menu section
     @Test
     fun `test when data loaded complete then check account header menu section is available`() {
-        val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        getDefaultClientGeneratorMockValue(clientMenuGenerator)
         viewModel = createViewModel(
-                clientMenuGenerator = clientMenuGenerator
         )
         viewModel.getMainNavData(true)
 
@@ -280,10 +277,7 @@ class TestMainNavViewModel {
 
     @Test
     fun `test when first load init viewmodel data then check data not null`() {
-        val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        getDefaultClientGeneratorMockValue(clientMenuGenerator)
-
-        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel = createViewModel()
         viewModel.setInitialState()
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
@@ -298,11 +292,9 @@ class TestMainNavViewModel {
         val userSession = mockk<UserSessionInterface>()
 
         every { userSession.isLoggedIn() } returns true
-        getDefaultClientGeneratorMockValue(clientMenuGenerator)
         coEvery { getNavOrderUseCase.executeOnBackground() } returns listOf(NavProductOrder())
         coEvery { getPaymentUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
         viewModel = createViewModel(
-                clientMenuGenerator = clientMenuGenerator,
                 getPaymentOrdersNavUseCase = getPaymentUseCase,
                 getUohOrdersNavUseCase = getNavOrderUseCase)
         viewModel.refreshTransactionListData()
