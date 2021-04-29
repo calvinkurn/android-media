@@ -16,7 +16,8 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
                                         private val itemHeaderShopPerformanceListener: ItemHeaderShopPerformanceListener,
                                         private val sectionFaqListener: SectionFaqListener,
                                         private val globalErrorListener: GlobalErrorListener,
-                                        private val periodDetailPerformanceListener: PeriodDetailPerformanceListener
+                                        private val periodDetailPerformanceListener: PeriodDetailPerformanceListener,
+                                        private val cardPotentialPMBenefitListener: CardPotentialPMBenefitListener
 ) : BaseAdapterTypeFactory(), ShopPerformanceTypeFactory {
 
     override fun type(headerShopPerformanceUiModel: HeaderShopPerformanceUiModel): Int {
@@ -79,7 +80,7 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
             ShopPerformanceShimmerViewHolder.LAYOUT -> ShopPerformanceShimmerViewHolder(parent)
             TransitionPeriodReliefViewHolder.LAYOUT -> TransitionPeriodReliefViewHolder(parent)
             ItemStatusPMViewHolder.LAYOUT -> ItemStatusPMViewHolder(parent, itemStatusPowerMerchantListener)
-            CardPotentialPMBenefitViewHolder.LAYOUT -> CardPotentialPMBenefitViewHolder(parent)
+            CardPotentialPMBenefitViewHolder.LAYOUT -> CardPotentialPMBenefitViewHolder(parent, cardPotentialPMBenefitListener)
             ItemStatusRMViewHolder.LAYOUT -> ItemStatusRMViewHolder(parent, itemPotentialPowerMerchantListener)
             SectionShopFeatureRecommendationViewHolder.LAYOUT -> SectionShopFeatureRecommendationViewHolder(parent, itemRecommendationFeatureListener)
             ItemTimerNewSellerViewHolder.LAYOUT -> ItemTimerNewSellerViewHolder(parent, itemTimerNewSellerListener)
