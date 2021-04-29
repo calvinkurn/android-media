@@ -103,7 +103,6 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LONGITUDE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.POSTAL_CODE
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_LIMITATION_START_DATE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_STATUS_ACTIVE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHOP_ID
@@ -1636,7 +1635,8 @@ class AddEditProductPreviewFragment :
 
     private fun setupProductLimitationViews() {
         if (!RollenceUtil.getProductLimitationRollence()) return
-        val htmlDescription = getString(R.string.label_product_limitation_ticker, PRODUCT_LIMITATION_START_DATE)
+        val productLimitStartDate = getString(R.string.label_product_limitation_start_date)
+        val htmlDescription = getString(R.string.label_product_limitation_ticker, productLimitStartDate)
         productLimitationTicker?.apply {
             setHtmlDescription(htmlDescription)
             showWithCondition((isAdding() && !isDrafting()) || viewModel.isDuplicate)
