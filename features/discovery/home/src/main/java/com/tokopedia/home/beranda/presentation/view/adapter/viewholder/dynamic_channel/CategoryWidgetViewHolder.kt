@@ -15,6 +15,7 @@ import com.tokopedia.home.beranda.helper.glide.FPM_CATEGORY_WIDGET_ITEM
 import com.tokopedia.home.beranda.helper.glide.loadImageRounded
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CategoryWidgetSpacingItemDecoration
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.home_dc_category_widget.view.*
 import java.util.*
@@ -29,6 +30,14 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         val recyclerView = itemView.recycleList
+        itemView.addOnImpressionListener(channel) {
+            categoryListener.putEEToIris(
+                        CategoryWidgetTracking.getCategoryWidgetBannerImpression(
+                        channel.grids.toList(),
+                        categoryListener.userId,
+                        true,
+                        channel) as HashMap<String, Any>)
+        }
         recyclerView.adapter = CategoryWidgetItemAdapter(channel, categoryListener, adapterPosition)
         recyclerView.layoutManager = GridLayoutManager(
                 view.context,

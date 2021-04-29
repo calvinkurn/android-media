@@ -159,16 +159,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     createRechargeBUWidget(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
-                    createDynamicChannel(
-                            channel,
-                            trackingData = CategoryWidgetTracking.getCategoryWidgetBannerImpression(
-                                    channel.grids.toList(),
-                                    userSessionInterface?.userId ?: "",
-                                    false,
-                                    channel
-                            ),
-                            isCombined = false
-                    )
+                    createDynamicChannel(channel)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
                     createTopAdsBannerModel(channel)
