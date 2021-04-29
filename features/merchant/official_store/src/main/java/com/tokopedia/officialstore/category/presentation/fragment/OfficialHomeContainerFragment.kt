@@ -239,6 +239,16 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         }
     }
 
+    fun selectTabByCategoryId(categoryId: String) {
+        val position = tabAdapter.getPositionBasedOnCategoryId(categoryId)
+        if (position != -1) {
+            val tab = tabLayout?.getTabAt(position)
+            tab?.let {
+                it.select()
+            }
+        }
+    }
+
     private fun convertToCategoriesTabItem(data: List<Category>): List<OfficialCategoriesTab.CategoriesItemTab> {
         val tabItemDataList = ArrayList<OfficialCategoriesTab.CategoriesItemTab>()
         data.forEach {
