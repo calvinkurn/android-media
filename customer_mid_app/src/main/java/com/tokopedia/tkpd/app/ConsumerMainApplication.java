@@ -61,6 +61,7 @@ import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.ToasterActivityLifecycle;
 import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.notifications.inApp.CMInAppManager;
+import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -125,6 +126,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_customerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_new_relic";
+    private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -318,6 +320,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
+        registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
     }
 
 
@@ -487,6 +490,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             @Override
             public String getUserId() {
                 return getUserSession().getUserId();
+            }
+
+            @NotNull
+            @Override
+            public String getParserScalyr() {
+                return PARSER_SCALYR_MA;
             }
 
             @NotNull

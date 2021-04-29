@@ -613,17 +613,18 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        activateUserUseCase.cancelJobs()
+    fun clearBackgroundTask() {
         registerRequestUseCase.cancelJobs()
-        registerRequestUseCaseV2.cancelJobs()
         registerCheckUseCase.cancelJobs()
         tickerInfoUseCase.unsubscribe()
         discoverUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
-        dynamicBannerUseCase.cancelJobs()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        clearBackgroundTask()
     }
 
     companion object {

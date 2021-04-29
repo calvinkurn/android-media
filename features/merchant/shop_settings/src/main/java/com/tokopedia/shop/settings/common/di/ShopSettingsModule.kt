@@ -13,8 +13,6 @@ import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -50,11 +48,5 @@ class ShopSettingsModule {
     @ShopSettingsScope
     fun provideGqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
-    }
-
-    @Provides
-    @ShopSettingsScope
-    fun provideCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
     }
 }

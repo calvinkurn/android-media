@@ -8,8 +8,6 @@ import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.flight.orderlist.data.FlightOrderApi
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource
@@ -159,10 +157,6 @@ class FlightOrderModule {
     @Provides
     fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
             MultiRequestGraphqlUseCase(graphqlRepository)
-
-    @FlightOrderScope
-    @Provides
-    fun provideDispatcherProvider(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     companion object {
         private const val NET_READ_TIMEOUT = 30

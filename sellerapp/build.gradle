@@ -5,6 +5,7 @@ if (project.hasProperty("auto-patch")) {
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'robust'
 apply plugin: 'io.hansel.preprocessor'
+apply plugin: 'newrelic'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 apply from: '../tools/set_debug_tools.gradle'
@@ -297,6 +298,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
+    implementation rootProject.ext.miscDependencies.newRelic
 
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.debugToolsDependencies.chuck
@@ -311,6 +313,8 @@ dependencies {
     } else {
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
+
+    implementation project(rootProject.ext.libraries.pageInfoPusher)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.preReleaseInspector)

@@ -10,6 +10,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class CatalogPreferredProductsBottomSheet : BottomSheetUnify() {
 
     private var catalogId: String = ""
+    private var catalogUrl: String = ""
 
     init {
         isDragable = true
@@ -35,19 +36,22 @@ class CatalogPreferredProductsBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
+            catalogUrl = requireArguments().getString(ARG_EXTRA_CATALOG_URL, "")
         }
         childFragmentManager.beginTransaction().replace(R.id.frame_content,
-                CatalogDetailProductListingFragment.newInstance(catalogId)).commit()
+                CatalogDetailProductListingFragment.newInstance(catalogId,catalogUrl)).commit()
 
     }
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
+        private const val ARG_EXTRA_CATALOG_URL = "ARG_EXTRA_CATALOG_URL"
 
-        fun newInstance(catalogId : String): CatalogPreferredProductsBottomSheet {
+        fun newInstance(catalogId : String, catalogUrl : String?): CatalogPreferredProductsBottomSheet {
             return CatalogPreferredProductsBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(ARG_EXTRA_CATALOG_ID, catalogId)
+                    putString(ARG_EXTRA_CATALOG_URL, catalogUrl)
                 }
             }
         }

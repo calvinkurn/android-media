@@ -30,6 +30,7 @@ import com.tokopedia.settingnotif.usersetting.view.activity.ParentActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactoryImpl
+import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.listener.ActivationItemListener
 import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
@@ -105,8 +106,17 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
             updatedSettingIds: List<Map<String, Any>>
     ) {
         if (!isRequestData) return
+
         settingViewModel.requestUpdateUserSetting(notificationType, updatedSettingIds)
-        settingViewModel.requestUpdateMoengageUserSetting(updatedSettingIds)
+
+        for (setting in updatedSettingIds) {
+            val name = setting[SettingViewHolder.PARAM_SETTING_KEY]
+            val value = setting[SettingViewHolder.PARAM_SETTING_VALUE]
+
+            if (name !is String || value !is Boolean) return
+
+            settingViewModel.requestUpdateMoengageUserSetting(name, value)
+        }
     }
 
     override fun loadData(page: Int) {

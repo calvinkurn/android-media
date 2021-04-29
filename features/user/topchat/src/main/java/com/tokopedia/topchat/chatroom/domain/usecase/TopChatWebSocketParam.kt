@@ -21,7 +21,8 @@ object TopChatWebSocketParam {
             thisMessageId: String,
             messageText: String,
             startTime: String,
-            attachments: List<SendablePreview>
+            attachments: List<SendablePreview>,
+            intention: String? = null
     ): String {
         val json = JsonObject().apply {
             addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
@@ -32,14 +33,17 @@ object TopChatWebSocketParam {
             addProperty("source", "inbox")
             addProperty("start_time", startTime)
             if (attachments.isNotEmpty()) {
-                add("extras", createProductExtrasAttachments(attachments))
+                add("extras", createProductExtrasAttachments(attachments, intention))
             }
         }
         json.add("data", data)
         return json.toString()
     }
 
-    private fun createProductExtrasAttachments(attachments: List<SendablePreview>): JsonElement {
+    private fun createProductExtrasAttachments(
+            attachments: List<SendablePreview>,
+            intention: String?
+    ): JsonElement {
         val extrasProducts = JsonArray()
         attachments.forEach { attachment ->
             if (attachment is SendableProductPreview) {
@@ -52,6 +56,9 @@ object TopChatWebSocketParam {
         }
         return JsonObject().apply {
             add("extras_product", extrasProducts)
+            intention?.let {
+                addProperty("intent", it)
+            }
         }
     }
 
