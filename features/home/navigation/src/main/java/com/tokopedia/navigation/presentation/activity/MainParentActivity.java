@@ -170,6 +170,9 @@ public class MainParentActivity extends BaseActivity implements
     private static final String ROLLANCE_VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD;
     private static final String ROLLANCE_VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
 
+
+    private static final String OS_KEY_MOBILE = "mobile";
+
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
     @Inject
@@ -383,7 +386,7 @@ public class MainParentActivity extends BaseActivity implements
         if (fragment != null) {
             this.currentFragment = fragment;
             if (fragment instanceof OfficialHomeContainerFragment) {
-                if (getIntent().getExtras().getString(OfficialHomeContainerFragment.KEY_CATEGORY).equals("mobile")) {
+                if (getIntent().getExtras().getString(OfficialHomeContainerFragment.KEY_CATEGORY).equals(OS_KEY_MOBILE)) {
                     ((OfficialHomeContainerFragment) fragment).selectFirstTab();
                 } else {
                     String categoryId = getIntent().getExtras().getString(OfficialHomeContainerFragment.KEY_CATEGORY);
