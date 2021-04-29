@@ -8,6 +8,6 @@ open class InsightDailyBudgetModel(
         var groupId: String = "",
         var groupName: String = "",
         var dailySuggestedPrice: Double = 0.0,
-        var potentialClick: Int = 0,
+        var potentialClick: Long = 0,
         var priceDaily: Double = 0.0
 ) :Parcelable

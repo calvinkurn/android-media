@@ -16,7 +16,6 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
-import com.tokopedia.topads.common.data.model.InsightDailyBudgetModel
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.dashboard.R
@@ -38,7 +37,6 @@ import javax.inject.Inject
  * Created by Pika on 20/7/20.
  */
 
-const val VIEW_DAILY_RECOMMENDATION_PRODUKS = "view - rekomendasi anggaran - grup iklan"
 const val CLICK_TERAPKAN = "click - terapkan"
 class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
@@ -153,8 +151,8 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
     private fun onButtonClick(pos: Int) {
         currentPosition = pos
-        topAdsDashboardPresenter.getGroupInfo(resources, adapter.items[pos].groupId.toString(), ::onSuccessGroupInfo)
-        val eventLabel = "${adapter.items[pos].groupId} - ${adapter.items[pos].suggestedPriceDaily} - ${calculatePotentialClick(adapter.items)} - ${adapter.items[pos].priceDaily}"
+        topAdsDashboardPresenter.getGroupInfo(resources, adapter.items[pos].groupId, ::onSuccessGroupInfo)
+        val eventLabel = "${adapter.items[pos].groupId} - ${adapter.items[pos].suggestedPriceDaily} - ${adapter.items[pos].setPotensiKlik} - ${adapter.items[pos].priceDaily}"
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_TERAPKAN, eventLabel, userSession.userId)
     }
 

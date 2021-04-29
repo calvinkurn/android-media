@@ -360,7 +360,7 @@ class TopAdsCreateAnalytics {
             list.add(mapOf(
                     "id" to it.groupId,
                     "name" to it.groupName,
-                    "creative" to "${it.dailySuggestedPrice}-${it.potentialClick}",
+                    "creative" to "${it.dailySuggestedPrice} - ${it.potentialClick}",
                     "position" to index + 1))
         }
         return list
@@ -372,7 +372,7 @@ class TopAdsCreateAnalytics {
             list.add(mapOf(
                     "id" to it.productid,
                     "name" to it.productname,
-                    "creative" to "${it.searchCount}-${it.serachPercentage}-${it.recommendedBid}",
+                    "creative" to "${it.searchCount} - ${it.serachPercentage} - ${it.recommendedBid}",
                     "position" to index + 1))
         }
         return list

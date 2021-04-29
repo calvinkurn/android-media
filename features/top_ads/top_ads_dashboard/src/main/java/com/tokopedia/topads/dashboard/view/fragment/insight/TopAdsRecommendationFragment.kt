@@ -42,6 +42,7 @@ const val CLICK_PRODUK_BERPOTENSI = "click - produk berpotensi"
 const val CLICK_ANGARRAN_HARIAN = "click - anggaran harian"
 const val VIEW_RECOMMENDED_PRODUK = "view - rekomendasi produk"
 const val CLICK_IKLANKAN = "click - iklankan"
+const val VIEW_DAILY_RECOMMENDATION_PRODUKS = "view - rekomendasi anggaran - grup iklan"
 class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     private var productRecommendData: ProductRecommendationData? = null
@@ -164,7 +165,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
                             groupId = it.groupId
                             groupName = it.groupName
                             dailySuggestedPrice = it.suggestedPriceDaily
-                            potentialClick = calculatePotentialClick(dailyBudgetRecommendData!!.data)
+                            potentialClick = it.setPotensiKlik
                         }
                         dailyRecommendationModel.add(dailyBudgetModel)
                     }
@@ -180,18 +181,6 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         })
         rvTabInsight.adapter = topAdsInsightTabAdapter
         view_pager.offscreenPageLimit = TopAdsDashboardConstant.OFFSCREEN_PAGE_LIMIT
-    }
-
-    private fun calculatePotentialClick(data: List<DataBudget>): Int {
-        var totalPotentialClick = 0
-        data.forEach {
-            totalPotentialClick += if (it.setCurrentBid >= it.priceDaily) {
-                ((it.setCurrentBid - it.priceDaily) / it.avgBid.toDouble()).toInt()
-            } else {
-                ((it.suggestedPriceDaily - it.priceDaily) / it.avgBid.toDouble()).toInt()
-            }
-        }
-        return totalPotentialClick
     }
 
     private fun renderViewPager() {

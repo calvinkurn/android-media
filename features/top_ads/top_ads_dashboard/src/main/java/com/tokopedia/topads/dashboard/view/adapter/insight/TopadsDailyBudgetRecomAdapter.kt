@@ -50,6 +50,7 @@ class TopadsDailyBudgetRecomAdapter(private val onBudgetClicked: ((pos: Int) -> 
             holder.view.recom_budget.text = recommendationBid
             holder.view.editBudget?.textFieldInput?.setText(convertToCurrency(suggestedPriceDaily.toLong()))
             setCurrentBid = suggestedPriceDaily
+            setPotensiKlik = calculatePotentialClick(holder).toLong()
             holder.view.potentialClick.text = String.format(holder.view.context.getString(R.string.topads_dash_potential_click_text), calculatePotentialClick(holder).thousandFormatted())
             holder.view.buttonSubmitEdit.setOnClickListener {
                 holder.view.buttonSubmitEdit.isLoading = true
