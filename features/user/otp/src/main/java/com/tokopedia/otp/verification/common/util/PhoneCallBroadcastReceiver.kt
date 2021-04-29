@@ -55,6 +55,7 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
             telephony = context?.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         } catch (e: Exception) {
              e.printStackTrace()
+            listener?.onErrorPhoneCallReceiverMessage("PhoneCall - set telephony : ${e.printStackTrace()}")
         }
     }
 
@@ -67,7 +68,7 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
             }, PhoneStateListener.LISTEN_CALL_STATE)
         } catch (e: Exception) {
             sendLogTracker("error [PhoneCallBroadcastReceiver#onReceive(); msg=$e]")
-            listener?.onErrorPhoneCallReceiverMessage("PhoneCall : ${e.printStackTrace()}")
+            listener?.onErrorPhoneCallReceiverMessage("PhoneCall on call changed : ${e.printStackTrace()}")
             e.printStackTrace()
         }
     }
