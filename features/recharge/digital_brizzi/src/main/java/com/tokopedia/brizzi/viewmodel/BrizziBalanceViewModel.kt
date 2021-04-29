@@ -82,7 +82,6 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
                         balanceInquiry.attributesEmoneyInquiry?.let { attributes ->
                             if (attributes.pendingBalance == 0) {
-                                Timber.d("BRIZZI#SUCCESS_GET_BALANCE#${it.cardNumber}, ${attributes.lastBalance.toDouble()}")
                                 emoneyInquiry.postValue(balanceInquiry)
                             } else {
                                 writeBalanceToCard(intent, rawLogBrizzi, brizziInstance)
@@ -152,7 +151,6 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
                 if (inquiryIdBrizzi > -1) {
                     balanceInquiry.attributesEmoneyInquiry?.let {
-                        Timber.d("BRIZZI#SUCCESS_UPDATE_BALANCE#${it.cardNumber}, ${it.lastBalance.toDouble()}")
                         logBrizzi(inquiryIdBrizzi, it.cardNumber, logRawQuery, "success", it.lastBalance.toDouble())
                     }
                 }
