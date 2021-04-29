@@ -19,8 +19,8 @@ import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState
 import com.tokopedia.troubleshooter.notification.ui.state.StatusState
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.troubleshooter.notification.util.isEqualsTo
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -289,10 +289,6 @@ class TroubleshootViewModelTest {
         viewModel.removeTickers()
         viewModel.tickers(TickerItemUIView(), StatusState.Success)
         assert(viewModel.tickerItems.isNotEmpty())
-    }
-
-    @Test fun `it should do notification setting correctly`() {
-
     }
 
 }
