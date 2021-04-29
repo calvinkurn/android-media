@@ -469,7 +469,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         val positionPM = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
         val positionRMNonEligible = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMBenefitUiModel }
 
-        var position = -1
+        var position = RecyclerView.NO_POSITION
 
         when {
             positionPMPro != RecyclerView.NO_POSITION -> {
