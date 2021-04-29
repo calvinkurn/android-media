@@ -2,4 +2,24 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.tokomart.home">
 
+    <application>
+        <activity
+            android:name=".presentation.activity.TokoMartHomeActivity"
+            android:exported="true"
+            android:label="@string/title_tokomart"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokomart"
+                    android:path="@string/path_tokomart_home"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>
