@@ -744,7 +744,8 @@ class OfficialStoreTracking(context: Context) {
             channel: ChannelModel,
             productItem: ChannelGrid,
             productPosition: String,
-            isLogin: Boolean
+            isLogin: Boolean,
+            userId: String
     ) {
         val valueDynamicMix = when (channel.layout) {
             DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
@@ -759,6 +760,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_LABEL, channel.id + " - " + categoryName,
                 FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
                 FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT,
+                USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_IMPRESSIONS, DataLayer.listOf(

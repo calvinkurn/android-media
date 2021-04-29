@@ -57,12 +57,4 @@ class OfficialHomeContainerAdapter(
         registeredFragment.remove(position)
         super.destroyItem(container, position, `object`)
     }
-
-    fun getPositionBasedOnCategoryId(categoryId: String): Int {
-        return try {
-            categoryTabPosMap.getValue(categoryId)
-        } catch (e: Exception) {
-            -1
-        }
-    }
 }
