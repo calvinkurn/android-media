@@ -41,7 +41,7 @@ object IconList {
     const val ID_NAV_LOTTIE_WISHLIST = 91
     const val ID_NAV_ANIMATED_WISHLIST = 92
 
-    const val SOURCE_INBOX = "review_inbox"
+    const val SOURCE_INBOX = "review inbox"
 
     //Image icon
     internal object MessageIcon: IconConfigItem {
