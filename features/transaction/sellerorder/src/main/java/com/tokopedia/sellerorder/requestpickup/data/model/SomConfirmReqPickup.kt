@@ -118,30 +118,21 @@ data class SomConfirmReqPickup (
                             @Parcelize
                             data class ScheduleTime(
                                     @SerializedName("today")
-                                    val today: List<Today> = listOf(),
+                                    val today: List<ScheduleResponse> = listOf(),
                                     @SerializedName("tomorrow")
-                                    val tomorrow: List<Tomorrow> = listOf()
+                                    val tomorrow: List<ScheduleResponse> = listOf()
                             ) : Parcelable {
 
                                 @Parcelize
-                                data class Today(
+                                data class ScheduleResponse(
                                         @SerializedName("key")
-                                        val keyToday: String = "",
+                                        val key: String = "",
                                         @SerializedName("start")
-                                        val startToday: String = "",
+                                        val start: String = "",
                                         @SerializedName("end")
-                                        val endToday : String = ""
+                                        val end : String = ""
                                 ): Parcelable
 
-                                @Parcelize
-                                data class Tomorrow(
-                                        @SerializedName("key")
-                                        val keyTomorrow: String = "",
-                                        @SerializedName("start")
-                                        val startTomorrow: String = "",
-                                        @SerializedName("end")
-                                        val endTomorrow : String = ""
-                                ): Parcelable
                             }
                     }
                 }

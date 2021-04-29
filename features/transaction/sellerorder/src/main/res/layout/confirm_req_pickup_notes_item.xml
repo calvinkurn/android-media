@@ -7,15 +7,14 @@
     android:layout_marginLeft="@dimen/dp_10"
     android:layout_marginEnd="@dimen/dp_10"
     android:layout_marginRight="@dimen/dp_10"
-    android:layout_marginTop="@dimen/dp_20">
+    android:layout_marginTop="@dimen/dp_8">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_index"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="1"
-        app:typographyType="heading_5"
-        app:typographyWeight="bold"/>
+        app:typographyType="body_2"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_notes"

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.requestpickup.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -42,14 +43,17 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var currOrderId = ""
+    private var currSchedulePickupKey = ""
     private var currSchedulePickupTime = ""
     private var confirmReqPickupResponse = SomConfirmReqPickup.Data.MpLogisticPreShipInfo()
     private var processReqPickupResponse = SomProcessReqPickup.Data.MpLogisticRequestPickup()
     private lateinit var confirmReqPickupCourierNotesAdapter: SomConfirmReqPickupCourierNotesAdapter
 
     private var bottomSheetSchedulePickup: BottomSheetUnify? = null
-    private var bottomSheetSchedulePickupAdapter = SomConfirmSchedulePickupAdapter(this)
-    private var rvSchedulePickup: RecyclerView? = null
+    private var bottomSheetSchedulePickupTodayAdapter = SomConfirmSchedulePickupAdapter(this)
+    private var bottomSheetSchedulePickupTomorrowAdapter = SomConfirmSchedulePickupAdapter(this)
+    private var rvSchedulePickupToday: RecyclerView? = null
+    private var rvSchedulePickupTomorrow: RecyclerView? = null
 
     private val somConfirmRequestPickupViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomConfirmReqPickupViewModel::class.java]
@@ -99,7 +103,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     }
 
     private fun processReqPickup() {
-        val processReqPickupParam = SomProcessReqPickupParam(orderId = currOrderId, schedulePickupTime = currSchedulePickupTime)
+        val processReqPickupParam = SomProcessReqPickupParam(orderId = currOrderId, schedulePickupTime = currSchedulePickupKey)
         somConfirmRequestPickupViewModel.processRequestPickup(GraphqlHelper.loadRawString(resources, R.raw.gql_som_process_req_pickup), processReqPickupParam)
     }
 
@@ -151,7 +155,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                 val htmlCourierCountService = HtmlLinkHelper(it, "${shipper.countText} <b>${shipper.count}</b>")
                 tv_courier_count?.text = htmlCourierCountService.spannedString
             }
-            tv_courier_notes?.text = confirmReqPickupResponse.dataSuccess.detail.orchestraPartner
+            tv_courier_notes?.text = "Oleh kurir: ${confirmReqPickupResponse.dataSuccess.detail.orchestraPartner}"
         }
 
         if (confirmReqPickupResponse.dataSuccess.notes.listNotes.isNotEmpty()) {
@@ -173,6 +177,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
 
         if (confirmReqPickupResponse.dataSuccess.schedule_time.today.isNotEmpty() || confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow.isNotEmpty()) {
             rl_schedule_pickup?.visibility = View.VISIBLE
+            btn_arrow?.visibility = View.GONE
             pickup_now?.centerText = true
             pickup_schedule?.centerText = true
             tv_schedule?.text = confirmReqPickupResponse.dataSuccess.detail.listShippers[0].note
@@ -183,17 +188,19 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                 btn_arrow?.visibility = View.GONE
                 divider_schedule?.visibility = View.GONE
                 tv_schedule?.text = confirmReqPickupResponse.dataSuccess.detail.listShippers[0].note
-                currSchedulePickupTime = ""
+                currSchedulePickupKey = ""
             }
 
             pickup_schedule?.setOnClickListener {
+                val schedulePickupMapper = SchedulePickupMapper()
                 setActiveChips(pickup_schedule, pickup_now)
                 btn_arrow?.visibility = View.VISIBLE
                 divider_schedule?.visibility = View.VISIBLE
-                currSchedulePickupTime = confirmReqPickupResponse.dataSuccess.schedule_time.today[0].keyToday
+                bottomSheetSchedulePickupTodayAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time.today, "Hari ini"))
+                bottomSheetSchedulePickupTomorrowAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow, "Besok"))
+                currSchedulePickupKey = confirmReqPickupResponse.dataSuccess.schedule_time.today[0].key
+                tv_schedule?.text = currSchedulePickupTime
                 btn_arrow.setOnClickListener {
-                    val schedulePickupMapper = SchedulePickupMapper()
-                    bottomSheetSchedulePickupAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time))
                     openBottomSheetSchedulePickup()
                 }
             }
@@ -227,11 +234,17 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     }
 
     private fun setupChild(child: View) {
-        rvSchedulePickup = child.findViewById(R.id.rv_schedule_pickup)
+        rvSchedulePickupToday = child.findViewById(R.id.rv_today)
+        rvSchedulePickupTomorrow = child.findViewById(R.id.rv_tomorrow)
 
-        rvSchedulePickup?.apply {
+        rvSchedulePickupToday?.apply {
             layoutManager = LinearLayoutManager(this.context)
-            adapter = bottomSheetSchedulePickupAdapter
+            adapter = bottomSheetSchedulePickupTodayAdapter
+        }
+
+        rvSchedulePickupTomorrow?.apply {
+            layoutManager = LinearLayoutManager(this.context)
+            adapter = bottomSheetSchedulePickupTomorrowAdapter
         }
     }
 
@@ -241,13 +254,12 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
         deselected?.chipType = ChipsUnify.TYPE_NORMAL
     }
 
-    override fun onSchedulePickupTodayClicked(today: Today) {
+    @SuppressLint("SetTextI18n")
+    override fun onSchedulePickupClicked(scheduleTime: ScheduleTime, formattedTime: String) {
         bottomSheetSchedulePickup?.dismiss()
-        currSchedulePickupTime = today.keyToday
+        currSchedulePickupKey = scheduleTime.key
+        tv_schedule?.text = "${scheduleTime.day}, $formattedTime"
+        currSchedulePickupTime = "${scheduleTime.day}, $formattedTime"
     }
 
-    override fun onSchedulePickupTomorrowClicked(tomorrow: Tomorrow) {
-        bottomSheetSchedulePickup?.dismiss()
-        currSchedulePickupTime = tomorrow.keyTomorrow
-    }
 }
