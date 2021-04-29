@@ -122,7 +122,8 @@ class PlayLiveStateProcessor(
                 PlayLivePusherState.Error(when (code) {
                     ApsaraLivePusherWrapper.PLAY_PUSHER_ERROR_SYSTEM_ERROR -> PlayLivePusherErrorState.SystemError
                     ApsaraLivePusherWrapper.PLAY_PUSHER_ERROR_NETWORK_POOR -> PlayLivePusherErrorState.NetworkPoor
-                    ApsaraLivePusherWrapper.PLAY_PUSHER_ERROR_NETWORK_LOSS -> {
+                    ApsaraLivePusherWrapper.PLAY_PUSHER_ERROR_NETWORK_LOSS,
+                    ApsaraLivePusherWrapper.PLAY_PUSHER_ERROR_RECONNECTION_FAILED -> {
                         livePusherWrapper.reconnect()
                         PlayLivePusherErrorState.NetworkLoss
                     }
