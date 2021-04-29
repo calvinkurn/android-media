@@ -1,7 +1,9 @@
 package com.tokopedia.otp.qrcode.view.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -11,8 +13,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.otp.common.IOnBackPressed
+import com.tokopedia.otp.common.SignatureUtil
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.di.OtpComponent
+import com.tokopedia.otp.notif.data.SignResult
+import com.tokopedia.otp.notif.view.fragment.ReceiverNotifFragment
 import com.tokopedia.otp.qrcode.domain.pojo.VerifyQrData
 import com.tokopedia.otp.qrcode.view.viewbinding.LoginByQrViewBinding
 import com.tokopedia.otp.qrcode.viewmodel.LoginByQrViewModel
@@ -87,15 +92,26 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
         viewBound.userName?.text = userSession.name ?: ""
 
         viewBound.approveButton?.setOnClickListener {
-            verifyQrCode(uuid)
+            verifyQrCode(uuid, "approved")
         }
         viewBound.rejectButton?.setOnClickListener {
-            verifyQrCode(uuid)
+            verifyQrCode(uuid, "rejected")
         }
     }
 
-    private fun verifyQrCode(uuid: String) {
-        goToResult("asd", uuid, "dfg", "fgh", "ghj")
+    private fun verifyQrCode(uuid: String, status: String) {
+        var signResult = SignResult()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            signResult = signDataVerifyQr(uuid, status)
+        }
+        viewModel.verifyQrCode(uuid, status, signResult.signature)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun signDataVerifyQr(uuid: String, status: String): SignResult {
+        val datetime = (System.currentTimeMillis() / 1000).toString()
+        val data = uuid + status
+        return SignatureUtil.signData(data, datetime, LOGIN_QR_ALIAS)
     }
 
     private fun onSuccessVerifyQr(): (VerifyQrData) -> Unit {
@@ -137,6 +153,8 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     companion object {
+
+        private const val LOGIN_QR_ALIAS = "LoginByQr"
 
         fun createInstance(bundle: Bundle): LoginByQrFragment {
             val fragment = LoginByQrFragment()
