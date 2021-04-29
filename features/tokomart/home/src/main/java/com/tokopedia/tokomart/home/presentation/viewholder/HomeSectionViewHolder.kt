@@ -16,9 +16,9 @@ class HomeSectionViewHolder(
         val LAYOUT = R.layout.item_tokomart_home_section
     }
 
-    override fun bind(uiModel: HomeSectionUiModel) {
+    override fun bind(data: HomeSectionUiModel) {
         itemView.apply {
-            textTitle.text = uiModel.title
+            textTitle.text = data.title
         }
     }
 }

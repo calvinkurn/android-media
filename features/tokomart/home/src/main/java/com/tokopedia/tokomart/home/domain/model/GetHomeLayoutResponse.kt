@@ -6,5 +6,6 @@ data class GetHomeLayoutResponse(
 
 data class HomeLayoutResponse(
     val id: String,
-    val title: String
+    val title: String,
+    val type: Int
 )
