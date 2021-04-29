@@ -89,6 +89,7 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
 import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
 import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
 import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
+import com.tokopedia.sellerorder.list.presentation.animator.SomFadeRightAnimator
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
@@ -239,6 +240,13 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
     }
 
+    private val fadeRightAnimator by lazy {
+        context?.let {
+            SomFadeRightAnimator(it)
+        } ?: defaultItemAnimator
+    }
+    private val defaultItemAnimator by lazy { DefaultItemAnimator() }
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -271,6 +279,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var somFilterBottomSheet: SomFilterBottomSheet? = null
     private var pendingAction: SomPendingAction? = null
     private var tickerIsReady = false
+    private var wasChangingTab = false
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + masterJob
@@ -454,6 +463,19 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, refreshFilter: Boolean) {
+        if (status.key != tabActive && refreshFilter) {
+            wasChangingTab = true
+        }
+        rvSomList?.itemAnimator =
+                if (wasChangingTab && !refreshFilter) {
+                    defaultItemAnimator
+                } else {
+                    fadeRightAnimator
+                }
+        if (status.key == tabActive) {
+            wasChangingTab = false
+        }
+
         tabActive = if (status.isChecked) {
             if (somListSortFilterTab?.isStatusFilterAppliedFromAdvancedFilter == true)
                 viewModel.setStatusOrderFilter(viewModel.getDataOrderListParams().statusList)
@@ -604,6 +626,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onAcceptOrderButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean) {
+        rvSomList?.itemAnimator = fadeRightAnimator
         getSwipeRefreshLayout(view)?.isRefreshing = true
         if (!skipValidateOrder) {
             pendingAction = SomPendingAction(actionName, orderId) {
@@ -618,6 +641,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onRequestPickupButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean) {
+        rvSomList?.itemAnimator = fadeRightAnimator
         getSwipeRefreshLayout(view)?.isRefreshing = true
         if (!skipValidateOrder) {
             pendingAction = SomPendingAction(actionName, orderId) {
@@ -632,6 +656,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onRespondToCancellationButtonClicked(order: SomListOrderUiModel) {
+        rvSomList?.itemAnimator = fadeRightAnimator
         selectedOrderId = order.orderId
         SomOrderRequestCancelBottomSheet().apply {
             setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
@@ -1851,6 +1876,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }?.somFilterData?.find {
             it.isSelected
         }?.key
+
+        if (tabActive != selectedStatusFilterKey.orEmpty()) {
+            wasChangingTab = true
+        }
+
         tabActive = selectedStatusFilterKey.orEmpty()
         viewModel.updateGetOrderListParams(filterData)
         loadFilters(showShimmer = false, loadOrders = true)
