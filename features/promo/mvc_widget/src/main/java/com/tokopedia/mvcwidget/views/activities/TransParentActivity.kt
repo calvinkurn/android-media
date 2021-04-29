@@ -25,17 +25,20 @@ class TransParentActivity : BaseActivity() {
     var isOnResume = false
     private var childView: MvcDetailView? = null
     private var appLink : String?=null
+    private var shopName : String?=null
 
     companion object {
         const val SHOP_ID = "shopId"
         const val MVC_SOURCE = "mvcSource"
         const val REDIRECTION_LINK = "redirectionLink"
+        const val SHOP_NAME = "shopName"
 
-        fun getIntent(context: Context, shopId: String, @MvcSource source: Int, redirectionLink: String = ""): Intent {
+        fun getIntent(context: Context, shopId: String, @MvcSource source: Int, redirectionLink: String = "", shopName: String = ""): Intent {
             val intent = Intent(context, TransParentActivity::class.java)
             intent.putExtra(SHOP_ID, shopId)
             intent.putExtra(MVC_SOURCE, source)
             intent.putExtra(REDIRECTION_LINK, redirectionLink)
+            intent.putExtra(SHOP_NAME, shopName)
 
             return intent
         }
@@ -56,6 +59,7 @@ class TransParentActivity : BaseActivity() {
         shopId = intent.extras?.getString(SHOP_ID, "0") ?: "0"
         mvcSource = intent.extras?.getInt(MVC_SOURCE, MvcSource.DEFAULT) ?: MvcSource.DEFAULT
         appLink = intent.extras?.getString(REDIRECTION_LINK, "") ?: ""
+        appLink = intent.extras?.getString(SHOP_NAME, "") ?: ""
 
 
         if (userSession.isLoggedIn) {
@@ -90,6 +94,7 @@ class TransParentActivity : BaseActivity() {
             childView?.findViewById<LinearLayout>(R.id.btn_layout)?.visibility = View.VISIBLE
             childView?.findViewById<UnifyButton>(R.id.btn_continue)?.setOnClickListener {
                 bottomSheet.dismiss()
+                shopName?.let { it1 -> Tracker.userClickBottomSheetCTA(it1) }
                 RouteManager.route(this,appLink)
             }
         }
@@ -109,6 +114,10 @@ class TransParentActivity : BaseActivity() {
             }
         }
 
+    }
+
+    fun setTokoButtonClickListener(onClickListener: View.OnClickListener?) {
+        childView?.findViewById<UnifyButton>(R.id.btn_continue)?.setOnClickListener(onClickListener)
     }
 
     override fun onResume() {

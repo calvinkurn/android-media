@@ -122,7 +122,12 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
         }
 
         vh.itemView.setOnClickListener {
-            item?.shopInfo?.id?.let { it1 -> it.context.startActivity(item?.shopInfo?.appLink?.let { it2 -> TransParentActivity.getIntent(it.context, it1, 0 , it2) }) }
+            val shopName =  item?.shopInfo?.name
+            val shopApplink =  item?.shopInfo?.appLink
+            val shopId =  item?.shopInfo?.id
+            if (shopName != null && shopApplink != null && shopId != null) {
+                it.context.startActivity(TransParentActivity.getIntent(it.context, shopId, 0, shopApplink, shopName))
+            }
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE, vh, item?.AdInfo)
         }
 
