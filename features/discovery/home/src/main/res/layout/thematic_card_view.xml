@@ -296,7 +296,6 @@
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
                 android:gravity="center"
-                android:scaleType="fitXY"
                 android:adjustViewBounds="true"
                 android:visibility="gone"
                 app:layout_constraintHorizontal_bias="0.0"

@@ -10,8 +10,6 @@ import com.tokopedia.favorite.di.qualifier.TopAdsQualifier
 import com.tokopedia.favorite.di.scope.FavoriteScope
 import com.tokopedia.favorite.domain.FavoriteRepository
 import com.tokopedia.favorite.domain.interactor.*
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import dagger.Module
@@ -118,11 +116,4 @@ class FavoriteModule {
     fun provideTopAdsService(@TopAdsQualifier retrofit: Retrofit): TopAdsService {
         return retrofit.create(TopAdsService::class.java)
     }
-
-    @FavoriteScope
-    @Provides
-    fun provideDispatcherProvider(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
-    }
-
 }

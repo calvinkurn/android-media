@@ -37,6 +37,8 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fingerprint.util.FingerprintConstant
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.payment.R
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent
@@ -61,7 +63,6 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -201,11 +202,15 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     override fun renderWebViewPostUrl(url: String, postData: ByteArray, isGet: Boolean) {
-        if (isGet) {
+        if (isGet || isInsufficientBookingStockUrl(url)) {
             scroogeWebView?.loadUrl(url)
         } else {
             scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this), postData)
         }
+    }
+
+    private fun isInsufficientBookingStockUrl(url: String): Boolean {
+        return url.startsWith(INSUFFICIENT_STOCK_URL, ignoreCase = true)
     }
 
     override fun showToastMessageWithForceCloseView(message: String) {
@@ -412,6 +417,10 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             if (url != null) {
+                val uri = Uri.parse(url)
+                if (uri.isOpaque) {
+                    return super.shouldOverrideUrlLoading(view, url)
+                }
                 // fingerprint
                 if (url.isNotEmpty() && url.contains(PaymentFingerprintConstant.APP_LINK_FINGERPRINT) &&
                         getEnableFingerprintPayment()) {
@@ -536,7 +545,11 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         @TargetApi(Build.VERSION_CODES.M)
         override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
             super.onReceivedError(view, request, error)
-            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", request?.url, error?.errorCode, error?.description)
+            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
+                    mapOf("type" to request?.url.toString(),
+                            "error_code" to error?.errorCode.toString(),
+                            "desc" to error?.description?.toString().orEmpty()
+                    ))
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -662,6 +675,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         private const val HCI_CAMERA_SELFIE = "android-js-call://selfie"
         private const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
         private val THANK_PAGE_URL_LIST = arrayOf("thanks", "thank")
+        private const val INSUFFICIENT_STOCK_URL = "https://www.tokopedia.com/cart/insufficient_booking_stock"
 
         private const val BACK_DIALOG_URL = "javascript:handlePopAndroid();"
 

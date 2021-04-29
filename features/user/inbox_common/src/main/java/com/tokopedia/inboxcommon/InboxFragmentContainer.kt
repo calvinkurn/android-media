@@ -13,4 +13,7 @@ interface InboxFragmentContainer {
     fun increaseChatUnreadCounter()
     fun refreshNotificationCounter()
     fun decreaseDiscussionUnreadCounter()
+    fun decreaseReviewUnreviewedCounter()
+    fun hideReviewCounter()
+    fun showReviewCounter()
 }

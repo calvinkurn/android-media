@@ -5,6 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/discovery_common_dms_card_background"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
@@ -19,7 +20,7 @@
             android:id="@+id/optionInfoImage"
             android:layout_width="132dp"
             android:layout_height="132dp"
-            android:scaleType="fitXY"
+            android:scaleType="fitCenter"
             app:srcCompat="@drawable/search_inspiration_carousel_error_product_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>

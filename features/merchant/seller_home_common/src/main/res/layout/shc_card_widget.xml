@@ -52,6 +52,15 @@
             app:typographyWeight="bold"
             tools:text="Rp999.999.999" />
 
+        <com.tokopedia.sellerhomecommon.presentation.view.customview.CardValueCountdownView
+            android:id="@+id/card_value_countdown_view"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCardTitle"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCardSubValue"
             android:layout_width="@dimen/layout_lvl0"

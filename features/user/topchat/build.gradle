@@ -67,6 +67,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.features.mediauploader)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation project(rootProject.ext.libraries.deviceInfo)
 
@@ -103,6 +104,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.libraries.analyticAnnotationCentral)
+    implementation project(rootProject.ext.features.productManageCommon)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)

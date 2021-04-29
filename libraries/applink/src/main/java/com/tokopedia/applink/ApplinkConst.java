@@ -100,6 +100,7 @@ public interface ApplinkConst {
     String NEW_WISHLIST = "tokopedia://new-wishlist";
     String WISHLIST_HOME = "tokopedia://wishlisthome";
     String RECENT_VIEW = "tokopedia://recentlyviewed";
+    String HOST_LOGIN = "login";
     String LOGIN = "tokopedia://login";
     String OTP = "tokopedia://otp";
     String OTP_PUSH_NOTIF_RECEIVER = "tokopedia://otp-verify";
@@ -618,5 +619,21 @@ public interface ApplinkConst {
 
     interface Navigation {
         String MAIN_NAV = "tokopedia://navigation/main";
+    }
+
+    interface Inbox {
+        String PARAM_PAGE = "page";
+        String VALUE_PAGE_NOTIFICATION = "notification";
+        String VALUE_PAGE_CHAT = "chat";
+        String VALUE_PAGE_TALK = "talk";
+        String VALUE_PAGE_REVIEW = "review";
+
+        String PARAM_ROLE = "role";
+        String VALUE_ROLE_BUYER = "buyer";
+        String VALUE_ROLE_SELLER = "seller";
+    }
+
+    interface GeneralInfo {
+        String GENERAL_INFO_FORCE_CLOSE_PAGE = "tokopedia://general-info-close";
     }
 }

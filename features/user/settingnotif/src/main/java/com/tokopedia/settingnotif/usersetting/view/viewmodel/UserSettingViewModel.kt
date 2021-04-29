@@ -10,6 +10,7 @@ import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.util.SingleLiveEvent
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.settingnotif.usersetting.analytics.MoengageManager
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
@@ -24,6 +25,7 @@ import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase.Compa
 class UserSettingViewModel @Inject constructor(
         private val getUserSettingUseCase: GetUserSettingUseCase,
         private val setUserSettingUseCase: SetUserSettingUseCase,
+        private val moengageManager: MoengageManager,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io), SettingFieldContract.UserSetting {
 
@@ -66,28 +68,11 @@ class UserSettingViewModel @Inject constructor(
         })
     }
 
-    override fun requestUpdateMoengageUserSetting(
-            updatedSettingIds: List<Map<String, Any>>
-    ) {
-        for (setting in updatedSettingIds) {
-            val name = setting[SettingViewHolder.PARAM_SETTING_KEY]
-            val value = setting[SettingViewHolder.PARAM_SETTING_VALUE]
-
-            if (name !is String || value !is Boolean) continue
-
-            when (name) {
-                SETTING_PUSH_NOTIFICATION_PROMO -> setMoengagePromoPreference(value)
-                SETTING_EMAIL_BULLETIN -> setMoengageEmailPreference(value)
-            }
+    override fun requestUpdateMoengageUserSetting(name: String, value: Boolean) {
+        when (name) {
+            SETTING_PUSH_NOTIFICATION_PROMO -> moengageManager.setPushPreference(value)
+            SETTING_EMAIL_BULLETIN -> moengageManager.setNewsletterEmailPref(value)
         }
-    }
-
-    private fun setMoengageEmailPreference(checked: Boolean) {
-        TrackApp.getInstance().moEngage.setNewsletterEmailPref(checked)
-    }
-
-    private fun setMoengagePromoPreference(checked: Boolean) {
-        TrackApp.getInstance().moEngage.setPushPreference(checked)
     }
 
     companion object {
