@@ -211,6 +211,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> renderSearchBarView(it.data)
                 is Fail -> {
+                    hideLoading()
                     adapter.showGetListError(it.throwable)
                     digital_homepage_toolbar.hide()
                 }
