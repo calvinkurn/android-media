@@ -12,7 +12,7 @@ data class RechargeMultipleSBMBill(
         val bills: List<RechargeBills> = emptyList()
 ) {
     data class Response(
-            @SerializedName("rechargeMultipleSBMBill")
+            @SerializedName("RechargeMultipleSBMBill")
             @Expose
             val response: RechargeMultipleSBMBill? = null
     )

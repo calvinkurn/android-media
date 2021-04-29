@@ -77,7 +77,7 @@ data class RechargeBills(
         @SerializedName("DueDateLabel")
         @Expose
         var dueDateLabel: DueUrgency = DueUrgency(),
-        @SerializedName("section")
+        @SerializedName("sections")
         @Expose
         var section: Section = Section(),
 

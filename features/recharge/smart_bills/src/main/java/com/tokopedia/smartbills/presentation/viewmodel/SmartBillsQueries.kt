@@ -97,8 +97,9 @@ object SmartBillsQueries {
             type: Type
             text: Text
             bills: Bills {
-                flag: Flag
-                index: Index
+                  flag: Flag
+                  index: Index
+                  UUID
                   productID: ProductID
                   productName: ProductName
                   categoryID: CategoryID
@@ -138,7 +139,7 @@ object SmartBillsQueries {
     val GET_SBM_RELOAD_ACTION_QUERY by lazy {
         """
         query GetSBM(${'$'}uuids:[String],${'$'}month: Int!, ${'$'}year: Int!, ${'$'}source: Int){
-        rechargeMultipleSBMBill(
+        RechargeMultipleSBMBill(
         UUIDs:${'$'}uuids,
         Month:${'$'}month,
         Year:${'$'}year,

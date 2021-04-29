@@ -246,7 +246,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     }
                 }
                 is Fail -> {
-                    smartBillsAnalytics.clickPayFailed(adapter.dataSize, adapter.checkedDataList.size)
+                    smartBillsAnalytics.clickPayFailed(listBills.size, adapter.checkedDataList.size)
 
                     checkout_loading_view.hide()
                     var throwable = it.throwable

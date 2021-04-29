@@ -60,6 +60,7 @@ class SmartBillsViewHolder(val view: View,
                 cb_smart_bills_item_accordion.disableView()
             } else if(accordionType == PAID_TYPE){
                 //remove checkbox in paid type
+                disableView()
                 cb_smart_bills_item.gone()
             }
 
