@@ -174,7 +174,6 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     }
                 }
             }
-            add(mapToSectionPMPro(shopInfoPeriodUiModel))
         }
         return shopScoreVisitableList
     }
