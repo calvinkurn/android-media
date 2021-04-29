@@ -369,10 +369,10 @@ class NewShopPageFragment :
         initToolbar()
         initAdapter()
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            swipeToRefresh.isEnabled = (verticalOffset == 0)
+            swipeToRefresh?.isEnabled = (verticalOffset == 0)
         })
         initViewPager()
-        swipeToRefresh.setOnRefreshListener {
+        swipeToRefresh?.setOnRefreshListener {
             refreshData()
         }
         mainLayout.requestFocus()
@@ -815,7 +815,7 @@ class NewShopPageFragment :
             observeShopPageFollowingStatusSharedViewModel()
             getInitialData()
             view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
-            if (!swipeToRefresh.isRefreshing) {
+            if (swipeToRefresh?.isRefreshing == false) {
                 setViewState(VIEW_LOADING)
             }
             initViews(view)
@@ -1235,7 +1235,7 @@ class NewShopPageFragment :
         }
         shopPageTracking?.sendScreenShopPage(shopId, shopType)
         setViewState(VIEW_CONTENT)
-        swipeToRefresh.isRefreshing = false
+        swipeToRefresh?.isRefreshing = false
         shopPageFragmentHeaderViewHolder?.setShopHeaderWidgetData(shopPageP1Data.listShopHeaderWidget)
         remoteConfig?.let{
             shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget(it, isMyShop)
@@ -1508,10 +1508,10 @@ class NewShopPageFragment :
             errorButton?.setOnClickListener {
                 isRefresh = true
                 getInitialData()
-                if (!swipeToRefresh.isRefreshing)
+                if (swipeToRefresh?.isRefreshing == false)
                     setViewState(VIEW_LOADING)
             }
-            swipeToRefresh.isRefreshing = false
+            swipeToRefresh?.isRefreshing = false
         }
     }
 
@@ -1561,9 +1561,9 @@ class NewShopPageFragment :
         }
         isRefresh = true
         getInitialData()
-        if (!swipeToRefresh.isRefreshing)
+        if (swipeToRefresh?.isRefreshing == false)
             setViewState(VIEW_LOADING)
-        swipeToRefresh.isRefreshing = true
+        swipeToRefresh?.isRefreshing = true
 
         stickyLoginView?.loadContent()
     }
