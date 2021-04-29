@@ -2,6 +2,7 @@ package com.tokopedia.shop.score.performance.domain.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.gm.common.constant.NEW_SELLER_DAYS
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -160,14 +161,16 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                         if (shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD) {
                             add(mapToTransitionPeriodReliefUiModel(shopInfoPeriodUiModel.periodEndDate))
                         }
-                        add(ItemStatusPMUiModel())
+                        add(mapToItemPMUiModel(shopAge))
                     }
                 }
                 else -> {
-                    if (isEligiblePM == true) {
-                        add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel))
-                    } else {
-                        add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
+                    if (shopAge >= SHOP_AGE_SIXTY) {
+                        if (isEligiblePM == true) {
+                            add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, shopAge))
+                        } else {
+                            add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
+                        }
                     }
                 }
             }
@@ -202,10 +205,12 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                         ?: ""
                             }
                             it.shopScore >= SHOP_SCORE_EIGHTY -> {
-                                titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_more_80) ?: ""
+                                titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_more_80)
+                                        ?: ""
                             }
                         }
-                        descHeaderShopService = context?.getString(R.string.desc_tenure_new_seller) ?: ""
+                        descHeaderShopService = context?.getString(R.string.desc_tenure_new_seller)
+                                ?: ""
                     }
                 }
                 else -> {
@@ -376,7 +381,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                             CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> Pair("${shopScoreDetail.nextMinValue} $minuteText", minuteText)
                             ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY ->
                                 Pair("${shopScoreDetail.nextMinValue * ONE_HUNDRED_PERCENT}$percentText", percentText)
-                            TOTAL_BUYER_KEY -> Pair("${shopScoreDetail.nextMinValue}", peopleText)
+                            TOTAL_BUYER_KEY -> Pair("${shopScoreDetail.nextMinValue} $peopleText", peopleText)
                             OPEN_TOKOPEDIA_SELLER_KEY -> Pair("${shopScoreDetail.nextMinValue} $dayText", dayText)
                             else -> Pair("-", "")
                         }
@@ -415,6 +420,15 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         }
         copyItemDetail.sortWith(compareIdentifier)
         return copyItemDetail
+    }
+
+    private fun mapToItemPMUiModel(shopAge: Int): ItemStatusPMUiModel {
+        val isNewSeller = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
+        return ItemStatusPMUiModel(isNewSeller = isNewSeller,
+                descPM = if (isNewSeller)
+                    context?.getString(R.string.desc_pm_section_new_seller).orEmpty()
+                else
+                    context?.getString(R.string.desc_content_pm_section).orEmpty())
     }
 
     private fun mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): SectionPotentialPMBenefitUiModel {
@@ -491,10 +505,21 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return itemPotentialPMBenefitList
     }
 
-    private fun mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel)
+    private fun mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel, shopAge: Int)
             : ItemStatusRMUiModel {
         val updateDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT)
-        return ItemStatusRMUiModel(updateDatePotential = updateDate)
+        val isNewSeller = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
+        return ItemStatusRMUiModel(updateDatePotential = updateDate,
+                titleRMEligible =
+                if (isNewSeller)
+                    context?.getString(R.string.title_header_rm_section_new_seller).orEmpty()
+                else
+                    context?.getString(R.string.title_header_rm_section).orEmpty(),
+                descRMEligible = if (isNewSeller)
+                    context?.getString(R.string.desc_potential_rm_section_new_seller).orEmpty()
+                else
+                    context?.getString(R.string.desc_potential_eligible_power_merchant, updateDate).orEmpty()
+        )
     }
 
     private fun mapToCardTooltipLevel(level: Int = 0): List<CardTooltipLevelUiModel> {

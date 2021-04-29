@@ -75,13 +75,13 @@ object ShopScoreConstant {
 
     const val VIDEO_YOUTUBE_ID = "MjbnDFmWbZk"
 
-    const val SYSTEM_PENALTY_HELP_URL = "https://www.tokopedia.com/help/article/bagaimana-sistem-penalti-pengurangan-reputasi-toko"
+    const val SYSTEM_PENALTY_HELP_URL = "https://seller.tokopedia.com/edu/penalti-toko"
     const val HELP_URL = "https://www.tokopedia.com/help"
 
     const val PATTERN_DATE_TEXT = "dd MMMM yyyy"
     const val PATTERN_PENALTY_DATE_TEXT = "dd MMM yyyy"
 
-    const val SHOP_INFO_URL = "https://seller.tokopedia.com/shop-score-info"
+    const val SHOP_INFO_URL = "https://seller.tokopedia.com/edu/skor-toko"
     const val EMPTY_STATE_PENALTY_URL = "https://images.tokopedia.net/img/android/shop_score/ic_empty_state_penalty@2x.png"
 
     const val PATTERN_PENALTY_DATE_PARAM = "yyyy-MM-dd"

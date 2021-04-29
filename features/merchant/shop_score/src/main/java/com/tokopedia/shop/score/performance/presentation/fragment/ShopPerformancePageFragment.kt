@@ -123,7 +123,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             INFO_MENU_ID -> {
-                RouteManager.route(context, ShopScoreConstant.SHOP_INFO_URL)
+                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.SHOP_INFO_URL)
                 shopScorePenaltyTracking.clickMenuCompleteInfo()
             }
             PENALTY_WARNING_MENU_ID -> {
@@ -271,6 +271,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onGotoPMProPage() {
+        goToPowerMerchantSubscribe()
+    }
+
 
     /**
      * CardPotentialPMBenefitListener
@@ -390,6 +394,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     val itemPeriodDetailPerformanceIndex = shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }
                     val itemPMIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
                     val itemRMIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
+                    val itemRMNonEligibleIndex = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMBenefitUiModel }
+                    val itemPMProIndex = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMProUiModel }
 
                     if (coachMark?.isShowing == true) {
                         when (coachMark?.currentIndex) {
@@ -408,7 +414,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                                 }
                             }
                             COACHMARK_LAST_POSITION_PM_RM -> {
-                                if (itemPMIndex in firstVisiblePosition..lastVisiblePosition || itemRMIndex in firstVisiblePosition..lastVisiblePosition) {
+                                if (itemPMIndex in firstVisiblePosition..lastVisiblePosition
+                                        || itemRMIndex in firstVisiblePosition..lastVisiblePosition
+                                        || itemRMNonEligibleIndex in firstVisiblePosition..lastVisiblePosition
+                                        || itemPMProIndex in firstVisiblePosition..lastVisiblePosition) {
                                     coachMark?.animateShow()
                                 } else {
                                     coachMark?.animateHide()
@@ -456,16 +465,24 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun scrollToLastItemCoachMark() {
-        val positionPM = shopPerformanceAdapter.list.firstOrNull { it is ItemStatusPMUiModel }
+        val positionPMPro = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMProUiModel }
+        val positionPM = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
+        val positionRMNonEligible = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMBenefitUiModel }
+
         var position = -1
-        if (positionPM != null) {
-            position = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
-        } else {
-            val rmData = shopPerformanceAdapter.list.firstOrNull { it is ItemStatusRMUiModel }
-            if (rmData != null) {
-                position = shopPerformanceAdapter.list.indexOf(rmData)
+
+        when {
+            positionPMPro != -1 -> {
+                position = positionPMPro
+            }
+            positionPM != -1 -> {
+                position = positionPM
+            }
+            positionRMNonEligible != -1 -> {
+                position = positionRMNonEligible
             }
         }
+
         if (position != -1) {
             val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
                 override fun getVerticalSnapPreference(): Int {

@@ -20,6 +20,7 @@ interface CardPotentialPMBenefitListener {
 
 interface ItemStatusPMProListener {
     fun onItemPMProListener(view: View)
+    fun onGotoPMProPage()
 }
 
 interface PeriodDetailPerformanceListener {

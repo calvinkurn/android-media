@@ -24,7 +24,12 @@ class ItemStatusPMProViewHolder(view: View, private val itemStatusPMProListener:
             itemStatusPMProListener.onItemPMProListener(this)
             tvDescPMPro?.text = getString(R.string.desc_potential_pm_pro,
                     element?.transitionEndDate)
-
+            tv_see_all_benefit_pm_pro?.setOnClickListener {
+                itemStatusPMProListener.onGotoPMProPage()
+            }
+            ic_chevron_right_benefit_pm_pro?.setOnClickListener {
+                itemStatusPMProListener.onGotoPMProPage()
+            }
         }
         setPotentialPMProBenefitAdapter(element)
     }

@@ -286,5 +286,9 @@
     <string name="title_penalty_filter_bottom_sheet">Filter</string>
     <string name="reset_filter_penalty">Reset</string>
     <string name="close_youtube">Close</string>
+    <string name="desc_pm_section_new_seller">Pertahankan Performa Tokomu agar bisa memberikan yang terbaik untuk pembelimu!</string>
+    <string name="title_header_rm_section_new_seller">Gabung ke Power Merchant untuk tarik banyak calon pembeli, yuk!</string>
+    <string name="desc_potential_rm_section_new_seller"><![CDATA[Tingkatkan penjualan & kepercayaan pembeli dengan berbagai fitur untuk memaksimalkan bisnis.]]></string>
+    <string name="text_see_all_benefit_pm_pro">Lihat Semua Keuntungannya</string>
 
 </resources>

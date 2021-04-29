@@ -3,7 +3,6 @@ package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
@@ -30,16 +29,19 @@ class ItemStatusPMViewHolder(view: View,
             }
         }
         setupIconClickListener()
-        setupItemPowerMerchant()
+        setupItemPowerMerchant(element)
     }
 
-    private fun setupItemPowerMerchant() {
+    private fun setupItemPowerMerchant(element: ItemStatusPMUiModel?) {
         with(itemView) {
             potentialPowerMerchantWidget?.background = ContextCompat.getDrawable(context, R.drawable.bg_header_bronze)
             tv_pm_reputation_value?.text = getString(R.string.title_pm_value)
-            tv_desc_content_pm_section?.setTextMakeHyperlink(getString(R.string.desc_content_pm_section)) {
-                itemStatusPowerMerchantListener.onItemClickedGotoPMPro()
+            element?.descPM?.let {
+                tv_desc_content_pm_section?.setTextMakeHyperlink(it) {
+                    itemStatusPowerMerchantListener.onItemClickedGotoPMPro()
+                }
             }
+            tv_title_content_pm_section?.showWithCondition(element?.isNewSeller == false)
         }
     }
 
