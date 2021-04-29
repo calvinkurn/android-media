@@ -270,7 +270,7 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT_LABEL] = productId
         updateCommonItems(userId, map)
         val loginText: String = if (userId.isNullOrEmpty()) {
-            "- nonlogin"
+            " - nonlogin"
         } else {
             ""
         }
