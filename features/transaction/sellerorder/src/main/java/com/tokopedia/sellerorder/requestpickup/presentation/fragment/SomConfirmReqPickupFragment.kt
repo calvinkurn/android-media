@@ -42,6 +42,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var currOrderId = ""
+    private var currSchedulePickupTime = ""
     private var confirmReqPickupResponse = SomConfirmReqPickup.Data.MpLogisticPreShipInfo()
     private var processReqPickupResponse = SomProcessReqPickup.Data.MpLogisticRequestPickup()
     private lateinit var confirmReqPickupCourierNotesAdapter: SomConfirmReqPickupCourierNotesAdapter
@@ -98,7 +99,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     }
 
     private fun processReqPickup() {
-        val processReqPickupParam = SomProcessReqPickupParam(orderId = currOrderId)
+        val processReqPickupParam = SomProcessReqPickupParam(orderId = currOrderId, schedulePickupTime = currSchedulePickupTime)
         somConfirmRequestPickupViewModel.processRequestPickup(GraphqlHelper.loadRawString(resources, R.raw.gql_som_process_req_pickup), processReqPickupParam)
     }
 
@@ -170,7 +171,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
             rv_courier_notes?.visibility = View.GONE
         }
 
-        if (confirmReqPickupResponse.dataSuccess.schedule_time.today.isNotEmpty() && confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow.isNotEmpty()) {
+        if (confirmReqPickupResponse.dataSuccess.schedule_time.today.isNotEmpty() || confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow.isNotEmpty()) {
             rl_schedule_pickup?.visibility = View.VISIBLE
             pickup_now?.centerText = true
             pickup_schedule?.centerText = true
@@ -182,19 +183,20 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                 btn_arrow?.visibility = View.GONE
                 divider_schedule?.visibility = View.GONE
                 tv_schedule?.text = confirmReqPickupResponse.dataSuccess.detail.listShippers[0].note
+                currSchedulePickupTime = ""
             }
 
             pickup_schedule?.setOnClickListener {
                 setActiveChips(pickup_schedule, pickup_now)
                 btn_arrow?.visibility = View.VISIBLE
                 divider_schedule?.visibility = View.VISIBLE
+                currSchedulePickupTime = confirmReqPickupResponse.dataSuccess.schedule_time.today[0].keyToday
                 btn_arrow.setOnClickListener {
                     val schedulePickupMapper = SchedulePickupMapper()
                     bottomSheetSchedulePickupAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time))
                     openBottomSheetSchedulePickup()
                 }
             }
-
 
         } else {
             rl_schedule_pickup?.visibility = View.GONE
@@ -240,10 +242,12 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     }
 
     override fun onSchedulePickupTodayClicked(today: Today) {
-        TODO("Not yet implemented")
+        bottomSheetSchedulePickup?.dismiss()
+        currSchedulePickupTime = today.keyToday
     }
 
     override fun onSchedulePickupTomorrowClicked(tomorrow: Tomorrow) {
-        TODO("Not yet implemented")
+        bottomSheetSchedulePickup?.dismiss()
+        currSchedulePickupTime = tomorrow.keyTomorrow
     }
 }

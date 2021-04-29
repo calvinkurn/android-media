@@ -1,7 +1,5 @@
 package com.tokopedia.sellerorder.requestpickup.data.model
 
-import com.google.gson.annotations.SerializedName
-
 sealed class SchedulePickupModelVisitable
 
 data class SchedulePickupModel(

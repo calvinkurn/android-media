@@ -359,7 +359,7 @@
                 android:layout_marginBottom="@dimen/dp_8"
                 app:unifyButtonVariant="filled"
                 app:unifyButtonType="main"
-                android:text="Request Pick-up"
+                android:text="Kirim Request Pick-up"
                 android:textAlignment="center"/>
 
         </LinearLayout>
