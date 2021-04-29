@@ -12,6 +12,9 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.Rule
 import org.junit.Test
 
+/**
+ * @author by astidhiyaa on 29/04/21
+ */
 class HotelRoomListScreenshotTesting {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 

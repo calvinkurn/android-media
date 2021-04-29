@@ -19,6 +19,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+/**
+ * @author by astidhiyaa on 27/04/21
+ */
 class HotelHomepageScreenshotTesting {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 

@@ -10,6 +10,9 @@ import org.junit.Rule
 import org.junit.Test
 import com.tokopedia.hotel.R
 
+/**
+ * @author by astidhiyaa on 29/04/21
+ */
 class HotelRoomDetailScreenshotTesting {
 //    private val context = InstrumentationRegistry.getInstrumentation().targetContext
 //    lateinit var appBar: AppBarLayout

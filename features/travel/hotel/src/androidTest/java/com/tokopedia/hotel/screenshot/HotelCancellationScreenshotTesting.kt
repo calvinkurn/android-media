@@ -15,6 +15,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+/**
+ * @author by astidhiyaa on 29/04/21
+ */
 class HotelCancellationScreenshotTesting {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     lateinit var hotelCancellation : ScrollView

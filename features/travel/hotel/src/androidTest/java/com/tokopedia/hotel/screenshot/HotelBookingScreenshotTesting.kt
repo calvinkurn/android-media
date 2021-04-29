@@ -21,6 +21,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+/**
+ * @author by astidhiyaa on 29/04/21
+ */
 class HotelBookingScreenshotTesting {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     lateinit var hotelBooking : RelativeLayout
