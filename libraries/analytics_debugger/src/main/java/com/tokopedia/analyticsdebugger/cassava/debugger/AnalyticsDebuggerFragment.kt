@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.cassava.di.DaggerCassavaComponent
 import com.tokopedia.analyticsdebugger.cassava.injector.DebuggerViewModelFactory
 import com.tokopedia.analyticsdebugger.cassava.throttleFirst
 import com.tokopedia.analyticsdebugger.cassava.validator.MainValidatorActivity
@@ -25,15 +26,17 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
+import javax.inject.Inject
 
 
 @ExperimentalCoroutinesApi
 class AnalyticsDebuggerFragment : Fragment() {
 
-    private val viewModel: DebuggerListViewModel by lazy {
-        val factory = DebuggerViewModelFactory(TkpdAnalyticsDatabase.getInstance(requireContext()).gtmLogDao())
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
+
+    private val viewModel: DebuggerListViewModel =
         ViewModelProvider(this, factory).get(DebuggerListViewModel::class.java)
-    }
 
     private val listAdapter = DebuggerListAdapter().apply {
         setItemClickListener {
@@ -52,6 +55,10 @@ class AnalyticsDebuggerFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        DaggerCassavaComponent.builder()
+                .context(requireContext())
+                .build()
+                .inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

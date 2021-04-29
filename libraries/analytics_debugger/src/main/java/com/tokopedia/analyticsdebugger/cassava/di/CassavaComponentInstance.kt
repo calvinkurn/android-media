@@ -16,7 +16,7 @@ object CassavaComponentInstance {
         }
 
         cassavaComponent = DaggerCassavaComponent.builder()
-                .cassavaModule(CassavaModule(activity))
+                .context(activity)
                 .build()
 
         return cassavaComponent!!

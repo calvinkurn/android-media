@@ -18,48 +18,33 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 /**
  * @author by furqan on 07/04/2021
  */
 @Module
-class CassavaModule(private val context: Context) {
+class CassavaModule() {
 
-    @CassavaScope
+    @Singleton
     @Provides
-    fun provideContext(): Context = context
-
-    @CassavaScope
-    @Provides
-    fun provideApplication(context: Context): Application =
-            (context as Activity).application
-
-
-    @CassavaScope
-    @Provides
-    fun provideOkHttpClient(): OkHttpClient {
-        val chucker = ChuckerInterceptor(context)
-        return OkHttpClient.Builder()
-                .addInterceptor(chucker)
+    fun provideCassavaApi(context: Context): CassavaApi {
+        val client = OkHttpClient.Builder()
+                .addInterceptor(ChuckerInterceptor(context))
                 .build()
-    }
-
-    @CassavaScope
-    @Provides
-    fun provideCassavaApi(okHttpClient: OkHttpClient): CassavaApi {
         val retrofit = Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(GsonBuilder()
                         .setPrettyPrinting()
                         .serializeNulls()
                         .create()))
                 .baseUrl(TokopediaUrl.getInstance().API)
-                .client(okHttpClient)
+                .client(client)
                 .build()
         return retrofit.create(CassavaApi::class.java)
     }
 
     @Provides
-    fun provideGtmDao(): GtmLogDao {
+    fun provideGtmDao(context: Context): GtmLogDao {
         return TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
     }
 
