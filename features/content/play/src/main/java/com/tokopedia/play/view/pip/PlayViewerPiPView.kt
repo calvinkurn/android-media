@@ -110,6 +110,7 @@ class PlayViewerPiPView : ConstraintLayout {
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
+        pvVideo.player = null
         mVideoPlayer.removeListener(videoListener)
 
         if (mPiPInfo?.stopOnClose == true) {
