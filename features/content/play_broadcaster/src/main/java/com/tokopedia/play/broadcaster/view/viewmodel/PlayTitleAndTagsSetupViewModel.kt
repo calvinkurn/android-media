@@ -141,16 +141,16 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
             setChannelId(hydraConfigStore.getChannelId())
         }.executeOnBackground()
 
-        listOf(
-                "Baju",
-                "Review",
-                "Tas",
-                "Hiburan",
-                "Produk",
-                "Fashion",
-                "Topi",
-        )
+//        listOf(
+//                "Baju",
+//                "Review",
+//                "Tas",
+//                "Hiburan",
+//                "Produk",
+//                "Fashion",
+//                "Topi",
+//        )
 
-//        return@withContext recommendedTags.recommendedTags.tags
+        return@withContext recommendedTags.recommendedTags.tags
     }
 }
