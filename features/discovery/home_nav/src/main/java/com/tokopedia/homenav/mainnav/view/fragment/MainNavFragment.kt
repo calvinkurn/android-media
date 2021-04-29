@@ -116,7 +116,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onCreate(savedInstanceState)
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)
-        viewModel.setUserHaveLogoutData(haveUserLogoutData())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
