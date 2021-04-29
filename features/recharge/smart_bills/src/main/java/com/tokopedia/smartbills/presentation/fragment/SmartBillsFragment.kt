@@ -569,15 +569,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         smartBillsAnalytics.clickCollapseAccordion(titleAccordion)
     }
 
-    override fun collapseOnNow(accordion: AccordionUnify) {
-        Handler().run {
-            postDelayed({
-                    accordion.expandGroup(0)},
-                    EXPAND_ACCORDION_START_DELAY
-            )
-        }
-    }
-
     private fun getDataErrorException(): Throwable {
         return MessageErrorException(getString(R.string.smart_bills_data_error))
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.smartbills.presentation.adapter.viewholder
 
+import android.os.Handler
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
@@ -8,6 +9,7 @@ import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.Section
+import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment
 import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment.Companion.ACTION_TYPE
 import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment.Companion.PAID_TYPE
 import com.tokopedia.smartbills.util.RechargeSmartBillsAccordionView.getAccordionwithAction
@@ -24,7 +26,12 @@ class SmartBillsAccordionViewHolder(view: View,
     override fun bind(element: Section) {
         with(itemView){
             if(element.positionAccordion == 0) {
-                accordionListener.collapseOnNow(accordion_smart_bills)
+                Handler().run {
+                    postDelayed({
+                        accordion_smart_bills.expandGroup(0)},
+                            SmartBillsFragment.EXPAND_ACCORDION_START_DELAY
+                    )
+                }
                 smart_bills_view_margin.show()
             }
 
@@ -55,6 +62,5 @@ class SmartBillsAccordionViewHolder(view: View,
         fun onRefreshAccordion(titleAccordion: String)
         fun onCollapseAccordion(titleAccordion: String)
         fun onExpandAccordion(titleAccordion: String)
-        fun collapseOnNow(accordion: AccordionUnify)
     }
 }
