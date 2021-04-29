@@ -239,7 +239,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.iconNotification
     implementation rootProject.ext.unifyDependencies.sortFilter
     implementation rootProject.ext.unifyDependencies.pin
-    implementation rootProject.ext.unifyDependencies.accordion
 
     // external dependencies
     implementation(rootProject.ext.debugToolsDependencies.timber) {
