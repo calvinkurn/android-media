@@ -19,10 +19,16 @@ object PMConstant {
         const val PM_INACTIVE = "https://images.tokopedia.net/img/android/gold_merchant_common/gmc_pm_inactive.png"
         const val PM_REGISTRATION_PM = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_registration_header.png"
         const val PM_REGISTRATION_PM_PRO = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_registration_header.png"
+        const val PM_TOTAL_ORDER_TERM = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_improve_shop_order.png"
     }
 
     object Urls {
         const val POWER_MERCHANT_PAGE = "https://www.tokopedia.com/myshop/power-merchant"
         const val SHOP_SCORE_INTERRUPT_PAGE = "https://www.tokopedia.com/shop-interrupt"
+    }
+
+    object PMType {
+        const val PM_REGULAR = "pm"
+        const val PM_PRO = "pm_pro"
     }
 }

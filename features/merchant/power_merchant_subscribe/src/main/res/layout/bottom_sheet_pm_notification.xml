@@ -8,7 +8,7 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imagePmNotification"
-        android:layout_width="@dimen/power_merchant_notification_image_size"
+        android:layout_width="@dimen/pm_spacing_180dp"
         android:layout_height="@dimen/power_merchant_notification_image_size"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -18,7 +18,9 @@
         android:id="@+id/textTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl2"
         android:gravity="center"
         android:textColor="@color/Unify_N700"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -32,7 +34,9 @@
         android:id="@+id/textDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/layout_lvl2"
         android:gravity="center"
         android:textColor="@color/Unify_N700"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -42,10 +46,11 @@
         tools:text="Tingkatkan penjualan tokomu dengan mengakses fitur-fitur andalan **Power Merchant!**" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnPrimaryCTA"
+        android:id="@+id/btnPrimaryCta"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl3"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,4 +58,21 @@
         app:layout_goneMarginLeft="0dp"
         app:unifyButtonSize="medium"
         tools:text="Mulai" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSecondaryCta"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnPrimaryCta"
+        app:layout_goneMarginLeft="0dp"
+        app:unifyButtonSize="medium"
+        app:unifyButtonVariant="ghost"
+        tools:text="Secondary Cta"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

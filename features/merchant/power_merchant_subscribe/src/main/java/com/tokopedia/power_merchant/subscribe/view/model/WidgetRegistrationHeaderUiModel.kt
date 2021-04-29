@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.model
 
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
 
@@ -11,7 +12,7 @@ data class WidgetRegistrationHeaderUiModel(
         val shopInfo: PMShopInfoUiModel,
         val pmTerms: List<RegistrationTermUiModel> = emptyList(),
         val pmProTerms: List<RegistrationTermUiModel> = emptyList(),
-        var isPmProSelected: Boolean
+        var selectedPmType: String = PMConstant.PMType.PM_REGULAR
 ) : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

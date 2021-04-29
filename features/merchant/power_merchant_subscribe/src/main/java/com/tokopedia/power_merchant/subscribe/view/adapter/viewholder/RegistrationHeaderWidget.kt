@@ -56,7 +56,7 @@ class RegistrationHeaderWidget(
         pmsPmRegular.setDescription(context.getString(R.string.pm_power_merchant_section_description, textColor, PM_CHARGING))
         pmsPmRegular.setOnClickListener {
             setupRegularPmState(element)
-            element.isPmProSelected = false
+            element.selectedPmType = PMConstant.PMType.PM_REGULAR
             listener.onPowerMerchantSectionClickListener(element)
         }
 
@@ -64,11 +64,11 @@ class RegistrationHeaderWidget(
         setPmProSectionDescription(shopInfo.isEligiblePmPro)
         pmsPmPro.setOnClickListener {
             setupPmProState(element)
-            element.isPmProSelected = true
+            element.selectedPmType = PMConstant.PMType.PM_PRO
             listener.onPowerMerchantProSectionClickListener(element)
         }
 
-        if (element.isPmProSelected) {
+        if (element.selectedPmType == PMConstant.PMType.PM_PRO) {
             setupPmProState(element)
         } else {
             setupRegularPmState(element)

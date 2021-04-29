@@ -91,10 +91,13 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
             layoutManager = mLayoutManager
             adapter = pagerAdapter
 
-            try {
-                PagerSnapHelper().attachToRecyclerView(this)
-            } catch (e: IllegalStateException) {
-                Timber.e(e)
+            val isSinglePage = element.benefitPages.size <= 1
+            if (!isSinglePage) {
+                try {
+                    PagerSnapHelper().attachToRecyclerView(this)
+                } catch (e: IllegalStateException) {
+                    Timber.e(e)
+                }
             }
 
             addOnScrollListener(object : RecyclerView.OnScrollListener() {

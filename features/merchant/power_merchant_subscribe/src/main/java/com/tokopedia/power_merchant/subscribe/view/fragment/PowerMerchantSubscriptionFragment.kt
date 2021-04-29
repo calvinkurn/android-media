@@ -27,7 +27,6 @@ import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLog
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.PMWidgetListener
-import com.tokopedia.power_merchant.subscribe.view.bottomsheet.ContentSliderBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.DeactivationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PMNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PowerMerchantCancelBottomSheet
@@ -69,6 +68,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private var pmBasicInfo: PowerMerchantBasicInfoUiModel? = null
     private var cancelPmDeactivationWidgetPosition: Int? = null
     private var pmGradeBenefitAndShopInfo: PMGradeBenefitAndShopInfoUiModel? = null
+    private var selectedPmType = PMConstant.PMType.PM_REGULAR
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
 
@@ -132,15 +132,13 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     override fun onPowerMerchantSectionClickListener(headerWidget: WidgetRegistrationHeaderUiModel) {
-        adapter.data.clear()
-        adapter.data.add(headerWidget)
-        renderRegularPmRegistrationWidget()
+        selectedPmType = headerWidget.selectedPmType
+        renderRegularPmRegistrationWidget(headerWidget)
     }
 
     override fun onPowerMerchantProSectionClickListener(headerWidget: WidgetRegistrationHeaderUiModel) {
-        adapter.data.clear()
-        adapter.data.add(headerWidget)
-        renderPmProRegistrationWidgets()
+        selectedPmType = headerWidget.selectedPmType
+        renderPmProRegistrationWidgets(headerWidget)
     }
 
     private fun setupView() = view?.run {
@@ -271,36 +269,49 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         view?.pmRegistrationFooterView?.gone()
     }
 
-    private fun renderPmRegistrationWidgets(data: PMGradeBenefitAndShopInfoUiModel) {
+    private fun initPmActiveData(data: PMGradeBenefitAndShopInfoUiModel) {
         this.pmGradeBenefitAndShopInfo = data
-
-        adapter.data.clear()
-        adapter.data.add(getHeaderWidgetData())
-        if (data.shopInfo.isEligiblePmPro) {
-            renderPmProRegistrationWidgets()
+        selectedPmType = if (data.shopInfo.isEligiblePmPro) {
+            PMConstant.PMType.PM_PRO
         } else {
-            renderRegularPmRegistrationWidget()
+            PMConstant.PMType.PM_REGULAR
         }
     }
 
-    private fun renderPmProRegistrationWidgets() {
+    private fun renderPmRegistrationWidgets(data: PMGradeBenefitAndShopInfoUiModel) {
+        adapter.data.clear()
+        val registrationHeaderWidget = getRegistrationHeaderWidgetData(data.shopInfo)
+
+        if (data.shopInfo.isEligiblePmPro) {
+            renderPmProRegistrationWidgets(registrationHeaderWidget)
+        } else {
+            renderRegularPmRegistrationWidget(registrationHeaderWidget)
+        }
+    }
+
+    private fun renderPmProRegistrationWidgets(headerWidget: WidgetRegistrationHeaderUiModel) {
         val widgets = listOf(
+                headerWidget,
                 WidgetPmProStaticBenefit,
                 WidgetDividerUiModel,
                 WidgetGradeBenefitUiModel(benefitPages = pmGradeBenefitAndShopInfo?.gradeBenefitList.orEmpty())
         )
+        adapter.data.clear()
         adapter.data.addAll(widgets)
         adapter.notifyDataSetChanged()
 
         setupFooterCta()
     }
 
-    private fun renderRegularPmRegistrationWidget() {
+    private fun renderRegularPmRegistrationWidget(headerWidget: WidgetRegistrationHeaderUiModel) {
         val widgets = listOf(
+                headerWidget,
                 WidgetPotentialUiModel,
                 WidgetDividerUiModel,
                 WidgetGradeBenefitUiModel(benefitPages = pmGradeBenefitAndShopInfo?.gradeBenefitList.orEmpty())
         )
+
+        adapter.data.clear()
         adapter.data.addAll(widgets)
         adapter.notifyDataSetChanged()
 
@@ -319,26 +330,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         view?.pmRegistrationFooterView?.hideRegistrationProgress()
     }
 
-    private fun showSuccessRegistrationPopupTransitionPeriod() {
-        val title = getString(R.string.pm_registration_success_title)
-        val description = getString(R.string.pm_registration_success_description, PMConstant.TRANSITION_PERIOD_START_DATE)
-        val ctaText = getString(R.string.pm_learn_new_pm)
-        val illustrationUrl = PMConstant.Images.PM_REGISTRATION_SUCCESS
-        var reloadPageOnDismiss = true
-        showNotificationBottomSheet(title, description, ctaText, illustrationUrl, callback = {
-            reloadPageOnDismiss = false
-            if (pmBasicInfo?.shopInfo?.isNewSeller == true) {
-                showNewPowerMerchantInfoPopup()
-            } else {
-                showPerubahanPowerMerchantPopup()
-            }
-        }, onDismiss = {
-            if (reloadPageOnDismiss) {
-                fetchPowerMerchantBasicInfo()
-            }
-        })
-    }
-
     private fun showSuccessRegistrationPopupEndGamePeriod() {
         val title = getString(R.string.pm_registration_success_title)
         val description = getString(R.string.pm_registration_success_description_end_game)
@@ -349,99 +340,84 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         })
     }
 
-    private fun showNotificationBottomSheet(title: String, description: String, ctaText: String, imgUrl: String,
-                                            callback: (() -> Unit)? = null, onDismiss: (() -> Unit)? = null) {
+    private fun showNotificationBottomSheet(title: String, description: String, primaryCtaText: String, imgUrl: String, secondaryCtaText: String? = null,
+                                            onPrimaryCtaClicked: (() -> Unit)? = null,
+                                            onSecondaryCtaClicked: (() -> Unit)? = null,
+                                            onDismiss: (() -> Unit)? = null
+    ) {
         val notifBottomSheet = PMNotificationBottomSheet.createInstance(title, description, imgUrl)
+
         if (!notifBottomSheet.isAdded && !childFragmentManager.isStateSaved) {
-            notifBottomSheet.setPrimaryButtonClickListener(ctaText) {
-                callback?.invoke()
-                notifBottomSheet.dismiss()
+            with(notifBottomSheet) {
+                setPrimaryButtonClickListener(primaryCtaText) {
+                    onPrimaryCtaClicked?.invoke()
+                    dismiss()
+                }
+                setSecondaryCtaClickListener(secondaryCtaText) {
+                    onSecondaryCtaClicked?.invoke()
+                    dismiss()
+                }
+                setOnDismissListener {
+                    onDismiss?.invoke()
+                }
+                Handler().post {
+                    show(this@PowerMerchantSubscriptionFragment.childFragmentManager)
+                }
             }
-            notifBottomSheet.setOnDismissListener {
-                onDismiss?.invoke()
-            }
-            Handler().post {
-                notifBottomSheet.show(childFragmentManager)
-            }
-        }
-    }
-
-    private fun showNewPowerMerchantInfoPopup() {
-        val bottomSheet = ContentSliderBottomSheet.createInstance(childFragmentManager)
-        if (bottomSheet.isAdded) return
-        val slideItems = listOf(ContentSliderUiModel(
-                title = getString(R.string.pm_new_pm_inf_title),
-                description = getString(R.string.pm_new_pm_inf_description),
-                imgUrl = PMConstant.Images.PM_NEW_REQUIREMENT
-        ))
-        with(bottomSheet) {
-            val emptyTitle = ""
-            setContent(emptyTitle, slideItems)
-            setOnPrimaryCtaClickListener {
-                dismiss()
-            }
-            setOnSecondaryCtaClickListener {
-                openShopScoreInterruptPage()
-                dismiss()
-            }
-            setOnDismissListener {
-                fetchPowerMerchantBasicInfo()
-            }
-            show(this@PowerMerchantSubscriptionFragment.childFragmentManager)
-        }
-    }
-
-    private fun showPerubahanPowerMerchantPopup() {
-        val bottomSheet = ContentSliderBottomSheet.createInstance(childFragmentManager)
-        if (bottomSheet.isAdded && childFragmentManager.isStateSaved) return
-
-        val title = getString(R.string.pm_power_merchant_slider_title)
-        val slideItems = listOf(
-                ContentSliderUiModel(
-                        title = getString(R.string.pm_power_merchant_new_term_title),
-                        description = getString(R.string.pm_power_merchant_new_term_description, PMConstant.TRANSITION_PERIOD_START_DATE),
-                        imgUrl = PMConstant.Images.PM_NEW_REQUIREMENT
-                ),
-                ContentSliderUiModel(
-                        title = getString(R.string.pm_integrated_with_reputation_title),
-                        description = getString(R.string.pm_integrated_with_reputation_description, PMConstant.TRANSITION_PERIOD_START_DATE),
-                        imgUrl = PMConstant.Images.PM_INTEGRATED_WITH_REPUTATION
-                ),
-                ContentSliderUiModel(
-                        title = getString(R.string.pm_new_benefits_title),
-                        description = getString(R.string.pm_new_benefits_description),
-                        imgUrl = PMConstant.Images.PM_NEW_BENEFITS
-                ),
-                ContentSliderUiModel(
-                        title = getString(R.string.pm_new_benefits_title),
-                        description = getString(R.string.pm_new_schema_description, PMConstant.TRANSITION_PERIOD_START_DATE),
-                        imgUrl = PMConstant.Images.PM_NEW_SCHEMA
-                )
-        )
-
-        with(bottomSheet) {
-            setContent(title, slideItems)
-            setOnPrimaryCtaClickListener {
-                dismiss()
-            }
-            setOnSecondaryCtaClickListener {
-                openShopScoreInterruptPage()
-                bottomSheet.dismiss()
-            }
-            setOnDismissListener {
-                fetchPowerMerchantBasicInfo()
-            }
-            show(this@PowerMerchantSubscriptionFragment.childFragmentManager)
-        }
-    }
-
-    private fun openShopScoreInterruptPage() {
-        activity?.let {
-            interruptHelper.openInterruptPage(it)
         }
     }
 
     private fun setupFooterCta() = view?.run {
+        if (selectedPmType == PMConstant.PMType.PM_PRO) {
+            setupFooterPmPro()
+        } else {
+            setupFooterPmRegular()
+        }
+    }
+
+    private fun setupFooterPmPro() = view?.run {
+        val shopInfo = pmGradeBenefitAndShopInfo?.shopInfo ?: return@run
+        val registrationTerms = getRegistrationHeaderWidgetData(shopInfo).pmProTerms
+        val firstPriorityTerm = registrationTerms.filter { !it.isChecked }
+                .sortedBy { it.periority }.firstOrNull()
+
+        //show tnc check box only if kyc not eligible or pm pro eligible
+        val needTnC = firstPriorityTerm is RegistrationTermUiModel.Kyc || shopInfo.isEligiblePmPro
+
+        with(pmRegistrationFooterView) {
+            if (shopInfo.kycStatusId == KYCStatusId.PENDING) gone() else visible()
+            setTnCVisibility(needTnC)
+            setOnCtaClickListener { tncAgreed ->
+                when {
+                    shopInfo.isEligiblePmPro -> submitPMRegistration(tncAgreed)
+                    firstPriorityTerm is RegistrationTermUiModel.ShopScore -> showShopScoreTermBottomSheet(shopInfo)
+                    firstPriorityTerm is RegistrationTermUiModel.Order -> showOrderTermBottomSheet(shopInfo.itemSoldPmProThreshold)
+                    firstPriorityTerm is RegistrationTermUiModel.Niv -> showNivTermBottomSheet(shopInfo.nivPmProThreshold)
+                    firstPriorityTerm is RegistrationTermUiModel.Kyc -> submitKYC(tncAgreed)
+                }
+            }
+        }
+    }
+
+    private fun showOrderTermBottomSheet(itemSoldThreshold: Int) {
+        val title = getString(R.string.pm_not_eligible_order_term_title)
+        val description = getString(R.string.pm_not_eligible_order_term_description, itemSoldThreshold)
+        val primaryCtaText = getString(R.string.pm_learn_ad_and_promotion)
+        val secondaryCtaText = getString(R.string.pm_content_slider_last_slide_button)
+        val imageUrl = PMConstant.Images.PM_TOTAL_ORDER_TERM
+
+        showNotificationBottomSheet(title, description, primaryCtaText, imageUrl, secondaryCtaText,
+                onPrimaryCtaClicked = {
+                    RouteManager.route(requireContext(), ApplinkConst.SellerApp.CENTRALIZED_PROMO)
+                }
+        )
+    }
+
+    private fun showNivTermBottomSheet(nivThreshold: Long) {
+
+    }
+
+    private fun setupFooterPmRegular() = view?.run {
         val shopInfo = pmGradeBenefitAndShopInfo?.shopInfo ?: return@run
 
         val isEligibleShopScore = !shopInfo.isNewSeller && shopInfo.isEligibleShopScore
@@ -461,12 +437,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
         pmRegistrationFooterView.setCtaText(ctaText)
 
-        pmRegistrationFooterView.setOnCtaClickListener {
+        pmRegistrationFooterView.setOnCtaClickListener { tncAgreed ->
             when {
-                shopInfo.isEligiblePm -> submitPMRegistration(it)
+                shopInfo.isEligiblePm -> submitPMRegistration(tncAgreed)
                 !shopInfo.isKyc && ((!shopInfo.isNewSeller && shopInfo.isEligibleShopScore)
-                        || (shopInfo.isNewSeller && shopInfo.hasActiveProduct)) -> submitKYC(it)
-                else -> showRegistrationTermBottomSheet(shopInfo)
+                        || (shopInfo.isNewSeller && shopInfo.hasActiveProduct)) -> submitKYC(tncAgreed)
+                else -> showShopScoreTermBottomSheet(shopInfo)
             }
         }
     }
@@ -491,40 +467,36 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
     }
 
-    private fun showRegistrationTermBottomSheet(shopInfo: PMShopInfoUiModel) {
+    private fun showShopScoreTermBottomSheet(shopInfo: PMShopInfoUiModel) {
         val isNewSeller = shopInfo.isNewSeller
+        val isPmPro = selectedPmType == PMConstant.PMType.PM_PRO
+
         val title: String
         val description: String
         val ctaText: String
         val illustrationUrl: String
         val appLink: String
 
-        if (isNewSeller) {
+        if (isNewSeller && !isPmPro) {
             title = getString(R.string.pm_bottom_sheet_active_product_title)
             description = getString(R.string.pm_bottom_sheet_active_product_description)
             ctaText = getString(R.string.pm_add_product)
             illustrationUrl = PMConstant.Images.PM_ADD_PRODUCT_BOTTOM_SHEET
             appLink = ApplinkConst.SellerApp.PRODUCT_ADD
         } else {
+            val shopScoreThreshold = if (isPmPro) shopInfo.shopScorePmProThreshold else shopInfo.shopScoreThreshold
+            val pmLabel = if (isPmPro) getString(R.string.pm_power_merchant_pro) else getString(R.string.pm_power_merchant)
+
             title = getString(R.string.pm_bottom_sheet_shop_score_title)
-            description = getString(R.string.pm_bottom_sheet_shop_score_description)
+            description = getString(R.string.pm_bottom_sheet_shop_score_description, shopScoreThreshold, pmLabel)
             ctaText = getString(R.string.pm_learn_shop_performance)
             illustrationUrl = PMConstant.Images.PM_SHOP_SCORE_NOT_ELIGIBLE_BOTTOM_SHEET
             appLink = ApplinkConst.SHOP_SCORE_DETAIL
         }
 
-        val shopScoreBottomSheet = PMNotificationBottomSheet.createInstance(title, description, illustrationUrl)
-        shopScoreBottomSheet.setPrimaryButtonClickListener(ctaText) {
-            shopScoreBottomSheet.dismiss()
+        showNotificationBottomSheet(title, description, ctaText, illustrationUrl, onPrimaryCtaClicked = {
             RouteManager.route(context, appLink)
-        }
-
-        //to prevent IllegalStateException: Fragment already added
-        if (shopScoreBottomSheet.isAdded || childFragmentManager.isStateSaved) return
-
-        Handler().post {
-            shopScoreBottomSheet.show(childFragmentManager)
-        }
+        })
     }
 
     private fun submitPMRegistration(isTncChecked: Boolean) {
@@ -592,7 +564,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         mViewModel.shopInfoAndPMGradeBenefits.observe(viewLifecycleOwner, Observer {
             hideSwipeRefreshLoading()
             when (it) {
-                is Success -> renderPmRegistrationWidgets(it.data)
+                is Success -> {
+                    initPmActiveData(it.data)
+                    renderPmRegistrationWidgets(it.data)
+                }
                 is Fail -> {
                     showErrorState()
                     logToCrashlytic(PowerMerchantErrorLogger.REGISTRATION_PAGE_ERROR, it.throwable)
@@ -677,14 +652,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
     }
 
-    private fun getHeaderWidgetData(): WidgetRegistrationHeaderUiModel? {
-        val shopInfo = pmGradeBenefitAndShopInfo?.shopInfo ?: return null
-
+    private fun getRegistrationHeaderWidgetData(shopInfo: PMShopInfoUiModel): WidgetRegistrationHeaderUiModel {
         return WidgetRegistrationHeaderUiModel(
                 shopInfo = shopInfo,
                 pmTerms = PMRegistrationTermHelper.getPmRegistrationTerms(requireContext(), shopInfo),
                 pmProTerms = PMRegistrationTermHelper.getPmProRegistrationTerms(requireContext(), shopInfo),
-                isPmProSelected = shopInfo.isEligiblePmPro
+                selectedPmType = selectedPmType
         )
     }
 

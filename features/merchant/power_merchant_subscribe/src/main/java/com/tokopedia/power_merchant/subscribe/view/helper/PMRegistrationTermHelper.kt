@@ -149,13 +149,11 @@ object PMRegistrationTermHelper {
         val description: String
         var ctaText: String? = null
         var ctaAppLink: String? = null
-        var isChecked = false
         when (shopInfo.kycStatusId) {
             KYCStatusId.VERIFIED, KYCStatusId.APPROVED -> {
                 title = context.getString(R.string.pm_kyc_verified)
                 description = context.getString(R.string.pm_description_kyc_verified)
                 shopKycResIcon = R.drawable.ic_pm_checked
-                isChecked = true
             }
             KYCStatusId.NOT_VERIFIED, KYCStatusId.BLACKLIST -> {
                 title = context.getString(R.string.pm_kyc_not_verified)
@@ -201,7 +199,7 @@ object PMRegistrationTermHelper {
                 resDrawableIcon = shopKycResIcon,
                 clickableText = ctaText,
                 appLinkOrUrl = ctaAppLink,
-                isChecked = isChecked
+                isChecked = shopInfo.isKyc
         )
     }
 }
