@@ -1,6 +1,5 @@
 package com.tokopedia.tokopoints.view.tokopointhome.header
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable

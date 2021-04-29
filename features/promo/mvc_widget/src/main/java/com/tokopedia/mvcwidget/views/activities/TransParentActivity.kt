@@ -116,10 +116,6 @@ class TransParentActivity : BaseActivity() {
 
     }
 
-    fun setTokoButtonClickListener(onClickListener: View.OnClickListener?) {
-        childView?.findViewById<UnifyButton>(R.id.btn_continue)?.setOnClickListener(onClickListener)
-    }
-
     override fun onResume() {
         super.onResume()
         isOnResume = true
