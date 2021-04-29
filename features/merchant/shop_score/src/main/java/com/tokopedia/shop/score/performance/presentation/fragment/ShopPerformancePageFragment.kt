@@ -496,7 +496,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun scrollToItemHeaderCoachMark() {
         val positionItemHeader = shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }
-        if (positionItemHeader != -1) {
+        if (positionItemHeader != RecyclerView.NO_POSITION) {
             val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
                 override fun getVerticalSnapPreference(): Int {
                     return SNAP_TO_START
@@ -509,7 +509,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun scrollToItemDetailCoachMark() {
         val positionItemDetail = shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }
-        if (positionItemDetail != -1) {
+        if (positionItemDetail != RecyclerView.NO_POSITION) {
             val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
                 override fun getVerticalSnapPreference(): Int {
                     return SNAP_TO_END
@@ -522,7 +522,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun scrollToItemParameterDetail() {
         val positionItemDetail = shopPerformanceAdapter.list.indexOfLast { it is ItemDetailPerformanceUiModel }
-        if (positionItemDetail != -1) {
+        if (positionItemDetail != RecyclerView.NO_POSITION) {
             val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
                 override fun getVerticalSnapPreference(): Int {
                     return SNAP_TO_END
