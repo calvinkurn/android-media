@@ -4,15 +4,15 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class RechargeMultipleSBMBill(
-        @SerializedName("UserID")
+        @SerializedName("userID")
         @Expose
         val userID: String = "",
-        @SerializedName("Bills")
+        @SerializedName("bills")
         @Expose
         val bills: List<RechargeBills> = emptyList()
 ) {
     data class Response(
-            @SerializedName("RechargeMultipleSBMBill")
+            @SerializedName("rechargeMultipleSBMBill")
             @Expose
             val response: RechargeMultipleSBMBill? = null
     )

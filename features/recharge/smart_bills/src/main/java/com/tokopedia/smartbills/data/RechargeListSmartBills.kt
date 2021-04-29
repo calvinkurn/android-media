@@ -6,31 +6,31 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 
 data class RechargeListSmartBills(
-        @SerializedName("UserID")
+        @SerializedName("userID")
         @Expose
         val userID: String = "",
-        @SerializedName("Total")
+        @SerializedName("total")
         @Expose
         val total: Int = 0,
-        @SerializedName("TotalText")
+        @SerializedName("totalText")
         @Expose
         val totalText: String = "",
-        @SerializedName("Month")
+        @SerializedName("month")
         @Expose
         val month: String = "",
-        @SerializedName("MonthText")
+        @SerializedName("monthText")
         @Expose
         val monthText: String = "",
-        @SerializedName("DateRangeText")
+        @SerializedName("dateRangeText")
         @Expose
         val dateRangeText: String = "",
-        @SerializedName("IsOngoing")
+        @SerializedName("isOngoing")
         @Expose
         val isOngoing: Boolean = true,
-        @SerializedName("Summaries")
+        @SerializedName("summaries")
         @Expose
         val summaries: List<RechargeStatementBills.Summaries> = listOf(),
-        @SerializedName("Sections")
+        @SerializedName("sections")
         @Expose
         val sections: List<Section> = listOf(),
 
@@ -43,16 +43,16 @@ data class RechargeListSmartBills(
 }
 
 data class Section(
-    @SerializedName("Title")
+    @SerializedName("title")
     @Expose
     val title: String = "",
-    @SerializedName("Type")
+    @SerializedName("type")
     @Expose
     val type: Int = 0,
-    @SerializedName("Text")
+    @SerializedName("text")
     @Expose
     val text: String = "",
-    @SerializedName("Bills")
+    @SerializedName("bills")
     @Expose
     val bills: List<RechargeBills> = listOf(),
     val positionAccordion: Int = 0
