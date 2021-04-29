@@ -467,10 +467,8 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             productMap[LIST] = productCardItemList
             productMap[DIMENSION83] = getProductDime83(it)
             addSourceData(productMap)
-            if (productTypeName == PRODUCT_SPRINT_SALE || productTypeName == PRODUCT_SPRINT_SALE_CAROUSEL) {
-                productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
-                        "${if (it.campaignSoldCount.toIntOrZero() > 0) it.pdpView else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
-            }
+            productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
+                    "${if (it.campaignSoldCount.toIntOrZero() > 0) it.pdpView else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
 
         }
         list.add(productMap)
@@ -553,10 +551,9 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 listMap[LIST] = productCardItemList
                 listMap[DIMENSION83] = getProductDime83(it)
                 addSourceData(listMap)
-                if (productTypeName == PRODUCT_SPRINT_SALE || productTypeName == PRODUCT_SPRINT_SALE_CAROUSEL) {
-                    listMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
-                            "${if (it.campaignSoldCount.toIntOrZero() > 0) it.pdpView else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
-                }
+                listMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
+                        "${if (it.campaignSoldCount.toIntOrZero() > 0) it.pdpView else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
+
             }
             list.add(listMap)
 
