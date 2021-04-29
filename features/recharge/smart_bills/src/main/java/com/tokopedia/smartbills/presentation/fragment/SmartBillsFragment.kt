@@ -214,7 +214,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 is Success -> {
                     // Check if all items' transaction succeeds; if they do, navigate to payment
                     if (it.data.attributes.allSuccess) {
-                        smartBillsAnalytics.clickPay(adapter.checkedDataList, adapter.dataSize)
+                        smartBillsAnalytics.clickPay(adapter.checkedDataList, listBills.size)
 
                         val paymentPassData = PaymentPassData()
                         paymentPassData.convertToPaymenPassData(it.data)
@@ -223,7 +223,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
                         startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
                     } else { // Else, show error message in affected items
-                        smartBillsAnalytics.clickPayFailed(adapter.dataSize, adapter.checkedDataList.size)
+                        smartBillsAnalytics.clickPayFailed(listBills.size, adapter.checkedDataList.size)
 
                         checkout_loading_view.hide()
                         view?.let { v ->
