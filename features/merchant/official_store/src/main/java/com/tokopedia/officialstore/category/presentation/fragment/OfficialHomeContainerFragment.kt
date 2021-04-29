@@ -293,7 +293,6 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         }
         statusBar?.visibility = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
             else -> View.GONE
         }
     }
