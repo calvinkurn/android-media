@@ -203,7 +203,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
             val (shopInfo, _, title, _, _) = data
             val eventLabel = "mvc - {${holder.adapterPosition + 1}} - ${shopInfo?.name}"
             item["item_name"] = shopInfo?.name
-            item["position"] = holder.adapterPosition.toString()
+            item["position"] = (holder.adapterPosition + 1).toString()
             item["creative_name"] = title
             item["item_id"] = shopInfo?.id
             val promotions = HashMap<String, Any>()

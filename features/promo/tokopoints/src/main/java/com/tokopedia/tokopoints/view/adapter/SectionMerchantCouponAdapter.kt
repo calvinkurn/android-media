@@ -184,7 +184,7 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
         val (shopInfo, _, title, _, _) = arrayList[holder.adapterPosition] ?: return
         val eventLabel = "mvc - {${holder.adapterPosition + 1}} - ${shopInfo?.name}"
         item["item_name"] = shopInfo?.name
-        item["position"] = holder.adapterPosition.toString()
+        item["position"] = (holder.adapterPosition + 1).toString()
         item["creative_name"] = title
         item["item_id"] = shopInfo?.id
 
