@@ -209,14 +209,12 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGroupList(list: List<GroupListDataItem>) {
-        val selectedProductIds = TextUtils.join("," ,adapter.getSelectedIds())
-
         sheet.show(childFragmentManager, list)
         sheet.onNewGroup = { groupName ->
             currentGroupName = groupName
             getBidInfo()
             adapter.items?.forEach {
-                val eventLabel = "$selectedProductIds - ${it.searchCount} - ${it.searchPercentage} - ${it.recomBid} - ${it.setCurrentBid}"
+                val eventLabel = "${it.productId} - ${it.searchCount} - ${it.searchPercentage} - ${it.recomBid} - ${it.setCurrentBid}"
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(BUAT_GRUP_IKLANKAN, eventLabel, userSession.userId)
             }
         }
@@ -224,7 +222,7 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
             getBidInfo()
             currentGroupId = groupId
             adapter.items?.forEach {
-                val eventLabel = "$selectedProductIds - ${it.searchCount} - ${it.searchPercentage} - ${it.recomBid} - ${it.setCurrentBid}"
+                val eventLabel = "${it.productId} - ${it.searchCount} - ${it.searchPercentage} - ${it.recomBid} - ${it.setCurrentBid}"
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_GRUP_AKTIF_IKLANKAN, eventLabel, userSession.userId)
             }
         }

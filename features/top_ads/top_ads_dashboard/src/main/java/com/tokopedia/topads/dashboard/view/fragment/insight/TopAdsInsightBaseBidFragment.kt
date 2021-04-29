@@ -51,9 +51,6 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var dailyRecommendationModel = mutableListOf<InsightDailyBudgetModel>()
-
-
     companion object {
         fun createInstance(bundle: Bundle): TopAdsInsightBaseBidFragment {
             val fragment = TopAdsInsightBaseBidFragment()
@@ -128,17 +125,6 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
         (parentFragment as TopAdsRecommendationFragment).setCount(adapter.items.size, 1)
         setTitle(topadsGetDailyBudgetRecommendation.data)
-
-        topadsGetDailyBudgetRecommendation?.data?.forEach {
-            var dailyBudgetModel = InsightDailyBudgetModel().apply {
-                groupId = it.groupId
-                groupName = it.groupName
-                dailySuggestedPrice = it.suggestedPriceDaily
-                potentialClick = calculatePotentialClick(topadsGetDailyBudgetRecommendation.data)
-            }
-            dailyRecommendationModel.add(dailyBudgetModel)
-        }
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightDailyProductEcommerceViewEvent(VIEW_DAILY_RECOMMENDATION_PRODUKS, "", dailyRecommendationModel, userSession.userId)
     }
 
     private fun setTitle(data: List<DataBudget>) {

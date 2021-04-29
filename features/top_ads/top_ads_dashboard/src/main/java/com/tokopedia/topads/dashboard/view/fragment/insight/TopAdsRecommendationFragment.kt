@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.model.InsightDailyBudgetModel
 import com.tokopedia.topads.common.data.model.InsightProductRecommendationModel
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -51,8 +52,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private var countBid = 0
     private var index = 0
     private var insightRecommendationModel= mutableListOf<InsightProductRecommendationModel>()
-    var productids = mutableListOf<String>()
-    var productnames = mutableListOf<String>()
+    private var dailyRecommendationModel = mutableListOf<InsightDailyBudgetModel>()
 
     companion object {
         const val HEIGHT = "addp_bar_height"
@@ -115,19 +115,6 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         productRecommendData = productRecommendationModel.topadsGetProductRecommendation.data
         countProduct = productRecommendData?.products?.size ?: 0
         checkAllData()
-        productids?.clear()
-        productnames?.clear()
-        productRecommendationModel.topadsGetProductRecommendation?.data?.products?.forEach {
-            var insightProductRecommendationModel = InsightProductRecommendationModel().apply {
-                productid = it.productId
-                productname = it.productName
-                searchCount = it.searchCount
-                serachPercentage = it.searchPercentage
-                recommendedBid = it.recomBid
-            }
-            insightRecommendationModel.add(insightProductRecommendationModel)
-        }
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightProductEcommerceViewEvent(VIEW_RECOMMENDED_PRODUK, "", insightRecommendationModel, userSession.userId)
     }
 
     private fun checkAllData() {
@@ -159,8 +146,29 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
             override fun onTabItemClick(position: Int) {
                 if(position == 0) {
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_PRODUK_BERPOTENSI, userSession.userId, userSession.userId)
+                    productRecommendData?.products?.forEach {
+                        var insightProductRecommendationModel = InsightProductRecommendationModel().apply {
+                            productid = it.productId
+                            productname = it.productName
+                            searchCount = it.searchCount
+                            serachPercentage = it.searchPercentage
+                            recommendedBid = it.recomBid
+                        }
+                        insightRecommendationModel.add(insightProductRecommendationModel)
+                    }
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightProductEcommerceViewEvent(VIEW_RECOMMENDED_PRODUK, "", insightRecommendationModel, userSession.userId)
                 } else if(position == 1){
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_ANGARRAN_HARIAN, userSession.userId, userSession.userId)
+                    dailyBudgetRecommendData?.data?.forEach {
+                        var dailyBudgetModel = InsightDailyBudgetModel().apply {
+                            groupId = it.groupId
+                            groupName = it.groupName
+                            dailySuggestedPrice = it.suggestedPriceDaily
+                            potentialClick = calculatePotentialClick(dailyBudgetRecommendData!!.data)
+                        }
+                        dailyRecommendationModel.add(dailyBudgetModel)
+                    }
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightDailyProductEcommerceViewEvent(VIEW_DAILY_RECOMMENDATION_PRODUKS, "", dailyRecommendationModel, userSession.userId)
                 }
                 view_pager.currentItem = position
                 if (position == 0 && topAdsInsightTabAdapter?.getTab()?.get(position)?.contains(PRODUK) == true && countProduct != 0) {
@@ -172,6 +180,18 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         })
         rvTabInsight.adapter = topAdsInsightTabAdapter
         view_pager.offscreenPageLimit = TopAdsDashboardConstant.OFFSCREEN_PAGE_LIMIT
+    }
+
+    private fun calculatePotentialClick(data: List<DataBudget>): Int {
+        var totalPotentialClick = 0
+        data.forEach {
+            totalPotentialClick += if (it.setCurrentBid >= it.priceDaily) {
+                ((it.setCurrentBid - it.priceDaily) / it.avgBid.toDouble()).toInt()
+            } else {
+                ((it.suggestedPriceDaily - it.priceDaily) / it.avgBid.toDouble()).toInt()
+            }
+        }
+        return totalPotentialClick
     }
 
     private fun renderViewPager() {
