@@ -1271,7 +1271,7 @@ class NewShopPageFragment :
     }
 
     private fun setupTabs() {
-        listShopPageTabModel = createListShopPageTabModel()
+        listShopPageTabModel = (createListShopPageTabModel() as? List<ShopPageTabModel>) ?: listOf()
         viewPagerAdapter?.setTabData(listShopPageTabModel)
         val selectedPosition = getSelectedTabPosition()
         tabLayout.removeAllTabs()
@@ -1393,53 +1393,39 @@ class NewShopPageFragment :
     }
 
     private fun createListShopPageTabModel(): List<ShopPageTabModel> {
-        return mutableListOf<ShopPageTabModel>().apply {
-            if (isShowHomeTab()) {
-                getHomeFragment()?.let { homeFragment ->
-                    add(ShopPageTabModel(
-                            getString(R.string.shop_info_title_tab_home),
-                            iconTabHomeInactive,
-                            iconTabHomeActive,
-                            homeFragment
-                    ))
-                }
+        val listShopPageTabModel  = mutableListOf<ShopPageTabModel>()
+        if (isShowHomeTab()) {
+            getHomeFragment()?.let { homeFragment ->
+                listShopPageTabModel.add(ShopPageTabModel(
+                        getString(R.string.shop_info_title_tab_home),
+                        iconTabHomeInactive,
+                        iconTabHomeActive,
+                        homeFragment
+                ))
             }
-            val shopPageProductFragment = ShopPageProductListFragment.createInstance(
-                    shopId,
-                    shopPageHeaderDataModel?.shopName.orEmpty(),
-                    shopPageHeaderDataModel?.isOfficial ?: false,
-                    shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                    shopPageHeaderDataModel?.shopHomeType.orEmpty(),
-                    shopAttribution,
-                    shopRef
-            )
-            shopViewModel?.productListData?.let {
-                shopPageProductFragment.setInitialProductListData(it)
-            }
-            add(ShopPageTabModel(
-                    getString(R.string.new_shop_info_title_tab_product),
-                    iconTabProductInactive,
-                    iconTabProductActive,
-                    shopPageProductFragment
-            ))
+        }
+        val shopPageProductFragment = ShopPageProductListFragment.createInstance(
+                shopId,
+                shopPageHeaderDataModel?.shopName.orEmpty(),
+                shopPageHeaderDataModel?.isOfficial ?: false,
+                shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                shopPageHeaderDataModel?.shopHomeType.orEmpty(),
+                shopAttribution,
+                shopRef
+        )
+        shopViewModel?.productListData?.let {
+            shopPageProductFragment.setInitialProductListData(it)
+        }
+        listShopPageTabModel.add(ShopPageTabModel(
+                getString(R.string.new_shop_info_title_tab_product),
+                iconTabProductInactive,
+                iconTabProductActive,
+                shopPageProductFragment
+        ))
 
-            if (isShouldCheckShopType()) {
-                if (isNotRegularMerchant(shopPageHeaderDataModel)) {
-                    add(ShopPageTabModel(
-                            getString(R.string.shop_info_title_tab_showcase),
-                            iconTabShowcaseInactive,
-                            iconTabShowcaseActive,
-                            ShopPageShowcaseFragment.createInstance(
-                                    shopId,
-                                    shopRef,
-                                    shopAttribution,
-                                    shopPageHeaderDataModel?.isOfficial ?: false,
-                                    shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                            )
-                    ))
-                }
-            } else {
-                add(ShopPageTabModel(
+        if (isShouldCheckShopType()) {
+            if (isNotRegularMerchant(shopPageHeaderDataModel)) {
+                listShopPageTabModel.add(ShopPageTabModel(
                         getString(R.string.shop_info_title_tab_showcase),
                         iconTabShowcaseInactive,
                         iconTabShowcaseActive,
@@ -1452,30 +1438,44 @@ class NewShopPageFragment :
                         )
                 ))
             }
-
-            if (isShowFeed) {
-                val feedFragment = FeedShopFragment.createInstance(
-                        shopId,
-                        createPostUrl
-                )
-                add(ShopPageTabModel(
-                        getString(R.string.shop_info_title_tab_feed),
-                        iconTabFeedInactive,
-                        iconTabFeedActive,
-                        feedFragment
-                ))
-            }
-            val shopReviewFragment = ReviewShopFragment.createInstance(
-                    shopId,
-                    shopDomain
-            )
-            add(ShopPageTabModel(
-                    getString(R.string.shop_info_title_tab_review),
-                    iconTabReviewInactive,
-                    iconTabReviewActive,
-                    shopReviewFragment
+        } else {
+            listShopPageTabModel.add(ShopPageTabModel(
+                    getString(R.string.shop_info_title_tab_showcase),
+                    iconTabShowcaseInactive,
+                    iconTabShowcaseActive,
+                    ShopPageShowcaseFragment.createInstance(
+                            shopId,
+                            shopRef,
+                            shopAttribution,
+                            shopPageHeaderDataModel?.isOfficial ?: false,
+                            shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                    )
             ))
         }
+
+        if (isShowFeed) {
+            val feedFragment = FeedShopFragment.createInstance(
+                    shopId,
+                    createPostUrl
+            )
+            listShopPageTabModel.add(ShopPageTabModel(
+                    getString(R.string.shop_info_title_tab_feed),
+                    iconTabFeedInactive,
+                    iconTabFeedActive,
+                    feedFragment
+            ))
+        }
+        val shopReviewFragment = ReviewShopFragment.createInstance(
+                shopId,
+                shopDomain
+        )
+        listShopPageTabModel.add(ShopPageTabModel(
+                getString(R.string.shop_info_title_tab_review),
+                iconTabReviewInactive,
+                iconTabReviewActive,
+                shopReviewFragment
+        ))
+        return listShopPageTabModel
     }
 
     private fun isShowHomeTab(): Boolean {
