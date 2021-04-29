@@ -14,6 +14,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.IC_INCOME_PM_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.IC_ORDER_PM_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.IC_PM_VISITED_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.IC_SELLER_ANNOUNCE
+import com.tokopedia.shop.score.common.ShopScoreConstant.ONE_HUNDRED_PERCENT
 import com.tokopedia.shop.score.common.ShopScoreConstant.OPEN_TOKOPEDIA_SELLER_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_SUCCESS_RATE_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_NEW_SELLER
@@ -184,6 +185,24 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     descHeaderShopService = context?.getString(R.string.desc_new_seller_level_0, dateNewSellerProjection)
                             ?: ""
                 }
+                shopAge in SHOP_AGE_SIXTY..COUNT_DAYS_NEW_SELLER -> {
+                    shopScoreLevelResponse?.let {
+                        when {
+                            it.shopScore < SHOP_SCORE_SIXTY -> {
+                                titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_under_60)
+                                        ?: ""
+                            }
+                            it.shopScore in SHOP_SCORE_SIXTY..SHOP_SCORE_SEVENTY_NINE -> {
+                                titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_between_60_to_79)
+                                        ?: ""
+                            }
+                            it.shopScore >= SHOP_SCORE_EIGHTY -> {
+                                titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_more_80) ?: ""
+                            }
+                        }
+                        descHeaderShopService = context?.getString(R.string.desc_tenure_new_seller) ?: ""
+                    }
+                }
                 else -> {
                     when (shopScoreLevelResponse?.shopScore) {
                         in SHOP_SCORE_SIXTY..SHOP_SCORE_SIXTY_NINE -> {
@@ -351,7 +370,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                         when (shopScoreDetail.identifier) {
                             CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> Pair("${shopScoreDetail.nextMinValue} $minuteText", minuteText)
                             ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY, TOTAL_BUYER_KEY ->
-                                Pair("${shopScoreDetail.nextMinValue}$percentText", percentText)
+                                Pair("${shopScoreDetail.nextMinValue * ONE_HUNDRED_PERCENT}$percentText", percentText)
                             OPEN_TOKOPEDIA_SELLER_KEY -> Pair("${shopScoreDetail.nextMinValue} $dayText", dayText)
                             else -> Pair("-", "")
                         }
@@ -462,10 +481,6 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     title = context?.getString(R.string.title_shop_score_performance).orEmpty(),
                     desc_first = context?.getString(R.string.desc_shop_score_performance).orEmpty(),
                     isShow = true
-            ))
-            add(ItemFaqUiModel(
-                    title = context?.getString(R.string.title_shop_score_benefit).orEmpty(),
-                    desc_first = context?.getString(R.string.desc_shop_score_benefit).orEmpty(),
             ))
             add(ItemFaqUiModel(
                     title = context?.getString(R.string.title_shop_score_benefit).orEmpty(),

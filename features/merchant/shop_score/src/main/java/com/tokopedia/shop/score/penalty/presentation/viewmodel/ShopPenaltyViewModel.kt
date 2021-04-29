@@ -7,7 +7,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST
+import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
 import com.tokopedia.shop.score.common.format
 import com.tokopedia.shop.score.common.getNPastMonthTimeStamp
@@ -23,6 +26,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -99,17 +103,23 @@ class ShopPenaltyViewModel @Inject constructor(
                 getShopPenaltySummaryTypesUseCase.requestParams = GetShopPenaltySummaryTypesUseCase.createParams(
                         startDate, endDate)
                 getShopPenaltySummaryTypesUseCase.executeOnBackground()
-            }, onError = {})
+            }, onError = {
+                _penaltyPageData.postValue(Fail(it))
+                null
+            })
 
             val penaltyDetailResponse = asyncCatchError(block = {
                 getShopPenaltyDetailUseCase.params = GetShopPenaltyDetailUseCase.crateParams(
                         ShopScorePenaltyDetailParam(startDate = startDate, endDate = endDate, typeID = typeId, sort = sortBy
                         ))
                 getShopPenaltyDetailUseCase.executeOnBackground()
-            }, onError = {})
+            }, onError = {
+                _penaltyPageData.postValue(Fail(it))
+                null
+            })
 
-            val penaltySummaryTypeData = penaltySummaryTypeResponse.await() as? ShopPenaltySummaryTypeWrapper
-            val penaltyDetailData = penaltyDetailResponse.await() as? ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail
+            val penaltySummaryTypeData = penaltySummaryTypeResponse.await()
+            val penaltyDetailData = penaltyDetailResponse.await()
 
             penaltySummaryTypeData?.let { penaltySummary ->
                 penaltyDetailData?.also { penaltyDetail ->
@@ -121,15 +131,13 @@ class ShopPenaltyViewModel @Inject constructor(
                             typeId
                     )
 
-                    penaltyFilterUiModel = penaltyMapperData.penaltyFilterList?.toMutableList() ?: mutableListOf()
+                    penaltyFilterUiModel = penaltyMapperData.penaltyFilterList?.toMutableList()
+                            ?: mutableListOf()
                     itemSortFilterWrapperList = penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterUiModel).toMutableList()
                     _penaltyPageData.postValue(Success(penaltyMapperData))
                 }
             }
-
-        }, onError = {
-            _penaltyPageData.postValue(Fail(it))
-        })
+        }, onError = {})
     }
 
     private fun initPenaltyDetail() {
@@ -213,8 +221,13 @@ class ShopPenaltyViewModel @Inject constructor(
     fun resetFilterSelected() {
         launchCatchError(block = {
             penaltyFilterUiModel.map { penaltyFilterUiModel ->
-                penaltyFilterUiModel.chipsFilerList.map {
-                    it.isSelected = false
+                if (penaltyFilterUiModel.title == ShopScoreConstant.TITLE_SORT) {
+                    penaltyFilterUiModel.chipsFilerList.find { it.title == SORT_LATEST }?.isSelected = true
+                    penaltyFilterUiModel.chipsFilerList.find { it.title == SORT_OLDEST }?.isSelected = false
+                } else {
+                    penaltyFilterUiModel.chipsFilerList.map {
+                        it.isSelected = false
+                    }
                 }
             }
             _resetFilterResult.value = Success(penaltyFilterUiModel)

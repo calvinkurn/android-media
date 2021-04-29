@@ -14,6 +14,10 @@ interface ItemShopPerformanceListener {
                                          identifierPerformanceDetail: String)
 }
 
+interface CardPotentialPMBenefitListener {
+    fun onItemRMNonEligibleListener(view: View)
+}
+
 interface PeriodDetailPerformanceListener {
     fun onAddCoachMarkItemPeriod(view: View)
 }

@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -19,7 +20,10 @@ import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.detail.PenaltyDetailStepperAdapter
+import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyStatusBottomSheet
+import com.tokopedia.shop.score.penalty.presentation.model.FilterTypePenaltyUiModelWrapper
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyDetailViewModel
 import com.tokopedia.usecase.coroutines.Success
@@ -37,7 +41,6 @@ class ShopPenaltyDetailFragment: BaseDaggerFragment() {
 
     private val impressHolderHelpCenter = ImpressHolder()
 
-    private var statusPenalty = ""
 
     override fun getScreenName(): String = ""
 
@@ -52,7 +55,10 @@ class ShopPenaltyDetailFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        statusPenalty = activity?.intent?.extras?.getString(STATUS_PENALTY) ?: ""
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, activity?.intent?.getStringExtra(KEY_CACHE_MANAGE_ID)) }
+        val itemPenalty = cacheManager?.get(KEY_ITEM_PENALTY_DETAIL, ItemPenaltyUiModel::class.java)
+                ?: ItemPenaltyUiModel()
+        getPenaltyDetail(itemPenalty)
         observePenaltyDetailData()
     }
 
@@ -64,7 +70,10 @@ class ShopPenaltyDetailFragment: BaseDaggerFragment() {
                 }
             }
         }
-        shopPenaltyDetailViewModel.getPenaltyDetailData(statusPenalty)
+    }
+
+    private fun getPenaltyDetail(itemPenaltyUiModel: ItemPenaltyUiModel) {
+        shopPenaltyDetailViewModel.getPenaltyDetailData(itemPenaltyUiModel)
     }
 
     private fun initDataView(shopPenaltyDetailUiModel: ShopPenaltyDetailUiModel) {
@@ -105,7 +114,8 @@ class ShopPenaltyDetailFragment: BaseDaggerFragment() {
     }
 
     companion object {
-        const val STATUS_PENALTY = "EXTRA_STATUS_PENALTY"
+        const val KEY_ITEM_PENALTY_DETAIL = "key_item_penalty_detail"
+        const val KEY_CACHE_MANAGE_ID = "extra_cache_manager_id"
 
         fun newInstance(): ShopPenaltyDetailFragment {
             return ShopPenaltyDetailFragment()

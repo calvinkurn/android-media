@@ -28,6 +28,7 @@ import com.tokopedia.shop.score.common.setTypeGlobalError
 import com.tokopedia.shop.score.common.toggle
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.adapter.*
+import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPenaltyViewHolder
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyDateFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.model.*
@@ -139,6 +140,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
                 ?: 0
         viewModelShopPenalty.setSortTypeFilterData(Pair(sortBy, typeId))
         endlessRecyclerViewScrollListener.resetState()
+        penaltyPageAdapter.hidePenaltyData()
         penaltyPageAdapter.removePenaltyNotFound()
         penaltyPageAdapter.setPenaltyLoading()
     }
@@ -159,6 +161,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         val typeId = sortFilterItemWrapperList?.find { it.isSelected }?.idFilter ?: 0
         viewModelShopPenalty.setTypeFilterData(typeId)
         endlessRecyclerViewScrollListener.resetState()
+        penaltyPageAdapter.hidePenaltyData()
         penaltyPageAdapter.removePenaltyNotFound()
         penaltyPageAdapter.setPenaltyLoading()
     }
@@ -172,6 +175,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             "${startDate.second} - ${endDate.second}"
         }
         tvPeriodDetailPenalty?.text = getString(R.string.period_date_detail_penalty, date)
+        penaltyPageAdapter.hidePenaltyData()
         penaltyPageAdapter.removePenaltyNotFound()
         viewModelShopPenalty.setDateFilterData(Pair(startDate.first, endDate.first))
         viewModelShopPenalty.getDataPenalty()
@@ -179,9 +183,11 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         endlessRecyclerViewScrollListener.resetState()
     }
 
-    override fun onItemPenaltyClick(statusPenalty: String) {
+    override fun onItemPenaltyClick(itemPenaltyUiModel: ItemPenaltyUiModel) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
-        intent.putExtra(ShopPenaltyDetailFragment.STATUS_PENALTY, statusPenalty)
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+        cacheManager?.put(ShopPenaltyDetailFragment.KEY_ITEM_PENALTY_DETAIL, itemPenaltyUiModel)
+        intent.putExtra(ShopPenaltyDetailFragment.KEY_CACHE_MANAGE_ID, cacheManager?.id)
         startActivity(intent)
     }
 
@@ -292,24 +298,29 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
                 is Fail -> {
                     containerShimmerPenalty?.hide()
                     setupGlobalErrorState(it.throwable)
+                    penaltyPageAdapter.hidePenaltyData()
+                    endlessRecyclerViewScrollListener.resetState()
                 }
             }
         }
     }
 
     private fun onSuccessGetPenaltyListData(data: Triple<List<ItemPenaltyUiModel>, Boolean, Boolean>) {
+        globalErrorPenalty?.hide()
         if (!data.third && data.first.isEmpty()) {
+            penaltyPageAdapter.hideLoading()
             penaltyPageAdapter.setEmptyStatePenalty()
         } else {
             penaltyPageAdapter.removePenaltyNotFound()
+            penaltyPageAdapter.hideLoading()
             penaltyPageAdapter.setPenaltyListDetailData(data.first)
         }
         updateScrollListenerState(data.second)
     }
 
     private fun setupGlobalErrorState(throwable: Throwable) {
-        globalErrorPenalty.show()
-        globalErrorPenalty.setTypeGlobalError(throwable)
+        globalErrorPenalty?.show()
+        globalErrorPenalty?.setTypeGlobalError(throwable)
         globalErrorPenalty?.errorAction?.setOnClickListener {
             onSwipeRefresh()
         }

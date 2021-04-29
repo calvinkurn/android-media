@@ -119,8 +119,10 @@ class PMShopScoreInterruptHelper @Inject constructor() {
 
             workManager.getWorkInfoByIdLiveData(otw.id)
                     .observe(owner) {
-                        if (it.state == WorkInfo.State.SUCCEEDED) {
-                            function(getDataFromWorkerOutput(it.outputData))
+                        it?.let { workInfo ->
+                            if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+                                function(getDataFromWorkerOutput(workInfo.outputData))
+                            }
                         }
                     }
         }

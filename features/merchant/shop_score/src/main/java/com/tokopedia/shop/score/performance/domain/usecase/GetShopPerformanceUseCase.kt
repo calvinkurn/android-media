@@ -6,6 +6,9 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import java.io.IOException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
@@ -147,7 +150,11 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
             }
 
         } catch (e: Throwable) {
-            throw MessageErrorException(e.message)
+            if (e is SocketTimeoutException || e is UnknownHostException) {
+                throw IOException(e.message)
+            } else {
+                throw Exception(e.message)
+            }
         }
 
         return shopScoreWrapperResponse

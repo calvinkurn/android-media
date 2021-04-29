@@ -22,8 +22,14 @@ class PenaltyPageAdapter(penaltyPageAdapterFactory: PenaltyPageAdapterFactory):
         notifyDataSetChanged()
     }
 
+    fun hidePenaltyData() {
+        val itemPenaltySize = visitables.count { it is ItemPenaltyUiModel }
+        visitables.removeAll { it is ItemPenaltyUiModel }
+        notifyItemRangeRemoved(visitables.size, itemPenaltySize)
+    }
+
     fun setPenaltyLoading() {
-        if (visitables.getOrNull(lastIndex) is LoadingMoreModel){
+        if (visitables.getOrNull(lastIndex) !is LoadingMoreModel){
             visitables.add(loadingMoreModel)
             notifyItemInserted(lastIndex)
         }

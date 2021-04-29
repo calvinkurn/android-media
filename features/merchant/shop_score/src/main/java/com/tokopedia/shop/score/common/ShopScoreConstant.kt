@@ -23,6 +23,7 @@ object ShopScoreConstant {
 
     const val COUNT_DAYS_NEW_SELLER = 90
     const val PATTERN_DATE_NEW_SELLER = "dd MMMM yyyy"
+    const val ONE_HUNDRED_PERCENT = 100
 
     const val CHAT_DISCUSSION_REPLY_SPEED_KEY = "chat_and_discussion_reply_speed"
     const val CHAT_DISCUSSION_SPEED_KEY = "chat_and_discussion_reply_rate"
@@ -58,9 +59,13 @@ object ShopScoreConstant {
     const val TITLE_SORT = "Urutkan"
     const val TITLE_TYPE_PENALTY = "Jenis Pelanggaran"
 
-    const val POINTS_NOT_YET_DEDUCTED = "Poin belum dipotong"
-    const val ON_GOING = "Sedang Berlangsung"
+    const val POINTS_NOT_YET_DEDUCTED = "Poin belum terpotong"
+    const val ON_GOING = "Sedang berlangsung"
     const val PENALTY_DONE = "Penalty Selesai"
+
+    const val FINISHED_IN = "Selesai di"
+    const val SINCE = "Sejak"
+    const val START = "Mulai"
 
     const val VIDEO_YOUTUBE_ID = "MjbnDFmWbZk"
 
@@ -68,6 +73,7 @@ object ShopScoreConstant {
     const val HELP_URL = "https://www.tokopedia.com/help"
 
     const val PATTERN_DATE_TEXT = "dd MMMM yyyy"
+    const val PATTERN_PENALTY_DATE_TEXT = "dd MMM yyyy"
 
     const val SHOP_INFO_URL = "https://seller.tokopedia.com/shop-score-info"
     const val EMPTY_STATE_PENALTY_URL = "https://images.tokopedia.net/img/android/shop_score/ic_empty_state_penalty@2x.png"
