@@ -21,6 +21,9 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_NEW_SELLER
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_PERIOD_DATE
 import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_IDENTIFIER
+import com.tokopedia.shop.score.common.ShopScoreConstant.PM_PRO_BENEFIT_URL_1
+import com.tokopedia.shop.score.common.ShopScoreConstant.PM_PRO_BENEFIT_URL_2
+import com.tokopedia.shop.score.common.ShopScoreConstant.PM_PRO_BENEFIT_URL_3
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.READ_TIPS_MORE_INFO_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SET_OPERATIONAL_HOUR_SHOP_URL
@@ -167,6 +170,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     }
                 }
             }
+            add(mapToSectionPMPro(shopInfoPeriodUiModel))
         }
         return shopScoreVisitableList
     }
@@ -437,6 +441,31 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                         ))
                     }
                 })
+    }
+
+    private fun mapToSectionPMPro(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): SectionPotentialPMProUiModel {
+        return SectionPotentialPMProUiModel(potentialPMProPMBenefitList = mapToItemPMProBenefit(), transitionEndDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT))
+    }
+
+    private fun mapToItemPMProBenefit(): List<SectionPotentialPMProUiModel.ItemPMProBenefitUIModel> {
+        val itemPotentialPMBenefitList = mutableListOf<SectionPotentialPMProUiModel.ItemPMProBenefitUIModel>()
+        itemPotentialPMBenefitList.apply {
+            add(SectionPotentialPMProUiModel.ItemPMProBenefitUIModel(
+                    iconPotentialPMProUrl = PM_PRO_BENEFIT_URL_1,
+                    titlePotentialPMPro = R.string.title_item_benefit_1_pm_pro
+            ))
+
+            add(SectionPotentialPMProUiModel.ItemPMProBenefitUIModel(
+                    iconPotentialPMProUrl = PM_PRO_BENEFIT_URL_2,
+                    titlePotentialPMPro = R.string.title_item_benefit_2_pm_pro
+            ))
+
+            add(SectionPotentialPMProUiModel.ItemPMProBenefitUIModel(
+                    iconPotentialPMProUrl = PM_PRO_BENEFIT_URL_3,
+                    titlePotentialPMPro = R.string.title_item_benefit_3_pm_pro
+            ))
+        }
+        return itemPotentialPMBenefitList
     }
 
     private fun mapToItemPotentialBenefit(): List<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> {

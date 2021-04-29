@@ -18,6 +18,10 @@ interface CardPotentialPMBenefitListener {
     fun onItemRMNonEligibleListener(view: View)
 }
 
+interface ItemStatusPMProListener {
+    fun onItemPMProListener(view: View)
+}
+
 interface PeriodDetailPerformanceListener {
     fun onAddCoachMarkItemPeriod(view: View)
 }

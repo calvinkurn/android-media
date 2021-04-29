@@ -40,7 +40,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceListener, ItemShopPerformanceListener,
         ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
         ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, ItemHeaderShopPerformanceListener, SectionFaqListener,
-        PeriodDetailPerformanceListener, GlobalErrorListener, CardPotentialPMBenefitListener {
+        PeriodDetailPerformanceListener, GlobalErrorListener, CardPotentialPMBenefitListener, ItemStatusPMProListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -56,7 +56,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceAdapterTypeFactory(this, this,
                 this, this,
                 this, this, this,
-                this, this, this, this)
+                this, this,
+                this, this, this)
     }
 
     private val shopPerformanceAdapter by lazy { ShopPerformanceAdapter(shopPerformanceAdapterTypeFactory) }
@@ -248,6 +249,20 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     override fun onViewItemPowerMerchantListener(view: View) {
         val coachMarkPM = coachMarkItems.find { it.title == getString(R.string.title_coachmark_shop_score_3) }
         if (coachMarkPM == null) {
+            coachMarkItems.add(CoachMark2Item(
+                    view,
+                    getString(R.string.title_coachmark_shop_score_3),
+                    getString(R.string.desc_coachmark_shop_score_3),
+                    position = CoachMark2.POSITION_TOP))
+        }
+    }
+
+    /**
+     * ItemStatusPMProListener
+     */
+    override fun onItemPMProListener(view: View) {
+        val coachMarkPMPro = coachMarkItems.find { it.title == getString(R.string.title_coachmark_shop_score_3) }
+        if (coachMarkPMPro == null) {
             coachMarkItems.add(CoachMark2Item(
                     view,
                     getString(R.string.title_coachmark_shop_score_3),
