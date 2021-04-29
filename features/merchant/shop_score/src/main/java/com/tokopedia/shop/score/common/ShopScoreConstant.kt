@@ -45,11 +45,17 @@ object ShopScoreConstant {
     const val BG_GREEN_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_green_timer@3x.png"
     const val BG_ORANGE_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_orange_timer@3x.png"
 
+    const val PM_PRO_BENEFIT_URL_1 = "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_pm_pro1@3x.png"
+    const val PM_PRO_BENEFIT_URL_2 = "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_pm_pro2@3x.png"
+    const val PM_PRO_BENEFIT_URL_3 = "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_pm_pro3@3x.png"
+
+
     const val PENALTY_IDENTIFIER = "penalty"
 
     const val minuteText = "menit"
     const val percentText = "%"
     const val dayText = "hari"
+    const val peopleText = "orang"
 
     const val SORT_LATEST = "Paling Baru"
     const val SORT_OLDEST = "Paling Lama"
@@ -69,13 +75,13 @@ object ShopScoreConstant {
 
     const val VIDEO_YOUTUBE_ID = "MjbnDFmWbZk"
 
-    const val SYSTEM_PENALTY_HELP_URL = "https://www.tokopedia.com/help/article/bagaimana-sistem-penalti-pengurangan-reputasi-toko"
+    const val SYSTEM_PENALTY_HELP_URL = "https://seller.tokopedia.com/edu/penalti-toko"
     const val HELP_URL = "https://www.tokopedia.com/help"
 
     const val PATTERN_DATE_TEXT = "dd MMMM yyyy"
     const val PATTERN_PENALTY_DATE_TEXT = "dd MMM yyyy"
 
-    const val SHOP_INFO_URL = "https://seller.tokopedia.com/shop-score-info"
+    const val SHOP_INFO_URL = "https://seller.tokopedia.com/edu/skor-toko"
     const val EMPTY_STATE_PENALTY_URL = "https://images.tokopedia.net/img/android/shop_score/ic_empty_state_penalty@2x.png"
 
     const val PATTERN_PENALTY_DATE_PARAM = "yyyy-MM-dd"

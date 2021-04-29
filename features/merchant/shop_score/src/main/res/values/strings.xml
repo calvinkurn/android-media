@@ -44,7 +44,14 @@
 
     <string name="title_header_rm_section">Selamat! Karena Performamu, kamu bisa daftar Power Merchant</string>
 
+    <!--> PM Pro -->
+    <string name="title_potential_pm_pro">Selamat, berdasarkan Performamu, kamu terpilih menjadi Power Merchant Pro!</string>
+    <string name="desc_potential_pm_pro">Hingga %s, Power Merchant akan tetap aktif walaupun skor di bawah 60, ya.</string>
 
+    <string name="title_benefit_pm_pro">Toko dengan Power Merchant PRO punya keuntungan eksklusif:</string>
+    <string name="title_item_benefit_1_pm_pro">Bebas Ongkir dengan biaya lebih rendah</string>
+    <string name="title_item_benefit_2_pm_pro">Dapat badge Power Merchant Pro untuk tingkatkan kepercayaan pembeli</string>
+    <string name="title_item_benefit_3_pm_pro">Dapat prioritas dukungan marketing</string>
 
     <!-- Example Text for display preview -->
     <string name="example_score_performance">80</string>
@@ -208,8 +215,7 @@
     <string name="desc_shop_score_performance">Skor Performa Toko adalah standar penilaian Performa Toko berdasarkan kombinasi parameter yang digunakan untuk memberikan penilaian yang objektif bagi Seller.</string>
 
     <string name="title_shop_score_benefit">Apa keuntungan skor Performa Toko yang baru bagi toko saya?</string>
-    <string name="desc_shop_score_benefit">Skor Performa Toko yang baru memberikan panduan performa yang lebih jelas dan transparan untuk Seller. Tidak hanya itu, benefit yang diberikan juga jauh lebih baik jika dibandingkan dengan skema yang lama.
-        &lt;br /&gt;&lt;br /&gt;Untuk Power Merchant, Seller dengan grade yang tinggi akan mendapatkan benefit yang lebih baik dibandingkan dengan grade yang lebih rendah.</string>
+    <string name="desc_shop_score_benefit">Skor Performa Toko yang baru memberikan panduan performa yang lebih jelas dan transparan untuk Seller. Tidak hanya itu, keuntungan yang diberikan juga jauh lebih baik jika dibandingkan dengan skema yang lama. </string>
 
     <string name="title_shop_score_calculation">Bagaimana cara Tokopedia melakukan perhitungan skor Performa Toko?</string>
     <string name="desc_section_1_shop_score_calculation">Pertama, Tokopedia akan melakukan kalkulasi perhitungan level pada Seller untuk menggolongkan Seller di antara 4 Level.</string>
@@ -280,5 +286,9 @@
     <string name="title_penalty_filter_bottom_sheet">Filter</string>
     <string name="reset_filter_penalty">Reset</string>
     <string name="close_youtube">Close</string>
+    <string name="desc_pm_section_new_seller">Pertahankan Performa Tokomu agar bisa memberikan yang terbaik untuk pembelimu!</string>
+    <string name="title_header_rm_section_new_seller">Gabung ke Power Merchant untuk tarik banyak calon pembeli, yuk!</string>
+    <string name="desc_potential_rm_section_new_seller"><![CDATA[Tingkatkan penjualan & kepercayaan pembeli dengan berbagai fitur untuk memaksimalkan bisnis.]]></string>
+    <string name="text_see_all_benefit_pm_pro">Lihat Semua Keuntungannya</string>
 
 </resources>

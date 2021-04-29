@@ -105,7 +105,7 @@
                 app:layout_constraintStart_toStartOf="@id/tv_title_content_pm_section"
                 app:layout_constraintTop_toBottomOf="@id/tv_title_content_pm_section"
                 app:typographyType="body_2"
-                tools:text="@string/example_desc_pm_status" />
+                tools:text="@string/desc_content_pm_section" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

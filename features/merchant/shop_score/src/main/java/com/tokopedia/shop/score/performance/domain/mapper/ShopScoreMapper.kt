@@ -2,6 +2,7 @@ package com.tokopedia.shop.score.performance.domain.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.gm.common.constant.NEW_SELLER_DAYS
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -21,6 +22,9 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_NEW_SELLER
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_PERIOD_DATE
 import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_IDENTIFIER
+import com.tokopedia.shop.score.common.ShopScoreConstant.PM_PRO_BENEFIT_URL_1
+import com.tokopedia.shop.score.common.ShopScoreConstant.PM_PRO_BENEFIT_URL_2
+import com.tokopedia.shop.score.common.ShopScoreConstant.PM_PRO_BENEFIT_URL_3
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.READ_TIPS_MORE_INFO_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SET_OPERATIONAL_HOUR_SHOP_URL
@@ -46,6 +50,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS_UR
 import com.tokopedia.shop.score.common.ShopScoreConstant.TOTAL_BUYER_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.dayText
 import com.tokopedia.shop.score.common.ShopScoreConstant.minuteText
+import com.tokopedia.shop.score.common.ShopScoreConstant.peopleText
 import com.tokopedia.shop.score.common.ShopScoreConstant.percentText
 import com.tokopedia.shop.score.common.formatDate
 import com.tokopedia.shop.score.common.getLocale
@@ -156,14 +161,16 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                         if (shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD) {
                             add(mapToTransitionPeriodReliefUiModel(shopInfoPeriodUiModel.periodEndDate))
                         }
-                        add(ItemStatusPMUiModel())
+                        add(mapToItemPMUiModel(shopAge))
                     }
                 }
                 else -> {
-                    if (isEligiblePM == true) {
-                        add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel))
-                    } else {
-                        add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
+                    if (shopAge >= SHOP_AGE_SIXTY) {
+                        if (isEligiblePM == true) {
+                            add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, shopAge))
+                        } else {
+                            add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
+                        }
                     }
                 }
             }
@@ -197,10 +204,12 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                         ?: ""
                             }
                             it.shopScore >= SHOP_SCORE_EIGHTY -> {
-                                titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_more_80) ?: ""
+                                titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_more_80)
+                                        ?: ""
                             }
                         }
-                        descHeaderShopService = context?.getString(R.string.desc_tenure_new_seller) ?: ""
+                        descHeaderShopService = context?.getString(R.string.desc_tenure_new_seller)
+                                ?: ""
                     }
                 }
                 else -> {
@@ -369,8 +378,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 val (targetDetailPerformanceText, parameterItemDetailPerformance) =
                         when (shopScoreDetail.identifier) {
                             CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> Pair("${shopScoreDetail.nextMinValue} $minuteText", minuteText)
-                            ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY, TOTAL_BUYER_KEY ->
+                            ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY ->
                                 Pair("${shopScoreDetail.nextMinValue * ONE_HUNDRED_PERCENT}$percentText", percentText)
+                            TOTAL_BUYER_KEY -> Pair("${shopScoreDetail.nextMinValue} $peopleText", peopleText)
                             OPEN_TOKOPEDIA_SELLER_KEY -> Pair("${shopScoreDetail.nextMinValue} $dayText", dayText)
                             else -> Pair("-", "")
                         }
@@ -411,6 +421,15 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return copyItemDetail
     }
 
+    private fun mapToItemPMUiModel(shopAge: Int): ItemStatusPMUiModel {
+        val isNewSeller = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
+        return ItemStatusPMUiModel(isNewSeller = isNewSeller,
+                descPM = if (isNewSeller)
+                    context?.getString(R.string.desc_pm_section_new_seller).orEmpty()
+                else
+                    context?.getString(R.string.desc_content_pm_section).orEmpty())
+    }
+
     private fun mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): SectionPotentialPMBenefitUiModel {
         return SectionPotentialPMBenefitUiModel(potentialPMBenefitList = mapToItemPotentialBenefit(),
                 transitionEndDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT))
@@ -439,6 +458,31 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 })
     }
 
+    private fun mapToSectionPMPro(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): SectionPotentialPMProUiModel {
+        return SectionPotentialPMProUiModel(potentialPMProPMBenefitList = mapToItemPMProBenefit(), transitionEndDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT))
+    }
+
+    private fun mapToItemPMProBenefit(): List<SectionPotentialPMProUiModel.ItemPMProBenefitUIModel> {
+        val itemPotentialPMBenefitList = mutableListOf<SectionPotentialPMProUiModel.ItemPMProBenefitUIModel>()
+        itemPotentialPMBenefitList.apply {
+            add(SectionPotentialPMProUiModel.ItemPMProBenefitUIModel(
+                    iconPotentialPMProUrl = PM_PRO_BENEFIT_URL_1,
+                    titlePotentialPMPro = R.string.title_item_benefit_1_pm_pro
+            ))
+
+            add(SectionPotentialPMProUiModel.ItemPMProBenefitUIModel(
+                    iconPotentialPMProUrl = PM_PRO_BENEFIT_URL_2,
+                    titlePotentialPMPro = R.string.title_item_benefit_2_pm_pro
+            ))
+
+            add(SectionPotentialPMProUiModel.ItemPMProBenefitUIModel(
+                    iconPotentialPMProUrl = PM_PRO_BENEFIT_URL_3,
+                    titlePotentialPMPro = R.string.title_item_benefit_3_pm_pro
+            ))
+        }
+        return itemPotentialPMBenefitList
+    }
+
     private fun mapToItemPotentialBenefit(): List<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> {
         val itemPotentialPMBenefitList = mutableListOf<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel>()
         itemPotentialPMBenefitList.apply {
@@ -460,10 +504,21 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return itemPotentialPMBenefitList
     }
 
-    private fun mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel)
+    private fun mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel, shopAge: Int)
             : ItemStatusRMUiModel {
         val updateDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT)
-        return ItemStatusRMUiModel(updateDatePotential = updateDate)
+        val isNewSeller = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
+        return ItemStatusRMUiModel(updateDatePotential = updateDate,
+                titleRMEligible =
+                if (isNewSeller)
+                    context?.getString(R.string.title_header_rm_section_new_seller).orEmpty()
+                else
+                    context?.getString(R.string.title_header_rm_section).orEmpty(),
+                descRMEligible = if (isNewSeller)
+                    context?.getString(R.string.desc_potential_rm_section_new_seller).orEmpty()
+                else
+                    context?.getString(R.string.desc_potential_eligible_power_merchant, updateDate).orEmpty()
+        )
     }
 
     private fun mapToCardTooltipLevel(level: Int = 0): List<CardTooltipLevelUiModel> {
