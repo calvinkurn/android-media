@@ -190,7 +190,7 @@ class TrackingHotelUtil {
     }
 
     fun hotelViewHotelListMapImpression(context: Context?, destination: String, destinationType: String, searchParam: SearchParam,
-                                     products: List<Property>, currentListDataSize: Int, screenName: String) {
+                                        products: List<Property>, currentIndex: Int, screenName: String) {
         val roomCount = searchParam.room
         val guestCount = searchParam.guest.adult
         val duration = HotelUtils.countDayDifference(searchParam.checkIn, searchParam.checkOut)
@@ -199,7 +199,7 @@ class TrackingHotelUtil {
         val eventLabel = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(searchParam.checkIn)} - $duration"
         map.addGeneralEvent(PRODUCT_VIEW, VIEW_HOTEL_NAME_ON_MAP_IMPRESSION, eventLabel)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(CURRENCY_LABEL, IDR_LABEL, IMPRESSIONS_LABEL,
-                getPropertyList(products, currentListDataSize = currentListDataSize))
+                getPropertyList(products, currentIndex = currentIndex))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
@@ -221,7 +221,7 @@ class TrackingHotelUtil {
     }
 
     fun chooseHotelFromMap(context: Context?, destination: String, destinationType: String, searchParam: SearchParam,
-                    property: Property, position: Int, screenName: String) {
+                           property: Property, position: Int, screenName: String) {
         val roomCount = searchParam.room
         val guestCount = searchParam.guest.adult
         val duration = HotelUtils.countDayDifference(searchParam.checkIn, searchParam.checkOut)

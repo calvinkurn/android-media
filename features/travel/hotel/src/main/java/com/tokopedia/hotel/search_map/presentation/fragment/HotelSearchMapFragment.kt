@@ -679,7 +679,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                             searchDestinationType,
                             hotelSearchMapViewModel.searchParam,
                             listOf(adapterCardList.data[currentPosition]),
-                            adapterCardList.dataSize,
+                            0,
                             SEARCH_SCREEN_NAME)
 
                 }
