@@ -49,6 +49,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.SPEED_SENDING_ORDERS_UR
 import com.tokopedia.shop.score.common.ShopScoreConstant.TOTAL_BUYER_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.dayText
 import com.tokopedia.shop.score.common.ShopScoreConstant.minuteText
+import com.tokopedia.shop.score.common.ShopScoreConstant.peopleText
 import com.tokopedia.shop.score.common.ShopScoreConstant.percentText
 import com.tokopedia.shop.score.common.formatDate
 import com.tokopedia.shop.score.common.getLocale
@@ -373,8 +374,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 val (targetDetailPerformanceText, parameterItemDetailPerformance) =
                         when (shopScoreDetail.identifier) {
                             CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> Pair("${shopScoreDetail.nextMinValue} $minuteText", minuteText)
-                            ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY, TOTAL_BUYER_KEY ->
+                            ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY ->
                                 Pair("${shopScoreDetail.nextMinValue * ONE_HUNDRED_PERCENT}$percentText", percentText)
+                            TOTAL_BUYER_KEY -> Pair("${shopScoreDetail.nextMinValue}", peopleText)
                             OPEN_TOKOPEDIA_SELLER_KEY -> Pair("${shopScoreDetail.nextMinValue} $dayText", dayText)
                             else -> Pair("-", "")
                         }

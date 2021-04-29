@@ -55,6 +55,7 @@ object ShopScoreConstant {
     const val minuteText = "menit"
     const val percentText = "%"
     const val dayText = "hari"
+    const val peopleText = "orang"
 
     const val SORT_LATEST = "Paling Baru"
     const val SORT_OLDEST = "Paling Lama"
