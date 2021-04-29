@@ -1,5 +1,6 @@
 package com.tokopedia.catalog.analytics
 
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics.KEYS.Companion.CATALOG_URL_KEY
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.track.TrackApp
@@ -27,7 +28,7 @@ object CatalogDetailAnalytics {
         }
     }
 
-    fun trackEventImpressionProductCard(catalogId : String, userId : String ,
+    fun trackEventImpressionProductCard(catalogId : String, catalogUrl : String, userId : String ,
                                         item : CatalogProductItem, position : String,
                                         searchFilterMap : HashMap<String,String>?){
         val list = ArrayList<Map<String, Any>>()
@@ -35,7 +36,7 @@ object CatalogDetailAnalytics {
         productMap[KEYS.BRAND] = KEYS.NONE_OTHER
         productMap[KEYS.CATEGORY] = item.categoryId.toString()
         productMap[KEYS.ID] = item.id
-        productMap[KEYS.LIST] = ""
+        productMap[KEYS.LIST] = getCatalogTrackingUrl(catalogUrl)
         productMap[KEYS.NAME] = item.name
         productMap[KEYS.DIMENSION61] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
         productMap[KEYS.POSITION] = position
@@ -60,7 +61,7 @@ object CatalogDetailAnalytics {
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
-    fun trackProductCardClick(catalogId : String, userId : String ,
+    fun trackProductCardClick(catalogId : String,  catalogUrl : String, userId : String ,
                               item : CatalogProductItem, position : String ,
                               searchFilterMap : HashMap<String,String>?) {
         val list = ArrayList<Map<String, Any>>()
@@ -68,7 +69,7 @@ object CatalogDetailAnalytics {
         productMap[KEYS.BRAND] = KEYS.NONE_OTHER
         productMap[KEYS.CATEGORY] = item.categoryId.toString()
         productMap[KEYS.ID] = item.id
-        productMap[KEYS.LIST] = ""
+        productMap[KEYS.LIST] = getCatalogTrackingUrl(catalogUrl)
         productMap[KEYS.NAME] = item.name
         productMap[KEYS.DIMENSION61] = CatalogUtil.getSortFilterAnalytics(searchFilterMap)
         productMap[KEYS.POSITION] = position
@@ -80,7 +81,7 @@ object CatalogDetailAnalytics {
         val eCommerce = mapOf(
                 KEYS.CLICK to mapOf(
                         KEYS.ACTION_FIELD to mapOf(
-                                KEYS.LIST to ""
+                                KEYS.LIST to getCatalogTrackingUrl(catalogUrl)
                         ),
                         KEYS.PRODUCTS to list
                 )
@@ -169,6 +170,17 @@ object CatalogDetailAnalytics {
             const val CAMPAIGN_CODE = "campaignCode"
 
             const val IDR = "IDR"
+
+            const val CATALOG_URL_KEY = "/catalog/"
         }
+    }
+
+    private fun getCatalogTrackingUrl(catalogUrl : String?) : String {
+        if (!catalogUrl.isNullOrEmpty()){
+            catalogUrl.split(CATALOG_URL_KEY).last().let {
+                return "${CATALOG_URL_KEY}$it"
+            }
+        }
+        return ""
     }
 }

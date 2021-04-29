@@ -350,4 +350,8 @@
 
     <!--Dynamic feature for profile-->
     <string name="title_profile_df">Profile</string>
+
+    <string name="vidpick_app_name">Video Recorder</string>
+    <string name="album">Album</string>
+    <string name="edit_image">Edit Gambar</string>
 </resources>

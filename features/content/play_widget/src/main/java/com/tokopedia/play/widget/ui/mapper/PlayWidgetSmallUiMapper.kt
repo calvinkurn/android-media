@@ -4,6 +4,7 @@ import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import javax.inject.Inject
 
 /**
@@ -11,6 +12,7 @@ import javax.inject.Inject
  */
 class PlayWidgetSmallUiMapper @Inject constructor(
         private val configMapper: PlayWidgetConfigMapper,
+        private val promoLabelMapper: PlayWidgetPromoLabelMapper,
         private val videoMapper: PlayWidgetVideoMapper
 ) : PlayWidgetMapper {
 
@@ -47,7 +49,7 @@ class PlayWidgetSmallUiMapper @Inject constructor(
             startTime = item.startTime,
             totalView = item.stats.view.formatted,
             totalViewVisible = item.video.isShowTotalView,
-            hasPromo = item.config.hasPromo,
+            promoType = promoLabelMapper.mapWidgetPromoType(item.config.promoLabels),
             video = videoMapper.mapWidgetItemVideo(item.video)
     )
 }

@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -23,6 +24,7 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayPiPAnalytic
+import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.animation.PlayDelayFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
@@ -61,7 +63,6 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.changeConstraint
@@ -170,6 +171,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private lateinit var onStatsInfoGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
+    private lateinit var productAnalyticHelper: ProductAnalyticHelper
+
     /**
      * Animation
      */
@@ -193,6 +196,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initAnalytic()
         setupView(view)
         setupInsets(view)
         setupObserve()
@@ -208,6 +212,7 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onPause() {
         super.onPause()
         isOpened = false
+        productAnalyticHelper.sendImpressedFeaturedProducts()
         analytic.getTrackingQueue().sendAll()
     }
 
@@ -375,6 +380,10 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Product Featured View Component Listener
      */
+    override fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>) {
+        productAnalyticHelper.trackImpressedProducts(products)
+    }
+
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, position))
         analytic.clickFeaturedProduct(product, position)
@@ -388,6 +397,10 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Pinned Voucher View Component Listener
      */
+    override fun onVoucherImpressed(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel, position: Int) {
+        analytic.impressionHighlightedVoucher(voucher)
+    }
+
     override fun onVoucherClicked(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel) {
         if (voucher.code.isBlank() || voucher.code.isEmpty()) return
 
@@ -402,6 +415,10 @@ class PlayUserInteractionFragment @Inject constructor(
         scope.launch(dispatchers.immediate) {
             invalidateChatListBounds(maxTopPosition = maxTopPosition)
         }
+    }
+
+    private fun initAnalytic() {
+        productAnalyticHelper = ProductAnalyticHelper(analytic)
     }
 
     private fun setupView(view: View) {
@@ -634,10 +651,7 @@ class PlayUserInteractionFragment @Inject constructor(
             pinnedViewOnStateChanged(pinnedModel = it)
             productFeaturedViewOnStateChanged(pinnedModel = it)
             quickReplyViewOnStateChanged(pinnedModel = it)
-            if (it is PlayPinnedUiModel.PinnedProduct
-                    && it.productTags is PlayProductTagsUiModel.Complete) {
-                sendTrackerImpressionPinnedProduct(it.productTags)
-            }
+
         })
     }
 
@@ -868,7 +882,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openProfilePage(partnerId: Long) {
-        openPageByApplink(ApplinkConst.PROFILE, partnerId.toString())
+        openPageByApplink(ApplinkConst.PROFILE, partnerId.toString(), pipMode = true)
     }
 
     private fun doClickChatBox() {
@@ -930,7 +944,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false, pipMode: Boolean = false) {
-        if (pipMode) {
+        if (pipMode && playViewModel.isPiPAllowed && !playViewModel.isFreezeOrBanned) {
             playViewModel.requestPiPBrowsingPage(
                     OpenApplinkUiModel(applink = applink, params = params.toList(), requestCode, shouldFinish)
             )
@@ -969,7 +983,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun openProductSheet() {
         playViewModel.onShowProductSheet(productSheetMaxHeight)
-        sendTrackerImpressionBottomSheetProduct()
     }
 
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
@@ -1066,26 +1079,6 @@ class PlayUserInteractionFragment @Inject constructor(
         scope.launch {
             delay(AUTO_SWIPE_DELAY)
             playNavigation.navigateToNextPage()
-        }
-    }
-
-    private fun sendTrackerImpressionPinnedProduct(productTags: PlayProductTagsUiModel.Complete) {
-        val highlightedVouchers = productTags.voucherList.filterIsInstance<MerchantVoucherUiModel>()
-        val featuredProducts = productTags.productList.filterIsInstance<PlayProductUiModel.Product>()
-        analytic.impressionHighlightedVoucher(highlightedVouchers)
-        analytic.impressionFeaturedProduct(featuredProducts, productTags.basicInfo.maxFeaturedProducts)
-    }
-
-    private fun sendTrackerImpressionBottomSheetProduct() {
-        val playResult = playViewModel.observableProductSheetContent.value
-        if (playResult is PlayResult.Success) {
-            val productTag = playResult.data
-            if (productTag.productList.first() is PlayProductUiModel.Product) {
-                with(analytic) { impressionProductList(productTag.productList.filterIsInstance<PlayProductUiModel.Product>()) }
-            }
-            if (productTag.voucherList.isNotEmpty()) {
-                analytic.impressionPrivateVoucher(productTag.voucherList.filterIsInstance<MerchantVoucherUiModel>())
-            }
         }
     }
 

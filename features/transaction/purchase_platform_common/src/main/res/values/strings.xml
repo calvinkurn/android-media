@@ -31,4 +31,6 @@
     <string name="pp_cd_image_shop_badge_with_shop_type">image shop badge %1$s</string>
     <string name="pp_cd_shop_type_official_store">official store</string>
     <string name="pp_cd_shop_type_power_merchant">power merchant</string>
+    <string name="pp_cd_image_badge_bo">image badge bebas ongkir</string>
+    <string name="pp_cd_image_badge_boe">image badge bebas ongkir extra</string>
 </resources>

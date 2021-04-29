@@ -1,18 +1,16 @@
 package com.tokopedia.autocomplete.initialstate
 
-import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewModel
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
-import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchViewModel
-import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewModel
-import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
-import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
-import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductListDataView
-import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductLineTitleDataView
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
-import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewModel
-import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewModel
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchDataView
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleDataView
+import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleDataView
+import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchDataView
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreDataView
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleDataView
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
+import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleDataView
+import com.tokopedia.autocomplete.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocomplete.jsonToObject
 import io.mockk.every
 import io.mockk.verify
@@ -55,22 +53,22 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     private fun `Then verify visitable list`() {
         val visitableList = slotVisitableList.captured
 
-        Assert.assertTrue(visitableList[0] is RecentViewTitleViewModel)
-        Assert.assertTrue(visitableList[1] is RecentViewViewModel)
-        Assert.assertTrue(visitableList[2] is RecentSearchTitleViewModel)
-        Assert.assertTrue(visitableList[3] is RecentSearchViewModel)
-        Assert.assertTrue(visitableList[4] is PopularSearchTitleViewModel)
-        Assert.assertTrue(visitableList[5] is PopularSearchViewModel)
-        Assert.assertTrue(visitableList[6] is DynamicInitialStateTitleViewModel)
-        Assert.assertTrue(visitableList[7] is DynamicInitialStateSearchViewModel)
+        Assert.assertTrue(visitableList[0] is RecentViewTitleDataView)
+        Assert.assertTrue(visitableList[1] is RecentViewDataView)
+        Assert.assertTrue(visitableList[2] is RecentSearchTitleDataView)
+        Assert.assertTrue(visitableList[3] is RecentSearchDataView)
+        Assert.assertTrue(visitableList[4] is PopularSearchTitleDataView)
+        Assert.assertTrue(visitableList[5] is PopularSearchDataView)
+        Assert.assertTrue(visitableList[6] is DynamicInitialStateTitleDataView)
+        Assert.assertTrue(visitableList[7] is DynamicInitialStateSearchDataView)
         Assert.assertTrue(visitableList.size == 8)
 
-        `Then verify RecentSearchViewModel only have n items`(3, visitableList[3] as RecentSearchViewModel)
+        `Then verify RecentSearchDataView only have n items`(3, visitableList[3] as RecentSearchDataView)
     }
 
-    private fun `Then verify RecentSearchViewModel only have n items`(expectedRecentSearchSize: Int, viewModel: RecentSearchViewModel) {
-        assert(viewModel.list.size == expectedRecentSearchSize) {
-            "RecentSearchViewModel should only have $expectedRecentSearchSize items, actual size is ${viewModel.list.size}"
+    private fun `Then verify RecentSearchDataView only have n items`(expectedRecentSearchSize: Int, dataView: RecentSearchDataView) {
+        assert(dataView.list.size == expectedRecentSearchSize) {
+            "RecentSearchDataView should only have $expectedRecentSearchSize items, actual size is ${dataView.list.size}"
         }
     }
 
@@ -80,22 +78,22 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         `Test Initial State Data`(initialStateData)
 
         `Then verify initial state view will call showInitialStateResult behavior`()
-        `Then verify visitable list has SeeMoreViewModel`()
+        `Then verify visitable list has RecentSearchSeeMoreDataView`()
     }
 
-    private fun `Then verify visitable list has SeeMoreViewModel`() {
+    private fun `Then verify visitable list has RecentSearchSeeMoreDataView`() {
         val visitableList = slotVisitableList.captured
 
-        Assert.assertTrue(visitableList[0] is CuratedCampaignViewModel)
-        Assert.assertTrue(visitableList[1] is RecentViewTitleViewModel)
-        Assert.assertTrue(visitableList[2] is RecentViewViewModel)
-        Assert.assertTrue(visitableList[3] is RecentSearchTitleViewModel)
-        Assert.assertTrue(visitableList[4] is RecentSearchViewModel)
-        Assert.assertTrue(visitableList[5] is RecentSearchSeeMoreViewModel)
-        Assert.assertTrue(visitableList[6] is PopularSearchTitleViewModel)
-        Assert.assertTrue(visitableList[7] is PopularSearchViewModel)
-        Assert.assertTrue(visitableList[8] is DynamicInitialStateTitleViewModel)
-        Assert.assertTrue(visitableList[9] is DynamicInitialStateSearchViewModel)
+        Assert.assertTrue(visitableList[0] is CuratedCampaignDataView)
+        Assert.assertTrue(visitableList[1] is RecentViewTitleDataView)
+        Assert.assertTrue(visitableList[2] is RecentViewDataView)
+        Assert.assertTrue(visitableList[3] is RecentSearchTitleDataView)
+        Assert.assertTrue(visitableList[4] is RecentSearchDataView)
+        Assert.assertTrue(visitableList[5] is RecentSearchSeeMoreDataView)
+        Assert.assertTrue(visitableList[6] is PopularSearchTitleDataView)
+        Assert.assertTrue(visitableList[7] is PopularSearchDataView)
+        Assert.assertTrue(visitableList[8] is DynamicInitialStateTitleDataView)
+        Assert.assertTrue(visitableList[9] is DynamicInitialStateSearchDataView)
         /*
             Backend not ready, will be implemented after the new field is already in production.
             Estimated release on 3.124
@@ -104,7 +102,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
 //        Assert.assertTrue(visitableList[11] is InitialStateProductListDataView)
         Assert.assertTrue(visitableList.size == 10)
 
-        `Then verify RecentSearchViewModel only have n items`(3, visitableList[4] as RecentSearchViewModel)
+        `Then verify RecentSearchDataView only have n items`(3, visitableList[4] as RecentSearchDataView)
     }
 
     @Test

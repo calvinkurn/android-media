@@ -28,7 +28,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.shop.feed.view.adapter.holder.EmptyFeedShopSellerMigrationViewHolder
@@ -72,7 +72,7 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
         return BannerViewHolder.LAYOUT
     }
 
-    override fun type(topadsShopViewModel: TopadsShopViewModel): Int {
+    override fun type(topadsShopUiModel: TopadsShopUiModel): Int {
         return TopadsShopViewHolder.LAYOUT
     }
 

@@ -27,6 +27,7 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import java.io.File
@@ -312,6 +313,20 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
             }
         })
         shimmeringPlaceholder?.start()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        if (null != heightRatio) {
+            var width = measuredWidth
+            var height = measuredHeight
+            when {
+                width > 0 -> height = (width * heightRatio.orZero()).toInt()
+                height > 0 -> width = (height / heightRatio.orZero()).toInt()
+                else -> return
+            }
+            setMeasuredDimension(width, height)
+        }
     }
 
     override fun onDraw(canvas: Canvas?) {

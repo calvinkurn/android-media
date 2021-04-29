@@ -60,6 +60,8 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
@@ -1080,9 +1082,14 @@ open class HomeRevampViewModel @Inject constructor(
                     }
                     homeData?.let {
                         if (it.list.isEmpty()) {
-                            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_empty_update;" +
-                                    "reason='Visitables is empty';" +
-                                    "data='isProcessingDynamicChannel=${it.isProcessingDynamicChannle}, isProcessingAtf=${it.isProcessingAtf}, isFirstPage=${it.isFirstPage}, isCache=${it.isCache}'")
+                            ServerLogger.log(Priority.P2, "HOME_STATUS",
+                                    mapOf("type" to "revamp_empty_update",
+                                            "reason" to "Visitables is empty",
+                                            "isProcessingDynamicChannel" to it.isProcessingDynamicChannle.toString(),
+                                            "isProcessingAtf" to it.isProcessingAtf.toString(),
+                                            "isFirstPage" to it.isFirstPage.toString(),
+                                            "isCache" to it.isCache.toString()
+                                    ))
                         }
                         homeProcessor.get().sendWithQueueMethod(UpdateHomeData(it, this@HomeRevampViewModel))
 
@@ -1121,15 +1128,19 @@ open class HomeRevampViewModel @Inject constructor(
         }) {
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
-            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_init_flow;reason='${it.message?:""
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${stackTrace
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+            ServerLogger.log(Priority.P2, "HOME_STATUS",
+                    mapOf("type" to "revamp_error_init_flow",
+                            "reason" to (it.message ?: "".take(ConstantKey.HomeTimber.MAX_LIMIT)),
+                            "data" to stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
+                    ))
         }.invokeOnCompletion {
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
-            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_cancelled_init_flow;reason='${it?.message?:"No error propagated"
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${stackTrace
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+            ServerLogger.log(Priority.P2, "HOME_STATUS",
+                    mapOf("type" to "revamp_cancelled_init_flow",
+                            "reason" to (it?.message ?: "No error propagated").take(ConstantKey.HomeTimber.MAX_LIMIT),
+                            "data" to stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
+                    ))
             homeFlowDataCancelled = true
         }
     }
@@ -1157,9 +1168,11 @@ open class HomeRevampViewModel @Inject constructor(
             homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
 
-            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_refresh;reason='${it.message?:""
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+            ServerLogger.log(Priority.P2, "HOME_STATUS",
+                    mapOf("type" to "revamp_error_refresh",
+                            "reason" to (it.message ?: "").take(ConstantKey.HomeTimber.MAX_LIMIT),
+                            "data" to Log.getStackTraceString(it).take(ConstantKey.HomeTimber.MAX_LIMIT)
+                    ))
         }
     }
 
@@ -1570,6 +1583,7 @@ open class HomeRevampViewModel @Inject constructor(
             try {
                 walletContent = getWalletBalanceContent()
             } catch (e: Exception) {
+                homeBalanceModel.isTokopointsOrOvoFailed = true
                 homeBalanceModel.mapErrorWallet()
                 newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
             }
@@ -1577,6 +1591,7 @@ open class HomeRevampViewModel @Inject constructor(
             try {
                 tokopointContent = getTokopointBalanceContent()
             } catch (e: Exception) {
+                homeBalanceModel.isTokopointsOrOvoFailed = true
                 homeBalanceModel.mapErrorTokopoints()
                 newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_ERROR))
             }
@@ -1598,6 +1613,7 @@ open class HomeRevampViewModel @Inject constructor(
                             )
                         }
                     } catch (e: Exception) {
+                        homeBalanceModel.isTokopointsOrOvoFailed = true
                         newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
                     }
                 } else {

@@ -42,8 +42,6 @@ object ApplinkConstInternalContent {
     const val HOST_PLAY_BROADCASTER = "play-broadcaster"
     const val INTERNAL_PLAY_BROADCASTER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_BROADCASTER"
 
-    const val INTERNAL_VIDEO_PICKER = "${DeeplinkConstant.SCHEME_INTERNAL}://global/video-picker"
-
     private const val ARGS_FROM_APPLINK = "isFromApplink"
     private const val ARGS_FROM_APPLINK_VALUE = "true"
     private const val ARG_MEDIA_INDEX = "media_index"

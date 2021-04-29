@@ -236,7 +236,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>) {
+    override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>, error: String) {
         showErrorToaster()
     }
 

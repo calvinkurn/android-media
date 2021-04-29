@@ -5,6 +5,7 @@ if (project.hasProperty("auto-patch")) {
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'robust'
 apply plugin: 'io.hansel.preprocessor'
+apply plugin: 'newrelic'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 apply from: '../tools/set_debug_tools.gradle'
@@ -180,6 +181,7 @@ dependencies {
     implementation project(rootProject.ext.features.pushNotificationCommon)
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
+    implementation project(rootProject.ext.libraries.encryption)
 
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -236,7 +238,6 @@ dependencies {
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.features.homecredit)
     implementation project(rootProject.ext.libraries.imageuploader)
-    implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.weaver)
@@ -262,6 +263,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.withdraw)
+    implementation project(rootProject.ext.features.mediaCommon)
 
     implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.loginregister)
@@ -296,6 +298,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
+    implementation rootProject.ext.miscDependencies.newRelic
 
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.debugToolsDependencies.chuck
@@ -310,6 +313,8 @@ dependencies {
     } else {
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
+
+    implementation project(rootProject.ext.libraries.pageInfoPusher)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.preReleaseInspector)

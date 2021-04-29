@@ -12,6 +12,8 @@ import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
 import com.tokopedia.core.gcm.notification.applink.ApplinkPushNotificationBuildAndShow;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
@@ -22,6 +24,7 @@ import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -59,9 +62,11 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     @Override
     public void notifyReceiverBackgroundMessage(Bundle data) {
-        Timber.w("P2#PUSH_NOTIF_UNUSED#AppNotificationReceiverUIBackground_Seller;isSupported='%s';isDedicated='%s'",
-                isSupportedApplinkNotification(data),
-                isDedicatedNotification(data));
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "AppNotificationReceiverUIBackground_Seller");
+        messageMap.put("isSupported", String.valueOf(isSupportedApplinkNotification(data)));
+        messageMap.put("isDedicated", String.valueOf(isDedicatedNotification(data)));
+        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
         if (isSupportedApplinkNotification(data)) {
             handleApplinkNotification(data);
         } else if (isDedicatedNotification(data)) {

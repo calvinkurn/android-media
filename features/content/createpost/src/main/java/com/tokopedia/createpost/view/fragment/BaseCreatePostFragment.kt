@@ -22,7 +22,7 @@ import com.tokopedia.affiliatecommon.analytics.AffiliateEventTracking
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_VIDEO_PICKER
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkItem
@@ -138,7 +138,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     override fun initInjector() {
         DaggerCreatePostComponent.builder()
-                .createPostModule(CreatePostModule(context!!.applicationContext))
+                .createPostModule(CreatePostModule(requireContext().applicationContext))
                 .build()
                 .inject(this)
     }
@@ -403,11 +403,11 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(VIEW_MODEL) ?: CreatePostViewModel()
         } else if (arguments != null) {
-            if (arguments!!.getString(DRAFT_ID) != null) {
-                initDraft(arguments!!)
+            if (requireArguments().getString(DRAFT_ID) != null) {
+                initDraft(requireArguments())
             } else {
-                viewModel.postId = arguments!!.getString(PARAM_POST_ID, "")
-                viewModel.authorType = arguments!!.getString(PARAM_TYPE, "")
+                viewModel.postId = requireArguments().getString(PARAM_POST_ID, "")
+                viewModel.authorType = requireArguments().getString(PARAM_TYPE, "")
 
                 initProductIds()
             }
@@ -417,13 +417,13 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     protected fun initProductIds() {
-        val productIds = arguments!!.getString(PARAM_PRODUCT_ID, "")
+        val productIds = requireArguments().getString(PARAM_PRODUCT_ID, "")
                 .split(',')
                 .filterNot { it == "-1" }
                 .toMutableList()
                 .apply { removeAll { it.trim() == "" } }
 
-        val adIds = arguments!!.getString(PARAM_AD_ID, "")
+        val adIds = requireArguments().getString(PARAM_AD_ID, "")
                 .split(',')
                 .filterNot { it == "-1" }
                 .toMutableList()
@@ -590,7 +590,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun goToVideoPicker() {
         activity?.let { activity ->
-            val intent = RouteManager.getIntent(activity, INTERNAL_VIDEO_PICKER)
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.VIDEO_PICKER)
             intent.putExtra(IMAGE_EXIST, viewModel.fileImageList.any { it.type == MediaType.VIDEO })
             startActivityForResult(intent, REQUEST_VIDEO_PICKER)
         }

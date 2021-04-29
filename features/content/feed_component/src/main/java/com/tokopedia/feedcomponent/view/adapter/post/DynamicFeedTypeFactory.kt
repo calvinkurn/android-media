@@ -9,7 +9,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 
 /**
  * @author by milhamj on 03/12/18.
@@ -21,7 +21,7 @@ interface DynamicFeedTypeFactory {
 
     fun type(bannerViewModel: BannerViewModel): Int
 
-    fun type(topadsShopViewModel: TopadsShopViewModel): Int
+    fun type(topadsShopUiModel: TopadsShopUiModel): Int
 
     fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int
 
