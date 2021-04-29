@@ -30,6 +30,7 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker;
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct;
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
@@ -62,7 +63,6 @@ import com.tokopedia.feedcomponent.view.widget.PostStatisticBottomSheet;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
@@ -448,7 +448,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void reportAction(int adapterposition, boolean canDeleteComment, String commentId) {
+    public void reportAction(int adapterposition, boolean canDeleteComment, String id, String reasonType, String commentId) {
 
     }
 
@@ -994,6 +994,21 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onTopAdsViewImpression(@NotNull String bannerId, @NotNull String imageUrl) {
+
+    }
+
+    @Override
+    public void onImageClicked(@NotNull String activityId) {
+
+    }
+
+    @Override
+    public void onPostTagItemBSClick(int positionInFeed, @NotNull String redirectUrl, @NotNull FeedXProduct postTagItem, int itemPosition) {
+
+    }
+
+    @Override
+    public void onTagClicked(int postId, @NotNull List<FeedXProduct> products, @NotNull DynamicPostViewHolder.DynamicPostListener listener) {
 
     }
 }

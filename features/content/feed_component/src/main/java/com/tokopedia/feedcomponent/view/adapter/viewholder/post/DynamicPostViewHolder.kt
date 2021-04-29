@@ -17,6 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
@@ -538,6 +539,8 @@ open class DynamicPostViewHolder(v: View,
 
         fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int)
 
+        fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int)
+
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
 
         fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String)
@@ -545,5 +548,9 @@ open class DynamicPostViewHolder(v: View,
         fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel)
 
         fun onReadMoreClicked(trackingPostModel: TrackingPostModel)
+
+        fun onImageClicked(activityId: String)
+
+        fun onTagClicked(postId: Int, products: List<FeedXProduct>,listener: DynamicPostListener)
     }
 }

@@ -98,31 +98,31 @@ object DynamicFeedNewMapper {
 
     private fun mapCardHighlight(posts: MutableList<Visitable<*>>, feed: FeedXCard) {
         val contentList: MutableList<HighlightCardViewModel> = mapHighlightContent(feed)
+        //todo
         if (contentList.isNotEmpty()) {
-            posts.add(HighlightViewModel(
-                    feed.id,
-                    Title(text = feed.title),
-                    contentList
-            ))
+            val dynamicPostUiModel = DynamicPostUiModel(feed.copyPostData())
+            posts.add(dynamicPostUiModel)
+//            posts.add(HighlightViewModel(
+//                    feed.id,
+//                    Title(text = feed.title),
+//                    contentList
+//            ))
         }
     }
 
     private fun mapHighlightContent(cardHighlight: FeedXCard): MutableList<HighlightCardViewModel> {
         val list: MutableList<HighlightCardViewModel> = ArrayList()
-        for (item in cardHighlight.items) {
-            if (item.products.isNotEmpty()) {
-                val product = item.products[0]
-                list.add(HighlightCardViewModel(
-                        product.id.toIntOrZero(),
+        for (item in cardHighlight.products) {
+            list.add(HighlightCardViewModel(
+                        item.id.toIntOrZero(),
                         0,
-                        product.coverURL,
-                        product.appLink,
+                        item.coverURL,
+                        item.appLink,
                         "",
                         header = getHeader(cardHighlight),
                         footer = getFooter(cardHighlight)
                 ))
             }
-        }
         return list
     }
 

@@ -23,8 +23,9 @@ public class KolCommentNewViewHolder extends AbstractViewHolder<KolCommentNewMod
 
     private KolCommentNewCardView.Listener commentViewListener = new KolCommentNewCardView.Listener() {
         @Override
-        public void onReport(@NotNull String commentId, boolean canDeleteComment) {
-            viewListener.reportAction(getAdapterPosition(), canDeleteComment, commentId);
+        public void onReport(@NotNull String reasonType, @NotNull String reasonDesc, @NotNull String id, boolean canDeleteComment) {
+            viewListener.reportAction(getAdapterPosition(), canDeleteComment, id,reasonType,reasonDesc);
+
         }
 
         @Override

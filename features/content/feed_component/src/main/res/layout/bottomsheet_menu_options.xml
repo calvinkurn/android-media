@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:text="@string/feed_component_report_it"
         android:textColor="@color/Red_R600"
@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/dp_18"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:text="@string/feed_component_unfollow"
         android:textColor="@color/Unify_N700_96"
@@ -37,7 +37,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/feed_component_dp_0.5"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:background="@color/Unify_N75" />
+        android:background="@color/Unify_N75"
+        android:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/not_interested"
@@ -45,9 +46,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/dp_18"
         android:text="@string/feed_component_not_interested"
         android:textColor="@color/Unify_N700_96"
+        android:visibility="gone"
         app:typographyType="heading_5" />
 
 </LinearLayout>

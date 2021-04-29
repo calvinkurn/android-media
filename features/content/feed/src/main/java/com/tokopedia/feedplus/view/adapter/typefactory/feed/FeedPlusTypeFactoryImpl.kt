@@ -133,7 +133,7 @@ class FeedPlusTypeFactoryImpl(
     }
 
     override fun type(highlightViewModel: HighlightViewModel): Int {
-        return HighlightViewHolder.LAYOUT
+        return DynamicPostNewViewHolder.LAYOUT
     }
 
     override fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int {
@@ -200,7 +200,7 @@ class FeedPlusTypeFactoryImpl(
             )
         } else if (type == ShimmerViewHolder.LAYOUT) {
             viewHolder = ShimmerViewHolder(view)
-        } else if (type == DynamicPostNewViewHolder.LAYOUT) {
+        } else if (type == DynamicPostNewViewHolder.LAYOUT || type == HighlightViewHolder.LAYOUT) {
             viewHolder = DynamicPostNewViewHolder(view, userSession, dynamicPostListener)
         } else
             viewHolder = super.createViewHolder(view, type)

@@ -12,6 +12,13 @@
     <string name="post_time_hour">\u0020pukul\u0020</string>
     <string name="post_time_yesterday_at">Kemarin pukul\u0020</string>
 
+    <!--Post Time new-->
+    <string name="post_time_just_now_new">1 mnt</string>
+    <string name="post_time_minutes_ago_new"> mnt</string>
+    <string name="post_time_hours_ago_new">jam </string>
+    <string name="post_time_hour_new">\u0020pukul\u0020</string>
+    <string name="post_time_yesterday_at_new">Kemarin pukul\u0020</string>
+
     <!-- Action -->
     <string name="feed_content_reported">Konten berhasil dilaporkan</string>
 
@@ -82,6 +89,8 @@
     <string name="feed_try_again">Coba Lagi</string>
 
     <string name="feed_header_time_format" formatted="false">%s • %s</string>
+    <string name="feed_header_time_new" formatted="false">%s</string>
+
     <string name="feed_header_separator" formatted="false">•</string>
 
     <string name="content_desc_authorImage">image profil</string>
@@ -90,6 +99,7 @@
     <string name="content_desc_headerAction">button action</string>
     <string name="content_desc_menu">button menu</string>
     <string name="content_desc_caption">text caption</string>
+    <string name="content_product_bs_title">Dalam foto ini</string>
 
     <string name="feed_color_pojo_dms_hex_black_value">#000000</string>
     <string name="feed_color_pojo_dms_hex_white_value">#fff</string>
@@ -119,5 +129,15 @@
     <string name="feed_component_see_all_comments">Lihat Semua %s Komentar</string>
     <string name="feed_component_add_comment">Comment as %s…</string>
     <string name="feed_component_read_more_button">Selengkapnya</string>
+
+    <!-- REPORT BOTTOMSHEET -->
+    <string name="feed_common_reason_type_spam" translatable="false">spam</string>
+    <string name="feed_common_reason_type_abuse" translatable="false">abuse</string>
+    <string name="feed_common_reason_type_inappropriate" translatable="false">inappropriate image</string>
+    <string name="feed_common_reason_type_others" translatable="false">custom</string>
+    <string name="feed_common_reason_desc_spam">Ini adalah spam</string>
+    <string name="feed_common_reason_desc_abuse">Mengandung SARA, kekerasan, diskriminasi, vulgar, ancaman dan pelanggaran nilai/norma sosial</string>
+    <string name="feed_common_reason_desc_inappropriate">Mengandung pornografi</string>
+    <string name="feed_common_reason_desc_others">Lainnya</string>
 
 </resources>

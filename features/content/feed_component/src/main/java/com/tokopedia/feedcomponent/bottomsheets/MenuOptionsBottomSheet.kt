@@ -1,6 +1,5 @@
 package com.tokopedia.feedcomponent.bottomsheets
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,15 +11,15 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_menu_options.*
 
 class MenuOptionsBottomSheet : BottomSheetUnify() {
-    private var menuOptionsClickInterface: MenuOptionsClickInterface? = null
     private var followText: String = ""
     private var isRecommendedPost: Boolean = false
+    var onReport: (() -> Unit)? = null
+    var onDeleteorFollow:(()->Unit)? = null
 
     companion object {
-        fun newInstance(context: Context, @StringRes followText: Int, isRecommendedPost: Boolean = false): MenuOptionsBottomSheet {
+        fun newInstance(followText: String, isRecommendedPost: Boolean = false): MenuOptionsBottomSheet {
             return MenuOptionsBottomSheet().apply {
-                this.menuOptionsClickInterface = context as? MenuOptionsClickInterface
-                this.followText = getString(followText)
+                this.followText = followText
                 this.isRecommendedPost = isRecommendedPost
             }
         }
@@ -37,19 +36,12 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
         not_interested.showWithCondition(isRecommendedPost)
         follow.text = followText
         follow.setOnClickListener {
-            menuOptionsClickInterface?.onFollow()
+            onDeleteorFollow?.invoke()
+            dismiss()
         }
         report.setOnClickListener {
-            menuOptionsClickInterface?.onReport()
+            onReport?.invoke()
+            dismiss()
         }
-        not_interested.setOnClickListener {
-            menuOptionsClickInterface?.onNotInterested()
-        }
-    }
-
-    interface MenuOptionsClickInterface {
-        fun onReport()
-        fun onFollow()
-        fun onNotInterested()
     }
 }

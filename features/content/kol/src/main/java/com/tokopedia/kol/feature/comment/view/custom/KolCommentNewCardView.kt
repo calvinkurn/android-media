@@ -10,7 +10,6 @@ import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -24,9 +23,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.feedcomponent.bottomsheets.MenuOptionsBottomSheet
+import com.tokopedia.feedcomponent.bottomsheets.ReportBottomSheet
 import com.tokopedia.feedcomponent.util.MentionTextHelper
 import com.tokopedia.feedcomponent.util.TagConverter
-import com.tokopedia.feedcomponent.util.util.ReportDeleteBS
 import com.tokopedia.feedcomponent.view.custom.MentionEditText
 import com.tokopedia.feedcomponent.view.span.MentionSpan
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
@@ -35,7 +35,6 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -44,7 +43,7 @@ import java.net.URLEncoder
 class KolCommentNewCardView : LinearLayout {
 
     private companion object {
-        const val SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+        //const val SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
     }
 
     constructor(context: Context) : super(context)
@@ -143,7 +142,7 @@ class KolCommentNewCardView : LinearLayout {
         likeBtn.gone()
         val tagConverter = TagConverter()
         val commentText: String = buildString {
-            if (badge.isVisible) append(SPACE)
+          //  if (badge.isVisible) append(SPACE)
             append(getCommentText(element))
         }
         comment.text = tagConverter.convertToLinkifyHashtag(
@@ -174,12 +173,12 @@ class KolCommentNewCardView : LinearLayout {
     private fun handleGeneralComment(element: KolCommentNewModel) {
         btnReply.visible()
         time.visible()
-        likeBtn.visible()
+        likeBtn.gone()
         comment.movementMethod = LinkMovementMethod.getInstance()
 
         val commentText: Spanned = if (element.isOfficial) {
             badge.visibility = View.VISIBLE
-            MethodChecker.fromHtml(SPACE + getCommentText(element))
+            MethodChecker.fromHtml( getCommentText(element))
         } else {
             badge.visibility = View.GONE
             MethodChecker.fromHtml(getCommentText(element))
@@ -193,20 +192,22 @@ class KolCommentNewCardView : LinearLayout {
         )
 
         setOnLongClickListener {
-            val sheet = ReportDeleteBS.newInstance()
-            sheet.onDeleteClick = {
-                listener?.onDeleteComment(element.id ?: "0", element.canDeleteComment()) ?: false
+            val sheet = MenuOptionsBottomSheet.newInstance("Hapus", false)
+            sheet.show((context as FragmentActivity).supportFragmentManager, "")
+            sheet.onReport = {
+                    ReportBottomSheet.newInstance(element.id?.toInt()
+                            ?: 0, context = object : ReportBottomSheet.OnReportOptionsClick {
+                        override fun onOption1(reasonType: String, reasonDesc: String) {
+                            listener?.onReport(reasonType,reasonDesc,element.id?:"0",element.canDeleteComment())
+//                            listener?.onDeleteComment(element.id ?: "0", element.canDeleteComment())
+//                                    ?: false
+                        }
+                    }).show((context as FragmentActivity).supportFragmentManager, "")
             }
-            sheet.onReportClick = {
-                listener?.onReport(element.id ?: "0", element.canDeleteComment())
+            sheet.onDeleteorFollow = {
+                listener?.onDeleteComment(element.id ?: "0", element.canDeleteComment())
+                        ?: false
             }
-            sheet.show((context as FragmentActivity).supportFragmentManager)
-            false
-        }
-
-        setOnTouchListener { v, e ->
-            if (e.action == MotionEvent.ACTION_DOWN || e.action == MotionEvent.ACTION_UP || e.action == MotionEvent.ACTION_MOVE)
-                listener?.onReport(element.id ?: "0", element.canDeleteComment())
             false
         }
 
@@ -245,6 +246,6 @@ class KolCommentNewCardView : LinearLayout {
         fun onDeleteComment(commentId: String, canDeleteComment: Boolean): Boolean
         fun onTokopediaUrlClicked(url: String)
         fun onReplyClicked(mentionableUser: MentionableUserViewModel)
-        fun onReport(s: String, canDeleteComment: Boolean)
+        fun onReport(reasonType: String,reasonDesc: String,id:String, canDeleteComment: Boolean)
     }
 }

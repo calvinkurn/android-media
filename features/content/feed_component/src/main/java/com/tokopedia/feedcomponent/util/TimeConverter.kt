@@ -25,6 +25,10 @@ object TimeConverter {
         return generateTime(context, postTime, DEFAULT_FEED_FORMAT)
     }
 
+    fun generateTimeNew(context: Context, postTime: String): String {
+        return generateTimeNew(context, postTime, DEFAULT_FEED_FORMAT)
+    }
+
     private fun generateTime(context: Context, postTime: String, format: String): String {
         return try {
             val localeID = Locale(LANGUAGE_ID, COUNTRY_ID)
@@ -39,6 +43,68 @@ object TimeConverter {
             postTime
         }
 
+    }
+
+
+    private fun generateTimeNew(context: Context, postTime: String, format: String): String {
+        return try {
+            val localeID = Locale(LANGUAGE_ID, COUNTRY_ID)
+
+            val sdf = SimpleDateFormat(format, localeID)
+            sdf.timeZone = TimeZone.getDefault()
+            val postDate = sdf.parse(postTime)
+            getFormattedTimeNew(context, postDate)
+
+        } catch (e: ParseException) {
+            Timber.d(e)
+            postTime
+        }
+
+    }
+
+    private fun getFormattedTimeNew(context: Context, postDate: Date): String {
+        val localeID = Locale(LANGUAGE_ID, COUNTRY_ID)
+        val currentTime = Date()
+
+        val calPostDate = Calendar.getInstance()
+        calPostDate.time = postDate
+
+        val calCurrentTime = Calendar.getInstance()
+        calCurrentTime.time = currentTime
+
+        val sdfHour = SimpleDateFormat(HOUR_MINUTE_FORMAT, localeID)
+        val sdfDay = SimpleDateFormat(DAY_MONTH_FORMAT, localeID)
+        val sdfYear = SimpleDateFormat(DAY_MONTH_YEAR_FORMAT, localeID)
+
+        return if (getDifference(currentTime, postDate) < 60) {
+            context.getString(R.string.post_time_just_now_new)
+
+        } else if (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE < 60) {
+            (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE).toString()
+                    .plus(context.getString(R.string.post_time_minutes_ago_new))
+
+        } else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR < 24
+                && calCurrentTime.get(Calendar.DAY_OF_MONTH) == calPostDate.get(Calendar.DAY_OF_MONTH)
+                && calCurrentTime.get(Calendar.MONTH) == calPostDate.get(Calendar.MONTH)
+                && calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)) {
+            (getDifference(currentTime, postDate) / MINUTES_IN_HOUR).toString()
+                    .plus(context.getString(R.string.post_time_hours_ago_new))
+
+        } else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR > 24 &&
+                getDifference(currentTime, postDate) / MINUTES_IN_HOUR < (24*7)
+                && calCurrentTime.get(Calendar.MONTH) == calPostDate.get(Calendar.MONTH)
+                && calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)
+                && isYesterday(calCurrentTime.get(Calendar.DAY_OF_MONTH), calPostDate.get(Calendar.DAY_OF_MONTH))) {
+            context.getString(R.string.post_time_yesterday_at)
+                    .plus(sdfHour.format(postDate))
+
+        } else if (calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR))
+            sdfDay.format(postDate)
+                    .plus(context.getString(R.string.post_time_hour))
+                    .plus(sdfHour.format(postDate))
+        else {
+            sdfYear.format(postDate)
+        }
     }
 
     private fun getFormattedTime(context: Context, postDate: Date): String {

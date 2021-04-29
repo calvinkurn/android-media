@@ -4,85 +4,169 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/report_header"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:text="@string/feed_component_report_Header"
-        android:textColor="@color/Unify_N700_96"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/report_description"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:text="@string/feed_component_report_description"
-        android:textColor="@color/Unify_N700_68"
-        app:layout_constraintEnd_toEndOf="@id/report_header"
-        app:layout_constraintStart_toStartOf="@id/report_header"
-        app:layout_constraintTop_toBottomOf="@id/report_header"
-        app:typographyType="body_2" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/report_subtext1"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:text="@string/feed_component_report_subtext1"
-        android:textColor="@color/Unify_N700_96"
-        app:layout_constraintEnd_toStartOf="@id/report_subtext1_icon"
-        app:layout_constraintStart_toStartOf="@id/report_header"
-        app:layout_constraintTop_toBottomOf="@id/report_description"
-        app:typographyType="heading_5" />
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/report_subtext1_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:icon_name="CHEVRON_RIGHT"
-        app:layout_constraintBottom_toBottomOf="@id/report_subtext1"
-        app:layout_constraintEnd_toEndOf="@id/report_header"
-        app:layout_constraintHorizontal_bias="1"
-        app:layout_constraintTop_toTopOf="@id/report_subtext1" />
-
-    <View
-        android:id="@+id/divider"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout1"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/feed_component_dp_0.5"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:background="@color/Unify_N75"
-        app:layout_constraintStart_toStartOf="@id/report_subtext1"
-        app:layout_constraintTop_toBottomOf="@id/report_subtext1" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/report_subtext2"
-        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:text="@string/feed_component_report_subtext2"
-        android:textColor="@color/Unify_N700_96"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/report_subtext2_icon"
-        app:layout_constraintStart_toStartOf="@id/report_header"
-        app:layout_constraintTop_toBottomOf="@id/divider"
-        app:typographyType="heading_5" />
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/report_subtext2_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:icon_name="CHEVRON_RIGHT"
-        app:layout_constraintBottom_toBottomOf="@id/report_subtext2"
-        app:layout_constraintEnd_toEndOf="@id/report_header"
-        app:layout_constraintHorizontal_bias="1"
-        app:layout_constraintTop_toTopOf="@id/report_subtext2" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/report_header"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/feed_component_report_Header"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/report_description"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:text="@string/feed_component_report_description"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintEnd_toEndOf="@id/report_header"
+            app:layout_constraintStart_toStartOf="@id/report_header"
+            app:layout_constraintTop_toBottomOf="@id/report_header"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/report_subtext1"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:text="@string/feed_common_reason_desc_spam"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toStartOf="@id/report_subtext1_icon"
+            app:layout_constraintStart_toStartOf="@id/report_header"
+            app:layout_constraintTop_toBottomOf="@id/report_description"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/report_subtext1_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="@id/report_subtext1"
+            app:layout_constraintEnd_toEndOf="@id/report_header"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintTop_toTopOf="@id/report_subtext1" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/feed_component_dp_0.5"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:background="@color/Unify_N75"
+            app:layout_constraintStart_toStartOf="@id/report_subtext1"
+            app:layout_constraintTop_toBottomOf="@id/report_subtext1" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/report_subtext2"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:text="@string/feed_common_reason_desc_abuse"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toStartOf="@id/report_subtext2_icon"
+            app:layout_constraintStart_toStartOf="@id/report_header"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/report_subtext2_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="@id/report_subtext2"
+            app:layout_constraintEnd_toEndOf="@id/report_header"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintTop_toTopOf="@id/report_subtext2" />
+
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/feed_component_dp_0.5"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:background="@color/Unify_N75"
+            app:layout_constraintStart_toStartOf="@id/report_subtext1"
+            app:layout_constraintTop_toBottomOf="@id/report_subtext2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/report_subtext3"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:text="@string/feed_common_reason_desc_inappropriate"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toStartOf="@id/report_subtext3_icon"
+            app:layout_constraintStart_toStartOf="@id/report_header"
+            app:layout_constraintTop_toBottomOf="@id/divider1"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/report_subtext3_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="@id/report_subtext3"
+            app:layout_constraintEnd_toEndOf="@id/report_header"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintTop_toTopOf="@id/report_subtext3" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/feed_component_dp_0.5"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:background="@color/Unify_N75"
+            app:layout_constraintStart_toStartOf="@id/report_subtext1"
+            app:layout_constraintTop_toBottomOf="@id/report_subtext3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/report_subtext4"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:text="@string/feed_common_reason_desc_others"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/report_subtext4_icon"
+            app:layout_constraintStart_toStartOf="@id/report_header"
+            app:layout_constraintTop_toBottomOf="@id/divider2"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/report_subtext4_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="@id/report_subtext4"
+            app:layout_constraintEnd_toEndOf="@id/report_header"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintTop_toTopOf="@id/report_subtext4" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/layout2"
+        layout="@layout/bottomsheet_report_reason_list"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/layout3"
+        layout="@layout/bottomsheet_spam_report"
+        android:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

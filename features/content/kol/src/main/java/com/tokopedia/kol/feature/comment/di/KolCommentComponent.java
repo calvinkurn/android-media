@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.comment.di;
 import com.tokopedia.kol.common.di.KolComponent;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentNewFragment;
+import com.tokopedia.kol.feature.report.di.ContentReportModule;
 
 import dagger.Component;
 

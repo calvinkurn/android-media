@@ -3,6 +3,7 @@ package com.tokopedia.feedcomponent.analytics.tracker
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_FEED_EMPTY
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_LOGGED_IN_STATUS
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.track.TrackApp
@@ -12,7 +13,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import kotlin.collections.HashMap
 import kotlin.collections.List
-
 /**
  * Created by jegul on 2019-08-28.
  */
@@ -33,6 +33,18 @@ class FeedAnalyticTracker
         const val LIST = "list"
         const val CURRENCY_CODE = "currencyCode"
         const val CURRENCY_CODE_IDR = "IDR"
+
+        private const val KEY_EVENT = "event"
+        private const val KEY_EVENT_SCREEN_NAME = "screenName"
+        private const val KEY_OPEN_SCREEN_EVENT = "openScreen"
+        private const val KEY_EVENT_CATEGORY = "eventCategory"
+        private const val KEY_EVENT_ACTION = "eventAction"
+        private const val KEY_EVENT_LABEL = "eventLabel"
+        private const val KEY_BUSINESS_UNIT_EVENT = "businessUnit"
+        private const val KEY_CURRENT_SITE_EVENT = "currentSite"
+        private const val KEY_EVENT_USER_ID = "userId"
+        private const val KEY_SESSION_IRIS = "sessionIris"
+
     }
 
     private object Event {
@@ -103,7 +115,7 @@ class FeedAnalyticTracker
         const val PARAM_ACTION_LOGIN = "login"
         const val PARAM_ACTION_NONLOGIN = "nonlogin"
         const val ACTION_FEED_RECOM_USER = "avatar - %s recommendation - %s"
-        const val ACTION_CLICK_FEED_AVATAR = "click avatar - %s - %s - %s"
+        const val ACTION_CLICK_FEED_AVATAR = "click - %s - %s "
         const val ACTION_CLICK_MEDIAPREVIEW_AVATAR = "click - %s - media preview - %s"
         const val ACTION_CLICK_TOPADS_PROMOTED = "click - shop - topads shop recommendation - %s"
         const val FORMAT_TWO_PARAM = "%s - %s"
@@ -176,6 +188,9 @@ class FeedAnalyticTracker
         const val PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER ="{usertype}"
     }
 
+    private fun getIrisSessionId(): String = "1234"
+
+
     //    https://docs.google.com/spreadsheets/d/1GZuybElS3H9_H_wI3z7f4Q8Y8eGZhaFnE-OK9DnYsk4/edit#gid=956196839
     //    screenshot 47
     fun eventContentDetailClickShopNameAvatar(activityId: String, shopId: String) {
@@ -212,14 +227,61 @@ class FeedAnalyticTracker
 
     //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
     //    screenshot 19
+    //https://mynakama.tokopedia.com/datatracker/requestdetail/view/942
+    //1
     fun eventClickFeedAvatar(activityId: String, activityName: String, targetId: String, targetType: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CATEGORY_FEED_TIMELINE,
-                String.format(Action.ACTION_CLICK_FEED_AVATAR, targetType, activityName,
-                        if (userSessionInterface.isLoggedIn()) Action.PARAM_ACTION_LOGIN else Action.PARAM_ACTION_NONLOGIN),
-                String.format(Action.FORMAT_TWO_PARAM, targetId, activityId)
-        )
+        val map = mapOf(
+                KEY_EVENT to Event.CLICK_FEED,
+                KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
+                KEY_EVENT_ACTION to String.format(Action.ACTION_CLICK_FEED_AVATAR,"shop","sgc image"),
+                KEY_EVENT_LABEL to  String.format(Action.FORMAT_TWO_PARAM, activityId, userSessionInterface.shopId),
+                KEY_BUSINESS_UNIT_EVENT to "content",
+                KEY_CURRENT_SITE_EVENT to "tokopediamarketplace",
+                KEY_SESSION_IRIS to getIrisSessionId(),
+                KEY_EVENT_USER_ID to userSessionInterface.userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+
+    }
+
+    fun evenClickMenu(activityId: String) {
+        val map = mapOf(
+                KEY_EVENT to Event.CLICK_FEED,
+                KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
+                KEY_EVENT_ACTION to String.format(Action.ACTION_CLICK_FEED_AVATAR,"three dots","sgc image"),
+                KEY_EVENT_LABEL to  String.format(Action.FORMAT_TWO_PARAM, activityId, userSessionInterface.shopId),
+                KEY_BUSINESS_UNIT_EVENT to "content",
+                KEY_CURRENT_SITE_EVENT to "tokopediamarketplace",
+                KEY_SESSION_IRIS to getIrisSessionId(),
+                KEY_EVENT_USER_ID to userSessionInterface.userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+
+
+    fun eventTagClicked(activityId: String) {
+        val map = mapOf(
+                KEY_EVENT to Event.CLICK_FEED,
+                KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
+                KEY_EVENT_ACTION to String.format(Action.ACTION_CLICK_FEED_AVATAR,"lihat produk","sgc image"),
+                KEY_EVENT_LABEL to  String.format(Action.FORMAT_TWO_PARAM, activityId, userSessionInterface.shopId),
+                KEY_BUSINESS_UNIT_EVENT to "content",
+                KEY_CURRENT_SITE_EVENT to "tokopediamarketplace",
+                KEY_SESSION_IRIS to getIrisSessionId(),
+                KEY_EVENT_USER_ID to userSessionInterface.userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun eventImageClicked(activityId: String) {
+        val map = mapOf(
+                KEY_EVENT to Event.CLICK_FEED,
+                KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
+                KEY_EVENT_ACTION to String.format(Action.ACTION_CLICK_FEED_AVATAR,"image","sgc image"),
+                KEY_EVENT_LABEL to  String.format(Action.FORMAT_TWO_PARAM, activityId, userSessionInterface.shopId),
+                KEY_BUSINESS_UNIT_EVENT to "content",
+                KEY_CURRENT_SITE_EVENT to "tokopediamarketplace",
+                KEY_SESSION_IRIS to getIrisSessionId(),
+                KEY_EVENT_USER_ID to userSessionInterface.userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
@@ -1221,6 +1283,7 @@ class FeedAnalyticTracker
         ))
         return dataList
     }
+
 
     class ProductItem(id: Int, name: String, price: Int, brand: String, category: String,
                   variant: String, list: String, position: Int) {

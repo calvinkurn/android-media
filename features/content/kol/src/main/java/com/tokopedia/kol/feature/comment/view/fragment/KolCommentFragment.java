@@ -379,7 +379,7 @@ public class KolCommentFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void reportAction(int adapterposition, boolean canDeleteComment, String commentId) {
+    public void reportAction(int adapterposition, boolean canDeleteComment, String id, String reasonType, String commentId) {
 
     }
 

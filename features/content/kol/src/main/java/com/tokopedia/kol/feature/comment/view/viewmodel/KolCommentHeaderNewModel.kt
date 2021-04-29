@@ -35,15 +35,6 @@ class KolCommentHeaderNewModel : KolCommentNewModel, Visitable<KolCommentTypeFac
     }
 
     companion object {
-        val CREATOR: Parcelable.Creator<KolCommentHeaderNewModel?> = object : Parcelable.Creator<KolCommentHeaderNewModel?> {
-            override fun createFromParcel(source: Parcel): KolCommentHeaderNewModel? {
-                return KolCommentHeaderNewModel(source)
-            }
-
-            override fun newArray(size: Int): Array<KolCommentHeaderNewModel?> {
-                return arrayOfNulls(size)
-            }
-        }
     }
 
     override fun type(typeFactory: KolCommentTypeFactory?): Int {

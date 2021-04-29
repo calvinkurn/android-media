@@ -28,8 +28,10 @@ public class KolCommentHeaderNewViewHolder extends AbstractViewHolder<KolComment
 
     private KolCommentNewCardView.Listener commentViewListener = new KolCommentNewCardView.Listener() {
 
+
         @Override
-        public void onReport(@NotNull String s, boolean canDeleteComment) {
+        public void onReport(@NotNull String reasonType, @NotNull String reasonDesc, @NotNull String id, boolean canDeleteComment) {
+
         }
 
         @Override

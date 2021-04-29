@@ -11,8 +11,8 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import javax.inject.Inject
 
 const val FEED_X_QUERY: String = """
-query feedxhome(${'$'}cursor: String!, ${'$'}limit: Int!) {
-  feedXHome(req: {cursor: ${'$'}cursor, limit: ${'$'}limit}) {
+query feedxhome(${'$'}req: FeedXHomeRequest!) {
+  feedXHome(req:${'$'}req) {
     items {
       __typename
       ... on FeedXCardBanners {
@@ -70,16 +70,22 @@ query feedxhome(${'$'}cursor: String!, ${'$'}limit: Int!) {
           star
           price
           priceFmt
-          priceStruck
-          priceStruckFmt
+          isDiscount
           discount
           discountFmt
-          badgeTexts
-          badgeImageURLs
+          priceOriginal
+          priceOriginalFmt
+          priceDiscount
+          priceDiscountFmt
+          totalSold
+          isBebasOngkir
+          bebasOngkirStatus
+          bebasOngkirURL
           mods
         }
         hashtagAppLinkFmt
         hashtagWebLinkFmt
+        reportable
         like {
           label
           count
@@ -148,12 +154,17 @@ query feedxhome(${'$'}cursor: String!, ${'$'}limit: Int!) {
             star
             price
             priceFmt
-            priceStruck
-            priceStruckFmt
+            isDiscount
             discount
             discountFmt
-            badgeTexts
-            badgeImageURLs
+            priceOriginal
+            priceOriginalFmt
+            priceDiscount
+            priceDiscountFmt
+            totalSold
+            isBebasOngkir
+            bebasOngkirStatus
+            bebasOngkirURL
             mods
           }
           mods
@@ -176,6 +187,8 @@ query feedxhome(${'$'}cursor: String!, ${'$'}limit: Int!) {
         title
         subTitle
         text
+        appLink
+        webLink
         products {
           id
           name
@@ -185,12 +198,17 @@ query feedxhome(${'$'}cursor: String!, ${'$'}limit: Int!) {
           star
           price
           priceFmt
-          priceStruck
-          priceStruckFmt
+          isDiscount
           discount
           discountFmt
-          badgeTexts
-          badgeImageURLs
+          priceOriginal
+          priceOriginalFmt
+          priceDiscount
+          priceDiscountFmt
+          totalSold
+          isBebasOngkir
+          bebasOngkirStatus
+          bebasOngkirURL
           mods
         }
         like {
@@ -243,6 +261,7 @@ query feedxhome(${'$'}cursor: String!, ${'$'}limit: Int!) {
         mods
       }
     }
+    mods
     pagination {
       totalData
       cursor
@@ -250,6 +269,7 @@ query feedxhome(${'$'}cursor: String!, ${'$'}limit: Int!) {
     }
   }
 }
+
 """
 
 private const val CURSOR: String = "cursor"
@@ -270,7 +290,8 @@ class GetDynamicFeedNewUseCase @Inject constructor(graphqlRepository: GraphqlRep
                 CURSOR to cursor,
                 LIMIT to limit
         )
-        setRequestParams(queryMap)
+        val map = mutableMapOf("req" to queryMap)
+        setRequestParams(map)
     }
 
     suspend fun execute(cursor: String = "", limit: Int = 5):

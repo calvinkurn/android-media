@@ -1,12 +1,14 @@
 package com.tokopedia.feedcomponent.view.widget
 
 import android.content.Context
+import android.os.Handler
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -94,7 +96,7 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
         this.listener = dynamicPostListener
         this.positionInFeed = adapterPosition
         bindHeader(feedXCard.id.toIntOrZero(), feedXCard.author, feedXCard.followers.isFollowed)
-        bindItems(feedXCard.media)
+        bindItems(feedXCard.id.toIntOrZero(), feedXCard.media, feedXCard.tags)
         bindCaption(feedXCard)
         bindPublishedAt(feedXCard.publishedAt, feedXCard.subTitle)
         bindLike(feedXCard.like, feedXCard.id.toIntOrZero())
@@ -125,13 +127,18 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
             listener?.onHeaderActionClick(positionInFeed, author.id,
                     authorType, isFollowed)
         }
+        shopMenuIcon.setOnClickListener {
+            listener?.onMenuClick(positionInFeed, activityId, true, true, true)
+        }
         //handle 3 dots click listener here
     }
 
     private fun bindLike(like: FeedXLike, id: Int) {
         if (like.isLiked) {
-            likeButton.setImage(IconUnify.THUMB_FILLED)
+            val colorGreen = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            likeButton.setImage(IconUnify.THUMB_FILLED, colorGreen, colorGreen)
         } else {
+           // val colorWhite = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
             likeButton.setImage(IconUnify.THUMB)
         }
         if (like.likedBy.isNotEmpty() || like.count != 0) {
@@ -174,19 +181,19 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
                         .replace("\n", "<br/>")
                         .replace(DynamicPostViewHolder.NEWLINE, "<br/>")
                         .plus("... ")
-                        .plus("<font color='#42b549'><b>")
+                        .plus("<font color='#6D7588'><b>")
                         .plus(context.getString(R.string.feed_component_read_more_button))
                         .plus("</b></font>")
 
                 captionText.text = tagConverter.convertToLinkifyHashtag(
                         SpannableString(MethodChecker.fromHtml(captionTxt)), colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag) }
                 captionText.setOnClickListener {
-                    if (caption.appLink.isNotEmpty()) {
-                        listener?.onCaptionClick(positionInFeed, caption.appLink)
-                    } else {
+//                    if (caption.appLink.isNotEmpty()) {
+//                        listener?.onCaptionClick(positionInFeed, caption.appLink)
+//                    } else {
                         captionText.text = tagConverter.convertToLinkifyHashtag(SpannableString(caption.text),
                                 colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag) }
-                    }
+                  //  }
                 }
                 captionText.movementMethod = LinkMovementMethod.getInstance()
             } else {
@@ -249,9 +256,15 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
         commentButton.setOnClickListener {
             listener?.onCommentClick(positionInFeed, id)
         }
+        seeAllCommentText.setOnClickListener {
+            listener?.onCommentClick(positionInFeed, id)
+        }
+        addCommentHint.setOnClickListener {
+            listener?.onCommentClick(positionInFeed, id)
+        }
     }
 
-    private fun bindItems(media: List<FeedXMedia>) {
+    private fun bindItems(postId: Int, media: List<FeedXMedia>, products: List<FeedXProduct>) {
         carouselView.apply {
             stage.removeAllViews()
             indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
@@ -268,7 +281,24 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
                     imageItem.layoutParams = param
                     imageItem.run {
                         findViewById<ImageUnify>(R.id.post_image).setImageUrl(it.mediaUrl)
-                        findViewById<CardView>(R.id.product_tagging_parent).showWithCondition(it.tagging.isNotEmpty())
+                        findViewById<IconUnify>(R.id.collapsed).showWithCondition(products.isNotEmpty())
+                        val productTag = findViewById<IconUnify>(R.id.collapsed)
+                        val productTagText = findViewById<ImageView>(R.id.expanded)
+                        Handler().postDelayed({
+                            productTag.gone()
+                            productTagText.visible()
+                        }, 1000)
+                        //feedxProduct
+                        productTag?.setOnClickListener {
+                            listener?.onTagClicked(postId, products, listener!!)
+                        }
+                        productTagText?.setOnClickListener {
+                            listener?.onTagClicked(postId, products, listener!!)
+                        }
+                        imageItem?.setOnClickListener {
+                            productTag.gone()
+                            productTagText.visible()
+                        }
                         //set on click listener for the image item
                     }
                     addItem(imageItem)
@@ -284,13 +314,12 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     private fun bindPublishedAt(publishedAt: String, subTitle: String) {
-        val avatarDate = TimeConverter.generateTime(context, publishedAt)
+        val avatarDate = TimeConverter.generateTimeNew(context, publishedAt)
         val spannableString: SpannableString =
                 if (subTitle.isNotEmpty()) {
                     SpannableString(String.format(
-                            context.getString(R.string.feed_header_time_format),
-                            avatarDate,
-                            subTitle))
+                            context.getString(R.string.feed_header_time_new),
+                            avatarDate))
                 } else {
                     SpannableString(avatarDate)
                 }

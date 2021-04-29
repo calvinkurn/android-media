@@ -39,7 +39,7 @@
             android:id="@+id/comment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_2"
             android:layout_toEndOf="@id/avatar"
             android:textColor="@color/light_N700_96"
             android:textSize="@dimen/sp_14"
@@ -47,7 +47,7 @@
             app:layout_constraintStart_toEndOf="@id/badge"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_2"
-            tools:text="      Nisie ih produknya kurang joss. Naik kereta api tut tut tut. Siapa hendak turun. Ke bandnung, surabaya. Bolehlah naik dengan percuma hahaha." />
+            tools:text="Hakuna Matata! What a wonderful phrase Hakuna Matata! Ain't no passing craze It means no worries For the rest of your days It's our problem-free philosophy Hakuna Matata! " />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/btn_like"
@@ -55,6 +55,7 @@
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/comment"

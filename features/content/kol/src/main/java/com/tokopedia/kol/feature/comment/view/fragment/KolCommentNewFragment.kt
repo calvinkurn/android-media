@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -22,6 +21,7 @@ import com.tokopedia.feedcomponent.view.adapter.mention.MentionableUserAdapter
 import com.tokopedia.feedcomponent.view.adapter.mention.MentionableUserAdapter.MentionAdapterListener
 import com.tokopedia.feedcomponent.view.custom.MentionEditText
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.comment.di.DaggerKolCommentComponent
@@ -34,6 +34,7 @@ import com.tokopedia.kol.feature.comment.view.listener.KolComment
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments
+import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,7 +45,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.View.ViewHolder, MentionAdapterListener {
+class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.View.ViewHolder, MentionAdapterListener, ContentReportContract.View {
 
 
     private var adapter: KolCommentAdapter? = null
@@ -58,10 +59,13 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     private var mentionAdapter: MentionableUserAdapter? = null
     private var totalNewComment = 0
     private var commentId = "0"
-
+    private lateinit var globalError: GlobalError
 
     @Inject
     lateinit var presenter: KolComment.Presenter
+
+    @Inject
+    lateinit var presenterReport: ContentReportContract.Presenter
 
     @Inject
     lateinit var typeFactory: KolCommentTypeFactory
@@ -84,12 +88,12 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         listComment = parentView.findViewById(R.id.comment_list)
         kolComment = parentView.findViewById(R.id.new_comment)
         avatarShop = parentView.findViewById(R.id.avatar_shop)
-
+        globalError = parentView.findViewById(R.id.globalError)
         //todo
         sendButton = parentView.findViewById(R.id.send_but)
         prepareView()
         presenter.attachView(this)
-
+        presenterReport.attachView(this)
         return parentView
     }
 
@@ -113,11 +117,14 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun onServerErrorGetCommentsFirstTime(errorMessage: String?) {
-        //todo
+        removeLoading()
+        showError(false) {
+            presenter.getCommentFirstTime(
+                    requireArguments().getInt(KolCommentActivity.ARGS_ID))
+        }
     }
 
     override fun onErrorDeleteComment(errorMessage: String?) {
-
         view?.let {
             Toaster.build(it, getString(R.string.kol_deleting_comment_error), Toaster.TYPE_ERROR).show()
         }
@@ -151,9 +158,10 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 && userSession?.userId == header?.userId)
     }
 
-    override fun reportAction(adapterPosition: Int, canDeleteComment: Boolean, commentId: String) {
+    override fun reportAction(adapterPosition: Int, canDeleteComment: Boolean, id: String, reasonType: String, reasonDesc: String) {
+        presenterReport.sendReport(id.toInt(), reasonType, reasonDesc, "comment")
         this.adapterPosition = adapterPosition
-        this.commentId = commentId
+        this.commentId = id
     }
 
     override fun replyToUser(user: MentionableUserViewModel?) {
@@ -260,10 +268,32 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             totalNewComment -= 1
             activity?.setResult(Activity.RESULT_OK, getReturnIntent(totalNewComment))
         }
+        adapter?.removeLoading()
+    }
+
+    override fun hideKeyboard() {
+    }
+
+    override fun enableSendBtn() {
     }
 
     override fun showLoading() {
         adapter?.showLoading()
+    }
+
+    override fun hideLoading() {
+        adapter?.removeLoading()
+    }
+
+    override fun onSuccessSendReport() {
+        onDeleteCommentKol(commentId, true, adapterPosition)
+    }
+
+    override fun onErrorSendReport(message: String) {
+        showToastMessage(message)
+    }
+
+    override fun onErrorSendReportDuplicate(message: String) {
     }
 
     override fun showMentionUserSuggestionList(userList: MutableList<MentionableUserViewModel>?) {
@@ -274,10 +304,9 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     override fun onErrorSendComment(errorMessage: String?) {
         view?.let {
-            Toaster.build(it,getString(R.string.kol_adding_comment_error), Toaster.TYPE_ERROR).show()
+            Toaster.build(it, getString(R.string.kol_adding_comment_error), Toaster.TYPE_ERROR).show()
         }
         enableSendComment()
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
     override fun removeLoading() {
@@ -285,12 +314,28 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun onErrorGetCommentsFirstTime(errorMessage: String?) {
-        //todo
-        NetworkErrorHelper.showEmptyState(context, view, errorMessage
+        globalError.setOnClickListener {
+            presenter.getCommentFirstTime(
+                    requireArguments().getInt(KolCommentActivity.ARGS_ID))
+        }
+
+        showError(
+                false
         ) {
             presenter.getCommentFirstTime(
                     requireArguments().getInt(KolCommentActivity.ARGS_ID))
         }
+    }
+
+    private fun showError(isConnectionError: Boolean, onError: () -> Unit) {
+        removeLoading()
+        globalError.setActionClickListener {
+            showLoading()
+            onError()
+        }
+        globalError.setType(
+                if (isConnectionError) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR
+        )
     }
 
     override fun enableSendComment() {
@@ -347,49 +392,15 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     }
 
+    private fun showToastMessage(errorMessage: String) {
+        view?.let {
+            Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.getCommentFirstTime(arguments?.getInt(KolCommentActivity.ARGS_ID) ?: 0)
-
-//        val swipeHelper: SwipeHelper = object : SwipeHelper(activity, listComment) {
-//            override fun instantiateUnderlayButton(viewHolder: RecyclerView.ViewHolder?, underlayButtons: MutableList<UnderlayButton?>) {
-//                underlayButtons.add(UnderlayButton(
-//                        "Report",
-//                        R.drawable.chat_report,
-//                        //todo
-//                        Color.parseColor("#52BB4DE8"),
-//                        UnderlayButtonClickListener {
-//
-//                        }
-//                ))
-//                underlayButtons.add(UnderlayButton(
-//                        "Delete",
-//                        R.drawable.delete,
-//                        Color.parseColor("#FFFFFF"),
-//                        UnderlayButtonClickListener {
-//                            var toBeDeleted = true
-//
-//                            view?.let {
-//                                Toaster.build(it, getString(R.string.kol_delete_1_comment), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.kol_delete_comment_ok), View.OnClickListener {
-//                                    toBeDeleted = false
-//                                })
-//                                val coroutineScope = CoroutineScope(Dispatchers.Main)
-//                                coroutineScope.launch {
-//                                    delay(Toaster.LENGTH_LONG.toLong())
-//                                    if (activity != null && isAdded) {
-//                                        if (toBeDeleted)
-//                                            presenter.deleteComment(commentId, adapterPosition)
-//
-//                                    }
-//
-//                                }
-//                            }
-//                        }
-//                ))
-//            }
-//
-//        }
-//        swipeHelper.attachSwipe()
     }
 
     override fun shouldGetMentionableUser(keyword: String) {
@@ -400,6 +411,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+        presenterReport.detachView()
     }
 
 }

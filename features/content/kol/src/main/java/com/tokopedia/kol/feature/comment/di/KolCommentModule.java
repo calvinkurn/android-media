@@ -9,6 +9,8 @@ import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentType
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactoryImpl;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.presenter.KolCommentPresenter;
+import com.tokopedia.kol.feature.report.view.listener.ContentReportContract;
+import com.tokopedia.kol.feature.report.view.presenter.ContentReportPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -39,6 +41,11 @@ public class KolCommentModule {
                 deleteKolCommentUseCase,
                 getMentionableUserUseCase
         );
+    }
+    @Provides
+    @KolCommentScope
+    public ContentReportContract.Presenter providePresenter(ContentReportPresenter contentReportPresenter){
+        return contentReportPresenter;
     }
 
     @KolCommentScope
