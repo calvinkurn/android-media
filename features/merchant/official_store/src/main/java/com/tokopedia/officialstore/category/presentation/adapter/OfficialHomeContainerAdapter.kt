@@ -22,12 +22,9 @@ class OfficialHomeContainerAdapter(
 
     var categoryList: MutableList<Category> = mutableListOf()
 
-    private var categoryTabPosMap: MutableMap<String, Int> = mutableMapOf()
-
     private fun getBundle(position: Int): Bundle {
         val bundle = Bundle()
         bundle.putParcelable(BUNDLE_CATEGORY, categoryList[position])
-        categoryTabPosMap.put(categoryList[position].categoryId, position)
         return bundle
     }
 
