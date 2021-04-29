@@ -4,6 +4,7 @@
     <string name="shop_settings_manage_notes">Catatan</string>
     <string name="shop_settings_basic_info">Informasi Dasar</string>
     <string name="shop_settings_info">Informasi Toko</string>
+    <string name="shop_settings_operational_hours">Jadwal Operasional Toko</string>
 
     <string name="shop_settings_add_note">Tambah Catatan</string>
     <string name="shop_settings_add_etalase">Tambah Etalase</string>
@@ -28,6 +29,7 @@
     <string name="shop_desc_must_be_filled">Deskripsi Toko harus diisi.</string>
     <string name="shop_status_current_label">Status Toko Saat ini</string>
 
+    <!-- Shop settings operational hours -->
     <string name="label_close_shop_now">Tutup Toko Sekarang</string>
     <string name="schedule_your_shop_close">Jadwalkan Tutup Toko</string>
     <string name="schedule_shop_close">Jadwal Tutup Toko</string>
@@ -36,6 +38,8 @@
     <string name="shop_close_note">Catatan</string>
     <string name="closed_note_information">Penutupan Toko akan berlaku mulai pukul 00:00 dan berakhir pada pukul 23:59 sesuai tanggal yang telah ditentukan.</string>
     <string name="hint_date">Day, dd/mm/yyyy</string>
+    <string name="shop_operational_hour_title_set_hour">Atur jam buka-tutup toko</string>
+    <string name="shop_operational_hour_desc_set_hour">Pembeli akan diinformasikan kalau pesanan yang masuk saat toko tutup akan diproses keesokan hari dan tidak mengurangi skor tokomu.</string>
 
     <string name="title_dialog_delete_shop_note">Hapus Catatan</string>
     <string name="desc_dialog_delete_shop_note">Hapus Catatan “%1$s”?</string>

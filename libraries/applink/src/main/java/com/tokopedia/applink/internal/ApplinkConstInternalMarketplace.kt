@@ -192,6 +192,9 @@ object ApplinkConstInternalMarketplace {
     val SHOP_EDIT_SCHEDULE = "$SHOP_SETTINGS_BASE-edit-schedule"
 
     @JvmField
+    val SHOP_SETTINGS_OPERATIONAL_HOURS = "$SHOP_SETTINGS_BASE-operational-hours"
+
+    @JvmField
     val SHOP_SETTINGS_SHIPPING = "$SHOP_SETTINGS_BASE-shipping"
 
     @JvmField

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header_shop_operational_hours"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_title="@string/shop_settings_operational_hours"
+        app:unify_header_is_show_back_button="true" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title_shop_ops_hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/header_shop_operational_hours"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="@dimen/dp_18"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/shop_operational_hour_title_set_hour"
+        app:typographyType="heading_5"
+        />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_edit_ops_hour"
+        app:icon_name="EDIT"
+        app:icon_color_light_enable="@color/Unify_N700"
+        app:icon_enable_state="true"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_title_shop_ops_hour"
+        android:layout_marginEnd="@dimen/dp_18"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_desc_shop_ops_hour"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_shop_ops_hour"
+        app:layout_constraintLeft_toLeftOf="@id/tv_title_shop_ops_hour"
+        app:layout_constraintRight_toLeftOf="@id/ic_edit_ops_hour"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/shop_operational_hour_desc_set_hour"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_N700_68"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

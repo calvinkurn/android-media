@@ -84,6 +84,7 @@
     <string name="path_shop_setting_cod_activation" translatable="false">/shop-settings-cod</string>
     <string name="path_shop_score_detail" translatable="false">/shop-score-detail</string>
     <string name="path_shop_edit_schedule" translatable="false">/shop-settings-edit-schedule</string>
+    <string name="path_shop_settings_operational_hours" translatable="false">/shop-settings-operational-hours</string>
     <string name="path_shop_page_setting" translatable="false">/shop-page-setting</string>
 
     <string name="path_seller_review_detail" translatable="false">/seller-review-detail</string>
