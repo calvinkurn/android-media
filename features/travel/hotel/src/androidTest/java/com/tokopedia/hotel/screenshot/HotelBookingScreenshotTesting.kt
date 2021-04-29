@@ -5,7 +5,6 @@ import android.app.Instrumentation
 import android.content.Intent
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import android.widget.ScrollView
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -24,7 +23,7 @@ import org.junit.Test
 
 class HotelBookingScreenshotTesting {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    lateinit var hotelBooking : ScrollView
+    lateinit var hotelBooking : RelativeLayout
 
     @get:Rule
     var activityRule: IntentsTestRule<HotelBookingActivity> = object : IntentsTestRule<HotelBookingActivity>(HotelBookingActivity::class.java) {
