@@ -4,7 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
-import com.tokopedia.digital_checkout.utils.analytics.DigitalCheckoutTrackingConst.Value.CROSSELL_CART_TYPE
+import com.tokopedia.digital_checkout.utils.analytics.DigitalCheckoutTrackingConst.Value.CROSSELL_CARD_TYPE
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -147,7 +147,7 @@ class DigitalAnalytics {
                 BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
                 DigitalCheckoutTrackingConst.Label.CLICK,
                 DataLayer.mapOf(DigitalCheckoutTrackingConst.Label.ACTION_FIELD,
-                        DataLayer.mapOf(DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title}"),
+                        DataLayer.mapOf(DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} - $CROSSELL_CARD_TYPE"),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(*fintechProductList.toTypedArray()))),
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
         ))
@@ -248,7 +248,7 @@ class DigitalAnalytics {
                         DigitalCheckoutTrackingConst.Event.CHECKOUT, DataLayer.mapOf(
                         DigitalCheckoutTrackingConst.Label.ACTION_FIELD, DataLayer.mapOf(
                         DigitalCheckoutTrackingConst.Label.STEP, "2",
-                        DigitalCheckoutTrackingConst.Label.OPTION, DigitalCheckoutTrackingConst.Misc.ACTION_FIELD_STEP2_TEBUS_MURAH),
+                        DigitalCheckoutTrackingConst.Label.OPTION, DigitalCheckoutTrackingConst.Misc.ACTION_FIELD_STEP2),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(
                         *fintechProductList.toTypedArray())))
                 )
@@ -303,7 +303,7 @@ class DigitalAnalytics {
                 DigitalCheckoutTrackingConst.Product.KEY_BRAND, fintechProduct.operatorName,
                 DigitalCheckoutTrackingConst.Product.KEY_CATEGORY, categoryName,
                 DigitalCheckoutTrackingConst.Product.KEY_ID, fintechProduct.tierId,
-                DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} - $CROSSELL_CART_TYPE",
+                DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} $position - $CROSSELL_CARD_TYPE",
                 DigitalCheckoutTrackingConst.Product.KEY_NAME, fintechProduct.info.title,
                 DigitalCheckoutTrackingConst.Product.KEY_POSITION, position,
                 DigitalCheckoutTrackingConst.Product.KEY_PRICE, fintechProduct.fintechAmount,
