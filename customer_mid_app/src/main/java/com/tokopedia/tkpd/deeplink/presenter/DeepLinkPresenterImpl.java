@@ -51,6 +51,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
+import com.tokopedia.applink.travel.DeeplinkMapperTravel;
 
 import java.net.MalformedURLException;
 import java.net.URL;
