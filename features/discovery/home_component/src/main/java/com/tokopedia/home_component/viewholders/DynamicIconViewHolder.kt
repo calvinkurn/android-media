@@ -60,7 +60,7 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
 
     private fun setupImpression(element: DynamicIconComponentDataModel){
         itemView.addOnImpressionListener(element) {
-            listener.onIconChannelImpressed(element, adapterPosition)
+            if (!element.isCache) listener.onIconChannelImpressed(element, adapterPosition)
         }
     }
 
