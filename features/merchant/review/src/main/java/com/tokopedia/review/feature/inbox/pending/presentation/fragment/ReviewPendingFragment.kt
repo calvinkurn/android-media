@@ -444,6 +444,9 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     private fun getSourceData() {
         if(InboxUnifiedRemoteConfig.isInboxUnified()) {
             source = containerListener?.getPageSource() ?: ReviewInboxConstants.DEFAULT_SOURCE
+            if(source.isBlank()) {
+                source = ReviewInboxConstants.DEFAULT_SOURCE
+            }
             return
         }
         source = arguments?.getString(ReviewInboxConstants.PARAM_SOURCE, ReviewInboxConstants.DEFAULT_SOURCE) ?: ReviewInboxConstants.DEFAULT_SOURCE
