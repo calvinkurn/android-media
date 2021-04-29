@@ -14,7 +14,6 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.math.min
 
 class GetOccCartMapper @Inject constructor() {
@@ -91,19 +90,12 @@ class GetOccCartMapper @Inject constructor() {
                 shop.isGoldBadge -> shop.goldMerchant.goldMerchantLogoUrl
                 else -> ""
             }
-            shopUrl = shop.shopUrl
             isGold = shop.isGold
             isOfficial = shop.isOfficial
-            addressId = shop.addressId
             postalCode = shop.postalCode
             latitude = shop.latitude
             longitude = shop.longitude
             districtId = shop.districtId
-            districtName = shop.districtName
-            origin = shop.origin
-            addressStreet = shop.addressStreet
-            provinceId = shop.provinceId
-            cityId = shop.cityId
             shopShipment = generateShopShipment(shop.shopShipments)
             errors = cart.errors
             isFulfillment = cart.warehouse.isFulfillment
@@ -115,7 +107,6 @@ class GetOccCartMapper @Inject constructor() {
     private fun generateOrderProduct(product: ProductDataResponse): OrderProduct {
         val orderProduct = OrderProduct()
         orderProduct.apply {
-            parentId = product.parentId
             productId = product.productId
             productName = product.productName
             productPrice = product.productPrice
@@ -139,14 +130,14 @@ class GetOccCartMapper @Inject constructor() {
             }
             cashback = if (product.productCashback.isNotBlank()) "Cashback ${product.productCashback}" else ""
             warehouseId = product.wareHouseId
-            isPreorder = product.isPreorder
+            isPreOrder = product.isPreOrder
             categoryId = product.categoryId
             category = product.category
             campaignId = product.campaignId
             productFinsurance = product.productFinsurance
             isSlashPrice = product.productOriginalPrice > product.productPrice
             productTrackerData = ProductTrackerData(product.productTrackerData.attribution, product.productTrackerData.trackerListName)
-            preorderDuration = product.productPreorder.durationDay.toIntOrZero()
+            preOrderDuration = product.productPreorder.durationDay.toIntOrZero()
         }
         return orderProduct
     }
@@ -285,7 +276,7 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapAddress(address: Address): OrderProfileAddress {
         return OrderProfileAddress(address.addressId, address.receiverName, address.addressName, address.addressStreet, address.districtId,
                 address.districtName, address.cityId, address.cityName, address.provinceId, address.provinceName, address.phone, address.longitude,
-                address.latitude, address.postalCode, address.state, address.stateDetail)
+                address.latitude, address.postalCode, address.state, address.stateDetail, address.status)
     }
 
     private fun mapTicker(tickers: List<Ticker>): TickerData? {

@@ -58,6 +58,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.mediaCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
@@ -89,6 +90,7 @@ dependencies {
     implementation project(rootProject.ext.features.internalReview)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
+    implementation project(rootProject.ext.libraries.logger)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.unifyDependencies.icon

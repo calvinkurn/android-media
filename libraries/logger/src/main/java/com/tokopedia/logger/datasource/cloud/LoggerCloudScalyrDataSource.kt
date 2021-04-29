@@ -1,10 +1,10 @@
 package com.tokopedia.logger.datasource.cloud
 
 import com.google.gson.Gson
-import com.tokopedia.logger.model.ScalyrBody
-import com.tokopedia.logger.model.ScalyrConfig
-import com.tokopedia.logger.model.ScalyrEvent
-import com.tokopedia.logger.model.ScalyrSessionInfo
+import com.tokopedia.logger.model.scalyr.ScalyrBody
+import com.tokopedia.logger.model.scalyr.ScalyrConfig
+import com.tokopedia.logger.model.scalyr.ScalyrEvent
+import com.tokopedia.logger.model.scalyr.ScalyrSessionInfo
 import com.tokopedia.logger.utils.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,7 +12,7 @@ import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class LoggerCloudScalyrDataSource: LoggerCloudDataSource<ScalyrConfig, ScalyrEvent>() {
+class LoggerCloudScalyrDataSource: LoggerCloudDataSource {
     companion object {
         private val gson = Gson()
     }
@@ -26,7 +26,7 @@ class LoggerCloudScalyrDataSource: LoggerCloudDataSource<ScalyrConfig, ScalyrEve
                 e.printStackTrace()
             }
         }
-        return errCode == Constants.SCALYR_SUCCESS_CODE
+        return errCode == Constants.RESPONSE_SUCCESS_CODE
     }
 
     private fun openURL(config: ScalyrConfig, scalyrEventList: List<ScalyrEvent>): Int {
@@ -37,9 +37,7 @@ class LoggerCloudScalyrDataSource: LoggerCloudDataSource<ScalyrConfig, ScalyrEve
 
         try {
             val scalyrBody = ScalyrBody(config.token, config.session,
-                ScalyrSessionInfo(config.serverHost, config.parser, config.packageName,
-                        config.installer,
-                        config.debug, config.priority),
+                ScalyrSessionInfo(config.serverHost, config.parser),
                 scalyrEventList)
             url = URL(Constants.SCALYR_SERVER_URL)
             urlConnection = url.openConnection() as HttpURLConnection

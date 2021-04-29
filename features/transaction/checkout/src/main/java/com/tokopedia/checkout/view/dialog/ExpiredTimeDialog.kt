@@ -3,9 +3,10 @@ package com.tokopedia.checkout.view.dialog
 import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 
 class ExpiredTimeDialog : DialogFragment() {
 
@@ -31,6 +32,12 @@ class ExpiredTimeDialog : DialogFragment() {
             }
             dialogUnify
         } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    override fun show(manager: FragmentManager, tag: String?) {
+        val fragmentTransaction = manager.beginTransaction()
+        fragmentTransaction.add(this, tag)
+        fragmentTransaction.commitAllowingStateLoss()
     }
 
     companion object {

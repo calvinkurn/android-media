@@ -1,26 +1,22 @@
 package com.tokopedia.loginregister.login.view.presenter
 
-import android.content.Context
 import android.text.TextUtils
-import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.login.domain.StatusPinUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
-import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
+import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
+import com.tokopedia.loginregister.common.view.ticker.subscriber.TickerInfoLoginSubscriber
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
 

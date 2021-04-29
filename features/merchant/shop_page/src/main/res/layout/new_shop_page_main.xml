@@ -96,7 +96,7 @@
         app:layout_constraintHorizontal_bias="0"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@drawable/bottom_sheet_filter_bottom_bar_shadow" />
+        android:background="@color/Unify_N75" />
 
     <ViewStub
         android:id="@+id/view_stub_content_layout"

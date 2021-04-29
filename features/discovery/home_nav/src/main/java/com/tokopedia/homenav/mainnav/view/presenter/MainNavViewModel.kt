@@ -437,16 +437,16 @@ class MainNavViewModel @Inject constructor(
                         it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
                         InitialShimmerTransactionDataModel(),
                         it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
-                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER))
             } else {
                 transactionDataList = mutableListOf(
                         SeparatorDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
                         it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
-                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER))
             }
             return transactionDataList

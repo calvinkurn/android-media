@@ -107,6 +107,7 @@ object AccountConstants {
             const val LABEL_GET_TO_KNOW_TOKOPEDIA = "Kenali Tokopedia"
             const val LABEL_TERMS_AND_CONDITIONS = "Syarat dan Ketentuan"
             const val LABEL_PRIVACY_POLICY = "Kebijakan Privasi"
+            const val LABEL_IP = "Hak Kekayaan Intelektual"
             const val LABEL_REVIEW_THIS_APP = "Ulas Aplikasi Ini"
         }
 
@@ -136,6 +137,7 @@ object AccountConstants {
     object Url {
         const val BASE_MOBILE = "https://m.tokopedia.com/"
         const val PATH_TERM_CONDITION = "terms.pl?isBack=true"
+        const val PATH_IP = "intellectual-property-protection"
         const val PATH_PRIVACY_POLICY = "privacy.pl?isBack=true"
         const val BASE_WEBVIEW_APPLINK = "tokopedia://webview?url="
         const val PATH_ABOUT_US = "about"
@@ -152,6 +154,7 @@ object AccountConstants {
         const val SETTING_TKPD_PAY_ID = 3
         const val SETTING_TNC_ID = 5
         const val SETTING_PRIVACY_ID = 6
+        const val SETTING_IP = 7
         const val SETTING_OUT_ID = 8
         const val SETTING_SHAKE_ID = 9
         const val SETTING_GEOLOCATION_ID = 98
@@ -175,6 +178,7 @@ object AccountConstants {
         const val SETTING_APP_SETTING = 46
         const val SETTING_ABOUT_TOKOPEDIA = 47
         const val SETTING_TOKOPOINTS = 48
+        const val SETTING_QUALITY_SETTING = 49
     }
 
     object KEY {

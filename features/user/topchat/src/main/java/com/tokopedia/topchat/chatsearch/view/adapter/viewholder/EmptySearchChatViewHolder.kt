@@ -37,6 +37,6 @@ class EmptySearchChatViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_empty_chat_search
-        private const val iconUrl = "https://ecs7.tokopedia.net/android/others/icon_empty_chat_search_result.webp"
+        private const val iconUrl = "https://images.tokopedia.net/img/android/user/chat/img_chat_empty_search_result.png"
     }
 }
