@@ -82,6 +82,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.maps
