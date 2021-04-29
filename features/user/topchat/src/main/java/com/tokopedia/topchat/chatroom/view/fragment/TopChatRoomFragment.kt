@@ -358,6 +358,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         setupBeforeReplyTime()
         loadInitialData()
         initLoadMoreListener()
+        onReplyBoxEmpty()
     }
 
     private fun setupBackground() {
