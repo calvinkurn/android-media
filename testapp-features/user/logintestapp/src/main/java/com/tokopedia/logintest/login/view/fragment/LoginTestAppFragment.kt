@@ -91,6 +91,7 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
     private var activityShouldEnd = true
+    private var isUseHash = false
 
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var socmedButtonsContainer: LinearLayout
@@ -98,7 +99,7 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
     private lateinit var partialActionButton: TextView
     private lateinit var passwordEditText: TextInputEditText
     private lateinit var tickerAnnouncement: Ticker
-    private lateinit var bottomSheet: BottomSheetUnify
+    private var bottomSheet: BottomSheetUnify? = null
     private lateinit var bannerLogin: ImageView
     private lateinit var callTokopediaCare: Typography
     private lateinit var sharedPrefs: SharedPreferences
@@ -125,9 +126,9 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
 
     override fun onResume() {
         super.onResume()
-        if (userSession.isLoggedIn && activity != null && activityShouldEnd) {
-            activity!!.setResult(Activity.RESULT_OK)
-            activity!!.finish()
+        if (userSession.isLoggedIn && activityShouldEnd) {
+            activity?.setResult(Activity.RESULT_OK)
+            activity?.finish()
         }
     }
 
@@ -151,10 +152,10 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
 
     private fun getDraw(): Drawable? {
         var drawable: TextDrawable? = null
-        if (activity != null) {
-            drawable = TextDrawable(activity!!)
-            drawable.text = resources.getString(R.string.register)
-            drawable.setTextColor(MethodChecker.getColor(context, R.color.tkpd_main_green))
+        activity?.let {
+            drawable = TextDrawable(it)
+            drawable?.text = resources.getString(R.string.register)
+            drawable?.setTextColor(MethodChecker.getColor(context, R.color.tkpd_main_green))
         }
         return drawable
     }
@@ -201,10 +202,10 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
         fetchRemoteConfig()
         clearData()
         prepareView()
-        if (arguments != null && arguments!!.getBoolean(IS_AUTO_FILL, false)) {
-            emailPhoneEditText.setText(arguments!!.getString(AUTO_FILL_EMAIL, ""))
+        if (arguments != null && arguments?.getBoolean(IS_AUTO_FILL, false) == true) {
+            emailPhoneEditText.setText(arguments?.getString(AUTO_FILL_EMAIL, ""))
         } else if (isAutoLogin) {
-            when (arguments!!.getInt(AUTO_LOGIN_METHOD)) {
+            when (arguments?.getInt(AUTO_LOGIN_METHOD)) {
                 LoginTestAppActivity.METHOD_EMAIL -> onLoginEmailClick()
             }
         }
@@ -237,13 +238,12 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
     }
 
     private fun onLoginEmailClick() {
-        val email = arguments!!.getString(AUTO_LOGIN_EMAIL, "")
-        val pw = arguments!!.getString(AUTO_LOGIN_PASS, "")
+        val email = arguments?.getString(AUTO_LOGIN_EMAIL, "").orEmpty()
+        val pw = arguments?.getString(AUTO_LOGIN_PASS, "").orEmpty()
         partialRegisterInputView.showLoginEmailView(email)
         emailPhoneEditText.setText(email)
         passwordEditText.setText(pw)
-        presenter.loginEmail(email, pw)
-
+        loginEmail(email, pw)
     }
 
     private fun prepareView() {
@@ -257,15 +257,15 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
         socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
 
         bottomSheet = BottomSheetUnify()
-        bottomSheet.setTitle(getString(R.string.choose_social_media))
-        bottomSheet.setChild(viewBottomSheetDialog)
-        bottomSheet.setCloseClickListener {
+        bottomSheet?.setTitle(getString(R.string.choose_social_media))
+        bottomSheet?.setChild(viewBottomSheetDialog)
+        bottomSheet?.setCloseClickListener {
             onDismissBottomSheet()
         }
 
         socmed_btn.setOnClickListener {
             fragmentManager?.let {
-                bottomSheet.show(it, getString(R.string.bottom_sheet_show))
+                bottomSheet?.show(it, getString(R.string.bottom_sheet_show))
             }
         }
 
@@ -277,8 +277,8 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
 
         passwordEditText.setOnEditorActionListener { textView, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_DONE) {
-                presenter.loginEmail(emailPhoneEditText.text.toString().trim(),
-                        passwordEditText.text.toString())
+                loginEmail(emailPhoneEditText.text.toString().trim(),
+                        passwordEditText.text.toString(), useHash = isUseHash)
                 activity?.let {
                     KeyboardHandler.hideSoftKeyboard(it)
                 }
@@ -374,12 +374,7 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
     }
 
     private fun onDismissBottomSheet() {
-        try {
-            if (bottomSheet != null) {
-                bottomSheet.dismiss()
-            }
-        } catch (e: Exception) {
-        }
+        bottomSheet?.dismiss()
     }
 
     override fun showLoadingLogin() {
@@ -479,15 +474,13 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    override fun isFromRegister(): Boolean {
-        return (activity != null
-                && activity!!.intent != null
-                && activity!!.intent.getBooleanExtra(IS_FROM_REGISTER, false))
-    }
+    override fun isFromRegister(): Boolean =
+            activity?.intent?.getBooleanExtra(IS_FROM_REGISTER, false) == true
+
 
     override fun onErrorValidateRegister(throwable: Throwable) {
         dismissLoadingLogin()
-        val message = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+        val message = ErrorHandler.getErrorMessage(context, throwable)
         partialRegisterInputView.onErrorValidate(message)
     }
 
@@ -500,7 +493,7 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
-            presenter.loginEmail(email, passwordEditText.text.toString())
+            loginEmail(email, passwordEditText.text.toString(), useHash = isUseHash)
             activity?.let {
                 KeyboardHandler.hideSoftKeyboard(it)
             }
@@ -578,6 +571,14 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
         }
     }
 
+    private fun loginEmail(email: String, password: String, useHash: Boolean = false) {
+        if(useHash) {
+            presenter.loginEmailV2(email = email, password = password, useHash = useHash)
+        }else {
+            presenter.loginEmail(email, password)
+        }
+    }
+
     override fun onGoToForbiddenPage() {
         ForbiddenActivity.startActivity(activity)
     }
@@ -647,8 +648,8 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
     }
 
     private fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
-        if (activity != null && activity!!.applicationContext != null) {
-            val intent = RouteManager.getIntent(activity,
+        activity?.let {
+            val intent = RouteManager.getIntent(it,
                     ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
@@ -667,17 +668,17 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
                 }
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
                 dismissLoadingLogin()
-                activity!!.setResult(Activity.RESULT_CANCELED)
+                activity?.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
             } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
                 dismissLoadingLogin()
-                activity!!.setResult(Activity.RESULT_CANCELED)
+                activity?.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
             } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
                 dismissLoadingLogin()
-                activity!!.setResult(Activity.RESULT_CANCELED)
+                activity?.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_VERIFY_PHONE) {
                 onSuccessLogin()
             } else if (requestCode == REQUEST_REGISTER_PHONE
@@ -777,18 +778,16 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
                 listTickerInfo.forEach {
                     mockData.add(TickerData(it.title, it.message, getTickerType(it.color), true))
                 }
-                val adapter = TickerPagerAdapter(activity!!, mockData)
-                adapter.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                    }
-
-                    override fun onDismiss() {
-
-                    }
-
-                })
-                tickerAnnouncement.addPagerView(adapter, mockData)
+                activity?.let {
+                    val adapter = TickerPagerAdapter(it, mockData)
+                    adapter.setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                        }
+                        override fun onDismiss() {}
+                    })
+                    tickerAnnouncement.addPagerView(adapter, mockData)
+                }
             } else {
                 listTickerInfo.first().let {
                     tickerAnnouncement.tickerTitle = it.title
@@ -843,7 +842,7 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
             dismissLoadingLogin()
             view?.run {
                 val errorMessage = ErrorHandler.getErrorMessage(context, it)
-                Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
+                Toaster.build(this, errorMessage, Snackbar.LENGTH_LONG).show()
             }
         }
     }
@@ -899,6 +898,7 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
             if (TextUtils.equals(it.registerType, EMAIL_TYPE)) {
                 if (it.isExist) {
                     if (!it.isPending) {
+                        isUseHash = it.useHash
                         onEmailExist(it.view)
                     } else {
                         showNotRegisteredEmailDialog(it.view, true)
@@ -999,11 +999,7 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
         const val REQUEST_COTP_PHONE_VERIFICATION = 118
         const val REQUEST_ADD_PIN_AFTER_SQ = 119
 
-        private const val PHONE_TYPE = "phone"
         private const val EMAIL_TYPE = "email"
-
-        private const val LOGIN_LOAD_TRACE = "gb_login_trace"
-        private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
 
         private const val SOURCE_ACCOUNT = "account"
         private const val SOURCE_ATC = "atc"
@@ -1012,8 +1008,6 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
 
         private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
         private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
-
-        private const val BANNER_LOGIN_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
 
         private const val TOKOPEDIA_CARE_PATH = "help"
 

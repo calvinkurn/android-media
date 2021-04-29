@@ -3,6 +3,8 @@ package com.tokopedia.logintest.login.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 
 import javax.inject.Named;
@@ -32,4 +34,9 @@ public class LoginTestAppModule {
         return Dispatchers.getMain();
     }
 
+    @LoginTestAppScope
+    @Provides
+    CoroutineDispatchers provideCoroutineDispatcher() {
+        return CoroutineDispatchersProvider.INSTANCE;
+    }
 }

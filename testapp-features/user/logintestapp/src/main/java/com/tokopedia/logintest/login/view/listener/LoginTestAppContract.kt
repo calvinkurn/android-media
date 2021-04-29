@@ -70,6 +70,7 @@ interface LoginTestAppContract {
 
     interface Presenter : CustomerPresenter<View> {
         fun loginEmail(email: String, password: String, isSmartLock : Boolean = false)
+        fun loginEmailV2(email: String, password: String, isSmartLock : Boolean = false, useHash: Boolean)
 
         fun getUserInfo()
 

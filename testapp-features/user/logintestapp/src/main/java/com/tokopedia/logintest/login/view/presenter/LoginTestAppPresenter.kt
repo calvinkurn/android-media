@@ -2,6 +2,10 @@ package com.tokopedia.logintest.login.view.presenter
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.encryption.security.decodeBase64
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logintest.R
 import com.tokopedia.logintest.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.logintest.common.view.ticker.domain.usecase.TickerInfoUseCase
@@ -12,31 +16,40 @@ import com.tokopedia.logintest.login.domain.pojo.RegisterCheckData
 import com.tokopedia.logintest.login.domain.pojo.StatusPinData
 import com.tokopedia.logintest.login.view.listener.LoginTestAppContract
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
+import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
+import com.tokopedia.sessioncommon.domain.usecase.LoginTokenV2UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by nisie on 18/01/19.
  */
 class LoginTestAppPresenter @Inject constructor(private val registerCheckTestAppUseCase: RegisterCheckTestAppUseCase,
-                                                private val loginTokenUseCase:
-                                                   LoginTokenUseCase,
+                                                private val loginTokenUseCase: LoginTokenUseCase,
                                                 private val getProfileUseCase: GetProfileUseCase,
                                                 private val tickerInfoUseCase: TickerInfoUseCase,
                                                 private val statusPinUseCase: StatusPinTestAppUseCase,
                                                 private val dynamicBannerUseCase: DynamicBannerUseCase,
+                                                private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
+                                                private val loginTokenV2UseCase: LoginTokenV2UseCase,
                                                 @Named(SESSION_MODULE)
-                                                   private val userSession: UserSessionInterface)
+                                                private val userSession: UserSessionInterface,
+                                                private val dispatcherProvider: CoroutineDispatchers)
     : BaseDaggerPresenter<LoginTestAppContract.View>(),
-        LoginTestAppContract.Presenter {
+        LoginTestAppContract.Presenter, CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = dispatcherProvider.io
 
     private lateinit var viewEmailPhone: LoginTestAppContract.View
-
 
     fun attachView(view: LoginTestAppContract.View, viewEmailPhone: LoginTestAppContract.View) {
         super.attachView(view)
@@ -74,6 +87,48 @@ class LoginTestAppPresenter @Inject constructor(private val registerCheckTestApp
                 viewEmailPhone.stopTrace()
             }
         }
+    }
+
+    override fun loginEmailV2(email: String, password: String, isSmartLock: Boolean, useHash: Boolean) {
+        if (isSmartLock) {
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
+        } else {
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
+        }
+        launchCatchError(coroutineContext, {
+            view?.let { view ->
+                view.resetError()
+                if (isValid(email, password)) {
+                    view.showLoadingLogin()
+                    val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
+                    if(keyData.key.isNotEmpty()) {
+                        var finalPassword = password
+                        if (useHash) {
+                            finalPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), useHash)
+                        }
+                        loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
+                        val tokenResult = loginTokenV2UseCase.executeOnBackground()
+
+                        LoginV2Mapper(userSession).map(tokenResult,
+                                onSuccessLoginToken = {
+                                    view.onSuccessLoginEmail()
+                                },
+                                onErrorLoginToken = {
+                                    view.onErrorLoginEmail(email).invoke(it)
+                                },
+                                onShowPopupError = {},
+                                onGoToActivationPage = {},
+                                onGoToSecurityQuestion = {}
+                        )
+                    }
+                } else {
+                    viewEmailPhone.stopTrace()
+                }
+            }
+        }, {
+            view.onErrorLoginEmail(email).invoke(it)
+        })
+
     }
 
     override fun reloginAfterSQ(validateToken: String) {
