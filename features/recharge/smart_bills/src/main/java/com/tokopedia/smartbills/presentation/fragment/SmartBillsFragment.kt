@@ -496,7 +496,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     override fun onClickNextBuyButton() {
         // Prevent multiple checkout calls when one is already underway
-        if (listBills.isNotEmpty() && !checkout_loading_view.isVisible) {
+        if (adapter.checkedDataList.isNotEmpty() && !checkout_loading_view.isVisible) {
             // Reset error in bill items
             for ((index, bill) in listBills.withIndex()) {
                 if (bill.errorMessage.isNotEmpty()) {
