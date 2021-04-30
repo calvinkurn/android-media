@@ -343,6 +343,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             val email = it.getString(PARAM_EMAIL, "")
             val method = it.getString(PARAM_LOGIN_METHOD, "")
 
+            isFromRegister = it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false)
+
             if (phone.isNotEmpty()) {
                 emailPhoneEditText?.setText(phone)
             } else if(email.isNotEmpty()) {
@@ -1105,11 +1107,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         dismissLoadingLogin()
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
-    }
-
-    override fun isFromRegister(): Boolean {
-        isFromRegister = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false) ?: false
-        return isFromRegister
     }
 
     override fun trackSuccessValidate() {
