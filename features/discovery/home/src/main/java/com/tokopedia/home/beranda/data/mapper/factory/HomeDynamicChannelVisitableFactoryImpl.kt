@@ -160,14 +160,15 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
                     createDynamicChannel(
-                            channel = channel,
+                            channel,
                             trackingData = CategoryWidgetTracking.getCategoryWidgetBannerImpression(
                                     channel.grids.toList(),
                                     userSessionInterface?.userId ?: "",
                                     false,
                                     channel
                             ),
-                            isCombined = false)
+                            isCombined = false
+                    )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
                     createTopAdsBannerModel(channel)
