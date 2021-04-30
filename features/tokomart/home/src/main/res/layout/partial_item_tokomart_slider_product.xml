@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/unify_space_16"
+    android:layout_marginTop="@dimen/unify_space_16"
+    android:layout_marginRight="@dimen/unify_space_16"
+    android:layout_marginBottom="@dimen/unify_space_8"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/Unify_N700"
+        app:typographyType="heading_4"
+        tools:text="Kategori Tokomart" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_cta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="gone"
+        android:textColor="@color/Unify_G500"
+        app:typographyType="heading_4"
+        tools:text="Lihat Semua"
+        tools:visibility="visible" />
+</RelativeLayout>

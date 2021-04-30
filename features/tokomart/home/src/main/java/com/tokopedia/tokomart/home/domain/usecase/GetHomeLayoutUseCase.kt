@@ -14,8 +14,12 @@ class GetHomeLayoutUseCase @Inject constructor(
     fun execute(): List<HomeLayoutResponse> {
         // Dummy data
         return listOf(
+            HomeLayoutResponse("0", "Choose Address Widget", HomeLayoutType.CHOOSE_ADDRESS_WIDGET),
             HomeLayoutResponse("1", "Promo spesial", HomeLayoutType.SECTION),
-            HomeLayoutResponse("2", "Kategori", HomeLayoutType.ALL_CATEGORY)
+            HomeLayoutResponse("2", "Kategori", HomeLayoutType.ALL_CATEGORY),
+            HomeLayoutResponse("3", "Slider Banner", HomeLayoutType.SLIDER_BANNER),
+            HomeLayoutResponse("4", "Slider Product", HomeLayoutType.SLIDER_PRODUCT),
+//            HomeLayoutResponse("5", "Special Recipe", HomeLayoutType.SPECIAL_RECIPE) NOT MVP
         )
     }
 }

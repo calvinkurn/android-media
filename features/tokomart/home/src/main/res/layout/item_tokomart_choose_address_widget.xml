@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget android:id="@+id/choose_address_widget"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/unify_space_8"
+    android:layout_marginStart="@dimen/unify_space_16"
+    android:visibility="visible"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
