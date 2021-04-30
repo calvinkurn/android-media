@@ -1160,24 +1160,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             it.showProgressLoading()
             val adsId = it.getAdsId()
             if (adsId != null && !adsId.trim { it <= ' ' }.isEmpty()) {
-                seamlessLoginUsecase.generateSeamlessUrl(url.replace(QUERY_APP_CLIENT_ID, adsId), object : SeamlessLoginSubscriber {
-                    override fun onUrlGenerated(url: String) {
-                        view?.let { currentView ->
-                            currentView.hideProgressLoading()
-                            currentView.goToLite(url)
-                        }
-                    }
-
-                    override fun onError(msg: String) {
-                        view?.let { currentView ->
-                            currentView.hideProgressLoading()
-                            currentView.showToastMessageRed(msg)
-                        }
-                    }
-                })
+                seamlessLoginUsecase.generateSeamlessUrl(url.replace(QUERY_APP_CLIENT_ID, adsId), CartSeamlessLoginSubscriber(view) )
             } else {
                 it.hideProgressLoading()
-                it.showToastMessageRed(ResponseErrorException())
+                it.showToastMessageRed()
             }
         }
     }
