@@ -47,6 +47,7 @@ class HomeScreenshotTesting {
     @Test
     fun screenShotVisibleView() {
         waitForData()
+        turnOffAnimation()
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             takeScreenShotVisibleViewInScreen(
                     activityRule.activity.window.decorView,

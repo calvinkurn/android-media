@@ -26,6 +26,8 @@ class HomeMockResponseConfig: MockModelConfig() {
         const val KEY_CONTAINS_SALAM = "salamWidget"
         const val KEY_CONTAINS_POPULAR_KEYWORDS = "PopularKeywords"
         const val KEY_CONTAINS_RECOMMENDATION_TAB = "getRecommendation"
+        const val KEY_CONTAINS_UNIVERSE_PLACEHOLDER = "universe_placeholder"
+        const val KEY_QUERY_FLOATING_EGG = "gamiFloating"
     }
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
@@ -121,6 +123,16 @@ class HomeMockResponseConfig: MockModelConfig() {
                 FIND_BY_CONTAINS
         )
 
+        addMockResponse(
+                KEY_CONTAINS_UNIVERSE_PLACEHOLDER,
+                getRawString(context, R.raw.response_mock_data_universe_placeholder),
+                FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+                KEY_QUERY_FLOATING_EGG,
+                getRawString(context, R.raw.response_mock_data_home_egg),
+                FIND_BY_CONTAINS)
         return this
     }
 }
