@@ -109,6 +109,8 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             !(throwable instanceof InterruptedIOException) &&
                             !(throwable instanceof ConnectionShutdownException)) {
                         LoggingUtils.logGqlError("java", requests.toString(), throwable);
+                    } else {
+                        LoggingUtils.logGqlErrorNetwork("java", requests.toString(), throwable);
                     }
                 }).map(httpResponse -> {
                     if (httpResponse == null) {

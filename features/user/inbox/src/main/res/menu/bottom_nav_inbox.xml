@@ -19,4 +19,10 @@
         android:icon="@drawable/navstate_inbox_discussion"
         android:title="@string/inbox_title_discussion"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_inbox_review"
+        android:enabled="true"
+        android:icon="@drawable/navstate_inbox_review"
+        android:title="@string/inbox_title_review"
+        app:showAsAction="ifRoom" />
 </menu>

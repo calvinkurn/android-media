@@ -50,8 +50,6 @@
     <string name="screentitle_notification_setting">Atur Notifikasi</string>
     <string name="save_setting_label">Simpan</string>
     <string name="header_privacy_account_setting">Keamanan</string>
-    <string name="title_occ_preference_setting">Beli Langsung</string>
-    <string name="subtitle_occ_preference_setting">Atur pengiriman &amp; pembayaranmu favoritmu</string>
 
     <string name="label_chat">Chat</string>
     <string name="label_chat_admin">Chat Tokopedia Administrator</string>

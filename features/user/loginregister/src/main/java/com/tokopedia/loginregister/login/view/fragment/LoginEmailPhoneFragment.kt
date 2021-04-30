@@ -22,6 +22,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -101,6 +102,7 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredent
 import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
+import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -115,6 +117,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.network.TokenErrorException
 import com.tokopedia.sessioncommon.util.TokenGenerator
+import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
@@ -188,6 +191,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private var socmedButtonsContainer: LinearLayout? = null
     private var socmedBottomSheet: SocmedBottomSheet? = null
     private var socmedButton: UnifyButton? = null
+    private var parentContainer: ConstraintLayout? = null
 
     private var currentEmail = ""
     private var tempValidateToken = ""
@@ -576,7 +580,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun prepareView() {
-
+        parentContainer = activity?.findViewById(R.id.parent_container)
+        parentContainer?.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         partialRegisterInputView?.showForgotPassword()
 
         socmedBottomSheet = SocmedBottomSheet(context)
@@ -1006,6 +1011,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             SubmitDeviceWorker.scheduleWorker(it, true)
             DataVisorWorker.scheduleWorker(it, true)
             AppAuthWorker.scheduleWorker(it, true)
+            TwoFactorMluHelper.clear2FaInterval(it)
         }
 
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
@@ -1420,7 +1426,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onSuccessActivateUser(activateUserData: ActivateUserData) {
         dismissLoadingLogin()
         userSession.clearToken()
-        userSession.setToken(activateUserData.accessToken, activateUserData.tokenType, activateUserData.refreshToken)
+        userSession.setToken(activateUserData.accessToken, activateUserData.tokenType, EncoderDecoder.Encrypt(activateUserData.refreshToken, userSession.refreshTokenIV))
         viewModel.getUserInfo()
     }
 

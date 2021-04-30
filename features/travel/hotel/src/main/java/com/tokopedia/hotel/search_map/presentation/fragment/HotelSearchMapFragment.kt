@@ -12,8 +12,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.*
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
@@ -110,12 +108,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var quickFilters: List<QuickFilter> = listOf()
     private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
     private var isSearchByMap: Boolean = false
+    private var lastHorizontalTrackingPositionSent: Int = -1
 
     private var isViewFullMap: Boolean = false
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
-    private lateinit var bounceAnim: Animation
     private val snapHelper: SnapHelper = LinearSnapHelper()
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
@@ -205,6 +203,17 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         lat = it.data.second
                         long = it.data.first
                     }
+                    hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
+                    removeAllMarker()
+                    showCardListView()
+                    hideFindNearHereView()
+                    changeHeaderTitle()
+                    loadInitialData()
+                }
+                is Fail -> {
+                    if (it.throwable.message.isNullOrEmpty()) {
+                        checkGps()
+                    }
                 }
             }
         })
@@ -275,6 +284,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 hotelSearchMapViewModel.addFilter(listOf())
                 isSearchByMap = false
             }
+        } else if (requestCode == REQUEST_CODE_GPS) {
+            getCurrentLocation()
         }
     }
 
@@ -317,6 +328,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         halfExpandBottomSheet()
 
         ivHotelSearchMapNoResult.loadImage(getString(R.string.hotel_url_empty_search_map_result))
+
+        trackingHotelUtil.viewHotelSearchMap(context,
+                searchDestinationName,
+                searchDestinationType,
+                hotelSearchMapViewModel.searchParam,
+                SEARCH_SCREEN_NAME)
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -496,10 +513,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_EXPANDED -> {
-                        context?.let {
-                            bounceAnim = AnimationUtils.loadAnimation(it, R.anim.bounce_anim)
-                        }
-                        btnHotelSearchWithMap.startAnimation(bounceAnim)
+                        showSearchWithMap()
                         setupContentMargin(true)
                         googleMap.uiSettings.setAllGesturesEnabled(false)
 
@@ -580,6 +594,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
 
         if (isHotelListShowingError()) {
+            hideSearchWithMap()
             rvVerticalPropertiesHotelSearchMap.setMargin(0,
                     resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7),
                     0,
@@ -652,6 +667,26 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     cardListPosition = getCurrentItemCardList()
                     changeMarkerState(cardListPosition)
+                }
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val currentPosition = getCurrentItemCardList()
+                if (currentPosition != -1 &&
+                        currentPosition != lastHorizontalTrackingPositionSent &&
+                        adapterCardList.data[currentPosition] is Property) {
+
+                    lastHorizontalTrackingPositionSent = currentPosition
+                    trackingHotelUtil.hotelViewHotelListMapImpression(context,
+                            searchDestinationName,
+                            searchDestinationType,
+                            hotelSearchMapViewModel.searchParam,
+                            listOf(adapterCardList.data[currentPosition]),
+                            0,
+                            SEARCH_SCREEN_NAME)
+
                 }
             }
         })
@@ -808,7 +843,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
             isSearchByMap = true
             getCurrentLocation()
-            onSearchByMap()
         }
     }
 
@@ -860,7 +894,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         showGetMylocation()
         context?.let {
             val searchParam = hotelSearchMapViewModel.searchParam
-            trackingHotelUtil.hotelViewHotelListMapImpression(it,
+            trackingHotelUtil.hotelViewHotelListImpression(it,
                     searchDestinationName,
                     searchDestinationType,
                     searchParam,
@@ -873,7 +907,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         showQuickFilterShimmering(false)
 
         val searchProperties = data.properties
-
         if (searchProperties.isNotEmpty()) {
             showCardListView()
             if (adapterCardList.itemCount <= MINIMUM_NUMBER_OF_RESULT_LOADED) {
@@ -1165,35 +1198,42 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 sortOption.firstOrNull { it.displayName == filter.values.firstOrNull() }
             } else null
 
-    private fun getCurrentLocation() {
+    private fun checkGps() {
         val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && permissionCheckerHelper.hasPermission(requireContext(), arrayOf(PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION))) {
+            showDialogEnableGPS()
+        } else {
+            getCurrentLocation()
+        }
+    }
 
+    private fun getCurrentLocation() {
         val locationDetectorHelper = LocationDetectorHelper(
                 permissionCheckerHelper,
                 fusedLocationClient,
                 requireActivity().applicationContext)
 
-        permissionCheckerHelper.checkPermission(this, requireActivity().getString(R.string.hotel_destination_need_permission),
-                object : PermissionCheckerHelper.PermissionCheckListener {
-                    override fun onNeverAskAgain(permissionText: String) {}
+        activity?.let {
+            permissionCheckerHelper.checkPermission(it,
+                    PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                        }
 
-                    override fun onPermissionDenied(permissionText: String) {
-                        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
-                                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                                requireActivity().getString(R.string.hotel_destination_need_permission))
-                    }
+                        override fun onNeverAskAgain(permissionText: String) {
+                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                        }
 
-                    override fun onPermissionGranted() {
-                        locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
-                                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                                requireActivity().getString(R.string.hotel_destination_need_permission))
-                    }
+                        override fun onPermissionGranted() {
+                            locationDetectorHelper.getLocation(hotelSearchMapViewModel.onGetLocation(), requireActivity(),
+                                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                                    requireActivity().getString(R.string.hotel_destination_need_permission))
+                        }
 
-                })
-
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            showDialogEnableGPS()
+                    }, getString(R.string.hotel_destination_need_permission))
         }
+
     }
 
     private fun showDialogEnableGPS() {

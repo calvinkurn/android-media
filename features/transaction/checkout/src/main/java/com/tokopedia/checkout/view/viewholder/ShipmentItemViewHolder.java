@@ -674,7 +674,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             renderSelectedCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         } else {
             // Has not select shipping
-            renderNoSelectedCourier(shipmentCartItemModel, currentAddress, ratesDataConverter, isTradeInDropOff);
+            prepareLoadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, isTradeInDropOff);
         }
     }
 
@@ -843,32 +843,39 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
     }
 
-    private void renderNoSelectedCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, RatesDataConverter ratesDataConverter, boolean isTradeInDropOff) {
+    private void prepareLoadCourierState(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, RatesDataConverter ratesDataConverter, boolean isTradeInDropOff) {
         layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
         layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
         llShippingOptionsContainer.setVisibility(View.GONE);
 
         if (isTradeInDropOff) {
-            boolean hasSelectTradeInLocation = mActionListener.hasSelectTradeInLocation();
-            if (hasSelectTradeInLocation) {
-                layoutTradeInShippingInfo.setVisibility(View.GONE);
-                layoutStateNoSelectedShipping.setVisibility(View.VISIBLE);
-                layoutStateNoSelectedShipping.setOnClickListener(
-                        getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
-                );
-            } else {
-                layoutTradeInShippingInfo.setVisibility(View.VISIBLE);
-                layoutStateNoSelectedShipping.setVisibility(View.GONE);
-            }
+            renderNoSelectedCourier(shipmentCartItemModel, currentAddress, SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
+            loadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
         } else {
-            layoutTradeInShippingInfo.setVisibility(View.GONE);
-            layoutStateNoSelectedShipping.setVisibility(View.VISIBLE);
-            layoutStateNoSelectedShipping.setOnClickListener(
-                    getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
-            );
+            renderNoSelectedCourier(shipmentCartItemModel, currentAddress, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE);
+            loadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE);
         }
+    }
 
-        loadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE);
+    private void renderNoSelectedCourierNormalShipping(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress) {
+        layoutTradeInShippingInfo.setVisibility(View.GONE);
+        layoutStateNoSelectedShipping.setVisibility(View.VISIBLE);
+        layoutStateNoSelectedShipping.setOnClickListener(
+                getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
+        );
+        containerShippingExperience.setVisibility(View.VISIBLE);
+    }
+
+    private void renderNoSelectedCourierTradeInDropOff(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, boolean hasSelectTradeInLocation) {
+        if (hasSelectTradeInLocation) {
+            renderNoSelectedCourierNormalShipping(shipmentCartItemModel, currentAddress);
+        } else {
+            layoutTradeInShippingInfo.setVisibility(View.VISIBLE);
+            layoutStateNoSelectedShipping.setVisibility(View.GONE);
+            tvTradeInShippingPriceTitle.setVisibility(View.VISIBLE);
+            tvTradeInShippingPriceDetail.setVisibility(View.VISIBLE);
+            containerShippingExperience.setVisibility(View.VISIBLE);
+        }
     }
 
     private View.OnClickListener getOnChangeCourierClickListener(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress) {
@@ -893,25 +900,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                                   int saveStateType) {
         ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
         if (shipmentCartItemModel.isStateLoadingCourierState()) {
-            switch (saveStateType) {
-                case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
-                    tvTradeInShippingPriceTitle.setVisibility(View.GONE);
-                    tvTradeInShippingPriceDetail.setVisibility(View.GONE);
-                    break;
-                case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
-                    llShippingExperienceStateLoading.setVisibility(View.VISIBLE);
-                    containerShippingExperience.setVisibility(View.GONE);
-                    break;
-            }
+            renderLoadingCourierState();
         } else {
             boolean hasLoadCourier = false;
+            llShippingExperienceStateLoading.setVisibility(View.GONE);
             switch (saveStateType) {
                 case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
                     hasLoadCourier = shipmentDetailData != null && shipmentDetailData.getSelectedCourierTradeInDropOff() != null;
                     break;
                 case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
                     hasLoadCourier = shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null;
-                    llShippingExperienceStateLoading.setVisibility(View.GONE);
                     break;
             }
 
@@ -920,7 +918,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     ShipmentDetailData tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
                             shipmentCartItemModel, recipientAddressModel);
 
-                    boolean hasLoadCourierState = false;
+                    boolean hasLoadCourierState;
                     if (saveStateType == SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF) {
                         hasLoadCourierState = shipmentCartItemModel.isStateHasLoadCourierTradeInDropOffState();
                     } else {
@@ -930,50 +928,55 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     if (!hasLoadCourierState) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
-                            mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
-                                    shipmentCartItemModel.getSpId(), position, tmpShipmentDetailData,
-                                    shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(),
-                                    saveStateType == SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
-                            shipmentCartItemModel.setStateLoadingCourierState(true);
-                            switch (saveStateType) {
-                                case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
-                                    shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
-                                    tvTradeInShippingPriceTitle.setVisibility(View.GONE);
-                                    tvTradeInShippingPriceDetail.setVisibility(View.GONE);
-                                    break;
-                                case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
-                                    shipmentCartItemModel.setStateHasLoadCourierState(true);
-                                    llShippingExperienceStateLoading.setVisibility(View.VISIBLE);
-                                    containerShippingExperience.setVisibility(View.GONE);
-                                    break;
-                            }
+                            loadCourierStateData(shipmentCartItemModel, saveStateType, tmpShipmentDetailData, position);
                         }
                     } else {
-                        switch (saveStateType) {
-                            case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
-                                tvTradeInShippingPriceTitle.setVisibility(View.GONE);
-                                tvTradeInShippingPriceDetail.setVisibility(View.GONE);
-                                break;
-                            case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
-                                llShippingExperienceStateLoading.setVisibility(View.GONE);
-                                containerShippingExperience.setVisibility(View.VISIBLE);
-                                break;
-                        }
+                        renderNoSelectedCourier(shipmentCartItemModel, recipientAddressModel, saveStateType);
                     }
                 }
             } else {
-                switch (saveStateType) {
-                    case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
-                        tvTradeInShippingPriceTitle.setVisibility(View.GONE);
-                        tvTradeInShippingPriceDetail.setVisibility(View.GONE);
-                        break;
-                    case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
-                        llShippingExperienceStateLoading.setVisibility(View.GONE);
-                        containerShippingExperience.setVisibility(View.VISIBLE);
-                        break;
-                }
+                renderNoSelectedCourier(shipmentCartItemModel, recipientAddressModel, saveStateType);
             }
         }
+    }
+
+    private void renderNoSelectedCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, int saveStateType) {
+        switch (saveStateType) {
+            case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
+                boolean hasSelectTradeInLocation = mActionListener.hasSelectTradeInLocation();
+                renderNoSelectedCourierTradeInDropOff(shipmentCartItemModel, recipientAddressModel, hasSelectTradeInLocation);
+                break;
+            case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
+                renderNoSelectedCourierNormalShipping(shipmentCartItemModel, recipientAddressModel);
+                break;
+        }
+    }
+
+    private void loadCourierStateData(ShipmentCartItemModel shipmentCartItemModel, int saveStateType, ShipmentDetailData tmpShipmentDetailData, int position) {
+        mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
+                shipmentCartItemModel.getSpId(), position, tmpShipmentDetailData,
+                shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(),
+                saveStateType == SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
+        shipmentCartItemModel.setStateLoadingCourierState(true);
+        llShippingExperienceStateLoading.setVisibility(View.VISIBLE);
+        containerShippingExperience.setVisibility(View.GONE);
+        switch (saveStateType) {
+            case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
+                shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
+                tvTradeInShippingPriceTitle.setVisibility(View.GONE);
+                tvTradeInShippingPriceDetail.setVisibility(View.GONE);
+                break;
+            case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
+                shipmentCartItemModel.setStateHasLoadCourierState(true);
+                break;
+        }
+    }
+
+    private void renderLoadingCourierState() {
+        llShippingExperienceStateLoading.setVisibility(View.VISIBLE);
+        containerShippingExperience.setVisibility(View.GONE);
+        tvTradeInShippingPriceTitle.setVisibility(View.GONE);
+        tvTradeInShippingPriceDetail.setVisibility(View.GONE);
     }
 
     private void renderCostDetail(ShipmentCartItemModel shipmentCartItemModel) {

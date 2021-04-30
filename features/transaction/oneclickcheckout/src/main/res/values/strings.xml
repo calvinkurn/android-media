@@ -3,12 +3,10 @@
     <string name="pay">Bayar</string>
     <string name="continue_pay">Lanjutkan</string>
     <string name="change_payment_method">Ganti Metode Bayar</string>
-    <string name="preference_number">Pilihan %1d</string>
     <string name="preference_number_summary">Pilihan</string>
 
     <string name="lbl_summary_preference_title">Pengaturan Beli Langsung</string>
     <string name="lbl_summary_preference_option">Pilihan</string>
-    <string name="lbl_summary_preference_with_number_title">Atur</string>
     <string name="lbl_new_summary_preference">Atur Template</string>
     <string name="lbl_summary_preference_subtitle">Cek ringkasan pengaturanmu</string>
 
@@ -16,26 +14,15 @@
     <string name="step_choose_payment">Langkah 3 dari 3</string>
     <string name="lbl_save">Simpan</string>
 
-    <string name="lbl_delete_preference_title">Hapus pilihan ini?</string>
     <string name="lbl_new_delete_preference_title">Hapus template ini?</string>
-    <string name="lbl_delete_preference_desc">Pengaturan Beli Langsung yang sudah dihapus tidak bisa dipakai untuk belanja.</string>
     <string name="lbl_new_delete_preference_desc">Template Beli Langsung yang sudah dihapus tidak bisa dipakai untuk belanja.</string>
     <string name="lbl_delete_preference_ok">Ya, Hapus</string>
     <string name="atur_pilihan">Atur Pilihan</string>
     <string name="label_pilih">Pilih</string>
-    <string name="label_kurir">Kurir</string>
-    <string name="label_choose_other_preference">Ganti Pilihan Lain</string>
-    <string name="label_create_other_preference">Buat Pilihan Lain</string>
-    <string name="label_choose_this_preference">Gunakan Pilihan Ini</string>
-    <string name="label_used">Digunakan</string>
 
     <string name="label_pay_total">Total Bayar</string>
 
-    <string name="lbl_osp_free_shipping">Pengiriman Bebas Ongkir</string>
-    <string name="lbl_osp_free_shipping_only_price">Rp 0</string>
-
     <string name="lbl_osp_header">Barang yang dibeli</string>
-    <string name="lbl_osp_secondary_header_intro">Hai!</string>
     <string name="lbl_osp_secondary_header">Pengiriman dan pembayaran</string>
     <string name="lbl_osp_secondary_header_info">Info</string>
 
@@ -49,9 +36,9 @@
     <string name="add_first_preference">Atur</string>
     <string name="new_add_first_preference">Buat Template</string>
     <string name="add_preference">Tambah Pilihan</string>
-    <string name="lbl_make_default_preference">Jadikan Pilihan Utama</string>
     <string name="lbl_new_make_default_preference">Jadikan template utama</string>
     <string name="lbl_default_preference">Utama</string>
+    <string name="occ_lbl_main_address">Utama</string>
     <string name="lbl_default_preference_profile">Pilihan Utama</string>
 
     <!--Choose Address-->
@@ -71,8 +58,6 @@
     <string name="activity_title_shipping_duration">Pilih Durasi Pengiriman</string>
     <string name="activity_subtitle_shipping_address">Langkah 2 dari 3</string>
     <string name="ticker_label_text">Perkiraan tiba dihitung sejak pesanan dikirim</string>
-    <string name="logistic_promo_info_title">Bebas Ongkir</string>
-    <string name="logistic_promo_info_desc">Bebas Ongkir tidak bisa disimpan sebagai pilihan pengiriman, tapi bisa digunakan saat Beli Langsung.</string>
     <string name="new_logistic_promo_info_desc">Bebas Ongkir tidak bisa disimpan sebagai template. Jika tersedia, akan direkomendasikan sebelum kamu bayar.</string>
 
     <string name="default_action_occ_info_bottom_sheet">Lanjut Belanja</string>
@@ -118,4 +103,7 @@
     <string name="lbl_reload_shipping">Refresh</string>
 
     <string name="content_description_img_payment">Payment Image</string>
+
+    <string name="occ_lbl_title_no_address">Tambahkan Alamat dulu, ya!</string>
+    <string name="occ_lbl_desc_no_address">Cuma satu langkah lagi sebelum\nmelanjutkan proses Beli Langsung :)</string>
 </resources>

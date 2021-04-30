@@ -798,8 +798,10 @@ class PlayUserInteractionFragment @Inject constructor(
         if (!this::onStatsInfoGlobalLayoutListener.isInitialized) {
             onStatsInfoGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener{
                 override fun onGlobalLayout() {
-                    playFragment.stopRenderMonitoring()
-                    statsInfoView.rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    if (isAdded) {
+                        playFragment.stopRenderMonitoring()
+                        statsInfoView.rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
                 }
             }
             statsInfoView.rootView.viewTreeObserver.addOnGlobalLayoutListener(onStatsInfoGlobalLayoutListener)
@@ -872,7 +874,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openProfilePage(partnerId: Long) {
-        openPageByApplink(ApplinkConst.PROFILE, partnerId.toString())
+        openPageByApplink(ApplinkConst.PROFILE, partnerId.toString(), pipMode = true)
     }
 
     private fun doClickChatBox() {
@@ -934,7 +936,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false, pipMode: Boolean = false) {
-        if (pipMode && !playViewModel.isFreezeOrBanned) {
+        if (pipMode && playViewModel.isPiPAllowed && !playViewModel.isFreezeOrBanned) {
             playViewModel.requestPiPBrowsingPage(
                     OpenApplinkUiModel(applink = applink, params = params.toList(), requestCode, shouldFinish)
             )

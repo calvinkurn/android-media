@@ -145,7 +145,6 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
         bindContentTextView();
         bindNewSearchButton();
         bindRecylerView();
-        bindBannerAds();
         bindGlobalSearchButton();
     }
 

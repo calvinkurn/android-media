@@ -82,8 +82,9 @@ class ShopHomeCarousellProductViewHolder(
                 productCardModelList = shopHomeProductViewModelList.map {
                     ShopPageHomeMapper.mapToProductCardModel(
                             isHasAtc(),
-                            !isHasAtc(),
-                            it
+                            false,
+                            it,
+                            false
                     )
                 },
                 carouselProductCardOnItemAddToCartListener = object : CarouselProductCardListener.OnItemAddToCartListener{
