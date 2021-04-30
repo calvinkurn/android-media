@@ -19,22 +19,24 @@ class GetLiveStatisticsUseCase @Inject constructor(
 
     private val query = """
         query liveReport(${'$'}channelId: String!){
-          broadcasterReportLiveSummaries(channelID: ${'$'}channelId) {
+          broadcasterReportLiveSummaries(channelID: ${'$'}channelId, useDashboardFormat: true) {
             channel {
               channelID
               metrics {
                 add_to_cart: addToCart
-                remove_from_cart: removeFromCart
-                wish_list: wishList
-                remove_wish_list: removeWishList
+                add_to_cart_fmt: addToCartFmt
                 payment_verified: paymentVerified
+                payment_verified_fmt: paymentVerifiedFmt
                 follow_shop: followShop
-                unfollow_shop: unFollowShop
+                follow_shop_fmt: followShopFmt
                 like_channel: likeChannel
-                unlike_channel: unLike
+                like_channel_fmt: likeChannelFmt
                 visit_shop: visitShop
+                visit_shop_fmt: visitShopFmt
                 visit_pdp: visitPDP
+                visit_pdp_fmt: visitPDPFmt
                 visit_channel: visitChannel
+                visit_channel_fmt: visitChannelFmt
               }
             }
             duration

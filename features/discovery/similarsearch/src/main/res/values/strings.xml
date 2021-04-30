@@ -17,4 +17,5 @@
     <string name="similar_search_empty_content">Lagi nggak ada Produk Serupa, nih. Yuk, cek hasil pencarian lainnya!</string>
     <string name="similar_search_empty_button">Cek Hasil Pencarian</string>
 
+    <string name="content_desc_similar_search_imageRating">image rating</string>
 </resources>

@@ -107,7 +107,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     private fun getPermissions(): Array<String> {
         return arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE,
                 PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
                 PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO)
     }
@@ -209,8 +209,9 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         videoPreview.setVideoURI(null)
 
         if (!isVideoSourcePicker) {
-            if (File(videoPath).exists()) {
-                FileUtils.deleteCacheDir()
+            val file = File(videoPath)
+            if (file.exists()) {
+                file.delete()
             }
         }
 
