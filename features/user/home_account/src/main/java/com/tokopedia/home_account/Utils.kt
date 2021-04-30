@@ -12,6 +12,11 @@ import kotlin.collections.HashMap
 object Utils {
     const val M_RESULT = "mResults"
     const val M_ERRORS = "mErrors"
+    private const val LANGUAGE_ID = "id"
+    private const val COUNTRY_ID = "ID"
+    private const val PATTERN_CURRENCY = "Rp#,##0.##"
+    private const val DECIMAL_SEPARATOR = ','
+    private const val GROUPING_SEPARATOR = '.'
 
     fun normalizePhoneNumber(phoneNum: String): String? {
         return if (phoneNum.isNotEmpty()) phoneNum.replaceFirst("^0(?!$)".toRegex(), "62") else ""
@@ -42,12 +47,12 @@ object Utils {
     }
 
     fun formatIdrCurrency(balance: Long): String {
-        val unusualSymbols = DecimalFormatSymbols(Locale("id", "ID"))
-        unusualSymbols.decimalSeparator = ','
-        unusualSymbols.groupingSeparator = '.'
+        val unusualSymbols = DecimalFormatSymbols(Locale(LANGUAGE_ID, COUNTRY_ID))
+        unusualSymbols.decimalSeparator = DECIMAL_SEPARATOR
+        unusualSymbols.groupingSeparator = GROUPING_SEPARATOR
 
-        val strange = "Rp#,##0.##"
-        val formatter = DecimalFormat(strange, unusualSymbols)
+        val pattern = PATTERN_CURRENCY
+        val formatter = DecimalFormat(pattern, unusualSymbols)
         formatter.groupingSize = 3
 
         return formatter.format(balance)
