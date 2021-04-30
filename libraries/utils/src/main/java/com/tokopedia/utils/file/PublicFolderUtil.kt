@@ -21,7 +21,7 @@ object PublicFolderUtil {
      * @param fileName: output fileName, without prefix directory
      * @param compressFormat: Compress Format for image, default is jpeg
      * @param mimeType: mimeType for Image, default "image/jpeg"
-     * @param directory: public directory to put, default is Directory Pictures
+     * @param directory: (API 29 and above only) public directory to put, default is Directory Pictures
      */
     fun putImageToPublicFolder(
             context: Context, bitmap: Bitmap, fileName: String,
@@ -32,7 +32,7 @@ object PublicFolderUtil {
         try {
             val contentResolver: ContentResolver = context.contentResolver
             val contentValues = createContentValues(fileName, mimeType, directory)
-            val contentUri = getContentUriFromMime(mimeType);
+            val contentUri = getContentUriFromMime(mimeType)
             val uri = contentResolver.insert(contentUri, contentValues)
             uri?.let {
                 contentResolver.openOutputStream(uri)?.let { outputStream ->
@@ -40,11 +40,7 @@ object PublicFolderUtil {
                     bitmap.compress(compressFormat, 100, outputStream)
                     outputStream.close()
                 }
-                contentValues.clear()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
-                    contentResolver.update(uri, contentValues, null, null)
-                }
+                resetPending(contentResolver, contentValues, uri)
             }
             return FileUtil.getPath(contentResolver, uri)
         } catch (ex: Exception) {
@@ -56,7 +52,7 @@ object PublicFolderUtil {
      * @param localFile: input file to put
      * @param outputFileName: output fileName, without prefix directory
      * @param mimeType: mimeType for Image, default "image/jpeg"
-     * @param directory: public directory to put. If not given, will determine automatically by mimeType
+     * @param directory: (API 29 and above only) public directory to put. If not given, will determine automatically by mimeType
      */
     fun putFileToPublicFolder(
             context: Context,
@@ -68,7 +64,7 @@ object PublicFolderUtil {
         try {
             val contentResolver: ContentResolver = context.contentResolver
             val contentValues = createContentValues(outputFileName, mimeType, directory)
-            val contentUri = getContentUriFromMime(mimeType);
+            val contentUri = getContentUriFromMime(mimeType)
             val uri = contentResolver.insert(contentUri, contentValues)
             uri?.let {
                 contentResolver.openOutputStream(uri)?.let { outputStream ->
@@ -81,11 +77,7 @@ object PublicFolderUtil {
                         outputStream.close()
                     }
                 }
-                contentValues.clear()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
-                    contentResolver.update(uri, contentValues, null, null)
-                }
+                resetPending(contentResolver, contentValues, uri)
             }
             return FileUtil.getPath(contentResolver, uri)
         } catch (ex: Exception) {
@@ -143,6 +135,14 @@ object PublicFolderUtil {
             contentValues.put(MediaStore.Images.Media.IS_PENDING, 1)
         }
         return contentValues
+    }
+
+    private fun resetPending(contentResolver: ContentResolver, contentValues: ContentValues, uri: Uri){
+        contentValues.clear()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
+            contentResolver.update(uri, contentValues, null, null)
+        }
     }
 
     @Throws(IOException::class)
