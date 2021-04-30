@@ -21,7 +21,6 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.util.model.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
@@ -34,10 +33,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.util.pageflow.FragmentPageNavigator
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.cleanBackstack
-import com.tokopedia.play_common.util.extension.compatTransitionName
 import java.util.*
 import javax.inject.Inject
-
 
 /**
  * Created by jegul on 26/05/20
@@ -68,8 +65,6 @@ class PlayBroadcastSetupBottomSheet(
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
-    private val fragmentBreadcrumbs = Stack<BreadcrumbsModel>()
-
     private var mListener: SetupResultListener? = null
 
     private val currentFragment: Fragment?
@@ -89,9 +84,8 @@ class PlayBroadcastSetupBottomSheet(
                 val currentFragment = childFragmentManager.findFragmentById(R.id.fl_fragment)
                 if (currentFragment is PlayBaseSetupFragment && currentFragment.onInterceptBackPressed()) return
 
-                if (!fragmentBreadcrumbs.empty()) {
-                    val lastFragmentBreadcrumbs = fragmentBreadcrumbs.pop()
-                    childFragmentManager.popBackStack(lastFragmentBreadcrumbs.fragmentClass.name, 0)
+                if (childFragmentManager.backStackEntryCount > 1) {
+                    childFragmentManager.popBackStack()
                 } else {
                     cancel()
                     mListener?.onSetupCanceled()
@@ -124,7 +118,6 @@ class PlayBroadcastSetupBottomSheet(
     }
 
     override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
-        addBreadcrumb()
         openFragment(fragmentClass, extras, sharedElements)
     }
 
@@ -241,15 +234,6 @@ class PlayBroadcastSetupBottomSheet(
                 extras,
                 sharedElements
         )
-    }
-
-    private fun addBreadcrumb() {
-        currentFragment?.let { fragment ->
-            fragmentBreadcrumbs.add(
-                    BreadcrumbsModel(fragment.javaClass, fragment.arguments
-                            ?: Bundle.EMPTY)
-            )
-        }
     }
 
     companion object {

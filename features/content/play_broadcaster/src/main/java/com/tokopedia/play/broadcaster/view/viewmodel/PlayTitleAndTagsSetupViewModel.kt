@@ -115,6 +115,8 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
     }
 
     private suspend fun uploadTags() {
+        if (setupDataStore.getTags().isEmpty()) return
+
         val isSuccess = setupDataStore.uploadTags(hydraConfigStore.getChannelId())
         if (!isSuccess) error("Set Channel Tag Failed")
     }

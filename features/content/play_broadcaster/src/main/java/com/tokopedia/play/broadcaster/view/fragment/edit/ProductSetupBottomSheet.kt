@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -24,7 +23,6 @@ import com.tokopedia.play.broadcaster.data.type.OverwriteMode
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.util.model.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.util.pageflow.FragmentPageNavigator
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
@@ -36,7 +34,6 @@ import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.cleanBackstack
-import com.tokopedia.play_common.util.extension.compatTransitionName
 import java.util.*
 import javax.inject.Inject
 
@@ -78,17 +75,14 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
             }
     )
 
-    private val fragmentBreadcrumbs = Stack<BreadcrumbsModel>()
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
             override fun onBackPressed() {
                 val currentFragment = childFragmentManager.findFragmentById(R.id.fl_fragment)
                 if (currentFragment is PlayBaseSetupFragment && currentFragment.onInterceptBackPressed()) return
 
-                if (!fragmentBreadcrumbs.empty()) {
-                    val lastFragmentBreadcrumbs = fragmentBreadcrumbs.pop()
-                    childFragmentManager.popBackStack(lastFragmentBreadcrumbs.fragmentClass.name, 0)
+                if (childFragmentManager.backStackEntryCount > 1) {
+                    childFragmentManager.popBackStack()
                 } else {
                     cancel()
                     mListener?.onSetupCanceled()
@@ -126,7 +120,6 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
     }
 
     override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
-        addBreadcrumb()
         openFragment(fragmentClass, extras, sharedElements)
     }
 
@@ -204,15 +197,6 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
                 extras,
                 sharedElements
         )
-    }
-
-    private fun addBreadcrumb() {
-        currentFragment?.let { fragment ->
-            fragmentBreadcrumbs.add(
-                    BreadcrumbsModel(fragment.javaClass, fragment.arguments
-                            ?: Bundle.EMPTY)
-            )
-        }
     }
 
     private fun setupDialog(dialog: Dialog) {
