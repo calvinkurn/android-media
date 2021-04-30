@@ -4,20 +4,20 @@
   "query": [
     {
       "eventAction": "view - talk on inbox talk",
-      "eventCategory": "{{inbox talk - .*}}",
+      "eventCategory": "inbox talk - .*",
       "currentSite": "tokopediamarketplace",
       "event": "view_item",
-      "userId": "{{\\d{1,}}}",
+      "userId": "\\d{1,}",
       "screenName": "/inbox - talk",
       "promotions": [
         {
-          "item_id":  "{{.{1,}}}",
-          "item_name": "{{inbox talk - .*}}",
-          "creative_slot":  "{{\\d{1,}}}",
-          "creative_name": "{{message status:.*}}"
+          "item_id":  ".{1,}",
+          "item_name": "inbox talk - .*",
+          "creative_slot":  "\\d{1,}",
+          "creative_name": "message status:.*"
         }
       ],
-      "sessionIris": "{{.{1,}}}",
+      "sessionIris": ".{1,}",
       "eventLabel": "",
       "businessUnit": "physical goods"
     }
