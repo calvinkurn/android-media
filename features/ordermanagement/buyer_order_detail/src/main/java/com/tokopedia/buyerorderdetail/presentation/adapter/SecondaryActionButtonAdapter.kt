@@ -40,7 +40,9 @@ class SecondaryActionButtonAdapter(private val listener: ActionButtonClickListen
         fun bind(button: ActionButtonsUiModel.ActionButton?) {
             itemView.tvBuyerOrderDetailSecondaryActionButton.text = button?.label.orEmpty()
             itemView.tvBuyerOrderDetailSecondaryActionButton.setOnClickListener {
-                listener.onActionButtonClicked(button?.key.orEmpty())
+                button?.let {
+                    listener.onActionButtonClicked(button)
+                }
             }
         }
 

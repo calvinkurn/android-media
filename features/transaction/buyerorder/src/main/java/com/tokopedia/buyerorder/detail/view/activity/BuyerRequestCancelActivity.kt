@@ -9,21 +9,27 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.detail.di.DaggerOrderDetailsComponent
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
 import com.tokopedia.buyerorder.detail.view.fragment.BuyerRequestCancelFragment
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 
 /**
  * Created by fwidjaja on 08/06/20.
  */
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class BuyerRequestCancelActivity: BaseSimpleActivity(), HasComponent<OrderDetailsComponent> {
+class BuyerRequestCancelActivity : BaseSimpleActivity(), HasComponent<OrderDetailsComponent> {
 
     override fun getNewFragment(): Fragment? {
-        var bundle = Bundle()
-        if (intent.extras != null) {
-            bundle = intent.extras ?: Bundle()
+        val cacheManager = SaveInstanceCacheManager(this)
+        val bundle = Bundle()
+        val cacheId = intent.getStringExtra(BuyerConsts.PARAM_CACHE_ID).orEmpty()
+        if (cacheId.isNotEmpty()) {
+            bundle.putAll(cacheManager.get(cacheId, Bundle::class.java, bundle))
+        } else if (intent.extras != null) {
+            bundle.putAll(intent.extras ?: Bundle())
         } else {
             bundle.putString(BuyerConsts.PARAM_SHOP_NAME, "")
             bundle.putString(BuyerConsts.PARAM_INVOICE, "")
-            bundle.putSerializable(BuyerConsts.PARAM_LIST_PRODUCT, null)
+            bundle.putSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, null)
+            bundle.putSerializable(BuyerConsts.PARAM_JSON_LIST_PRODUCT, null)
             bundle.putString(BuyerConsts.PARAM_ORDER_ID, "")
             bundle.putString(BuyerConsts.PARAM_URI, "")
             bundle.putBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, false)

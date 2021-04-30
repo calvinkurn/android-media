@@ -14,7 +14,15 @@ data class ActionButtonsUiModel(
     }
 
     data class ActionButton(
+            val key: String,
             val label: String,
-            val key: String
-    )
+            val popUp: PopUp,
+            val style: String
+    ) {
+        data class PopUp(
+                val actionButton: List<ActionButton> = listOf(),
+                val body: String = "",
+                val title: String = ""
+        )
+    }
 }

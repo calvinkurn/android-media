@@ -903,7 +903,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
-                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, (Serializable) listProducts);
                     if (getArguments() != null) {
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                     }
@@ -991,7 +991,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
-                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, (Serializable) listProducts);
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_URI, actionButton.getUri());
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, isRequestedCancel);
@@ -1010,7 +1010,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
-                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, (Serializable) listProducts);
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_URI, actionButton.getUri());
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, isRequestedCancel);

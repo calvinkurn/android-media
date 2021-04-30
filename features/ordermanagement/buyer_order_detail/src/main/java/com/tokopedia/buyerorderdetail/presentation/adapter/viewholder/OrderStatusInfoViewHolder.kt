@@ -1,11 +1,14 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
+import android.graphics.Color
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.item_buyer_order_detail_status_info.view.*
 import java.util.*
@@ -25,7 +28,7 @@ class OrderStatusInfoViewHolder(itemView: View?) : AbstractViewHolder<OrderStatu
             this.element = it
             setupInvoice(it.invoice.invoice)
             setupPurchaseDate(it.purchaseDate)
-            setupDeadline(it.deadline.value)
+            setupDeadline(it.deadline)
             setupClickListener()
         }
     }
@@ -50,11 +53,19 @@ class OrderStatusInfoViewHolder(itemView: View?) : AbstractViewHolder<OrderStatu
         itemView.tvBuyerOrderDetailPurchaseDateValue?.text = purchaseDate
     }
 
-    private fun setupDeadline(deadline: Long) {
-        itemView.timerBuyerOrderDetailDeadline?.apply {
-            targetDate = Calendar.getInstance().apply {
-                timeInMillis = deadline
-            }
+    private fun setupDeadline(deadline: OrderStatusUiModel.OrderStatusInfoUiModel.DeadlineUiModel) {
+        itemView.tvBuyerOrderDetailDeadlineLabel?.apply {
+            text = deadline.label
+            showWithCondition(deadline.label.isNotBlank())
+        }
+        itemView.icBuyerOrderDetailDeadline?.apply {
+            setColorFilter(Color.parseColor(deadline.color))
+            showWithCondition(deadline.label.isNotBlank())
+        }
+        itemView.tvBuyerOrderDetailDeadlineValue?.apply {
+            text = deadline.value
+            setTextColor(Color.parseColor(deadline.color))
+            showWithCondition(deadline.label.isNotBlank())
         }
     }
 

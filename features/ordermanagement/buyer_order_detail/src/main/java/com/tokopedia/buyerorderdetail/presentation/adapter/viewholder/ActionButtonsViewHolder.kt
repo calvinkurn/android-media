@@ -11,8 +11,6 @@ import kotlinx.android.synthetic.main.item_buyer_order_detail_action_buttons.vie
 
 class ActionButtonsViewHolder(itemView: View?, private val listener: ActionButtonClickListener) : AbstractViewHolder<ActionButtonsUiModel>(itemView), View.OnClickListener {
     companion object {
-        const val SECONDARY_ACTION_BUTTON_KEY = "secondary_action"
-
         val LAYOUT = R.layout.item_buyer_order_detail_action_buttons
     }
 
@@ -57,11 +55,11 @@ class ActionButtonsViewHolder(itemView: View?, private val listener: ActionButto
 
     private fun onPrimaryActionButtonClicked() {
         element?.let {
-            listener.onActionButtonClicked(it.primaryActionButton.key)
+            listener.onActionButtonClicked(it.primaryActionButton)
         }
     }
 
     private fun onSecondaryActionButtonClicked() {
-        listener.onActionButtonClicked(SECONDARY_ACTION_BUTTON_KEY)
+        listener.onSecondaryActionButtonClicked()
     }
 }

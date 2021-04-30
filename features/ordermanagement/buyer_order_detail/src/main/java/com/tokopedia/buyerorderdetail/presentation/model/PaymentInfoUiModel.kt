@@ -6,9 +6,9 @@ import com.tokopedia.kotlin.extensions.view.orZero
 
 data class PaymentInfoUiModel(
         val headerUiModel: PlainHeaderUiModel,
-        val paymentMethodInfoItems: List<PaymentInfoItemUiModel>,
-        val paymentInfoItems: List<PaymentInfoItemUiModel>,
         val paymentGrandTotal: PaymentGrandTotalUiModel,
+        val paymentInfoItems: List<PaymentInfoItemUiModel>,
+        val paymentMethodInfoItem: PaymentInfoItemUiModel,
         val ticker: TickerUiModel
 ) {
     open class PaymentInfoItemUiModel(

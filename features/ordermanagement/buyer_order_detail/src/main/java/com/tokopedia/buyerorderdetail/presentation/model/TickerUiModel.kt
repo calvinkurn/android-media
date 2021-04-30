@@ -5,10 +5,10 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class TickerUiModel(
-        val description: String,
+        val actionKey: String,
         val actionText: String,
         val actionUrl: String,
-        val actionKey: String,
+        val description: String,
         val type: String
 ) : Visitable<BuyerOrderDetailTypeFactory> {
     override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {

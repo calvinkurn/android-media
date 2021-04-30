@@ -38,6 +38,7 @@
     <string name="path_seller_migration" translatable="false">/seller-migration</string>
 
     <string name="path_order_unified" translatable="false">/unified</string>
+    <string name="path_order_request_cancel" translatable="false">/request-cancel</string>
 
     <string name="path_order_confirmed" translatable="false">/confirmed</string>
     <string name="path_order_list_buyer" translatable="false">/order_list</string>

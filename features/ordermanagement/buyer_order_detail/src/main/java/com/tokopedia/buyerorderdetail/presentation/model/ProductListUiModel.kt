@@ -5,14 +5,14 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class ProductListUiModel(
-        val productListHeaderUiModel: ProductListHeaderUiModel,
-        val productList: List<ProductUiModel>
+        val productList: List<ProductUiModel>,
+        val productListHeaderUiModel: ProductListHeaderUiModel
 ) {
     data class ProductListHeaderUiModel(
             val header: String,
             val shopBadge: Int,
-            val shopName: String,
-            val shopId: String
+            val shopId: String,
+            val shopName: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -20,15 +20,18 @@ data class ProductListUiModel(
     }
 
     data class ProductUiModel(
-            val productThumbnailUrl: String,
+            val button: ActionButtonsUiModel.ActionButton,
+            val orderDetailId: String,
+            val price: String,
+            val priceText: String,
+            val productId: String,
             val productName: String,
-            val productQuantityAndPrice: String,
             val productNote: String,
-            val totalPrice: String,
-            val showBuyAgainButton: Boolean,
+            val productThumbnailUrl: String,
+            val quantity: Int,
             val showClaimInsurance: Boolean,
-            val orderId: String,
-            val orderDetailId: String
+            val totalPrice: String,
+            val totalPriceText: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()

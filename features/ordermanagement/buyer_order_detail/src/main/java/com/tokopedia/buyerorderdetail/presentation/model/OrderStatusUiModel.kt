@@ -6,12 +6,12 @@ import com.tokopedia.kotlin.extensions.view.orZero
 
 data class OrderStatusUiModel(
         val orderStatusHeaderUiModel: OrderStatusHeaderUiModel,
-        val ticker: TickerUiModel,
-        val orderStatusInfoUiModel: OrderStatusInfoUiModel
+        val orderStatusInfoUiModel: OrderStatusInfoUiModel,
+        val ticker: TickerUiModel
 ) {
     data class OrderStatusHeaderUiModel(
-            val orderId: String,
             val indicatorColor: String,
+            val orderId: String,
             val orderStatus: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
@@ -20,9 +20,9 @@ data class OrderStatusUiModel(
     }
 
     data class OrderStatusInfoUiModel(
+            val deadline: DeadlineUiModel,
             val invoice: InvoiceUiModel,
-            val purchaseDate: String,
-            val deadline: DeadlineUiModel
+            val purchaseDate: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -34,9 +34,9 @@ data class OrderStatusUiModel(
         )
 
         data class DeadlineUiModel(
+                val color: String,
                 val label: String,
-                val value: Long,
-                val color: String
+                val value: String
         )
     }
 }

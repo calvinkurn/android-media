@@ -1,10 +1,10 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
 data class BuyerOrderDetailUiModel(
-        val actionButtons: ActionButtonsUiModel,
+        val actionButtonsUiModel: ActionButtonsUiModel,
         val buyProtectionUiModel: BuyProtectionUiModel,
-        val shipmentInfoUiModel: ShipmentInfoUiModel,
-        val paymentInfoItems: PaymentInfoUiModel,
+        val orderStatusUiModel: OrderStatusUiModel,
+        val paymentInfoUiModel: PaymentInfoUiModel,
         val productListUiModel: ProductListUiModel,
-        val orderStatusUiModel: OrderStatusUiModel
+        val shipmentInfoUiModel: ShipmentInfoUiModel
 )

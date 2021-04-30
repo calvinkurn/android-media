@@ -78,25 +78,37 @@
         android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
         android:text="@string/label_deadline"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintEnd_toStartOf="@id/timerBuyerOrderDetailDeadline"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailPurchaseDateLabel"
         app:layout_constraintWidth_default="wrap"
         app:typographyType="body_3" />
 
-    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
-        android:id="@+id/timerBuyerOrderDetailDeadline"
-        android:layout_width="wrap_content"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icBuyerOrderDetailDeadline"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:icon_name="CLOCK"
+        app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailDeadlineLabel"
+        app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailDeadlineValue"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailDeadlineLabel"
+        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailDeadlineLabel" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailDeadlineValue"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailDeadlineLabel"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icBuyerOrderDetailDeadline"
         app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailDeadlineLabel"
-        app:timer_unify_single_remainingHours="0"
-        app:timer_unify_single_remainingMinutes="0"
-        app:timer_unify_single_remainingSeconds="0"
-        app:timer_unify_single_showClockIcon="true"
-        app:timer_unify_single_type="auto"
-        app:timer_unify_single_variant="informative" />
+        app:layout_constraintWidth_default="wrap"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="13 Sept; 14:55" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

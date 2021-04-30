@@ -5,18 +5,18 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class ShipmentInfoUiModel(
-        val headerUiModel: PlainHeaderUiModel,
-        val courierInfoUiModel: CourierInfoUiModel,
-        val ticker: TickerUiModel,
-        val courierDriverInfoUiModel: CourierDriverInfoUiModel,
         val awbInfoUiModel: AwbInfoUiModel,
-        val receiverReceiverAddressInfoUiModel: ReceiverAddressInfoUiModel
+        val courierDriverInfoUiModel: CourierDriverInfoUiModel,
+        val courierInfoUiModel: CourierInfoUiModel,
+        val headerUiModel: PlainHeaderUiModel,
+        val receiverAddressInfoUiModel: ReceiverAddressInfoUiModel,
+        val ticker: TickerUiModel
 ) {
     data class ReceiverAddressInfoUiModel(
-            val receiverName: String,
-            val receiverPhoneNumber: String,
             val receiverAddress: String,
-            val receiverAddressNote: String
+            val receiverAddressNote: String,
+            val receiverName: String,
+            val receiverPhoneNumber: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -32,9 +32,9 @@ data class ShipmentInfoUiModel(
     }
 
     data class CourierInfoUiModel(
+            val arrivalEstimation: String,
             val courierNameAndProductName: String,
-            val isFreeShipping: Boolean,
-            val arrivalEstimation: String
+            val isFreeShipping: Boolean
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -42,9 +42,9 @@ data class ShipmentInfoUiModel(
     }
 
     data class CourierDriverInfoUiModel(
-            val photoUrl: String,
             val name: String,
             val phoneNumber: String,
+            val photoUrl: String,
             val plateNumber: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {

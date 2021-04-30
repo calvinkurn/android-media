@@ -5,225 +5,46 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
+import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ActionButtonsViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.BuyProtectionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SecondaryActionButtonBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.model.*
+import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_buyer_order_detail.*
-import java.util.*
+import javax.inject.Inject
 
 class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener, BuyProtectionViewHolder.BuyProtectionListener, ProductViewHolder.ProductViewListener {
 
-    private val mockModel = BuyerOrderDetailUiModel(
-            actionButtons = ActionButtonsUiModel(
-                    primaryActionButton = ActionButtonsUiModel.ActionButton(
-                            key = "cancel_order",
-                            label = "Batalkan Pesanan"
-                    ),
-                    secondaryActionButtons = listOf(
-                            ActionButtonsUiModel.ActionButton(
-                                    key = "help",
-                                    label = "Bantuan"
-                            ),
-                            ActionButtonsUiModel.ActionButton(
-                                    key = "ask_seller",
-                                    label = "Tanya Penjual"
-                            )
-                    )
-            ),
-            buyProtectionUiModel = BuyProtectionUiModel(
-                    title = "Beli Proteksi?",
-                    description = "12 bulan proteksi diluar cakupan garansi resmi, ganti rugi hingga senilai harga barang",
-                    deadline = Calendar.getInstance(TimeZone.getDefault()).apply {
-                        add(Calendar.SECOND, 15)
-                    }.timeInMillis
-            ),
-            shipmentInfoUiModel = ShipmentInfoUiModel(
-                    headerUiModel = PlainHeaderUiModel(
-                            header = "Info Pengiriman"
-                    ),
-                    courierInfoUiModel = ShipmentInfoUiModel.CourierInfoUiModel(
-                            courierNameAndProductName = "Same Day - Go Send",
-                            isFreeShipping = true,
-                            arrivalEstimation = "(Estimasi tiba 17 Jan - 19 Jan)"
-                    ),
-                    ticker = TickerUiModel(
-                            description = "Jaminan tepat waktu. Ongkir kembali jika pesanan tiba lebih dari 15 Dec 20; 15:20 WIB. ",
-                            actionText = "Lihat S&K",
-                            actionUrl = "https://www.m.tokopedia.com",
-                            actionKey = "",
-                            type = "info"
-                    ),
-                    courierDriverInfoUiModel = ShipmentInfoUiModel.CourierDriverInfoUiModel(
-                            photoUrl = "https://static.wikia.nocookie.net/nickelodeon-movies/images/7/7e/Patrick_Star.png",
-                            name = "Patrick Star",
-                            phoneNumber = "081234567890",
-                            plateNumber = "B 1234 XYZ"
-                    ),
-                    awbInfoUiModel = ShipmentInfoUiModel.AwbInfoUiModel(
-                            awbNumber = "BOOE900142127415"
-                    ),
-                    receiverReceiverAddressInfoUiModel = ShipmentInfoUiModel.ReceiverAddressInfoUiModel(
-                            receiverName = "Spongebob Square Pants",
-                            receiverPhoneNumber = "08987654321",
-                            receiverAddress = "Tokopedia Tower, Mailing Room Jl. Letjen s parman kav.77 Slipi, Jakarta barat 14410",
-                            receiverAddressNote = "Lantai 29"
-                    )
-            ),
-            paymentInfoItems = PaymentInfoUiModel(
-                    headerUiModel = PlainHeaderUiModel(
-                            header = "Rincian Pembayaran"
-                    ),
-                    paymentMethodInfoItems = listOf(
-                            PaymentInfoUiModel.PaymentInfoItemUiModel(
-                                    label = "Metode Pembayaran",
-                                    value = "Kartu Kredit"
-                            )
-                    ),
-                    paymentInfoItems = listOf(
-                            PaymentInfoUiModel.PaymentInfoItemUiModel(
-                                    label = "Total Harga (2 Barang)",
-                                    value = "Rp5.000.000"
-                            ),
-                            PaymentInfoUiModel.PaymentInfoItemUiModel(
-                                    label = "Diskon",
-                                    value = "- Rp150.000"
-                            ),
-                            PaymentInfoUiModel.PaymentInfoItemUiModel(
-                                    label = "Proteksi Produk",
-                                    value = "Rp300.000"
-                            ),
-                            PaymentInfoUiModel.PaymentInfoItemUiModel(
-                                    label = "Jaminan Ready Stock",
-                                    value = "Rp500"
-                            ),
-                            PaymentInfoUiModel.PaymentInfoItemUiModel(
-                                    label = "Total Ongkos Kirim (2.20 kg)",
-                                    value = "Rp40.000"
-                            ),
-                            PaymentInfoUiModel.PaymentInfoItemUiModel(
-                                    label = "Diskon Ongkos Kirim",
-                                    value = "- Rp20.000"
-                            ),
-                            PaymentInfoUiModel.PaymentInfoItemUiModel(
-                                    label = "Asuransi Pengiriman",
-                                    value = "Rp3.000"
-                            )
-                    ),
-                    paymentGrandTotal = PaymentInfoUiModel.PaymentGrandTotalUiModel(
-                            label = "Total Belanja",
-                            value = "Rp5.173.500"
-                    ),
-                    ticker = TickerUiModel(
-                            description = "Cashback <b>30.000 OVO Points</b>",
-                            actionText = "",
-                            actionUrl = "",
-                            actionKey = "",
-                            type = "info"
-                    )
-            ),
-            productListUiModel = ProductListUiModel(
-                    productListHeaderUiModel = ProductListUiModel.ProductListHeaderUiModel(
-                            header = "Detail Produk",
-                            shopBadge = 2,
-                            shopName = "Rockerpower Shopz",
-                            shopId = "1479278"
-                    ),
-                    productList = listOf(
-                            ProductListUiModel.ProductUiModel(
-                                    productThumbnailUrl = "https://i.pinimg.com/originals/18/e6/96/18e696b711dbb20adf11ecf8ff2ce0ec.png",
-                                    productName = "Patrick Star Bertapa",
-                                    productQuantityAndPrice = "2 x Rp 2.000.000",
-                                    productNote = "43 Size. Packing rapi plis.",
-                                    totalPrice = "Rp 4.000.000",
-                                    showBuyAgainButton = true,
-                                    showClaimInsurance = true,
-                                    orderId = "774683135",
-                                    orderDetailId = "1200008888"
-                            ),
-                            ProductListUiModel.ProductUiModel(
-                                    productThumbnailUrl = "https://akcdn.detik.net.id/visual/2020/08/11/patrick-star-di-spongebob-squarepants_169.jpeg?w=650",
-                                    productName = "Patrick Star Makan Krabby Patty Pake Helm Sandy yang dipenuhi dengan Air Laut yang Asin (Menyelam sambil minum air laut)",
-                                    productQuantityAndPrice = "4 x Rp 5.000.000",
-                                    productNote = "43 Size. Packing rapi plis pake bubble wrap yg tebel, kalau ga tebel nanti saya minta refund karena ga tebel bubble wrapnya, kasian patricknya.",
-                                    totalPrice = "Rp 20.000.000",
-                                    showBuyAgainButton = false,
-                                    showClaimInsurance = true,
-                                    orderId = "774683135",
-                                    orderDetailId = "1200008888"
-                            ),
-                            ProductListUiModel.ProductUiModel(
-                                    productThumbnailUrl = "https://img.tek.id/crop/330x230/content/2020/08/11/31957/nickelodeon-garap-serial-tv-spin-off-patrick-6siywPEb7g.jpg",
-                                    productName = "Patrick Star Vacuum Cleaner",
-                                    productQuantityAndPrice = "6 x Rp 5.000.000",
-                                    productNote = "43 Size. Packing rapi plis.",
-                                    totalPrice = "Rp 30.000.000",
-                                    showBuyAgainButton = false,
-                                    showClaimInsurance = false,
-                                    orderId = "774683135",
-                                    orderDetailId = "1200008888"
-                            ),
-                            ProductListUiModel.ProductUiModel(
-                                    productThumbnailUrl = "https://www.greenscene.co.id/wp-content/uploads/2020/08/Patrick-Stars-696x497.jpg",
-                                    productName = "Telepon Patrick Star",
-                                    productQuantityAndPrice = "8 x Rp 5.000.000",
-                                    productNote = "43 Size. Packing rapi plis.",
-                                    totalPrice = "Rp 40.000.000",
-                                    showBuyAgainButton = true,
-                                    showClaimInsurance = false,
-                                    orderId = "774683135",
-                                    orderDetailId = "1200008888"
-                            ),
-                            ProductListUiModel.ProductUiModel(
-                                    productThumbnailUrl = "https://cdn.kincir.com/1/production/media/2018/april/silsilah-keluarga-patrick-star-yang-harus-lo-tahu/2-patrick-patar-700x700.jpg",
-                                    productName = "Patrick Star Muda",
-                                    productQuantityAndPrice = "10 x Rp 5.000.000",
-                                    productNote = "",
-                                    totalPrice = "Rp 50.000.000",
-                                    showBuyAgainButton = false,
-                                    showClaimInsurance = false,
-                                    orderId = "774683135",
-                                    orderDetailId = "1200008888"
-                            )
-                    )
-            ),
-            orderStatusUiModel = OrderStatusUiModel(
-                    orderStatusHeaderUiModel = OrderStatusUiModel.OrderStatusHeaderUiModel(
-                            orderId = "771624875",
-                            indicatorColor = "#FFC400",
-                            orderStatus = "Menunggu Konfirmasi"
-                    ),
-                    ticker = TickerUiModel(
-                            description = "Pengajuan pembatalan berhasil dan menunggu persetujuan dari penjual. ",
-                            actionText = "Lihat S&K",
-                            actionUrl = "https://www.m.tokopedia.com",
-                            actionKey = "",
-                            type = "info"
-                    ),
-                    orderStatusInfoUiModel = OrderStatusUiModel.OrderStatusInfoUiModel(
-                            invoice = OrderStatusUiModel.OrderStatusInfoUiModel.InvoiceUiModel(
-                                    invoice = "INV/20161025/XVI/X/55069657",
-                                    url = "https://www.tokopedia.com/invoice.pl?id=771624875&pdf=Invoice-12299749-6841924-20210423104343-ZmZmZmZmZmYy"
-                            ),
-                            purchaseDate = "25 Des 2021, 05:00 WIB",
-                            deadline = OrderStatusUiModel.OrderStatusInfoUiModel.DeadlineUiModel(
-                                    label = "Batal Otomatis",
-                                    value = Calendar.getInstance(TimeZone.getDefault()).apply {
-                                        add(Calendar.HOUR, 10)
-                                    }.timeInMillis,
-                                    color = "#FFC400"
-                            )
-                    )
-            ))
+    companion object {
+        @JvmStatic
+        fun newInstance(extras: Bundle): BuyerOrderDetailFragment {
+            return BuyerOrderDetailFragment().apply {
+                arguments = extras
+            }
+        }
 
+        const val REQUEST_CANCEL_ORDER = 101
+    }
+
+    @Inject
+    lateinit var viewModel: BuyerOrderDetailViewModel
+
+    private val cacheManager: SaveInstanceCacheManager by lazy {
+        SaveInstanceCacheManager(requireContext())
+    }
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
         BuyerOrderDetailTypeFactory(this, this, this)
     }
@@ -247,17 +68,28 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
+        observeBuyerOrderDetail()
     }
 
-    override fun onActionButtonClicked(key: String) {
-        when (key) {
-            ActionButtonsViewHolder.SECONDARY_ACTION_BUTTON_KEY -> onSecondaryActionButtonClicked()
-            else -> {
-                view?.let {
-                    Toaster.build(it, key, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-                }
-            }
+    override fun onActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
+        when (button.key) {
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_ASK_SELLER -> onAskSellerActionButtonClicked()
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_REQUEST_CANCEL -> onRequestCancelActionButtonClicked(button)
         }
+    }
+
+    override fun onSecondaryActionButtonClicked() {
+        val secondaryActionButtons = viewModel.getSecondaryActionButtons()
+        secondaryActionButtonBottomSheet.setSecondaryActionButtons(secondaryActionButtons)
+        secondaryActionButtonBottomSheet.show(childFragmentManager)
+    }
+
+    private fun onAskSellerActionButtonClicked() {
+
+    }
+
+    private fun onRequestCancelActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
+        BuyerOrderDetailNavigator.goToRequestCancellationPage(this, viewModel.buyerOrderDetailResult.value, button, cacheManager)
     }
 
     override fun onClickBuyProtection() {
@@ -267,7 +99,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
     }
 
     override fun onReachBuyProtectionDeadline() {
-//        adapter.removeBuyProtectionWidget()
+        view?.let {
+            Toaster.build(it, "Beli proteksi dong...", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
     }
 
     override fun onBuyAgainButtonClicked() {
@@ -276,7 +110,14 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
 
     private fun setupViews() {
         setupToolbar()
+        setupSwipeRefreshLayout()
         setupRecyclerView()
+    }
+
+    private fun setupSwipeRefreshLayout() {
+        swipeRefreshBuyerOrderDetail?.setOnRefreshListener {
+            loadBuyerOrderDetail()
+        }
     }
 
     private fun setupToolbar() {
@@ -288,121 +129,162 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
 
     private fun setupRecyclerView() {
         rvBuyerOrderDetail.adapter = adapter
-        // status
-        addOrderStatusHeaderSection()
-        addTickerSection(mockModel.orderStatusUiModel.ticker)
-        addThinDividerSection()
-        addOrderStatusInfoSection()
-        // product list
-        addThickDividerSection()
-        addProductListHeaderSection()
-        addProductListSection()
-        // buy protection
-        addThickDividerSection()
-        addBuyProtectionSection()
-        // shipment info
-        addThickDividerSection()
-        addPlainHeaderSection(mockModel.shipmentInfoUiModel.headerUiModel)
-        addTickerSection(mockModel.shipmentInfoUiModel.ticker)
-        addCourierInfoSection()
-        addThinDashedDividerSection()
-        addCourierDriverInfoSection()
-        addThinDashedDividerSection()
-        addAwbInfoSection()
-        addReceiverAddressInfoSection()
-        // payment info
-        addThickDividerSection()
-        addPlainHeaderSection(mockModel.paymentInfoItems.headerUiModel)
-        addPaymentMethodSection()
-        addThinDividerSection()
-        addPaymentInfoSection()
-        addThinDividerSection()
-        addPaymentGrandTotalSection()
-        addTickerSection(mockModel.paymentInfoItems.ticker)
-        // action buttons
-        addActionButtonsSection()
     }
 
-    private fun addOrderStatusInfoSection() {
-        adapter.addElement(mockModel.orderStatusUiModel.orderStatusInfoUiModel)
+    private fun loadBuyerOrderDetail() {
+        val orderId = arguments?.getString(BuyerOrderDetailConst.PARAM_ORDER_ID, "").orEmpty()
+        val paymentId = arguments?.getString(BuyerOrderDetailConst.PARAM_PAYMENT_ID, "").orEmpty()
+        val cart = arguments?.getString(BuyerOrderDetailConst.PARAM_CART_STRING, "").orEmpty()
+        viewModel.getBuyerOrderDetail(orderId, paymentId, cart)
     }
 
-    private fun addOrderStatusHeaderSection() {
-        adapter.addElement(mockModel.orderStatusUiModel.orderStatusHeaderUiModel)
+    private fun observeBuyerOrderDetail() {
+        loadBuyerOrderDetail()
+        viewModel.buyerOrderDetailResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> onSuccessGetBuyerOrderDetail(result.data)
+                is Fail -> onFailedGetBuyerOrderDetail(result.throwable)
+            }
+            swipeRefreshBuyerOrderDetail?.isRefreshing = false
+        })
     }
 
-    private fun addProductListSection() {
-        mockModel.productListUiModel.productList.forEach {
-            adapter.addElement(it)
+    private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
+        adapter.clearAllElements()
+        setupOrderStatusSection(data.orderStatusUiModel)
+        setupProductListSection(data.productListUiModel)
+        setupBuyProtectionSection(data.buyProtectionUiModel)
+        setupShipmentInfoSection(data.shipmentInfoUiModel)
+        setupPaymentInfoSection(data.paymentInfoUiModel)
+        setupActionButtonsSection(data.actionButtonsUiModel)
+    }
+
+    private fun onFailedGetBuyerOrderDetail(throwable: Throwable) {
+        view?.let { view ->
+            Toaster.build(view, throwable.message.orEmpty(), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }
     }
 
-    private fun addProductListHeaderSection() {
-        adapter.addElement(mockModel.productListUiModel.productListHeaderUiModel)
+    private fun setupOrderStatusSection(orderStatusUiModel: OrderStatusUiModel) {
+        addOrderStatusHeaderSection(orderStatusUiModel.orderStatusHeaderUiModel)
+        addTickerSection(orderStatusUiModel.ticker)
+        addThinDividerSection()
+        addOrderStatusInfoSection(orderStatusUiModel.orderStatusInfoUiModel)
     }
 
-    private fun addReceiverAddressInfoSection() {
-        adapter.addElement(mockModel.shipmentInfoUiModel.receiverReceiverAddressInfoUiModel)
+    private fun setupProductListSection(productListUiModel: ProductListUiModel) {
+        addThickDividerSection()
+        addProductListHeaderSection(productListUiModel.productListHeaderUiModel)
+        addProductListSection(productListUiModel.productList)
     }
 
-    private fun addAwbInfoSection() {
-        adapter.addElement(mockModel.shipmentInfoUiModel.awbInfoUiModel)
+    private fun setupBuyProtectionSection(buyProtectionUiModel: BuyProtectionUiModel) {
+        if (buyProtectionUiModel.showBuyProtection) {
+            addThickDividerSection()
+            addBuyProtectionSection(buyProtectionUiModel)
+        }
     }
 
-    private fun addCourierInfoSection() {
-        adapter.addElement(mockModel.shipmentInfoUiModel.courierInfoUiModel)
+    private fun setupShipmentInfoSection(shipmentInfoUiModel: ShipmentInfoUiModel) {
+        addThickDividerSection()
+        addPlainHeaderSection(shipmentInfoUiModel.headerUiModel)
+        addTickerSection(shipmentInfoUiModel.ticker)
+        addCourierInfoSection(shipmentInfoUiModel.courierInfoUiModel)
+        if (shipmentInfoUiModel.courierDriverInfoUiModel.name.isNotBlank()) {
+            addThinDashedDividerSection()
+            addCourierDriverInfoSection(shipmentInfoUiModel.courierDriverInfoUiModel)
+            addThinDashedDividerSection()
+        }
+        addAwbInfoSection(shipmentInfoUiModel.awbInfoUiModel)
+        addReceiverAddressInfoSection(shipmentInfoUiModel.receiverAddressInfoUiModel)
+    }
+
+    private fun setupPaymentInfoSection(paymentInfoUiModel: PaymentInfoUiModel) {
+        addThickDividerSection()
+        addPlainHeaderSection(paymentInfoUiModel.headerUiModel)
+        addPaymentMethodSection(paymentInfoUiModel.paymentMethodInfoItem)
+        addThinDividerSection()
+        addPaymentInfoSection(paymentInfoUiModel.paymentInfoItems)
+        addThinDividerSection()
+        addPaymentGrandTotalSection(paymentInfoUiModel.paymentGrandTotal)
+        addTickerSection(paymentInfoUiModel.ticker)
+    }
+
+    private fun setupActionButtonsSection(actionButtonsUiModel: ActionButtonsUiModel) {
+        addActionButtonsSection(actionButtonsUiModel)
     }
 
     private fun addPlainHeaderSection(headerUiModel: PlainHeaderUiModel) {
-        adapter.addElement(headerUiModel)
-    }
-
-    private fun addThinDashedDividerSection() {
-        adapter.addElement(ThinDashedDividerUiModel())
-    }
-
-    private fun addThickDividerSection() {
-        adapter.addElement(ThickDividerUiModel())
-    }
-
-    private fun addCourierDriverInfoSection() {
-        adapter.addElement(mockModel.shipmentInfoUiModel.courierDriverInfoUiModel)
+        adapter.addItem(headerUiModel)
     }
 
     private fun addTickerSection(tickerUiModel: TickerUiModel) {
-        adapter.addElement(tickerUiModel)
-    }
-
-    private fun addBuyProtectionSection() {
-        adapter.addElement(mockModel.buyProtectionUiModel)
-    }
-
-    private fun addPaymentMethodSection() {
-        mockModel.paymentInfoItems.paymentMethodInfoItems.forEach {
-            adapter.addElement(it)
+        if (tickerUiModel.description.isNotBlank()) {
+            adapter.addItem(tickerUiModel)
         }
+    }
+
+    private fun addThinDashedDividerSection() {
+        adapter.addItem(ThinDashedDividerUiModel())
+    }
+
+    private fun addThickDividerSection() {
+        adapter.addItem(ThickDividerUiModel())
     }
 
     private fun addThinDividerSection() {
-        adapter.addElement(ThinDividerUiModel())
+        adapter.addItem(ThinDividerUiModel())
     }
 
-    private fun addPaymentInfoSection() {
-        mockModel.paymentInfoItems.paymentInfoItems.forEach {
-            adapter.addElement(it)
-        }
+    private fun addOrderStatusHeaderSection(orderStatusHeaderUiModel: OrderStatusUiModel.OrderStatusHeaderUiModel) {
+        adapter.addItem(orderStatusHeaderUiModel)
     }
 
-    private fun addPaymentGrandTotalSection() {
-        adapter.addElement(mockModel.paymentInfoItems.paymentGrandTotal)
+    private fun addOrderStatusInfoSection(orderStatusInfoUiModel: OrderStatusUiModel.OrderStatusInfoUiModel) {
+        adapter.addItem(orderStatusInfoUiModel)
     }
 
-    private fun addActionButtonsSection() {
-        adapter.addElement(mockModel.actionButtons)
+    private fun addProductListHeaderSection(productListHeaderUiModel: ProductListUiModel.ProductListHeaderUiModel) {
+        adapter.addItem(productListHeaderUiModel)
     }
 
-    private fun onSecondaryActionButtonClicked() {
-        secondaryActionButtonBottomSheet.setSecondaryActionButtons(mockModel.actionButtons.secondaryActionButtons)
-        secondaryActionButtonBottomSheet.show(childFragmentManager)
+    private fun addProductListSection(productList: List<ProductListUiModel.ProductUiModel>) {
+        adapter.addItems(productList)
+    }
+
+    private fun addCourierInfoSection(courierInfoUiModel: ShipmentInfoUiModel.CourierInfoUiModel) {
+        adapter.addItem(courierInfoUiModel)
+    }
+
+    private fun addCourierDriverInfoSection(courierDriverInfoUiModel: ShipmentInfoUiModel.CourierDriverInfoUiModel) {
+        adapter.addItem(courierDriverInfoUiModel)
+    }
+
+    private fun addAwbInfoSection(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel) {
+        adapter.addItem(awbInfoUiModel)
+    }
+
+    private fun addReceiverAddressInfoSection(receiverAddressInfoUiModel: ShipmentInfoUiModel.ReceiverAddressInfoUiModel) {
+        adapter.addItem(receiverAddressInfoUiModel)
+    }
+
+    private fun addBuyProtectionSection(buyProtectionUiModel: BuyProtectionUiModel) {
+        adapter.addItem(buyProtectionUiModel)
+    }
+
+    private fun addPaymentMethodSection(paymentMethodInfoItem: PaymentInfoUiModel.PaymentInfoItemUiModel) {
+        adapter.addItem(paymentMethodInfoItem)
+    }
+
+    private fun addPaymentInfoSection(paymentInfoItems: List<PaymentInfoUiModel.PaymentInfoItemUiModel>) {
+        adapter.addItems(paymentInfoItems)
+    }
+
+    private fun addPaymentGrandTotalSection(paymentGrandTotal: PaymentInfoUiModel.PaymentGrandTotalUiModel) {
+        adapter.addItem(paymentGrandTotal)
+    }
+
+    private fun addActionButtonsSection(actionButtonsUiModel: ActionButtonsUiModel) {
+        adapter.addItem(actionButtonsUiModel)
     }
 }

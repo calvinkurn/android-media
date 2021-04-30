@@ -7,7 +7,8 @@ object BuyerConsts {
     const val TITLE_CANCEL_REASON_BOTTOMSHEET = "Ajukan Pembatalan"
     const val TITLE_LIST_OF_PRODUCT_BOTTOMSHEET = "Semua Produk"
     const val PARAM_SHOP_NAME = "param_shop_name"
-    const val PARAM_LIST_PRODUCT = "param_list_product"
+    const val PARAM_SERIALIZABLE_LIST_PRODUCT = "param_serializable_list_product"
+    const val PARAM_JSON_LIST_PRODUCT = "param_json_list_product"
     const val PARAM_INVOICE = "param_invoice"
     const val INVOICE = "invoice"
     const val PARAM = "param"
@@ -24,6 +25,7 @@ object BuyerConsts {
     const val PARAM_INVOICE_URL = "invoice_url"
     const val PARAM_STATUS_ID = "status_id"
     const val PARAM_STATUS_INFO = "status_info"
+    const val PARAM_CACHE_ID = "cache_id"
     const val CANCEL_BUYER_REQUEST_TWO_LAYER = 105
     const val ACTION_OK = "OK"
     const val LAINNYA = "lainnya"

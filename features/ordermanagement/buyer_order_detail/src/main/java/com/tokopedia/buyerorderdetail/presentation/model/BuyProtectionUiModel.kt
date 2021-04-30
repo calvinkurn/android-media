@@ -5,9 +5,10 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class BuyProtectionUiModel(
-        val title: String,
+        val deadline: Long,
         val description: String,
-        val deadline: Long
+        val title: String,
+        val showBuyProtection: Boolean = false
 ): Visitable<BuyerOrderDetailTypeFactory> {
     override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
         return typeFactory?.type(this).orZero()

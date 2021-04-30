@@ -19,4 +19,5 @@
     <string name="message_invoice_copied">Kode invoice telah tersalin</string>
     <string name="message_awb_copied">Nomor resi telah tersalin</string>
     <string name="html_link">%1$s &lt;a href=\"%2$s\"&gt;%3$s&lt;/a&gt;</string>
+    <string name="label_product_price_and_quantity">%1$d x %2$s</string>
 </resources>

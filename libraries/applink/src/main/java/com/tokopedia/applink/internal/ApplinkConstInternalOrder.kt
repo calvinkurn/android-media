@@ -55,6 +55,7 @@ object ApplinkConstInternalOrder {
     const val MENUNGGU_KONFIRMASI = "5"
     const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
     const val EXTRA_USER_MODE = "EXTRA_USER_MODE"
+    const val PATH_REQUEST_CANCEL = "request-cancel"
 
     // snapshot
     const val PARAM_ORDER_DETAIL_ID = "order_detail_id"
@@ -248,6 +249,9 @@ object ApplinkConstInternalOrder {
 
     @JvmField
     val MP_INTERNAL_DELIVERED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=14"
+
+    @JvmField
+    val MP_INTERNAL_REQUEST_CANCEL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDER/$PATH_REQUEST_CANCEL"
 
 
     // order snapshot

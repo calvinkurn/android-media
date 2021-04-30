@@ -7,6 +7,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -34,10 +35,10 @@ class ProductViewHolder(
             setupClaimInsuranceButton(it.showClaimInsurance)
             setupProductThumbnail(it.productThumbnailUrl, it.showClaimInsurance)
             setupProductName(it.productName)
-            setupProductQuantityAndPrice(it.productQuantityAndPrice)
+            setupProductQuantityAndPrice(it.quantity, it.priceText)
             setupProductNote(it.productNote)
-            setupTotalPrice(it.totalPrice)
-            setupBuyAgainButton(it.showBuyAgainButton)
+            setupTotalPrice(it.totalPriceText)
+            setupButton(it.button)
         }
     }
 
@@ -55,7 +56,7 @@ class ProductViewHolder(
 
     private fun goToProductSnapshotPage() {
         element?.let {
-            BuyerOrderDetailNavigator.goToProductSnapshotPage(itemView.context, it.orderId, it.orderDetailId)
+            BuyerOrderDetailNavigator.goToProductSnapshotPage(itemView.context, it.productId, it.orderDetailId)
         }
     }
 
@@ -87,8 +88,8 @@ class ProductViewHolder(
         itemView.tvBuyerOrderDetailProductName?.text = productName
     }
 
-    private fun setupProductQuantityAndPrice(productQuantityAndPrice: String) {
-        itemView.tvBuyerOrderDetailProductPriceQuantity?.text = productQuantityAndPrice
+    private fun setupProductQuantityAndPrice(quantity: Int, priceText: String) {
+        itemView.tvBuyerOrderDetailProductPriceQuantity?.text = itemView.context.getString(R.string.label_product_price_and_quantity, quantity, priceText)
     }
 
     private fun setupProductNote(productNote: String) {
@@ -108,8 +109,11 @@ class ProductViewHolder(
         itemView.tvBuyerOrderDetailProductPriceValue?.text = totalPrice
     }
 
-    private fun setupBuyAgainButton(showBuyAgainButton: Boolean) {
-        itemView.btnBuyerOrderDetailBuyProductAgain?.showWithCondition(showBuyAgainButton)
+    private fun setupButton(showBuyAgainButton: ActionButtonsUiModel.ActionButton) {
+        itemView.btnBuyerOrderDetailBuyProductAgain?.apply {
+            text = showBuyAgainButton.label
+            showWithCondition(showBuyAgainButton.label.isNotBlank())
+        }
     }
 
     interface ProductViewListener {
