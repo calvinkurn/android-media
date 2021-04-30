@@ -147,7 +147,7 @@ class DigitalAnalytics {
                 BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
                 DigitalCheckoutTrackingConst.Label.CLICK,
                 DataLayer.mapOf(DigitalCheckoutTrackingConst.Label.ACTION_FIELD,
-                        DataLayer.mapOf(DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} - $CROSSELL_CARD_TYPE"),
+                        DataLayer.mapOf(DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} $position - $CROSSELL_CARD_TYPE"),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(*fintechProductList.toTypedArray()))),
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
         ))
