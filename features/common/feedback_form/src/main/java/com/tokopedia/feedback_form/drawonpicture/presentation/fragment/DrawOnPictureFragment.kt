@@ -27,6 +27,7 @@ import com.tokopedia.feedback_form.drawonpicture.presentation.activity.DrawOnPic
 import com.tokopedia.feedback_form.drawonpicture.presentation.adapter.BrushColorAdapter
 import com.tokopedia.feedback_form.drawonpicture.presentation.adapter.viewholder.BrushColorViewHolder
 import com.tokopedia.feedback_form.drawonpicture.presentation.viewmodel.DrawOnPictureViewModel
+import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.file.PublicFolderUtil
 import kotlinx.android.synthetic.main.fragment_draw_on_picture.*
 import java.io.File
@@ -120,7 +121,7 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
             Bitmap.createScaledBitmap(editedBitmap, options.outWidth, options.outHeight, false)
         else editedBitmap
 
-        val newPath = PublicFolderUtil.putImageToPublicFolder(requireActivity(), saveBitmap, System.currentTimeMillis().toString())
+        val newPath = PublicFolderUtil.putImageToPublicFolder(requireActivity(), saveBitmap, FileUtil.generateUniqueFileNameDateFormat(Math.random().toInt()))
         newPath?.let {
             sendNewPathResult(newPath, imageUri.path)
         }

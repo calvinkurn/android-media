@@ -55,6 +55,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.file.PublicFolderUtil
 import kotlinx.android.synthetic.main.fragment_feedback_page.*
 import okhttp3.MediaType
@@ -63,6 +64,7 @@ import okhttp3.RequestBody
 import rx.subscriptions.CompositeSubscription
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -505,15 +507,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         val destHeight = 1440
         val destWidth = origWidth / (origHeight.toDouble() / destHeight)
         val b2 = Bitmap.createScaledBitmap(b, destWidth.toInt(), destHeight, false)
-        val filePathString = PublicFolderUtil.putImageToPublicFolder(requireActivity(), b2, System.currentTimeMillis().toString())
+        val filePathString = PublicFolderUtil.putImageToPublicFolder(requireActivity(), b2, FileUtil.generateUniqueFileNameDateFormat(Math.random().toInt()))
         resizedUriImage = Uri.parse(filePathString)
-    }
-
-    private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
-        val bytes = ByteArrayOutputStream()
-        inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "IMG_" + Calendar.getInstance().time, null)
-        return Uri.parse(path)
     }
 
     private fun setActiveFilter(selected: ChipsUnify?, deselected: ChipsUnify?) {

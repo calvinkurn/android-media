@@ -1,5 +1,6 @@
 package com.tokopedia.utils.file
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
@@ -10,6 +11,7 @@ import android.webkit.MimeTypeMap
 import com.tokopedia.config.GlobalConfig
 import java.io.*
 import java.nio.channels.FileChannel
+import java.text.SimpleDateFormat
 import java.util.*
 
 object FileUtil {
@@ -60,6 +62,14 @@ object FileUtil {
         }
         timeString = timeString.substring(startIndex)
         return timeString + Random().nextInt(100)
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun generateUniqueFileNameDateFormat(index: Int): String {
+        val date = Date()
+        val sdf = SimpleDateFormat("ddMMyyyyhhmmss")
+        val dateString = sdf.format(date)
+        return dateString.replace("[^a-zA-Z0-9]".toRegex(), "") + "_" + (index + 1).toString()
     }
 
     fun writeStreamToFile(source: InputStream, file: File): Boolean {

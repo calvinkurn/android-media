@@ -26,6 +26,7 @@ import com.tokopedia.design.list.adapter.TouchImageAdapter
 import com.tokopedia.imagepreview.ImagePreviewUtils.getUri
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.file.PublicFolderUtil
 import java.io.File
 import java.util.*
@@ -109,7 +110,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
     }
 
     private fun actionDownloadAndSavePicture() {
-        val filenameParam = System.currentTimeMillis().toString() + "_" + viewPager.currentItem
+        val filenameParam = FileUtil.generateUniqueFileNameDateFormat(viewPager.currentItem)
         val notificationId = filenameParam.toInt()
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationBuilder = NotificationCompat.Builder(this@ImagePreviewActivity,
