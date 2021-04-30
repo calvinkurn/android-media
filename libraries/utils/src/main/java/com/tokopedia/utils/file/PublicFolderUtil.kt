@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
@@ -15,16 +16,17 @@ import java.io.*
  */
 object PublicFolderUtil {
 
-    fun putImageToPublicFolder(context: Context, bitmap: Bitmap, fileName: String,
-                               compressFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG,
-                               mimeType: String = "image/jpeg",
-                               directory: String = Environment.DIRECTORY_PICTURES): String? {
+    fun putImageToPublicFolder(
+            context: Context, bitmap: Bitmap, fileName: String,
+            compressFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG,
+            mimeType: String = "image/jpeg",
+            directory: String? = null
+    ): String? {
         try {
             val contentResolver: ContentResolver = context.contentResolver
-
             val contentValues = createContentValues(fileName, mimeType, directory)
-
-            val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+            val contentUri = getContentUriFromMime(mimeType);
+            val uri = contentResolver.insert(contentUri, contentValues)
             uri?.let {
                 contentResolver.openOutputStream(uri)?.let { outputStream ->
                     BufferedOutputStream(outputStream)
@@ -43,17 +45,18 @@ object PublicFolderUtil {
         }
     }
 
-    fun putFileToPublicFolder(context: Context,
-                              localFile: File,
-                              outputFileName:String,
-                              mimeType: String,
-                              directory: String = Environment.DIRECTORY_DOWNLOADS): String? {
+    fun putFileToPublicFolder(
+            context: Context,
+            localFile: File,
+            outputFileName: String,
+            mimeType: String,
+            directory: String? = null,
+    ): String? {
         try {
             val contentResolver: ContentResolver = context.contentResolver
-
             val contentValues = createContentValues(outputFileName, mimeType, directory)
-
-            val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+            val contentUri = getContentUriFromMime(mimeType);
+            val uri = contentResolver.insert(contentUri, contentValues)
             uri?.let {
                 contentResolver.openOutputStream(uri)?.let { outputStream ->
                     var inputStream: FileInputStream? = null
@@ -77,14 +80,52 @@ object PublicFolderUtil {
         }
     }
 
-    private fun createContentValues(fileName: String, mimeType: String, directory: String): ContentValues {
+    private fun getContentUriFromMime(mimeType: String): Uri {
+        return when {
+            mimeType.startsWith("image") -> {
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            }
+            mimeType.startsWith("video") -> {
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+            }
+            mimeType.startsWith("audio") -> {
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+            }
+            else -> {
+                MediaStore.Files.getContentUri("external")
+            }
+        }
+    }
+
+    private fun getDirectoryFromMime(mimeType: String): String {
+        return when {
+            mimeType.startsWith("image") -> {
+                Environment.DIRECTORY_PICTURES
+            }
+            mimeType.startsWith("video") -> {
+                Environment.DIRECTORY_MOVIES
+            }
+            mimeType.startsWith("audio") -> {
+                Environment.DIRECTORY_MUSIC
+            }
+            else -> {
+                Environment.DIRECTORY_DOWNLOADS
+            }
+        }
+    }
+
+    private fun createContentValues(
+            fileName: String,
+            mimeType: String,
+            directory: String? = null
+    ): ContentValues {
         val contentValues = ContentValues()
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
         contentValues.put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             contentValues.put(
                     MediaStore.Images.Media.RELATIVE_PATH,
-                    directory
+                    directory ?: getDirectoryFromMime(mimeType)
             )
             contentValues.put(MediaStore.Images.Media.IS_PENDING, 1)
         }
