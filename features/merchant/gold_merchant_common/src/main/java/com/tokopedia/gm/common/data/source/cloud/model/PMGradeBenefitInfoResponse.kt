@@ -37,6 +37,8 @@ data class PMGradeBenefitInfoModel(
 data class PmGradeWithBenefitsModel(
         @SerializedName("pm_grade_name")
         val gradeName: String? = "",
+        @SerializedName("pm_tier")
+        val pmTier: Int? = 0,
         @SerializedName("is_active")
         val isActive: Boolean? = false,
         @SerializedName("benefit_list")

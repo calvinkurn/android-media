@@ -372,6 +372,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private fun setupFooterCta() = view?.run {
         val shopInfo = pmGradeBenefitAndShopInfo?.shopInfo ?: return@run
         val isPmPro = selectedPmType == PMConstant.PMType.PM_PRO
+        val isEligiblePm = if (isPmPro) shopInfo.isEligiblePmPro else shopInfo.isEligiblePm
+
         val registrationTerms = if (isPmPro) {
             getRegistrationHeaderWidgetData(shopInfo).pmProTerms
         } else {
@@ -387,7 +389,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }.sortedBy { it.periority }.firstOrNull()
 
         //show tnc check box only if kyc not eligible or pm pro eligible
-        val needTnC = firstPriorityTerm is RegistrationTermUiModel.Kyc || shopInfo.isEligiblePmPro
+        val needTnC = firstPriorityTerm is RegistrationTermUiModel.Kyc || isEligiblePm
 
         val ctaText = if (needTnC || shopInfo.isNewSeller) {
             getString(R.string.power_merchant_register_now)
@@ -400,7 +402,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             setCtaText(ctaText)
             setTnCVisibility(needTnC)
             setOnCtaClickListener { tncAgreed ->
-                val isEligiblePm = if (isPmPro) shopInfo.isEligiblePmPro else shopInfo.isEligiblePm
                 when {
                     isEligiblePm -> submitPMRegistration(tncAgreed)
                     firstPriorityTerm is RegistrationTermUiModel.ShopScore -> showShopScoreTermBottomSheet(shopInfo)

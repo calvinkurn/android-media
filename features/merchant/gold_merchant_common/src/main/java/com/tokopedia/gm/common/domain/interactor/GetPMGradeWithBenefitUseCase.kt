@@ -6,7 +6,6 @@ import com.tokopedia.gm.common.domain.mapper.PMGradeBenefitInfoMapper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
@@ -50,8 +49,8 @@ class GetPMGradeWithBenefitUseCase @Inject constructor(
               goldGetPMGradeBenefitInfo(shop_id: ${'$'}shop_id, source: ${'$'}source) {
                 pm_grade_benefit_list {
                   pm_grade_name
-                  image_badge_url
                   is_active
+                  pm_tier
                   benefit_list {
                     benefit_name
                     benefit_category

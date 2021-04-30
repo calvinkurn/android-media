@@ -31,4 +31,9 @@ object PMConstant {
         const val PM_REGULAR = "pm"
         const val PM_PRO = "pm_pro"
     }
+
+    object PMTier {
+        const val POWER_MERCHANT = 0
+        const val POWER_MERCHANT_PRO = 1
+    }
 }
