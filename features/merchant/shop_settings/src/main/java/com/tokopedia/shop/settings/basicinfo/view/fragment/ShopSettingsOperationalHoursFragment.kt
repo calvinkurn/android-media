@@ -1,5 +1,6 @@
 package com.tokopedia.shop.settings.basicinfo.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.shop.settings.R
+import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsSetOperationalHoursActivity
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 
@@ -70,7 +72,9 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private fun initListener() {
         // set click listener for icon edit ops hour
         icEditOpsHour?.setOnClickListener {
-            TODO()
+            activity?.run {
+                startActivity(Intent(this, ShopSettingsSetOperationalHoursActivity::class.java))
+            }
         }
     }
 

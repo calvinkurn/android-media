@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_16">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="24 Jam"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="@dimen/dp_8"
+        />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Libur"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="@dimen/dp_8"
+        />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pilih Jam"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="@dimen/dp_8"
+        />
+
+
+</LinearLayout>

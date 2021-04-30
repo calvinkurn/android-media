@@ -5,6 +5,7 @@
     <string name="shop_settings_basic_info">Informasi Dasar</string>
     <string name="shop_settings_info">Informasi Toko</string>
     <string name="shop_settings_operational_hours">Jadwal Operasional Toko</string>
+    <string name="shop_settings_set_operational_hours">Jam Operasional</string>
 
     <string name="shop_settings_add_note">Tambah Catatan</string>
     <string name="shop_settings_add_etalase">Tambah Etalase</string>
