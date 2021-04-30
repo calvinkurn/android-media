@@ -15,6 +15,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import java.io.IOException
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -69,10 +70,14 @@ fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): Str
 }
 
 fun String.formatDate(beforePattern: String, targetPattern: String, locale: Locale = getLocale()): String {
-    val fromSimpleDateFormat = SimpleDateFormat(beforePattern, locale)
-    val parseDate = fromSimpleDateFormat.parse(this)
-    val convertFormatDate = SimpleDateFormat(targetPattern, locale)
-    return parseDate?.let { convertFormatDate.format(it) } ?: ""
+    return try {
+        val fromSimpleDateFormat = SimpleDateFormat(beforePattern, locale)
+        val parseDate = fromSimpleDateFormat.parse(this)
+        val convertFormatDate = SimpleDateFormat(targetPattern, locale)
+         parseDate?.let { convertFormatDate.format(it) } ?: ""
+    } catch (e: ParseException) {
+        ""
+    }
 }
 
 fun getLocale(): Locale {
