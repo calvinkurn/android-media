@@ -16,11 +16,18 @@ import java.io.*
  */
 object PublicFolderUtil {
 
+    /**
+     * @param bitmap: input Bitmap to be put
+     * @param fileName: output fileName, without prefix directory
+     * @param compressFormat: Compress Format for image, default is jpeg
+     * @param mimeType: mimeType for Image, default "image/jpeg"
+     * @param directory: public directory to put, default is Directory Pictures
+     */
     fun putImageToPublicFolder(
             context: Context, bitmap: Bitmap, fileName: String,
             compressFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG,
             mimeType: String = "image/jpeg",
-            directory: String? = null
+            directory: String? = Environment.DIRECTORY_PICTURES
     ): String? {
         try {
             val contentResolver: ContentResolver = context.contentResolver
@@ -45,6 +52,12 @@ object PublicFolderUtil {
         }
     }
 
+    /**
+     * @param localFile: input file to put
+     * @param outputFileName: output fileName, without prefix directory
+     * @param mimeType: mimeType for Image, default "image/jpeg"
+     * @param directory: public directory to put. If not given, will determine automatically by mimeType
+     */
     fun putFileToPublicFolder(
             context: Context,
             localFile: File,
