@@ -16,6 +16,7 @@ import android.os.Environment
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
+import com.tokopedia.utils.file.PublicFolderUtil
 import kotlinx.coroutines.*
 import java.io.File
 import java.text.DateFormat
@@ -200,7 +201,7 @@ class ScreenRecordService : Service(), CoroutineScope {
             releaseResources()
 
             withContext(Dispatchers.IO) {
-                resultVideoPath = writeResultToGallery()
+                resultVideoPath = writeResultToMovies()
                 cleanUnusedFiles()
             }
 
@@ -222,21 +223,19 @@ class ScreenRecordService : Service(), CoroutineScope {
         virtualDisplay.release()
     }
 
-    private fun writeResultToGallery(): String {
-
-        val movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
-        val outputFile = File(movieDir, "${getOutputPathName()}/${getOutputFileName()}_${getTimestamp()}.mp4")
-
+    private fun writeResultToMovies(): String {
         val srcFile = File(internalStoragePath + FILENAME_RESULT)
-        srcFile.copyTo(target = outputFile)
-
-        MediaScannerConnection.scanFile(applicationContext, arrayOf(outputFile.absolutePath), null, null)
-
-        return outputFile.absolutePath
-    }
-
-    private fun getOutputPathName(): String {
-        return "Tokopedia"
+        val outputFilePathString = PublicFolderUtil.putFileToPublicFolder(applicationContext,
+                srcFile,
+                "${getOutputFileName()}_${getTimestamp()}.mp4",
+                "video/mp4", Environment.DIRECTORY_MOVIES)
+        if (outputFilePathString?.isNotEmpty() == true) {
+            val outputFile = File(outputFilePathString)
+            MediaScannerConnection.scanFile(applicationContext, arrayOf(outputFile.absolutePath), null, null)
+            return outputFile.absolutePath
+        } else {
+            return ""
+        }
     }
 
     private fun getTimestamp(): String {

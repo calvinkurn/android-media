@@ -50,12 +50,12 @@ import com.tokopedia.feedback_form.feedbackpage.ui.listener.ImageClickListener
 import com.tokopedia.feedback_form.feedbackpage.ui.preference.Preferences
 import com.tokopedia.feedback_form.feedbackpage.util.*
 import com.tokopedia.imagepicker.common.*
-import com.tokopedia.imagepreview.ImagePreviewUtils
 import com.tokopedia.screenshot_observer.ScreenshotData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.file.PublicFolderUtil
 import kotlinx.android.synthetic.main.fragment_feedback_page.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -505,7 +505,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         val destHeight = 1440
         val destWidth = origWidth / (origHeight.toDouble() / destHeight)
         val b2 = Bitmap.createScaledBitmap(b, destWidth.toInt(), destHeight, false)
-        resizedUriImage = Uri.parse(ImagePreviewUtils.saveImageFromBitmap(requireActivity(), b2, ImagePreviewUtils.processPictureName(Math.random().toInt())))
+        val filePathString = PublicFolderUtil.putImageToPublicFolder(requireActivity(), b2, System.currentTimeMillis().toString())
+        resizedUriImage = Uri.parse(filePathString)
     }
 
     private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
