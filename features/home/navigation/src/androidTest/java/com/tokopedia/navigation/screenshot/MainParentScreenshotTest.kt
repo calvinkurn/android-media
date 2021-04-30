@@ -22,6 +22,7 @@ private const val TAG = "MainParentScreenshotTesting"
 class MainParentScreenshotTest {
     val KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION"
     val KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING"
+    val CHOOSE_ADDRESS_ROLLENCE_KEY = "hyperlocal_android"
 
     @get:Rule
     var activityRule = object: ActivityTestRule<MainParentActivity>(MainParentActivity::class.java) {
@@ -30,6 +31,7 @@ class MainParentScreenshotTest {
             setupGraphqlMockResponse(MainHomeMockResponseConfig())
             setupDarkModeTest(false)
             setupHomeEnvironment()
+            setupAbTestRemoteConfig()
         }
     }
 
@@ -60,6 +62,21 @@ class MainParentScreenshotTest {
             )
         }
         activityRule.activity.finishAndRemoveTask()
+    }
+
+    private fun setupAbTestRemoteConfig() {
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+                AbTestPlatform.NAVIGATION_EXP_TOP_NAV,
+                AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+                CHOOSE_ADDRESS_ROLLENCE_KEY,
+                CHOOSE_ADDRESS_ROLLENCE_KEY)
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+                AbTestPlatform.BALANCE_EXP,
+                AbTestPlatform.BALANCE_VARIANT_NEW)
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+                AbTestPlatform.HOME_EXP,
+                AbTestPlatform.HOME_VARIANT_REVAMP)
     }
 
     private fun fileName(suffix: String? = null): String {
