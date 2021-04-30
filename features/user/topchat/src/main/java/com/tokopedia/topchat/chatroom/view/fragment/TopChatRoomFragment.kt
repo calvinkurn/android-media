@@ -555,8 +555,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     ) {
         setupFirstTimeOnly(chatRoom, chat)
         setupFirstPage(chatRoom, chat)
+        setupPostFirstPage()
         fpm.stopTrace()
         setupDummyData()
+    }
+
+    private fun setupPostFirstPage() {
+        presenter.getShopFollowingStatus(
+                shopId, ::onErrorGetShopFollowingStatus, ::onSuccessGetShopFollowingStatus
+        )
     }
 
     private fun setupDummyData() {
@@ -575,9 +582,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun setupFirstTimeOnly(chatRoom: ChatroomViewModel, chat: ChatReplies) {
         updateViewData(chatRoom)
         checkCanAttachVoucher()
-        presenter.getShopFollowingStatus(
-                shopId, ::onErrorGetShopFollowingStatus, ::onSuccessGetShopFollowingStatus
-        )
         orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(
                 chatRoom, onToolbarClicked(), this, alertDialog
