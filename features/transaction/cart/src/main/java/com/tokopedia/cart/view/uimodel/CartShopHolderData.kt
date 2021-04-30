@@ -5,16 +5,15 @@ import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class CartShopHolderData(
-        var shopGroupAvailableData: ShopGroupAvailableData? = null,
-        var isAllSelected: Boolean = false,
-        var isPartialSelected: Boolean = false
-
-) : Parcelable {
+class CartShopHolderData : Parcelable {
+    var shopGroupAvailableData: ShopGroupAvailableData? = null
+    var isAllSelected: Boolean = false
+        get() = field
+        private set
+    var isPartialSelected: Boolean = false
 
     fun setAllItemSelected(allSelected: Boolean) {
         this.isAllSelected = allSelected
         shopGroupAvailableData?.isChecked = allSelected
     }
-
 }
