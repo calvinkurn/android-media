@@ -121,6 +121,7 @@ class ProductListPresenter @Inject constructor(
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID,
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
+                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
         )
         private val showInspirationCardType = listOf(
                 SearchConstant.InspirationCard.TYPE_ANNOTATION,
@@ -1217,8 +1218,9 @@ class ProductListPresenter @Inject constructor(
 
             if (data.position <= productList.size && shouldShowInspirationCarousel(data.layout)) {
                 try {
+                    val inspirationCarouselVisitableList = constructInspirationCarouselVisitableList(data)
                     val product = productList[data.position - 1]
-                    list.add(list.indexOf(product) + 1, data)
+                    list.addAll(list.indexOf(product) + 1, inspirationCarouselVisitableList)
                     inspirationCarouselViewModelIterator.remove()
                 } catch (exception: java.lang.Exception) {
                     exception.printStackTrace()
@@ -1237,6 +1239,47 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun shouldShowInspirationCarousel(layout: String) = showInspirationCarouselLayout.contains(layout)
+
+    private fun constructInspirationCarouselVisitableList(data: InspirationCarouselDataView) =
+            if (data.isDynamicProductLayout())
+                convertInspirationCarouselToBroadMatch(data)
+            else
+                listOf(data)
+
+    private fun InspirationCarouselDataView.isDynamicProductLayout() =
+            layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT
+
+    private fun convertInspirationCarouselToBroadMatch(data: InspirationCarouselDataView): List<Visitable<*>> {
+        val broadMatchVisitableList = mutableListOf<Visitable<*>>()
+
+        broadMatchVisitableList.add(SeparatorDataView())
+        broadMatchVisitableList.addAll(data.options.mapToBroadMatchDataView())
+        broadMatchVisitableList.add(SeparatorDataView())
+
+        return broadMatchVisitableList
+    }
+
+    private fun List<InspirationCarouselDataView.Option>.mapToBroadMatchDataView(): List<Visitable<*>> {
+        return map { option ->
+            BroadMatchDataView(
+                    keyword = option.title,
+                    applink = option.applink,
+                    broadMatchItemDataViewList = option.product.map { product ->
+                        BroadMatchItemDataView(
+                                id = product.id,
+                                name = product.name,
+                                price = product.price,
+                                imageUrl = product.imgUrl,
+                                url = product.url,
+                                applink = product.applink,
+                                priceString = product.priceStr,
+                                ratingAverage = product.ratingAverage,
+                                labelGroupDataList = product.labelGroupDataList,
+                        )
+                    }
+            )
+        }
+    }
 
     private fun processBannerAndBroadmatchInSamePosition(
             searchProduct: SearchProductModel.SearchProduct,
