@@ -1,6 +1,7 @@
 package com.tokopedia.sellerfeedback.presentation.activity
 
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.ColorInt
@@ -8,14 +9,17 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
-import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragment
+import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragmentV2
+import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragmentV2.Companion.EXTRA_URI_IMAGE
 
-class SellerFeedbackActivity: BaseSimpleActivity() {
+class SellerFeedbackActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val colorId = ContextCompat.getColor(this@SellerFeedbackActivity,
-            com.tokopedia.unifyprinciples.R.color.Unify_N400)
+        val colorId = ContextCompat.getColor(
+                this@SellerFeedbackActivity,
+                com.tokopedia.unifyprinciples.R.color.Unify_N400
+        )
 
         setupToolbar(colorId)
         setupStatusBar(colorId)
@@ -34,5 +38,8 @@ class SellerFeedbackActivity: BaseSimpleActivity() {
         }
     }
 
-    override fun getNewFragment(): Fragment = SellerFeedbackFragment()
+    override fun getNewFragment(): Fragment {
+        val uri = intent.getParcelableExtra<Uri>(EXTRA_URI_IMAGE) ?: null
+        return SellerFeedbackFragmentV2.createInstance(uri)
+    }
 }

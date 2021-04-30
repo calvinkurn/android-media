@@ -1,0 +1,13 @@
+package com.tokopedia.sellerfeedback.di.component
+
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.sellerfeedback.di.module.SellerFeedbackViewModelModule
+import com.tokopedia.sellerfeedback.di.scope.SellerFeedbackScope
+import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragmentV2
+import dagger.Component
+
+@SellerFeedbackScope
+@Component(modules = [SellerFeedbackViewModelModule::class], dependencies = [BaseAppComponent::class])
+interface SellerFeedbackComponent {
+    fun inject(sellerFeedbackFragmentV2: SellerFeedbackFragmentV2)
+}
