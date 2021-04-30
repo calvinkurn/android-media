@@ -11,9 +11,6 @@
     <string name="label_awb_number">No Resi</string>
     <string name="label_address">Alamat</string>
     <string name="secondary_action_bottomsheet_header">Lainnya</string>
-    <string name="buy_protection_description">12 bulan proteksi diluar cakupan garansi resmi, ganti rugi hingga senilai harga barang</string>
-    <string name="buy_protection_title">Beli proteksi?</string>
-    <string name="claim_protection_label">Klaim Proteksi</string>
     <string name="buy_again_label">Beli Lagi</string>
     <string name="buyer_order_detail_toolbar_title">Detail Pesanan</string>
     <string name="message_invoice_copied">Kode invoice telah tersalin</string>

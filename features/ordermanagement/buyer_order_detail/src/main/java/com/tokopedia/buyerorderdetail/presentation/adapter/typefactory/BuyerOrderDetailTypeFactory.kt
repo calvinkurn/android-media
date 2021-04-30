@@ -10,7 +10,6 @@ import com.tokopedia.buyerorderdetail.presentation.model.*
 
 class BuyerOrderDetailTypeFactory(
         private val actionButtonClickListener: ActionButtonClickListener,
-        private val buyProtectionListener: BuyProtectionViewHolder.BuyProtectionListener,
         private val productViewListener: ProductViewHolder.ProductViewListener) : BaseAdapterTypeFactory() {
     fun type(actionButtonsUiModel: ActionButtonsUiModel): Int {
         return ActionButtonsViewHolder.LAYOUT
@@ -18,10 +17,6 @@ class BuyerOrderDetailTypeFactory(
 
     fun type(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel): Int {
         return AwbInfoViewHolder.LAYOUT
-    }
-
-    fun type(buyProtectionUiModel: BuyProtectionUiModel): Int {
-        return BuyProtectionViewHolder.LAYOUT
     }
 
     fun type(courierDriverInfoUiModel: ShipmentInfoUiModel.CourierDriverInfoUiModel): Int {
@@ -84,7 +79,6 @@ class BuyerOrderDetailTypeFactory(
         return when (type) {
             ActionButtonsViewHolder.LAYOUT -> ActionButtonsViewHolder(parent, actionButtonClickListener)
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
-            BuyProtectionViewHolder.LAYOUT -> BuyProtectionViewHolder(parent, buyProtectionListener)
             CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(parent)
             CourierInfoViewHolder.LAYOUT -> CourierInfoViewHolder(parent)
             OrderStatusHeaderViewHolder.LAYOUT -> OrderStatusHeaderViewHolder(parent)

@@ -14,7 +14,6 @@ import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.BuyProtectionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SecondaryActionButtonBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.model.*
@@ -26,7 +25,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_buyer_order_detail.*
 import javax.inject.Inject
 
-class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener, BuyProtectionViewHolder.BuyProtectionListener, ProductViewHolder.ProductViewListener {
+class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener, ProductViewHolder.ProductViewListener {
 
     companion object {
         @JvmStatic
@@ -46,7 +45,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         SaveInstanceCacheManager(requireContext())
     }
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this, this, this)
+        BuyerOrderDetailTypeFactory(this, this)
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
@@ -90,18 +89,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
 
     private fun onRequestCancelActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
         BuyerOrderDetailNavigator.goToRequestCancellationPage(this, viewModel.buyerOrderDetailResult.value, button, cacheManager)
-    }
-
-    override fun onClickBuyProtection() {
-        view?.let {
-            Toaster.build(it, "Beli proteksi dong...", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-        }
-    }
-
-    override fun onReachBuyProtectionDeadline() {
-        view?.let {
-            Toaster.build(it, "Beli proteksi dong...", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-        }
     }
 
     override fun onBuyAgainButtonClicked() {
@@ -153,7 +140,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         adapter.clearAllElements()
         setupOrderStatusSection(data.orderStatusUiModel)
         setupProductListSection(data.productListUiModel)
-        setupBuyProtectionSection(data.buyProtectionUiModel)
         setupShipmentInfoSection(data.shipmentInfoUiModel)
         setupPaymentInfoSection(data.paymentInfoUiModel)
         setupActionButtonsSection(data.actionButtonsUiModel)
@@ -176,13 +162,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         addThickDividerSection()
         addProductListHeaderSection(productListUiModel.productListHeaderUiModel)
         addProductListSection(productListUiModel.productList)
-    }
-
-    private fun setupBuyProtectionSection(buyProtectionUiModel: BuyProtectionUiModel) {
-        if (buyProtectionUiModel.showBuyProtection) {
-            addThickDividerSection()
-            addBuyProtectionSection(buyProtectionUiModel)
-        }
     }
 
     private fun setupShipmentInfoSection(shipmentInfoUiModel: ShipmentInfoUiModel) {
@@ -266,10 +245,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
 
     private fun addReceiverAddressInfoSection(receiverAddressInfoUiModel: ShipmentInfoUiModel.ReceiverAddressInfoUiModel) {
         adapter.addItem(receiverAddressInfoUiModel)
-    }
-
-    private fun addBuyProtectionSection(buyProtectionUiModel: BuyProtectionUiModel) {
-        adapter.addItem(buyProtectionUiModel)
     }
 
     private fun addPaymentMethodSection(paymentMethodInfoItem: PaymentInfoUiModel.PaymentInfoItemUiModel) {

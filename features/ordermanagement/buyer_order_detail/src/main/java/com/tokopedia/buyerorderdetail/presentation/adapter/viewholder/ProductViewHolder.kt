@@ -9,8 +9,6 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
-import com.tokopedia.kotlin.extensions.view.getDimens
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.item_buyer_order_detail_product_list_item.view.*
 
@@ -32,8 +30,7 @@ class ProductViewHolder(
     override fun bind(element: ProductListUiModel.ProductUiModel?) {
         element?.let {
             this.element = it
-            setupClaimInsuranceButton(it.showClaimInsurance)
-            setupProductThumbnail(it.productThumbnailUrl, it.showClaimInsurance)
+            setupProductThumbnail(it.productThumbnailUrl)
             setupProductName(it.productName)
             setupProductQuantityAndPrice(it.quantity, it.priceText)
             setupProductNote(it.productNote)
@@ -44,14 +41,9 @@ class ProductViewHolder(
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.btnProductProtection -> goToBuyProductProtection()
             R.id.cardBuyerOrderDetailProduct -> goToProductSnapshotPage()
             R.id.btnBuyerOrderDetailBuyProductAgain -> addToCart()
         }
-    }
-
-    private fun goToBuyProductProtection() {
-        //TODO: Implement ATC after knowing the applink
     }
 
     private fun goToProductSnapshotPage() {
@@ -66,21 +58,14 @@ class ProductViewHolder(
 
     private fun setupClickListeners() {
         with(itemView) {
-            btnProductProtection?.setOnClickListener(this@ProductViewHolder)
             cardBuyerOrderDetailProduct?.setOnClickListener(this@ProductViewHolder)
             btnBuyerOrderDetailBuyProductAgain?.setOnClickListener(this@ProductViewHolder)
         }
     }
 
-    private fun setupClaimInsuranceButton(showClaimInsurance: Boolean) {
-        itemView.btnProductProtection?.showWithCondition(showClaimInsurance)
-    }
-
-    private fun setupProductThumbnail(productThumbnailUrl: String, showClaimInsurance: Boolean) {
+    private fun setupProductThumbnail(productThumbnailUrl: String) {
         itemView.ivBuyerOrderDetailProductThumbnail?.apply {
             setImageUrl(productThumbnailUrl)
-            val marginTop = if (showClaimInsurance) getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) else 0
-            setMargin(0, marginTop, 0, 0)
         }
     }
 

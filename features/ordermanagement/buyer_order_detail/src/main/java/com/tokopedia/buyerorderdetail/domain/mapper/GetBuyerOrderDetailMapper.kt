@@ -10,7 +10,6 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
     fun mapDomainModelToUiModel(buyerOrderDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail): BuyerOrderDetailUiModel {
         return BuyerOrderDetailUiModel(
                 actionButtonsUiModel = mapActionButtons(buyerOrderDetail.button, buyerOrderDetail.dotMenu),
-                buyProtectionUiModel = mapBuyProtectionUiModel(),
                 orderStatusUiModel = mapOrderStatusUiModel(buyerOrderDetail.orderStatus, buyerOrderDetail.tickerInfo, buyerOrderDetail.invoice, buyerOrderDetail.invoiceUrl, buyerOrderDetail.deadline, buyerOrderDetail.paymentDate),
                 paymentInfoUiModel = mapPaymentInfoUiModel(buyerOrderDetail.payment, buyerOrderDetail.cashbackInfo),
                 productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.shop, buyerOrderDetail.meta),
@@ -22,14 +21,6 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         return ActionButtonsUiModel(
                 primaryActionButton = mapActionButton(button),
                 secondaryActionButtons = mapSecondaryActionButtons(dotMenu)
-        )
-    }
-
-    private fun mapBuyProtectionUiModel(): BuyProtectionUiModel {
-        return BuyProtectionUiModel(
-                deadline = 1234567890, //TODO: replace with the one from backend
-                description = "12 bulan proteksi diluar cakupan garansi resmi, ganti rugi hingga senilai harga barang", //TODO: replace with the one from backend
-                title = "Beli Proteksi?" //TODO: replace with the one from backend
         )
     }
 
@@ -216,8 +207,7 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
                 productThumbnailUrl = product.thumbnail,
                 quantity = product.quantity,
                 totalPrice = product.totalPrice,
-                totalPriceText = product.totalPriceText,
-                showClaimInsurance = true
+                totalPriceText = product.totalPriceText
         )
     }
 

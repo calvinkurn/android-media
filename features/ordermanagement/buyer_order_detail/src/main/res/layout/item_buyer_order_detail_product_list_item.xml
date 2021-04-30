@@ -13,58 +13,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/btnProductProtection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_btn_product_protection"
-            android:paddingStart="@dimen/spacing_lvl3"
-            android:paddingTop="@dimen/spacing_lvl2"
-            android:paddingEnd="@dimen/spacing_lvl3"
-            android:paddingBottom="@dimen/spacing_lvl2"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/icBuyerOrderDetailProtectionBadge"
-                android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="@dimen/layout_lvl2"
-                app:icon_color_light_enable="#525A67"
-                app:icon_name="PROTECTION"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvBuyerOrderDetailProtectionLabel"
-                android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl2"
-                android:text="@string/claim_protection_label"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/icBuyerOrderDetailProtectionSeeMore"
-                app:layout_constraintStart_toEndOf="@id/icBuyerOrderDetailProtectionBadge"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="small" />
-
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/icBuyerOrderDetailProtectionSeeMore"
-                android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="@dimen/layout_lvl2"
-                app:icon_color_light_enable="#525A67"
-                app:icon_name="CHEVRON_RIGHT"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivBuyerOrderDetailProductThumbnail"
             android:layout_width="@dimen/product_thumbnail_size"
             android:layout_height="@dimen/product_thumbnail_size"
-            android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnProductProtection" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvBuyerOrderDetailProductName"

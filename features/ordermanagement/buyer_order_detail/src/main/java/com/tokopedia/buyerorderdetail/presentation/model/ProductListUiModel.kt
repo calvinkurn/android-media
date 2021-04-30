@@ -29,7 +29,6 @@ data class ProductListUiModel(
             val productNote: String,
             val productThumbnailUrl: String,
             val quantity: Int,
-            val showClaimInsurance: Boolean,
             val totalPrice: String,
             val totalPriceText: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
