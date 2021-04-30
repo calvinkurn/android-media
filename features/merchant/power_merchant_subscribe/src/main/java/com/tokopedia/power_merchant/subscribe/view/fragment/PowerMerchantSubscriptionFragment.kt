@@ -340,10 +340,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         })
     }
 
-    private fun showNotificationBottomSheet(title: String, description: String, primaryCtaText: String, imgUrl: String, secondaryCtaText: String? = null,
-                                            onPrimaryCtaClicked: (() -> Unit)? = null,
-                                            onSecondaryCtaClicked: (() -> Unit)? = null,
-                                            onDismiss: (() -> Unit)? = null
+    private fun showNotificationBottomSheet(
+            title: String, description: String, primaryCtaText: String, imgUrl: String,
+            secondaryCtaText: String? = null,
+            onPrimaryCtaClicked: (() -> Unit)? = null,
+            onSecondaryCtaClicked: (() -> Unit)? = null,
+            onDismiss: (() -> Unit)? = null
     ) {
         val notifBottomSheet = PMNotificationBottomSheet.createInstance(title, description, imgUrl)
 
@@ -368,29 +370,41 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun setupFooterCta() = view?.run {
-        if (selectedPmType == PMConstant.PMType.PM_PRO) {
-            setupFooterPmPro()
-        } else {
-            setupFooterPmRegular()
-        }
-    }
-
-    private fun setupFooterPmPro() = view?.run {
         val shopInfo = pmGradeBenefitAndShopInfo?.shopInfo ?: return@run
-        val registrationTerms = getRegistrationHeaderWidgetData(shopInfo).pmProTerms
-        val firstPriorityTerm = registrationTerms.filter { !it.isChecked }
-                .sortedBy { it.periority }.firstOrNull()
+        val isPmPro = selectedPmType == PMConstant.PMType.PM_PRO
+        val registrationTerms = if (isPmPro) {
+            getRegistrationHeaderWidgetData(shopInfo).pmProTerms
+        } else {
+            getRegistrationHeaderWidgetData(shopInfo).pmTerms
+        }
+
+        val firstPriorityTerm = registrationTerms.filter {
+            if (!shopInfo.isNewSeller) {
+                !it.isChecked && it !is RegistrationTermUiModel.ActiveProduct
+            } else {
+                !it.isChecked
+            }
+        }.sortedBy { it.periority }.firstOrNull()
 
         //show tnc check box only if kyc not eligible or pm pro eligible
         val needTnC = firstPriorityTerm is RegistrationTermUiModel.Kyc || shopInfo.isEligiblePmPro
 
+        val ctaText = if (needTnC || shopInfo.isNewSeller) {
+            getString(R.string.power_merchant_register_now)
+        } else {
+            getString(R.string.pm_interested_to_register)
+        }
+
         with(pmRegistrationFooterView) {
             if (shopInfo.kycStatusId == KYCStatusId.PENDING) gone() else visible()
+            setCtaText(ctaText)
             setTnCVisibility(needTnC)
             setOnCtaClickListener { tncAgreed ->
+                val isEligiblePm = if (isPmPro) shopInfo.isEligiblePmPro else shopInfo.isEligiblePm
                 when {
-                    shopInfo.isEligiblePmPro -> submitPMRegistration(tncAgreed)
+                    isEligiblePm -> submitPMRegistration(tncAgreed)
                     firstPriorityTerm is RegistrationTermUiModel.ShopScore -> showShopScoreTermBottomSheet(shopInfo)
+                    firstPriorityTerm is RegistrationTermUiModel.ActiveProduct -> showActiveProductTermBottomSheet()
                     firstPriorityTerm is RegistrationTermUiModel.Order -> showOrderTermBottomSheet(shopInfo.itemSoldPmProThreshold)
                     firstPriorityTerm is RegistrationTermUiModel.Niv -> showNivTermBottomSheet(shopInfo.nivPmProThreshold)
                     firstPriorityTerm is RegistrationTermUiModel.Kyc -> submitKYC(tncAgreed)
@@ -417,36 +431,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     }
 
-    private fun setupFooterPmRegular() = view?.run {
-        val shopInfo = pmGradeBenefitAndShopInfo?.shopInfo ?: return@run
-
-        val isEligibleShopScore = !shopInfo.isNewSeller && shopInfo.isEligibleShopScore
-        val hasActiveProduct = shopInfo.isNewSeller && shopInfo.hasActiveProduct
-        val needTnC = (!shopInfo.isKyc && (isEligibleShopScore || hasActiveProduct))
-                || (shopInfo.isKyc && (isEligibleShopScore || hasActiveProduct))
-        if (shopInfo.kycStatusId == KYCStatusId.PENDING) {
-            pmRegistrationFooterView.gone()
-        } else {
-            pmRegistrationFooterView.visible()
-        }
-        pmRegistrationFooterView.setTnCVisibility(needTnC)
-        val ctaText = if (needTnC || shopInfo.isNewSeller) {
-            getString(R.string.power_merchant_register_now)
-        } else {
-            getString(R.string.pm_interested_to_register)
-        }
-        pmRegistrationFooterView.setCtaText(ctaText)
-
-        pmRegistrationFooterView.setOnCtaClickListener { tncAgreed ->
-            when {
-                shopInfo.isEligiblePm -> submitPMRegistration(tncAgreed)
-                !shopInfo.isKyc && ((!shopInfo.isNewSeller && shopInfo.isEligibleShopScore)
-                        || (shopInfo.isNewSeller && shopInfo.hasActiveProduct)) -> submitKYC(tncAgreed)
-                else -> showShopScoreTermBottomSheet(shopInfo)
-            }
-        }
-    }
-
     private fun submitKYC(isTncChecked: Boolean) {
         if (!isTncChecked) {
             val message = getString(R.string.pm_tnc_agreement_error_message)
@@ -468,34 +452,28 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun showShopScoreTermBottomSheet(shopInfo: PMShopInfoUiModel) {
-        val isNewSeller = shopInfo.isNewSeller
         val isPmPro = selectedPmType == PMConstant.PMType.PM_PRO
+        val shopScoreThreshold = if (isPmPro) shopInfo.shopScorePmProThreshold else shopInfo.shopScoreThreshold
+        val pmLabel = if (isPmPro) getString(R.string.pm_power_merchant_pro) else getString(R.string.pm_power_merchant)
 
-        val title: String
-        val description: String
-        val ctaText: String
-        val illustrationUrl: String
-        val appLink: String
-
-        if (isNewSeller && !isPmPro) {
-            title = getString(R.string.pm_bottom_sheet_active_product_title)
-            description = getString(R.string.pm_bottom_sheet_active_product_description)
-            ctaText = getString(R.string.pm_add_product)
-            illustrationUrl = PMConstant.Images.PM_ADD_PRODUCT_BOTTOM_SHEET
-            appLink = ApplinkConst.SellerApp.PRODUCT_ADD
-        } else {
-            val shopScoreThreshold = if (isPmPro) shopInfo.shopScorePmProThreshold else shopInfo.shopScoreThreshold
-            val pmLabel = if (isPmPro) getString(R.string.pm_power_merchant_pro) else getString(R.string.pm_power_merchant)
-
-            title = getString(R.string.pm_bottom_sheet_shop_score_title)
-            description = getString(R.string.pm_bottom_sheet_shop_score_description, shopScoreThreshold, pmLabel)
-            ctaText = getString(R.string.pm_learn_shop_performance)
-            illustrationUrl = PMConstant.Images.PM_SHOP_SCORE_NOT_ELIGIBLE_BOTTOM_SHEET
-            appLink = ApplinkConst.SHOP_SCORE_DETAIL
-        }
+        val title: String = getString(R.string.pm_bottom_sheet_shop_score_title)
+        val description = getString(R.string.pm_bottom_sheet_shop_score_description, shopScoreThreshold, pmLabel)
+        val ctaText = getString(R.string.pm_learn_shop_performance)
+        val illustrationUrl = PMConstant.Images.PM_SHOP_SCORE_NOT_ELIGIBLE_BOTTOM_SHEET
 
         showNotificationBottomSheet(title, description, ctaText, illustrationUrl, onPrimaryCtaClicked = {
-            RouteManager.route(context, appLink)
+            RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL)
+        })
+    }
+
+    private fun showActiveProductTermBottomSheet() {
+        val title: String = getString(R.string.pm_bottom_sheet_active_product_title)
+        val description: String = getString(R.string.pm_bottom_sheet_active_product_description)
+        val ctaText: String = getString(R.string.pm_add_product)
+        val illustrationUrl: String = PMConstant.Images.PM_ADD_PRODUCT_BOTTOM_SHEET
+
+        showNotificationBottomSheet(title, description, ctaText, illustrationUrl, onPrimaryCtaClicked = {
+            RouteManager.route(context, ApplinkConst.SellerApp.PRODUCT_ADD)
         })
     }
 

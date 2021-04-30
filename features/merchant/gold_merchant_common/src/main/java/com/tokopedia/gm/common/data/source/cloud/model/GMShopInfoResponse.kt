@@ -26,8 +26,6 @@ data class GoldGetPMShopInfoDataModel(
         val shopScoreThreshold: Int? = 0,
         @SerializedName("shop_score_pm_pro_threshold")
         val shopScorePmProThreshold: Int? = 0,
-        @SerializedName("is_eligible_shop_score")
-        val isEligibleShopScore: Boolean? = false,
         @SerializedName("is_has_active_product")
         val hasActiveProduct: Boolean? = false,
         @SerializedName("is_eligible_pm")

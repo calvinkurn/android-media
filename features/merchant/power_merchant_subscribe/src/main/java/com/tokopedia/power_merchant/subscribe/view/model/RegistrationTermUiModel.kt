@@ -22,6 +22,15 @@ sealed class RegistrationTermUiModel(
             override val appLinkOrUrl: String? = null
     ) : RegistrationTermUiModel(title, descriptionHtml, resDrawableIcon, isChecked, clickableText, appLinkOrUrl, 1)
 
+    data class ActiveProduct(
+            override val title: String,
+            override val descriptionHtml: String,
+            override val resDrawableIcon: Int,
+            override val isChecked: Boolean,
+            override val clickableText: String? = null,
+            override val appLinkOrUrl: String? = null
+    ) : RegistrationTermUiModel(title, descriptionHtml, resDrawableIcon, isChecked, clickableText, appLinkOrUrl, 1)
+
     data class Order(
             override val title: String,
             override val descriptionHtml: String,

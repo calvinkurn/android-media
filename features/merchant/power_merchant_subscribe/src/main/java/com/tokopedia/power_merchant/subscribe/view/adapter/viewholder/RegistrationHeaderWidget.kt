@@ -119,7 +119,7 @@ class RegistrationHeaderWidget(
     }
 
     private fun setTickerVisibility(shopInfo: PMShopInfoUiModel) {
-        val isEligibleShopScore = !shopInfo.isNewSeller && shopInfo.isEligibleShopScore
+        val isEligibleShopScore = !shopInfo.isNewSeller && (shopInfo.isEligibleShopScore() || shopInfo.isEligibleShopScorePmPro())
         val hasActiveProduct = shopInfo.isNewSeller && shopInfo.hasActiveProduct
         val isTickerVisible = shopInfo.kycStatusId == KYCStatusId.PENDING && (isEligibleShopScore || hasActiveProduct)
         itemView.tickerPmHeader.visibility = if (isTickerVisible) {

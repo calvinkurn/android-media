@@ -9,7 +9,8 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imagePmNotification"
         android:layout_width="@dimen/pm_spacing_180dp"
-        android:layout_height="@dimen/power_merchant_notification_image_size"
+        android:layout_height="@dimen/pm_spacing_180dp"
+        android:scaleType="centerInside"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -19,7 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:gravity="center"
         android:textColor="@color/Unify_N700"

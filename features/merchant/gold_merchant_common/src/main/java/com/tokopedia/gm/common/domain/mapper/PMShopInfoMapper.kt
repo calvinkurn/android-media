@@ -23,7 +23,6 @@ class PMShopInfoMapper @Inject constructor() {
                 shopScore = response?.shopScore.orZero(),
                 shopScoreThreshold = response?.shopScoreThreshold ?: PMShopInfoUiModel.DEFAULT_PM_SHOP_SCORE_THRESHOLD,
                 shopScorePmProThreshold = response?.shopScorePmProThreshold ?: PMShopInfoUiModel.DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD,
-                isEligibleShopScore = response?.isEligibleShopScore.orFalse(),
                 hasActiveProduct = response?.hasActiveProduct.orFalse(),
                 isEligiblePm = response?.isEligiblePm.orFalse(),
                 isEligiblePmPro = response?.isEligiblePmPro.orFalse(),

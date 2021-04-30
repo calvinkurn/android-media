@@ -16,11 +16,17 @@ import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 object PMRegistrationTermHelper {
 
     fun getPmRegistrationTerms(context: Context, shopInfo: PMShopInfoUiModel): List<RegistrationTermUiModel> {
-        return listOf(getShopScoreOrProductTerm(context, shopInfo, false), getKycTerm(context, shopInfo))
+        val firstTerm = if (shopInfo.isNewSeller) {
+            getActiveProductTerm(context, shopInfo)
+        } else {
+            getShopScoreTerm(context, shopInfo, false)
+        }
+        return listOf(firstTerm, getKycTerm(context, shopInfo, false))
     }
 
     fun getPmProRegistrationTerms(context: Context, shopInfo: PMShopInfoUiModel): List<RegistrationTermUiModel> {
-        return listOf(getShopScoreOrProductTerm(context, shopInfo, true), getTotalOrderTerm(context, shopInfo), getNivTerm(context, shopInfo), getKycTerm(context, shopInfo))
+        return listOf(getShopScoreTerm(context, shopInfo, true), getTotalOrderTerm(context, shopInfo),
+                getNivTerm(context, shopInfo), getKycTerm(context, shopInfo, true))
     }
 
     private fun getTotalOrderTerm(context: Context, shopInfo: PMShopInfoUiModel): RegistrationTermUiModel.Order {
@@ -90,8 +96,9 @@ object PMRegistrationTermHelper {
         )
     }
 
-    private fun getShopScoreOrProductTerm(context: Context, shopInfo: PMShopInfoUiModel, isPmPro: Boolean): RegistrationTermUiModel.ShopScore {
-        val shopScoreResIcon: Int = if ((shopInfo.isNewSeller && shopInfo.hasActiveProduct) || (!shopInfo.isNewSeller && shopInfo.isEligibleShopScore)) {
+    private fun getShopScoreTerm(context: Context, shopInfo: PMShopInfoUiModel, isPmPro: Boolean): RegistrationTermUiModel.ShopScore {
+        val isEligibleShopScore = (isPmPro && shopInfo.isEligibleShopScorePmPro()) || (!isPmPro && shopInfo.isEligibleShopScore())
+        val shopScoreResIcon: Int = if (isEligibleShopScore) {
             R.drawable.ic_pm_checked
         } else {
             R.drawable.ic_pm_not_checked
@@ -101,49 +108,71 @@ object PMRegistrationTermHelper {
         val description: String
         var ctaText: String? = null
         var ctaAppLink: String? = null
-        var isChecked = false
+
         val shopScoreThreshold = if (isPmPro) {
             shopInfo.shopScorePmProThreshold
         } else {
             shopInfo.shopScoreThreshold
         }
 
-        if (shopInfo.isNewSeller) { //new seller
-            if (shopInfo.hasActiveProduct) {
-                title = context.getString(R.string.pm_already_have_one_active_product)
-                description = context.getString(R.string.pm_label_already_have_one_active_product)
-                isChecked = true
-            } else {
-                title = context.getString(R.string.pm_have_not_one_active_product_yet)
-                description = context.getString(R.string.pm_label_have_not_one_active_product_yet)
-                ctaText = context.getString(R.string.pm_add_product)
-                ctaAppLink = ApplinkConst.SellerApp.PRODUCT_ADD
-            }
-        } else { //existing seller
-            if (shopInfo.isEligibleShopScore) {
-                val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-                title = context.getString(R.string.pm_shop_score_eligible, textColor, shopInfo.shopScore)
-                description = context.getString(R.string.pm_shop_score_eligible_description, shopScoreThreshold)
-                isChecked = true
-            } else {
-                val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
-                title = context.getString(R.string.pm_shop_score_not_eligible, textColor, shopInfo.shopScore)
-                description = context.getString(R.string.pm_shop_score_not_eligible_description, shopScoreThreshold)
-                ctaText = context.getString(R.string.pm_learn_shop_performance)
-                ctaAppLink = ApplinkConst.SHOP_SCORE_DETAIL
-            }
+        if (isEligibleShopScore) {
+            val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            title = context.getString(R.string.pm_shop_score_eligible, textColor, shopInfo.shopScore)
+            description = context.getString(R.string.pm_shop_score_eligible_description, shopScoreThreshold)
+        } else {
+            val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
+            title = context.getString(R.string.pm_shop_score_not_eligible, textColor, shopInfo.shopScore)
+            description = context.getString(R.string.pm_shop_score_not_eligible_description, shopScoreThreshold)
+            ctaText = context.getString(R.string.pm_learn_shop_performance)
+            ctaAppLink = ApplinkConst.SHOP_SCORE_DETAIL
         }
+
         return RegistrationTermUiModel.ShopScore(
                 title = title,
                 descriptionHtml = description,
                 resDrawableIcon = shopScoreResIcon,
                 clickableText = ctaText,
                 appLinkOrUrl = ctaAppLink,
-                isChecked = isChecked
+                isChecked = isEligibleShopScore
         )
     }
 
-    private fun getKycTerm(context: Context, shopInfo: PMShopInfoUiModel): RegistrationTermUiModel {
+    private fun getActiveProductTerm(context: Context, shopInfo: PMShopInfoUiModel): RegistrationTermUiModel.ActiveProduct {
+        val shopScoreResIcon: Int = if (shopInfo.hasActiveProduct) {
+            R.drawable.ic_pm_checked
+        } else {
+            R.drawable.ic_pm_not_checked
+        }
+
+        val title: String
+        val description: String
+        var ctaText: String? = null
+        var ctaAppLink: String? = null
+
+        if (shopInfo.hasActiveProduct) {
+            title = context.getString(R.string.pm_already_have_one_active_product)
+            description = context.getString(R.string.pm_label_already_have_one_active_product)
+        } else {
+            title = context.getString(R.string.pm_have_not_one_active_product_yet)
+            description = context.getString(R.string.pm_label_have_not_one_active_product_yet)
+            ctaText = context.getString(R.string.pm_add_product)
+            ctaAppLink = ApplinkConst.SellerApp.PRODUCT_ADD
+        }
+
+        return RegistrationTermUiModel.ActiveProduct(
+                title = title,
+                descriptionHtml = description,
+                resDrawableIcon = shopScoreResIcon,
+                clickableText = ctaText,
+                appLinkOrUrl = ctaAppLink,
+                isChecked = shopInfo.hasActiveProduct
+        )
+    }
+
+    private fun getKycTerm(context: Context, shopInfo: PMShopInfoUiModel, isPmPro: Boolean): RegistrationTermUiModel {
+        val isEligibleShopScore = (!isPmPro && !shopInfo.isEligibleShopScore()) ||
+                (isPmPro && !shopInfo.isEligibleShopScorePmPro())
+
         val shopKycResIcon: Int
         val title: String
         val description: String
@@ -158,7 +187,7 @@ object PMRegistrationTermHelper {
             KYCStatusId.NOT_VERIFIED, KYCStatusId.BLACKLIST -> {
                 title = context.getString(R.string.pm_kyc_not_verified)
                 when {
-                    !shopInfo.isNewSeller && !shopInfo.isEligibleShopScore -> {
+                    !shopInfo.isNewSeller && isEligibleShopScore -> {
                         description = context.getString(R.string.pm_description_kyc_not_verified_existing_seller)
                         ctaText = context.getString(R.string.pm_verify_data_clickable)
                         ctaAppLink = ApplinkConst.KYC_SELLER_DASHBOARD
@@ -183,7 +212,7 @@ object PMRegistrationTermHelper {
             }
             else -> {
                 title = context.getString(R.string.pm_verification_failed)
-                if ((shopInfo.isNewSeller && !shopInfo.hasActiveProduct) || (!shopInfo.isNewSeller && !shopInfo.isEligibleShopScore)) {
+                if ((shopInfo.isNewSeller && !shopInfo.hasActiveProduct) || !isEligibleShopScore) {
                     description = context.getString(R.string.pm_description_kyc_verification_failed)
                     ctaText = context.getString(R.string.pm_verify_again_clickable)
                     ctaAppLink = ApplinkConst.KYC_SELLER_DASHBOARD
