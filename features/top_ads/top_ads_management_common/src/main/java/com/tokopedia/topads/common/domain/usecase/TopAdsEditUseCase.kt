@@ -70,7 +70,7 @@ class TopAdsEditUseCase @Inject constructor(val userSession: UserSessionInterfac
         return TopadsManageGroupAdsInput().apply {
             shopID = userSession.shopId
             keywordOperation = null
-            groupID = groupId.toString()
+            groupID = groupId
             source = PARAM_RECOM_EDIT_SOURCE
             groupInput = GroupEditInput(
                     action = PARAM_EDIT_OPTION,

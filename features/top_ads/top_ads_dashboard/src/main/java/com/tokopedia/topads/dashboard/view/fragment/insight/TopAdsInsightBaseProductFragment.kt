@@ -73,7 +73,7 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
         TopAdsRecomGroupBottomSheet.getInstance()
     }
     private var currentGroupName = ""
-    private var currentGroupId = -1
+    private var currentGroupId = ""
 
     companion object {
         fun createInstance(bundle: Bundle): TopAdsInsightBaseProductFragment {
@@ -212,6 +212,7 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
         sheet.show(childFragmentManager, list)
         sheet.onNewGroup = { groupName ->
             currentGroupName = groupName
+            currentGroupId = ""
             getBidInfo()
             adapter.items?.forEach {
                 if(it.isChecked) {
@@ -242,7 +243,7 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
-        if (currentGroupId == -1) {
+        if (currentGroupId.isEmpty()) {
             val param: HashMap<String, Any> = hashMapOf()
             val userSession = UserSession(context)
             param[INPUT] = InputCreateGroup().apply {
@@ -265,7 +266,7 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
             map[PARAM_GROUP_Id] = currentGroupId
             map[PARAM_PRICE_BID] = data.firstOrNull()?.minBid ?: 0
             topAdsDashboardPresenter.editBudgetThroughInsight(productList, map, ::onResultEdit, ::onError)
-            currentGroupId = -1
+            currentGroupId = ""
         }
         sheet.dismiss()
     }
