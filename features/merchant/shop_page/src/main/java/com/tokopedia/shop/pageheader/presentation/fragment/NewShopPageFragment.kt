@@ -1422,7 +1422,7 @@ class NewShopPageFragment :
             if (isNotRegularMerchant(shopPageHeaderDataModel)) {
                 listShopPageTabModel.add(ShopPageTabModel(
                         getString(R.string.shop_info_title_tab_showcase),
-                        if (isFirstTimeShowTabLabel() == false) {
+                        if (isFirstTimeShowTabLabel() == false && isUsingNewNavigation()) {
                             saveFirstShowTabLabel()
                             iconTabShowcaseWithLabelInactive
                         } else {
@@ -1441,7 +1441,7 @@ class NewShopPageFragment :
         } else {
             listShopPageTabModel.add(ShopPageTabModel(
                     getString(R.string.shop_info_title_tab_showcase),
-                    if (isFirstTimeShowTabLabel() == false) {
+                    if (isFirstTimeShowTabLabel() == false && isUsingNewNavigation()) {
                         saveFirstShowTabLabel()
                         iconTabShowcaseWithLabelInactive
                     } else {
