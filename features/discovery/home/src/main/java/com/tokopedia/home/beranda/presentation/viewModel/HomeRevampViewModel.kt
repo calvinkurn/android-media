@@ -13,7 +13,7 @@ import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
-import com.tokopedia.home.beranda.common.HomeDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.isSalamWidgetAvailable
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperRechargetoReminder
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperSalamtoReminder
@@ -40,6 +40,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.PendingCashbackModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -59,6 +60,8 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
@@ -122,10 +125,10 @@ open class HomeRevampViewModel @Inject constructor(
         private val getRechargeBUWidgetUseCase: Lazy<GetRechargeBUWidgetUseCase>,
         private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
         private val bestSellerMapper: Lazy<BestSellerMapper>,
-        private val homeDispatcher: Lazy<HomeDispatcherProvider>,
+        private val homeDispatcher: Lazy<CoroutineDispatchers>,
         private val homeProcessor: Lazy<HomeCommandProcessor>,
         private val playWidgetTools: Lazy<PlayWidgetTools>
-) : BaseCoRoutineScope(homeDispatcher.get().io()), ResultCommandProcessor {
+) : BaseCoRoutineScope(homeDispatcher.get().io), ResultCommandProcessor {
 
     companion object {
         private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
@@ -143,7 +146,7 @@ open class HomeRevampViewModel @Inject constructor(
     private var useNewBalanceWidget: Boolean = true
 
     var currentTopAdsBannerToken: String = ""
-    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().ui())
+    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().main)
     private lateinit var initialShimmerData: HomeInitialShimmerDataModel
 
 // ============================================================================================
@@ -541,22 +544,20 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getReviewData() {
-        if (isNeedShowGeoLocation) {
-            onRemoveSuggestedReview()
-        } else {
-            getSuggestedReview()
-        }
+        getSuggestedReview()
     }
 
     private fun getSuggestedReview() {
         if(getSuggestedReviewJob?.isActive == true) return
-        if (!isNeedShowGeoLocation && userSession.get().isLoggedIn) {
+        if (userSession.get().isLoggedIn) {
             getSuggestedReviewJob = launchCatchError(coroutineContext, block = {
                 val data = getHomeReviewSuggestedUseCase.get().executeOnBackground()
                 insertSuggestedReview(data)
             }) {
                 onRemoveSuggestedReview()
             }
+        } else {
+            onRemoveSuggestedReview()
         }
     }
 
@@ -1081,9 +1082,14 @@ open class HomeRevampViewModel @Inject constructor(
                     }
                     homeData?.let {
                         if (it.list.isEmpty()) {
-                            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_empty_update;" +
-                                    "reason='Visitables is empty';" +
-                                    "data='isProcessingDynamicChannel=${it.isProcessingDynamicChannle}, isProcessingAtf=${it.isProcessingAtf}, isFirstPage=${it.isFirstPage}, isCache=${it.isCache}'")
+                            ServerLogger.log(Priority.P2, "HOME_STATUS",
+                                    mapOf("type" to "revamp_empty_update",
+                                            "reason" to "Visitables is empty",
+                                            "isProcessingDynamicChannel" to it.isProcessingDynamicChannle.toString(),
+                                            "isProcessingAtf" to it.isProcessingAtf.toString(),
+                                            "isFirstPage" to it.isFirstPage.toString(),
+                                            "isCache" to it.isCache.toString()
+                                    ))
                         }
                         homeProcessor.get().sendWithQueueMethod(UpdateHomeData(it, this@HomeRevampViewModel))
 
@@ -1122,15 +1128,19 @@ open class HomeRevampViewModel @Inject constructor(
         }) {
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
-            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_init_flow;reason='${it.message?:""
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${stackTrace
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+            ServerLogger.log(Priority.P2, "HOME_STATUS",
+                    mapOf("type" to "revamp_error_init_flow",
+                            "reason" to (it.message ?: "".take(ConstantKey.HomeTimber.MAX_LIMIT)),
+                            "data" to stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
+                    ))
         }.invokeOnCompletion {
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
-            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_cancelled_init_flow;reason='${it?.message?:"No error propagated"
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${stackTrace
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+            ServerLogger.log(Priority.P2, "HOME_STATUS",
+                    mapOf("type" to "revamp_cancelled_init_flow",
+                            "reason" to (it?.message ?: "No error propagated").take(ConstantKey.HomeTimber.MAX_LIMIT),
+                            "data" to stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
+                    ))
             homeFlowDataCancelled = true
         }
     }
@@ -1158,9 +1168,11 @@ open class HomeRevampViewModel @Inject constructor(
             homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
 
-            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_refresh;reason='${it.message?:""
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+            ServerLogger.log(Priority.P2, "HOME_STATUS",
+                    mapOf("type" to "revamp_error_refresh",
+                            "reason" to (it.message ?: "").take(ConstantKey.HomeTimber.MAX_LIMIT),
+                            "data" to Log.getStackTraceString(it).take(ConstantKey.HomeTimber.MAX_LIMIT)
+                    ))
         }
     }
 
@@ -1571,6 +1583,7 @@ open class HomeRevampViewModel @Inject constructor(
             try {
                 walletContent = getWalletBalanceContent()
             } catch (e: Exception) {
+                homeBalanceModel.isTokopointsOrOvoFailed = true
                 homeBalanceModel.mapErrorWallet()
                 newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
             }
@@ -1578,6 +1591,7 @@ open class HomeRevampViewModel @Inject constructor(
             try {
                 tokopointContent = getTokopointBalanceContent()
             } catch (e: Exception) {
+                homeBalanceModel.isTokopointsOrOvoFailed = true
                 homeBalanceModel.mapErrorTokopoints()
                 newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_ERROR))
             }
@@ -1599,6 +1613,7 @@ open class HomeRevampViewModel @Inject constructor(
                             )
                         }
                     } catch (e: Exception) {
+                        homeBalanceModel.isTokopointsOrOvoFailed = true
                         newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
                     }
                 } else {
@@ -1810,7 +1825,7 @@ open class HomeRevampViewModel @Inject constructor(
         launchCatchError(block = {
             val response = playWidgetTools.get().getWidgetFromNetwork(
                     PlayWidgetUseCase.WidgetType.Home,
-                    homeDispatcher.get().io()
+                    homeDispatcher.get().io
             )
             val uiModel = playWidgetTools.get().mapWidgetToModel(response)
             homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(dataModel.copy(
@@ -1842,7 +1857,7 @@ open class HomeRevampViewModel @Inject constructor(
             val response = playWidgetTools.get().updateToggleReminder(
                     channelId,
                     reminderType,
-                    homeDispatcher.get().io()
+                    homeDispatcher.get().io
             )
 
             when (val success = playWidgetTools.get().mapWidgetToggleReminder(response)) {

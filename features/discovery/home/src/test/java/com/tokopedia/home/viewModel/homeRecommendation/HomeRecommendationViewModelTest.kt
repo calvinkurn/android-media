@@ -7,7 +7,7 @@ import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
 import com.tokopedia.home.ext.observeOnce
-import com.tokopedia.home.rules.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -27,7 +27,7 @@ class HomeRecommendationViewModelTest{
     private val getHomeRecommendationUseCase = mockk<GetHomeRecommendationUseCase>(relaxed = true)
     private val topAdsImageViewUseCase = mockk< TopAdsImageViewUseCase>(relaxed = true)
     private val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
-    private val homeRecommendationViewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, TestDispatcherProvider())
+    private val homeRecommendationViewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, topAdsImageViewUseCase, CoroutineTestDispatchersProvider)
 
     @Test
     fun `Get Success Data Home Recommendation Initial Page`(){

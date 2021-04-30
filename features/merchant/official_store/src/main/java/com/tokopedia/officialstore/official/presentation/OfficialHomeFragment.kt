@@ -55,6 +55,7 @@ import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAda
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.listener.OSMixLeftComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSMixTopComponentCallback
 import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
 import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
@@ -65,6 +66,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 
@@ -97,6 +99,8 @@ class OfficialHomeFragment :
     lateinit var viewModel: OfficialStoreHomeViewModel
     @Inject
     lateinit var officialHomeMapper: OfficialHomeMapper
+
+    lateinit var userSession: UserSessionInterface
 
     private var tracking: OfficialStoreTracking? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
@@ -166,6 +170,7 @@ class OfficialHomeFragment :
                 OfficialStoreHomeComponentCallback(),
                 OfficialStoreLegoBannerComponentCallback(this),
                 OSMixLeftComponentCallback(this),
+                OSMixTopComponentCallback(this),
                 recyclerView?.recycledViewPool)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
@@ -377,7 +382,6 @@ class OfficialHomeFragment :
     override fun onDestroy() {
         viewModel.officialStoreBannersResult.removeObservers(this)
         viewModel.officialStoreBenefitsResult.removeObservers(this)
-        viewModel.officialStoreFeaturedShopResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
         viewModel.productRecommendation.removeObservers(this)
         viewModel.flush()
@@ -674,7 +678,8 @@ class OfficialHomeFragment :
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
                         gridData,
-                        channelData.campaignCode
+                        channelData.campaignCode,
+                        channelData.campaignID.toString()
                 )
 
                 RouteManager.route(context, applink)
@@ -827,8 +832,9 @@ class OfficialHomeFragment :
                 viewModel.currentSlugDC,
                 channel,
                 grid,
-                position.toString(),
-                viewModel.isLoggedIn()
+                position,
+                viewModel.isLoggedIn(),
+                viewModel.getUserId()
         )
         RouteManager.route(context, applink)
     }

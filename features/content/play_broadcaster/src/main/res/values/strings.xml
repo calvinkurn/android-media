@@ -167,4 +167,6 @@
     <string name="play_broadcast_delete_schedule_dialog_title">Yakin mau hapus jadwal?</string>
     <string name="play_broadcast_delete_schedule_dialog_desc">Jika dihapus, maka pengingat siaran untuk calon penontonmu batal dikirimkan.</string>
     <string name="play_broadcast_schedule_deleted">Jadwal sudah dihapus</string>
+
+    <string name="album">Album</string>
 </resources>

@@ -134,7 +134,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
         tvSort.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_sort_grayscale_24), null, null, null)
         if (type == null) {
             cvSort.visible()
-            getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            getRecyclerView(view)?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     if (dy > 0) cvSort.gone()
                     else cvSort.visible()
@@ -213,7 +213,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
 
     override fun showEmpty() {
         svEmptyState.visible()
-        getRecyclerView(view).gone()
+        getRecyclerView(view)?.gone()
     }
 
     fun setListener(listener: CuratedProductListener) {

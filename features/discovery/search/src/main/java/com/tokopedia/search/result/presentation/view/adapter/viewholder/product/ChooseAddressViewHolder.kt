@@ -10,7 +10,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.ChooseAddressViewModel
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
 
@@ -18,7 +18,7 @@ internal class ChooseAddressViewHolder(
         itemView: View,
         private val chooseAddressListener: ChooseAddressListener,
         private val searchNavigationListener: SearchNavigationClickListener,
-): AbstractViewHolder<ChooseAddressViewModel>(itemView) {
+): AbstractViewHolder<ChooseAddressDataView>(itemView) {
 
     companion object {
         @JvmField
@@ -71,7 +71,7 @@ internal class ChooseAddressViewHolder(
         })
     }
 
-    override fun bind(element: ChooseAddressViewModel?) {
+    override fun bind(element: ChooseAddressDataView?) {
         bindChooseAddressWidget()
         bindChangeViewButton()
     }
@@ -86,7 +86,7 @@ internal class ChooseAddressViewHolder(
         }
     }
 
-    override fun bind(element: ChooseAddressViewModel?, payloads: MutableList<Any>) {
+    override fun bind(element: ChooseAddressDataView?, payloads: MutableList<Any>) {
         val payload = payloads.getOrNull(0) ?: return
 
         when(payload) {

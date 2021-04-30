@@ -236,13 +236,9 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     }
 
     private fun setupSellerBroadcast() {
-        if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
+        if (!isTabSeller()) return
         setupSellerBroadcastButton()
         chatItemListViewModel.loadChatBlastSellerMetaData()
-    }
-
-    private fun isSellerBroadcastRemoteConfigOn(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.TOPCHAT_SELLER_BROADCAST)
     }
 
     private fun setupSellerBroadcastButton() {
@@ -254,24 +250,25 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                 false -> broadCastButton.hide()
             }
         })
-        chatItemListViewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { url ->
-            if (url.isNullOrEmpty()) return@Observer
+        chatItemListViewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { applink ->
+            if (applink.isNullOrEmpty()) return@Observer
             broadCastButton.setOnClickListener {
                 if(isSellerMigrationEnabled(context)) {
                     val screenName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT
-                    val webViewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
                     val intent = context?.let { context ->
                         SellerMigrationActivity.createIntent(
                                 context = context,
                                 featureName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT,
                                 screenName = screenName,
-                                appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, webViewUrl)
+                                appLinks = arrayListOf(
+                                        ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, applink
+                                )
                         )
                     }
                     startActivity(intent)
                 } else {
                     chatListAnalytics.eventClickBroadcastButton()
-                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
+                    RouteManager.route(context, applink)
                 }
             }
         })
@@ -292,11 +289,13 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
 
     private fun setUpRecyclerView(view: View) {
         val recyclerView = super.getRecyclerView(view)
-        recyclerView.setHasFixedSize(true)
-        for (i in 0 until recyclerView.itemDecorationCount) {
-            recyclerView.removeItemDecorationAt(i)
+        recyclerView?.let {
+            it.setHasFixedSize(true)
+            for (i in 0 until it.itemDecorationCount) {
+                it.removeItemDecorationAt(i)
+            }
+            it.addItemDecoration(ChatListItemDecoration(context))
         }
-        recyclerView.addItemDecoration(ChatListItemDecoration(context))
     }
 
     private fun setObserver() {
@@ -407,8 +406,8 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     }
 
     private fun animateWhenOnTop() {
-        if ((getRecyclerView(view).layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0) {
-            getRecyclerView(view).smoothScrollToPosition(0)
+        if ((getRecyclerView(view)?.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() == 0) {
+            getRecyclerView(view)?.smoothScrollToPosition(0)
         }
     }
 
@@ -431,7 +430,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     private fun isFirstPage(): Boolean = currentPage == 1
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view).layoutManager) {
+        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 if (totalItemsCount > 1) {

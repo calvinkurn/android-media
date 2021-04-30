@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.*
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.*
 import com.tokopedia.variant_common.view.ProductVariantListener
@@ -26,10 +25,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
     }
 
     override fun type(data: ProductMostHelpfulReviewDataModel): Int {
-        if (data.type == ProductDetailConstant.REVIEW) {
-            return ProductReviewViewHolder.LAYOUT
-        }
-        return ProductReviewOldViewHolder.LAYOUT
+        return ProductReviewViewHolder.LAYOUT
     }
 
     override fun type(data: ProductDiscussionMostHelpfulDataModel): Int {
@@ -38,10 +34,6 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
 
     override fun type(data: ProductInfoDataModel): Int {
         return ProductInfoViewHolder.LAYOUT
-    }
-
-    override fun type(data: ProductShopInfoDataModel): Int {
-        return ProductShopInfoViewHolder.LAYOUT
     }
 
     override fun type(data: PageErrorDataModel): Int {
@@ -66,10 +58,6 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
 
     override fun type(data: ProductMiniSocialProofDataModel): Int {
         return ProductMiniSocialProofViewHolder.LAYOUT
-    }
-
-    override fun type(data: ProductMiniShopInfoDataModel): Int {
-        return ProductMiniShopInfoViewHolder.LAYOUT
     }
 
     override fun type(data: ProductTickerInfoDataModel): Int {
@@ -108,16 +96,18 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductMerchantVoucherSummaryViewHolder.LAYOUT
     }
 
+    override fun type(data: PdpComparisonWidgetDataModel): Int {
+        return PdpComparisonWidgetViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
             ProductMerchantVoucherViewHolder.LAYOUT -> ProductMerchantVoucherViewHolder(view, listener)
-            ProductShopInfoViewHolder.LAYOUT -> ProductShopInfoViewHolder(view, listener)
             ProductInfoViewHolder.LAYOUT -> ProductInfoViewHolder(view, listener)
             ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(view, listener)
             ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view, listener)
             ProductReviewViewHolder.LAYOUT -> ProductReviewViewHolder(view, listener)
-            ProductReviewOldViewHolder.LAYOUT -> ProductReviewOldViewHolder(view, listener)
             ProductShimmeringViewHolder.LAYOUT -> ProductShimmeringViewHolder(view)
             PageErrorViewHolder.LAYOUT -> PageErrorViewHolder(view, listener)
             ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(view, variantListener, listener)
@@ -125,7 +115,6 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductMediaViewHolder.LAYOUT -> ProductMediaViewHolder(view, listener)
             ProductContentViewHolder.LAYOUT -> ProductContentViewHolder(view, listener)
             ProductMiniSocialProofViewHolder.LAYOUT -> ProductMiniSocialProofViewHolder(view, listener)
-            ProductMiniShopInfoViewHolder.LAYOUT -> ProductMiniShopInfoViewHolder(view, listener)
             ProductTickerInfoViewHolder.LAYOUT -> ProductTickerInfoViewHolder(view, listener)
             ProductShopCredibilityViewHolder.LAYOUT -> ProductShopCredibilityViewHolder(view, listener)
             ProductCustomInfoViewHolder.LAYOUT -> ProductCustomInfoViewHolder(view, listener)
@@ -134,6 +123,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductReportViewHolder.LAYOUT -> ProductReportViewHolder(view, listener)
             ProductShipmentViewHolder.LAYOUT -> ProductShipmentViewHolder(view, listener)
             ProductMerchantVoucherSummaryViewHolder.LAYOUT -> ProductMerchantVoucherSummaryViewHolder(view)
+            PdpComparisonWidgetViewHolder.LAYOUT -> PdpComparisonWidgetViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

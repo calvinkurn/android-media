@@ -21,12 +21,14 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.TkpdIdlingResource
+import com.tokopedia.loginregister.common.view.PartialRegisterInputView
 import com.tokopedia.loginregister.login.stub.LoginEmailPhoneFragmentStub
 import com.tokopedia.loginregister.login.stub.PartialInputTextView
 import com.tokopedia.loginregister.login.stub.activity.LoginEmailPhoneActivityStub
 import com.tokopedia.loginregister.login.stub.response.LoginMockResponse
-import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
+import com.tokopedia.test.application.annotations.UiAnalyticsTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -47,6 +49,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 @LargeTest
+@UiAnalyticsTest
 class LoginActivityInstrumentedTest {
 
     val trackerPath = "tracker/user/loginregister/login_register_p1.json"
@@ -67,6 +70,9 @@ class LoginActivityInstrumentedTest {
     private val gtmLogDBSource = GtmLogDBSource(context)
 
     lateinit var fragment: LoginEmailPhoneFragmentStub
+
+    private var email = "yoris.prayogo+3@tokopedia.com"
+    private var phone = "082242454504"
 
     @ExperimentalCoroutinesApi
     @Before
@@ -101,21 +107,31 @@ class LoginActivityInstrumentedTest {
         clickUbahButton()
         onLoginViaPhone()
         onRegisterFooterSpannableClick()
-        onSocmedBtnClick()
         clickGoogleLogin()
+
+        Thread.sleep(500)
+
         assertThat(
             getAnalyticsWithQuery(gtmLogDBSource, context, trackerPath),
             hasAllSuccess()
         )
     }
 
+    fun clickOnButtonMasuk(){
+        mActivityTestRule.runOnUiThread {
+            fragment.partialActionButton.performClick()
+        }
+    }
+
     /* Show socmed container if socmed button clicked */
     fun onSocmedBtnClick() {
-        onView(allOf(withText(R.string.social_media), withContentDescription(R.string.content_desc_socmed_btn_phone))).perform(click())
+        onView(allOf(withText(R.string.another_method), withContentDescription(R.string.content_desc_socmed_btn_phone))).perform(click())
         onView(withId(R.id.socmed_container)).check(matches(isDisplayed()))
     }
 
     fun clickGoogleLogin(){
+        onSocmedBtnClick()
+        Thread.sleep(600)
         onView(withText("Google"))
                 .inRoot(isDialog()) // <---
                 .check(matches(isDisplayed()))
@@ -124,6 +140,8 @@ class LoginActivityInstrumentedTest {
     }
 
     fun clickFacebookLogin(){
+        onSocmedBtnClick()
+        Thread.sleep(600)
         onView(withText("Facebook"))
                 .inRoot(isDialog()) // <---
                 .check(matches(isDisplayed()))
@@ -132,7 +150,7 @@ class LoginActivityInstrumentedTest {
 
     /* click login email */
     fun onLoginViaEmail() {
-        Thread.sleep(1000)
+        Thread.sleep(600)
         onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(PartialInputTextView())
         onView(allOf(withId(R.id.register_btn), withText("Selanjutnya"), withContentDescription("button submit"))).perform(click())
     }
@@ -143,21 +161,31 @@ class LoginActivityInstrumentedTest {
 
     /* click login email */
     fun onLoginViaPhone() {
-        onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("082242454504"))
+        onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText(phone))
         onView(withId(R.id.register_btn)).perform(click())
     }
 
     fun setInputEmailPhone(){
         val partial = fragment.view?.findViewById<PartialRegisterInputView>(R.id.login_input_view)
         mActivityTestRule.runOnUiThread {
-            partial?.findViewById<EditText>(R.id.input_email_phone)?.setText("yorisprayogo@gmail.com")
+            partial?.findViewById<EditText>(R.id.input_email_phone)?.setText(email)
         }
     }
+
+    fun loginEmailPassword(){
+        setInputEmailPhone()
+        Thread.sleep(1000)
+        val partial = fragment.view?.findViewById<TextFieldUnify>(R.id.wrapper_password)
+        mActivityTestRule.runOnUiThread {
+            partial?.textFieldInput?.setText("test1234")
+        }
+        Thread.sleep(1000)
+        clickOnButtonMasuk()
+    }
+
     /* goto forgot password if clicked */
     fun forgotPassClick() {
         Thread.sleep(1000)
-        setInputEmailPhone()
-        onView(allOf(isDisplayed(), withId(R.id.register_btn), withContentDescription(R.string.content_desc_register_btn))).perform(click())
         onView(allOf(withId(R.id.forgot_pass), withContentDescription(R.string.content_desc_forgot_pass))).perform(click())
     }
 

@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhomecommon.domain.mapper.LayoutMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
 import com.tokopedia.sellerhomecommon.utils.TestHelper
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -37,7 +38,7 @@ class GetLayoutUseCaseTest {
     @RelaxedMockK
     lateinit var mapper: LayoutMapper
     private val getLayoutUseCase by lazy {
-        GetLayoutUseCase(gqlRepository, mapper)
+        GetLayoutUseCase(gqlRepository, mapper, CoroutineTestDispatchersProvider)
     }
 
     private val params = GetLayoutUseCase.getRequestParams(anyString(), anyString())

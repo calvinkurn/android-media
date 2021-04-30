@@ -97,9 +97,6 @@ class ShopPageViewModelTest {
     lateinit var updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>
 
     @RelaxedMockK
-    lateinit var firebaseRemoteConfig: RemoteConfig
-
-    @RelaxedMockK
     lateinit var context: Context
 
     private val testCoroutineDispatcherProvider by lazy {
@@ -130,7 +127,6 @@ class ShopPageViewModelTest {
                 shopRequestUnmoderateUseCase,
                 getFollowStatusUseCase,
                 updateFollowStatusUseCase,
-                firebaseRemoteConfig,
                 testCoroutineDispatcherProvider
         )
     }
@@ -180,10 +176,6 @@ class ShopPageViewModelTest {
 
     @Test
     fun `check whether shopPageP1Data value is Success if isRefresh and cache remote config true`() {
-        coEvery { firebaseRemoteConfig.getBoolean(
-                DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST,
-                any()
-        ) } returns true
         coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1()
         coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
                 data = listOf(ShopProduct(),ShopProduct())

@@ -3,19 +3,19 @@ package com.tokopedia.cart.view.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.ItemProductWishlistBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_product_wishlist.view.*
 
 /**
  * Created by Irfan Khoirul on 2019-06-15.
  */
 
-class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListener?, val itemWidth: Int) : RecyclerView.ViewHolder(view) {
+class CartWishlistItemViewHolder(private val binding: ItemProductWishlistBinding, val actionListener: ActionListener?, val itemWidth: Int) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_product_wishlist
@@ -38,7 +38,7 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
     }
 
     private fun renderButtonAddToCart(element: CartWishlistItemHolderData) {
-        itemView.btn_add_to_cart?.apply {
+        binding.btnAddToCart.apply {
             setOnClickListener {
                 actionListener?.onButtonAddToCartClicked(element)
             }
@@ -46,7 +46,7 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
     }
 
     private fun renderButtonDelete(element: CartWishlistItemHolderData) {
-        itemView.btn_delete_wishlist?.apply {
+        binding.btnDeleteWishlist.apply {
             setOnClickListener {
                 actionListener?.onRemoveWishlistFromWishlist(element.id)
             }
@@ -54,7 +54,7 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
     }
 
     private fun renderFreeShipping(element: CartWishlistItemHolderData) {
-        itemView.img_free_shipping?.apply {
+        binding.imgFreeShipping.apply {
             if (element.freeShippingUrl.isNotBlank()) {
                 loadImage(element.freeShippingUrl)
                 show()
@@ -65,11 +65,11 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
     }
 
     private fun renderShopName(element: CartWishlistItemHolderData) {
-        itemView.text_shop_name?.apply {
+        binding.textShopName.apply {
             text = element.shopName
             val marginFour = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
             val marginNine = itemView.context.resources.getDimension(R.dimen.dp_9).toInt()
-            if (itemView.img_shop_badge?.visibility == View.VISIBLE) {
+            if (binding.imgShopBadge.visibility == View.VISIBLE) {
                 setMargin(marginFour, marginFour, 0, 0)
             } else {
                 setMargin(marginNine, marginFour, 0, 0)
@@ -78,7 +78,7 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
     }
 
     private fun renderShopBadge(element: CartWishlistItemHolderData) {
-        itemView.img_shop_badge?.apply {
+        binding.imgShopBadge.apply {
             if (element.badgeUrl.isNotBlank()) {
                 loadImage(element.badgeUrl)
                 show()
@@ -89,13 +89,13 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
     }
 
     private fun renderProductPrice(element: CartWishlistItemHolderData) {
-        itemView.text_product_price?.apply {
+        binding.textProductPrice.apply {
             text = element.price
         }
     }
 
     private fun renderProductVariant(element: CartWishlistItemHolderData) {
-        itemView.text_product_variant?.apply {
+        binding.textProductVariant.apply {
             if (element.variant.isNotBlank()) {
                 text = element.variant
                 show()
@@ -106,13 +106,13 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
     }
 
     private fun renderProductName(element: CartWishlistItemHolderData) {
-        itemView.text_product_name?.apply {
+        binding.textProductName.apply {
             text = element.name
         }
     }
 
     private fun renderProductImage(element: CartWishlistItemHolderData) {
-        itemView.img_product?.apply {
+        binding.imgProduct.apply {
             if (element.imageUrl.isNotBlank()) {
                 loadImage(element.imageUrl)
                 show()

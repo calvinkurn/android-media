@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.autocomplete.R
 import kotlinx.android.synthetic.main.layout_autocomplete_suggestion_separator.view.*
 
-class SuggestionSeparatorViewHolder(itemView: View) : AbstractViewHolder<SuggestionSeparatorViewModel>(itemView) {
+class SuggestionSeparatorViewHolder(itemView: View) : AbstractViewHolder<SuggestionSeparatorDataView>(itemView) {
 
-    override fun bind(element: SuggestionSeparatorViewModel) {
+    override fun bind(element: SuggestionSeparatorDataView) {
         itemView.autocompleteSuggestionDoubleLineWithoutImageSeparator?.visibility = View.VISIBLE
     }
 

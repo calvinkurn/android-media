@@ -40,11 +40,19 @@ query dynamicHomeChannel($type: String, $location: String) {
                 productClickUrl
                 impression
                 cashback
+                rating
+                ratingAverage
+                count_review
+                warehouseID
                 discountPercentage
                 freeOngkir {
                     isActive
                     imageUrl
                 }
+                shop{
+                    shopID
+                }
+                campaignCode
                 labelGroup {
                     position
                     title

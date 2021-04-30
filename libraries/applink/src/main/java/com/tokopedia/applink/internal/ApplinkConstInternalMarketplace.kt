@@ -146,6 +146,9 @@ object ApplinkConstInternalMarketplace {
     val SHOP_PAGE_FEED = "$SHOP_PAGE_BASE/{shop_id}/feed"
 
     @JvmField
+    val SHOP_PAGE_NOTE = "$SHOP_PAGE_BASE/{shop_id}/note"
+
+    @JvmField
     val SHOP_PAGE_PRODUCT_LIST = "$SHOP_PAGE_BASE-product-list/{shop_id}/etalase/{etalase_id}/"
 
     // GmSubscribeHomeActivity
@@ -201,10 +204,6 @@ object ApplinkConstInternalMarketplace {
     //GeolocationActivity
     @JvmField
     val GEOLOCATION = "$INTERNAL_MARKETPLACE/geolocation"
-
-    //CodActivity
-    @JvmField
-    val COD = "$INTERNAL_MARKETPLACE/cod"
 
     // OnboardingActivity
     @JvmField
@@ -307,9 +306,18 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val REVIEW_SELLER_REPORT = "$INTERNAL_MARKETPLACE/review-report"
 
+    @JvmField
+    val REVIEW_REMINDER = "$INTERNAL_MARKETPLACE/review-reminder"
+
     //ShopFavouriteListActivity
     @JvmField
     val SHOP_FAVOURITE_LIST = "$INTERNAL_MARKETPLACE/shop-favourites"
+
+    @JvmField
+    val SHOP_FAVOURITE_LIST_WITH_SHOP_ID = "$SHOP_PAGE_BASE/{shop_id}/shop-favourites"
+
+    @JvmField
+    val SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID = "$SHOP_PAGE_BASE/{shop_id}/settings"
 
     @JvmField
     val ARGS_SHOP_ID = "ARGS_SHOP_ID"

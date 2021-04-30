@@ -354,6 +354,11 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         event_pdp_app_bar_layout.removeOnOffsetChangedListener(this)
     }
 
+    override fun onStop() {
+        super.onStop()
+        hideShareLoading()
+    }
+
     private fun goToTicketPage(productDetailData: ProductDetailData, selectedDate: String) {
         val startDate = getStartDate(productDetailData)
         val endDate = getEndDate(productDetailData)
@@ -468,8 +473,11 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     }
 
     fun share(productDetailData: ProductDetailData) {
-        activity?.run {
-            EventShare(this).shareEvent(productDetailData, { showShareLoading() }, { hideShareLoading() }, this.applicationContext)
+        activity?.let { activity ->
+            context?.let { context ->
+                val titleShare = getString(R.string.ent_pdp_share_title, productDetailData.title)
+                EventShare(activity).shareEvent(productDetailData, titleShare, { showShareLoading() }, { hideShareLoading() })
+            }
         }
     }
 

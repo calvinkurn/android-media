@@ -3,7 +3,6 @@ package com.tokopedia.filter.bottomsheet
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.sort_filter_bottom_sheet.view.*
 
 class SortFilterBottomSheet: BottomSheetUnify() {
@@ -277,7 +277,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     private fun processLoading(isLoading: Boolean) {
         if (isLoading) {
             sortFilterBottomSheetView?.let {
-                if (isDarkModeOn()) {
+                if (context.isDarkMode()) {
                     it.buttonApplyContainer?.background = context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N50)
                 } else {
                     it.buttonApplyContainer?.background = context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N0)
@@ -347,10 +347,6 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     private fun undoStatusBarOverlayColor() {
         statusBarColorHelper?.undoSetStatusBarColor()
         statusBarColorHelper = null
-    }
-
-    private fun isDarkModeOn(): Boolean {
-        return AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
     }
 
     data class ApplySortFilterModel(

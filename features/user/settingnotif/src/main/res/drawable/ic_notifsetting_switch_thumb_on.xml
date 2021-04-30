@@ -2,8 +2,8 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="oval">
-            <solid android:color="@color/Neutral_N0" />
-            <stroke android:color="@color/settingnotif_green_ic"
+            <solid android:color="@color/Unify_N0" />
+            <stroke android:color="@color/Unify_G500"
                 android:width="@dimen/setting_notif_dp_0_5"/>
             <size android:height="@dimen/setting_notif_dp_6"
                 android:width="@dimen/setting_notif_dp_6"/>
@@ -15,6 +15,6 @@
         android:left="@dimen/setting_notif_dp_7"
         android:right="@dimen/setting_notif_dp_7">
         <bitmap android:src="@drawable/ic_action_check"
-            android:tint="@color/settingnotif_green_ic" />
+            android:tint="@color/Unify_G500" />
     </item>
 </layer-list>

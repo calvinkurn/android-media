@@ -6,15 +6,13 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.logisticCommon.domain.mapper.AddressCornerMapper
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticCommon.domain.mapper.AddressCornerMapper
-import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.oneclickcheckout.common.PAYMENT_LISTING_URL
-import com.tokopedia.oneclickcheckout.common.dispatchers.DefaultDispatchers
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.domain.mapper.PreferenceModelMapper
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.OvoTopUpUrlGqlResponse
@@ -52,10 +50,6 @@ open class PreferenceEditModule(private val activity: Activity) {
     @PreferenceEditScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @PreferenceEditScope
-    @Provides
-    fun provideExecutorDispatchers(): ExecutorDispatchers = DefaultDispatchers
 
     @PreferenceEditScope
     @Provides

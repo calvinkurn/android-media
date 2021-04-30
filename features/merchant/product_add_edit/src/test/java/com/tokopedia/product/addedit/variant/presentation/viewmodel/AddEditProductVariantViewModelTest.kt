@@ -1,7 +1,10 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
+import com.tokopedia.product.addedit.util.setPrivateProperty
 import com.tokopedia.product.addedit.variant.data.model.GetVariantCategoryCombinationResponse
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
@@ -16,6 +19,7 @@ import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -375,12 +379,12 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         } returns GetVariantCategoryCombinationResponse()
 
         viewModel.getVariantCategoryCombination(1, listOf())
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getVariantCategoryCombinationUseCase.executeOnBackground()
         }
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         assert(viewModel.getVariantCategoryCombinationResult.getOrAwaitValue() is Success)
     }
 
@@ -398,12 +402,12 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         } returns GetVariantCategoryCombinationResponse()
 
         viewModel.getVariantCategoryCombination(1, selections)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             getVariantCategoryCombinationUseCase.executeOnBackground()
         }
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         assert(viewModel.getVariantCategoryCombinationResult.getOrAwaitValue() is Success)
     }
 
@@ -415,6 +419,24 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         val selectedVariantUnit = Unit(variantUnitID = variantUnitId)
         val variantData = VariantDetail(units = listOf(dummyVariantUnit))
         variantDataMap[VARIANT_VALUE_LEVEL_ONE_POSITION] = variantData
+        viewModel.addCustomVariantUnitValue(10, selectedVariantUnit, customVuv)
+        viewModel.addCustomVariantUnitValue(VARIANT_VALUE_LEVEL_ONE_POSITION, selectedVariantUnit, customVuv)
+
+        val vu = variantDataMap[VARIANT_VALUE_LEVEL_ONE_POSITION]?.units?.find {
+            it.variantUnitID == variantUnitId
+        }
+        assert(vu?.unitValues?.contains(customVuv) ?: false)
+    }
+
+    @Test
+    fun `non-custom should be added to respective variant unit inside selected variant data`() {
+        val customVuv = UnitValue()
+        val variantUnitId = 1
+        val dummyVariantUnit = Unit(variantUnitID = variantUnitId)
+        val selectedVariantUnit = Unit(variantUnitID = variantUnitId, unitName = "Hijau")
+        val variantData = VariantDetail(units = listOf(dummyVariantUnit))
+        variantDataMap[VARIANT_VALUE_LEVEL_ONE_POSITION] = variantData
+        viewModel.addCustomVariantUnitValue(10, selectedVariantUnit, customVuv)
         viewModel.addCustomVariantUnitValue(VARIANT_VALUE_LEVEL_ONE_POSITION, selectedVariantUnit, customVuv)
 
         val vu = variantDataMap[VARIANT_VALUE_LEVEL_ONE_POSITION]?.units?.find {
@@ -650,5 +672,39 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         val productInputModel = ProductInputModel(variantInputModel = VariantInputModel(products = listOf(productVariantInputModel), selections = listOf(selectionInputModel)))
         val variantPhotos = viewModel.getProductVariantPhotos(productInputModel)
         assert(variantPhotos.isEmpty())
+    }
+
+    @Test
+    fun `mapSizechart should return PictureVariantInputModel`() {
+        viewModel.setPrivateProperty("mIsVariantSizechartVisible", MutableLiveData(true))
+        val picture = viewModel.callPrivateFunc("mapSizechart", PictureVariantInputModel(picID = "1")) as PictureVariantInputModel
+        assertEquals("1", picture.picID)
+
+        val pictureEmpty = viewModel.callPrivateFunc("mapSizechart", null) as PictureVariantInputModel
+        assertEquals("", pictureEmpty.picID)
+    }
+
+    @Test
+    fun `mapProductVariant should return ProductVariantInputModel`() {
+        viewModel.productInputModel.value = ProductInputModel(
+                variantInputModel = VariantInputModel(
+                        products = listOf(
+                                ProductVariantInputModel(combination = listOf(1))
+                        )
+                ))
+        viewModel.callPrivateFunc("mapProductVariant",
+                emptyList<PictureVariantInputModel>(),
+                listOf(1)) as ProductVariantInputModel
+        val product = viewModel.callPrivateFunc("mapProductVariant",
+                listOf(PictureVariantInputModel(picID = "1")),
+                listOf(1)) as ProductVariantInputModel
+        assertEquals(listOf(1), product.combination)
+        assertEquals(0L, viewModel.productInputModel.value?.productId)
+    }
+
+    @Test
+    fun `isVariantUnitValuesEmpty should return valid output`() {
+        val isEmpty = viewModel.isVariantUnitValuesEmpty(99)
+        assertEquals(true, isEmpty)
     }
 }

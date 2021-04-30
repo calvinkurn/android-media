@@ -18,8 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.GalleryType;
-import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader;
-import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem;
+import com.tokopedia.imagepicker.common.adapter.AlbumAdapter;
+import com.tokopedia.imagepicker.common.loader.AlbumLoader;
+import com.tokopedia.imagepicker.common.model.AlbumItem;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
  * Created by hendry on 08/05/18.
  */
 
-public class AlbumPickerActivity extends BaseSimpleActivity implements LoaderManager.LoaderCallbacks<Cursor>,AlbumAdapter.OnAlbumAdapterListener {
+public class AlbumPickerActivity extends BaseSimpleActivity implements LoaderManager.LoaderCallbacks<Cursor>, AlbumAdapter.OnAlbumAdapterListener {
 
     public static final String EXTRA_ALBUM_ID = "extra_album_id";
     public static final String EXTRA_GALLERY_TYPE = "extra_gallery_type";
@@ -37,8 +38,6 @@ public class AlbumPickerActivity extends BaseSimpleActivity implements LoaderMan
 
     private static final int ALBUM_LOADER_ID = 1;
 
-    private int selectedAlbumId;
-    private RecyclerView recyclerView;
     private View loadingView;
 
     private AlbumAdapter albumAdapter;
@@ -60,14 +59,14 @@ public class AlbumPickerActivity extends BaseSimpleActivity implements LoaderMan
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
-        selectedAlbumId = intent.getIntExtra(EXTRA_ALBUM_ID, -1);
+        int selectedAlbumId = intent.getIntExtra(EXTRA_ALBUM_ID, -1);
         galleryType = GalleryType.fromInt(intent.getIntExtra(EXTRA_GALLERY_TYPE, GalleryType.IMAGE_ONLY.getValue()));
 
         super.onCreate(savedInstanceState);
 
         albumAdapter = new AlbumAdapter(this, this, galleryType);
 
-        recyclerView = findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);

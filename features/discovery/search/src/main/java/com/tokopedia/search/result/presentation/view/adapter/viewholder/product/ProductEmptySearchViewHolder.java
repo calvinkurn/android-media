@@ -2,11 +2,6 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
-import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +18,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.R;
-import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.SpacingItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
@@ -40,7 +35,7 @@ import com.tokopedia.unifycomponents.UnifyButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearchProductViewModel> implements TopAdsItemClickListener {
+public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearchProductDataView> implements TopAdsItemClickListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_empty_state_product;
@@ -58,7 +53,7 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
     private UnifyButton buttonEmptySearchToGlobalSearch;
     protected RecyclerView selectedFilterRecyclerView;
     private ProductSelectedFilterAdapter productSelectedFilterAdapter;
-    private EmptySearchProductViewModel boundedEmptySearchModel;
+    private EmptySearchProductDataView boundedEmptySearchModel;
 
     public ProductEmptySearchViewHolder(View view, EmptyStateListener emptyStateListener, BannerAdsListener bannerAdsListener, Config topAdsConfig) {
         super(view);
@@ -142,7 +137,7 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
     }
 
     @Override
-    public void bind(EmptySearchProductViewModel model) {
+    public void bind(EmptySearchProductDataView model) {
         boundedEmptySearchModel = model;
 
         bindNoResultImage();
@@ -150,7 +145,6 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
         bindContentTextView();
         bindNewSearchButton();
         bindRecylerView();
-        bindBannerAds();
         bindGlobalSearchButton();
     }
 

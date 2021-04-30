@@ -19,8 +19,6 @@ class CartActivity : BaseCheckoutActivity() {
         return R.layout.activity_cart
     }
 
-    override fun initInjector() {}
-
     override fun setupBundlePass(extras: Bundle?) {
         val productIdStr = intent?.data?.getQueryParameter(APPLINK_PARAM_PRODUCT_ID) ?: ""
         if (productIdStr.isNotBlank()) {

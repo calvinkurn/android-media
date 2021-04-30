@@ -1,9 +1,7 @@
 package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.cart.data.model.response.promo.CartPromoData
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButtonResponse
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import java.util.*
@@ -53,8 +51,6 @@ data class CartDataListResponse(
         val unavailableSectionAction: List<Action> = emptyList(),
         @SerializedName("total_product_error")
         val totalProductError: Int = 0,
-        @SerializedName("ab_test_button")
-        val abTestButton: ABTestButtonResponse = ABTestButtonResponse(),
         @SerializedName("localization_choose_address")
         val localizationChooseAddress: LocalizationChooseAddress = LocalizationChooseAddress(),
         @SerializedName("pop_up_message")

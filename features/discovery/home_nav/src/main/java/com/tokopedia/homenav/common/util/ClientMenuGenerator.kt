@@ -6,7 +6,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -31,6 +34,10 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         const val APPLINK_MY_BILLS = "tokopedia://webview?url=https://www.tokopedia.com/mybills/"
         const val APPLINK_COMPLAIN = "https://m.tokopedia.com/resolution-center/inbox/buyer/mobile"
         const val APPLINK_TICKET = "tokopedia-android-internal://order/unified?filter=etiket"
+
+        const val IDENTIFIER_TITLE_MY_ACTIVITY = 100
+        const val IDENTIFIER_TITLE_ALL_CATEGORIES = 101
+        const val IDENTIFIER_TITLE_HELP_CENTER = 102
     }
 
 
@@ -56,6 +63,18 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             ID_OPEN_SHOP_TICKER -> return getOpenShopTicker()
         }
         return HomeNavTickerDataModel()
+    }
+
+    fun getSectionTitle(identifier: Int): HomeNavTitleDataModel {
+        return HomeNavTitleDataModel(
+                identifier = identifier,
+                title = when (identifier) {
+                    IDENTIFIER_TITLE_MY_ACTIVITY -> context.getString(R.string.title_transaction_section)
+                    IDENTIFIER_TITLE_ALL_CATEGORIES -> context.getString(R.string.title_category_section)
+                    IDENTIFIER_TITLE_HELP_CENTER -> context.getString(R.string.title_helpcenter_section)
+                    else -> ""
+                }
+        )
     }
 
     private fun getWishlistUserMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
@@ -204,6 +223,16 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
     }
 
     private fun getReputationApplink(): String {
-        return Uri.parse(ApplinkConst.REPUTATION).buildUpon().appendQueryParameter(PAGE_SOURCE_KEY, PAGE_SOURCE).build().toString()
+        val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+        ) == AbTestPlatform.VARIANT_NEW_INBOX
+        return if (useNewInbox) {
+            Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
+                appendQueryParameter(ApplinkConst.Inbox.PARAM_PAGE, ApplinkConst.Inbox.VALUE_PAGE_REVIEW)
+                appendQueryParameter(ApplinkConst.Inbox.PARAM_ROLE, ApplinkConst.Inbox.VALUE_ROLE_BUYER)
+            }.build().toString()
+        } else {
+            Uri.parse(ApplinkConst.REPUTATION).buildUpon().appendQueryParameter(PAGE_SOURCE_KEY, PAGE_SOURCE).build().toString()
+        }
     }
 }

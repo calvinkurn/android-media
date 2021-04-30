@@ -9,10 +9,10 @@ import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.search.R;
-import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
+import com.tokopedia.search.result.presentation.model.SuggestionDataView;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 
-public class SuggestionViewHolder extends AbstractViewHolder<SuggestionViewModel> {
+public class SuggestionViewHolder extends AbstractViewHolder<SuggestionDataView> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_product_suggestion_layout;
@@ -27,11 +27,11 @@ public class SuggestionViewHolder extends AbstractViewHolder<SuggestionViewModel
     }
 
     @Override
-    public void bind(final SuggestionViewModel element) {
+    public void bind(final SuggestionDataView element) {
         bindSuggestionView(element);
     }
 
-    private void bindSuggestionView(final SuggestionViewModel element) {
+    private void bindSuggestionView(final SuggestionDataView element) {
         if (!TextUtils.isEmpty(element.getSuggestionText())) {
             suggestionText.setText(Html.fromHtml(element.getSuggestionText()));
             suggestionText.setOnClickListener(v -> {

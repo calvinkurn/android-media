@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
@@ -413,6 +414,24 @@ class ShipmentPresenterValidateUseFinalTest {
         verifySequence {
             view.activityContext
             view.renderErrorCheckPromoShipmentData(any())
+        }
+    }
+
+    @Test
+    fun `WHEN validate use status get akamai exception THEN should show error and reset courier and clear promo`() {
+        // Given
+        val message = "error"
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(AkamaiErrorException(message))
+
+        // When
+        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+
+        // Then
+        verifySequence {
+            view.showToastError(message)
+            view.resetAllCourier()
+            view.cancelAllCourierPromo()
+            view.doResetButtonPromoCheckout()
         }
     }
 

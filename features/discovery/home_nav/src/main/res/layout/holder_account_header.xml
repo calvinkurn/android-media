@@ -231,7 +231,7 @@
             app:layout_constraintLeft_toLeftOf="@id/usr_badge"
             app:layout_constraintTop_toBottomOf="@id/usr_ovo_badge"
             app:layout_goneMarginStart="@dimen/dp_10"
-            app:typographyType="body_3"
+            app:typographyType="body_2"
             tools:visibility="visible" />
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/usr_shop_info"

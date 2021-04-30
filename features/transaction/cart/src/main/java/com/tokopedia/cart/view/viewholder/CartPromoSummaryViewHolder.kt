@@ -3,17 +3,17 @@ package com.tokopedia.cart.view.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.ItemCartPromoPriceSummaryBinding
 import com.tokopedia.cart.domain.model.cartlist.PromoSummaryDetailData
-import kotlinx.android.synthetic.main.item_cart_promo_price_summary.view.*
 
 /**
  * @author by furqan on 17/02/2021
  */
-class CartPromoSummaryViewHolder(view: View)
-    : RecyclerView.ViewHolder(view) {
+class CartPromoSummaryViewHolder(private val binding: ItemCartPromoPriceSummaryBinding)
+    : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(element: PromoSummaryDetailData) {
-        with(itemView) {
+        with(binding) {
             tgCartPromoCashbackTitle.text = element.description
             tgCartPromoCashbackValue.text = element.amountStr
 

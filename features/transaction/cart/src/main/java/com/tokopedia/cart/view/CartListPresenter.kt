@@ -19,7 +19,6 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.subscriber.*
 import com.tokopedia.cart.view.uimodel.*
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.ResponseErrorException
@@ -37,14 +36,13 @@ import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import rx.subscriptions.CompositeSubscription
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -84,6 +82,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     // Store last validate use response from cart page
     var lastUpdateCartAndValidateUseResponse: UpdateAndValidateUseData? = null
     var isLastApplyResponseStillValid = true
+
+    // Store last validate use request for clearing promo if got akamai error
+    var lastValidateUseRequest: ValidateUsePromoRequest? = null
 
     companion object {
         private val PERCENTAGE = 100.0f
@@ -1237,6 +1238,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 val requestParams = RequestParams.create()
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
                 requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
+                lastValidateUseRequest = promoRequest
 
                 compositeSubscription.add(
                         updateCartAndValidateUseUseCase.createObservable(requestParams)
@@ -1255,6 +1257,21 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 clearCacheAutoApplyStackUseCase?.createObservable(RequestParams.create())
                         ?.subscribe(ClearRedPromosBeforeGoToCheckoutSubscriber(view))
         )
+    }
+
+    override fun doClearAllPromo() {
+        lastValidateUseRequest?.let {
+            val codes = arrayListOf<String>()
+            it.codes.forEach { code -> code?.let { codes.add(code) } }
+            it.orders.forEach { order -> order?.codes?.let { code -> codes.addAll(code) } }
+            clearCacheAutoApplyStackUseCase?.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, codes)
+            compositeSubscription.add(
+                    // Do nothing on subscribe
+                    clearCacheAutoApplyStackUseCase?.createObservable(RequestParams.create())?.subscribe()
+            )
+            setLastApplyNotValid()
+            setValidateUseLastResponse(ValidateUsePromoRevampUiModel())
+        }
     }
 
     override fun getValidateUseLastResponse(): ValidateUsePromoRevampUiModel? {

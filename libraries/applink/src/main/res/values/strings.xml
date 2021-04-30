@@ -117,6 +117,7 @@
     <string name="title_review_inbox">Review Inbox</string>
     <string name="title_review_detail">Review Detail</string>
     <string name="title_create_review">Create Review</string>
+    <string name="title_review_reminder">Review Reminder</string>
   
     <!-- Inactive Phone -->
     <string name="title_update_inactive_phone">Inactive Phone</string>
@@ -126,5 +127,7 @@
 
     <!--Order Management History-->
     <string name="title_order_management_history">Detail Status</string>
+
+    <string name="title_image_picker">Image Picker</string>
 
 </resources>

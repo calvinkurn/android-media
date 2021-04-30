@@ -60,11 +60,14 @@
                             tools:text="Yay, kamu dapat hadia" />
 
                         <com.tokopedia.unifyprinciples.Typography
+                            android:paddingStart="@dimen/gami_reward_second_line_side_margin"
+                            android:paddingEnd="@dimen/gami_reward_second_line_side_margin"
                             android:id="@+id/tvRewardSecondLine"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/dp_15"
                             android:gravity="center_horizontal"
+                            tools:text="Kupon Cashback and 1000000 tokopoints \nasdasd asdasd\n asdasdasda"
                             android:textColor="@android:color/white"
                             app:typographyType="heading_4"
                             app:typographyWeight="bold" />
@@ -76,27 +79,7 @@
                             android:layout_marginStart="@dimen/dp_16"
                             android:layout_marginEnd="@dimen/dp_16" />
 
-                        <!--                        <androidx.appcompat.widget.AppCompatTextView-->
-                        <!--                            android:id="@+id/btnAction"-->
-                        <!--                            android:layout_width="wrap_content"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:background="@drawable/gf_bg_orange_3d"-->
-                        <!--                            android:fontFamily="sans-serif"-->
-                        <!--                            android:paddingStart="@dimen/dp_64"-->
-                        <!--                            android:paddingLeft="@dimen/dp_64"-->
-                        <!--                            android:paddingTop="@dimen/dp_11"-->
-                        <!--                            android:paddingEnd="@dimen/dp_64"-->
-                        <!--                            android:paddingRight="@dimen/dp_64"-->
-                        <!--                            android:paddingBottom="@dimen/dp_15"-->
-                        <!--                            android:textColor="@android:color/white"-->
-                        <!--                            android:textSize="@dimen/sp_16"-->
-                        <!--                            android:textStyle="bold"-->
-                        <!--                            tools:text="@string/gami_palai_kupon_ovo_points" />-->
-
                     </LinearLayout>
-
-                    <!--                    <include layout="@layout/gami_gift_reminder" />-->
-
 
                     <com.tokopedia.gamification.giftbox.presentation.views.GamiDirectGiftView
                         android:id="@+id/direct_gift_view"

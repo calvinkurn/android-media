@@ -22,6 +22,7 @@ data class TableWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
+        override var isNeedToBeRemoved: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<TableDataUiModel> {
 
@@ -30,6 +31,10 @@ data class TableWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<TableDataUiModel> {
-        return TableWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+        return TableWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+    }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<TableDataUiModel>): Boolean {
+        return dataKey != other.dataKey
     }
 }

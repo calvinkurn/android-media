@@ -11,5 +11,5 @@ interface PlayFragmentContract {
 
     fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean
 
-    fun onEnterPiPState(piPState: PiPState) {}
+    fun onEnterPiPState(pipState: PiPState) {}
 }

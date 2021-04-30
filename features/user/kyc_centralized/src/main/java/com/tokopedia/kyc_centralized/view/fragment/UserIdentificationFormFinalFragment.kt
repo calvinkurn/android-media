@@ -28,21 +28,26 @@ import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.StepperListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
+import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
@@ -70,7 +75,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private var bulletTextLayout: LinearLayout? = null
     private var info: TextView? = null
     private var subtitle: TextView? = null
-    private var uploadButton: TextView? = null
+    private var uploadButton: UnifyButton? = null
     private var stepperModel: UserIdentificationStepperModel? = null
     private var stepperListener: StepperListener? = null
     private var analytics: UserIdentificationCommonAnalytics? = null
@@ -78,6 +83,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private var isSocketTimeoutException: Boolean = false
 
     private lateinit var remoteConfig: RemoteConfig
+
+    private var retakeActionCode = NOT_RETAKE
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -110,6 +117,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_user_identification_final, container, false)
         initView(view)
+        encryptImage()
         setContentView()
         if (projectId == 4) //TradeIn project Id
             uploadButton?.setText(R.string.upload_button_tradein)
@@ -124,36 +132,73 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     private fun initObserver() {
         kycUploadViewModel.kycResponseLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            hideLoading()
             when (it) {
                 is Success -> {
-                    setKycUploadResultView(it.data)
                     sendSuccessTimberLog()
+                    setKycUploadResultView(it.data)
                 }
                 is Fail -> {
+                    hideLoading()
                     showUploadError()
                     setFailedResult(it.throwable)
                     sendErrorTimberLog(it.throwable)
                 }
             }
         })
+
+        kycUploadViewModel.encryptImageLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    uploadButton?.isEnabled = true
+                    when (retakeActionCode) {
+                        NOT_RETAKE -> {
+                            //if liveness, upload the files immediately
+                            if (!isKycSelfie) {
+                                uploadKycFiles()
+                            }
+                        }
+                        RETAKE_KTP -> {
+                            goToLivenessOrSelfie()
+                        }
+                        RETAKE_FACE -> {
+                            uploadKycFiles()
+                        }
+                    }
+                }
+                is Fail -> {
+                    NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.error_text_image_fail_to_encrypt))
+                }
+            }
+        })
     }
 
     private fun sendErrorTimberLog(throwable: Throwable) {
-        if(!isKycSelfie) {
-            Timber.w("P2#LIVENESS_UPLOAD_RESULT#'ErrorUpload';ktpPath='${stepperModel?.ktpFile}';facePath='${stepperModel?.faceFile}';tkpdProjectId='$projectId';stack_trace='${throwable}'")
+        if (!isKycSelfie) {
+            ServerLogger.log(Priority.P2, "LIVENESS_UPLOAD_RESULT", mapOf("type" to "ErrorUpload",
+                    "ktpPath" to stepperModel?.ktpFile.orEmpty(),
+                    "facePath" to stepperModel?.faceFile.orEmpty(),
+                    "tkpdProjectId" to projectId.toString(),
+                    "stack_trace" to throwable.toString()
+            ))
         } else {
-            Timber.w("P2#SELFIE_UPLOAD_RESULT#'ErrorUpload';ktpPath='${stepperModel?.ktpFile}';facePath='${stepperModel?.faceFile}';tkpdProjectId='$projectId';stack_trace='${throwable}'")
+            ServerLogger.log(Priority.P2, "SELFIE_UPLOAD_RESULT",
+                    mapOf("type" to "ErrorUpload",
+                            "ktpPath" to stepperModel?.ktpFile.orEmpty(),
+                            "facePath" to stepperModel?.faceFile.orEmpty(),
+                            "tkpdProjectId" to projectId.toString(),
+                            "stack_trace" to throwable.toString()
+                    ))
             analytics?.eventClickUploadPhotosTradeIn("failed")
         }
     }
 
     private fun sendSuccessTimberLog() {
-        if(isKycSelfie) {
-            Timber.w("P2#KYC_SELFIE_UPLOAD_RESULT#'SuccessUpload';" +
-                    "ktpPath='" + stepperModel?.ktpFile + "';" +
-                    "facePath='" + stepperModel?.faceFile + "';" +
-                    "tkpdProjectId='" + projectId + "';")
+        if (isKycSelfie) {
+            ServerLogger.log(Priority.P2, "KYC_SELFIE_UPLOAD_RESULT",
+                    mapOf("type" to "SuccessUpload",
+                            "ktpPath" to stepperModel?.ktpFile.orEmpty(),
+                            "facePath" to stepperModel?.faceFile.orEmpty(),
+                            "tkpdProjectId" to projectId.toString()))
             analytics?.eventClickUploadPhotosTradeIn("success")
         }
     }
@@ -178,13 +223,25 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)
     }
 
+    private fun encryptImage() {
+        if (isUsingEncrypt()) {
+            uploadButton?.isEnabled = false
+            kycUploadViewModel.encryptImageFace(stepperModel?.faceFile.toEmptyStringIfNull())
+        }
+    }
+
     private fun setContentView() {
         loadingLayout?.visibility = View.GONE
         if (isKycSelfie) {
             hideLoading()
             setKycSelfieView()
         } else {
-            uploadKycFiles()
+            //if not using encryption, send immediately, else wait for encrypt and show loading
+            if (!isUsingEncrypt()) {
+                uploadKycFiles()
+            } else {
+                showLoading()
+            }
         }
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
@@ -195,10 +252,10 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private fun uploadKycFiles() {
         showLoading()
         stepperModel?.let {
-            if(isSocketTimeoutException) {
+            if (isSocketTimeoutException) {
                 isSocketTimeoutException = false
             }
-            kycUploadViewModel.uploadImages(it.ktpFile, it.faceFile, projectId.toString())
+            kycUploadViewModel.uploadImages(it.ktpFile, it.faceFile, projectId.toString(), isUsingEncrypt())
         }
     }
 
@@ -219,51 +276,53 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     private fun setKycUploadResultView(data: KycData) {
-        if(data.isSuccessRegister) {
-            deleteTmpFile()
+        if (data.isSuccessRegister) {
+            deleteTmpFile(deleteKtp = true, deleteFace = true)
             activity?.setResult(Activity.RESULT_OK)
             stepperListener?.finishPage()
         } else {
+            hideLoading()
             var imageKtp = KycUrl.KTP_VERIF_OK
             var imageFace = KycUrl.FACE_VERIF_OK
             var colorKtp: Int? = ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null)
             var colorFace: Int? = ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null)
             listRetake = data.listRetake
-            if(!listRetake.isNullOrEmpty()) {
-                for(i in data.listRetake.indices) {
-                    when(data.listRetake[i]) {
+            if (!listRetake.isNullOrEmpty()) {
+                for (i in data.listRetake.indices) {
+                    when (data.listRetake[i]) {
                         KYCConstant.KTP_RETAKE -> {
                             imageKtp = KycUrl.KTP_VERIF_FAIL
                             colorKtp = null
-                            setKtpUploadButtonListener()
+                            setKtpRetakeButtonListener()
                         }
                         KYCConstant.FACE_RETAKE -> {
                             imageFace = KycUrl.FACE_VERIF_FAIL
                             colorFace = null
-                            setFaceUploadButtonListener()
+                            setFaceRetakeButtonListener()
                         }
                     }
                 }
                 if (listRetake.size == 2) {
-                    setKtpFaceUploadButtonListener()
+                    setKtpFaceRetakeButtonListener()
                 }
             }
             setResultViews(imageKtp, imageFace, data.app.title, data.app.subtitle, colorKtp, colorFace, data.app.button, data.listMessage)
             if (activity is UserIdentificationFormActivity) {
                 (activity as UserIdentificationFormActivity)
-                    .updateToolbarTitle(getString(R.string.title_kyc_form_fail_verification))
+                        .updateToolbarTitle(getString(R.string.title_kyc_form_fail_verification))
             }
         }
     }
 
-    private fun setKtpUploadButtonListener() {
+    private fun setKtpRetakeButtonListener() {
         uploadButton?.setOnClickListener { v: View? ->
             analytics?.eventClickChangeKtpFinalFormPage()
+            deleteTmpFile(deleteKtp = true, deleteFace = false)
             openCameraView(UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP, KYCConstant.REQUEST_CODE_CAMERA_KTP)
         }
     }
 
-    private fun setFaceUploadButtonListener() {
+    private fun setFaceRetakeButtonListener() {
         uploadButton?.setOnClickListener { v: View? ->
             analytics?.eventClickChangeSelfieFinalFormPage()
             goToLivenessOrSelfie()
@@ -271,16 +330,18 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     private fun goToLivenessOrSelfie() {
-        if(!isKycSelfie) {
+        deleteTmpFile(deleteKtp = false, deleteFace = true)
+        if (!isKycSelfie) {
             openLivenessView()
         } else {
             openCameraView(UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE, KYCConstant.REQUEST_CODE_CAMERA_FACE)
         }
     }
 
-    private fun setKtpFaceUploadButtonListener() {
+    private fun setKtpFaceRetakeButtonListener() {
         uploadButton?.setOnClickListener { v: View? ->
             analytics?.eventClickChangeKtpSelfieFinalFormPage()
+            deleteTmpFile(deleteKtp = true, deleteFace = true)
             openCameraView(UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP, KYCConstant.REQUEST_CODE_CAMERA_KTP)
         }
     }
@@ -356,16 +417,25 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private fun retakeAction(requestCode: Int, data: Intent) {
         when (requestCode) {
             KYCConstant.REQUEST_CODE_CAMERA_KTP -> {
+                retakeActionCode = RETAKE_KTP
                 stepperModel?.ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
-                goToLivenessOrSelfie()
+                if (isUsingEncrypt()) {
+                    kycUploadViewModel.encryptImageKtp(stepperModel?.ktpFile.toEmptyStringIfNull())
+                } else {
+                    goToLivenessOrSelfie()
+                }
             }
             KYCConstant.REQUEST_CODE_CAMERA_FACE -> {
-                if(!isKycSelfie) {
+                retakeActionCode = RETAKE_FACE
+                if (!isKycSelfie) {
                     stepperModel?.faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH).toEmptyStringIfNull()
-                    uploadKycFiles()
                 } else {
                     stepperModel?.faceFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
-                    setKycSelfieView()
+                }
+                if (isUsingEncrypt()) {
+                    kycUploadViewModel.encryptImageFace(stepperModel?.faceFile.toEmptyStringIfNull())
+                } else {
+                    uploadKycFiles()
                 }
             }
             else -> {
@@ -419,7 +489,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     fun clickBackAction() {
-        if(isSocketTimeoutException) {
+        if (isSocketTimeoutException) {
             analytics?.eventClickBackConnectionTimeout()
         } else {
             if (!isKycSelfie) {
@@ -460,7 +530,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             }
         }
         kyc_upload_error_button?.setOnClickListener {
-            if(!isKycSelfie) {
+            if (!isKycSelfie) {
                 analytics?.eventClickConnectionTimeout()
                 openLivenessView()
             } else {
@@ -469,7 +539,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         }
     }
 
-    private fun setViews(failedReasonTitle: String, failedReason: String, failedImage: String){
+    private fun setViews(failedReasonTitle: String, failedReason: String, failedImage: String) {
         kyc_upload_error_title?.text = failedReasonTitle
         kyc_upload_error_subtitle?.text = failedReason
         main_image?.let {
@@ -477,13 +547,24 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         }
     }
 
-    fun deleteTmpFile() {
-        FileUtil.deleteFile(stepperModel?.ktpFile)
-        FileUtil.deleteFile(stepperModel?.faceFile)
+    fun deleteTmpFile(deleteKtp: Boolean, deleteFace: Boolean) {
+        if (deleteKtp) FileUtil.deleteFile(stepperModel?.ktpFile)
+        if (deleteFace) FileUtil.deleteFile(stepperModel?.faceFile)
+    }
+
+    private fun isUsingEncrypt(): Boolean {
+        context?.let {
+            return ImageEncryptionUtil.isUsingEncrypt(it)
+        }
+        return false
     }
 
     companion object {
         private var projectId = 0
+        private const val NOT_RETAKE = 0
+        private const val RETAKE_KTP = 1
+        private const val RETAKE_FACE = 2
+
         fun createInstance(projectid: Int): Fragment {
             val fragment = UserIdentificationFormFinalFragment()
             projectId = projectid

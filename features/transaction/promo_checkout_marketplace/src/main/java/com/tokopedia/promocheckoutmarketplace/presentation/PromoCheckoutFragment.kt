@@ -35,12 +35,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
@@ -68,6 +68,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckou
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.*
 import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -76,6 +77,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -114,7 +116,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     // Use single recycler view to prevent memory leak & OOM caused by nested recyclerview
-    private lateinit var recyclerView: RecyclerView
+    private var recyclerView: RecyclerView? = null
     private lateinit var adapter: PromoCheckoutAdapter
 
     // Main Section
@@ -159,7 +161,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                            promoRequest: PromoRequest,
                            validateUsePromoRequest: ValidateUsePromoRequest,
                            bboPromoCodes: ArrayList<String>,
-                           promoMvcLockCourierFlow: Boolean = false): PromoCheckoutFragment {
+                           promoMvcLockCourierFlow: Boolean = false,
+                           chosenAddress: ChosenAddress?): PromoCheckoutFragment {
             return PromoCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARGS_PAGE_SOURCE, pageSource)
@@ -167,6 +170,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     putParcelable(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
                     putStringArrayList(ARGS_BBO_PROMO_CODES, bboPromoCodes)
                     putBoolean(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, promoMvcLockCourierFlow)
+                    // Add chosen address for trade in indomaret case, will be null for other case
+                    putParcelable(ARGS_CHOSEN_ADDRESS, chosenAddress)
                 }
             }
         }
@@ -196,8 +201,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.promo_checkout_marketplace_module_fragment, container, false)
         recyclerView = getRecyclerView(view)
-        recyclerView.addItemDecoration(itemDecorator)
-        (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        recyclerView?.addItemDecoration(itemDecorator)
+        (recyclerView?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
         view?.viewTreeObserver?.addOnGlobalLayoutListener {
             val heightDiff = view.rootView?.height?.minus(view.height) ?: 0
@@ -286,7 +291,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun initializeRecyclerViewScrollListener() {
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 
             }
@@ -686,8 +691,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun snapToPromoInput() {
-        recyclerView.layoutManager?.let { layoutManager ->
-            val linearSmoothScroller = object : LinearSmoothScroller(recyclerView.context) {
+        recyclerView?.layoutManager?.let { layoutManager ->
+            val linearSmoothScroller = object : LinearSmoothScroller(recyclerView?.context) {
                 override fun getVerticalSnapPreference(): Int {
                     return SNAP_TO_START
                 }
@@ -746,6 +751,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             toolbar?.hideResetButton()
             fragmentUiModel.uiData.exception?.let {
                 layoutGlobalError?.setType(getGlobalErrorType(it))
+                if (it is AkamaiErrorException) {
+                    showToastMessage(it)
+                }
             }
             layoutGlobalError?.setActionClickListener { view ->
                 analytics.eventClickCobaLagi(viewModel.getPageSource())
@@ -823,7 +831,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             showLoading()
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
-            viewModel.getPromoList(mutation, promoRequest, "")
+            val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
+            viewModel.getPromoList(mutation, promoRequest, "", chosenAddress)
         }
     }
 
@@ -831,19 +840,19 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         return false
     }
 
-    fun showToastMessage(message: String) {
+    private fun showToastMessage(message: String) {
         view?.let {
-            Toaster.make(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            Toaster.build(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }
     }
 
-    fun showToastMessage(throwable: Throwable) {
+    private fun showToastMessage(throwable: Throwable) {
         showToastMessage(getErrorMessage(throwable))
     }
 
     private fun getErrorMessage(throwable: Throwable): String {
         var errorMessage = throwable.message
-        if (throwable !is PromoErrorException) errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        if (throwable !is PromoErrorException && throwable !is AkamaiErrorException) errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         if (errorMessage.isNullOrBlank()) {
             errorMessage = getString(R.string.label_error_global_promo_checkout)
         }
@@ -917,9 +926,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }
 
             val scrollPosition = if (adapter.list.size > promoWithCoachMarkIndex) promoWithCoachMarkIndex + 1 else promoWithCoachMarkIndex
-            recyclerView.smoothScrollToPosition(scrollPosition)
+            recyclerView?.smoothScrollToPosition(scrollPosition)
             Handler().postDelayed({
-                val holder = recyclerView.findViewHolderForAdapterPosition(promoWithCoachMarkIndex)
+                val holder = recyclerView?.findViewHolderForAdapterPosition(promoWithCoachMarkIndex)
                 val coachMarkData = adapter.list[promoWithCoachMarkIndex] as PromoListItemUiModel
                 holder?.let {
                     val coachMarkItem = arrayListOf(
@@ -934,7 +943,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     context?.let {
                         promoCoachMark = CoachMark2(it)
                         promoCoachMark.showCoachMark(coachMarkItem)
-                        recyclerView.addOnScrollListener(coachMarkRecyclerListener)
+                        recyclerView?.addOnScrollListener(coachMarkRecyclerListener)
                         localCacheHandler.apply {
                             putBoolean(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, true)
                             applyEditor()
@@ -1001,7 +1010,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             viewModel.updatePromoInputStateBeforeApplyPromo(promoCode, isFromLastSeen)
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
-            viewModel.getPromoList(mutation, promoRequest, promoCode)
+            val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
+            viewModel.getPromoList(mutation, promoRequest, promoCode, chosenAddress)
         }
     }
 
@@ -1015,7 +1025,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickPromoListItem(element: PromoListItemUiModel, position: Int) {
         viewModel.updatePromoListAfterClickPromoItem(element)
-        renderStickyPromoHeader(recyclerView)
+        recyclerView?.let { renderStickyPromoHeader(it) }
 
         // dismiss coachmark if user click promo with coachmark
         if (promoWithCoachMarkIndex != -1 && adapter.list[promoWithCoachMarkIndex] is PromoListItemUiModel &&

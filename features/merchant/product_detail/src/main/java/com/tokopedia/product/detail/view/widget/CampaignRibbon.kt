@@ -6,6 +6,7 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -55,6 +56,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     // ongoing components - structure type 2
     private var campaignRibbonType2View: View? = null
     private var campaignLogoView2: ImageView? = null
+    private var campaignLogoContainerView2: FrameLayout? = null
     private var campaignNameView2: Typography? = null
     private var timerView2: TimerUnifySingle? = null
     private var stockWordingView2: Typography? = null
@@ -64,6 +66,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     // slash price / thematic only components - structure type 3
     private var campaignRibbonType3View: View? = null
     private var campaignLogoView3: ImageView? = null
+    private var campaignLogoContainerView3: FrameLayout? = null
     private var campaignNameViews3: Typography? = null
     private var timerView3: TimerUnifySingle? = null
     private var endsInWordingView3: Typography? = null
@@ -93,6 +96,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         // TYPE 2 PROPERTIES
         campaignRibbonType2View = rootView.findViewById(R.id.campaign_ribbon_type_2)
         campaignLogoView2 = campaignRibbonType2View?.findViewById(R.id.iu_campaign_logo_s2)
+        campaignLogoContainerView2 = campaignRibbonType2View?.findViewById(R.id.iu_campaign_logo_s2_container)
         campaignNameView2 = campaignRibbonType2View?.findViewById(R.id.tpg_campaign_name_s2)
         timerView2 = campaignRibbonType2View?.findViewById(R.id.tus_timer_view_s2)
         stockWordingView2 = campaignRibbonType2View?.findViewById(R.id.tgp_stock_wording_s2)
@@ -100,6 +104,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         regulatoryInfoView2 = campaignRibbonType2View?.findViewById(R.id.tgp_regulatory_info_s2)
         // TYPE 3 PROPERTIES
         campaignRibbonType3View = rootView.findViewById(R.id.campaign_ribbon_type_3)
+        campaignLogoContainerView3 = rootView.findViewById(R.id.iu_campaign_logo_s3_container)
         campaignLogoView3 = campaignRibbonType3View?.findViewById(R.id.iu_campaign_logo_s3)
         campaignNameViews3 = campaignRibbonType3View?.findViewById(R.id.tpg_campaign_name_s3)
         timerView3 = campaignRibbonType3View?.findViewById(R.id.tus_timer_view_s3)
@@ -140,26 +145,29 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     // SLASH PRICE - not eligible for thematic campaign - use campaign ribbon structure type 3
     private fun renderSlashPriceCampaignRibbon(onGoingData: ProductContentMainData) {
         val campaign = onGoingData.campaign
-        if (campaign.shouldShowRibbonCampaign) {
-            // thematic data
-            val thematicCampaign = onGoingData.thematicCampaign
-            // render campaign name
-            val campaignName = if (thematicCampaign.campaignName.isNotBlank()) thematicCampaign.campaignName else campaign.campaignTypeName
-            campaignNameViews3?.text = campaignName
-            // render campaign ribbon background
-            val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
-            val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes, SLASH_PRICE)
-            campaignRibbonType3View?.background = gradientDrawable
-            // show count down wording
-            endsInWordingView3?.show()
-            // render ongoing count down timer
-            renderOnGoingCountDownTimer(campaign = campaign, timerView = timerView3)
-            // hide irrelevant views
-            regulatoryInfo3?.hide()
-            campaignLogoView3?.hide()
-            // show campaign ribbon type 3
-            showCampaignRibbonType3()
-        } else this.hide()
+        if (onGoingData.thematicCampaign.campaignName.isEmpty()) {
+            if (campaign.shouldShowRibbonCampaign) {
+                // thematic data
+                val thematicCampaign = onGoingData.thematicCampaign
+                // render campaign name
+                campaignNameViews3?.text = campaign.campaignTypeName
+                // render campaign ribbon background
+                val gradientDrawable = getGradientDrawableForBackGround(campaign.background, SLASH_PRICE)
+                campaignRibbonType3View?.background = gradientDrawable
+                // show count down wording
+                endsInWordingView3?.show()
+                // render ongoing count down timer
+                renderOnGoingCountDownTimer(campaign = campaign, timerView = timerView3)
+                // hide irrelevant views
+                regulatoryInfo3?.hide()
+                hideLogoView3()
+                // show campaign ribbon type 3
+                showCampaignRibbonType3()
+            } else this.hide()
+        } else {
+            // if thematic have value, render thematic instead of slash price
+            renderThematicCampaignRibbon(onGoingData)
+        }
     }
 
     // THEMATIC ONLY - use campaign ribbon structure type 3
@@ -172,8 +180,10 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         // render campaign logo
         if (thematicCampaign.icon.isNotBlank()) {
             campaignLogoView3?.loadImage(thematicCampaign.icon)
-            campaignLogoView3?.show()
-        } else campaignLogoView3?.hide()
+            showLogoView3()
+        } else {
+            hideLogoView3()
+        }
         // render campaign name
         campaignNameViews3?.text = thematicCampaign.campaignName
         // hide irrelevant views
@@ -182,6 +192,16 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         timerView3?.hide()
         // show campaign ribbon type 3
         showCampaignRibbonType3()
+    }
+
+    private fun hideLogoView3() {
+        campaignLogoView3?.hide()
+        campaignLogoContainerView3?.hide()
+    }
+
+    private fun showLogoView3() {
+        campaignLogoView3?.show()
+        campaignLogoContainerView3?.show()
     }
 
     // show upcoming structure
@@ -297,8 +317,9 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         // render campaign logo
         if (thematicCampaign.icon.isNotBlank()) {
             campaignLogoView2?.loadImage(thematicCampaign.icon)
-            campaignLogoView2?.show()
-        } else campaignLogoView2?.hide()
+            showLogoView2()
+        } else hideLogoView2()
+
         // render campaign name
         val campaignName = if (thematicCampaign.campaignName.isNotBlank()) thematicCampaign.campaignName else campaign.campaignTypeName
         campaignNameView2?.text = campaignName
@@ -315,6 +336,16 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         } else {
             regulatoryInfoView2?.hide()
         }
+    }
+
+    private fun hideLogoView2() {
+        campaignLogoView2?.hide()
+        campaignLogoContainerView2?.hide()
+    }
+
+    private fun showLogoView2() {
+        campaignLogoView2?.show()
+        campaignLogoContainerView2?.show()
     }
 
     private fun renderStockWording(stockWording: String, stockTypography: Typography?) {

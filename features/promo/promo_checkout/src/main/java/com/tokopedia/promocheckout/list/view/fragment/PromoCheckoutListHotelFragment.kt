@@ -7,6 +7,7 @@ import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListHotelPresenter
+import com.tokopedia.promocheckout.util.ColorUtil
 import javax.inject.Inject
 
 class PromoCheckoutListHotelFragment : PromoCheckoutListDigitalFragment(), PromoCheckoutListContract.View {
@@ -29,7 +30,9 @@ class PromoCheckoutListHotelFragment : PromoCheckoutListDigitalFragment(), Promo
     }
 
     override fun onPromoCodeUse(promoCode: String) {
-        if (promoCode.isNotEmpty()) promoCheckoutListHotelPresenter.checkPromoCode(cartID, promoCode)
+        context?.run {
+            if (promoCode.isNotEmpty()) promoCheckoutListHotelPresenter.checkPromoCode(cartID, promoCode, ColorUtil.getColorFromResToString(this, com.tokopedia.unifyprinciples.R.color.Unify_G200))
+        }
     }
 
     override fun initInjector() {

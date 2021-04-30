@@ -87,13 +87,8 @@ class ShopPageViewModel @Inject constructor(
         private val shopRequestUnmoderateUseCase: Lazy<ShopRequestUnmoderateUseCase>,
         private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
         private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
-        private val firebaseRemoteConfig: RemoteConfig,
         private val dispatcherProvider: CoroutineDispatchers)
     : BaseViewModel(dispatcherProvider.main) {
-
-    companion object {
-        private const val DATA_NOT_FOUND = "Data not found"
-    }
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 

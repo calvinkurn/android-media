@@ -15,6 +15,8 @@ internal interface IconConfigItem { fun get(
         onClick: ()-> Unit = {}): IconToolbar }
 
 object IconList {
+    val ID_INBOX = R.drawable.ic_searchbar_new_inbox
+
     const val ID_MESSAGE = IconUnify.MESSAGE
     const val ID_NOTIFICATION = IconUnify.BELL
     const val ID_CART = IconUnify.CART
@@ -43,6 +45,25 @@ object IconList {
         override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_MESSAGE,
+                    applink = ApplinkConst.INBOX,
+                    disableRouteManager = disableRouteManager,
+                    nonLoginApplink = ApplinkConst.LOGIN,
+                    name = NAME_MESSAGE,
+                    disableDefaultGtmTracker = disableDefaultGtmTracker
+            ) {
+                onClick.invoke()
+            }
+        }
+    }
+
+    internal object InboxIcon: IconConfigItem {
+        override fun get(
+                pageSource: String, disableRouteManager: Boolean,
+                disableDefaultGtmTracker: Boolean, onClick: ()-> Unit
+        ): IconToolbar {
+            return IconToolbar(
+                    id = ID_INBOX,
+                    imageRes = ID_INBOX,
                     applink = ApplinkConst.INBOX,
                     disableRouteManager = disableRouteManager,
                     nonLoginApplink = ApplinkConst.LOGIN,

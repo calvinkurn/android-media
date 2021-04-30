@@ -5,6 +5,7 @@ import com.tokopedia.sellerhomecommon.domain.mapper.TickerMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetTickerResponse
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -47,13 +48,14 @@ class GetTickerUseCaseTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        getTickerUseCase = GetTickerUseCase(gqlRepository, mapper)
+        getTickerUseCase = GetTickerUseCase(gqlRepository, mapper, CoroutineTestDispatchersProvider)
     }
 
     @Test
     fun `should success when get ticker`() = runBlocking {
         getTickerUseCase.params = params
 
+        val isFromCache = false
         val successResponse = TestHelper.createSuccessResponse<GetTickerResponse>(SUCCESS_RESPONSE)
         val expectedTickers = listOf(TickerItemUiModel(
                 id = "253",
@@ -69,7 +71,7 @@ class GetTickerUseCaseTest {
         } returns successResponse
 
         coEvery {
-            mapper.mapRemoteModelToUiModel(any(), cacheStrategy.type == CacheType.CACHE_ONLY)
+            mapper.mapRemoteDataToUiData(any(), isFromCache)
         } returns expectedTickers
 
         val result = getTickerUseCase.executeOnBackground()
@@ -79,7 +81,7 @@ class GetTickerUseCaseTest {
         }
 
         coVerify {
-            mapper.mapRemoteModelToUiModel(any(), cacheStrategy.type == CacheType.CACHE_ONLY)
+            mapper.mapRemoteDataToUiData(any(), isFromCache)
         }
 
         Assert.assertEquals(expectedTickers, result)

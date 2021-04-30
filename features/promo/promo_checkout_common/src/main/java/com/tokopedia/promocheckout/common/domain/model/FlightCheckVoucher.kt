@@ -40,8 +40,8 @@ class FlightCheckVoucher (
         var message: String = "",
         @SerializedName("VoucherAmount")
         @Expose
-        var voucherAmount: Long = 0
-
+        var voucherAmount: Long = 0,
+        var messageColor: String = ""
 ) {
     class Response(
             @SerializedName("flightVoucher")

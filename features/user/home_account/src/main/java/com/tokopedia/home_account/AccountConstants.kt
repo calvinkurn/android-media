@@ -26,6 +26,9 @@ object AccountConstants {
         const val EVENT_CATEGORY = "eventCategory"
         const val EVENT_ACTION = "eventAction"
         const val EVENT_LABEL = "eventLabel"
+        const val EVENT_BUSINESS_UNIT = "businessUnit"
+        const val EVENT_CURRENT_SITE = "currentSite"
+        const val EVENT_USER_ID = "userId"
         const val ECOMMERCE = "ecommerce"
         const val CURRENCY_CODE = "currencyCode"
         const val IDR = "IDR"
@@ -104,7 +107,16 @@ object AccountConstants {
             const val LABEL_GET_TO_KNOW_TOKOPEDIA = "Kenali Tokopedia"
             const val LABEL_TERMS_AND_CONDITIONS = "Syarat dan Ketentuan"
             const val LABEL_PRIVACY_POLICY = "Kebijakan Privasi"
+            const val LABEL_IP = "Hak Kekayaan Intelektual"
             const val LABEL_REVIEW_THIS_APP = "Ulas Aplikasi Ini"
+        }
+
+        object BusinessUnit {
+            const val USER_PLATFORM_UNIT = "user platform"
+        }
+
+        object CurrentSite {
+            const val TOKOPEDIA_MARKETPLACE_SITE = "tokopediamarketplace"
         }
     }
 
@@ -125,6 +137,7 @@ object AccountConstants {
     object Url {
         const val BASE_MOBILE = "https://m.tokopedia.com/"
         const val PATH_TERM_CONDITION = "terms.pl?isBack=true"
+        const val PATH_IP = "intellectual-property-protection"
         const val PATH_PRIVACY_POLICY = "privacy.pl?isBack=true"
         const val BASE_WEBVIEW_APPLINK = "tokopedia://webview?url="
         const val PATH_ABOUT_US = "about"
@@ -141,6 +154,7 @@ object AccountConstants {
         const val SETTING_TKPD_PAY_ID = 3
         const val SETTING_TNC_ID = 5
         const val SETTING_PRIVACY_ID = 6
+        const val SETTING_IP = 7
         const val SETTING_OUT_ID = 8
         const val SETTING_SHAKE_ID = 9
         const val SETTING_GEOLOCATION_ID = 98
@@ -164,6 +178,7 @@ object AccountConstants {
         const val SETTING_APP_SETTING = 46
         const val SETTING_ABOUT_TOKOPEDIA = 47
         const val SETTING_TOKOPOINTS = 48
+        const val SETTING_QUALITY_SETTING = 49
     }
 
     object KEY {

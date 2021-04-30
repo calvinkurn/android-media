@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl2"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/radShcPostFilter"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +30,7 @@
     <View
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="0.8dp"
-        android:background="@color/Neutral_N75"
+        android:background="@color/Unify_N75"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

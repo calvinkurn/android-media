@@ -5,8 +5,8 @@ import com.tokopedia.search.result.presentation.model.*
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
 object MockSearchProductModel {
-    fun getProductItemViewModel(): ProductItemViewModel {
-        val productItem = ProductItemViewModel()
+    fun getProductItemViewModel(): ProductItemDataView {
+        val productItem = ProductItemDataView()
         productItem.productID = "937515116"
         productItem.warehouseID = "0"
         productItem.productName = "Mock Organic 1"
@@ -29,7 +29,7 @@ object MockSearchProductModel {
         productItem.categoryName = "Handphone"
         productItem.categoryBreadcrumb = "Handphone"
         productItem.labelGroupList = listOf()
-        productItem.freeOngkirViewModel = FreeOngkirViewModel()
+        productItem.freeOngkirDataView = FreeOngkirDataView()
         productItem.boosterList = "0"
         productItem.sourceEngine = "0"
         productItem.isOrganicAds = false
@@ -39,20 +39,20 @@ object MockSearchProductModel {
         return productItem
     }
 
-    fun getInspirationCardViewModel(): InspirationCardViewModel {
-        return InspirationCardViewModel(
+    fun getInspirationCardViewModel(): InspirationCardDataView {
+        return InspirationCardDataView(
                 title = "Coba produk dengan kategori ini :",
                 type = "category",
                 position = 8,
-                options = listOf(
+                optionData = listOf(
                         getInspirationCardOptionViewModel(1), getInspirationCardOptionViewModel(2),
                         getInspirationCardOptionViewModel(3), getInspirationCardOptionViewModel(4)
                 )
         )
     }
 
-    private fun getInspirationCardOptionViewModel(position: Int): InspirationCardOptionViewModel {
-        return InspirationCardOptionViewModel(
+    private fun getInspirationCardOptionViewModel(position: Int): InspirationCardOptionDataView {
+        return InspirationCardOptionDataView(
                 text = "Kemeja Pria $position",
                 img = "",
                 url = "https://www.tokopedia.com/search?q=baju&sc=3579&source=search&st=product",
@@ -61,8 +61,8 @@ object MockSearchProductModel {
         )
     }
 
-    fun getInspirationCarouselListViewModel(): InspirationCarouselViewModel {
-        return InspirationCarouselViewModel(
+    fun getInspirationCarouselListViewModel(): InspirationCarouselDataView {
+        return InspirationCarouselDataView(
                 title = "Cek kategori berikut - should not be shown (position error)",
                 type = "category",
                 position = 0,
@@ -72,13 +72,13 @@ object MockSearchProductModel {
         )
     }
 
-    private fun getInspirationCarouselOptionViewModel(): InspirationCarouselViewModel.Option {
-        return InspirationCarouselViewModel.Option(
+    private fun getInspirationCarouselOptionViewModel(): InspirationCarouselDataView.Option {
+        return InspirationCarouselDataView.Option(
                 title = "Android OS",
                 url = "tokopedia://search?q=samsung",
                 applink = "tokopedia://search?q=samsung",
                 product = listOf(
-                        InspirationCarouselViewModel.Option.Product(
+                        InspirationCarouselDataView.Option.Product(
                                 id = "12345",
                                 name = "Samsung Galaxy A50S 4/64 Ram 4gb Rom 64gb Garansi Resmi",
                                 price = 8000000,
@@ -93,12 +93,12 @@ object MockSearchProductModel {
         )
     }
 
-    fun getBroadMatchViewModel(): BroadMatchViewModel {
-        return BroadMatchViewModel(
+    fun getBroadMatchViewModel(): BroadMatchDataView {
+        return BroadMatchDataView(
                 keyword = "baju kaos anak",
                 url = "https://staging.tokopedia.com/search?q=baju+kaos+anak&source=related_keyword&st=product",
                 applink = "tokopedia://search?q=baju kaos anak&source=related_keyword&st=product",
-                broadMatchItemViewModelList = listOf(
+                broadMatchItemDataViewList = listOf(
                         getBroadMatchItemViewModel(1), getBroadMatchItemViewModel(2),
                         getBroadMatchItemViewModel(3), getBroadMatchItemViewModel(4),
                         getBroadMatchItemViewModel(5), getBroadMatchItemViewModel(6)
@@ -106,8 +106,8 @@ object MockSearchProductModel {
         )
     }
 
-    private fun getBroadMatchItemViewModel(position: Int): BroadMatchItemViewModel {
-        return BroadMatchItemViewModel(
+    private fun getBroadMatchItemViewModel(position: Int): BroadMatchItemDataView {
+        return BroadMatchItemDataView(
                 id = "15340985",
                 name = "tes hidden category blazer $position",
                 price = 150000,
@@ -118,8 +118,8 @@ object MockSearchProductModel {
         )
     }
 
-    fun getGlobalNavViewModel(): GlobalNavViewModel {
-        return GlobalNavViewModel(
+    fun getGlobalNavViewModel(): GlobalNavDataView {
+        return GlobalNavDataView(
                 "recharge",
                 "Beli Pulsa",
                 "pulsa xl",
@@ -136,8 +136,8 @@ object MockSearchProductModel {
         )
     }
 
-    private fun getGlobalNavItemViewModel(position: Int): GlobalNavViewModel.Item {
-        return GlobalNavViewModel.Item(
+    private fun getGlobalNavItemViewModel(position: Int): GlobalNavDataView.Item {
+        return GlobalNavDataView.Item(
                 "Recharge $position",
                 "50.000",
                 "Rp 49.500",
@@ -152,15 +152,15 @@ object MockSearchProductModel {
         )
     }
 
-    fun getCpmViewModel(): CpmViewModel {
-        val cpmViewModel = CpmViewModel()
+    fun getCpmViewModel(): CpmDataView {
+        val cpmViewModel = CpmDataView()
         cpmViewModel.cpmModel = CpmModel(cpmJSONObject)
 
         return cpmViewModel
     }
 
-    fun getSuggestionViewModel(): SuggestionViewModel {
-        val suggestionViewModel = SuggestionViewModel()
+    fun getSuggestionViewModel(): SuggestionDataView {
+        val suggestionViewModel = SuggestionDataView()
         suggestionViewModel.suggestionText = "Menampilkan hasil untuk <strong>\"bju batik\"</strong>. </br> Apakah yang anda maksud <strong><font color=\"#42b549\">\"baju batik\"</font></strong> ?"
         suggestionViewModel.suggestion = "baju batik"
         suggestionViewModel.suggestedQuery = "q=baju batik&rf=true"
@@ -168,23 +168,23 @@ object MockSearchProductModel {
         return suggestionViewModel
     }
 
-    fun getEmptySearchProductViewModel(): EmptySearchProductViewModel {
-        val emptySearchProductViewModel = EmptySearchProductViewModel()
+    fun getEmptySearchProductViewModel(): EmptySearchProductDataView {
+        val emptySearchProductViewModel = EmptySearchProductDataView()
         emptySearchProductViewModel.isBannerAdsAllowed = true
 
         return emptySearchProductViewModel
     }
 
-    fun getBannedProductsEmptySearchViewModel(): BannedProductsEmptySearchViewModel {
-        return BannedProductsEmptySearchViewModel("Produk yang kamu cari tidak tersedia di Android. Silakan cari di desktop atau mobile web HP-mu.")
+    fun getBannedProductsEmptySearchViewModel(): BannedProductsEmptySearchDataView {
+        return BannedProductsEmptySearchDataView("Produk yang kamu cari tidak tersedia di Android. Silakan cari di desktop atau mobile web HP-mu.")
     }
 
-    fun getRecommendationTitleViewModel(): RecommendationTitleViewModel {
-        return RecommendationTitleViewModel("Rekomendasi Untuk Anda", "", "empty_search")
+    fun getRecommendationTitleViewModel(): RecommendationTitleDataView {
+        return RecommendationTitleDataView("Rekomendasi Untuk Anda", "", "empty_search")
     }
 
-    fun getRecommendationItemViewModel(): RecommendationItemViewModel {
-        return RecommendationItemViewModel(getRecommendationItem())
+    fun getRecommendationItemViewModel(): RecommendationItemDataView {
+        return RecommendationItemDataView(getRecommendationItem())
     }
 
     private fun getRecommendationItem(): RecommendationItem {

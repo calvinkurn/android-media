@@ -12,10 +12,10 @@ import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
-import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 
 /**
@@ -43,7 +43,7 @@ interface ChatbotContract {
 
         fun showErrorToast(it: Throwable)
 
-        fun updateToolbar(profileName: String?, profileImage: String?)
+        fun updateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?)
 
         fun removeDummy(visitable: Visitable<*>)
     }
@@ -107,6 +107,11 @@ interface ChatbotContract {
         fun cancelImageUpload()
 
         fun getActionBubbleforNoTrasaction(): ChatActionBubbleViewModel
+
+        fun checkLinkForRedirection(invoiceRefNum: String,
+                                    onGetSuccessResponse: (String) -> Unit,
+                                    setStickyButtonStatus: (Boolean) -> Unit,
+                                    onError: (Throwable) -> Unit)
 
     }
 }

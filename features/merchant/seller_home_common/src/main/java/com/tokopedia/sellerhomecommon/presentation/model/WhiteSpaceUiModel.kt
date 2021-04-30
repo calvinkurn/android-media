@@ -22,6 +22,7 @@ class WhiteSpaceUiModel(
         override var isLoaded: Boolean = true,
         override var isLoading: Boolean = false,
         override var isFromCache: Boolean = false,
+        override var isNeedToBeRemoved: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel = WidgetEmptyStateUiModel()
 ) : BaseWidgetUiModel<BaseDataUiModel> {
 
@@ -30,6 +31,10 @@ class WhiteSpaceUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<BaseDataUiModel> {
-        return WhiteSpaceUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+        return WhiteSpaceUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+    }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<BaseDataUiModel>): Boolean {
+        return dataKey != other.dataKey
     }
 }

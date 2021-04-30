@@ -16,8 +16,8 @@ import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.presentation.widget.FeaturedShopAdapter.OnItemClickListener
 
 class FeaturedShopViewHolder(
-    itemView: View,
-    private val onItemClickListener: OnItemClickListener?
+        itemView: View,
+        private val onItemClickListener: OnItemClickListener?
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val imageView: ImageView? = itemView.findViewById(R.id.image_featured_shop)
@@ -30,12 +30,12 @@ class FeaturedShopViewHolder(
     fun bind(shop: Shop) {
         imageView?.let {
             Glide.with(it.context)
-                .load(shop.imageUrl)
-                .dontAnimate()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .listener(imageRequestListener())
-                .into(it)
+                    .load(shop.imageUrl)
+                    .dontAnimate()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .listener(imageRequestListener())
+                    .into(it)
         }
 
         setOnClickListener(shop)
@@ -43,18 +43,18 @@ class FeaturedShopViewHolder(
 
     private fun imageRequestListener() = object: RequestListener<Drawable> {
         override fun onLoadFailed(
-            e: GlideException?,
-            model: Any?,
-            target: Target<Drawable>?,
-            isFirstResource: Boolean
+                e: GlideException?,
+                model: Any?,
+                target: Target<Drawable>?,
+                isFirstResource: Boolean
         ): Boolean = false
 
         override fun onResourceReady(
-            resource: Drawable?,
-            model: Any?,
-            target: Target<Drawable>?,
-            dataSource: DataSource?,
-            isFirstResource: Boolean
+                resource: Drawable?,
+                model: Any?,
+                target: Target<Drawable>?,
+                dataSource: DataSource?,
+                isFirstResource: Boolean
         ): Boolean {
             imageLoading?.visibility = View.GONE
             imageView?.setImageDrawable(resource)

@@ -5,8 +5,8 @@
     android:layout_width="@dimen/dp_200"
     android:layout_height="@dimen/dp_150"
     android:orientation="vertical"
-    android:layout_marginRight="@dimen/dp_16"
-    app:cardCornerRadius="@dimen/dp_4">
+    app:cardCornerRadius="@dimen/dp_4"
+    android:layout_marginStart="@dimen/dp_10">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,7 +19,8 @@
             app:srcCompat="@drawable/ic_mark_ico_choose_address"
             app:layout_constraintTop_toTopOf="@id/address_title"
             app:layout_constraintBottom_toBottomOf="@id/address_title"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="null"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_title"

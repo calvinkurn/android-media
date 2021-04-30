@@ -10,8 +10,8 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VAR
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.ChooseAddressViewModel
-import com.tokopedia.search.result.presentation.model.SearchProductCountViewModel
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
+import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.search.shouldNotContain
@@ -96,7 +96,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     }
 
     private fun `Then verify top of visitable list is choose address widget`() {
-        visitableList.first().shouldBeInstanceOf<ChooseAddressViewModel>()
+        visitableList.first().shouldBeInstanceOf<ChooseAddressDataView>()
     }
 
     @Test
@@ -149,7 +149,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     }
 
     private fun `Then verify visitable list does not contain search product count`() {
-        visitableList.any { it is SearchProductCountViewModel } shouldBe false
+        visitableList.any { it is SearchProductCountDataView } shouldBe false
     }
 
     private fun `Given navigation revamp is enabled`() {

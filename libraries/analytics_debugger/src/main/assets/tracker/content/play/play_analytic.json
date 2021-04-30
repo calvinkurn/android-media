@@ -10,7 +10,7 @@
       "appsflyerId": "{{.*}}",
       "shopId": "{{.*}}",
       "screenName": "{{/group-chat-room/\\d+/vod|live}}",
-      "userId": "{{.+}}",
+      "userId": "{{.*}}",
       "sessionIris": "{{.*}}"
     },
     {
@@ -200,7 +200,7 @@
           "item_name": "{{.*}}",
           "item_brand": "{{.*}}",
           "item_category": "{{.*}}",
-          "price": "{{\\d+.\\d+}}",
+          "price": "{{.*}}",
           "item_variant": "{{.*}}",
           "index": "{{\\d+(.\\d+)?}}"
         }
@@ -280,13 +280,6 @@
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
       "eventLabel": "{{\\d+ - (live|vod)}}",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "eventAction": "click product pinned message",
-      "event": "clickGroupChat",
-      "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+}}",
       "sessionIris": "{{.*}}"
     },
     {

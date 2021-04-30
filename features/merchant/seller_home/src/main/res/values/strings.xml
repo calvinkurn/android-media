@@ -25,25 +25,6 @@
 
     <string name="sah_ticker_warning">#ecdb77</string>
 
-    <!--seller review-->
-    <string name="sir_send">Kirim</string>
-    <string name="sir_send_feedback">Beri Masukan</string>
-    <string name="sir_default_title">Waktunya kasih bintang, nih</string>
-    <string name="sir_default_message">Seberapa puas sih kamu dengan aplikasi Tokopedia?</string>
-    <string name="sir_feedback_title">Bantu kami menggapai bintang</string>
-    <string name="sir_feedback_message">Yuk, berikan masukan agar Tokopedia bisa lebih \n memenuhi kebutuhanmu.</string>
-    <string name="sir_feedback_placeholder">Tulis masukanmu disini</string>
-    <string name="sir_thank_you_title">Yay, terima kasih untuk \nbintangnya!</string>
-    <string name="sir_thank_you_message">Senang bisa memenuhi kebutuhanmu. \nSering-sering berkunjung, ya!</string>
-    <string name="sir_rate_1_star">Sangat Kurang</string>
-    <string name="sir_rate_2_star">Kurang</string>
-    <string name="sir_rate_3_star">Cukup</string>
-    <string name="sir_rate_4_star">Puas</string>
-    <string name="sir_rate_5_star">Sangat Puas</string>
-    <string name="sir_toaster_error">Oops, ada kesalahan. Coba ulangi lagi, ya</string>
-    <string name="sir_toaster_error_no_connection">Yah, koneksi internet kamu terputus.</string>
-    <string name="sir_ok">OK</string>
-
     <string name="menu_setting_title">Pengaturan</string>
     <string name="setting_logout">Logout</string>
     <string name="setting_application_version">Versi %1$s</string>
@@ -116,4 +97,15 @@
     <string name="centralized_promo_promo_creation_free_shipping_description">Fitur Bebas Ongkir dapat meningkatkan penjualan dan menarik calon pembeli.</string>
     <string name="sah_stock_location_ticker_title">Hanya menampilkan stok lokasi utama</string>
     <string name="sah_stock_location_ticker_description">Untuk lihat jumlah dan alokasi stok produk di tiap lokasi, akses Seller Dashboard di desktopmu, ya.</string>
+    <string name="centralized_promo_content_desc_image_promo_post">image promo post</string>
+    <string name="centralized_promo_content_desc_image_recommended_promo">image recommended promo</string>
+    <string name="centralized_promo_content_desc_button_lihat_detail_promo">button lihat detail promo</string>
+    <string name="sah_content_desc_image_widget_error">image widget error</string>
+    <string name="settings_shop_status_label">Status toko:</string>
+    <string name="settings_operational_hour_open">BUKA</string>
+    <string name="settings_operational_hour_closed">TUTUP</string>
+    <string name="settings_operational_hour_not_set">LIBUR</string>
+    <string name="shop_operational_hour_24_hour">24 Jam</string>
+    <string name="shop_operational_hour_set_operational_time">Atur jam buka toko</string>
+    <string name="sah_content_desc_image_operational_hour">image operational hour</string>
 </resources>

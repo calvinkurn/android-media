@@ -1,20 +1,19 @@
 package com.tokopedia.cart.view.viewholder
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.HolderItemCartTickerErrorBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
-import kotlinx.android.synthetic.main.holder_item_cart_ticker_error.view.*
 
 /**
  * @author anggaprasetiyo on 13/03/18.
  */
-class CartTickerErrorViewHolder(itemView: View, private val actionListener: ActionListener?) : RecyclerView.ViewHolder(itemView) {
+class CartTickerErrorViewHolder(private val binding: HolderItemCartTickerErrorBinding, private val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     fun bindData(data: CartItemTickerErrorHolderData) {
-        itemView.ticker_error.setTextDescription(data.cartTickerErrorData?.errorInfo ?: "")
-        itemView.ticker_action.setOnClickListener { v -> actionListener?.onSeeErrorProductsClicked() }
+        binding.tickerError.setTextDescription(data.cartTickerErrorData?.errorInfo ?: "")
+        binding.tickerAction.setOnClickListener { v -> actionListener?.onSeeErrorProductsClicked() }
     }
 
     companion object {

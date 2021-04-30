@@ -71,6 +71,7 @@ class CatalogDetailPageFragment : Fragment(),
     private var fullSpecificationDataModel = CatalogFullSpecificationDataModel(arrayListOf())
 
     private var catalogId: String = ""
+    private var catalogUrl: String = ""
 
     private var navToolbar: NavToolbar? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
@@ -142,8 +143,8 @@ class CatalogDetailPageFragment : Fragment(),
 
     private fun setUpBottomSheet(){
         requireActivity().supportFragmentManager.beginTransaction().replace(
-                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogId)
-        ).commit()
+                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogId,catalogUrl),
+                CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG).commit()
 
         mBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_fragment_container)
         mBottomSheetBehavior?.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
@@ -156,6 +157,14 @@ class CatalogDetailPageFragment : Fragment(),
                 }
                 else if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     isBottomSheetOpen = true
+                }else if (newState == BottomSheetBehavior.STATE_DRAGGING){
+                    if(!isBottomSheetOpen){
+                        CatalogDetailAnalytics.sendEvent(
+                                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                                CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
+                                catalogId,userSession.userId)
+                    }
                 }
             }
         })
@@ -168,8 +177,10 @@ class CatalogDetailPageFragment : Fragment(),
                     it.data.listOfComponents.forEach { component ->
                         catalogUiUpdater.updateModel(component)
                     }
+                    catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
                     fullSpecificationDataModel = it.data.fullSpecificationDataModel
                     updateUi()
+                    setCatalogUrlForTracking()
                 }
                 is Fail -> {
                     onError(it.throwable)
@@ -177,6 +188,14 @@ class CatalogDetailPageFragment : Fragment(),
             }
 
         })
+    }
+
+    private fun setCatalogUrlForTracking() {
+        activity?.supportFragmentManager?.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG)?.let { fragment ->
+            if(fragment is CatalogPreferredProductsBottomSheet){
+                fragment.setCatalogUrl(catalogUrl)
+            }
+        }
     }
 
 
@@ -304,14 +323,6 @@ class CatalogDetailPageFragment : Fragment(),
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                 CatalogDetailAnalytics.EventKeys.EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_CATALOG_IMAGE,
-                catalogId,userSession.userId)
-    }
-
-    override fun onImagesScrolled() {
-        CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
                 catalogId,userSession.userId)
     }
 

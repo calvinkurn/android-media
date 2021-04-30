@@ -15,7 +15,7 @@ import java.util.List;
  * @author Irfan Khoirul on 23/04/18.
  */
 
-public class ShipmentCartItemModel implements ShipmentData, Parcelable {
+public class ShipmentCartItemModel implements Parcelable {
 
     private boolean allItemError;
     private boolean isError;
@@ -34,6 +34,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private String shopBadge;
     private int orderNumber;
     private String preOrderInfo;
+    private boolean isFreeShippingExtra;
     private String freeShippingBadgeUrl;
     private String shopLocation;
     private String shopAlertMessage;
@@ -110,6 +111,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         shopId = in.readInt();
         shopName = in.readString();
         preOrderInfo = in.readString();
+        isFreeShippingExtra = in.readByte() != 0;
         freeShippingBadgeUrl = in.readString();
         shopLocation = in.readString();
         shopAlertMessage = in.readString();
@@ -165,6 +167,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeInt(shopId);
         dest.writeString(shopName);
         dest.writeString(preOrderInfo);
+        dest.writeByte((byte) (isFreeShippingExtra ? 1 : 0));
         dest.writeString(freeShippingBadgeUrl);
         dest.writeString(shopLocation);
         dest.writeString(shopAlertMessage);
@@ -189,7 +192,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (stateDropshipperHasError ? 1 : 0));
         dest.writeByte((byte) (stateLoadingCourierState ? 1 : 0));
         dest.writeByte((byte) (stateHasLoadCourierState ? 1 : 0));
-        dest.writeByte((byte) (stateHasLoadCourierTradeInDropOffState ? 1: 0));
+        dest.writeByte((byte) (stateHasLoadCourierTradeInDropOffState ? 1 : 0));
         dest.writeByte((byte) (stateHasExtraMarginTop ? 1 : 0));
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
         dest.writeByte((byte) (isHidingCourier ? 1 : 0));
@@ -439,9 +442,13 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         isHidingCourier = hidingCourier;
     }
 
-    public String getCartString() { return cartString; }
+    public String getCartString() {
+        return cartString;
+    }
 
-    public void setCartString(String cartString) { this.cartString = cartString; }
+    public void setCartString(String cartString) {
+        this.cartString = cartString;
+    }
 
     public int getShippingId() {
         return shippingId;
@@ -563,11 +570,17 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.fulfillmentId = fulfillmentId;
     }
 
-    public String getBlackboxInfo() { return blackboxInfo; }
+    public String getBlackboxInfo() {
+        return blackboxInfo;
+    }
 
-    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
+    public void setBlackboxInfo(String blackboxInfo) {
+        this.blackboxInfo = blackboxInfo;
+    }
 
-    public boolean getHasPromoList() { return hasPromoList; }
+    public boolean getHasPromoList() {
+        return hasPromoList;
+    }
 
     public void setHasPromoList(boolean hasPromoList) {
         this.hasPromoList = hasPromoList;
@@ -589,13 +602,21 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.saveStateFlag = saveStateFlag;
     }
 
-    public boolean getIsLeasingProduct() { return isLeasingProduct; }
+    public boolean getIsLeasingProduct() {
+        return isLeasingProduct;
+    }
 
-    public void setIsLeasingProduct(boolean leasingProduct) { isLeasingProduct = leasingProduct; }
+    public void setIsLeasingProduct(boolean leasingProduct) {
+        isLeasingProduct = leasingProduct;
+    }
 
-    public int getBookingFee() { return bookingFee; }
+    public int getBookingFee() {
+        return bookingFee;
+    }
 
-    public void setBookingFee(int bookingFee) { this.bookingFee = bookingFee; }
+    public void setBookingFee(int bookingFee) {
+        this.bookingFee = bookingFee;
+    }
 
     public boolean isDropshipperDisable() {
         return isDropshipperDisable;
@@ -667,6 +688,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setPreOrderInfo(String preOrderInfo) {
         this.preOrderInfo = preOrderInfo;
+    }
+
+    public boolean isFreeShippingExtra() {
+        return isFreeShippingExtra;
+    }
+
+    public void setFreeShippingExtra(boolean freeShippingExtra) {
+        isFreeShippingExtra = freeShippingExtra;
     }
 
     public String getFreeShippingBadgeUrl() {

@@ -2,14 +2,14 @@ package com.tokopedia.search.result.shop.presentation.mapper
 
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
-import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopDataView
 
-internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
+internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopDataView> {
 
-    override fun convert(source: SearchShopModel): ShopViewModel {
+    override fun convert(source: SearchShopModel): ShopDataView {
         val searchShopData = source.aceSearchShop
 
-        return ShopViewModel(
+        return ShopDataView(
                 source = searchShopData.source,
                 searchUrl = searchShopData.searchUrl,
                 paging = createPagingViewModel(searchShopData.paging),
@@ -19,8 +19,8 @@ internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
         )
     }
 
-    private fun createPagingViewModel(pagingModel: SearchShopModel.AceSearchShop.Paging): ShopViewModel.Paging {
-        return ShopViewModel.Paging(
+    private fun createPagingViewModel(pagingModel: SearchShopModel.AceSearchShop.Paging): ShopDataView.Paging {
+        return ShopDataView.Paging(
                 uriNext = pagingModel.uriNext,
                 uriPrevious = pagingModel.uriPrevious
         )
@@ -29,8 +29,8 @@ internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
     private fun createShopItemViewModelList(
             shopItemModelList: List<SearchShopModel.AceSearchShop.ShopItem>,
             isRecommendation: Boolean
-    ): List<ShopViewModel.ShopItem> {
-        val shopItemViewModelList = mutableListOf<ShopViewModel.ShopItem>()
+    ): List<ShopDataView.ShopItem> {
+        val shopItemViewModelList = mutableListOf<ShopDataView.ShopItem>()
 
         shopItemModelList.forEach { shopItemModel ->
             shopItemViewModelList.add(createShopItemViewModel(shopItemModel, isRecommendation))
@@ -42,8 +42,8 @@ internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
     private fun createShopItemViewModel(
             shopItemModel: SearchShopModel.AceSearchShop.ShopItem,
             isRecommendation: Boolean
-    ): ShopViewModel.ShopItem {
-        return ShopViewModel.ShopItem(
+    ): ShopDataView.ShopItem {
+        return ShopDataView.ShopItem(
                 id = shopItemModel.id,
                 name = shopItemModel.name,
                 domain = shopItemModel.domain,
@@ -76,8 +76,8 @@ internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
     private fun createShopItemProductViewModelList(
             shopItemProductList: List<SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct>,
             isRecommendation: Boolean
-    ): List<ShopViewModel.ShopItem.ShopItemProduct> {
-        val shopItemProductViewModelList = mutableListOf<ShopViewModel.ShopItem.ShopItemProduct>()
+    ): List<ShopDataView.ShopItem.ShopItemProduct> {
+        val shopItemProductViewModelList = mutableListOf<ShopDataView.ShopItem.ShopItemProduct>()
 
         shopItemProductList.forEach { shopItemProduct ->
             shopItemProductViewModelList.add(createShopItemProductViewModel(shopItemProduct, isRecommendation))
@@ -89,8 +89,8 @@ internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
     private fun createShopItemProductViewModel(
             shopItemProduct: SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct,
             isRecommendation: Boolean
-    ): ShopViewModel.ShopItem.ShopItemProduct {
-        return ShopViewModel.ShopItem.ShopItemProduct(
+    ): ShopDataView.ShopItem.ShopItemProduct {
+        return ShopDataView.ShopItem.ShopItemProduct(
                 id = shopItemProduct.id,
                 name = shopItemProduct.name,
                 url = shopItemProduct.url,
@@ -104,8 +104,8 @@ internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
 
     private fun createShopItemVoucherViewModel(
             shopItemVoucherModel: SearchShopModel.AceSearchShop.ShopItem.ShopItemVoucher
-    ): ShopViewModel.ShopItem.ShopItemVoucher {
-        return ShopViewModel.ShopItem.ShopItemVoucher(
+    ): ShopDataView.ShopItem.ShopItemVoucher {
+        return ShopDataView.ShopItem.ShopItemVoucher(
                 freeShipping = shopItemVoucherModel.freeShipping,
                 cashback = createShopItemVoucherCashbackViewModel(shopItemVoucherModel.cashback)
         )
@@ -113,8 +113,8 @@ internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopViewModel> {
 
     private fun createShopItemVoucherCashbackViewModel(
             shopItemVoucherCashbackModel: SearchShopModel.AceSearchShop.ShopItem.ShopItemVoucher.ShopItemVoucherCashback
-    ): ShopViewModel.ShopItem.ShopItemVoucher.ShopItemVoucherCashback {
-        return ShopViewModel.ShopItem.ShopItemVoucher.ShopItemVoucherCashback(
+    ): ShopDataView.ShopItem.ShopItemVoucher.ShopItemVoucherCashback {
+        return ShopDataView.ShopItem.ShopItemVoucher.ShopItemVoucherCashback(
                 isPercentage = shopItemVoucherCashbackModel.isPercentage,
                 cashbackValue = shopItemVoucherCashbackModel.cashbackValue
         )

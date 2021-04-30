@@ -82,6 +82,15 @@ data class RecommendationEntity (
         val badges: List<Badges> = listOf()
         @SerializedName("minOrder")
         val minOrder: Int = 0
+        @SerializedName("specificationLabels")
+        val specificationsLabels: List<SpecificationsLabels> = listOf()
+
+        class SpecificationsLabels {
+            @SerializedName("key")
+            val key: String = ""
+            @SerializedName("value")
+            val value: String = ""
+        }
 
         class LabelGroup {
             @SerializedName("position")

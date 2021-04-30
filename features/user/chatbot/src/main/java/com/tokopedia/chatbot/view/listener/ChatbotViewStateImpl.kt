@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
@@ -61,7 +62,6 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun initView() {
         recyclerView = view.findViewById(getRecyclerViewId())
-        mainLoading = view.findViewById(getProgressId())
         replyEditText = view.findViewById(getNewCommentId())
         replyBox = view.findViewById(getReplyBoxId())
         actionBox = view.findViewById(getActionBoxId())
@@ -101,7 +101,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun loadAvatar(avatarUrl: String) {
-        val avatar = toolbar.findViewById<ImageView>(com.tokopedia.chat_common.R.id.user_avatar)
+        val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
         ImageHandler.loadImageCircle2(avatar.context, avatar, avatarUrl,
                 R.drawable.chatbot_avatar)
     }
@@ -310,8 +310,30 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         removeInvoiceCarousel()
     }
 
+    override fun hideHelpfullOptions() {
+        var item: HelpFullQuestionsViewModel? = null
+        var index = 0
+        for (it in adapter.list) {
+            if (it is HelpFullQuestionsViewModel) {
+                item = it
+                index = adapter.list.indexOf(item)
+                break
+            }
+        }
+        item?.let {
+            it.isSubmited = true
+            adapter.setElement(index, it) }
+    }
+
     override fun getAdapter(): ChatbotAdapter {
         return super.getAdapter() as ChatbotAdapter
+    }
+
+    override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
+        val title = toolbar.findViewById<TextView>(R.id.title)
+        val interlocutorName = getInterlocutorName(chatroomViewModel.getHeaderName())
+        title.text = MethodChecker.fromHtml(interlocutorName)
+        loadAvatar(chatroomViewModel.headerModel.image)
     }
 
     override fun getInterlocutorName(headerName: String): String  = headerName
@@ -338,10 +360,6 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun getRecyclerViewId(): Int {
         return R.id.recycler_view
-    }
-
-    override fun getProgressId(): Int {
-        return R.id.progress
     }
 
     override fun getNewCommentId(): Int {

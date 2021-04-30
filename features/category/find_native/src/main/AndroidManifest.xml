@@ -7,7 +7,7 @@
             android:name=".view.activity.FindNavActivity"
             android:label="@string/title_find_native"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -17,7 +17,7 @@
                     android:host="@string/host_find"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />

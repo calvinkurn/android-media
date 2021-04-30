@@ -1,6 +1,7 @@
 package com.tokopedia.home_account.view
 
 import android.Manifest
+import android.app.Activity
 import android.app.ActivityManager
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -11,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,12 +21,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
@@ -71,6 +75,7 @@ import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -79,16 +84,27 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.internal_review.factory.createReviewHelper
 import kotlinx.android.synthetic.main.home_account_user_fragment.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -121,6 +137,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(HomeAccountUserViewModel::class.java) }
+    private val reviewHelper by lazy { createReviewHelper(context?.applicationContext) }
     private var endlessRecyclerViewScrollListener: HomeAccountEndlessScrollListener? = null
     private var fpmBuyer: PerformanceMonitoring? = null
     private var trackingQueue: TrackingQueue? = null
@@ -136,6 +153,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     var appBarCollapseListener: onAppBarCollapseListener? = null
     var isNeedRefreshProfileItems = true
     var coachMark: CoachMark2? = null
+    var memberLocalLoad: LocalLoad? = null
+    var memberCardView: CardUnify? = null
+    var memberTitle: Typography? = null
+    var memberIcon: ImageUnify? = null
 
     override fun getScreenName(): String = "homeAccountUserFragment"
 
@@ -145,6 +166,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!userSession.isLoggedIn) {
+            goToApplink(ApplinkConst.LOGIN)
+            activity?.finish()
+        }
         fetchRemoteConfig()
         fpmBuyer = PerformanceMonitoring.start(FPM_BUYER)
         context?.let {
@@ -212,17 +237,24 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         viewModel.shortcutData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    memberLocalLoad?.hide()
+                    memberCardView?.show()
+
+                    val leftMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6f, resources.displayMetrics)
+                    memberTitle?.setMargin(leftMargin.toInt(), 0, 0,  0)
+                    memberTitle?.text = it.data.tokopointsStatusFiltered.statusFilteredData.tier.nameDesc
+                    memberIcon?.show()
+                    memberIcon?.setImageUrl(it.data.tokopointsStatusFiltered.statusFilteredData.tier.imageURL)
+
                     val mappedMember = mapper.mapMemberItemDataView(it.data)
                     memberAdapter?.addItems(mappedMember)
                     memberAdapter?.notifyDataSetChanged()
-                    adapter?.notifyItemChanged(0)
+                    adapter?.notifyDataSetChanged()
                 }
 
                 is Fail -> {
-                    memberAdapter?.addItems(listOf(MemberItemDataView(
-                            type = AccountConstants.LAYOUT.TYPE_ERROR
-                    )))
-                    adapter?.notifyItemChanged(0)
+                    memberCardView?.hide()
+                    memberLocalLoad?.show()
                 }
             }
         })
@@ -262,6 +294,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun onSuccessGetUserPageAssetConfig(userPageAssetConfig: UserPageAssetConfig) {
+        financialAdapter?.removeByType(ErrorFinancialViewHolder.ERROR_TYPE)
         var ovoUserPageAssetConfigData = UserPageAssetConfigData()
         var tokopointUserPageAssetConfigData = UserPageAssetConfigData()
         userPageAssetConfig.userPageAssetConfig.forEach { userPageAssetConfigData ->
@@ -290,49 +323,61 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun onFailedGetUserPageAssetConfig() {
+        ErrorFinancialViewHolder.ERROR_TYPE
         financialAdapter?.showError()
+        adapter?.notifyDataSetChanged()
     }
 
     private fun onSuccessGetTokopointsDrawerList(tokopointsDrawerList: TokopointsDrawerList) {
+        financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS)
+        val mappedData = mapper.mapTokopoints(tokopointsDrawerList)
+        financialAdapter?.addSingleItem(mappedData)
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun onFailedGetTokopointsDrawerList() {
         context?.let {
-            val mappedData = mapper.mapTokopoints(tokopointsDrawerList)
+            financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS)
+            val mappedData = mapper.mapError(it, ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS, R.drawable.ic_account_tokopoint)
             financialAdapter?.addSingleItem(mappedData)
             adapter?.notifyDataSetChanged()
         }
     }
 
-    private fun onFailedGetTokopointsDrawerList() {
-        val mappedData = mapper.mapError(context, ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS, R.drawable.ic_account_tokopoint)
-        financialAdapter?.addSingleItem(mappedData)
-        adapter?.notifyDataSetChanged()
-    }
-
     private fun onSuccessGetSaldoBalance(balance: Balance) {
         context?.let {
-            val mappedData = mapper.mapSaldo(context, balance)
+            financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO)
+            val mappedData = mapper.mapSaldo(it, balance)
             financialAdapter?.addSingleItem(mappedData)
             adapter?.notifyDataSetChanged()
         }
     }
 
     private fun onFailedGetSaldoBalance() {
-        val mappedData = mapper.mapError(context, ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO, R.drawable.ic_account_balance)
-        financialAdapter?.addSingleItem(mappedData)
-        adapter?.notifyDataSetChanged()
+        context?.let {
+            financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO)
+            val mappedData = mapper.mapError(it, ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO, R.drawable.ic_account_balance)
+            financialAdapter?.addSingleItem(mappedData)
+            adapter?.notifyDataSetChanged()
+        }
     }
 
     private fun onSuccessGetOvoBalance(walletModel: WalletModel) {
         context?.let {
-            val mappedMember = mapper.mapToFinancialData(context, walletModel)
+            financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_OVO)
+            val mappedMember = mapper.mapToFinancialData(it, walletModel)
             financialAdapter?.addSingleItem(mappedMember)
             adapter?.notifyDataSetChanged()
         }
     }
 
     private fun onFailedGetOvoBalance() {
-        val mappedData = mapper.mapError(context, ErrorFinancialItemViewHolder.TYPE_ERROR_OVO, R.drawable.ic_account_ovo)
-        financialAdapter?.addSingleItem(mappedData)
-        adapter?.notifyDataSetChanged()
+        context?.let {
+            financialAdapter?.removeByType(ErrorFinancialItemViewHolder.TYPE_ERROR_OVO)
+            val mappedData = mapper.mapError(it, ErrorFinancialItemViewHolder.TYPE_ERROR_OVO, R.drawable.ic_account_ovo)
+            financialAdapter?.addSingleItem(mappedData)
+            adapter?.notifyDataSetChanged()
+        }
     }
 
     override fun onMemberErrorClicked() {
@@ -342,25 +387,23 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     override fun onFinancialErrorClicked(type: Int) {
         when (type) {
             ErrorFinancialItemViewHolder.TYPE_ERROR_TOKOPOINTS -> {
-                financialAdapter?.removeByType(type)
                 viewModel.getTokopoints()
             }
             ErrorFinancialItemViewHolder.TYPE_ERROR_OVO -> {
-                financialAdapter?.removeByType(type)
                 viewModel.getOvoBalance()
             }
             ErrorFinancialItemViewHolder.TYPE_ERROR_SALDO -> {
-                financialAdapter?.removeByType(type)
                 viewModel.getSaldoBalance()
             }
             ErrorFinancialViewHolder.ERROR_TYPE -> {
-                financialAdapter?.removeByType(type)
                 viewModel.getUserPageAssetConfig()
             }
         }
     }
 
     private fun onFailGetData() {
+        memberCardView?.hide()
+        memberLocalLoad?.show()
         adapter?.run {
             if (getItem(0) is ProfileDataView) {
                 removeItemAt(0)
@@ -384,11 +427,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel) {
+        memberLocalLoad?.hide()
+        memberCardView?.show()
         adapter?.run {
             if (getItem(0) is ProfileDataView) {
                 removeItemAt(0)
             }
-            addItem(0, mapper.mapToProfileDataView(activity, buyerAccount))
+            addItem(0, mapper.mapToProfileDataView(buyerAccount))
             notifyDataSetChanged()
         }
         hideLoading()
@@ -446,9 +491,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         home_account_user_toolbar?.let {
-            it.setIcon(IconBuilder()
-                    .addIcon(IconList.ID_NAV_GLOBAL) {}
-            )
+            it.setIcon(IconBuilder(
+                    IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_ACCOUNT)
+            ).addIcon(iconId = IconList.ID_NAV_GLOBAL) {})
         }
 
         setupStatusBar()
@@ -507,7 +552,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         viewModel.getShortcutData()
     }
 
-    private fun showHomeAccountTokopoints() : Boolean {
+    private fun showHomeAccountTokopoints(): Boolean {
         return isShowHomeAccountTokopoints
     }
 
@@ -587,6 +632,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     override fun onProfileClicked() {
         homeAccountAnalytic.eventClickProfile()
+    }
+
+    override fun onIconWarningClicked(profile: ProfileDataView) {
+        showBottomSheetAddName(profile)
     }
 
     override fun onEditProfileClicked() {
@@ -749,6 +798,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 }
             }
 
+            AccountConstants.SettingCode.SETTING_IP -> {
+                homeAccountAnalytic.eventClickIpAboutTokopedia()
+                RouteManager.route(activity, AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_IP)
+            }
+
             AccountConstants.SettingCode.SETTING_PRIVACY_ID -> {
                 homeAccountAnalytic.eventClickSetting(PRIVACY_POLICY)
                 homeAccountAnalytic.eventClickPrivacyPolicyAboutTokopedia()
@@ -758,7 +812,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             AccountConstants.SettingCode.SETTING_APP_REVIEW_ID -> {
                 homeAccountAnalytic.eventClickSetting(APPLICATION_REVIEW)
                 homeAccountAnalytic.eventClickReviewAboutTokopedia()
-                goToPlaystore()
+                goToReviewApp()
             }
 
             AccountConstants.SettingCode.SETTING_DEV_OPTIONS -> if (GlobalConfig.isAllowDebuggingTools()) {
@@ -775,6 +829,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
                 showDialogLogout()
+            }
+            AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
+                RouteManager.route(context, ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING)
             }
             AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE -> {
                 homeAccountAnalytic.eventClickAppSettingCleanCache()
@@ -880,6 +937,16 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
+    private fun goToReviewApp() {
+        if (reviewHelper != null) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                reviewHelper?.checkForCustomerReview(context, childFragmentManager, ::goToPlaystore)
+            }
+        } else {
+            goToPlaystore()
+        }
+    }
+
     private fun goToPlaystore() {
         activity?.let {
             val uri = Uri.parse("market://details?id=" + it.application.packageName)
@@ -929,6 +996,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     override fun onItemViewBinded(position: Int, itemView: View, data: Any) {
+        initCoachMark(position, itemView, data)
+        if (position == 0) {
+            initMemberLocalLoad(itemView)
+            initMemberTitle(itemView)
+        }
+    }
+
+    private fun initCoachMark(position: Int, itemView: View, data: Any) {
         if (accountPref.isShowCoachmark()) {
             if (!isProfileSectionBinded) {
                 if (coachMarkItem.count() < 3) {
@@ -967,6 +1042,30 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
             coachMark?.showCoachMark(coachMarkItem)
             isProfileSectionBinded = true
+        }
+    }
+
+    private fun initMemberLocalLoad(itemView: View) {
+        itemView.findViewById<LocalLoad>(R.id.home_account_local_load)?.let {
+            memberLocalLoad = it
+            memberLocalLoad?.refreshBtn?.setOnClickListener {
+                memberLocalLoad?.progressState = !(memberLocalLoad?.progressState ?: false)
+                onMemberErrorClicked()
+            }
+        }
+
+        itemView.findViewById<CardUnify>(R.id.home_account_member_card)?.let {
+            memberCardView = it
+        }
+    }
+
+    private fun initMemberTitle(itemView: View) {
+        itemView.findViewById<Typography>(R.id.home_account_member_layout_title)?.let {
+            memberTitle = it
+        }
+
+        itemView.findViewById<ImageUnify>(R.id.home_account_member_layout_member_icon)?.let {
+            memberIcon = it
         }
     }
 
@@ -1079,6 +1178,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         }
 
+        if (requestCode == REQUEST_CODE_CHANGE_NAME && resultCode == Activity.RESULT_OK) {
+            gotoSettingProfile()
+        }
+
+        if (requestCode == REQUEST_CODE_PROFILE_SETTING) {
+            getData()
+        }
+
         handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
             override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                 handleWishlistAction(productCardOptionsModel)
@@ -1132,6 +1239,44 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
+    private fun showBottomSheetAddName(profile: ProfileDataView) {
+        activity?.let {
+            val addNameLayout = View.inflate(context, R.layout.layout_bottom_sheet_add_name, null)
+            val btnAddName: UnifyButton = addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_button)
+            val iconAddName: ImageUnify = addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_icon)
+            val bottomSheet = BottomSheetUnify()
+
+            ImageUtils.loadImage(iconAddName, URL_ICON_ADD_NAME_BOTTOM_SHEET)
+            iconAddName.setOnClickListener {
+                gotoChangeName(profile)
+                bottomSheet.dismiss()
+            }
+            btnAddName.setOnClickListener {
+                gotoChangeName(profile)
+                bottomSheet.dismiss()
+            }
+
+            bottomSheet.setChild(addNameLayout)
+            bottomSheet.clearAction()
+            bottomSheet.setCloseClickListener {
+                bottomSheet.dismiss()
+            }
+            childFragmentManager.run {
+                bottomSheet.show(this, "bottom sheet add name")
+            }
+        }
+    }
+
+    private fun gotoChangeName(profile: ProfileDataView) {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.CHANGE_NAME, profile.name, "")
+        startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
+    }
+
+    private fun gotoSettingProfile() {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
+        startActivityForResult(intent, REQUEST_CODE_PROFILE_SETTING)
+    }
+
     private fun showSuccessRemoveWishlist() {
         view?.let {
             Toaster.make(
@@ -1173,6 +1318,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     companion object {
+        private const val REQUEST_CODE_CHANGE_NAME = 300
+        private const val REQUEST_CODE_PROFILE_SETTING = 301
 
         private const val COMPONENT_NAME_TOP_ADS = "Account Home Recommendation Top Ads"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
@@ -1180,6 +1327,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val REQUEST_FROM_PDP = 394
         private val FPM_BUYER = "mp_account_buyer"
+        private const val URL_ICON_ADD_NAME_BOTTOM_SHEET = "https://images.tokopedia.net/img/android/user/profile_page/Group3082@3x.png"
 
         private const val OVO_ASSET_TYPE = "ovo"
         private const val TOKOPOINT_ASSET_TYPE = "tokopoint"

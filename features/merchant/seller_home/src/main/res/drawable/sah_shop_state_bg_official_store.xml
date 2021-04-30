@@ -4,6 +4,6 @@
 
     <gradient
         android:angle="270"
-        android:endColor="@color/sah_color_00ebffef"
-        android:startColor="@color/sah_color_fbe7ff" />
+        android:endColor="@color/Unify_G100_20"
+        android:startColor="@color/Unify_P100" />
 </shape>

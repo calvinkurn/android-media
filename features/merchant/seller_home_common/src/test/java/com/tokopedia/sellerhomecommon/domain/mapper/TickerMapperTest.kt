@@ -29,7 +29,7 @@ class TickerMapperTest {
         val jsonPath = "json/get_tickers_success_response.json"
         val gqlResponse = TestHelper.createSuccessResponse<GetTickerResponse>(jsonPath)
         val tickerData = gqlResponse.getSuccessData<GetTickerResponse>()
-        val remoteTickerList = tickerData.ticker?.tickers.orEmpty()
+        val isFromCache = false
 
         val expectedTickers = listOf(TickerItemUiModel(
                 id = "253",
@@ -40,7 +40,7 @@ class TickerMapperTest {
                 redirectUrl = "https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU"
         ))
 
-        val actualTickers = mapper.mapRemoteModelToUiModel(remoteTickerList, cacheStrategy.type == CacheType.CACHE_ONLY)
+        val actualTickers = mapper.mapRemoteDataToUiData(tickerData, isFromCache)
 
         Assert.assertEquals(expectedTickers, actualTickers)
     }

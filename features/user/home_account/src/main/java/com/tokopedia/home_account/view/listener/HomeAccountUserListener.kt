@@ -2,6 +2,7 @@ package com.tokopedia.home_account.view.listener
 
 import android.view.View
 import com.tokopedia.home_account.data.model.CommonDataView
+import com.tokopedia.home_account.data.model.ProfileDataView
 import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountUserCommonAdapter
@@ -22,6 +23,7 @@ interface HomeAccountUserListener {
     fun onItemViewBinded(position: Int, itemView: View, data: Any)
     fun onProfileAdapterReady(financialAdapter: HomeAccountFinancialAdapter, memberAdapter: HomeAccountMemberAdapter)
     fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter)
+    fun onIconWarningClicked(profile: ProfileDataView)
 
     fun onFinancialErrorClicked(type: Int)
     fun onMemberErrorClicked()
