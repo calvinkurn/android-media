@@ -19,6 +19,8 @@ import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SecondaryActionBu
 import com.tokopedia.buyerorderdetail.presentation.model.*
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -102,6 +104,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
     }
 
     private fun setupSwipeRefreshLayout() {
+        swipeRefreshBuyerOrderDetail?.isEnabled = false
         swipeRefreshBuyerOrderDetail?.setOnRefreshListener {
             loadBuyerOrderDetail()
         }
@@ -128,11 +131,14 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
     private fun observeBuyerOrderDetail() {
         loadBuyerOrderDetail()
         viewModel.buyerOrderDetailResult.observe(viewLifecycleOwner, Observer { result ->
+            loaderBuyerOrderDetail.gone()
+            rvBuyerOrderDetail.show()
             when (result) {
                 is Success -> onSuccessGetBuyerOrderDetail(result.data)
                 is Fail -> onFailedGetBuyerOrderDetail(result.throwable)
             }
             swipeRefreshBuyerOrderDetail?.isRefreshing = false
+            swipeRefreshBuyerOrderDetail?.isEnabled = true
         })
     }
 
