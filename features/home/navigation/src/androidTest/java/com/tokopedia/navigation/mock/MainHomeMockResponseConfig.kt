@@ -13,6 +13,8 @@ class MainHomeMockResponseConfig: MockModelConfig() {
         const val KEY_QUERY_DYNAMIC_POSITION = "dynamicPosition"
         const val KEY_QUERY_DYNAMIC_POSITION_ICON = "homeIcon"
         const val KEY_QUERY_FLOATING_EGG = "gamiFloating"
+        const val KEY_CONTAINS_UNIVERSE_PLACEHOLDER = "universe_placeholder"
+        const val KEY_QUERY_DYNAMIC_POSITION_TICKER = "homeTicker"
     }
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
@@ -45,6 +47,16 @@ class MainHomeMockResponseConfig: MockModelConfig() {
                 getRawString(context, R.raw.response_mock_data_dynamic_position_icon),
                 FIND_BY_CONTAINS)
 
+        addMockResponse(
+                KEY_CONTAINS_UNIVERSE_PLACEHOLDER,
+                getRawString(context, R.raw.response_mock_data_universe_placeholder),
+                FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+                KEY_QUERY_DYNAMIC_POSITION_TICKER,
+                getRawString(context, R.raw.response_mock_data_dynamic_position_ticker),
+                FIND_BY_CONTAINS)
         return this
     }
 }
