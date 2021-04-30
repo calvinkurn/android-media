@@ -307,7 +307,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
 
     private fun onSuccessGetPenaltyListData(data: Triple<List<ItemPenaltyUiModel>, Boolean, Boolean>) {
         globalErrorPenalty?.hide()
-        if (!data.third && data.first.isEmpty()) {
+        if (!data.second && data.first.isEmpty()) {
             penaltyPageAdapter.hideLoading()
             penaltyPageAdapter.setEmptyStatePenalty()
         } else {
@@ -315,7 +315,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             penaltyPageAdapter.hideLoading()
             penaltyPageAdapter.setPenaltyListDetailData(data.first)
         }
-        updateScrollListenerState(data.second)
+        updateScrollListenerState(data.third)
     }
 
     private fun setupGlobalErrorState(throwable: Throwable) {

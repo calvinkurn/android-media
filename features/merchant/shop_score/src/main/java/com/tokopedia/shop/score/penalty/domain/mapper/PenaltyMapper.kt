@@ -28,13 +28,13 @@ import javax.inject.Inject
 
 class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context?) {
 
-    fun mapToPenaltyDetail(itemPenaltyUiModel: ItemPenaltyUiModel, ): ShopPenaltyDetailUiModel {
+    fun mapToPenaltyDetail(itemPenaltyUiModel: ItemPenaltyUiModel): ShopPenaltyDetailUiModel {
         return ShopPenaltyDetailUiModel(
                 titleDetail = itemPenaltyUiModel.typePenalty,
-                dateDetail = itemPenaltyUiModel.startDate,
+                startDateDetail = itemPenaltyUiModel.startDate,
                 summaryDetail = itemPenaltyUiModel.descPenalty,
                 deductionPointPenalty = itemPenaltyUiModel.deductionPoint.toString(),
-                statusDate = itemPenaltyUiModel.endDateDetail,
+                endDateDetail = itemPenaltyUiModel.endDateDetail,
                 stepperPenaltyDetailList = mapToStepperPenaltyDetail(itemPenaltyUiModel.statusPenalty)
         )
     }
@@ -201,7 +201,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
         }
     }
 
-    private fun mapToChipsSortFilter(sortBy: Int): List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel> {
+    fun mapToChipsSortFilter(sortBy: Int): List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel> {
         return mutableListOf<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>().apply {
             add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = SORT_LATEST, isSelected = sortBy == SORT_LATEST_VALUE, value = SORT_LATEST_VALUE))
             add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(title = SORT_OLDEST, isSelected = sortBy == SORT_OLDEST_VALUE, value = SORT_OLDEST_VALUE))

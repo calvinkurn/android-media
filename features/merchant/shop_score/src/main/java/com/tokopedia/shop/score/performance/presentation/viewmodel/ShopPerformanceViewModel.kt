@@ -32,7 +32,7 @@ class ShopPerformanceViewModel @Inject constructor(
         private val getShopPerformanceUseCase: GetShopPerformanceUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    val shopInfoLevel: LiveData<Result<ShopInfoLevelUiModel>>
+    val shopInfoLevel: LiveData<ShopInfoLevelUiModel>
         get() = _shopInfoLevel
 
     val shopPerformanceDetail: LiveData<ShopPerformanceDetailUiModel>
@@ -46,7 +46,7 @@ class ShopPerformanceViewModel @Inject constructor(
 
     private val _shopPerformancePage = MutableLiveData<Result<Pair<List<BaseShopPerformance>, ShopScoreWrapperResponse>>>()
 
-    private val _shopInfoLevel = MutableLiveData<Result<ShopInfoLevelUiModel>>()
+    private val _shopInfoLevel = MutableLiveData<ShopInfoLevelUiModel>()
     private val _shopPerformanceDetail = MutableLiveData<ShopPerformanceDetailUiModel>()
 
     private val _shopInfoPeriod = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
@@ -86,10 +86,8 @@ class ShopPerformanceViewModel @Inject constructor(
     }
 
     fun getShopInfoLevel(level: Int) {
-        launchCatchError(block = {
-            _shopInfoLevel.value = Success(shopScoreMapper.mapToShopInfoLevelUiModel(level))
-        }, onError = {
-            _shopInfoLevel.value = Fail(it)
-        })
+        launch {
+            _shopInfoLevel.value = shopScoreMapper.mapToShopInfoLevelUiModel(level)
+        }
     }
 }

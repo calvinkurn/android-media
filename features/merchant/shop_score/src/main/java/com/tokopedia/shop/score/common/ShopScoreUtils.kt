@@ -74,7 +74,7 @@ fun String.formatDate(beforePattern: String, targetPattern: String, locale: Loca
         val fromSimpleDateFormat = SimpleDateFormat(beforePattern, locale)
         val parseDate = fromSimpleDateFormat.parse(this)
         val convertFormatDate = SimpleDateFormat(targetPattern, locale)
-         parseDate?.let { convertFormatDate.format(it) } ?: ""
+        parseDate?.let { convertFormatDate.format(it) } ?: ""
     } catch (e: ParseException) {
         ""
     }

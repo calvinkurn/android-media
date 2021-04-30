@@ -110,8 +110,7 @@ class ShopPenaltyViewModel @Inject constructor(
 
             val penaltyDetailResponse = asyncCatchError(block = {
                 getShopPenaltyDetailUseCase.params = GetShopPenaltyDetailUseCase.crateParams(
-                        ShopScorePenaltyDetailParam(startDate = startDate, endDate = endDate, typeID = typeId, sort = sortBy
-                        ))
+                        ShopScorePenaltyDetailParam(startDate = startDate, endDate = endDate, typeID = typeId, sort = sortBy))
                 getShopPenaltyDetailUseCase.executeOnBackground()
             }, onError = {
                 _penaltyPageData.postValue(Fail(it))
@@ -167,9 +166,9 @@ class ShopPenaltyViewModel @Inject constructor(
                 )
                 penaltyMapper.mapToItemPenaltyList(getShopPenaltyDetailUseCase.executeOnBackground())
             }
-            shopPenaltyDetailMediator.value = Success(penaltyDetail)
+            shopPenaltyDetailMediator.postValue(Success(penaltyDetail))
         }, onError = {
-            shopPenaltyDetailMediator.value = Fail(it)
+            shopPenaltyDetailMediator.postValue(Fail(it))
         })
     }
 
