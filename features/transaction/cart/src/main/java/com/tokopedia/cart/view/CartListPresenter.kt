@@ -362,20 +362,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
 
         if (!hasCalculateWholesalePrice) {
-            if (itemQty > wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc) {
-                subTotalWholesalePrice = (itemQty * wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc).toDouble()
-                val wholesalePrice = wholesalePriceDataList[wholesalePriceDataList.size - 1].prdPrc
-                val wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        wholesalePrice, false).removeDecimalSuffix()
-                originData.wholesalePriceFormatted = wholesalePriceFormatted
-                originData.wholesalePrice = wholesalePrice
-                subtotalBeforeSlashedPrice = itemQty * originData.wholesalePrice.toDouble()
-            } else {
-                subTotalWholesalePrice = itemQty * originData.pricePlan
-                originData.wholesalePriceFormatted = null
-                originData.wholesalePrice = 0
-                subtotalBeforeSlashedPrice = itemQty * originData.pricePlan
-            }
+            subTotalWholesalePrice = itemQty * originData.pricePlan
+            originData.wholesalePriceFormatted = null
+            originData.wholesalePrice = 0
+            subtotalBeforeSlashedPrice = itemQty * originData.pricePlan
         }
 
         if (originData.isCashBack) {
@@ -634,7 +624,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setPosition(position.toString())
             if (recommendationItem.isFreeOngkirActive && recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
                 setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA)
-            } else if(recommendationItem.isFreeOngkirActive && !recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
+            } else if (recommendationItem.isFreeOngkirActive && !recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
                 setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR)
             } else {
                 setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
@@ -725,7 +715,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setAttribution(EnhancedECommerceProductCartMapData.RECOMMENDATION_ATTRIBUTION)
             if (recommendationItem.isFreeOngkirActive && recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
                 setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA)
-            } else if(recommendationItem.isFreeOngkirActive && !recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
+            } else if (recommendationItem.isFreeOngkirActive && !recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
                 setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR)
             } else {
                 setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
@@ -995,7 +985,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val recommendationItem = cartRecommendationItemHolderData.recommendationItem
             if (recommendationItem.isFreeOngkirActive && recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
                 setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA)
-            } else if(recommendationItem.isFreeOngkirActive && !recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
+            } else if (recommendationItem.isFreeOngkirActive && !recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
                 setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR)
             } else {
                 setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
@@ -1160,7 +1150,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             it.showProgressLoading()
             val adsId = it.getAdsId()
             if (adsId != null && !adsId.trim { it <= ' ' }.isEmpty()) {
-                seamlessLoginUsecase.generateSeamlessUrl(url.replace(QUERY_APP_CLIENT_ID, adsId), CartSeamlessLoginSubscriber(view) )
+                seamlessLoginUsecase.generateSeamlessUrl(url.replace(QUERY_APP_CLIENT_ID, adsId), CartSeamlessLoginSubscriber(view))
             } else {
                 it.hideProgressLoading()
                 it.showToastMessageRed()
@@ -1182,7 +1172,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         view?.let {
             it.showProgressLoading()
 
-            val updateCartRequestList = getUpdateCartRequest(it.getAllSelectedCartDataList() ?: emptyList())
+            val updateCartRequestList = getUpdateCartRequest(it.getAllSelectedCartDataList()
+                    ?: emptyList())
             if (updateCartRequestList.isNotEmpty()) {
                 val requestParams = RequestParams.create()
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
