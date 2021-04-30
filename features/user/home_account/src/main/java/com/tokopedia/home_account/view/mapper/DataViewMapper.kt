@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
+import com.tokopedia.home_account.Utils
+import com.tokopedia.home_account.Utils.formatIdrCurrency
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_DEFAULT
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_KUPON_SAYA
@@ -103,7 +105,7 @@ class DataViewMapper @Inject constructor(
         val totalBalance = balance.buyerUsable + balance.sellerUsable
         return CommonDataView(
                 id = AccountConstants.SettingCode.SETTING_SALDO,
-                title = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalBalance.toDouble(), false),
+                title = formatIdrCurrency(totalBalance.toLong()),
                 body = getString(context, R.string.account_title_saldo_item),
                 type = FinancialItemViewHolder.TYPE_SALDO,
                 urlIcon = AccountConstants.Url.SALDO_ICON,
