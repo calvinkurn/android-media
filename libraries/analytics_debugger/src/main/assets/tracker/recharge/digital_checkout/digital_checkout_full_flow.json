@@ -59,11 +59,39 @@
       ]
     },
     {
-      "event":"clickCheckout",
-      "eventCategory":"digital - checkout page",
-      "eventAction":"tick auto debit",
-      "eventLabel":"{{.+ - .+}}",
-      "businessUnit":"recharge",
+      "event": "checkout_progress",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "click proceed to payment crossell",
+      "eventLabel": "{{.+ - .+}}",
+      "checkout_step": "2",
+      "checkout_option": "click payment option button",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": "{{.+}}",
+      "businessUnit": "recharge",
+      "userId": "{{.+}}",
+      "items": [
+        {
+          "cart_id": "{{.+}}",
+          "quantity": "{{\\d*.\\d*}}",
+          "category_id": "{{.+}}",
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "item_brand": "{{.+}}",
+          "item_variant": "{{.+}}",
+          "item_category": "{{.+}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "shop_id": "{{.+}}",
+          "shop_name": "{{.+}}",
+          "shop_type": "{{.+}}"
+        }
+      ]
+    },
+    {
+      "event": "clickCheckout",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "tick auto debit",
+      "eventLabel": "{{.+ - .+}}",
+      "businessUnit": "recharge",
       "currentSite":"tokopediadigital",
       "userId":"{{.+}}",
       "sessionIris": "{{.+}}"
