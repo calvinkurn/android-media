@@ -310,6 +310,21 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         removeInvoiceCarousel()
     }
 
+    override fun hideHelpfullOptions() {
+        var item: HelpFullQuestionsViewModel? = null
+        var index = 0
+        for (it in adapter.list) {
+            if (it is HelpFullQuestionsViewModel) {
+                item = it
+                index = adapter.list.indexOf(item)
+                break
+            }
+        }
+        item?.let {
+            it.isSubmited = true
+            adapter.setElement(index, it) }
+    }
+
     override fun getAdapter(): ChatbotAdapter {
         return super.getAdapter() as ChatbotAdapter
     }

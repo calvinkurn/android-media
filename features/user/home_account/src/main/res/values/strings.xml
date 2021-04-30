@@ -40,7 +40,6 @@
     <string name="menu_account_title_address_list">Daftar Alamat</string>
     <string name="menu_account_title_bank">Rekening Bank</string>
     <string name="menu_account_title_instant_payment">Pembayaran Instan</string>
-    <string name="menu_account_title_quick_buy">Beli Langsung</string>
     <string name="menu_account_title_security">Keamanan Akun</string>
     <string name="menu_account_title_notification">Notifikasi</string>
     <string name="menu_account_title_shake">Shake Shake</string>
@@ -63,7 +62,6 @@
     <string name="menu_account_desc_address">Atur alamat pengiriman belanjaan</string>
     <string name="menu_account_desc_bank">Tarik Saldo Tokopedia ke rekening tujuan</string>
     <string name="menu_account_desc_instant_payment">OVO, kartu kredit, &amp; debit instan terdaftar</string>
-    <string name="menu_account_desc_quick_buy">Atur pengiriman &amp; pembayaran favorit</string>
     <string name="menu_account_desc_security">Kata sandi, PIN, &amp; verifikasi data diri</string>
     <string name="menu_account_desc_notification">Atur segala jenis pesan notifikasi</string>
     <string name="menu_account_desc_shake">Goyang HP untuk dapat promo menarik</string>

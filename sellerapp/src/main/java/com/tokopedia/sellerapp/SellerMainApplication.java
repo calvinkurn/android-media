@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.github.moduth.blockcanary.BlockCanary;
 import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.android.play.core.splitcompat.SplitCompat;
+import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.authentication.AuthHelper;
@@ -39,6 +40,7 @@ import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
 import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.ToasterActivityLifecycle;
+import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -78,6 +80,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_sellerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_new_relic";
+    private static final String PARSER_SCALYR_SA = "android-seller-app-p%s";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -241,6 +244,12 @@ public class SellerMainApplication extends SellerRouterApplication implements
 
             @NotNull
             @Override
+            public String getParserScalyr() {
+                return PARSER_SCALYR_SA;
+            }
+
+            @NotNull
+            @Override
             public String getScalyrConfig() {
                 return remoteConfig.getString(REMOTE_CONFIG_SCALYR_KEY_LOG);
             }
@@ -279,6 +288,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
     }
 
     private void registerActivityLifecycleCallbacks() {
+        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -287,6 +297,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
+        registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
     }
 
     @Override
