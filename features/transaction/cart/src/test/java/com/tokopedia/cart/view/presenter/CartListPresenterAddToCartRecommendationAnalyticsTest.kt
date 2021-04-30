@@ -196,6 +196,28 @@ object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
 
         }
 
+        Scenario("1 item selected on non empty cart and item is top ads") {
+
+            lateinit var result: Map<String, Any>
+
+            When("generate add to cart recommendation data analytics") {
+                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(false, RecommendationItem(isTopAds = true)), AddToCartDataModel(), false)
+            }
+
+            Then("should be containing 1 product") {
+                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
+                Assert.assertEquals(1, products.size)
+            }
+
+            Then("key `list` value should contain `top ads`") {
+                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
+                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
+                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String).contains(EnhancedECommerceActionField.LIST_CART_RECOMMENDATION_TOPADS_TYPE))
+            }
+
+        }
+
         Scenario("1 item selected on empty cart") {
 
             lateinit var result: Map<String, Any>
