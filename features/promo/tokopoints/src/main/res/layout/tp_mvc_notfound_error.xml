@@ -9,14 +9,14 @@
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/ivCouponError"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_280"
+        android:layout_height="@dimen/dp_210"
         android:layout_marginTop="@dimen/dp_30"
         app:imageDpiSupportType="singleDpi"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:remoteFileName="mvc_emptylist.png" />
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/mvc_emptylist.png" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvCoupornErrorTitle"
