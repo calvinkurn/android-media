@@ -371,6 +371,7 @@
     <string name="action_specification_counter">, +%1$d lainnya</string>
 
     <!-- Product Limitation -->
+    <string name="label_product_limitation_start_date">10 Mei 2021</string>
     <string name="label_product_limitation_ticker">Mulai %1$s, ada perubahan Syarat &amp; Ketentuan jumlah produk. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
     <string name="action_product_limitation_item">Pelajari</string>
     <string name="action_product_limitation_item_goto_productlist">Ke Daftar Produk</string>
