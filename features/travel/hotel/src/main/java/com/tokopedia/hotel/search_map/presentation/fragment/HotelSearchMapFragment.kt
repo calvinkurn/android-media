@@ -341,6 +341,16 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 cardListPosition = it.tag as Int
                 rvHorizontalPropertiesHotelSearchMap.scrollToPosition(cardListPosition)
                 changeMarkerState(cardListPosition)
+                with(hotelSearchMapViewModel.searchParam) {
+                    if(cardListPosition >= 0){
+                        trackingHotelUtil.hotelOnScrollName(
+                                context,
+                                searchDestinationName,
+                                searchDestinationType,
+                                this, hotelProperties[cardListPosition],cardListPosition,
+                                SEARCH_SCREEN_NAME)
+                    }
+                }
             }
         }
         return true
