@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_N700_68"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         tools:text="Ini Descripsi" />
 
     <com.tokopedia.unifyprinciples.Typography

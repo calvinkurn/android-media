@@ -24,7 +24,6 @@ import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
-import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
@@ -46,6 +45,7 @@ import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpFragmentP
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyPdpProductViewHolder
 import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyProductDetailBottomSheet
 import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
+import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpBottomCheckoutWidget
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpHeaderViewWidget
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpInputCardNumberWidget
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpMapper
@@ -67,7 +67,7 @@ import javax.inject.Inject
 
 class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.ActionListener,
         EmoneyPdpInputCardNumberWidget.ActionListener, EmoneyPdpProductViewHolder.ActionListener,
-        TopupBillsCheckoutWidget.ActionListener {
+        EmoneyPdpBottomCheckoutWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -193,6 +193,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     if (it.throwable is DigitalAddToCartViewModel.DigitalUserNotLoginException) {
                         navigateToLoginPage()
                     } else emoneyPdpViewModel.setErrorMessage(it.throwable)
+                    emoneyFullPageLoadingLayout.hide()
                 }
             }
             emoneyFullPageLoadingLayout.hide()

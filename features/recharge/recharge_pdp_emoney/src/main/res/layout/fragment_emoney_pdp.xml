@@ -20,7 +20,8 @@
             android:background="@drawable/bg_emoney_pdp_green_gradient"
             android:orientation="vertical"
             app:elevation="@dimen/spacing_lvl2"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            android:paddingBottom="@dimen/spacing_lvl2">
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/emoneyPdpTicker"
@@ -45,8 +46,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/unify_space_12"
-                android:layout_marginTop="@dimen/unify_space_12"
-                android:layout_marginBottom="@dimen/spacing_lvl5"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
                 app:layout_constraintTop_toBottomOf="@id/emoneyPdpHeaderView" />
 
             <com.tokopedia.unifycomponents.TabsUnify
@@ -99,7 +100,7 @@
         app:cardElevation="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+        <com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpBottomCheckoutWidget
             android:id="@+id/emoneyBuyWidget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -112,7 +113,7 @@
         android:id="@+id/emoneyFullPageLoadingLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="false"
+        android:clickable="true"
         android:background="@color/Unify_N700_32"
         android:visibility="gone">
 
