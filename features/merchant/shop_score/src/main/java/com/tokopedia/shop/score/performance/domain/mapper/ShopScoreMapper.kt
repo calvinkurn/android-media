@@ -166,10 +166,15 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 }
                 else -> {
                     if (shopAge >= SHOP_AGE_SIXTY) {
-                        if (isEligiblePM == true) {
-                            add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, shopAge))
+                        val isNewSellerPM = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
+                        if (isNewSellerPM) {
+                            add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, shopAge, isNewSellerPM))
                         } else {
-                            add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
+                            if (isEligiblePM == true) {
+                                add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, shopAge, isNewSellerPM))
+                            } else {
+                                add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
+                            }
                         }
                     }
                 }
@@ -504,10 +509,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return itemPotentialPMBenefitList
     }
 
-    private fun mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel, shopAge: Int)
+    private fun mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel, shopAge: Int, isNewSeller)
             : ItemStatusRMUiModel {
         val updateDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT)
-        val isNewSeller = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
         return ItemStatusRMUiModel(updateDatePotential = updateDate,
                 titleRMEligible =
                 if (isNewSeller)
