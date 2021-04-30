@@ -27,6 +27,7 @@ import com.tokopedia.gm.common.view.worker.GetPMInterruptDataWorker
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -303,9 +304,12 @@ class PMShopScoreInterruptHelper @Inject constructor() {
                 PARAM_HAS_CLICKED to hasConsentChecked
         )
         val url = UriUtil.buildUriAppendParams(PMConstant.Urls.SHOP_SCORE_INTERRUPT_PAGE, param)
-        val encodedUrl = URLEncoder.encode(url, "UTF-8")
-        val backPressedMessage = context.getString(R.string.pm_on_back_pressed_disabled_message)
-        return String.format("%s?url=%s&titlebar=false&back_pressed_enabled=false&back_pressed_message=%s", ApplinkConst.WEBVIEW, encodedUrl, backPressedMessage)
+        val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
+        val backPressedMessage = URLEncoder.encode(context.getString(R.string.pm_on_back_pressed_disabled_message), StandardCharsets.UTF_8.toString())
+        val backPressedEnabled = (getPeriodType() != PeriodType.COMMUNICATION_PERIOD).toString()
+        val showTitleBar = (getPeriodType() != PeriodType.COMMUNICATION_PERIOD).toString()
+
+        return String.format("%s?titlebar=%s&back_pressed_enabled=%s&back_pressed_message=%s&url=%s", ApplinkConst.WEBVIEW, showTitleBar, backPressedEnabled, backPressedMessage, encodedUrl)
     }
 
     private fun hasConsentChecked(): Boolean {
