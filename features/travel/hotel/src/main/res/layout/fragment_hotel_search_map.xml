@@ -61,8 +61,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:itemCount="3"
-                tools:listitem="@layout/item_property_search_result_horizontal"
-                app:fastScrollEnabled="false"/>
+                tools:listitem="@layout/item_property_search_result_horizontal"/>
 
             <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
                 android:id="@+id/btnGetRadiusHotelSearchMap"
