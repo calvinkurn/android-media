@@ -8,7 +8,6 @@ import kotlinx.android.parcel.Parcelize
 class CartShopHolderData : Parcelable {
     var shopGroupAvailableData: ShopGroupAvailableData? = null
     var isAllSelected: Boolean = false
-        get() = field
         private set
     var isPartialSelected: Boolean = false
 
