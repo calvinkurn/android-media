@@ -111,7 +111,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
 
     private fun actionDownloadAndSavePicture() {
         val filenameParam = FileUtil.generateUniqueFileNameDateFormat(viewPager.currentItem)
-        val notificationId = filenameParam.toInt()
+        val notificationId = filenameParam.hashCode()
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationBuilder = NotificationCompat.Builder(this@ImagePreviewActivity,
                 ANDROID_GENERAL_CHANNEL)
