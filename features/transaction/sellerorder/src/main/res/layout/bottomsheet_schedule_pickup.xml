@@ -23,7 +23,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_today"/>
 
     <View
-        android:id="@+id/divider_label"
+        android:id="@+id/divider_schedule"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
         android:background="@color/Unify_N75"
@@ -40,7 +40,7 @@
         android:layout_marginTop="@dimen/unify_space_16"
         android:text="Besok"
         android:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@id/divider_label"
+        app:layout_constraintTop_toBottomOf="@id/divider_schedule"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView

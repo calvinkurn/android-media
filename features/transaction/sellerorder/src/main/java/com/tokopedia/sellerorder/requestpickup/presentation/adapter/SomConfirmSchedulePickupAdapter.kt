@@ -35,9 +35,10 @@ class SomConfirmSchedulePickupAdapter(private val listener: SomConfirmSchedulePi
         holder.bind(scheduleTime[position])
     }
 
-    fun setData(data: List<ScheduleTime>) {
+    fun setData(data: List<ScheduleTime>, key: String) {
         scheduleTime.clear()
         scheduleTime.addAll(data)
+        selectedKey = key
         notifyDataSetChanged()
     }
 
@@ -63,7 +64,6 @@ class SomConfirmSchedulePickupAdapter(private val listener: SomConfirmSchedulePi
             }
 
             itemScheduleLayout.setOnClickListener {
-                selectedKey = item.key
                 listener.onSchedulePickupClicked(item, formattedTime)
             }
 

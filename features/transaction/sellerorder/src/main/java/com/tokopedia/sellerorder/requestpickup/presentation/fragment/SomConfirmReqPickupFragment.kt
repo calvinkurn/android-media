@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -30,6 +31,7 @@ import com.tokopedia.sellerorder.requestpickup.presentation.viewmodel.SomConfirm
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_som_confirm_req_pickup.*
@@ -54,6 +56,9 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     private var bottomSheetSchedulePickupTomorrowAdapter = SomConfirmSchedulePickupAdapter(this)
     private var rvSchedulePickupToday: RecyclerView? = null
     private var rvSchedulePickupTomorrow: RecyclerView? = null
+    private var tvSchedulePickupToday: Typography? = null
+    private var tvSchedulePickupTomorrow: Typography? = null
+    private var dividerSchedulePickup: View? = null
 
     private val somConfirmRequestPickupViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomConfirmReqPickupViewModel::class.java]
@@ -196,12 +201,11 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                 setActiveChips(pickup_schedule, pickup_now)
                 btn_arrow?.visibility = View.VISIBLE
                 divider_schedule?.visibility = View.VISIBLE
-                bottomSheetSchedulePickupTodayAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time.today, "Hari ini"))
-                bottomSheetSchedulePickupTomorrowAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow, "Besok"))
-                currSchedulePickupKey = confirmReqPickupResponse.dataSuccess.schedule_time.today[0].key
                 tv_schedule?.text = currSchedulePickupTime
                 btn_arrow.setOnClickListener {
                     openBottomSheetSchedulePickup()
+                    bottomSheetSchedulePickupTodayAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time.today, "Hari ini"), currSchedulePickupKey)
+                    bottomSheetSchedulePickupTomorrowAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time.today, "Besok"), currSchedulePickupKey)
                 }
             }
 
@@ -236,6 +240,9 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     private fun setupChild(child: View) {
         rvSchedulePickupToday = child.findViewById(R.id.rv_today)
         rvSchedulePickupTomorrow = child.findViewById(R.id.rv_tomorrow)
+        tvSchedulePickupToday = child.findViewById(R.id.tv_today)
+        tvSchedulePickupTomorrow = child.findViewById(R.id.tv_tomorrow)
+        dividerSchedulePickup = child.findViewById(R.id.divider_schedule)
 
         rvSchedulePickupToday?.apply {
             layoutManager = LinearLayoutManager(this.context)
@@ -245,6 +252,16 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
         rvSchedulePickupTomorrow?.apply {
             layoutManager = LinearLayoutManager(this.context)
             adapter = bottomSheetSchedulePickupTomorrowAdapter
+        }
+
+        if (confirmReqPickupResponse.dataSuccess.schedule_time.today.isEmpty()) {
+            rvSchedulePickupToday?.gone()
+            tvSchedulePickupToday?.gone()
+            dividerSchedulePickup?.gone()
+        } else if (confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow.isEmpty()) {
+            rvSchedulePickupTomorrow?.gone()
+            tvSchedulePickupTomorrow?.gone()
+            dividerSchedulePickup?.gone()
         }
     }
 
