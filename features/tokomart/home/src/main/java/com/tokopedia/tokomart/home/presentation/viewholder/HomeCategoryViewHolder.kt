@@ -2,18 +2,36 @@ package com.tokopedia.tokomart.home.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokomart.home.R
+import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapter
+import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeFactory
+import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryUiModel
+import kotlinx.android.synthetic.main.item_tokomart_home_category.view.*
 
 class HomeCategoryViewHolder(itemView: View): AbstractViewHolder<HomeCategoryUiModel>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokomart_home_category
+
+        private const val GRID_SPAN_COUNT = 5
     }
 
-    override fun bind(data: HomeCategoryUiModel) {
+    private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(), TokoMartHomeListDiffer()) }
 
+    override fun bind(data: HomeCategoryUiModel) {
+        itemView.apply {
+            textTitle.text = data.title
+
+            with(rvCategory) {
+                adapter = this@HomeCategoryViewHolder.adapter
+                layoutManager = GridLayoutManager(context, GRID_SPAN_COUNT)
+            }
+
+            adapter.submitList(data.menuList)
+        }
     }
 }
