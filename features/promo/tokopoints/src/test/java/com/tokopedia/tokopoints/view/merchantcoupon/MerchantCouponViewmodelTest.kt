@@ -83,6 +83,12 @@ class MerchantCouponViewmodelTest {
         val couponObserver = mockk<Observer<Resources<MerchantCouponData>>>() {
             every { onChanged(any()) } just Runs
         }
+        val data = mockk<GraphqlResponse>(relaxed = true)
+        coEvery { gqlRepository.getReseponse(any()) } returns data
+        coEvery { repository.executeOnBackground() } returns mockk {
+            every { getData<MerchantCouponResponse>(MerchantCouponResponse::class.java) } returns null
+            every { getError(MerchantCouponResponse::class.java) } returns null
+        }
         viewModel.couponData.observeForever(couponObserver)
         viewModel.merchantCouponData(0)
 
