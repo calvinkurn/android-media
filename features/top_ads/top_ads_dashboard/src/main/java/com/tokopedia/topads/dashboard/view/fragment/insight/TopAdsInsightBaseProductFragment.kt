@@ -214,16 +214,20 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
             currentGroupName = groupName
             getBidInfo()
             adapter.items?.forEach {
-                val eventLabel = "${it.productId} - ${it.searchCount} - ${it.searchPercentage} - ${it.recomBid} - ${it.setCurrentBid}"
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(BUAT_GRUP_IKLANKAN, eventLabel, userSession.userId)
+                if(it.isChecked) {
+                    val eventLabel = "${it.productId} - ${it.searchCount} - ${it.searchPercentage} - ${it.recomBid} - ${it.setCurrentBid}"
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(BUAT_GRUP_IKLANKAN, eventLabel, userSession.userId)
+                }
             }
         }
         sheet.onItemClick = { groupId ->
             getBidInfo()
             currentGroupId = groupId
             adapter.items?.forEach {
-                val eventLabel = "${it.productId} - ${it.searchCount} - ${it.searchPercentage} - ${it.recomBid} - ${it.setCurrentBid}"
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_GRUP_AKTIF_IKLANKAN, eventLabel, userSession.userId)
+                if(it.isChecked) {
+                    val eventLabel = "${it.productId} - ${it.searchCount} - ${it.searchPercentage} - ${it.recomBid} - ${it.setCurrentBid}"
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_GRUP_AKTIF_IKLANKAN, eventLabel, userSession.userId)
+                }
             }
         }
 

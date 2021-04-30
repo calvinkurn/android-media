@@ -152,7 +152,7 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
     private fun onButtonClick(pos: Int) {
         currentPosition = pos
         topAdsDashboardPresenter.getGroupInfo(resources, adapter.items[pos].groupId, ::onSuccessGroupInfo)
-        val eventLabel = "${adapter.items[pos].groupId} - ${adapter.items[pos].suggestedPriceDaily} - ${adapter.items[pos].setPotensiKlik} - ${adapter.items[pos].priceDaily}"
+        val eventLabel = "${adapter.items[pos].groupId} - ${adapter.items[pos].suggestedPriceDaily} - ${adapter.items[pos].setPotensiKlik} - ${adapter.items[pos].setCurrentBid}"
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_TERAPKAN, eventLabel, userSession.userId)
     }
 
