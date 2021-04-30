@@ -10,6 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.response.*
+import com.tokopedia.topads.edit.data.KeySharedModel
 import com.tokopedia.topads.edit.data.raw.MANAGE_GROUP
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.utils.Constants
@@ -73,11 +74,11 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         val dataDeleteProduct = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>("deletedProducts")
 
 
-        val keywordsPositiveCreate = dataKeyword[POSITIVE_CREATE] as? MutableList<GetKeywordResponse.KeywordsItem>
-        val keywordsPositiveDelete = dataKeyword[POSITIVE_DELETE] as? MutableList<GetKeywordResponse.KeywordsItem>
-        val keywordsNegCreate = dataKeyword[NEGATIVE_KEYWORDS_ADDED] as? MutableList<GetKeywordResponse.KeywordsItem>
-        val keywordsNegDelete = dataKeyword[NEGATIVE_KEYWORDS_DELETED] as? MutableList<GetKeywordResponse.KeywordsItem>
-        val keywordsPostiveEdit = dataKeyword[POSITIVE_EDIT] as? MutableList<GetKeywordResponse.KeywordsItem>
+        val keywordsPositiveCreate = dataKeyword[POSITIVE_CREATE] as? MutableList<KeySharedModel>
+        val keywordsPositiveDelete = dataKeyword[POSITIVE_DELETE] as? MutableList<KeySharedModel>
+        val keywordsNegCreate = dataKeyword[NEGATIVE_KEYWORDS_ADDED] as? MutableList<KeySharedModel>
+        val keywordsNegDelete = dataKeyword[NEGATIVE_KEYWORDS_DELETED] as? MutableList<KeySharedModel>
+        val keywordsPostiveEdit = dataKeyword[POSITIVE_EDIT] as? MutableList<KeySharedModel>
 
         //always
         val input = TopadsManageGroupAdsInput()
@@ -127,7 +128,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
             keyword.price_bid = posKey.priceBid.toDouble()
-            keyword.id = posKey.keywordId
+            keyword.id = posKey.id
             keyword.status = null
             keyword.tag = null
             keyword.type = null
@@ -141,7 +142,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
             keyword.price_bid = null
-            keyword.id = posKey.keywordId
+            keyword.id = posKey.id
             keyword.tag = null
             keyword.status = null
             keyword.type = null
@@ -154,11 +155,12 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
             keyword.source = keyPos.source
-            keyword.id = keyPos.keywordId
+            keyword.id = keyPos.id
             keyword.price_bid = keyPos.priceBid.toDouble()
             keyword.status = ACTIVE
-            keyword.tag = keyPos.tag
-            if (keyPos.type == KEYWORD_TYPE_PHRASE) {
+            keyword.tag = keyPos.name
+            //todo
+            if (keyPos.typeInt == KEYWORD_TYPE_PHRASE) {
                 keyword.type = POSITIVE_PHRASE
             } else {
                 keyword.type = POSITIVE_SPECIFIC
@@ -172,7 +174,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
             keyword.price_bid = 0.0
-            keyword.id = negKey.keywordId
+            keyword.id = negKey.id
             keyword.tag = null
             keyword.status = null
             keyword.type = null
@@ -187,13 +189,13 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             val keyword = KeywordEditInput.Keyword()
             keyword.id = "0"
             keyword.price_bid = 0.0
-            if (negKey.type == KEYWORD_TYPE_NEGATIVE_PHRASE) {
+            if (negKey.typeInt == KEYWORD_TYPE_NEGATIVE_PHRASE) {
                 keyword.type = NEGATIVE_PHRASE
             } else {
                 keyword.type = NEGATIVE_SPECIFIC
             }
             keyword.status = ACTIVE
-            keyword.tag = negKey.tag
+            keyword.tag = negKey.name
             keyword.source = negKey.source
             keywordEditInput.keyword = keyword
             keywordEditInput.action = ACTION_CREATE

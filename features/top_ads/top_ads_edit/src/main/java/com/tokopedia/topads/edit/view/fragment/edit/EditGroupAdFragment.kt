@@ -7,14 +7,12 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
-import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
@@ -27,7 +25,6 @@ import com.tokopedia.topads.edit.utils.Constants.IS_DATA_CHANGE
 import com.tokopedia.topads.edit.utils.Constants.MAXIMUM_LIMIT
 import com.tokopedia.topads.edit.utils.Constants.MULTIPLIER
 import com.tokopedia.topads.edit.utils.Constants.NAME_EDIT
-import com.tokopedia.topads.edit.utils.Constants.PRODUCT
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import com.tokopedia.utils.text.currency.NumberTextWatcher
@@ -46,25 +43,21 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private var minBid = "0"
-    private var maxBid = "0"
-    private var suggestBidPerClick = "0"
     private var validation1 = true
     private var validation2 = true
     private var validation3 = true
     private var currentBudget = 0
-    private var productId: MutableList<String> = mutableListOf()
     private var groupId: Int? = 0
     private var priceDaily = 0
     private var groupName: String = ""
     private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
+        ViewModelProvider(this, viewModelFactory)
     }
     private val viewModel by lazy {
         viewModelProvider.get(EditFormDefaultViewModel::class.java)
     }
     private val sharedViewModel by lazy {
-        ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
+        ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
     }
     private var initialDailyBudget = 0
 
@@ -94,11 +87,15 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
         groupName = data.groupName
         group_name?.textFieldInput?.setText(data.groupName)
+        sharedViewModel.setBudget(data.priceBid)
         priceDaily = data.priceDaily
         if (priceDaily != 0) {
+            toggle?.isChecked = true
+            daily_budget?.visible()
             daily_budget?.textFieldInput?.setText(data.priceDaily.toString())
         } else {
-            daily_budget?.textFieldInput?.setText((MULTIPLIER * data.priceBid).toString())
+            daily_budget?.gone()
+            setCurrentDailyBudget((MULTIPLIER * data.priceBid).toString())
         }
         progressbar?.visibility = View.GONE
         saveInitialChoices()
@@ -108,6 +105,10 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     private fun getCurrentDailyBudget(): Int {
         return daily_budget?.textFieldInput?.text.toString().removeCommaRawString().toInt()
+    }
+
+    private fun setCurrentDailyBudget(data: String) {
+        daily_budget?.textFieldInput?.setText(data)
     }
 
     fun onSuccessGroupName(data: ResponseGroupValidateName.TopAdsGroupValidateName) {
@@ -136,6 +137,9 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sharedViewModel.getBudget().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            setCurrentDailyBudget((MULTIPLIER * it).toString())
+        })
         if (arguments?.getString(GROUP_ID)?.isNotEmpty()!!) {
             groupId = arguments?.getString(GROUP_ID)?.toInt()
             sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
@@ -235,7 +239,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun checkDataChanged(): Boolean {
-        return initialDailyBudget != getCurrentDailyBudget() ||groupName != getCurrentTitle()
+        return initialDailyBudget != getCurrentDailyBudget() || groupName != getCurrentTitle()
     }
 
     override fun onDetach() {

@@ -21,21 +21,22 @@
         android:id="@+id/group_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:text_field_input_type="text"
         app:text_field_label="@string/topads_edit_nama_grup_iklan"
         app:text_field_label_static="true"
+        app:text_field_message="@string/top_ads_edit_group_name_message"
         app:text_field_placeholder="@string/topads_edit_ketik_nama_group_iklan"
         tools:layout_height="40dp" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/group_name" />
 
@@ -43,14 +44,16 @@
         android:id="@+id/budgetLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         app:layout_constraintTop_toBottomOf="@+id/divider">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
-            android:text="Anggaran harian"
+            android:text="@string/topads_edit_anggaran_harian"
             app:typographyType="heading_5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -67,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
-            android:text="Batasi pengeluaran harianmu dengan atur anggaran harian."
+            android:text="@string/top_ads_edit_daily_budget_message"
             app:layout_constraintTop_toBottomOf="@id/title"
             app:typographyType="body_3" />
 

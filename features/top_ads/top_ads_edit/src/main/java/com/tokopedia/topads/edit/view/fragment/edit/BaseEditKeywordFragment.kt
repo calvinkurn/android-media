@@ -11,6 +11,7 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.view.adapter.viewpager.KeywordEditPagerAdapter
 import com.tokopedia.topads.edit.R
+import com.tokopedia.topads.edit.data.KeySharedModel
 import com.tokopedia.topads.edit.data.response.KeywordDataModel
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.GROUP_STRATEGY
@@ -139,11 +140,11 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     fun sendData(): HashMap<String, Any?> {
         val dataMap = HashMap<String, Any?>()
         val fragments = (view_pager?.adapter as KeywordEditPagerAdapter?)?.list
-        var dataNegativeAdded: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
-        var dataNegativeDeleted: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
-        var deletedKeywordsPos: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
-        var addedKeywordsPos: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
-        var editedKeywordsPos: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
+        var dataNegativeAdded: ArrayList<KeySharedModel>? = arrayListOf()
+        var dataNegativeDeleted: ArrayList<KeySharedModel>? = arrayListOf()
+        var deletedKeywordsPos: ArrayList<KeySharedModel>? = arrayListOf()
+        var addedKeywordsPos: ArrayList<KeySharedModel>? = arrayListOf()
+        var editedKeywordsPos: ArrayList<KeySharedModel>? = arrayListOf()
         var strategies: ArrayList<String>? = arrayListOf()
 
         if (fragments?.get(0) is EditKeywordsFragment) {
