@@ -35,8 +35,9 @@ class AnalyticsDebuggerFragment : Fragment() {
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
-    private val viewModel: DebuggerListViewModel =
+    private val viewModel: DebuggerListViewModel by lazy {
         ViewModelProvider(this, factory).get(DebuggerListViewModel::class.java)
+    }
 
     private val listAdapter = DebuggerListAdapter().apply {
         setItemClickListener {
