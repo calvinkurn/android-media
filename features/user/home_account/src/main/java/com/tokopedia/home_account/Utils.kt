@@ -5,7 +5,9 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import java.text.DecimalFormat
-import java.text.NumberFormat
+import java.text.DecimalFormatSymbols
+import java.util.*
+import kotlin.collections.HashMap
 
 object Utils {
     const val M_RESULT = "mResults"
@@ -40,7 +42,14 @@ object Utils {
     }
 
     fun formatIdrCurrency(balance: Long): String {
-        val formatter: NumberFormat = DecimalFormat("#.###")
-        return "Rp" + formatter.format(balance)
+        val unusualSymbols = DecimalFormatSymbols(Locale("id", "ID"))
+        unusualSymbols.decimalSeparator = ','
+        unusualSymbols.groupingSeparator = '.'
+
+        val strange = "Rp#,##0.##"
+        val formatter = DecimalFormat(strange, unusualSymbols)
+        formatter.groupingSize = 3
+
+        return formatter.format(balance)
     }
 }
