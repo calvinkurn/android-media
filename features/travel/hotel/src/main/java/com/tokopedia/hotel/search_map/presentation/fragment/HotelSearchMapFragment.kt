@@ -20,10 +20,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SnapHelper
+import androidx.recyclerview.widget.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -73,7 +70,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_hotel_search_map.*
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 /**
@@ -115,7 +111,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
-    private val snapHelper: SnapHelper = LinearSnapHelper()
+    private val snapHelper: SnapHelper = PagerSnapHelper()
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
