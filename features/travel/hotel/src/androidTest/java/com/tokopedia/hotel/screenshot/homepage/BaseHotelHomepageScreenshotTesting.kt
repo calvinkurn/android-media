@@ -22,7 +22,7 @@ import org.junit.Test
 /**
  * @author by astidhiyaa on 27/04/21
  */
-class HotelHomepageScreenshotTesting {
+abstract class BaseHotelHomepageScreenshotTesting {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
@@ -30,8 +30,8 @@ class HotelHomepageScreenshotTesting {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            setupDarkModeTest(forceDarkMode())
             setupGraphqlMockResponse(HotelHomepageMockResponseConfig())
-            setupDarkModeTest(false)
         }
 
         override fun getActivityIntent(): Intent {
@@ -85,5 +85,7 @@ class HotelHomepageScreenshotTesting {
         hotelHomepage.requestChildFocus(bottomView, bottomView)
     }
 
-    private fun filePrefix(): String = "hotel-homepage"
+    abstract fun filePrefix(): String
+
+    abstract fun forceDarkMode(): Boolean
 }

@@ -16,6 +16,7 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.hotel.R
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.unifycomponents.UnifyButton
 import org.junit.Before
 import org.junit.Rule
@@ -24,7 +25,7 @@ import org.junit.Test
 /**
  * @author by astidhiyaa on 29/04/21
  */
-class HotelBookingScreenshotTesting {
+abstract class BaseHotelBookingScreenshotTesting {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     lateinit var hotelBooking : RelativeLayout
 
@@ -33,6 +34,7 @@ class HotelBookingScreenshotTesting {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            setupDarkModeTest(forceDarkMode())
             setupGraphqlMockResponse(HotelBookingMockResponseConfig())
             login()
         }
@@ -96,7 +98,9 @@ class HotelBookingScreenshotTesting {
         hotelBooking.scrollTo(0, bottomPoint.y.toInt())
     }
 
-    private fun filePrefix(): String = "hotel-booking"
+    abstract fun filePrefix(): String
+
+    abstract fun forceDarkMode(): Boolean
 
     private fun login() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()

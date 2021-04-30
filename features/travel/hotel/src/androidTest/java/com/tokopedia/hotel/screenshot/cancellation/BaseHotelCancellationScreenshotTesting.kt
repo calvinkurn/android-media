@@ -10,6 +10,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationActivity
 import com.tokopedia.hotel.cancellation.presentation.activity.mock.HotelCancellationMockResponseConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.Before
 import org.junit.Rule
@@ -18,7 +19,7 @@ import org.junit.Test
 /**
  * @author by astidhiyaa on 29/04/21
  */
-class HotelCancellationScreenshotTesting {
+abstract class BaseHotelCancellationScreenshotTesting {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     lateinit var hotelCancellation : ScrollView
 
@@ -27,6 +28,7 @@ class HotelCancellationScreenshotTesting {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            setupDarkModeTest(forceDarkMode())
             setupGraphqlMockResponse(HotelCancellationMockResponseConfig())
         }
 
@@ -61,7 +63,9 @@ class HotelCancellationScreenshotTesting {
         activityRule.activity.finishAndRemoveTask()
     }
 
-    private fun filePrefix(): String = "hotel-cancellation"
+    abstract fun filePrefix(): String
+
+    abstract fun forceDarkMode(): Boolean
 
     private fun scrollToBottom(){
         val bottomPoint = activityRule.activity.findViewById<AppCompatTextView>(R.id.hotel_cancellation_page_footer)

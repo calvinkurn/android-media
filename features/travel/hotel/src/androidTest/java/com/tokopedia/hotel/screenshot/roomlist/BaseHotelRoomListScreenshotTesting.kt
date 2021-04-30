@@ -8,6 +8,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.hotel.roomlist.presentation.activity.mock.HotelRoomListResponseConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.Rule
 import org.junit.Test
@@ -15,7 +16,7 @@ import org.junit.Test
 /**
  * @author by astidhiyaa on 29/04/21
  */
-class HotelRoomListScreenshotTesting {
+abstract class BaseHotelRoomListScreenshotTesting {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
@@ -24,6 +25,7 @@ class HotelRoomListScreenshotTesting {
 
                 override fun beforeActivityLaunched() {
                     super.beforeActivityLaunched()
+                    setupDarkModeTest(forceDarkMode())
                     setupGraphqlMockResponse(HotelRoomListResponseConfig())
                 }
 
@@ -52,7 +54,9 @@ class HotelRoomListScreenshotTesting {
 
     }
 
-    private fun filePrefix(): String = "hotel-room-list"
+    abstract fun filePrefix(): String
+
+    abstract fun forceDarkMode(): Boolean
 
     private fun getItemCount(): Int {
         val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.recycler_view) as RecyclerView

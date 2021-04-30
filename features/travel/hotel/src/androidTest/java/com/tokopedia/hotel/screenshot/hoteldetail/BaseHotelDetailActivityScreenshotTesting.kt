@@ -18,11 +18,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import com.tokopedia.hotel.R
+import com.tokopedia.test.application.util.setupDarkModeTest
 
 /**
  * @author by astidhiyaa on 28/04/21
  */
-class HotelDetailActivityScreenshotTesting {
+abstract class BaseHotelDetailActivityScreenshotTesting {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     lateinit var appBar: AppBarLayout
     lateinit var hotelDetail: NestedScrollView
@@ -32,6 +33,7 @@ class HotelDetailActivityScreenshotTesting {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            setupDarkModeTest(forceDarkMode())
             setupGraphqlMockResponse(HotelDetailMockResponseConfig())
         }
 
@@ -76,9 +78,13 @@ class HotelDetailActivityScreenshotTesting {
         CommonActions.findViewAndScreenShot(R.id.container_hotel_info, filePrefix(), "info")
         CommonActions.findViewAndScreenShot(R.id.container_important_info, filePrefix(), "important-info")
         CommonActions.findViewAndScreenShot(R.id.container_hotel_description, filePrefix(), "description")
+
+        activityRule.activity.finishAndRemoveTask()
     }
 
-    private fun filePrefix(): String = "hotel-detail"
+    abstract fun filePrefix(): String
+
+    abstract fun forceDarkMode(): Boolean
 
     private fun scrollToMiddle(){
         val midPoint = activityRule.activity.findViewById<LinearLayout>(R.id.container_hotel_review)

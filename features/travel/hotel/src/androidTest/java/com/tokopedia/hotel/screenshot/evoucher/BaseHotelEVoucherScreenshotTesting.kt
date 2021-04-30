@@ -17,11 +17,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import com.tokopedia.hotel.R
+import com.tokopedia.test.application.util.setupDarkModeTest
 
 /**
  * @author by astidhiyaa on 29/04/21
  */
-class HotelEVoucherScreenshotTesting {
+abstract class BaseHotelEVoucherScreenshotTesting {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val orderId = "QPN-12Q58-VHSO"
     lateinit var hotelEVoucher: RelativeLayout
@@ -31,6 +32,7 @@ class HotelEVoucherScreenshotTesting {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            setupDarkModeTest(forceDarkMode())
             setupGraphqlMockResponse(HotelEVoucherMockResponseConfig())
         }
         override fun getActivityIntent(): Intent {
@@ -70,5 +72,7 @@ class HotelEVoucherScreenshotTesting {
         hotelEVoucher.scrollTo(0, bottomPoint.y.toInt())
     }
 
-    private fun filePrefix(): String = "hotel-evoucher"
+    abstract fun filePrefix(): String
+
+    abstract fun forceDarkMode(): Boolean
 }

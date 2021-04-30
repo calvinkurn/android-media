@@ -11,6 +11,7 @@ import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivit
 import com.tokopedia.hotel.search.presentation.activity.mock.HotelSearchMockResponseConfig
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.Rule
 import org.junit.Test
@@ -18,7 +19,7 @@ import org.junit.Test
 /**
  * @author by astidhiyaa on 28/04/21
  */
-class HotelSearchResultScreenshotTesting {
+abstract class BaseHotelSearchResultScreenshotTesting {
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
@@ -26,6 +27,7 @@ class HotelSearchResultScreenshotTesting {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            setupDarkModeTest(forceDarkMode())
             setupGraphqlMockResponse(HotelSearchMockResponseConfig())
             val localCacheHandler = LocalCacheHandler(targetContext, HotelSearchResultFragment.PREFERENCES_NAME)
             localCacheHandler.apply {
@@ -61,7 +63,9 @@ class HotelSearchResultScreenshotTesting {
         activityRule.activity.finishAndRemoveTask()
     }
 
-    private fun filePrefix(): String = "hotel-old-srp"
+    abstract fun filePrefix(): String
+
+    abstract fun forceDarkMode(): Boolean
 
     private fun getHotelResultCount(): Int {
         val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.recycler_view) as RecyclerView
