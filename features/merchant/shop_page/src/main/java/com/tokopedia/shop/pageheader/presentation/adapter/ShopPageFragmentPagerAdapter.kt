@@ -89,7 +89,7 @@ internal class ShopPageFragmentPagerAdapter(
     private fun addMarginIfLabelShown(context: Context, rootConstraintLayoutView: ConstraintLayout, iconViewId: Int) {
         val constraintSet = ConstraintSet()
         constraintSet.clone(rootConstraintLayoutView)
-        val marginTop = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, context.resources.displayMetrics).toInt()
+        val marginTop = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6f, context.resources.displayMetrics).toInt()
         constraintSet.setMargin(iconViewId, ConstraintSet.TOP, marginTop)
         constraintSet.applyTo(rootConstraintLayoutView)
     }

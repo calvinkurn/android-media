@@ -1291,6 +1291,9 @@ class NewShopPageFragment :
                 getTabAt(i)?.customView = viewPagerAdapter?.getTabView(i, selectedPosition, isFirstTimeShowTabLabel() ?: true)
             }
         }
+        if (isFirstTimeShowTabLabel() == false && isUsingNewNavigation()) {
+            saveFirstShowTabLabel()
+        }
         viewPager.setCurrentItem(selectedPosition, false)
         tabLayout?.getTabAt(selectedPosition)?.select()
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -1423,7 +1426,6 @@ class NewShopPageFragment :
                 listShopPageTabModel.add(ShopPageTabModel(
                         getString(R.string.shop_info_title_tab_showcase),
                         if (isFirstTimeShowTabLabel() == false && isUsingNewNavigation()) {
-                            saveFirstShowTabLabel()
                             iconTabShowcaseWithLabelInactive
                         } else {
                             iconTabShowcaseInactive
@@ -1442,7 +1444,6 @@ class NewShopPageFragment :
             listShopPageTabModel.add(ShopPageTabModel(
                     getString(R.string.shop_info_title_tab_showcase),
                     if (isFirstTimeShowTabLabel() == false && isUsingNewNavigation()) {
-                        saveFirstShowTabLabel()
                         iconTabShowcaseWithLabelInactive
                     } else {
                         iconTabShowcaseInactive
