@@ -246,4 +246,6 @@
     <string name="pm_not_eligible_order_term_title">Tingkatkan jumlah pesanan \nTokomu dulu, yuk!</string>
     <string name="pm_not_eligible_order_term_description">Tokomu harus mendapatkan <b>min. %1$d pesanan</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan jumlah pesananmu, ya!</string>
     <string name="pm_learn_ad_and_promotion">Pelajari Iklan &amp; Promosi</string>
+    <string name="pm_not_eligible_niv_term_title">Tingkatkan pendapatan \nTokomu dulu, yuk!</string>
+    <string name="pm_not_eligible_niv_term_description">Tokomu harus mendapatkan pendapatan <b>%1$s</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan pendapatanmu, ya!</string>
 </resources>

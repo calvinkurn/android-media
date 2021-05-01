@@ -36,6 +36,7 @@ import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSubscr
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.fragment_pm_power_merchant_subscription.view.*
 import java.net.UnknownHostException
 import java.util.*
@@ -429,7 +430,18 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun showNivTermBottomSheet(nivThreshold: Long) {
+        val nivFormatted = CurrencyFormatHelper.convertToRupiah(nivThreshold.toString())
+        val title = getString(R.string.pm_not_eligible_niv_term_title)
+        val description = getString(R.string.pm_not_eligible_niv_term_description, nivFormatted)
+        val primaryCtaText = getString(R.string.pm_learn_ad_and_promotion)
+        val secondaryCtaText = getString(R.string.pm_content_slider_last_slide_button)
+        val imageUrl = PMConstant.Images.PM_TOTAL_ORDER_TERM
 
+        showNotificationBottomSheet(title, description, primaryCtaText, imageUrl, secondaryCtaText,
+                onPrimaryCtaClicked = {
+                    RouteManager.route(requireContext(), ApplinkConst.SellerApp.CENTRALIZED_PROMO)
+                }
+        )
     }
 
     private fun submitKYC(isTncChecked: Boolean) {
