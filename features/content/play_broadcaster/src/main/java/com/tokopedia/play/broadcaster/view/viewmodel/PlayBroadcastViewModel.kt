@@ -116,7 +116,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableLiveDurationState = MutableLiveData<PlayTimerState>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
 
-    private val livePusher = livePusherBuilder.build(dispatcher)
+    private val livePusher = livePusherBuilder.build()
 
     private val liveStateListener = object : PlayLiveStateListener {
         override fun onStateChanged(state: PlayLivePusherState) {
@@ -157,7 +157,7 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
     
-    private val liveStateProcessor = livePusherStateProcessorFactory.create(livePusher, scope)
+    private val liveStateProcessor = livePusherStateProcessorFactory.create(livePusher, dispatcher, scope)
     private var isLiveStarted: Boolean = false
 
     init {

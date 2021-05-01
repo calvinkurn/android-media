@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.view.SurfaceView
 import androidx.core.app.ActivityCompat
 import com.alivc.live.pusher.*
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.pusher.config.ApsaraLivePusherConfig
 import com.tokopedia.play.broadcaster.pusher.config.DefaultApsaraLivePusherConfig
 import com.tokopedia.play.broadcaster.pusher.error.ApsaraFatalException
@@ -15,7 +14,6 @@ import com.tokopedia.play.broadcaster.pusher.listener.ApsaraLivePusherErrorListe
 import com.tokopedia.play.broadcaster.pusher.listener.ApsaraLivePusherNetworkListenerImpl
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherStateProcessor
-import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentLinkedQueue
 
 
@@ -24,8 +22,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
  */
 class ApsaraLivePusherWrapper private constructor(
         val context: Context,
-        private val pusherConfig: ApsaraLivePusherConfig,
-        private val dispatcher: CoroutineDispatchers
+        private val pusherConfig: ApsaraLivePusherConfig
 ) {
 
     class Builder(context: Context) {
@@ -38,11 +35,10 @@ class ApsaraLivePusherWrapper private constructor(
             return this
         }
 
-        fun build(dispatchers: CoroutineDispatchers): ApsaraLivePusherWrapper {
+        fun build(): ApsaraLivePusherWrapper {
             return ApsaraLivePusherWrapper(
                     context = mContext,
-                    pusherConfig = mApsaraLivePushConfig ?: DefaultApsaraLivePusherConfig(mContext),
-                    dispatcher = dispatchers
+                    pusherConfig = mApsaraLivePushConfig ?: DefaultApsaraLivePusherConfig(mContext)
             )
         }
 
@@ -154,7 +150,7 @@ class ApsaraLivePusherWrapper private constructor(
         safeAction { aliVcLivePusher?.stopPush() }
     }
 
-    suspend fun resume() = withContext(dispatcher.default) {
+    fun resume() {
         safeAction { aliVcLivePusher?.resume() }
     }
 
@@ -166,7 +162,7 @@ class ApsaraLivePusherWrapper private constructor(
         safeAction { aliVcLivePusher?.destroy() }
     }
 
-    suspend fun reconnect() = withContext(dispatcher.default) {
+    fun reconnect() {
         safeAction { aliVcLivePusher?.reconnectPushAsync(ingestUrl) }
     }
 
