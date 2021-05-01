@@ -12,7 +12,8 @@ object HomeLayoutMapper {
         HomeLayoutType.DYNAMIC_CHANNEL,
         HomeLayoutType.SLIDER_BANNER,
         HomeLayoutType.SLIDER_PRODUCT,
-        HomeLayoutType.CHOOSE_ADDRESS_WIDGET
+        HomeLayoutType.CHOOSE_ADDRESS_WIDGET,
+        HomeLayoutType.SLIDER_PRODUCT_PERSONALIZED
     )
 
     fun mapToHomeUiModel(response: List<HomeLayoutResponse>): List<HomeLayoutUiModel> {
@@ -22,6 +23,7 @@ object HomeLayoutMapper {
                 HomeLayoutType.SLIDER_BANNER -> HomeSliderBannerUiModel("", "")
                 HomeLayoutType.SLIDER_PRODUCT -> HomeSliderProductUiModel()
                 HomeLayoutType.CHOOSE_ADDRESS_WIDGET -> HomeChooseAddressWidgetUiModel(false)
+                HomeLayoutType.SLIDER_PRODUCT_PERSONALIZED -> HomeSliderProductPersonalizedUiModel()
                 else -> HomeSectionUiModel(it.id, it.title)
             }
         }

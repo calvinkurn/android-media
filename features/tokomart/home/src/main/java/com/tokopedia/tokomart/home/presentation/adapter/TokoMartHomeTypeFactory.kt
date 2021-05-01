@@ -9,5 +9,6 @@ interface TokoMartHomeTypeFactory {
     fun type(uiModel: HomeSliderBannerUiModel): Int
     fun type(uiModel: HomeSliderProductUiModel): Int
     fun type(uiModel: HomeChooseAddressWidgetUiModel): Int
+    fun type(uiModel: HomeSliderProductPersonalizedUiModel): Int
 //    fun type(uiModel: HomeSpecialRecipeUiModel): Int NOT MVP
 }

@@ -9,7 +9,8 @@ import androidx.annotation.IntDef
     HomeLayoutType.DYNAMIC_CHANNEL,
     HomeLayoutType.SLIDER_BANNER,
     HomeLayoutType.SLIDER_PRODUCT,
-    HomeLayoutType.CHOOSE_ADDRESS_WIDGET
+    HomeLayoutType.CHOOSE_ADDRESS_WIDGET,
+    HomeLayoutType.SLIDER_PRODUCT_PERSONALIZED
 )
 annotation class HomeLayoutType {
     companion object {
@@ -19,5 +20,6 @@ annotation class HomeLayoutType {
         const val SLIDER_BANNER = 3
         const val SLIDER_PRODUCT = 4
         const val CHOOSE_ADDRESS_WIDGET = 5
+        const val SLIDER_PRODUCT_PERSONALIZED = 6
     }
 }

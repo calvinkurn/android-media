@@ -19,6 +19,7 @@ class GetHomeLayoutUseCase @Inject constructor(
             HomeLayoutResponse("2", "Kategori", HomeLayoutType.ALL_CATEGORY),
             HomeLayoutResponse("3", "Slider Banner", HomeLayoutType.SLIDER_BANNER),
             HomeLayoutResponse("4", "Slider Product", HomeLayoutType.SLIDER_PRODUCT),
+            HomeLayoutResponse("5", "Slider Product Personalized", HomeLayoutType.SLIDER_PRODUCT_PERSONALIZED)
 //            HomeLayoutResponse("5", "Special Recipe", HomeLayoutType.SPECIAL_RECIPE) NOT MVP
         )
     }

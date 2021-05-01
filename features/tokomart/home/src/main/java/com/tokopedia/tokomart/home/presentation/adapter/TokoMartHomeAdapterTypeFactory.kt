@@ -15,6 +15,7 @@ class TokoMartHomeAdapterTypeFactory(private val fragment: Fragment): BaseAdapte
     override fun type(uiModel: HomeSliderBannerUiModel): Int = HomeSliderBannerViewHolder.LAYOUT
     override fun type(uiModel: HomeSliderProductUiModel): Int = HomeSliderProductViewHolder.LAYOUT
     override fun type(uiModel: HomeChooseAddressWidgetUiModel): Int = HomeChooseAddressWidgetViewHolder.LAYOUT
+    override fun type(uiModel: HomeSliderProductPersonalizedUiModel): Int = HomeSliderProductPersonalizedViewHolder.LAYOUT
 //    override fun type(uiModel: HomeSpecialRecipeUiModel): Int = HomeSpecialRecipeViewHolder.LAYOUT NOT MVP
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -24,6 +25,7 @@ class TokoMartHomeAdapterTypeFactory(private val fragment: Fragment): BaseAdapte
             HomeSliderBannerViewHolder.LAYOUT -> HomeSliderBannerViewHolder(parent)
             HomeSliderProductViewHolder.LAYOUT -> HomeSliderProductViewHolder(parent)
             HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(parent, fragment)
+            HomeSliderProductPersonalizedViewHolder.LAYOUT -> HomeSliderProductPersonalizedViewHolder(parent)
 //            HomeSpecialRecipeViewHolder.LAYOUT -> HomeSpecialRecipeViewHolder(parent) NOT MVP
             else -> super.createViewHolder(parent, type)
         }
