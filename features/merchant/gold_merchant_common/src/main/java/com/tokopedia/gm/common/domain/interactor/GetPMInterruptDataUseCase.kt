@@ -41,9 +41,12 @@ class GetPMInterruptDataUseCase @Inject constructor(
                 is_new_seller
                 shop_age
               }
-              goldGetPMOSStatus(shopID: ${'$'}shopId, includeOS: false) {
+              goldGetPMOSStatus(shopID: ${'$'}shopId, includeOS: true) {
                 data {
                   power_merchant {
+                    status
+                  }
+                  official_store {
                     status
                   }
                 }

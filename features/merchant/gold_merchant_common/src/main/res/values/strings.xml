@@ -23,4 +23,6 @@
     <string name="gmc_new_seller_end_of_tenure_interrupt_title">Mulai %1$s, tokomu akan dinilai dari Performa Toko!</string>
     <string name="gmc_new_seller_end_of_tenure_interrupt_description">Pelajari dan tingkatkan Performa supaya menarik banyak calon pembeli, yuk!</string>
     <string name="pm_on_back_pressed_disabled_message">Baca hingga akhir untuk lanjut</string>
+    <string name="gmc_shop_score_consent_approved_message">Kamu sudah membaca dan paham perubahan skema Perfoma Toko.</string>
+    <string name="gmc_oke">Oke</string>
 </resources>

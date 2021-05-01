@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Handler
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.work.*
@@ -26,6 +27,7 @@ import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
 import com.tokopedia.gm.common.view.worker.GetPMInterruptDataWorker
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.unifycomponents.Toaster
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.util.*
@@ -63,9 +65,10 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         }
     }
 
-    fun setShopScoreConsentStatus(context: Context, uri: Uri) {
+    fun setShopScoreConsentStatus(context: Context, uri: Uri, callback: (isConsent: Boolean) -> Unit) {
         init(context)
         val isConsentApproved = uri.getBooleanQueryParameter(DeepLinkMapperShopScore.PARAM_IS_CONSENT, false)
+        callback(isConsentApproved)
         if (isConsentApproved) {
             pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_SHOP_SCORE_CONSENT_CHECKED, true)
             pmCommonPreferenceManager?.apply()
@@ -99,6 +102,16 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         val numberOfPageOpened = pmCommonPreferenceManager?.getInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, 0).orZero()
         pmCommonPreferenceManager?.putInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, numberOfPageOpened.plus(1))
         pmCommonPreferenceManager?.apply()
+    }
+
+    fun showsShopScoreConsentToaster(view: View?) {
+        view?.run {
+            Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
+            val message = context.getString(R.string.gmc_shop_score_consent_approved_message)
+            val ctaText = context.getString(R.string.gmc_oke)
+            Toaster.build(this, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText)
+                    .show()
+        }
     }
 
     fun destroy() {
@@ -150,6 +163,8 @@ class PMShopScoreInterruptHelper @Inject constructor() {
     }
 
     private fun showPmShopScoreInterrupt(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
+        if (data.isOfficialStore) return
+
         when (data.periodType) {
             PeriodType.TRANSITION_PERIOD -> setupInterruptTransitionPeriod(context, data, fm)
             PeriodType.COMMUNICATION_PERIOD -> setupInterruptCommunicationPeriod(context, data, fm)

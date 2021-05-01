@@ -1,5 +1,6 @@
 package com.tokopedia.gm.common.domain.mapper
 
+import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.cloud.model.PMInterruptDataResponse
 import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
@@ -16,6 +17,7 @@ class GetPMInterruptDataMapper @Inject constructor() {
                 isNewSeller = data.shopInfo?.isNewSeller ?: true,
                 shopAge = data.shopInfo?.shopAge ?: 1,
                 pmStatus = data.pmStatus?.data?.powerMerchant?.status.orEmpty(),
+                isOfficialStore = data.pmStatus?.data?.officialStore?.status == PMStatusConst.ACTIVE,
                 periodType = data.pmSettingInfo?.periodeType ?: PeriodType.COMMUNICATION_PERIOD
         )
     }
