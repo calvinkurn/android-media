@@ -7,6 +7,9 @@ import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
 import com.tokopedia.play.broadcaster.util.timer.PlayCountDownTimer
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherErrorState
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -14,21 +17,25 @@ import javax.inject.Inject
  * Created by mzennis on 16/03/21.
  */
 class PlayLiveStateProcessor(
-        private val livePusherWrapper: ApsaraLivePusherWrapper
+        private val livePusherWrapper: ApsaraLivePusherWrapper,
+        private val scope: CoroutineScope
 ) {
 
     class Factory @Inject constructor() {
         fun create(
-                livePusherWrapper: ApsaraLivePusherWrapper
+                livePusherWrapper: ApsaraLivePusherWrapper,
+                scope: CoroutineScope
         ): PlayLiveStateProcessor {
             return PlayLiveStateProcessor(
-                    livePusherWrapper = livePusherWrapper
+                    livePusherWrapper = livePusherWrapper,
+                    scope = scope
             )
         }
     }
 
     private val mListeners = mutableListOf<PlayLiveStateListener>()
-    private var mLiveState: PlayLivePusherState? = null
+
+    private var autoReconnectJob: Job? = null
 
     private val localStorage: SharedPreferences
         get() = livePusherWrapper.context.getSharedPreferences(PlayCountDownTimer.PLAY_BROADCAST_PREFERENCE, Context.MODE_PRIVATE)
@@ -39,30 +46,47 @@ class PlayLiveStateProcessor(
     private var mPauseDuration: Long? = null
     private var isLiveStarted: Boolean = false
 
-    init {
-        livePusherWrapper.addListener(object : ApsaraLivePusherWrapper.Listener{
-            override fun onStateChanged(state: ApsaraLivePusherState) {
-                handleState(state)
-            }
+    private val apsaraListener = object : ApsaraLivePusherWrapper.Listener{
+        override fun onStateChanged(state: ApsaraLivePusherState) {
+            handleState(state)
+        }
 
-            override fun onError(code: Int, throwable: Throwable) {
-                handleError(code, throwable)
-            }
-        })
+        override fun onError(code: Int, throwable: Throwable) {
+            if (livePusherWrapper.pusherState !is ApsaraLivePusherState.Pause
+                    && livePusherWrapper.pusherState !is ApsaraLivePusherState.Stop)
+            handleError(code, throwable)
+        }
+    }
+
+    init {
+        livePusherWrapper.addListener(apsaraListener)
     }
 
     fun onResume() {
         if (livePusherWrapper.pusherState is ApsaraLivePusherState.Stop) {
             livePusherWrapper.destroy()
-        } else if (!isLiveStarted) livePusherWrapper.resume()
+        } else if (!isLiveStarted) {
+            scope.launch {
+                livePusherWrapper.resume()
+            }
+        }
 
-        if (isLiveStarted && livePusherWrapper.pusherState is ApsaraLivePusherState.Pause
-                && isReachMaximumPauseDuration()) {
-            reachMaximumPauseDuration()
+        if (isLiveStarted) {
+            if (isReachMaximumPauseDuration()) reachMaximumPauseDuration()
+            else {
+                scope.launch {
+                    livePusherWrapper.resume()
+                    if (!livePusherWrapper.isActivePushing) {
+                        livePusherWrapper.reconnect()
+                        broadcastState(PlayLivePusherState.Error(PlayLivePusherErrorState.NetworkLoss, IllegalStateException("Connection Loss")))
+                    }
+                }
+            }
         } else shouldContinueLiveStreaming()
     }
 
     fun onPause() {
+        cancelJob()
         livePusherWrapper.pause()
         setLastPauseMillis()
     }
@@ -72,6 +96,7 @@ class PlayLiveStateProcessor(
                 || livePusherWrapper.pusherState == ApsaraLivePusherState.Stop) {
             removeLastPauseMillis()
         }
+        livePusherWrapper.removeListener(apsaraListener)
         livePusherWrapper.destroy()
     }
 
@@ -104,9 +129,7 @@ class PlayLiveStateProcessor(
             }
             ApsaraLivePusherState.Resume -> {
                 if (isLiveStarted) {
-                    if (mLiveState is PlayLivePusherState.Error) { // will fix this later
-                        broadcastState(PlayLivePusherState.Recovered)
-                    } else broadcastState(PlayLivePusherState.Resume(isResumed = true))
+                    broadcastState(PlayLivePusherState.Resume(isResumed = true))
                 }
             }
             ApsaraLivePusherState.Pause -> broadcastState(PlayLivePusherState.Pause)
@@ -124,7 +147,7 @@ class PlayLiveStateProcessor(
                     ApsaraLivePusherWrapper.PLAY_PUSHER_ERROR_NETWORK_POOR -> PlayLivePusherErrorState.NetworkPoor
                     ApsaraLivePusherWrapper.PLAY_PUSHER_ERROR_NETWORK_LOSS,
                     ApsaraLivePusherWrapper.PLAY_PUSHER_ERROR_RECONNECTION_FAILED -> {
-                        livePusherWrapper.reconnect()
+                        autoReconnect()
                         PlayLivePusherErrorState.NetworkLoss
                     }
                     else -> PlayLivePusherErrorState.ConnectFailed()
@@ -132,11 +155,19 @@ class PlayLiveStateProcessor(
         )
     }
 
-    private fun broadcastState(state: PlayLivePusherState) {
-        mLiveState = state
-        mListeners.forEach { it.onStateChanged(state) }
+    private fun autoReconnect() {
+        autoReconnectJob = scope.launch {
+            livePusherWrapper.reconnect()
+        }
     }
 
+    private fun cancelJob() {
+        autoReconnectJob?.cancel()
+    }
+
+    private fun broadcastState(state: PlayLivePusherState) {
+        mListeners.forEach { it.onStateChanged(state) }
+    }
 
     private fun setLastPauseMillis() {
         localStorageEditor.putLong(KEY_PAUSE_TIME, System.currentTimeMillis())?.apply()
