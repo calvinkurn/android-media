@@ -2,16 +2,18 @@ package com.tokopedia.shop.pageheader.presentation.adapter
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import androidx.collection.SparseArrayCompat
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
@@ -32,16 +34,16 @@ internal class ShopPageFragmentPagerAdapter(
 
     private val ctxRef = WeakReference(ctx)
 
-    fun getTabView(position: Int, selectedPosition: Int): View? = LayoutInflater.from(ctxRef.get())
+    fun getTabView(position: Int, selectedPosition: Int, isShowTabLabel: Boolean): View? = LayoutInflater.from(ctxRef.get())
             .inflate(tabViewLayout, null)?.apply {
+                if (!isShowTabLabel && listShopPageTabModel[position].tabFragment !is ShopPageShowcaseFragment) {
+                    addMarginIfLabelShown(context, tab_icon_layout, R.id.shop_page_tab_view_icon)
+                }
                 shop_page_tab_view_icon.setImageDrawable(getTabIconDrawable(position,  position == selectedPosition))
             }
 
     fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
         tab.customView?.apply {
-            if (listShopPageTabModel[tab.position].tabFragment is ShopPageShowcaseFragment) {
-                icon_tab_label?.gone()
-            }
             shop_page_tab_view_icon.setImageDrawable(getTabIconDrawable(tab.position, isActive))
         }
     }
@@ -82,6 +84,14 @@ internal class ShopPageFragmentPagerAdapter(
             com.tokopedia.unifyprinciples.R.color.Unify_G600
         else
             com.tokopedia.unifyprinciples.R.color.Unify_G500
+    }
+
+    private fun addMarginIfLabelShown(context: Context, rootConstraintLayoutView: ConstraintLayout, iconViewId: Int) {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(rootConstraintLayoutView)
+        val marginTop = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6f, context.resources.displayMetrics).toInt()
+        constraintSet.setMargin(iconViewId, ConstraintSet.TOP, marginTop)
+        constraintSet.applyTo(rootConstraintLayoutView)
     }
 
     override fun getItemId(position: Int): Long {
