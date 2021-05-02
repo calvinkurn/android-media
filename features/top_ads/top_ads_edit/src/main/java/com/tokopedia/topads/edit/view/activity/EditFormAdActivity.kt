@@ -17,13 +17,11 @@ import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.adapter.viewpager.TopAdsEditPagerAdapter
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
-import com.tokopedia.topads.edit.data.response.KeywordDataModel
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.ADDED_PRODUCTS
-import com.tokopedia.topads.edit.utils.Constants.ATUR_NAME
 import com.tokopedia.topads.edit.utils.Constants.DELETED_PRODUCTS
 import com.tokopedia.topads.edit.utils.Constants.KATA_KUNCI
 import com.tokopedia.topads.edit.utils.Constants.LAINNYA_NAME
@@ -94,15 +92,15 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
                 ::onSuccessGroupEdited, ::onErrorEdit)
     }
 
-    private fun sendSaveDataEvent(items: ArrayList<KeywordDataModel>?) {
+    private fun sendSaveDataEvent(items: MutableList<Map<String, Any>>) {
 
         val map = mutableListOf<MutableMap<String, String>>()
 
-        items?.forEach {
+        items.forEach {
             val keywordModel = DataLayer.mapOf(
-                    Constants.KEYWORD_NAME, it.keywordName,
-                    Constants.KEYWORD_ID, it.keywordId,
-                    Constants.KEYWORD_TYPE, it.keywordType
+                    Constants.KEYWORD_NAME, it["name"],
+                    Constants.KEYWORD_ID, it["id"],
+                    Constants.KEYWORD_TYPE, it["type"]
             )
             map.add(keywordModel as MutableMap<String, String>)
         }

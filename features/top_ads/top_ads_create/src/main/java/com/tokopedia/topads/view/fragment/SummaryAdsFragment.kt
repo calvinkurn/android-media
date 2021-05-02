@@ -20,6 +20,9 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.EXACT_POSITIVE
 import com.tokopedia.topads.common.data.model.AdsItem
 import com.tokopedia.topads.common.data.model.Group
 import com.tokopedia.topads.common.data.model.InputCreateGroup
@@ -395,10 +398,10 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private fun addKeywords(index: Int) {
         val key = KeywordsItem()
         val type = stepperModel?.selectedKeywordStage?.get(index)?.keywordType
-        val typeInt = if (type == BudgetingAdsFragment.BROAD_TYPE)
-            BudgetingAdsFragment.BROAD_POSITIVE
+        val typeInt = if (type == BROAD_TYPE)
+            BROAD_POSITIVE
         else
-            BudgetingAdsFragment.EXACT_POSITIVE
+            EXACT_POSITIVE
 
         key.keywordTypeID = typeInt.toString()
         key.keywordTag = stepperModel?.selectedKeywordStage?.get(index)?.keyword ?: ""

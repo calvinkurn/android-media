@@ -12,7 +12,6 @@ import com.tokopedia.unifyprinciples.Typography
 const val LOW = "low"
 const val HIGH = "high"
 const val MEDIUM = "mid"
-const val UNKNOWN_SEARCH = "belum ada data"
 const val KALI = " kali"
 
 class BidInfoItemViewHolder(val view: View, private var actionDelete: (pos: Int) -> Unit, var editBudget: ((pos: Int) -> Unit)?, var editType: ((pos: Int) -> Unit)?) : BidInfoViewHolder<BidInfoItemViewModel>(view) {

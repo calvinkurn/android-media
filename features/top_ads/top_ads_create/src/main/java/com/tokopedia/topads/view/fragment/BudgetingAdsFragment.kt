@@ -15,6 +15,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.EXACT_POSITIVE
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
@@ -34,7 +37,7 @@ import com.tokopedia.topads.view.adapter.bidinfo.BidInfoAdapterTypeFactoryImpl
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoEmptyViewModel
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
 import com.tokopedia.topads.view.model.BudgetingAdsViewModel
-import com.tokopedia.topads.view.sheet.ChooseKeyBottomSheet
+import com.tokopedia.topads.common.view.sheet.ChooseKeyBottomSheet
 import com.tokopedia.topads.view.sheet.InfoBottomSheet
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
@@ -96,10 +99,6 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         private const val KEYWORD_NAME = "keywordName"
         private const val CURRENT_KEY_TYPE = "currentKeyType"
         private const val ITEM_POSITION = "pos"
-        const val SPECIFIC_TYPE = "Spesifik"
-        const val BROAD_TYPE = "Luas"
-        const val EXACT_POSITIVE = 21
-        const val BROAD_POSITIVE = 11
         private const val FACTOR = "50"
         fun createInstance(): Fragment {
             val fragment = BudgetingAdsFragment()
@@ -131,7 +130,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun onDeleteItem(position: Int) {
-        ticker?.gone()
+        ticker.gone()
         bidInfoAdapter.items.removeAt(position)
         bidInfoAdapter.notifyItemRemoved(position)
         updateString()
@@ -140,10 +139,10 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     private fun prepareView() {
         if (stepperModel?.redirectionToSummary == true) {
-            buttonNext?.text = getString(R.string.topads_common_save_butt)
+            buttonNext.text = getString(R.string.topads_common_save_butt)
         }
 
-        addKeyword?.setOnClickListener {
+        addKeyword.setOnClickListener {
             val intent = Intent(context, KeywordSuggestionActivity::class.java)
             stepperModel?.selectedKeywordStage = getItemSelected()
             intent.putExtra("model", stepperModel)
@@ -169,7 +168,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SETUP_KEY, shopID, userID)
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
         sheet.show(childFragmentManager, "")
-        sheet.onSaved = { bid, _, position ->
+        sheet.onSaved = { bid, position ->
             (bidInfoAdapter.items[position] as BidInfoItemViewModel).data.bidSuggest = bid
             bidInfoAdapter.notifyItemChanged(position)
         }
@@ -197,11 +196,6 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         bundle.putString(MIN_BID, minBid)
         bundle.putString(SUGGESTION_BID, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.bidSuggest)
         bundle.putString(KEYWORD_NAME, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.keyword)
-        if ((bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.keywordType == SPECIFIC_TYPE) {
-            bundle.putInt(CURRENT_KEY_TYPE, EXACT_POSITIVE)
-        } else {
-            bundle.putInt(CURRENT_KEY_TYPE, BROAD_POSITIVE)
-        }
         bundle.putInt(ITEM_POSITION, pos)
         return bundle
     }
@@ -290,14 +284,14 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         }
         bidInfoAdapter.notifyDataSetChanged()
         setCount()
-        ticker?.setTextDescription(MethodChecker.fromHtml(String.format(getString(R.string.topads_create_key_ticker_text), bidInfoAdapter.itemCount)))
+        ticker.setTextDescription(MethodChecker.fromHtml(String.format(getString(com.tokopedia.topads.common.R.string.topads_common_added_key_ticker_text), bidInfoAdapter.itemCount)))
     }
 
     private fun setCount() {
         if(bidInfoAdapter.items.count() == 1 && bidInfoAdapter.items[0] is BidInfoEmptyViewModel) {
-            selectedkeyword?.text = String.format(getString(R.string.topads_create_selected_keyword), 0)
+            selectedkeyword.text = String.format(getString(R.string.topads_common_selected_keyword), 0)
         } else {
-            selectedkeyword?.text = String.format(getString(R.string.topads_create_selected_keyword), bidInfoAdapter.items.count())
+            selectedkeyword.text = String.format(getString(R.string.topads_common_selected_keyword), bidInfoAdapter.items.count())
         }
     }
 
@@ -330,7 +324,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun onEmptySuggestion() {
-        ticker?.gone()
+        ticker.gone()
         bidInfoAdapter.items.add(BidInfoEmptyViewModel())
         bidInfoAdapter.notifyDataSetChanged()
     }
@@ -354,10 +348,10 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
         prepareView()
-        loading?.visibility = View.VISIBLE
+        loading.visibility = View.VISIBLE
         userID = UserSession(view.context).userId
         shopID = UserSession(view.context).shopId
-        buttonNext?.setOnClickListener {
+        buttonNext.setOnClickListener {
             gotoNextPage()
         }
         info1.setOnClickListener {
@@ -373,8 +367,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(R.drawable.topads_ic_tips))
         }
 
-        tipButton?.addItem(tooltipView)
-        tipButton?.setOnClickListener {
+        tipButton.addItem(tooltipView)
+        tipButton.setOnClickListener {
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
                 add(TipsUiRowModel(R.string.biaya_iklan_tip_1, R.drawable.topads_create_ic_checklist))
@@ -391,14 +385,14 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, shopID, userID)
         }
 
-        budget?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->
+        budget.textFieldInput.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 val eventLabel = "$shopID - $EVENT_CLICK_BUDGET"
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUDGET, eventLabel, userID)
             }
         }
 
-        budget?.textFieldInput?.addTextChangedListener(object : NumberTextWatcher(budget.textFieldInput, "0") {
+        budget.textFieldInput.addTextChangedListener(object : NumberTextWatcher(budget.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()
@@ -427,14 +421,12 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         })
         bidList.adapter = bidInfoAdapter
         bidList.layoutManager = LinearLayoutManager(context)
-        tipLayout?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        bottomLayout?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        if (tipLayout != null && bottomLayout != null) {
-            val heightButton = tipLayout.measuredHeight
-            val bottomHeight = bottomLayout.measuredHeight
-            val height = (heightButton + bottomHeight)
-            bidList?.setPadding(0, 0, 0, height)
-        }
+        tipLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        bottomLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val heightButton = tipLayout.measuredHeight
+        val bottomHeight = bottomLayout.measuredHeight
+        val height = (heightButton + bottomHeight)
+        bidList.setPadding(0, 0, 0, height)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

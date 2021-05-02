@@ -38,7 +38,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     private var buttonStateCallback: SaveButtonStateCallBack? = null
     private var btnState = true
     private var autoBidSelectionSheet: AutoBidSelectionSheet? = null
-    var positivekeywordsAll: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
+    var positivekeywordsAll: ArrayList<KeySharedModel>? = arrayListOf()
     var negativekeywordsAll: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
 
     companion object {
@@ -174,25 +174,21 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         return dataMap
     }
 
-    fun getKeywordNameItems(): ArrayList<KeywordDataModel>? {
-        var items: ArrayList<KeywordDataModel>? = arrayListOf()
+    fun getKeywordNameItems(): MutableList<Map<String, Any>> {
         val fragments = (view_pager?.adapter as KeywordEditPagerAdapter?)?.list
+        var items:MutableList<Map<String,Any>> = mutableListOf()
         if (fragments?.get(0) is EditKeywordsFragment) {
-            positivekeywordsAll?.forEach {
-                var model = KeywordDataModel()
-                model.keywordName = it.tag
-                model.keywordId = it.keywordId
-                model.keywordType = "positif"
-                items?.add(model)
+            positivekeywordsAll?.forEachIndexed {index , it->
+                val map = mapOf("name" to it.name
+                , "id" to it.id , "type" to "positif")
+                items.add(map)
             }
         }
         if (fragments?.get(1) is EditNegativeKeywordsFragment) {
             negativekeywordsAll?.forEach {
-                var model = KeywordDataModel()
-                model.keywordName = it.tag
-                model.keywordId = it.keywordId
-                model.keywordType = "negatif"
-                items?.add(model)
+                val map = mapOf("name" to it.tag
+                        , "id" to it.keywordId , "type" to "negatif")
+                items.add(map)
             }
         }
         return items

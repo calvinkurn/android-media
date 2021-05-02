@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.util.Utils.KALI
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordItemViewModel
@@ -21,13 +22,13 @@ class EditKeywordItemViewHolder(val view: View,
                                 var actionDelete: (pos: Int) -> Unit, var editBudget: ((pos: Int) -> Unit)?, var editType: ((pos: Int) -> Unit)?) : EditKeywordViewHolder<EditKeywordItemViewModel>(view) {
 
 
-    var btnDelete = view.findViewById<UnifyImageButton>(com.tokopedia.topads.common.R.id.btnDelete)
-    var budgetEdit = view.findViewById<UnifyImageButton>(com.tokopedia.topads.common.R.id.editBudget)
-    var typeEdit = view.findViewById<UnifyImageButton>(com.tokopedia.topads.common.R.id.editType)
-    var keywordData = view.findViewById<Typography>(com.tokopedia.topads.common.R.id.keywordData)
-    var keywordName = view.findViewById<Typography>(com.tokopedia.topads.common.R.id.keywordName)
-    var typeKeyword = view.findViewById<Typography>(com.tokopedia.topads.common.R.id.typeKeyword)
-    var keywordBudget = view.findViewById<Typography>(com.tokopedia.topads.common.R.id.keywordBudget)
+    private var btnDelete = view.findViewById<UnifyImageButton>(com.tokopedia.topads.common.R.id.btnDelete)
+    private var budgetEdit = view.findViewById<UnifyImageButton>(com.tokopedia.topads.common.R.id.editBudget)
+    private var typeEdit = view.findViewById<UnifyImageButton>(com.tokopedia.topads.common.R.id.editType)
+    private var keywordData = view.findViewById<Typography>(com.tokopedia.topads.common.R.id.keywordData)
+    private var keywordName = view.findViewById<Typography>(com.tokopedia.topads.common.R.id.keywordName)
+    private var typeKeyword = view.findViewById<Typography>(com.tokopedia.topads.common.R.id.typeKeyword)
+    private var keywordBudget = view.findViewById<Typography>(com.tokopedia.topads.common.R.id.keywordBudget)
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_create_layout_budget_list_item
@@ -59,8 +60,9 @@ class EditKeywordItemViewHolder(val view: View,
             }
             budgetEdit.setOnClickListener {
                 editBudget?.invoke(adapterPosition)
+
             }
-            keywordBudget.setOnClickListener {
+            typeEdit.setOnClickListener {
                 editType?.invoke(adapterPosition)
             }
             val competition = when (item.data.competition) {
@@ -69,11 +71,19 @@ class EditKeywordItemViewHolder(val view: View,
                 HIGH -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_high)
                 else -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_low)
             }
-            keywordData.text = MethodChecker.fromHtml(String.format(view.context.getString(com.tokopedia.topads.common.R.string.topads_create_keyword_data), competition, item.data.totalSearch + KALI))
+
+            val search = if(it.data.totalSearch == "-1")
+                TopAdsCommonConstant.UNKNOWN_SEARCH
+            else
+                it.data.totalSearch
+            keywordData.text = MethodChecker.fromHtml(String.format(view.context.getString(com.tokopedia.topads.common.R.string.topads_create_keyword_data), competition, search + KALI))
             keywordName.text = item.data.name
-            typeKeyword.text = item.data.type
-            if (item.data.suggestedBid != "0")
-                keywordBudget.text = "Rp " + item.data.suggestedBid
+            if(item.data.typeInt == EXACT_POSITIVE)
+            typeKeyword.text = SPECIFIC_TYPE
+            else
+                typeKeyword.text = BROAD_TYPE
+            if (item.data.priceBid != "0")
+                keywordBudget.text = "Rp " + item.data.priceBid
             else
                 keywordBudget.text = "Rp $minBid"
         }

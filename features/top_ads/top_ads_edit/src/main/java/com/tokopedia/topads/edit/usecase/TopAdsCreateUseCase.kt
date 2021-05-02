@@ -159,7 +159,6 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             keyword.price_bid = keyPos.priceBid.toDouble()
             keyword.status = ACTIVE
             keyword.tag = keyPos.name
-            //todo
             if (keyPos.typeInt == KEYWORD_TYPE_PHRASE) {
                 keyword.type = POSITIVE_PHRASE
             } else {

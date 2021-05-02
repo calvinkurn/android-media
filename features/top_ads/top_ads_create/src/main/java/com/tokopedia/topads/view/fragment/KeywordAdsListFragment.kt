@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.UNKNOWN_SEARCH
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.SearchData
@@ -23,7 +24,6 @@ import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
-import com.tokopedia.topads.view.adapter.bidinfo.viewholder.UNKNOWN_SEARCH
 import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapter
 import com.tokopedia.topads.view.adapter.keyword.KeywordSearchAdapter
 import com.tokopedia.topads.view.model.KeywordAdsViewModel

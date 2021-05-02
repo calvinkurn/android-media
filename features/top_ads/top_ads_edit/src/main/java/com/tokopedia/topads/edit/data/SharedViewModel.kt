@@ -14,6 +14,7 @@ class SharedViewModel : ViewModel() {
     private var groupId: MutableLiveData<Int> = MutableLiveData()
     private var negKeyword: MutableLiveData<List<GetKeywordResponse.KeywordsItem>> = MutableLiveData()
     private var bidForGroup: MutableLiveData<Int> = MutableLiveData()
+    private var dailyBudget: MutableLiveData<Int> = MutableLiveData()
 
     fun setProductIds(text: MutableList<String>) {
         productId.value = text
@@ -29,9 +30,12 @@ class SharedViewModel : ViewModel() {
 
     fun setNegKeywords(data: List<GetKeywordResponse.KeywordsItem>) {
         negKeyword.value = data
-
     }
 
+    fun setDailyBudget(budget:Int){
+        dailyBudget.value = budget*40
+
+    }
     fun getProuductIds(): MutableLiveData<MutableList<String>> {
         return productId
     }
@@ -46,6 +50,10 @@ class SharedViewModel : ViewModel() {
 
     fun getBudget(): MutableLiveData<Int> {
         return bidForGroup
+    }
+
+    fun getDailyBudget(): MutableLiveData<Int>{
+        return dailyBudget
     }
 
 

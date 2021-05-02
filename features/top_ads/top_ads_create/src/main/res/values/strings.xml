@@ -129,16 +129,10 @@
     <!-- Manual Budget Page -->
     <string name="topads_create_per_click">per klik</string>
     <string name="topads_create_budget_title">Biaya Iklan dan Kata Kunci</string>
-    <string name="topads_create_key_ticker_text"> <![CDATA["<font color='#F531353B'><b> %d kata kunci </b></font> ]]>ditambahkan secara otomatis</string>
-    <string name="topads_create_selected_keyword">Kata kunci dipilih (%d)</string>
     <string name="topads_create_bs_title1">Biaya Kata Kunci</string>
     <string name="topads_create_bs_desc1">Biaya iklan yang dikenakan saat calon pembeli mengklik iklanmu dari halaman pencarian seperti menggunakan kata kunci yang kamu tentukan.</string>
     <string name="topads_create_bs_title2">Biaya Iklan Dasar</string>
     <string name="topads_create_bs_desc2">Biaya iklan yang dikenakan saat calon pembeli mengklik iklanmu dari halaman selain halaman hasil pencarian seperti halaman utama, kategori, dan produk rekomendasi.</string>
-    <string name="topads_create_choose_type_bs_desc1">Iklan akan muncul saat kata kunci yang calon pembeli pakai dan kata kunci yang kamu tentukan  <![CDATA["<font color='#F531353B'><b> cocok sebagian.</b></font> ]]> </string>
-    <string name="topads_create_choose_type_bs_desc2">Iklan akan muncul saat kata kunci yang calon pembeli pakai dan kata kunci yang kamu tentukan  <![CDATA["<font color='#F531353B'><b> sama persis.</b></font> ]]></string>
-    <string name="topads_create_choose_type_bs_extra">Masih bingung?<![CDATA["<font color='#42b549'><b> Lihat tabel simulasi </b></font> ]]></string>
-    <string name="topads_create_static_bs_title">Tabel simulasi kata kata kunci</string>
     <string name="topads_create_group_name_error_wrong">Nama Grup Anda telah digunakan</string>
     <string name="topads_create_group_name_error">Nama grup iklan sudah digunakan.</string>
     <string name="topads_create_group_name_empty_error">Nama grup iklan tidak boleh kosong.</string>

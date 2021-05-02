@@ -137,8 +137,8 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedViewModel.getBudget().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            setCurrentDailyBudget((MULTIPLIER * it).toString())
+        sharedViewModel.getDailyBudget().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            setCurrentDailyBudget(it.toString())
         })
         if (arguments?.getString(GROUP_ID)?.isNotEmpty()!!) {
             groupId = arguments?.getString(GROUP_ID)?.toInt()

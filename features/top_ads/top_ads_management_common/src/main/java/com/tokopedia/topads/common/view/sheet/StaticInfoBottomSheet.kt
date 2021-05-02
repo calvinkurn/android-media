@@ -1,15 +1,15 @@
-package com.tokopedia.topads.view.sheet
+package com.tokopedia.topads.common.view.sheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.topads.create.R
+import com.tokopedia.topads.common.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_static_info_bs.*
 
-class StaticInfoBottomSheet : BottomSheetUnify(){
+class StaticInfoBottomSheet : BottomSheetUnify() {
     private var contentView: View? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -22,8 +22,8 @@ class StaticInfoBottomSheet : BottomSheetUnify(){
         showKnob = true
         isHideable = true
         showCloseIcon = false
-         setChild(contentView)
-            setTitle(getString(R.string.topads_create_static_bs_title))
+        setChild(contentView)
+        setTitle(getString(R.string.topads_common_static_bs_title))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
