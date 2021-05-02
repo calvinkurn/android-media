@@ -15,7 +15,6 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import java.io.IOException
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -67,17 +66,6 @@ fun getNowTimeStamp(): Long {
 fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): String {
     val sdf = SimpleDateFormat(pattern, locale)
     return sdf.format(timeMillis)
-}
-
-fun formatDate(originDate: String, beforePattern: String, targetPattern: String, locale: Locale = getLocale()): String {
-    return try {
-        val fromSimpleDateFormat = SimpleDateFormat(beforePattern, locale)
-        val parseDate = fromSimpleDateFormat.parse(originDate)
-        val convertFormatDate = SimpleDateFormat(targetPattern, locale)
-        parseDate?.let { convertFormatDate.format(it) } ?: ""
-    } catch (e: ParseException) {
-        originDate
-    }
 }
 
 fun getLocale(): Locale {
