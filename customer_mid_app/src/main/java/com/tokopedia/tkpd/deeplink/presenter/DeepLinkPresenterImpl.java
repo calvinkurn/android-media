@@ -362,7 +362,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         List<String> linkSegment = uri.getPathSegments();
         if (linkSegment.size() > 1) {
             if (linkSegment.get(1).equals("search")) {
-                DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_SRP + "?" + uri.getQuery());
+                String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_SRP);
+                RouteManager.route(context, applink + "?" + uri.getQuery());
                 context.finish();
             } else if (linkSegment.size() >= 4 && linkSegment.get(2).equals("h")) {
                 // eg : https://www.tokopedia.com/hotel/Indonesia/h/the-apurva-kempinski-bali-960088/
