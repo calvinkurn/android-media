@@ -59,7 +59,7 @@ class TransParentActivity : BaseActivity() {
         shopId = intent.extras?.getString(SHOP_ID, "0") ?: "0"
         mvcSource = intent.extras?.getInt(MVC_SOURCE, MvcSource.DEFAULT) ?: MvcSource.DEFAULT
         appLink = intent.extras?.getString(REDIRECTION_LINK, "") ?: ""
-        appLink = intent.extras?.getString(SHOP_NAME, "") ?: ""
+        shopName = intent.extras?.getString(SHOP_NAME, "") ?: ""
 
 
         if (userSession.isLoggedIn) {
