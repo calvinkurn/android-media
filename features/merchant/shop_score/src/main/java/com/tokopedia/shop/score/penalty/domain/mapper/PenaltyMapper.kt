@@ -2,6 +2,7 @@ package com.tokopedia.shop.score.penalty.domain.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.FINISHED_IN
@@ -18,7 +19,6 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST_VALUE
 import com.tokopedia.shop.score.common.ShopScoreConstant.START
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_SORT
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
-import com.tokopedia.shop.score.common.formatDate
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltySummaryResponse
@@ -140,7 +140,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                                          typeId: Int
     ): ItemDetailPenaltyFilterUiModel {
         return ItemDetailPenaltyFilterUiModel(
-                periodDetail = "${dateFilter.first.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT)} - ${dateFilter.second.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT)}",
+                periodDetail = "${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, dateFilter.first)} - ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, dateFilter.second)}",
                 itemSortFilterWrapperList = mapToSortFilterPenalty(penaltyTypes, typeId))
     }
 
@@ -168,23 +168,23 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                 }
                 val endDateText = when (it.status) {
                     ON_GOING -> {
-                        "$FINISHED_IN ${it.penaltyExpirationDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT)}"
+                        "$FINISHED_IN ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}"
                     }
                     PENALTY_DONE -> {
-                        "$SINCE ${it.penaltyExpirationDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT)}"
+                        "$SINCE ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}"
                     }
                     POINTS_NOT_YET_DEDUCTED -> {
-                        "$START ${it.penaltyExpirationDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT)}"
+                        "$START ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}"
                     }
-                    else -> it.penaltyExpirationDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT)
+                    else -> DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)
                 }
 
                 add(ItemPenaltyUiModel(
                         statusPenalty = it.status,
                         deductionPoint = it.score,
-                        startDate = it.penaltyStartDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT),
+                        startDate = DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyStartDate),
                         endDate = endDateText,
-                        endDateDetail = it.penaltyExpirationDate.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT),
+                        endDateDetail = DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate),
                         typePenalty = it.typeName,
                         descPenalty = it.reason,
                         colorPenalty = colorTypePenalty
