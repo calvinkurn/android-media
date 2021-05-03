@@ -34,8 +34,8 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
 
         emoneyPdpCardInputNumber.textFieldInput.isClickable = true
         emoneyPdpCardInputNumber.textFieldInput.isFocusable = false
-        emoneyPdpCardInputNumber.textFieldInput.filters = arrayOf<InputFilter>(LengthFilter(16))
-        emoneyPdpCardInputNumber.textFieldInput.setOnClickListener { listener?.onClickInputView(getInputString()) }
+        emoneyPdpCardInputNumber.textFieldInput.filters = arrayOf<InputFilter>(LengthFilter(20))
+        emoneyPdpCardInputNumber.textFieldInput.setOnClickListener { listener?.onClickInputView(getNumber()) }
         emoneyPdpCardInputNumber.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
         emoneyPdpCardInputNumber.getSecondIcon().setPadding(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2))
@@ -49,14 +49,12 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
 
         emoneyPdpCardInputNumber.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                listener?.onInputNumberChanged(s.toString())
+                listener?.onInputNumberChanged(getNumber())
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         })
-
-
     }
 
     fun renderError(errorMsg: String) {
@@ -65,18 +63,21 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun setNumber(number: String) {
-        emoneyPdpCardInputNumber.textFieldInput.setText(number)
+        var cardNumber = ""
+        for ((i, char) in number.withIndex()) {
+            if (i > 0 && i % 4 == 0) cardNumber += " "
+            cardNumber += char
+        }
+        emoneyPdpCardInputNumber.textFieldInput.setText(cardNumber)
         if (number.isNotEmpty()) showClearIcon()
     }
 
-    fun getNumber(): String = emoneyPdpCardInputNumber.textFieldInput.text.toString()
+    fun getNumber(): String = emoneyPdpCardInputNumber.textFieldInput.text.toString().replace(" ", "")
 
     fun setOperator(imageUrl: String) {
         emoneyPdpCardInputNumber.setFirstIcon(imageUrl)
         emoneyPdpCardInputNumber.getFirstIcon().show()
     }
-
-    private fun getInputString() = emoneyPdpCardInputNumber.textFieldInput.text.toString()
 
     private fun clearNumberAndOperator() {
         renderError("")

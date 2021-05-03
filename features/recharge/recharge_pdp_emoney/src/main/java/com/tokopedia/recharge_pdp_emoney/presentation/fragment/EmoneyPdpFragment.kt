@@ -430,7 +430,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             }
         }
         emoneyPdpViewPager.show()
-        emoneyPdpProductWidget.showPaddingBottom(false)
+        emoneyPdpProductWidget.showPaddingBottom(resources.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6))
         emoneyBuyWidgetLayout.hide()
     }
 
@@ -439,8 +439,10 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         emoneyPdpViewModel.setSelectedProduct(product)
         emoneyBuyWidget.setTotalPrice(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(product.attributes.pricePlain.toIntOrZero()))
         emoneyBuyWidgetLayout.show()
-        emoneyPdpProductWidget.showPaddingBottom(true)
         emoneyBuyWidget.setVisibilityLayout(true)
+        emoneyBuyWidgetLayout.invalidate()
+        emoneyPdpProductWidget.showPaddingBottom(kotlin.math.max(resources.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.unify_space_64), emoneyBuyWidgetLayout.measuredHeight)
+                + resources.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6))
     }
 
     override fun onClickSeeDetailProduct(product: CatalogProduct) {

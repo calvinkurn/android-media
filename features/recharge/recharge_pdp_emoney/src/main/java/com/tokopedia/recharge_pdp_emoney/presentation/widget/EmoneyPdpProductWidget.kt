@@ -60,9 +60,7 @@ class EmoneyPdpProductWidget @JvmOverloads constructor(@NotNull context: Context
         if (!emoneyProductListRecyclerView.isShown) emoneyProductListRecyclerView.show()
     }
 
-    fun showPaddingBottom(isShow: Boolean) {
-        emoneyProductListRecyclerView.setPadding(0, 0, 0,
-                if (isShow) resources.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.layout_lvl9)
-                else resources.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6))
+    fun showPaddingBottom(paddingHeight: Int) {
+        emoneyProductListRecyclerView.setPadding(0, 0, 0, paddingHeight)
     }
 }
