@@ -38,6 +38,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.akamaiBotLib)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    implementation project(rootProject.ext.libraries.encryption)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
