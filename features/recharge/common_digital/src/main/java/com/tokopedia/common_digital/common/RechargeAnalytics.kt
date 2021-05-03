@@ -70,13 +70,13 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
                 subscriber)
     }
 
-    private fun createScreenLaunchLinkerData(userId: String, categoryName: String, groupWiseCategoryId: List<String>): RechargeLinkerData {
+    private fun createScreenLaunchLinkerData(userId: String, categoryName: String, groupWiseCategoryId: String): RechargeLinkerData {
         val rechargeLinkerData = RechargeLinkerData()
         rechargeLinkerData.linkerData = LinkerData().apply {
             productCategory = categoryName
             this.userId = userId
         }
-        rechargeLinkerData.setCategoryIds(groupWiseCategoryId)
+        rechargeLinkerData.categoryIds = groupWiseCategoryId
         return rechargeLinkerData
     }
 

@@ -5,7 +5,7 @@ import java.util.List;
 public class RechargeLinkerData {
 
     private LinkerData linkerData;
-    private List<String> categoryIds;
+    private String categoryIds;
 
     public LinkerData getLinkerData() {
         return linkerData;
@@ -16,10 +16,10 @@ public class RechargeLinkerData {
     }
 
     public String getCategoryIds() {
-        return categoryIds.toString();
+        return categoryIds;
     }
 
-    public void setCategoryIds(List<String> categoryId) {
+    public void setCategoryIds(String categoryId) {
         this.categoryIds = categoryId;
     }
 
