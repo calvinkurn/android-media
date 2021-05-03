@@ -8,6 +8,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.Window
@@ -93,15 +94,13 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
         viewPager.currentItem = position
     }
 
-    private fun openImageDownloaded(path: String) {
-        val file = File(path)
+    private fun openImageDownloaded(uri: Uri) {
         val intent = Intent().apply {
             action = Intent.ACTION_VIEW
-            val uri = getUri(this@ImagePreviewActivity, file)
             setDataAndType(uri, "image/*")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        startActivity(intent);
+        startActivity(intent)
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)
     }
@@ -125,9 +124,9 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
         notificationManager.notify(notificationId, notificationBuilder.build())
         val targetListener: CustomTarget<Bitmap> = object : CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                val path: String?
+                val fileAndUri: Pair<File?, Uri?>
                 try {
-                    path = PublicFolderUtil.putImageToPublicFolder(
+                    fileAndUri = PublicFolderUtil.putImageToPublicFolder(
                             this@ImagePreviewActivity,
                             bitmap = resource,
                             fileName = filenameParam)
@@ -135,16 +134,14 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                     showFailedDownload(notificationId, notificationBuilder)
                     return
                 }
-
-                if (path == null) {
+                val resultUri = fileAndUri.second
+                if (resultUri == null) {
                     showFailedDownload(notificationId, notificationBuilder)
                 } else {
                     val intent = Intent().apply {
                         action = Intent.ACTION_VIEW
                     }
-                    val file = File(path)
-                    val uri = getUri(this@ImagePreviewActivity, file)
-                    intent.setDataAndType(uri, "image/*")
+                    intent.setDataAndType(resultUri, "image/*")
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
                     val pIntent = PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, 0)
@@ -164,7 +161,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                             getString(R.string.download_success),
                             Snackbar.LENGTH_SHORT)
                     snackbar.setAction(getString(R.string.label_open)) {
-                        openImageDownloaded(path)
+                        openImageDownloaded(resultUri)
                     }
                     snackbar.addCallback(object : Snackbar.Callback() {
                         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {

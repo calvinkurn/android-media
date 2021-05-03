@@ -28,7 +28,7 @@ object PublicFolderUtil {
             compressFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG,
             mimeType: String = "image/jpeg",
             directory: String? = Environment.DIRECTORY_PICTURES
-    ): String? {
+    ): Pair<File?, Uri?> {
         try {
             val contentResolver: ContentResolver = context.contentResolver
             val contentValues = createContentValues(fileName, mimeType, directory)
@@ -42,9 +42,9 @@ object PublicFolderUtil {
                 }
                 resetPending(contentResolver, contentValues, uri)
             }
-            return FileUtil.getPath(contentResolver, uri)
+            return fileAndUriPair(contentResolver, uri)
         } catch (ex: Exception) {
-            return null
+            return null to null
         }
     }
 
@@ -60,7 +60,7 @@ object PublicFolderUtil {
             outputFileName: String,
             mimeType: String,
             directory: String? = null,
-    ): String? {
+    ): Pair<File?, Uri?> {
         try {
             val contentResolver: ContentResolver = context.contentResolver
             val contentValues = createContentValues(outputFileName, mimeType, directory)
@@ -79,9 +79,18 @@ object PublicFolderUtil {
                 }
                 resetPending(contentResolver, contentValues, uri)
             }
-            return FileUtil.getPath(contentResolver, uri)
+            return fileAndUriPair(contentResolver, uri)
         } catch (ex: Exception) {
-            return null
+            return null to null
+        }
+    }
+
+    private fun fileAndUriPair (contentResolver: ContentResolver, uri:Uri?): Pair<File?, Uri?> {
+        val filePath = FileUtil.getPath(contentResolver, uri)
+        return if (filePath != null) {
+            File(filePath) to uri
+        } else {
+            null to null
         }
     }
 

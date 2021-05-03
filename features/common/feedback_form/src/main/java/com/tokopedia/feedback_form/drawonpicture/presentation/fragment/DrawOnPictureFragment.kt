@@ -121,9 +121,9 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
             Bitmap.createScaledBitmap(editedBitmap, options.outWidth, options.outHeight, false)
         else editedBitmap
 
-        val newPath = PublicFolderUtil.putImageToPublicFolder(requireActivity(), saveBitmap, FileUtil.generateUniqueFileNameDateFormat(Math.random().toInt()))
-        newPath?.let {
-            sendNewPathResult(newPath, imageUri.path)
+        val newFileAndUri = PublicFolderUtil.putImageToPublicFolder(requireActivity(), saveBitmap, FileUtil.generateUniqueFileNameDateFormat(Math.random().toInt()))
+        newFileAndUri.first?.let {
+            sendNewPathResult(it.absolutePath, imageUri.path)
         }
     }
 

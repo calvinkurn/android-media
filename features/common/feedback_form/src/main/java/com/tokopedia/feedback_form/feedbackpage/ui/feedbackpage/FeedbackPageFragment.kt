@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.ContentResolver
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -62,9 +61,7 @@ import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import rx.subscriptions.CompositeSubscription
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -91,7 +88,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private var emailTokopedia: String = ""
     private var uriImage: Uri? = null
     private var lastAccessedPage: String? = ""
-    private var resizedUriImage: Uri? = null
+    private var resizedImageFile: File? = null
     private var categoryItem: Int = -1
     private var reportType: Int = 0
     private var labelsId: ArrayList<Int> = arrayListOf()
@@ -189,8 +186,10 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
                 if (!imageType.contains(".mp4") && imageSize > 250) {
                     resizeImage(image)
-                    val resizedFile = File(resizedUriImage?.path)
-                    sendAttachmentImage(feedbackId, resizedFile, totalImage, initCountImage)
+                    resizedImageFile?.let { imageFile ->
+                        val resizedFile = File(imageFile.path)
+                        sendAttachmentImage(feedbackId, resizedFile, totalImage, initCountImage)
+                    }
                 } else if (!imageType.contains(".mp4") && imageSize < 250) {
                     sendAttachmentImage(feedbackId, originalFile, totalImage, initCountImage)
                 } else {
@@ -507,8 +506,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         val destHeight = 1440
         val destWidth = origWidth / (origHeight.toDouble() / destHeight)
         val b2 = Bitmap.createScaledBitmap(b, destWidth.toInt(), destHeight, false)
-        val filePathString = PublicFolderUtil.putImageToPublicFolder(requireActivity(), b2, FileUtil.generateUniqueFileNameDateFormat(Math.random().toInt()))
-        resizedUriImage = Uri.parse(filePathString)
+        val fileAndUri = PublicFolderUtil.putImageToPublicFolder(requireActivity(), b2, FileUtil.generateUniqueFileNameDateFormat(Math.random().toInt()))
+        resizedImageFile = fileAndUri.first
     }
 
     private fun setActiveFilter(selected: ChipsUnify?, deselected: ChipsUnify?) {

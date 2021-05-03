@@ -225,12 +225,12 @@ class ScreenRecordService : Service(), CoroutineScope {
 
     private fun writeResultToMovies(): String {
         val srcFile = File(internalStoragePath + FILENAME_RESULT)
-        val outputFilePathString = PublicFolderUtil.putFileToPublicFolder(applicationContext,
+        val result = PublicFolderUtil.putFileToPublicFolder(applicationContext,
                 srcFile,
                 "${getOutputFileName()}_${getTimestamp()}.mp4",
                 "video/mp4")
-        if (outputFilePathString?.isNotEmpty() == true) {
-            val outputFile = File(outputFilePathString)
+        val outputFile = result.first
+        if (outputFile != null) {
             MediaScannerConnection.scanFile(applicationContext, arrayOf(outputFile.absolutePath), null, null)
             return outputFile.absolutePath
         } else {
