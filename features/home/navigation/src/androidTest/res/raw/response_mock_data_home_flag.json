@@ -15,7 +15,7 @@
           {
             "is_active": true,
             "name": "has_tokopoints",
-            "integer_value":1
+            "integer_value":2
           },
           {
             "is_active": false,

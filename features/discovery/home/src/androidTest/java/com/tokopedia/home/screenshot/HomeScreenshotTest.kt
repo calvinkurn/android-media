@@ -34,6 +34,9 @@ private const val TAG = "HomeScreenshotTesting"
  * Created by devarafikry on 12/04/21.
  */
 class HomeScreenshotTest {
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val gtmLogDBSource = GtmLogDBSource(context)
+
     @get:Rule
     var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
@@ -43,11 +46,9 @@ class HomeScreenshotTest {
             setupDarkModeTest(false)
             setupAbTestRemoteConfig()
             disableCoachMark(context)
+            InstrumentationAuthHelper.clearUserSession()
         }
     }
-
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun resetAll() {
@@ -57,7 +58,7 @@ class HomeScreenshotTest {
 
     @Test
     fun screenShotVisibleViewNonLoggedIn() {
-        waitForData()
+        Thread.sleep(10000)
         turnOffAnimation()
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             takeScreenShotVisibleViewInScreen(
@@ -71,8 +72,8 @@ class HomeScreenshotTest {
 
     @Test
     fun screenShotVisibleViewLoggedIn() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
-        waitForData()
+        loginScreenshotTest()
+        Thread.sleep(10000)
         turnOffAnimation()
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             takeScreenShotVisibleViewInScreen(
@@ -86,7 +87,8 @@ class HomeScreenshotTest {
 
     @Test
     fun screenShotEachViewholders() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        loginScreenshotTest()
+        Thread.sleep(10000)
         waitForData()
         turnOffAnimation()
         doScreenshotForEachViewholder()
@@ -118,7 +120,6 @@ class HomeScreenshotTest {
     private fun doScreenshotForEachViewholder() {
         val screenshotModelList = listOf(
                 ScreenshotModel(name = "Header"),
-                ScreenshotModel(name = "BalanceWidget"),
                 ScreenshotModel(name = "Ticker"),
                 ScreenshotModel(name = "ATF1-Icon"),
                 ScreenshotModel(name = "ATF2-Banner Carousel"),
@@ -165,6 +166,13 @@ class HomeScreenshotTest {
         }
     }
 
+    private fun loginScreenshotTest() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            InstrumentationAuthHelper.loginInstrumentationTestUser1()
+            activityRule.activity.recreate()
+        }
+    }
+
     private fun fileName(suffix: String? = null): String {
         val prefix = TAG
         suffix?.let {
@@ -173,7 +181,7 @@ class HomeScreenshotTest {
         return prefix
     }
 
-    private fun String.name(loggedIn: Boolean) = this + (if (loggedIn) "-login" else "nonlogin")
+    private fun String.name(loggedIn: Boolean) = this + (if (loggedIn) "-login" else "-nonlogin")
 
     private fun doActivityTest(position: Int, action: (viewHolder: RecyclerView.ViewHolder)-> Unit) {
         val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)

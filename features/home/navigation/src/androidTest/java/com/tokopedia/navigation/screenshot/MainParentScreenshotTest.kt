@@ -3,12 +3,13 @@ package com.tokopedia.navigation.screenshot
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.home.component.disableCoachMark
+import com.tokopedia.navigation.com.tokopedia.navigation.helper.NavigationInstrumentationHelper.disableCoachMark
 import com.tokopedia.navigation.com.tokopedia.navigation.mock.MainHomeMockResponseConfig
 import com.tokopedia.navigation.presentation.activity.MainParentActivity
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.test.application.espresso_component.CommonActions.takeScreenShotVisibleViewInScreen
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSession
@@ -34,6 +35,7 @@ class MainParentScreenshotTest {
             setupHomeEnvironment()
             setupAbTestRemoteConfig()
             disableCoachMark(context)
+            InstrumentationAuthHelper.clearUserSession()
         }
     }
 
@@ -54,13 +56,30 @@ class MainParentScreenshotTest {
     }
 
     @Test
-    fun screenShotVisibleView() {
+    fun screenShotVisibleViewNonLoggedIn() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            activityRule.activity.recreate()
+        }
         Thread.sleep(10000)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             takeScreenShotVisibleViewInScreen(
                     activityRule.activity.window.decorView,
                     fileName(),
-                    "home"
+                    "home".name(false)
+            )
+        }
+        activityRule.activity.finishAndRemoveTask()
+    }
+
+    @Test
+    fun screenShotVisibleViewLoggedIn() {
+        loginScreenshotTest()
+        Thread.sleep(10000)
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            takeScreenShotVisibleViewInScreen(
+                    activityRule.activity.window.decorView,
+                    fileName(),
+                    "home".name(true)
             )
         }
         activityRule.activity.finishAndRemoveTask()
@@ -87,5 +106,14 @@ class MainParentScreenshotTest {
             return "$prefix-$suffix"
         }
         return prefix
+    }
+
+    private fun String.name(loggedIn: Boolean) = this + (if (loggedIn) "-login" else "-nonlogin")
+
+    private fun loginScreenshotTest() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            InstrumentationAuthHelper.loginInstrumentationTestUser1()
+            activityRule.activity.recreate()
+        }
     }
 }

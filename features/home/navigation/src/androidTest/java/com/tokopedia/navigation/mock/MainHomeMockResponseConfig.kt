@@ -1,7 +1,6 @@
 package com.tokopedia.navigation.com.tokopedia.navigation.mock
 
 import android.content.Context
-import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.navigation.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
