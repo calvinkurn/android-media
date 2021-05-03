@@ -112,6 +112,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         when (button.key) {
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_ASK_SELLER -> onAskSellerActionButtonClicked()
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_REQUEST_CANCEL -> onRequestCancelActionButtonClicked(button)
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_TRACK_SHIPMENT -> onTrackShipmentActionButtonClicked(button)
         }
     }
 
@@ -122,11 +123,30 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun onAskSellerActionButtonClicked() {
-
+        context?.let { context ->
+            viewModel.buyerOrderDetailResult.value?.let {
+                if (it is Success) {
+                    BuyerOrderDetailNavigator.goToAskSeller(context, it.data)
+                }
+            }
+        }
     }
 
     private fun onRequestCancelActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
         BuyerOrderDetailNavigator.goToRequestCancellationPage(this, viewModel.buyerOrderDetailResult.value, button, cacheManager)
+    }
+
+    private fun onTrackShipmentActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
+        context?.let { context ->
+            viewModel.buyerOrderDetailResult.value?.let {
+                if (it is Success) {
+                    BuyerOrderDetailNavigator.goToTrackShipmentPage(
+                            context,
+                            it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
+                            button.url)
+                }
+            }
+        }
     }
 
     private fun setupViews() {

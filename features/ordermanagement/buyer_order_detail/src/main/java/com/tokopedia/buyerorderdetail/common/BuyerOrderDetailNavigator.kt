@@ -39,6 +39,14 @@ object BuyerOrderDetailNavigator {
         context.startActivity(intent)
     }
 
+    fun goToTrackShipmentPage(context: Context, orderId: String, trackingUrl: String) {
+        val appLink = Uri.parse(ApplinkConst.ORDER_TRACKING).buildUpon()
+                .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl)
+                .build()
+                .toString()
+        RouteManager.route(context, appLink, orderId)
+    }
+
     fun goToShopPage(context: Context, shopId: String) {
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId)
     }
@@ -82,6 +90,21 @@ object BuyerOrderDetailNavigator {
                 fragment.startActivityForResult(intent, BuyerOrderDetailFragment.REQUEST_CANCEL_ORDER)
             }
         }
+    }
+
+    fun goToAskSeller(context: Context, buyerOrderDetailData: BuyerOrderDetailUiModel) {
+        val intent = RouteManager.getIntent(context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, buyerOrderDetailData.productListUiModel.productListHeaderUiModel.shopId)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_ID, buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderId)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productName.orEmpty())
+        intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.purchaseDate)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productThumbnailUrl.orEmpty())
+        intent.putExtra(ApplinkConst.Chat.INVOICE_URL, buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.invoice.url)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderStatus)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, buyerOrderDetailData.paymentInfoUiModel.paymentGrandTotal.value)
+        intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.SOURCE_ASK_SELLER)
+        context.startActivity(intent)
     }
 
     private fun composeCallIntentData(phoneNumber: String): Uri {

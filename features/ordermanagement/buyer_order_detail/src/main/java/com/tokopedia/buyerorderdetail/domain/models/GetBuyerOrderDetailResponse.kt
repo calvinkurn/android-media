@@ -51,7 +51,9 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("popup")
                     val popup: Popup = Popup(),
                     @SerializedName("style")
-                    val style: String = ""
+                    val style: String = "",
+                    @SerializedName("url")
+                    val url: String = ""
             ) {
                 data class Popup(
                         @SerializedName("action_button")

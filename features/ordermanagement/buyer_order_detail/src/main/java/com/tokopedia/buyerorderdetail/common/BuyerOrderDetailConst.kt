@@ -3,6 +3,7 @@ package com.tokopedia.buyerorderdetail.common
 object BuyerOrderDetailConst {
     const val ACTION_BUTTON_KEY_ASK_SELLER = "ask_seller"
     const val ACTION_BUTTON_KEY_REQUEST_CANCEL = "request_cancel"
+    const val ACTION_BUTTON_KEY_TRACK_SHIPMENT = "track"
 
     const val SECTION_HEADER_PRODUCT_LIST = "Daftar Produk"
     const val SECTION_HEADER_SHIPMENT_INFO = "Info Pengiriman"

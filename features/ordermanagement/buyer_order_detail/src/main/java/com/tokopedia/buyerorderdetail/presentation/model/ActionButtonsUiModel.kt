@@ -8,7 +8,8 @@ data class ActionButtonsUiModel(
             val key: String,
             val label: String,
             val popUp: PopUp,
-            val style: String
+            val style: String,
+            val url: String
     ) {
         data class PopUp(
                 val actionButton: List<ActionButton> = listOf(),

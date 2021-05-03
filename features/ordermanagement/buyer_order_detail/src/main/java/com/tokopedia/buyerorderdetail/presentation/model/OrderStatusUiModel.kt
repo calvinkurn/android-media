@@ -12,7 +12,8 @@ data class OrderStatusUiModel(
     data class OrderStatusHeaderUiModel(
             val indicatorColor: String,
             val orderId: String,
-            val orderStatus: String
+            val orderStatus: String,
+            val orderStatusId: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
