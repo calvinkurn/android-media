@@ -8,6 +8,7 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
  */
 
 class WidgetGradeBenefitUiModel(
+        val selectedPmTireType: Int,
         val benefitPages: List<PMGradeWithBenefitsUiModel>
 ) : BaseWidgetUiModel {
 

@@ -38,20 +38,20 @@ class PmProStaticBenefitWidget(itemView: View) : AbstractViewHolder<WidgetPmProS
         return lazy {
             listOf(
                     PMGradeBenefitUiModel(
-                            benefitName = getString(R.string.pm_free_shipping_description),
-                            drawableResIcon = R.drawable.ic_pm_search_rounded_bg
-                    ),
-                    PMGradeBenefitUiModel(
                             benefitName = getString(R.string.pm_search_ranking_description),
                             drawableResIcon = R.drawable.ic_pm_search_rounded_bg
                     ),
                     PMGradeBenefitUiModel(
-                            benefitName = getString(R.string.pm_exclusive_badge_pm_pro_description),
-                            drawableResIcon = R.drawable.ic_pm_search_rounded_bg
+                            benefitName = getString(R.string.pm_free_shipping_description),
+                            drawableResIcon = R.drawable.ic_pm_free_shipping_rounded
+                    ),
+                    PMGradeBenefitUiModel(
+                            benefitName = getString(R.string.pm_discount_shipping_fee),
+                            drawableResIcon = R.drawable.ic_pm_free_shipping_rounded
                     ),
                     PMGradeBenefitUiModel(
                             benefitName = getString(R.string.pm_growing_benefit_description),
-                            drawableResIcon = R.drawable.ic_pm_search_rounded_bg
+                            drawableResIcon = R.drawable.ic_pm_benefit
                     )
             )
         }

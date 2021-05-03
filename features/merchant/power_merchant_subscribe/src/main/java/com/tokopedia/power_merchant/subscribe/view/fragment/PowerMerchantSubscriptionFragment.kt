@@ -321,6 +321,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private fun getPmGradeBenefitWidget(): WidgetGradeBenefitUiModel {
         val gradeBenefitList = pmGradeBenefitAndShopInfo?.gradeBenefitList.orEmpty()
         return WidgetGradeBenefitUiModel(
+                selectedPmTireType = selectedPmType,
                 benefitPages = gradeBenefitList.filter { it.pmTier == selectedPmType }
         )
     }

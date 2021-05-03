@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -33,12 +34,21 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         setupTabLayout(element)
         setupPagerView(element)
         selectDefaultTab(element)
-        setupView()
+        setupView(element)
     }
 
-    private fun setupView() = with(itemView) {
+    private fun setupView(element: WidgetGradeBenefitUiModel) = with(itemView) {
         tvPmLearMorePowerMerchant.setOnClickListener {
             RouteManager.route(context, Constant.Url.POWER_MERCHANT_EDU)
+        }
+
+        val isPmPro = element.selectedPmTireType == PMConstant.PMTierType.PM_PRO
+        if (isPmPro) {
+            tvPmGradeBenefitTitle.text = getString(R.string.pm_grade_benefit_widget_title_pm_pro)
+            tvPmGradeBenefitDescription.visible()
+        } else {
+            tvPmGradeBenefitTitle.text = getString(R.string.pm_grade_benefit_widget_title_pm_pro)
+            tvPmGradeBenefitDescription.gone()
         }
     }
 

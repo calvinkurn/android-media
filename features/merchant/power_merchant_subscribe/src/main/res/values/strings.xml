@@ -148,8 +148,9 @@
     <string name="pm_registration_terms">Syarat Pendaftaran</string>
     <string name="pm_registration_potential_description">Dari data di 2020, dengan biaya layanan <b>1%</b> saja dari setiap produk terjual, tokomu berpotensi:</string>
     <string name="pm_tnc_agreement_text">Saya setuju dengan <font color="#03AC0E"><b>S&amp;K</b></font> yang berlaku.</string>
-    <string name="pm_grade_benefit_widget_title">Dapatkan keuntungan eksklusif PM Gold!</string>
-    <string name="pm_grade_benefit_widget_description">Grade dapat mengalami kenaikan setiap bulan dan \npenurunan setiap 3 bulan.</string>
+    <string name="pm_grade_benefit_widget_title_pm">Keuntungan yang bisa kamu dapatkan:</string>
+    <string name="pm_grade_benefit_widget_title_pm_pro">Dapatkan berbagai keuntungan sesuai level!</string>
+    <string name="pm_grade_benefit_widget_description">Paket keuntungan dapat mengalami kenaikan setiap bulan dan penurunan setiap 3 bulan.</string>
     <string name="pm_pm_transition_period_learnmore">Pelajari Power Merchant Selengkapnya</string>
     <string name="pm_pm_registration_header_ticker_message">Tunggu, ya! Jika verifikasi data berhasil, tokomu akan langsung jadi Power Merchant!</string>
     <string name="pm_shop_grade_message">Pastikan status Power Merchant-mu aktif \nuntuk tetap nikmati keuntungannya, ya!</string>
@@ -239,8 +240,8 @@
     <string name="pm_niv_threshold_term">Pendapatan bersih min. %1$s</string>
     <string name="pm_free_shipping_description">Biaya Bebas Ongkir yang lebih murah</string>
     <string name="pm_search_ranking_description">Peringkat pencarian lebih tinggi</string>
-    <string name="pm_exclusive_badge_pm_pro_description">Badge eksklusif PM Pro di tampilan buyer</string>
-    <string name="pm_growing_benefit_description">Keuntungan bertambah sesuai Performa</string>
+    <string name="pm_discount_shipping_fee">Diskon biaya pengiriman Same Day &amp; Instan</string>
+    <string name="pm_growing_benefit_description">Keuntungan bertambah sesuai level toko</string>
     <string name="pm_pm_pro_statistic_benefit_description">Berbagai keuntungan yang bisa didapatkan!</string>
     <string name="pm_not_eligible_order_term_title">Tingkatkan jumlah pesanan \nTokomu dulu, yuk!</string>
     <string name="pm_not_eligible_order_term_description">Tokomu harus mendapatkan <b>min. %1$d pesanan</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan jumlah pesananmu, ya!</string>

@@ -11,9 +11,9 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:text="@string/pm_grade_benefit_widget_title"
+        android:text="@string/pm_grade_benefit_widget_title_pm_pro"
         android:textColor="@color/Neutral_N700"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -58,12 +58,24 @@
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_pm_grade_benefit_pager" />
 
+    <View
+        android:id="@+id/horLinePm1"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:background="@color/Unify_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvPmGradeBenefitPager" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmLearMorePowerMerchant"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl3"
+        android:layout_marginBottom="@dimen/layout_lvl2"
         android:gravity="center"
         android:text="@string/pm_pm_transition_period_learnmore"
         android:textColor="@color/Unify_G500"
@@ -71,5 +83,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rvPmGradeBenefitPager" />
+        app:layout_constraintTop_toBottomOf="@+id/horLinePm1" />
 </androidx.constraintlayout.widget.ConstraintLayout>
