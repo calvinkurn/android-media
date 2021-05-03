@@ -109,6 +109,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var quickFilters: List<QuickFilter> = listOf()
     private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
     private var isSearchByMap: Boolean = false
+    private var lastHorizontalTrackingPositionSent: Int = -1
 
     private var isViewFullMap: Boolean = false
 
@@ -326,6 +327,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         halfExpandBottomSheet()
 
         ivHotelSearchMapNoResult.loadImage(getString(R.string.hotel_url_empty_search_map_result))
+
+        trackingHotelUtil.viewHotelSearchMap(context,
+                searchDestinationName,
+                searchDestinationType,
+                hotelSearchMapViewModel.searchParam,
+                SEARCH_SCREEN_NAME)
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -681,6 +688,26 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     }
                 }
             }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val currentPosition = getCurrentItemCardList()
+                if (currentPosition != -1 &&
+                        currentPosition != lastHorizontalTrackingPositionSent &&
+                        adapterCardList.data[currentPosition] is Property) {
+
+                    lastHorizontalTrackingPositionSent = currentPosition
+                    trackingHotelUtil.hotelViewHotelListMapImpression(context,
+                            searchDestinationName,
+                            searchDestinationType,
+                            hotelSearchMapViewModel.searchParam,
+                            listOf(adapterCardList.data[currentPosition]),
+                            0,
+                            SEARCH_SCREEN_NAME)
+
+                }
+            }
         })
     }
 
@@ -899,7 +926,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         showQuickFilterShimmering(false)
 
         val searchProperties = data.properties
-
         if (searchProperties.isNotEmpty()) {
             showCardListView()
             if (adapterCardList.itemCount <= MINIMUM_NUMBER_OF_RESULT_LOADED) {

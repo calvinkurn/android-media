@@ -458,4 +458,50 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         assertEmptyStockLabelOnProductCard(R.id.recycler_view, 1)
     }
 
+    @Test
+    fun should_show_deactivate_toaster_when_deactivate_product_from_update_stock() {
+        // Given
+        val productName = "Sepatu"
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment.setEmptyStock(
+                0, false
+        )
+        createSuccessUpdateStockIntentResult(
+                "1261590628", 0, ProductStatus.INACTIVE, productName
+        )
+        inflateTestFragment()
+
+        // When
+        clickChangeStockBtn(R.id.recycler_view, 1)
+
+        // Then
+        assertSnackbarText(
+                "Produk \"$productName\" berhasil dinonaktifkan."
+        )
+    }
+
+    @Test
+    fun should_show_activate_toaster_when_activate_product_from_update_stock() {
+        // Given
+        val productName = "Sepatu"
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductChatReplies
+        chatAttachmentUseCase.response = sellerProductAttachment.setEmptyStock(
+                0, true
+        )
+        createSuccessUpdateStockIntentResult(
+                "1261590628", 20, ProductStatus.ACTIVE, productName
+        )
+        inflateTestFragment()
+
+        // When
+        clickChangeStockBtn(R.id.recycler_view, 1)
+
+        // Then
+        assertSnackbarText(
+                "Produk \"$productName\" berhasil diaktifkan."
+        )
+    }
+
 }
