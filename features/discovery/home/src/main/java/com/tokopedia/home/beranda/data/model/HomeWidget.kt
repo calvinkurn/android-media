@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.model
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
@@ -74,6 +75,7 @@ class HomeWidget(
     )
 
     data class TabItem(
+            @SuppressLint("Invalid Data Type")
             @SerializedName("id")
             @Expose
             val id: Int,
@@ -112,6 +114,7 @@ class HomeWidget(
             val backColor: String)
 
     class ContentItemTab(
+            @SuppressLint("Invalid Data Type")
             @SerializedName("id")
             @Expose
             val contentId: Int = -1,
@@ -145,6 +148,7 @@ class HomeWidget(
             @SerializedName("tag_type")
             @Expose
             val tagType: Int = -1,
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",
@@ -154,6 +158,7 @@ class HomeWidget(
             @SerializedName("price_prefix")
             @Expose
             val pricePrefix: String = "",
+            @SuppressLint("Invalid Data Type")
             @SerializedName("template_id")
             @Expose
             val templateId: Int = -1
