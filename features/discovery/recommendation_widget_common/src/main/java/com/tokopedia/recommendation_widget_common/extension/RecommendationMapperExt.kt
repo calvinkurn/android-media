@@ -71,18 +71,20 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                         }
                 )
             },
-            title,
-            foreignTitle,
-            source,
-            tid,
-            widgetUrl,
-            layoutType,
-            seeMoreAppLink,
-            pagination.currentPage,
-            pagination.nextPage,
-            pagination.prevPage,
-            pagination.hasNext,
-            pageName)
+            title = title,
+            foreignTitle = foreignTitle,
+            subtitle = subtitle,
+            source = source,
+            tid = tid,
+            widgetUrl = widgetUrl,
+            layoutType = layoutType,
+            seeMoreAppLink = seeMoreAppLink,
+            currentPage = pagination.currentPage,
+            nextPage = pagination.nextPage,
+            prevPage = pagination.prevPage,
+            hasNext = pagination.hasNext,
+            pageName = pageName
+    )
 }
 
 fun List<RecommendationItem>.toProductCardModels(hasThreeDots: Boolean = false): List<ProductCardModel>{

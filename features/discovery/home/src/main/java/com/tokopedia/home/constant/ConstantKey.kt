@@ -53,7 +53,6 @@ object ConstantKey {
     }
 
     object HomeTimber {
-        const val TAG = "P2#HOME_STATUS#"
         const val MAX_LIMIT = 1000
     }
 

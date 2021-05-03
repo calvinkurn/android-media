@@ -13,8 +13,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.empty_state.EmptyStateUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.BuildConfig
@@ -69,6 +73,8 @@ import kotlinx.android.synthetic.main.fragment_sah.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.lang.Exception
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
@@ -99,8 +105,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val MAX_LOTTIE_ANIM_SPEED = 4f
         private const val SCROLL_DELTA_MIN_Y_THRESHOLD = 20f
         private const val SCROLL_DELTA_MAX_Y_THRESHOLD = 100f
-
-        private const val HIDDEN_WIDGET_COUNT = 2
 
         private const val DEFAULT_HEIGHT_DP = 720f
     }
@@ -167,6 +171,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
 
     private var ketupatLottie: KetupatLottieView? = null
+    private var emptyState: EmptyStateUnify? = null
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
     override val coroutineContext: CoroutineContext
@@ -294,6 +299,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             loadAnimationFromUrl()
             setListener(this@SellerHomeFragment)
         }
+        emptyState = findViewById(R.id.empty_state_seller_home)
 
         val sellerHomeLayoutManager = SellerHomeLayoutManager(context, 2).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -327,6 +333,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sahGlobalError.setActionClickListener {
             reloadPage()
         }
+        emptyState?.run {
+            setTitle(context?.getString(R.string.sah_failed_to_get_information).orEmpty())
+            setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500, null))
+            setPrimaryCTAText(context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty())
+            setPrimaryCTAClickListener {
+                reloadPage()
+            }
+        }
 
         setViewBackground()
     }
@@ -345,13 +359,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 if (widget.widgetType == WidgetType.CARD) {
                     visibleWidgets.add(widget)
                 } else {
-                    val lastLoadingWidget =
-                            if (isNewLazyLoad) {
-                                getLastLoadingWidget(lastVisible)
-                            } else {
-                                lastVisible
-                            }
-                    if (index in firstVisible..lastLoadingWidget) {
+                    if (index in firstVisible..lastVisible) {
                         visibleWidgets.add(widget)
                     }
                 }
@@ -361,27 +369,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
     }
 
-    /**
-     * Get index of last widget which data will be loaded.
-     * This will be used to load widgets below the visible widgets for smooth scrolling
-     *
-     * @param   lastVisibleWidget   index of last visible widget on the screen
-     * @return  index of last widget that need its data to be loaded
-     */
-    private fun getLastLoadingWidget(lastVisibleWidget: Int): Int {
-        return if (lastVisibleWidget + HIDDEN_WIDGET_COUNT >= adapter.dataSize) {
-            adapter.lastIndex
-        } else {
-            lastVisibleWidget + HIDDEN_WIDGET_COUNT
-        }
-    }
-
     private fun reloadPage() = view?.run {
         val isAdapterNotEmpty = adapter.data.isNotEmpty()
         setProgressBarVisibility(!isAdapterNotEmpty)
         swipeRefreshLayout.isRefreshing = isAdapterNotEmpty
 
         sahGlobalError.gone()
+        emptyState?.gone()
         val deviceHeight =
                 if (isNewLazyLoad) {
                     deviceDisplayHeight
@@ -497,8 +491,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>) {
-        showErrorToaster()
+    override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>, error: String) {
+        showErrorToaster(error)
     }
 
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
@@ -717,6 +711,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     @Suppress("UNCHECKED_CAST")
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
         view?.sahGlobalError?.gone()
+        emptyState?.gone()
         recyclerView?.visible()
 
         adapter.hideLoading()
@@ -792,6 +787,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (isWidgetHasError) {
             showErrorToaster()
         }
+
+        loadNextUnloadedWidget()
     }
 
     private fun isTheSameWidget(oldWidget: BaseWidgetUiModel<*>, newWidget: BaseWidgetUiModel<*>): Boolean {
@@ -831,10 +828,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
         if (adapter.data.isEmpty()) {
-            sahGlobalError.visible()
+            showErrorViewByException(throwable)
         } else {
-            showErrorToaster()
+            throwable.showErrorToaster()
             sahGlobalError.gone()
+            emptyState?.gone()
         }
         view?.swipeRefreshLayout?.isRefreshing = false
         setProgressBarVisibility(false)
@@ -842,11 +840,33 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         logToCrashlytics(throwable, ERROR_LAYOUT)
     }
 
-    private fun showErrorToaster() = view?.run {
+    private fun showErrorViewByException(throwable: Throwable) = view?.run {
+        val errorType =
+                when(throwable) {
+                    is MessageErrorException -> null
+                    is UnknownHostException, is SocketTimeoutException -> GlobalError.NO_CONNECTION
+                    else -> GlobalError.SERVER_ERROR
+                }
+
+        if (errorType == null) {
+            sahGlobalError?.gone()
+            emptyState?.showMessageExceptionError(throwable)
+        } else {
+            sahGlobalError?.run {
+                setType(errorType)
+                visible()
+            }
+            emptyState?.gone()
+        }
+    }
+
+    private fun showErrorToaster(errorMessage: String? = null) = view?.run {
         if (isErrorToastShown) return@run
         isErrorToastShown = true
 
-        Toaster.build(this, context.getString(R.string.sah_failed_to_get_information),
+        val message = errorMessage ?: context.getString(R.string.sah_failed_to_get_information)
+
+        Toaster.build(this, message,
                 TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, context.getString(R.string.sah_reload)
         ) {
             reloadPageOrLoadDataOfErrorWidget()
@@ -855,6 +875,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         Handler().postDelayed({
             isErrorToastShown = false
         }, TOAST_DURATION)
+    }
+
+    private fun Throwable.showErrorToaster() {
+        context?.let {
+            showErrorToaster(ErrorHandler.getErrorMessage(it, this))
+        }
     }
 
     /**
@@ -946,7 +972,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
      */
     private fun loadNextUnloadedWidget() {
         if (isNewLazyLoad) {
-            adapter.data?.find { !it.isLoaded }?.let { newWidgets ->
+            adapter.data?.find { it.isNeedToLoad() }?.let { newWidgets ->
                 getWidgetsData(listOf(newWidgets))
             }
         }
@@ -1153,6 +1179,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             else -> MEDIUM_LOTTIE_ANIM_SPEED
         }
     }
+
+    private fun EmptyStateUnify.showMessageExceptionError(throwable: Throwable) {
+        val errorMessage = context?.let {
+            ErrorHandler.getErrorMessage(it, throwable)
+        } ?: this@SellerHomeFragment.context?.getString(R.string.sah_failed_to_get_information).orEmpty()
+        setDescription(errorMessage)
+        visible()
+    }
+
+    private fun BaseWidgetUiModel<*>.isNeedToLoad(): Boolean =
+            !isLoaded && this !is SectionWidgetUiModel && this !is TickerWidgetUiModel &&
+                    this !is DescriptionWidgetUiModel && this !is WhiteSpaceUiModel
 
     interface Listener {
         fun getShopInfo()

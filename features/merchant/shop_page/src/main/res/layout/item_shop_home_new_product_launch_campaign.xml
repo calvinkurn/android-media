@@ -128,8 +128,25 @@
         tools:visibility="visible" />
 
     <include
-        android:id="@+id/layout_remind_me"
-        layout="@layout/layout_shop_home_npl_remind_me"
+        android:id="@+id/layout_remind_me_un_notified"
+        layout="@layout/layout_shop_home_npl_remind_me_un_notified"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/layout_timer"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintLeft_toRightOf="@id/layout_timer"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/banner_background"
+        app:layout_constraintVertical_bias="0"
+        tools:visibility="visible" />
+
+    <include
+        android:id="@+id/layout_remind_me_notified"
+        layout="@layout/layout_shop_home_npl_remind_me_notified"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_32"
         android:layout_marginTop="@dimen/dp_8"
