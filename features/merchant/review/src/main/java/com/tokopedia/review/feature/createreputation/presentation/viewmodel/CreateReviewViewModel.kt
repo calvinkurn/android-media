@@ -3,17 +3,17 @@ package com.tokopedia.review.feature.createreputation.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.review.feature.createreputation.model.*
-import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductIncentiveOvo
-import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
-import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevEditReviewUseCase
-import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
+import com.tokopedia.review.feature.createreputation.domain.usecase.*
+import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
+import com.tokopedia.review.feature.createreputation.model.DefaultImageReviewUiModel
+import com.tokopedia.review.feature.createreputation.model.ImageReviewUiModel
+import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.presentation.mapper.CreateReviewImageMapper
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.usecase.coroutines.Result
@@ -32,7 +32,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                                                 private val submitReviewUseCase: ProductrevSubmitReviewUseCase,
                                                 private val uploaderUseCase: UploaderUseCase,
                                                 private val editReviewUseCase: ProductrevEditReviewUseCase,
-                                                private val userSessionInterface: UserSessionInterface
+                                                private val userSessionInterface: UserSessionInterface,
+                                                private val getReviewTemplatesUseCase: GetReviewTemplatesUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.io) {
 
     companion object {

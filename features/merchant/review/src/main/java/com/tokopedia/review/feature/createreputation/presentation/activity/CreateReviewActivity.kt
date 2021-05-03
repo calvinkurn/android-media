@@ -10,13 +10,13 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
+import timber.log.Timber
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
 class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, ReviewPerformanceMonitoringListener {
@@ -151,5 +151,17 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
 
     private fun setToolbar() {
         this.supportActionBar?.setTitle(getString(R.string.review_create_activity_title))
+    }
+
+    private fun handleDimming(){
+        try{
+            window.setDimAmount(0f)
+        }catch (th:Throwable){
+            Timber.e(th)
+        }
+    }
+
+    private fun showWriteFormBottomSheet() {
+
     }
 }
