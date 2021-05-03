@@ -19,6 +19,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.draft.presentation.activity.AddEditProductDraftActivity
 import com.tokopedia.product.addedit.mock.AddEditProductEditingMockResponseConfig
+import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.deleteAllDraft
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -49,8 +50,11 @@ class AddEditProductDraftAnalyticTest {
     fun beforeTest() {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         remoteConfig.setString(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, "true")
+
         gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(AddEditProductEditingMockResponseConfig())
+        deleteAllDraft()
+
         InstrumentationAuthHelper.loginInstrumentationTestUser2()
         activityRule.launchActivity(Intent())
     }

@@ -22,6 +22,7 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_SEARCH
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.*
@@ -165,10 +166,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = getRecyclerView(view)
         recyclerView?.removeItemDecorationAt(0)
-        context?.let {
-            recyclerView?.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(R.dimen.hotel_12dp),
-                    LinearLayoutManager.VERTICAL))
-        }
         searchResultviewModel.fetchTickerData()
     }
 
@@ -455,7 +452,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun loadData(page: Int) {
-        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
+        val searchQuery = HotelGqlQuery.PROPERTY_SEARCH
         searchResultviewModel.searchProperty(page, searchQuery)
     }
 

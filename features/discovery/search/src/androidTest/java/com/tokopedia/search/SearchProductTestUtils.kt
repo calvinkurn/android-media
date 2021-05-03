@@ -72,6 +72,11 @@ internal fun createInspirationCarouselListener(): InspirationCarouselListener {
         override fun onImpressedInspirationCarouselGridProduct(product: InspirationCarouselDataView.Option.Product) {}
         override fun onInspirationCarouselGridProductClicked(product: InspirationCarouselDataView.Option.Product) {}
         override fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselDataView.Option) {}
+        override fun onInspirationCarouselChipsProductClicked(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onImpressedInspirationCarouselChipsProduct(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselChipsSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
+        override fun onInspirationCarouselChipsClicked(inspirationCarouselAdapterPosition: Int, inspirationCarouselViewModel: InspirationCarouselDataView, inspirationCarouselOption: InspirationCarouselDataView.Option) {}
+
     }
 }
 

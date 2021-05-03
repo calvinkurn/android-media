@@ -15,8 +15,6 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play_common.util.coroutine.DefaultCoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -32,10 +30,6 @@ class PlayBroadcastModule(private val mContext: Context) {
     fun provideContext(): Context {
         return mContext
     }
-
-    @PlayBroadcastScope
-    @Provides
-    fun provideCoroutineDispatcherProvider(): CoroutineDispatcherProvider = DefaultCoroutineDispatcherProvider()
 
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {

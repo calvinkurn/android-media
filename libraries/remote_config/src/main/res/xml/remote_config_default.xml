@@ -264,6 +264,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_customer_hotel_search_with_map</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>nonb_1_ttl</key>
         <value>Bebas Beli Apa Saja</value>
     </entry>
@@ -444,6 +448,10 @@
     <entry>
         <key>android_async_iris_init</key>
         <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_gcm_legacy</key>
+        <value>true</value>
     </entry>
     <entry>
         <key>android_async_remoteconfig_mainapp_init</key>

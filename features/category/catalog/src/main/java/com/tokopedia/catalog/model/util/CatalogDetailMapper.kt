@@ -13,7 +13,7 @@ object CatalogDetailMapper {
                     productName = name, productBrand = brand, tag = tag,
                     priceRange = "${marketPrice?.firstOrNull()?.minFmt} - ${marketPrice?.firstOrNull()?.maxFmt}" ,
                     description = description, shortDescription = shortDescription,
-                    images = catalogGetDetailModular.basicInfo.catalogImage))
+                    images = catalogGetDetailModular.basicInfo.catalogImage, url = url))
         }
 
         catalogGetDetailModular.components?.forEachIndexed { _, component ->
@@ -29,7 +29,8 @@ object CatalogDetailMapper {
                 }
 
                 CatalogConstant.CATALOG_PRODUCT_LIST -> {
-                    listOfComponents.add(CatalogProductsContainerDataModel(name = component.name, type = component.type, catalogId = catalogGetDetailModular.basicInfo.id))
+                    listOfComponents.add(CatalogProductsContainerDataModel(name = component.name, type = component.type,
+                            catalogId = catalogGetDetailModular.basicInfo.id, catalogUrl = catalogGetDetailModular.basicInfo.url))
                 }
 
                 CatalogConstant.VIDEO -> {

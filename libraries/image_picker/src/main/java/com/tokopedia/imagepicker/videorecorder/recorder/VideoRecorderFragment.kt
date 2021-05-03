@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.VideoResult
@@ -16,12 +17,13 @@ import com.otaliastudios.cameraview.gesture.GestureAction
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.R
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.imagepicker.common.listener.VideoPickerCallback
 import com.tokopedia.imagepicker.common.state.StateRecorder
-import com.tokopedia.videorecorder.utils.*
-import com.tokopedia.videorecorder.utils.hide
-import com.tokopedia.videorecorder.utils.show
+import com.tokopedia.imagepicker.videorecorder.DURATION_MAX
+import com.tokopedia.imagepicker.videorecorder.utils.*
+import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
+import com.tokopedia.utils.video.VideoUtil
+import com.tokopedia.utils.video.VideoUtil.VIDEO_DIR
 import kotlinx.android.synthetic.main.fragment_recorder.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -30,11 +32,10 @@ import java.util.concurrent.TimeUnit
  * Created by isfaaghyth on 04/03/19.
  * github: @isfaaghyth
  */
-class VideoRecorderFragment: TkpdBaseV4Fragment() {
+class VideoRecorderFragment : TkpdBaseV4Fragment() {
 
     companion object {
         const val SAVED_FLASH_INDEX = "saved_flash_index"
-        const val DURATION_MAX = 60000 //1 minute
     }
 
     //flash collection
@@ -49,14 +50,12 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     //for progress loader
     private lateinit var timer: Timer
 
-    //runtime permission handle
-    private lateinit var permissionHelper: PermissionCheckerHelper
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
             flashIndex = savedInstanceState.getInt(SAVED_FLASH_INDEX, 0)
         }
+        cleanUpInternalStorageIfNeeded(requireContext(), VIDEO_DIR)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -157,7 +156,7 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
             progress.show()
             btnFlip.hide()
             btnFlash.hide()
-            val file = FileUtils.videoPath(FileUtils.RESULT_DIR)
+            val file = VideoUtil.getTokopediaVideoPath()
             cameraView.takeVideo(file, DURATION_MAX)
             //progress and duration countdown
             timer = Timer()
@@ -213,10 +212,11 @@ class VideoRecorderFragment: TkpdBaseV4Fragment() {
     }
 
     private fun setUIFlashCamera(flashEnum: Int) {
+        val colorWhite = context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_White) }
         when (flashEnum) {
             Flash.AUTO.ordinal -> btnFlash.setImageDrawable(com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable(activity, com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash))
-            Flash.ON.ordinal -> btnFlash.setImage(IconUnify.FLASH_ON, null, null, null, null)
-            Flash.OFF.ordinal -> btnFlash.setImage(IconUnify.FLASH_OFF, null, null, null, null)
+            Flash.ON.ordinal -> btnFlash.setImage(IconUnify.FLASH_ON, colorWhite, colorWhite, colorWhite, colorWhite)
+            Flash.OFF.ordinal -> btnFlash.setImage(IconUnify.FLASH_OFF, colorWhite, colorWhite, colorWhite, colorWhite)
         }
     }
 
