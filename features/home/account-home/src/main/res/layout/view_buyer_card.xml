@@ -35,7 +35,7 @@
         app:srcCompat="@drawable/ic_byme_blue"
         tools:ignore="ContentDescription" />
 
-    <androidx.cardview.widget.CardView
+    <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -279,7 +279,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/by_me_button"
