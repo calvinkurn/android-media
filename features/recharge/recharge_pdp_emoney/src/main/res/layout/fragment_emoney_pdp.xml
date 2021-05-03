@@ -15,13 +15,15 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_emoney_pdp_green_gradient"
             android:orientation="vertical"
             app:elevation="@dimen/spacing_lvl2"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            android:paddingBottom="@dimen/spacing_lvl2">
+            android:paddingBottom="@dimen/spacing_lvl2"
+            android:paddingTop="?attr/actionBarSize">
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/emoneyPdpTicker"

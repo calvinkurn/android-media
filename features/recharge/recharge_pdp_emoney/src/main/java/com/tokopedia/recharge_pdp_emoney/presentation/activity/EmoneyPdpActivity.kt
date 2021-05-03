@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.di.DaggerEmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
@@ -70,7 +71,8 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
         }
         super.onCreate(savedInstanceState)
 
-        toolbar.elevation = 0f
+        (toolbar as HeaderUnify).transparentMode = false
+        (toolbar as HeaderUnify).isShowShadow = false
     }
 
     override fun getNewFragment(): Fragment {

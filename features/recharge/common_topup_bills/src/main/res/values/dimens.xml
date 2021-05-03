@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="separator_size">1dp</dimen>
+    <dimen name="toolbar_seperator_height">-2dp</dimen>
     <dimen name="input_dropdown_item_height">56dp</dimen>
     <dimen name="input_field_info_icon_size">14dp</dimen>
 

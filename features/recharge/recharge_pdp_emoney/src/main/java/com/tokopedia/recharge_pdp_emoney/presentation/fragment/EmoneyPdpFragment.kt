@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
@@ -58,8 +59,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.android.synthetic.main.activity_emoney.*
 import kotlinx.android.synthetic.main.fragment_emoney_pdp.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 /**
  * @author by jessica on 29/03/21
@@ -112,6 +115,8 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         emoneyPdpInputCardWidget.initView(this)
         emoneyPdpProductWidget.setListener(this)
         emoneyBuyWidget.listener = this
+
+        setAnimationAppBarLayout()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -209,6 +214,28 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         topUpBillsViewModel.getFavoriteNumbers(
                 CommonTopupBillsGqlMutation.favoriteNumber,
                 topUpBillsViewModel.createFavoriteNumbersParams(detailPassData.categoryId.toIntOrZero()))
+    }
+
+    private fun setAnimationAppBarLayout() {
+        appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+            var lastOffset = -1
+            var lastIsCollapsed = false
+
+            override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
+                if (lastOffset == verticalOffSet) return
+
+                lastOffset = verticalOffSet
+                if (abs(verticalOffSet) >= appBarLayout.totalScrollRange && !lastIsCollapsed) {
+                    //Collapsed
+                    lastIsCollapsed = true
+                    (activity as EmoneyPdpActivity).emoney_toolbar.isShowShadow = true
+                } else if (verticalOffSet == 0 && lastIsCollapsed) {
+                    //Expanded
+                    lastIsCollapsed = false
+                    (activity as EmoneyPdpActivity).emoney_toolbar.isShowShadow = false
+                }
+            }
+        })
     }
 
     private fun trackEventViewPdp(categoryName: String) {
