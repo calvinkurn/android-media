@@ -1,5 +1,6 @@
 package com.tokopedia.flight.common.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.view.Menu;
@@ -37,6 +38,8 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity implements T
     private FlightComponent component;
 
     static String TAG_FLIGHT_MENU = "flightMenu";
+
+    static int REQUEST_CODE_LOGIN_FLIGHT = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +111,8 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity implements T
             flightAnalytics.eventClickTransactions(getScreenName());
             RouteManager.route(this, ApplinkConst.FLIGHT_ORDER);
         } else {
-            RouteManager.route(this, ApplinkConst.LOGIN);
+            Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
+            startActivityForResult(intent, REQUEST_CODE_LOGIN_FLIGHT);
         }
     }
 

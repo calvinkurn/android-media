@@ -91,7 +91,8 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), TravelMenuBottomSheet.Tr
         if (userSessionInterface.isLoggedIn) {
             RouteManager.route(this, ApplinkConst.HOTEL_ORDER)
         } else {
-            RouteManager.route(this, ApplinkConst.LOGIN)
+            val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_CODE_LOGIN_HOTEl)
         }
     }
 
@@ -122,5 +123,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), TravelMenuBottomSheet.Tr
 
     companion object {
         val TAG_HOTEL_MENU = "hotelMenu"
+
+        const val REQUEST_CODE_LOGIN_HOTEl = 100
     }
 }
