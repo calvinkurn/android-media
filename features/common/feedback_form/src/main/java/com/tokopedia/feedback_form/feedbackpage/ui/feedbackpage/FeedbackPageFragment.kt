@@ -54,8 +54,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.file.FileUtil
-import com.tokopedia.utils.file.PublicFolderUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.android.synthetic.main.fragment_feedback_page.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -83,12 +82,10 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private var versionCode: String = ""
     private var userId: String = ""
     private var sessionToken: String = ""
-    private var fcmToken: String = ""
     private var loginState: String = ""
     private var emailTokopedia: String = ""
     private var uriImage: Uri? = null
     private var lastAccessedPage: String? = ""
-    private var resizedImageFile: File? = null
     private var categoryItem: Int = -1
     private var reportType: Int = 0
     private var labelsId: ArrayList<Int> = arrayListOf()
@@ -185,10 +182,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 imageSize = originalFile.length()/1000
 
                 if (!imageType.contains(".mp4") && imageSize > 250) {
-                    resizeImage(image)
-                    resizedImageFile?.let { imageFile ->
-                        val resizedFile = File(imageFile.path)
-                        sendAttachmentImage(feedbackId, resizedFile, totalImage, initCountImage)
+                    resizeImage(image)?.let { imageFile ->
+                        sendAttachmentImage(feedbackId, imageFile, totalImage, initCountImage)
                     }
                 } else if (!imageType.contains(".mp4") && imageSize < 250) {
                     sendAttachmentImage(feedbackId, originalFile, totalImage, initCountImage)
@@ -499,15 +494,14 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         feedbackPagePresenter.sendAttachment(feedbackId, fileData, totalImage, countImage)
     }
 
-    private fun resizeImage(data: String) {
+    private fun resizeImage(data: String):File? {
         val b = BitmapFactory.decodeFile(data)
         val origWidth = b.width
         val origHeight = b.height
         val destHeight = 1440
         val destWidth = origWidth / (origHeight.toDouble() / destHeight)
         val b2 = Bitmap.createScaledBitmap(b, destWidth.toInt(), destHeight, false)
-        val fileAndUri = PublicFolderUtil.putImageToPublicFolder(requireActivity(), b2, FileUtil.generateUniqueFileNameDateFormat(Math.random().toInt()))
-        resizedImageFile = fileAndUri.first
+        return ImageProcessingUtil.writeImageToTkpdPath(b2, Bitmap.CompressFormat.JPEG)
     }
 
     private fun setActiveFilter(selected: ChipsUnify?, deselected: ChipsUnify?) {
