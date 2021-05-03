@@ -2,11 +2,11 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -43,7 +43,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
                     shop_location_online.text = context.getString(R.string.location_dot_builder, element.shopLocation)
                 }
                 setupLastActive(element.shopLastActive)
-                setupBadgeAndImage(element.shopAva, element.isOs, element.isPm)
+                setupBadgeAndImage(element.shopAva, element.shopTierBadgeUrl)
                 setupGoApotik(element.isGoApotik)
                 setupInfoRegion(element)
                 setupFollow(element.isFavorite, componentTracker!!)
@@ -155,21 +155,9 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
         }
     }
 
-    private fun setupBadgeAndImage(avatar: String, isOs: Boolean, isPm: Boolean) = with(view) {
-        val drawable = when {
-            isOs -> {
-                MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_official_store_product)
-            }
-            isPm -> {
-                MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant)
-            }
-            else -> {
-                null
-            }
-        }
-
-        iv_badge.shouldShowWithAction(drawable != null) {
-            iv_badge.loadImage(drawable)
+    private fun setupBadgeAndImage(avatar: String, shopTierBadgeUrl: String) = with(view) {
+        iv_badge.shouldShowWithAction(shopTierBadgeUrl.isNotEmpty()) {
+            ImageHandler.LoadImage(iv_badge, shopTierBadgeUrl)
         }
 
         shop_ava.loadImageCircle(avatar)

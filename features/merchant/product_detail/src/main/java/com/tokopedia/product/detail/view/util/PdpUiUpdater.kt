@@ -143,13 +143,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY, loadInitialData) {
-                shopCredibility?.run {
-                    isOs = it.data.isOS
-                    isPm = it.data.isPowerMerchant
-                }
-            }
-
             updateData(ProductDetailConstant.MINI_SOCIAL_PROOF, loadInitialData) {
                 miniSocialProofMap?.run {
                     rating = it.basic.stats.rating
@@ -275,6 +268,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     shopAva = it.shopInfo.shopAssets.avatar
                     shopLocation = it.shopInfo.location
                     isGoApotik = it.isGoApotik
+                    shopTierBadgeUrl = it.shopInfo.shopTierBadgeUrl
                     infoShopData = if (context == null) listOf() else
                         getTwoShopInfoHieararchy(context,
                                 it.shopSpeed,

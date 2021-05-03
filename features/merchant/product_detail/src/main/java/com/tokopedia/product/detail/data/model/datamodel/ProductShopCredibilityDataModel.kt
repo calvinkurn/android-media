@@ -25,8 +25,7 @@ data class ProductShopCredibilityDataModel(
         var shopAva: String = "",
         var shopLocation: String = "",
 
-        var isOs: Boolean = false,
-        var isPm: Boolean = false,
+        var shopTierBadgeUrl: String = "",
         var isGoApotik: Boolean = false,
 
         var infoShopData: List<ShopCredibilityUiData> = listOf(),
@@ -75,6 +74,7 @@ data class ProductShopCredibilityDataModel(
                     && isFavorite == newData.isFavorite
                     && enableButtonFavorite == newData.enableButtonFavorite
                     && infoShopData.size == newData.infoShopData.size
+                    && shopTierBadgeUrl == newData.shopTierBadgeUrl
         } else {
             false
         }
