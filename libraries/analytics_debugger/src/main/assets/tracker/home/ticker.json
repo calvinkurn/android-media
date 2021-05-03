@@ -6,15 +6,15 @@
       "eventCategory": "ticker homepage",
       "event": "clickTicker",
       "eventAction": "click on close ticker",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     },
     {
       "eventCategory": "ticker homepage",
       "event": "clickTicker",
       "eventAction": "click ticker",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     }
   ]
 }
