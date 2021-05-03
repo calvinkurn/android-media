@@ -99,6 +99,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
             action = Intent.ACTION_VIEW
             val uri = getUri(this@ImagePreviewActivity, file)
             setDataAndType(uri, "image/*")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
         startActivity(intent);
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -141,11 +142,12 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                     val intent = Intent().apply {
                         action = Intent.ACTION_VIEW
                     }
-                    val file = File(path);
-                    val uri = getUri(this@ImagePreviewActivity, file);
-                    intent.setDataAndType(uri, "image/*");
+                    val file = File(path)
+                    val uri = getUri(this@ImagePreviewActivity, file)
+                    intent.setDataAndType(uri, "image/*")
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-                    val pIntent = PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, 0);
+                    val pIntent = PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, 0)
 
                     notificationBuilder.setContentText(getString(R.string.download_success))
                             .setProgress(0, 0, false)
