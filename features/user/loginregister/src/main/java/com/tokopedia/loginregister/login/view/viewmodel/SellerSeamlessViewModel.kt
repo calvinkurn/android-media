@@ -53,7 +53,9 @@ class SellerSeamlessViewModel @Inject constructor(@Named(SessionModule.SESSION_M
                             onGoToSecurityQuestion()
                     )
             )
-        } else onFailedLoginToken()
+        } else {
+            onFailedLoginToken().invoke(Throwable())
+        }
     }
 
     private fun onFailedLoginToken(): (Throwable) -> Unit {

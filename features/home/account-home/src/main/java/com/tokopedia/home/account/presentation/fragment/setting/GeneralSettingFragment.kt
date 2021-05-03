@@ -185,9 +185,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             }
         }
 
-        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_OCC_PREFERENCE_ID,
-                getString(R.string.title_occ_preference_setting), getString(R.string.subtitle_occ_preference_setting)))
-
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)))
         settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SHAKE_ID,
@@ -294,9 +291,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             }
             SettingConstant.SETTING_FEEDBACK_FORM -> {
                 RouteManager.route(context, ApplinkConst.FEEDBACK_FORM)
-            }
-            SettingConstant.SETTING_OCC_PREFERENCE_ID -> {
-                RouteManager.route(context, ApplinkConstInternalMarketplace.PREFERENCE_LIST)
             }
             SettingConstant.SETTING_IMAGE_QUALITY -> {
                 RouteManager.route(context, ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING)
@@ -481,7 +475,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         accessDialog.setBodyText(dialogBodyMsg)
         accessDialog.setPositiveButton(dialogPositiveButton)
         accessDialog.setNegativeButton(dialogNegativeButton)
-        accessDialog.show(activity!!.supportFragmentManager, AccessRequestDialogFragment.TAG)
+        accessDialog.show(requireActivity().supportFragmentManager, AccessRequestDialogFragment.TAG)
     }
 
     override fun refreshSafeSearchOption() {
@@ -508,7 +502,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     override fun onErrorSendNotif(throwable: Throwable) {
         if (view != null) {
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
-            Toaster.showError(view!!, errorMessage, Snackbar.LENGTH_LONG)
+            Toaster.showError(requireView(), errorMessage, Snackbar.LENGTH_LONG)
         }
     }
 

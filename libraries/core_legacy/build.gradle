@@ -21,6 +21,15 @@ buildscript {
 }
 
 android {
+    if (project.hasProperty("newRelic")) {
+        sourceSets.each {
+            it.java.srcDirs += "src/main/new_relic"
+        }
+    }else{
+        sourceSets.each {
+            it.java.srcDirs += "src/main/new_relic_dummy"
+        }
+    }
     defaultConfig {
         javaCompileOptions {
             annotationProcessorOptions {
@@ -94,6 +103,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation project(rootProject.ext.libraries.weaver)
+    if (project.hasProperty("newRelic")) {
+        implementation rootProject.ext.miscDependencies.newRelic
+    }
 }
 
 project.ext {

@@ -38,6 +38,7 @@ class CatalogDetailProductListingViewModel
 
     var pageCount = 0
     var isPagingAllowed: Boolean = true
+    var catalogUrl = ""
 
     var list: ArrayList<Visitable<CatalogTypeFactory>> = ArrayList()
 

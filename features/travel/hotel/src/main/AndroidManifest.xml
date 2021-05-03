@@ -44,7 +44,24 @@
 
                 <data
                     android:host="@string/host_hotel"
-                    android:path="@string/path_hotel_search_result"
+                    android:path="@string/path_hotel_search_result_old_srp"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".search_map.presentation.activity.HotelSearchMapActivity"
+            android:label="@string/hotel_app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_hotel"
+                    android:path="@string/path_hotel_search_result_map"
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
@@ -139,8 +156,8 @@
             android:name=".globalsearch.presentation.activity.HotelChangeSearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
-
-        <activity android:name=".cancellation.presentation.activity.HotelCancellationActivity"
+        <activity
+            android:name=".cancellation.presentation.activity.HotelCancellationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustResize">
@@ -156,11 +173,10 @@
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".cancellation.presentation.activity.HotelCancellationConfirmationActivity"
+        <activity
+            android:name=".cancellation.presentation.activity.HotelCancellationConfirmationActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"/>
-
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".orderdetail.presentation.activity.SeeInvoiceActivity"
             android:configChanges="uiMode"

@@ -13,7 +13,7 @@ data class ProgressDataUiModel(
         val maxValue: Int = 0,
         val colorState: ShopScorePMWidget.State = ShopScorePMWidget.State.GOOD,
         val subtitle: String = "",
-        override val dataKey: String = "",
+        override var dataKey: String = "",
         override var error: String = "",
         override var isFromCache: Boolean = false,
         override val showWidget: Boolean = false
