@@ -151,6 +151,30 @@ data class RecommendationEntity (
             @SerializedName("pagination")
             val pagination: Pagination = Pagination(),
             @SerializedName("recommendation")
-            val recommendation: List<Recommendation> = listOf()
+            val recommendation: List<Recommendation> = listOf(),
+            @SerializedName("campaign")
+            val campaign: RecommendationCampaign = RecommendationCampaign()
     )
+
+    class RecommendationCampaign {
+        @SerializedName("appLandingPageLink")
+        val appLandingPageLink: String = ""
+        @SerializedName("landingPageLink")
+        val landingPageLink: String = ""
+        @SerializedName("assets")
+        val assets: Assets = Assets()
+        @SerializedName("foreignTitle")
+        val foreignTitle: String = ""
+
+        class Assets {
+            @SerializedName("banner")
+            val banner: Banner = Banner()
+        }
+
+        class Banner {
+            @SerializedName("apps")
+            val apps: String = ""
+        }
+
+    }
 }

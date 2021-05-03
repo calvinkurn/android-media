@@ -16,5 +16,14 @@ data class RecommendationWidget(
         val prevPage: Int = 0,
         val hasNext: Boolean = false,
         val pageName: String = "",
-        val recommendationFilterChips: List<RecommendationFilterChipsEntity.RecommendationFilterChip> = listOf()
+        val recommendationFilterChips: List<RecommendationFilterChipsEntity.RecommendationFilterChip> = listOf(),
+        val subtitle: String = "",
+        val titleColor: String = "",
+        val subtitleColor: String = "",
+        val expiredTime: String = "",
+        val serverTimeUnix: Long = 0,
+        val headerBackImage: String = "",
+        val headerBackColor: String = "",
+        val recommendationConfig: RecommendationConfig = RecommendationConfig(),
+        val recommendationBanner: RecommendationBanner? = null
 )
