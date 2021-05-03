@@ -47,7 +47,7 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
             tvPmGradeBenefitTitle.text = getString(R.string.pm_grade_benefit_widget_title_pm_pro)
             tvPmGradeBenefitDescription.visible()
         } else {
-            tvPmGradeBenefitTitle.text = getString(R.string.pm_grade_benefit_widget_title_pm_pro)
+            tvPmGradeBenefitTitle.text = getString(R.string.pm_grade_benefit_widget_title_pm)
             tvPmGradeBenefitDescription.gone()
         }
     }
@@ -65,11 +65,11 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         with(itemView.tabPmGradeBenefit) {
             val isSinglePage = element.benefitPages.size <= 1
             if (isSinglePage) {
-                tabLayout.gone()
+                gone()
                 return@with
             }
 
-            tabLayout.visible()
+            visible()
             tabLayout.removeAllTabs()
             element.benefitPages.forEach {
                 addNewTab(it.gradeName.asCamelCase())
