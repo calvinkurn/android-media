@@ -181,8 +181,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 imageSize = originalFile.length()/1000
 
                 if (!imageType.contains(".mp4") && imageSize > 250) {
-                    resizeImage(image)?.let { imageFile ->
-                        sendAttachmentImage(feedbackId, imageFile, totalImage, initCountImage)
+                    resizeImage(image).let { imagePath ->
+                        val fileResult = File(imagePath)
+                        if (fileResult.exists()) {
+                            sendAttachmentImage(feedbackId, fileResult, totalImage, initCountImage)
+                        }
                     }
                 } else if (!imageType.contains(".mp4") && imageSize < 250) {
                     sendAttachmentImage(feedbackId, originalFile, totalImage, initCountImage)
@@ -493,14 +496,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         feedbackPagePresenter.sendAttachment(feedbackId, fileData, totalImage, countImage)
     }
 
-    private fun resizeImage(data: String):File? {
-        val b = BitmapFactory.decodeFile(data)
-        val origWidth = b.width
-        val origHeight = b.height
-        val destHeight = 1440
-        val destWidth = origWidth / (origHeight.toDouble() / destHeight)
-        val b2 = Bitmap.createScaledBitmap(b, destWidth.toInt(), destHeight, false)
-        return ImageProcessingUtil.writeImageToTkpdPath(b2, Bitmap.CompressFormat.JPEG)
+    private fun resizeImage(filePath: String):String {
+        return ImageProcessingUtil.resizeBitmap(filePath, 1440, 1440, false, Bitmap.CompressFormat.JPEG)
     }
 
     private fun setActiveFilter(selected: ChipsUnify?, deselected: ChipsUnify?) {

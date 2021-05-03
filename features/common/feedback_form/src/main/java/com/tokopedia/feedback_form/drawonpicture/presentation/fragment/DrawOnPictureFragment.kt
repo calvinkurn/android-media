@@ -29,6 +29,7 @@ import com.tokopedia.feedback_form.drawonpicture.presentation.adapter.viewholder
 import com.tokopedia.feedback_form.drawonpicture.presentation.viewmodel.DrawOnPictureViewModel
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.file.PublicFolderUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.android.synthetic.main.fragment_draw_on_picture.*
 import java.io.File
 import javax.inject.Inject
@@ -70,7 +71,7 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
             override fun onGlobalLayout() {
                 containerDOP.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                val imageSize = getImageSize()
+                val imageSize = ImageProcessingUtil.getWidthAndHeight(requireContext(), imageUri)
                 val heightRatio: Float = containerDOP.height.toFloat() / imageSize.second.toFloat()
                 val widthRatio: Float = containerDOP.width.toFloat() / imageSize.first.toFloat()
                 val layoutParams = dopFeedbackForm.layoutParams
@@ -204,16 +205,6 @@ class DrawOnPictureFragment : BaseDaggerFragment(),
         intent.putExtra(EXTRA_DRAW_IMAGE_URI_OLD, oldPath)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
-    }
-
-    private fun getImageSize(): Pair<Int, Int> {
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = true
-        BitmapFactory.decodeFile(File(imageUri.getPath()).getAbsolutePath(), options)
-        val imageHeight = options.outHeight
-        val imageWidth = options.outWidth
-
-        return Pair(imageWidth, imageHeight)
     }
 
     companion object {
