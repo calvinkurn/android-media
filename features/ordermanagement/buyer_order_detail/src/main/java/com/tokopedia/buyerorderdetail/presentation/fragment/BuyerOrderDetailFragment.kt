@@ -1,11 +1,14 @@
 package com.tokopedia.buyerorderdetail.presentation.fragment
 
+import android.animation.LayoutTransition
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
@@ -19,7 +22,6 @@ import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SecondaryActionBu
 import com.tokopedia.buyerorderdetail.presentation.model.*
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -98,6 +100,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
     }
 
     private fun setupViews() {
+        containerBuyerOrderDetail.layoutTransition.apply {
+            enableTransitionType(LayoutTransition.CHANGING)
+            setDuration(LayoutTransition.CHANGING, 300L)
+            setStartDelay(LayoutTransition.CHANGING, 45L)
+        }
         setupToolbar()
         setupSwipeRefreshLayout()
         setupRecyclerView()
@@ -129,9 +136,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
     }
 
     private fun observeBuyerOrderDetail() {
+        showLoadIndicator()
         loadBuyerOrderDetail()
         viewModel.buyerOrderDetailResult.observe(viewLifecycleOwner, Observer { result ->
-            loaderBuyerOrderDetail.gone()
+            hideLoadIndicator()
             rvBuyerOrderDetail.show()
             when (result) {
                 is Success -> onSuccessGetBuyerOrderDetail(result.data)
@@ -142,13 +150,29 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         })
     }
 
+    private fun showLoadIndicator() {
+        loaderBuyerOrderDetail.apply {
+            scaleX = 1f
+            scaleY = 1f
+        }
+    }
+
+    private fun hideLoadIndicator() {
+        loaderBuyerOrderDetail.apply {
+            scaleX = 0f
+            scaleY = 0f
+        }
+    }
+
     private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
-        adapter.clearAllElements()
-        setupOrderStatusSection(data.orderStatusUiModel)
-        setupProductListSection(data.productListUiModel)
-        setupShipmentInfoSection(data.shipmentInfoUiModel)
-        setupPaymentInfoSection(data.paymentInfoUiModel)
-        setupActionButtonsSection(data.actionButtonsUiModel)
+        val newItems = mutableListOf<Visitable<BuyerOrderDetailTypeFactory>>().apply {
+            setupOrderStatusSection(data.orderStatusUiModel)
+            setupProductListSection(data.productListUiModel)
+            setupShipmentInfoSection(data.shipmentInfoUiModel)
+            setupPaymentInfoSection(data.paymentInfoUiModel)
+            setupActionButtonsSection(data.actionButtonsUiModel)
+        }
+        adapter.updateItems(newItems)
     }
 
     private fun onFailedGetBuyerOrderDetail(throwable: Throwable) {
@@ -157,20 +181,20 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         }
     }
 
-    private fun setupOrderStatusSection(orderStatusUiModel: OrderStatusUiModel) {
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderStatusSection(orderStatusUiModel: OrderStatusUiModel) {
         addOrderStatusHeaderSection(orderStatusUiModel.orderStatusHeaderUiModel)
         addTickerSection(orderStatusUiModel.ticker)
         addThinDividerSection()
         addOrderStatusInfoSection(orderStatusUiModel.orderStatusInfoUiModel)
     }
 
-    private fun setupProductListSection(productListUiModel: ProductListUiModel) {
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupProductListSection(productListUiModel: ProductListUiModel) {
         addThickDividerSection()
         addProductListHeaderSection(productListUiModel.productListHeaderUiModel)
         addProductListSection(productListUiModel.productList)
     }
 
-    private fun setupShipmentInfoSection(shipmentInfoUiModel: ShipmentInfoUiModel) {
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupShipmentInfoSection(shipmentInfoUiModel: ShipmentInfoUiModel) {
         addThickDividerSection()
         addPlainHeaderSection(shipmentInfoUiModel.headerUiModel)
         addTickerSection(shipmentInfoUiModel.ticker)
@@ -184,7 +208,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         addReceiverAddressInfoSection(shipmentInfoUiModel.receiverAddressInfoUiModel)
     }
 
-    private fun setupPaymentInfoSection(paymentInfoUiModel: PaymentInfoUiModel) {
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupPaymentInfoSection(paymentInfoUiModel: PaymentInfoUiModel) {
         addThickDividerSection()
         addPlainHeaderSection(paymentInfoUiModel.headerUiModel)
         addPaymentMethodSection(paymentInfoUiModel.paymentMethodInfoItem)
@@ -195,77 +219,77 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         addTickerSection(paymentInfoUiModel.ticker)
     }
 
-    private fun setupActionButtonsSection(actionButtonsUiModel: ActionButtonsUiModel) {
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupActionButtonsSection(actionButtonsUiModel: ActionButtonsUiModel) {
         addActionButtonsSection(actionButtonsUiModel)
     }
 
-    private fun addPlainHeaderSection(headerUiModel: PlainHeaderUiModel) {
-        adapter.addItem(headerUiModel)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPlainHeaderSection(headerUiModel: PlainHeaderUiModel) {
+        add(headerUiModel)
     }
 
-    private fun addTickerSection(tickerUiModel: TickerUiModel) {
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addTickerSection(tickerUiModel: TickerUiModel) {
         if (tickerUiModel.description.isNotBlank()) {
-            adapter.addItem(tickerUiModel)
+            add(tickerUiModel)
         }
     }
 
-    private fun addThinDashedDividerSection() {
-        adapter.addItem(ThinDashedDividerUiModel())
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addThinDashedDividerSection() {
+        add(ThinDashedDividerUiModel())
     }
 
-    private fun addThickDividerSection() {
-        adapter.addItem(ThickDividerUiModel())
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addThickDividerSection() {
+        add(ThickDividerUiModel())
     }
 
-    private fun addThinDividerSection() {
-        adapter.addItem(ThinDividerUiModel())
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addThinDividerSection() {
+        add(ThinDividerUiModel())
     }
 
-    private fun addOrderStatusHeaderSection(orderStatusHeaderUiModel: OrderStatusUiModel.OrderStatusHeaderUiModel) {
-        adapter.addItem(orderStatusHeaderUiModel)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusHeaderSection(orderStatusHeaderUiModel: OrderStatusUiModel.OrderStatusHeaderUiModel) {
+        add(orderStatusHeaderUiModel)
     }
 
-    private fun addOrderStatusInfoSection(orderStatusInfoUiModel: OrderStatusUiModel.OrderStatusInfoUiModel) {
-        adapter.addItem(orderStatusInfoUiModel)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusInfoSection(orderStatusInfoUiModel: OrderStatusUiModel.OrderStatusInfoUiModel) {
+        add(orderStatusInfoUiModel)
     }
 
-    private fun addProductListHeaderSection(productListHeaderUiModel: ProductListUiModel.ProductListHeaderUiModel) {
-        adapter.addItem(productListHeaderUiModel)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductListHeaderSection(productListHeaderUiModel: ProductListUiModel.ProductListHeaderUiModel) {
+        add(productListHeaderUiModel)
     }
 
-    private fun addProductListSection(productList: List<ProductListUiModel.ProductUiModel>) {
-        adapter.addItems(productList)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductListSection(productList: List<ProductListUiModel.ProductUiModel>) {
+        addAll(productList)
     }
 
-    private fun addCourierInfoSection(courierInfoUiModel: ShipmentInfoUiModel.CourierInfoUiModel) {
-        adapter.addItem(courierInfoUiModel)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addCourierInfoSection(courierInfoUiModel: ShipmentInfoUiModel.CourierInfoUiModel) {
+        add(courierInfoUiModel)
     }
 
-    private fun addCourierDriverInfoSection(courierDriverInfoUiModel: ShipmentInfoUiModel.CourierDriverInfoUiModel) {
-        adapter.addItem(courierDriverInfoUiModel)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addCourierDriverInfoSection(courierDriverInfoUiModel: ShipmentInfoUiModel.CourierDriverInfoUiModel) {
+        add(courierDriverInfoUiModel)
     }
 
-    private fun addAwbInfoSection(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel) {
-        adapter.addItem(awbInfoUiModel)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addAwbInfoSection(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel) {
+        add(awbInfoUiModel)
     }
 
-    private fun addReceiverAddressInfoSection(receiverAddressInfoUiModel: ShipmentInfoUiModel.ReceiverAddressInfoUiModel) {
-        adapter.addItem(receiverAddressInfoUiModel)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addReceiverAddressInfoSection(receiverAddressInfoUiModel: ShipmentInfoUiModel.ReceiverAddressInfoUiModel) {
+        add(receiverAddressInfoUiModel)
     }
 
-    private fun addPaymentMethodSection(paymentMethodInfoItem: PaymentInfoUiModel.PaymentInfoItemUiModel) {
-        adapter.addItem(paymentMethodInfoItem)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPaymentMethodSection(paymentMethodInfoItem: PaymentInfoUiModel.PaymentInfoItemUiModel) {
+        add(paymentMethodInfoItem)
     }
 
-    private fun addPaymentInfoSection(paymentInfoItems: List<PaymentInfoUiModel.PaymentInfoItemUiModel>) {
-        adapter.addItems(paymentInfoItems)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPaymentInfoSection(paymentInfoItems: List<PaymentInfoUiModel.PaymentInfoItemUiModel>) {
+        addAll(paymentInfoItems)
     }
 
-    private fun addPaymentGrandTotalSection(paymentGrandTotal: PaymentInfoUiModel.PaymentGrandTotalUiModel) {
-        adapter.addItem(paymentGrandTotal)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPaymentGrandTotalSection(paymentGrandTotal: PaymentInfoUiModel.PaymentGrandTotalUiModel) {
+        add(paymentGrandTotal)
     }
 
-    private fun addActionButtonsSection(actionButtonsUiModel: ActionButtonsUiModel) {
-        adapter.addItem(actionButtonsUiModel)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addActionButtonsSection(actionButtonsUiModel: ActionButtonsUiModel) {
+        add(actionButtonsUiModel)
     }
 }
