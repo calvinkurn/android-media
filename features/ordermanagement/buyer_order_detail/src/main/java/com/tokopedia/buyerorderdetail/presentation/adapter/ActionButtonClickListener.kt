@@ -4,5 +4,4 @@ import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 
 interface ActionButtonClickListener {
     fun onActionButtonClicked(button: ActionButtonsUiModel.ActionButton)
-    fun onSecondaryActionButtonClicked()
 }

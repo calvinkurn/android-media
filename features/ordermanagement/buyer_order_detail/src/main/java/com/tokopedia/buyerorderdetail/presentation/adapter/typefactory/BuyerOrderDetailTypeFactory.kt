@@ -4,16 +4,11 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.*
 import com.tokopedia.buyerorderdetail.presentation.model.*
 
 class BuyerOrderDetailTypeFactory(
-        private val actionButtonClickListener: ActionButtonClickListener,
         private val productViewListener: ProductViewHolder.ProductViewListener) : BaseAdapterTypeFactory() {
-    fun type(actionButtonsUiModel: ActionButtonsUiModel): Int {
-        return ActionButtonsViewHolder.LAYOUT
-    }
 
     fun type(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel): Int {
         return AwbInfoViewHolder.LAYOUT
@@ -77,7 +72,6 @@ class BuyerOrderDetailTypeFactory(
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            ActionButtonsViewHolder.LAYOUT -> ActionButtonsViewHolder(parent, actionButtonClickListener)
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
             CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(parent)
             CourierInfoViewHolder.LAYOUT -> CourierInfoViewHolder(parent)

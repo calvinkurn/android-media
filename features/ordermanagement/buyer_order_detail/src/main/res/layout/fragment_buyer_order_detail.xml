@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/containerBuyerOrderDetail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -45,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
         android:background="@color/Unify_N0"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/containerActionButtons"
         app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -53,8 +54,56 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0"
+            android:clipToPadding="false"
+            android:paddingBottom="14dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/containerActionButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/layout_lvl0"
+        app:cardElevation="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3">
+
+            <com.tokopedia.unifycomponents.UnifyImageButton
+                android:id="@+id/btnBuyerOrderDetailSecondaryActions"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:hapticFeedbackEnabled="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btnBuyerOrderDetailPrimaryActions"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/iconunify_menu_kebab_horizontal"
+                app:unifyImageButtonType="main"
+                app:unifyImageButtonVariant="ghost" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnBuyerOrderDetailPrimaryActions"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btnBuyerOrderDetailSecondaryActions"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled"
+                tools:text="Chat Penjual" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

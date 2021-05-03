@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.LayoutTransition
 import android.animation.ObjectAnimator
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -42,7 +44,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener, ProductViewHolder.ProductViewListener {
+class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.ProductViewListener, ActionButtonClickListener {
 
     companion object {
         @JvmStatic
@@ -71,13 +73,19 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         SaveInstanceCacheManager(requireContext())
     }
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this, this)
+        BuyerOrderDetailTypeFactory(this)
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
     }
     private val secondaryActionButtonBottomSheet: SecondaryActionButtonBottomSheet by lazy {
         SecondaryActionButtonBottomSheet(requireContext(), this)
+    }
+    private val primaryActionButtonClickListener: View.OnClickListener by lazy {
+        createPrimaryActionButtonClickListener()
+    }
+    private val secondaryActionButtonClickListener: View.OnClickListener by lazy {
+        createSecondaryActionButtonClickListener()
     }
 
     override fun getScreenName() = BuyerOrderDetailFragment::class.java.simpleName
@@ -96,6 +104,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         observeBuyerOrderDetail()
     }
 
+    override fun onBuyAgainButtonClicked() {
+        //TODO: Implement ATC after backend provide contract
+    }
+
     override fun onActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
         when (button.key) {
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_ASK_SELLER -> onAskSellerActionButtonClicked()
@@ -103,7 +115,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         }
     }
 
-    override fun onSecondaryActionButtonClicked() {
+    private fun onSecondaryActionButtonClicked() {
         val secondaryActionButtons = viewModel.getSecondaryActionButtons()
         secondaryActionButtonBottomSheet.setSecondaryActionButtons(secondaryActionButtons)
         secondaryActionButtonBottomSheet.show(childFragmentManager)
@@ -115,10 +127,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
 
     private fun onRequestCancelActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
         BuyerOrderDetailNavigator.goToRequestCancellationPage(this, viewModel.buyerOrderDetailResult.value, button, cacheManager)
-    }
-
-    override fun onBuyAgainButtonClicked() {
-        //TODO: Implement ATC after backend provide contract
     }
 
     private fun setupViews() {
@@ -200,10 +208,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         addTickerSection(paymentInfoUiModel.ticker)
     }
 
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupActionButtonsSection(actionButtonsUiModel: ActionButtonsUiModel) {
-        addActionButtonsSection(actionButtonsUiModel)
-    }
-
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPlainHeaderSection(headerUiModel: PlainHeaderUiModel) {
         add(headerUiModel)
     }
@@ -270,10 +274,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         add(paymentGrandTotal)
     }
 
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addActionButtonsSection(actionButtonsUiModel: ActionButtonsUiModel) {
-        add(actionButtonsUiModel)
-    }
-
     private fun loadBuyerOrderDetail() {
         val orderId = arguments?.getString(BuyerOrderDetailConst.PARAM_ORDER_ID, "").orEmpty()
         val paymentId = arguments?.getString(BuyerOrderDetailConst.PARAM_PAYMENT_ID, "").orEmpty()
@@ -295,6 +295,90 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         })
     }
 
+    private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
+        val newItems = mutableListOf<Visitable<BuyerOrderDetailTypeFactory>>().apply {
+            setupOrderStatusSection(data.orderStatusUiModel)
+            setupProductListSection(data.productListUiModel)
+            setupShipmentInfoSection(data.shipmentInfoUiModel)
+            setupPaymentInfoSection(data.paymentInfoUiModel)
+        }
+        setupActionButtons(data.actionButtonsUiModel)
+        adapter.updateItems(newItems)
+        showContent()
+    }
+
+    private fun onFailedGetBuyerOrderDetail(throwable: Throwable) {
+        val errorType = when (throwable) {
+            is MessageErrorException -> null
+            is SocketTimeoutException, is UnknownHostException -> GlobalError.NO_CONNECTION
+            else -> GlobalError.SERVER_ERROR
+        }
+
+        if (errorType == null) {
+            globalErrorBuyerOrderDetail?.gone()
+            emptyStateBuyerOrderDetail?.showMessageExceptionError(throwable)
+        } else {
+            globalErrorBuyerOrderDetail?.apply {
+                setType(errorType)
+                visible()
+            }
+            emptyStateBuyerOrderDetail?.gone()
+        }
+        hideContent()
+    }
+
+    private fun EmptyStateUnify.showMessageExceptionError(throwable: Throwable) {
+        val errorMessage = context?.let {
+            ErrorHandler.getErrorMessage(it, throwable)
+        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
+        setDescription(errorMessage)
+        visible()
+    }
+
+    private fun setupActionButtons(actionButtonsUiModel: ActionButtonsUiModel) {
+        if (actionButtonsUiModel.primaryActionButton.key.isNotBlank()) {
+            setupPrimaryButton(actionButtonsUiModel.primaryActionButton)
+            setupSecondaryButton()
+            showActionButtons()
+        } else {
+            hideActionButtons()
+        }
+    }
+
+    private fun setupPrimaryButton(primaryActionButton: ActionButtonsUiModel.ActionButton) {
+        btnBuyerOrderDetailPrimaryActions.text = primaryActionButton.label
+        btnBuyerOrderDetailPrimaryActions.setOnClickListener(primaryActionButtonClickListener)
+    }
+
+    private fun setupSecondaryButton() {
+        btnBuyerOrderDetailSecondaryActions?.apply {
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                setColor(ContextCompat.getColor(context, android.R.color.transparent))
+                cornerRadius = resources.getDimension(com.tokopedia.unifycomponents.R.dimen.button_corner_radius)
+                setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.buttonunify_alternate_stroke_color))
+            }
+            setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
+            setOnClickListener(secondaryActionButtonClickListener)
+        }
+    }
+
+    private fun createPrimaryActionButtonClickListener(): View.OnClickListener {
+        return View.OnClickListener {
+            viewModel.buyerOrderDetailResult.value?.let {
+                if (it is Success) {
+                    onActionButtonClicked(it.data.actionButtonsUiModel.primaryActionButton)
+                }
+            }
+        }
+    }
+
+    private fun createSecondaryActionButtonClickListener(): View.OnClickListener {
+        return View.OnClickListener {
+            onSecondaryActionButtonClicked()
+        }
+    }
+
     private fun showLoadIndicator() {
         loaderBuyerOrderDetail.show()
     }
@@ -313,6 +397,26 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         animatorHideContent = createHideContentAnimatorSet()
         animatorShowContent?.pause()
         animatorHideContent?.start()
+    }
+
+    private fun showActionButtons() {
+        containerActionButtons.apply {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(containerBuyerOrderDetail)
+            constraintSet.connect(R.id.containerActionButtons, ConstraintSet.BOTTOM, R.id.containerBuyerOrderDetail, ConstraintSet.BOTTOM)
+            constraintSet.clear(R.id.containerActionButtons, ConstraintSet.TOP)
+            constraintSet.applyTo(containerBuyerOrderDetail)
+        }
+    }
+
+    private fun hideActionButtons() {
+        containerActionButtons.apply {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(containerBuyerOrderDetail)
+            constraintSet.connect(R.id.containerActionButtons, ConstraintSet.TOP, R.id.containerBuyerOrderDetail, ConstraintSet.BOTTOM)
+            constraintSet.clear(R.id.containerActionButtons, ConstraintSet.BOTTOM)
+            constraintSet.applyTo(containerBuyerOrderDetail)
+        }
     }
 
     private fun createShowContentAnimatorSet(): AnimatorSet {
@@ -345,45 +449,5 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
             duration = SHOW_HIDE_CONTENT_ANIMATION_DURATION
             startDelay = TRANSLATION_ANIMATION_DELAY
         }
-    }
-
-    private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
-        val newItems = mutableListOf<Visitable<BuyerOrderDetailTypeFactory>>().apply {
-            setupOrderStatusSection(data.orderStatusUiModel)
-            setupProductListSection(data.productListUiModel)
-            setupShipmentInfoSection(data.shipmentInfoUiModel)
-            setupPaymentInfoSection(data.paymentInfoUiModel)
-            setupActionButtonsSection(data.actionButtonsUiModel)
-        }
-        adapter.updateItems(newItems)
-        showContent()
-    }
-
-    private fun onFailedGetBuyerOrderDetail(throwable: Throwable) {
-        val errorType = when (throwable) {
-            is MessageErrorException -> null
-            is SocketTimeoutException, is UnknownHostException -> GlobalError.NO_CONNECTION
-            else -> GlobalError.SERVER_ERROR
-        }
-
-        if (errorType == null) {
-            globalErrorBuyerOrderDetail?.gone()
-            emptyStateBuyerOrderDetail?.showMessageExceptionError(throwable)
-        } else {
-            globalErrorBuyerOrderDetail?.apply {
-                setType(errorType)
-                visible()
-            }
-            emptyStateBuyerOrderDetail?.gone()
-        }
-        hideContent()
-    }
-
-    private fun EmptyStateUnify.showMessageExceptionError(throwable: Throwable) {
-        val errorMessage = context?.let {
-            ErrorHandler.getErrorMessage(it, throwable)
-        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
-        setDescription(errorMessage)
-        visible()
     }
 }
