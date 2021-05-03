@@ -7,6 +7,11 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.search.analytics.SearchEventTracking
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CLICK
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CURRENCY_CODE
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IDR
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IMPRESSIONS
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.PRODUCTS
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -820,7 +825,7 @@ object SearchTracking {
                         TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.CLICK_ADD_TO_CART_ON_PRODUCT_OPTIONS,
                         TrackAppUtils.EVENT_LABEL, keyword,
                         ECOMMERCE, DataLayer.mapOf(
-                            SearchEventTracking.ECommerce.CURRENCY_CODE, SearchEventTracking.ECommerce.IDR,
+                            CURRENCY_CODE, IDR,
                             SearchEventTracking.ECommerce.ADD, DataLayer.mapOf(
                                 SearchEventTracking.ECommerce.ACTION_FIELD, DataLayer.mapOf(
                                     "list", getActionFieldString(isOrganicAds)
@@ -853,6 +858,82 @@ object SearchTracking {
                         TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
                         TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.CLICK_SHARE_PRODUCT_OPTIONS,
                         TrackAppUtils.EVENT_LABEL, "$queryKey - $productId"
+                )
+        )
+    }
+
+    @JvmStatic
+    fun trackEventImpressionDynamicProductCarousel(
+            trackingQueue: TrackingQueue,
+            type: String?,
+            keyword: String?,
+            userId: String?,
+            broadMatchItems: List<Any>,
+    ) {
+        val map = DataLayer.mapOf(
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_BROAD_MATCH,
+                SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", type, keyword),
+                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+                SearchTrackingConstant.USER_ID, userId,
+                ECOMMERCE, DataLayer.mapOf(
+                    "currencyCode", "IDR",
+                    "impressions", DataLayer.listOf(*broadMatchItems.toTypedArray())
+                )
+        ) as HashMap<String, Any>
+
+        trackingQueue.putEETracking(map)
+    }
+
+    @JvmStatic
+    fun trackEventClickDynamicProductCarousel(
+            trackingQueue: TrackingQueue,
+            type: String?,
+            keyword: String?,
+            userId: String?,
+            broadMatchItems: List<Any>,
+    ) {
+        val map = DataLayer.mapOf(
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_DYNAMIC_PRODUCT_CAROUSEL,
+                SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", type, keyword),
+                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+                SearchTrackingConstant.USER_ID, userId,
+                ECOMMERCE, DataLayer.mapOf(
+                    CURRENCY_CODE, IDR,
+                    IMPRESSIONS, DataLayer.listOf(*broadMatchItems.toTypedArray())
+                )
+        ) as HashMap<String, Any>
+
+        trackingQueue.putEETracking(map)
+    }
+
+    @JvmStatic
+    fun trackEventClickDynamicProductCarousel(
+            type: String?,
+            keyword: String?,
+            userId: String?,
+            broadMatchItems: List<Any>,
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
+                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_DYNAMIC_PRODUCT_CAROUSEL,
+                        SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", type, keyword),
+                        SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                        SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+                        SearchTrackingConstant.USER_ID, userId,
+                        ECOMMERCE, DataLayer.mapOf(CLICK,
+                            DataLayer.mapOf(
+                                    ACTION_FIELD, DataLayer.mapOf("list", ""),
+                                    PRODUCTS, DataLayer.listOf(*broadMatchItems.toTypedArray())
+                            )
+                        )
                 )
         )
     }

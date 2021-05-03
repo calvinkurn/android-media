@@ -1910,4 +1910,30 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onBannerClicked(bannerDataView: BannerDataView) {
         redirectionStartActivity(bannerDataView.applink, "")
     }
+
+    override fun trackDynamicProductCarouselImpression(dynamicProductCarousel: BroadMatchItemDataView, type: String) {
+        val trackingQueue = trackingQueue ?: return
+        val broadMatchItemAsObjectDataLayer: MutableList<Any> = ArrayList()
+        broadMatchItemAsObjectDataLayer.add(dynamicProductCarousel.asImpressionObjectDataLayer())
+
+        SearchTracking.trackEventImpressionDynamicProductCarousel(
+                trackingQueue = trackingQueue,
+                type = type,
+                keyword = queryKey,
+                userId = getUserId(),
+                broadMatchItems = broadMatchItemAsObjectDataLayer,
+        )
+    }
+
+    override fun trackDynamicProductCarouselClick(dynamicProductCarousel: BroadMatchItemDataView, type: String) {
+        val broadMatchItem: MutableList<Any> = ArrayList()
+        broadMatchItem.add(dynamicProductCarousel.asClickObjectDataLayer())
+
+        SearchTracking.trackEventClickDynamicProductCarousel(
+                type = type,
+                keyword = queryKey,
+                userId = getUserId(),
+                broadMatchItems = broadMatchItem,
+        )
+    }
 }

@@ -37,8 +37,10 @@ import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataVi
 import com.tokopedia.search.result.presentation.model.BannerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchProduct
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.CpmDataView
+import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
 import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.GlobalNavDataView
@@ -1275,6 +1277,7 @@ class ProductListPresenter @Inject constructor(
                                 priceString = product.priceStr,
                                 ratingAverage = product.ratingAverage,
                                 labelGroupDataList = product.labelGroupDataList,
+                                carouselProductType = DynamicCarouselProduct(option.inspirationCarouselType)
                         )
                     }
             )
@@ -1955,7 +1958,13 @@ class ProductListPresenter @Inject constructor(
         if (broadMatchItemDataView.isOrganicAds)
             sendTrackingImpressBroadMatchAds(broadMatchItemDataView)
 
-        view.trackBroadMatchImpression(broadMatchItemDataView)
+        when(val carouselProductType = broadMatchItemDataView.carouselProductType) {
+            is BroadMatchProduct -> view.trackBroadMatchImpression(broadMatchItemDataView)
+            is DynamicCarouselProduct -> view.trackDynamicProductCarouselImpression(
+                    broadMatchItemDataView,
+                    carouselProductType.type
+            )
+        }
     }
 
     private fun sendTrackingImpressBroadMatchAds(broadMatchItemDataView: BroadMatchItemDataView) {

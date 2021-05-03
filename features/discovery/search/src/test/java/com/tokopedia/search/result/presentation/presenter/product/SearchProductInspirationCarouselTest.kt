@@ -9,6 +9,7 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
+import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
@@ -622,11 +623,12 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         val inspirationCarouselOption = inspirationCarouselData.inspirationCarouselOptions[inspirationCarouselOptionIndex]
 
         this.shouldBeInstanceOf<BroadMatchDataView>(shouldBeBroadMatchMessage)
-        (this as BroadMatchDataView).assertBroadMatchViewModel(inspirationCarouselOption)
+        (this as BroadMatchDataView).assertBroadMatchViewModel(inspirationCarouselOption, inspirationCarouselData.type)
     }
 
     private fun BroadMatchDataView.assertBroadMatchViewModel(
-            inspirationCarouselOption: SearchProductModel.InspirationCarouselOption
+            inspirationCarouselOption: SearchProductModel.InspirationCarouselOption,
+            type: String,
     ) {
         keyword shouldBe inspirationCarouselOption.title
         applink shouldBe inspirationCarouselOption.applink
@@ -635,12 +637,13 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         broadMatchItemDataViewList.size shouldBe inspirationCarouselProducts.size
 
         inspirationCarouselProducts.forEachIndexed { index, inspirationCarouselProduct ->
-            broadMatchItemDataViewList[index].assertBroadMatchItemViewModel(inspirationCarouselProduct)
+            broadMatchItemDataViewList[index].assertBroadMatchItemViewModel(inspirationCarouselProduct, type)
         }
     }
 
     private fun BroadMatchItemDataView.assertBroadMatchItemViewModel(
             inspirationCarouselProduct: SearchProductModel.InspirationCarouselProduct,
+            type: String,
     ) {
         id shouldBe inspirationCarouselProduct.id
         name shouldBe inspirationCarouselProduct.name
@@ -663,6 +666,12 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
             actual.type shouldBe expected.type
             actual.imageUrl shouldBe expected.url
         }
+
+        carouselProductType.shouldBeInstanceOf<DynamicCarouselProduct>()
+        carouselProductType.hasThreeDots shouldBe false
+
+        val dynamicCarouselProductType = carouselProductType as DynamicCarouselProduct
+        dynamicCarouselProductType.type shouldBe type
     }
 
     private fun Visitable<*>.assertNotBroadMatchDataView(visitableIndex: Int) {
