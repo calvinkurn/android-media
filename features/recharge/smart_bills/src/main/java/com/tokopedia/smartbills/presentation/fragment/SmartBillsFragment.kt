@@ -135,7 +135,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                                 viewModel.createStatementBillsParams(
                                         it.month,
                                         it.year,
-                                        RechargeBills.Source.getSourceByString(source).ordinal
+                                        SOURCE
                                 ),
                                 swipeToRefresh?.isRefreshing ?: false
                         )
@@ -554,7 +554,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                             getUUIDAction(listAccordion),
                             it.month,
                             it.year,
-                            RechargeBills.Source.getSourceByString(source).ordinal
+                            SOURCE
                     ),
                     rechargeStatement
             )
@@ -583,6 +583,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         const val MAIN_TYPE = 2
         const val ACTION_TYPE = 3
         const val PAID_TYPE = 1
+
+        const val SOURCE = 1
 
         const val RECHARGE_SMART_BILLS_PAGE_PERFORMANCE = "dg_smart_bills_pdp"
 
