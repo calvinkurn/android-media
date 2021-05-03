@@ -18,6 +18,7 @@ class MainHomeMockResponseConfig: MockModelConfig() {
         const val KEY_CONTAINS_TOKOPOINTS_LIST = "tokopointsDrawerList"
         const val KEY_CONTAINS_WALLET = "wallet"
         const val KEY_CONTAINS_FLAG = "homeData"
+        const val KEY_CONTAINS_NOTIFICATION = "Notification"
     }
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
@@ -74,6 +75,12 @@ class MainHomeMockResponseConfig: MockModelConfig() {
         addMockResponse(
                 KEY_CONTAINS_FLAG,
                 getRawString(context, R.raw.response_mock_data_home_flag),
+                FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+                KEY_CONTAINS_NOTIFICATION,
+                getRawString(context, R.raw.response_mock_data_home_notification),
                 FIND_BY_CONTAINS
         )
         return this
