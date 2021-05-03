@@ -69,7 +69,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private var pmBasicInfo: PowerMerchantBasicInfoUiModel? = null
     private var cancelPmDeactivationWidgetPosition: Int? = null
     private var pmGradeBenefitAndShopInfo: PMGradeBenefitAndShopInfoUiModel? = null
-    private var selectedPmType = PMConstant.PMType.PM_REGULAR
+    private var selectedPmType = PMConstant.PMTierType.PM_REGULAR
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
 
@@ -273,9 +273,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private fun initPmActiveData(data: PMGradeBenefitAndShopInfoUiModel) {
         this.pmGradeBenefitAndShopInfo = data
         selectedPmType = if (data.shopInfo.isEligiblePmPro) {
-            PMConstant.PMType.PM_PRO
+            PMConstant.PMTierType.PM_PRO
         } else {
-            PMConstant.PMType.PM_REGULAR
+            PMConstant.PMTierType.PM_REGULAR
         }
     }
 
@@ -295,7 +295,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 headerWidget,
                 WidgetPmProStaticBenefit,
                 WidgetDividerUiModel,
-                WidgetGradeBenefitUiModel(benefitPages = pmGradeBenefitAndShopInfo?.gradeBenefitList.orEmpty())
+                getPmGradeBenefitWidget()
         )
         adapter.data.clear()
         adapter.data.addAll(widgets)
@@ -309,7 +309,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 headerWidget,
                 WidgetPotentialUiModel,
                 WidgetDividerUiModel,
-                WidgetGradeBenefitUiModel(benefitPages = pmGradeBenefitAndShopInfo?.gradeBenefitList.orEmpty())
+                getPmGradeBenefitWidget()
         )
 
         adapter.data.clear()
@@ -317,6 +317,13 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         adapter.notifyDataSetChanged()
 
         setupFooterCta()
+    }
+
+    private fun getPmGradeBenefitWidget(): WidgetGradeBenefitUiModel {
+        val gradeBenefitList = pmGradeBenefitAndShopInfo?.gradeBenefitList.orEmpty()
+        return WidgetGradeBenefitUiModel(
+                benefitPages = gradeBenefitList.filter { it.pmTier == selectedPmType }
+        )
     }
 
     private fun setOnPmActivationSuccess() {
@@ -372,7 +379,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun setupFooterCta() = view?.run {
         val shopInfo = pmGradeBenefitAndShopInfo?.shopInfo ?: return@run
-        val isPmPro = selectedPmType == PMConstant.PMType.PM_PRO
+        val isPmPro = selectedPmType == PMConstant.PMTierType.PM_PRO
         val isEligiblePm = if (isPmPro) shopInfo.isEligiblePmPro else shopInfo.isEligiblePm
 
         val registrationTerms = if (isPmPro) {
@@ -389,7 +396,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             }
         }.sortedBy { it.periority }.firstOrNull()
 
-        //show tnc check box only if kyc not eligible or pm pro eligible
+        //show tnc check box only if kyc not eligible or pm/pm pro eligible
         val needTnC = firstPriorityTerm is RegistrationTermUiModel.Kyc || isEligiblePm
 
         val ctaText = if (needTnC || shopInfo.isNewSeller) {
@@ -465,7 +472,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun showShopScoreTermBottomSheet(shopInfo: PMShopInfoUiModel) {
-        val isPmPro = selectedPmType == PMConstant.PMType.PM_PRO
+        val isPmPro = selectedPmType == PMConstant.PMTierType.PM_PRO
         val shopScoreThreshold = if (isPmPro) shopInfo.shopScorePmProThreshold else shopInfo.shopScoreThreshold
         val pmLabel = if (isPmPro) getString(R.string.pm_power_merchant_pro) else getString(R.string.pm_power_merchant)
 

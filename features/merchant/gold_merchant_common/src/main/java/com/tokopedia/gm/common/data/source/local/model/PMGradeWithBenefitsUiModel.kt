@@ -9,6 +9,6 @@ import com.tokopedia.gm.common.constant.PMConstant
 data class PMGradeWithBenefitsUiModel(
         val gradeName: String = "",
         val isActive: Boolean = false,
-        val pmTier: Int = PMConstant.PMTier.POWER_MERCHANT,
+        val pmTier: Int = PMConstant.PMTierType.PM_REGULAR,
         val benefits: List<PMGradeBenefitUiModel>? = null
 )
