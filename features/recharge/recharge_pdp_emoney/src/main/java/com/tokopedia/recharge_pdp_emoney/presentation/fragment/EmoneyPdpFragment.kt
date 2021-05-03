@@ -108,7 +108,6 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         loadData()
 
         renderCardState(detailPassData)
-        emoneyPdpHeaderView.configureCheckBalanceView()
         emoneyPdpHeaderView.actionListener = this
         emoneyPdpInputCardWidget.initView(this)
         emoneyPdpProductWidget.setListener(this)
