@@ -53,7 +53,6 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.dayText
 import com.tokopedia.shop.score.common.ShopScoreConstant.minuteText
 import com.tokopedia.shop.score.common.ShopScoreConstant.peopleText
 import com.tokopedia.shop.score.common.ShopScoreConstant.percentText
-import com.tokopedia.shop.score.common.formatDate
 import com.tokopedia.shop.score.common.getLocale
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.shop.score.performance.presentation.model.*
