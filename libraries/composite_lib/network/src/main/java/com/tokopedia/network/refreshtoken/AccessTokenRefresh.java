@@ -13,6 +13,7 @@ import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.io.IOException;
 import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
@@ -69,11 +70,12 @@ public class AccessTokenRefresh {
             } else {
                 return "";
             }
-
         } catch (SocketException e) {
-            e.printStackTrace();
-            Timber.w("P2#USER_AUTHENTICATOR#'%s';error='%s';path='%s'", "socket_exception", TkpdAuthenticator.Companion.formatThrowable(e), path);
-        } catch (Exception e) {
+            logExceptionToTimber(e, "socket_exception", path);
+        } catch (IOException e) {
+            logExceptionToTimber(e, "io_exception", path);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             networkRouter.sendRefreshTokenAnalytics(e.toString());
             Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';error='%s';path='%s'", "failed_refresh_token", userSession.getAccessToken(), TkpdAuthenticator.Companion.formatThrowable(e), path);
@@ -98,6 +100,11 @@ public class AccessTokenRefresh {
         } else {
             return "";
         }
+    }
+
+    private void logExceptionToTimber(Exception exception, String name, String path) {
+        exception.printStackTrace();
+        Timber.w("P2#USER_AUTHENTICATOR#'%s';error='%s';path='%s'", name, TkpdAuthenticator.Companion.formatThrowable(exception), path);
     }
 
     private void forceLogoutAndShowDialogForLoggedInUsers(UserSessionInterface userSession, NetworkRouter networkRouter, String path) {
