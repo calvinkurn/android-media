@@ -3,6 +3,7 @@ package com.tokopedia.navigation.screenshot
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.navigation.com.tokopedia.navigation.mock.MainHomeMockResponseConfig
 import com.tokopedia.navigation.presentation.activity.MainParentActivity
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -32,6 +33,7 @@ class MainParentScreenshotTest {
             setupDarkModeTest(false)
             setupHomeEnvironment()
             setupAbTestRemoteConfig()
+            disableCoachMark(context)
         }
     }
 

@@ -28,6 +28,9 @@ class HomeMockResponseConfig: MockModelConfig() {
         const val KEY_CONTAINS_RECOMMENDATION_TAB = "getRecommendation"
         const val KEY_CONTAINS_UNIVERSE_PLACEHOLDER = "universe_placeholder"
         const val KEY_QUERY_FLOATING_EGG = "gamiFloating"
+        const val KEY_CONTAINS_TOKOPOINTS_LIST = "tokopointsDrawerList"
+        const val KEY_CONTAINS_WALLET = "wallet"
+        const val KEY_CONTAINS_FLAG = "homeData"
     }
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
@@ -133,6 +136,22 @@ class HomeMockResponseConfig: MockModelConfig() {
                 KEY_QUERY_FLOATING_EGG,
                 getRawString(context, R.raw.response_mock_data_home_egg),
                 FIND_BY_CONTAINS)
+
+        addMockResponse(
+                KEY_CONTAINS_WALLET,
+                getRawString(context, R.raw.response_mock_data_wallet),
+                FIND_BY_CONTAINS)
+
+        addMockResponse(
+                KEY_CONTAINS_TOKOPOINTS_LIST,
+                getRawString(context, R.raw.response_mock_data_tokopoints_list),
+                FIND_BY_CONTAINS)
+
+        addMockResponse(
+                KEY_CONTAINS_FLAG,
+                getRawString(context, R.raw.response_mock_data_home_flag),
+                FIND_BY_CONTAINS
+        )
         return this
     }
 }
