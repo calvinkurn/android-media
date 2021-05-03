@@ -39,6 +39,8 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity implements T
 
     static String TAG_FLIGHT_MENU = "flightMenu";
 
+    static int REQUEST_CODE_LOGIN_FLIGHT = 101;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,12 +112,21 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity implements T
             RouteManager.route(this, ApplinkConst.FLIGHT_ORDER);
         } else {
             Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE_LOGIN_FLIGHT);
         }
     }
 
     @Override
     public void onPromoClicked() {
         navigateToAllPromoPage();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_LOGIN_FLIGHT) {
+            RouteManager.route(this, ApplinkConst.FLIGHT_ORDER);
+        }
     }
 }

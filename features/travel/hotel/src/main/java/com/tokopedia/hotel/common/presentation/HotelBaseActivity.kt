@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.common.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.Menu
@@ -92,7 +93,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), TravelMenuBottomSheet.Tr
             RouteManager.route(this, ApplinkConst.HOTEL_ORDER)
         } else {
             val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
-            startActivity(intent)
+            startActivityForResult(intent, REQUEST_CODE_LOGIN_HOTEl)
         }
     }
 
@@ -117,11 +118,21 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), TravelMenuBottomSheet.Tr
         return hotelComponent as HotelComponent
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_LOGIN_HOTEl) {
+            RouteManager.route(this, ApplinkConst.FLIGHT_ORDER)
+        }
+    }
+
     open fun shouldShowMenuWhite(): Boolean = false
 
     abstract fun shouldShowOptionMenu(): Boolean
 
     companion object {
         val TAG_HOTEL_MENU = "hotelMenu"
+
+        const val REQUEST_CODE_LOGIN_HOTEl = 100
     }
 }
