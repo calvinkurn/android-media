@@ -5,166 +5,166 @@
     {
       "event": "openScreen",
       "screenName": "/initial-sbm-page",
-      "isLoggedInStatus": "{{true|false}}",
+      "isLoggedInStatus": "true|false",
       "currentSite": "tokopediaDigitalRecharge",
       "businessUnit": "top up and tagihan",
-      "userId": "{{.*}}",
-      "clientId": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "shopId": "{{.*}}",
-      "appsflyerId": "{{.*}}",
-      "networkSpeed": "{{.*}}"
+      "userId": ".*",
+      "clientId": ".*",
+      "sessionIris": ".*",
+      "shopId": ".*",
+      "appsflyerId": ".*",
+      "networkSpeed": ".*"
     },
     {
       "event": "clickSmartBill",
       "eventCategory": "digital - smart bill management",
       "eventAction": "click all tagihan",
-      "eventLabel": "{{.+}}",
+      "eventLabel": ".+",
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "top up and tagihan",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickSmartBill",
       "eventCategory": "digital - smart bill management",
       "eventAction": "unclick all tagihan",
-      "eventLabel": "{{.+}}",
+      "eventLabel": ".+",
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "top up and tagihan",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "select_content",
       "eventCategory": "digital - smart bill management",
       "eventAction": "click tick bill",
-      "eventLabel": "{{.+ - .+}}",
+      "eventLabel": ".+ - .+",
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "top up and tagihan",
       "items": [
         {
-          "dimension40": "{{.*}}",
-          "item_id": "{{.+}}",
-          "index": "{{.+}}",
-          "item_name": "{{.+}}",
-          "item_brand": "{{.+}}",
-          "item_variant": "{{.+}}",
-          "item_category": "{{.+}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "dimension40": ".*",
+          "item_id": ".+",
+          "index": ".+",
+          "item_name": ".+",
+          "item_brand": ".+",
+          "item_variant": ".+",
+          "item_category": ".+",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d"
         }
       ],
-      "item_list": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "item_list": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "clickSmartBill",
       "eventCategory": "digital - smart bill management",
       "eventAction": "click untick bill",
-      "eventLabel": "{{.+ - .+}}",
+      "eventLabel": ".+ - .+",
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "top up and tagihan",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "view_item_list",
       "eventCategory": "digital - smart bill management",
       "eventAction": "impression all product",
-      "eventLabel": "{{.*}}",
+      "eventLabel": ".*",
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "top up and tagihan",
       "items": [
         {
-          "dimension40": "{{.*}}",
-          "item_id": "{{.+}}",
-          "index": "{{.+}}",
-          "item_name": "{{.+}}",
-          "item_brand": "{{.+}}",
-          "item_variant": "{{.+}}",
-          "item_category": "{{.+}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "dimension40": ".*",
+          "item_id": ".+",
+          "index": ".+",
+          "item_name": ".+",
+          "item_brand": ".+",
+          "item_variant": ".+",
+          "item_category": ".+",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d"
         }
       ],
-      "item_list": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "item_list": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "begin_checkout",
       "eventCategory": "digital - smart bill management",
       "eventAction": "click bayar full",
-      "eventLabel": "{{bayar - .+ - .+}}",
+      "eventLabel": "bayar - .+ - .+",
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "top up and tagihan",
       "items": [
         {
-          "item_id": "{{.+}}",
-          "item_name": "{{.+}}",
-          "item_brand": "{{.+}}",
-          "item_variant": "{{.+}}",
-          "item_category": "{{.+}}",
-          "quantity": "{{\\d*.\\d*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_brand": ".+",
+          "item_variant": ".+",
+          "item_category": ".+",
+          "quantity": "\\d*.\\d*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d"
         }
       ],
-      "sessionIris": "{{.*}}",
-      "checkout_step": "{{\\d*}}",
-      "checkout_option": "{{.*}}"
+      "sessionIris": ".*",
+      "checkout_step": "\\d*",
+      "checkout_option": ".*"
     },
     {
       "event": "begin_checkout",
       "eventCategory": "digital - smart bill management",
       "eventAction": "click bayar partial",
-      "eventLabel": "{{bayar - \\d+ - \\d+}}",
+      "eventLabel": "bayar - \\d+ - \\d+",
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "top up and tagihan",
       "items": [
         {
-          "item_id": "{{.+}}",
-          "item_name": "{{.+}}",
-          "item_brand": "{{.+}}",
-          "item_variant": "{{.+}}",
-          "item_category": "{{.+}}",
-          "quantity": "{{\\d*.\\d*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_brand": ".+",
+          "item_variant": ".+",
+          "item_category": ".+",
+          "quantity": "\\d*.\\d*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d"
         }
       ],
-      "sessionIris": "{{.*}}",
-      "checkout_step": "{{\\d*}}",
-      "checkout_option": "{{.*}}"
+      "sessionIris": ".*",
+      "checkout_step": "\\d*",
+      "checkout_option": ".*"
     },
     {
       "event": "clickSmartBill",
       "eventCategory": "digital - smart bill management",
       "eventAction": "click bayar gagal",
-      "eventLabel": "{{gagal - \\d+ - \\d+}}",
+      "eventLabel": "gagal - \\d+ - \\d+",
       "screenName": "/initial-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "top up and tagihan",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickSmartBill",
       "eventCategory": "digital - smart bill management",
       "eventAction": "click detail",
-      "eventLabel": "{{.+ - .+}}",
+      "eventLabel": ".+ - .+",
       "screenName": "/detail-sbm-page",
       "currentSite": "tokopediaDigitalRecharge",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "top up and tagihan",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     }
   ]
 }
