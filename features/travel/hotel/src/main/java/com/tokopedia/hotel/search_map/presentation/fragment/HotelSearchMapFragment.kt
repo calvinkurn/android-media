@@ -20,7 +20,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -101,7 +104,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var markerCounter: Int = INIT_MARKER_TAG
     private var cardListPosition: Int = SELECTED_POSITION_INIT
     private var hotelSearchModel: HotelSearchModel = HotelSearchModel()
-    private var hotelProperties : ArrayList<Property> = arrayListOf()
+    private var hotelProperties: ArrayList<Property> = arrayListOf()
     private var isFirstInitializeFilter = true
     private var quickFilters: List<QuickFilter> = listOf()
     private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
@@ -302,8 +305,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         super.loadInitialData()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_hotel_search_map, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val viewRoot = inflater.inflate(R.layout.fragment_hotel_search_map, container, false)
+        viewRoot.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        return viewRoot
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -338,12 +344,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 rvHorizontalPropertiesHotelSearchMap.scrollToPosition(cardListPosition)
                 changeMarkerState(cardListPosition)
                 with(hotelSearchMapViewModel.searchParam) {
-                    if(cardListPosition >= 0){
+                    if (cardListPosition >= 0) {
                         trackingHotelUtil.hotelOnScrollName(
                                 context,
                                 searchDestinationName,
                                 searchDestinationType,
-                                this, hotelProperties[cardListPosition],cardListPosition,
+                                this, hotelProperties[cardListPosition], cardListPosition,
                                 SEARCH_SCREEN_NAME)
                     }
                 }
@@ -664,12 +670,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     cardListPosition = getCurrentItemCardList()
                     changeMarkerState(cardListPosition)
                     with(hotelSearchMapViewModel.searchParam) {
-                        if(cardListPosition >= 0){
+                        if (cardListPosition >= 0) {
                             trackingHotelUtil.hotelOnScrollName(
                                     context,
                                     searchDestinationName,
                                     searchDestinationType,
-                                    this, hotelProperties[cardListPosition],cardListPosition,
+                                    this, hotelProperties[cardListPosition], cardListPosition,
                                     SEARCH_SCREEN_NAME)
                         }
                     }
