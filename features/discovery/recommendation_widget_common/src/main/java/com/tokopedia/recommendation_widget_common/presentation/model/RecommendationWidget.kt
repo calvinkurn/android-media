@@ -25,5 +25,5 @@ data class RecommendationWidget(
         val headerBackImage: String = "",
         val headerBackColor: String = "",
         val recommendationConfig: RecommendationConfig = RecommendationConfig(),
-        val recommendationBanner: RecommendationBanner? = null
+        var recommendationBanner: RecommendationBanner? = null
 )

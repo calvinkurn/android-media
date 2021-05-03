@@ -1,11 +1,13 @@
 package com.tokopedia.recommendation_widget_common.widget.productcard.carousel.viewholder
 
+import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.model.RecomCarouselBannerDataModel
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.model.RecomCarouselSeeMoreDataModel
 
 /**
@@ -13,13 +15,18 @@ import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.mo
  */
 class RecomCarouselBannerViewHolder(view: View,
                                     private val data: RecommendationWidget)
-    : AbstractViewHolder<RecomCarouselSeeMoreDataModel>(view) {
+    : AbstractViewHolder<RecomCarouselBannerDataModel>(view) {
 
     private val container: View by lazy { view.findViewById<View>(R.id.container_banner) }
     private val bannerImage: ImageView by lazy { view.findViewById<ImageView>(R.id.image_banner) }
 
-    override fun bind(element: RecomCarouselSeeMoreDataModel) {
-        bannerImage.loadImage(element.backgroundImage)
+    override fun bind(element: RecomCarouselBannerDataModel) {
+        element.bannerImage?.let{
+            bannerImage.loadImage(it)
+        }
+        element.bannerBackgorundColor?.let {
+            container.setBackgroundColor(Color.parseColor(it))
+        }
         bannerImage.setOnClickListener {
             element.listener?.onSeeMoreCardClicked(applink = element.applink, data = data)
         }
