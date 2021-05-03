@@ -122,7 +122,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), TravelMenuBottomSheet.Tr
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE_LOGIN_HOTEl) {
-            RouteManager.route(this, ApplinkConst.FLIGHT_ORDER)
+            RouteManager.route(this, ApplinkConst.HOTEL_ORDER)
         }
     }
 
