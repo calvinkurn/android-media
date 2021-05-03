@@ -407,7 +407,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     override fun onClickSeeDetailProduct(product: CatalogProduct) {
         val bottomSheet = EmoneyProductDetailBottomSheet(product)
-        bottomSheet.show(childFragmentManager, "")
+        bottomSheet.show(childFragmentManager, TAG)
     }
 
     override fun onClickNextBuyButton() {
@@ -437,6 +437,8 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     companion object {
+        private const val TAG = "EmoneyProductDetailBottomSheet"
+
         private const val REQUEST_CODE_EMONEY_PDP_CHECK_SALDO = 1007
         private const val REQUEST_CODE_EMONEY_PDP_CAMERA_OCR = 1008
         private const val REQUEST_CODE_CART_DIGITAL = 1090
