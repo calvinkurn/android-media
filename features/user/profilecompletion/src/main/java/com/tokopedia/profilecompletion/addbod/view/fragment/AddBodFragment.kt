@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -19,6 +20,7 @@ import com.tokopedia.profilecompletion.addbod.data.AddBodData
 import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils
 import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils.getCurrentLocale
 import com.tokopedia.profilecompletion.addbod.viewmodel.AddBodViewModel
+import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
@@ -49,7 +51,12 @@ class AddBodFragment: BaseDaggerFragment(){
     private var unifyDatePicker: DatePickerUnify? = null
     private lateinit var chooseDateButton : View
     private var selectedDate : String = ""
+    private var parentContainer: RelativeLayout? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ColorUtils.setBackgroundColor(context, activity)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -81,6 +88,7 @@ class AddBodFragment: BaseDaggerFragment(){
         }
 
         initObserver()
+        parentContainer
     }
 
     private fun setChoosenDateFormat(date: String){

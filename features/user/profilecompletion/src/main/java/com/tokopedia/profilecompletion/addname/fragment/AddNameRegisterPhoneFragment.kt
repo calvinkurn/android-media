@@ -28,6 +28,7 @@ import com.tokopedia.profilecompletion.addname.AddNameRegisterPhoneAnalytics
 import com.tokopedia.profilecompletion.addname.di.DaggerAddNameComponent
 import com.tokopedia.profilecompletion.addname.listener.AddNameListener
 import com.tokopedia.profilecompletion.addname.presenter.AddNamePresenter
+import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -85,9 +86,9 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ColorUtils.setBackgroundColor(context, activity)
         phoneNumber =  getParamString(ApplinkConstInternalGlobal.PARAM_PHONE, arguments, savedInstanceState, "")
         uuid =  getParamString(ApplinkConstInternalGlobal.PARAM_UUID, arguments, savedInstanceState, "")
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

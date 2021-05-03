@@ -281,6 +281,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupBackgroundColor()
         callbackManager = CallbackManager.Factory.create()
         activity?.let {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -296,6 +297,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(IS_AUTO_LOGIN, arguments, savedInstanceState, false)
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+    }
+
+    private fun setupBackgroundColor() {
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(
+                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            )
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -577,13 +586,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun prepareView() {
-
         partialRegisterInputView?.showForgotPassword()
-        context?.let {
-            activity?.window?.decorView?.setBackgroundColor(
-                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-            )
-        }
         socmedBottomSheet = SocmedBottomSheet(context)
         socmedButtonsContainer = socmedBottomSheet?.getSocmedButtonContainer()
         socmedBottomSheet?.setCloseClickListener {
