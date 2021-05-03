@@ -9,7 +9,7 @@ data class RecommendationWidget(
         val source: String = "",
         val tid: String = "",
         val widgetUrl: String = "",
-        val layoutType: String = "",
+        var layoutType: String = "",
         val seeMoreAppLink: String = "",
         val currentPage: Int = 0,
         val nextPage: Int = 0,

@@ -15,7 +15,6 @@ data class RecomCarouselProductCardDataModel(
         val productModel: ProductCardModel,
         val recomItem: RecommendationItem,
         val impressHolder: ImpressHolder = ImpressHolder(),
-        val applink: String = "",
         val componentName: String = "",
         val listener: RecomCommonProductCardListener? = null
 ): Visitable<CommonRecomCarouselCardTypeFactory> {

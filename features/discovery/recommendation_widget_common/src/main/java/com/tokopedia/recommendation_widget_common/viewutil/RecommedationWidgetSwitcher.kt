@@ -20,7 +20,7 @@ fun getAndBindRecommendationWidgetByLayoutType(
         context: Context,
         data: RecommendationWidget,
         adapterPosition: Int = 0,
-        recommendationCarouselWidgetListener: RecommendationCarouselWidgetListener? = null): View? {
+        recommendationCarouselWidgetListener: RecommendationCarouselWidgetListener): View? {
     var layoutView: View? = null
     when (data.layoutType) {
         LAYOUT_TYPE_CATEGORY_WIDGET ->  {

@@ -49,7 +49,7 @@ class RecomCarouselProductCardViewHolder (view: View,
 //                            element.recomItem.imageUrl,
 //                            element.componentName)
 //                }
-                element.listener?.onProductCardClicked(position = adapterPosition,data = data, recomItem = element.recomItem, applink = element.applink)
+                element.listener?.onProductCardClicked(position = adapterPosition,data = data, recomItem = element.recomItem, applink = element.recomItem.appUrl)
             }
         }
     }
