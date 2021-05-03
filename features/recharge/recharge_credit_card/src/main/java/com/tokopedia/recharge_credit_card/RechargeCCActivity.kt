@@ -1,6 +1,7 @@
 package com.tokopedia.recharge_credit_card
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
@@ -36,6 +37,7 @@ class RechargeCCActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setSecureWindowFlag()
 
         toolbar_credit_card.addRightIcon(com.tokopedia.common_digital.R.drawable.digital_common_ic_tagihan)
         toolbar_credit_card.rightIcons?.let {
@@ -44,6 +46,13 @@ class RechargeCCActivity : BaseSimpleActivity() {
             }
         }
     }
+
+    private fun setSecureWindowFlag() {
+        runOnUiThread {
+            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
+    }
+
 
     companion object {
         private const val PARAM_MENU_ID = "menu_id"
