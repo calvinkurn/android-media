@@ -96,8 +96,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private var selectedImage: ArrayList<String> = arrayListOf()
 
     private val requiredPermissions: Array<String>
-        get() = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
+        get() = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_feedback_page, container, false)
