@@ -160,7 +160,7 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
             val chipType = ChipsUnify.TYPE_SELECTED
 
             penaltyViewModel.updateSortFilterSelected(titleFilter, chipType)
-            val actualResult = penaltyViewModel.updateSortFilterSelected.observeAwaitValue()
+            val actualResult = penaltyViewModel.updateSortSelectedPeriod.observeAwaitValue()
             assertTrue(actualResult is Success)
             val actualResultData = (actualResult as Success).data
             assertNotNull(actualResultData)

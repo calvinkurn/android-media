@@ -128,6 +128,7 @@
             app:layout_constraintTop_toBottomOf="@id/tvShopScoreMaximum"
             app:typographyType="heading_2"
             android:visibility="gone"
+            tools:visibility="visible"
             tools:text="@string/title_shop_score_service" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -135,15 +136,16 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl5"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:paddingBottom="@dimen/spacing_lvl4"
             android:textColor="@color/Unify_N0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvHeaderShopService"
+            app:layout_constraintBottom_toTopOf="@id/barrierTickerHasPenalty"
             app:typographyType="body_3"
             android:visibility="gone"
+            tools:visibility="visible"
             tools:text="@string/desc_shop_score_service" />
 
         <androidx.cardview.widget.CardView
@@ -152,12 +154,13 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="@dimen/spacing_lvl3"
             app:cardElevation="@dimen/layout_lvl0"
-            android:layout_marginTop="@dimen/spacing_lvl5"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginEnd="@dimen/spacing_lvl4"
+            tools:visibility="gone"
             app:cardBackgroundColor="@color/Unify_N0_20"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/barrierTickerHasPenalty"
             app:layout_constraintTop_toBottomOf="@id/tvShopScoreMaximum">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -199,12 +202,22 @@
 
         </androidx.cardview.widget.CardView>
 
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierTickerHasPenalty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="top"
+            app:constraint_referenced_ids="tickerShopHasPenalty"
+            app:layout_constraintStart_toStartOf="@id/tvPerformanceLevel"
+            app:layout_constraintBottom_toTopOf="@+id/tickerShopHasPenalty" />
+
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/tickerShopHasPenalty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             android:visibility="gone"
             app:closeButtonVisibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"

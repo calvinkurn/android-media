@@ -71,7 +71,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
 
         val RECOMMENDATION_TOOLS_QUERY = """
             query valuePropositionGetRecommendationTools(${'$'}shopID: Int!){
-              valuePropositionGetRecommendationTools(shopID: ${'$'}shopID, source:"android-shopscore-ui") {
+              valuePropositionGetRecommendationTools(shopID: ${'$'}shopID, source:"android-shop-score") {
                  recommendation_tools {
                   title
                   text

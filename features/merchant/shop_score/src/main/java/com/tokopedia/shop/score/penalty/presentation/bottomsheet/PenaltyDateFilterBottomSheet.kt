@@ -154,7 +154,7 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
                             maxDate = date
                             selectEndDate(date)
                             GlobalScope.launch(Dispatchers.Main) {
-                                delay(300)
+                                delay(DELAY_SELECTED_FILTER_DATE_PENALTY)
                                 calenderFilterListener?.onSaveCalendarClicked(Pair(startDateParam, startDateEditText), Pair(endDateParam, endDateEditText))
                                 dismissAllowingStateLoss()
                             }
@@ -183,6 +183,7 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
         const val PATTERN_DATE_PARAM = "yyyy-MM-dd"
         const val KEY_START_DATE_PENALTY = "key_start_date_penalty"
         const val KEY_END_DATE_PENALTY = "key_end_date_penalty"
+        const val DELAY_SELECTED_FILTER_DATE_PENALTY = 300L
 
         fun newInstance(startDate: String, endDate: String): PenaltyDateFilterBottomSheet {
             return PenaltyDateFilterBottomSheet().apply {

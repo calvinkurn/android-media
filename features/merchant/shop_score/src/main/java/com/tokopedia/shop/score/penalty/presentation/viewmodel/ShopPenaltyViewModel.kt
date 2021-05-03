@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST
@@ -16,9 +15,7 @@ import com.tokopedia.shop.score.common.format
 import com.tokopedia.shop.score.common.getNPastMonthTimeStamp
 import com.tokopedia.shop.score.common.getNowTimeStamp
 import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
-import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailParam
-import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailUseCase
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltySummaryTypesUseCase
 import com.tokopedia.shop.score.penalty.presentation.model.*
@@ -26,7 +23,6 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -49,8 +45,8 @@ class ShopPenaltyViewModel @Inject constructor(
     val shopPenaltyDetailData: LiveData<Result<Triple<List<ItemPenaltyUiModel>, Boolean, Boolean>>>
         get() = shopPenaltyDetailMediator
 
-    private val _updateSortFilterSelected = MutableLiveData<Result<List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>>>()
-    val updateSortFilterSelected: LiveData<Result<List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>>>
+    private val _updateSortFilterSelected = MutableLiveData<Result<List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>>>()
+    val updateSortSelectedPeriod: LiveData<Result<List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>>>
         get() = _updateSortFilterSelected
 
     private val _resetFilterResult = MutableLiveData<Result<List<PenaltyFilterUiModel>>>()
@@ -60,7 +56,7 @@ class ShopPenaltyViewModel @Inject constructor(
     val updateFilterSelected: LiveData<Result<Pair<List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>, String>>> = _updateFilterSelected
 
     private var penaltyFilterUiModel = mutableListOf<PenaltyFilterUiModel>()
-    private var itemSortFilterWrapperList = mutableListOf<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>()
+    private var itemSortFilterWrapperList = mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
 
     private val _typeFilterData = MutableLiveData<Int>()
     private val _sortTypeFilterData = MutableLiveData<Pair<Int, Int>>()
@@ -75,8 +71,8 @@ class ShopPenaltyViewModel @Inject constructor(
     }
 
     fun setItemSortFilterWrapperList(penaltyFilterList: List<PenaltyFilterUiModel>,
-                                     sortFilterItemList: List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>) {
-        this.itemSortFilterWrapperList = sortFilterItemList.toMutableList()
+                                     sortFilterItemPeriodList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>) {
+        this.itemSortFilterWrapperList = sortFilterItemPeriodList.toMutableList()
         this.penaltyFilterUiModel = penaltyFilterList.toMutableList()
     }
 
@@ -125,9 +121,9 @@ class ShopPenaltyViewModel @Inject constructor(
                     val penaltyMapperData = penaltyMapper.mapToPenaltyData(
                             penaltySummary,
                             penaltyDetail,
-                            Pair(startDate, endDate),
                             sortBy,
-                            typeId
+                            typeId,
+                            Pair(startDate, endDate)
                     )
 
                     penaltyFilterUiModel = penaltyMapperData.penaltyFilterList?.toMutableList()

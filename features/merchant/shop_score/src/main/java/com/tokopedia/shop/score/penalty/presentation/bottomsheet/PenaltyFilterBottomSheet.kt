@@ -88,7 +88,7 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
     override fun onDestroy() {
         removeObservers(viewModelShopPenalty.penaltyPageData)
         removeObservers(viewModelShopPenalty.filterPenaltyData)
-        removeObservers(viewModelShopPenalty.updateSortFilterSelected)
+        removeObservers(viewModelShopPenalty.updateSortSelectedPeriod)
         removeObservers(viewModelShopPenalty.resetFilterResult)
         removeObservers(viewModelShopPenalty.updateFilterSelected)
         super.onDestroy()
