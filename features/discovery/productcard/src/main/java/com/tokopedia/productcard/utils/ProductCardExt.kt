@@ -256,11 +256,12 @@ internal fun View.expandTouchArea(left: Int, top: Int, right: Int, bottom: Int) 
 }
 
 internal fun renderLabelCampaign(
+        isShow: Boolean,
         labelCampaignBackground: ImageView?,
         textViewLabelCampaign: Typography?,
         productCardModel: ProductCardModel
 ) {
-    if (productCardModel.isShowLabelCampaign()) {
+    if (isShow) {
         val labelCampaign = productCardModel.getLabelCampaign() ?: return
 
         labelCampaignBackground?.show()
@@ -276,12 +277,13 @@ internal fun renderLabelCampaign(
 }
 
 internal fun renderLabelBestSeller(
+        isShow: Boolean,
         labelBestSeller: Typography?,
         productCardModel: ProductCardModel
 ) {
     labelBestSeller ?: return
 
-    if (productCardModel.isShowLabelBestSeller()) {
+    if (isShow) {
         labelBestSeller.initLabelBestSeller(productCardModel.getLabelBestSeller())
     }
     else {
