@@ -127,6 +127,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_customerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_new_relic";
     private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
+    private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
+    private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -429,7 +431,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     private boolean getLeakCanaryToggleValue() {
-        return getSharedPreferences("app_leakcanary_toggle", MODE_PRIVATE).getBoolean("leakcanary_toggle", false);
+        return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, false);
     }
 
     private void initLogManager() {

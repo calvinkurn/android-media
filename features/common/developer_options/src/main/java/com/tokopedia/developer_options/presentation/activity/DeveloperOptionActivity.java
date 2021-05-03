@@ -102,6 +102,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
 
+    private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
+    private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
+
     private String CACHE_FREE_RETURN = "CACHE_FREE_RETURN";
     private String API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49";
 
@@ -699,15 +702,16 @@ public class DeveloperOptionActivity extends BaseActivity {
             new FakeResponseActivityProvider().startActivity(this);
         });
 
+        toggleLeakCanary.setVisibility(GlobalConfig.isSellerApp() ? View.GONE : View.VISIBLE);
         toggleLeakCanary.setChecked(getLeakCanaryToggleValue());
         toggleLeakCanary.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            getSharedPreferences("app_leakcanary_toggle", MODE_PRIVATE).edit().putBoolean("leakcanary_toggle", isChecked).apply();
-            Toast.makeText(DeveloperOptionActivity.this, "Please restart app!", Toast.LENGTH_SHORT).show();
+            getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).edit().putBoolean(LEAK_CANARY_TOGGLE_KEY, isChecked).apply();
+            Toast.makeText(DeveloperOptionActivity.this, "Please Restart the App", Toast.LENGTH_SHORT).show();
         });
     }
 
     private boolean getLeakCanaryToggleValue() {
-        return getSharedPreferences("app_leakcanary_toggle", MODE_PRIVATE).getBoolean("leakcanary_toggle", false);
+        return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, false);
     }
 
     public Object getOrNull(String[] list, int index) {
