@@ -60,7 +60,6 @@ import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.PostFilterBo
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.EmptyState
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -106,8 +105,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val MAX_LOTTIE_ANIM_SPEED = 4f
         private const val SCROLL_DELTA_MIN_Y_THRESHOLD = 20f
         private const val SCROLL_DELTA_MAX_Y_THRESHOLD = 100f
-
-        private const val HIDDEN_WIDGET_COUNT = 2
 
         private const val DEFAULT_HEIGHT_DP = 720f
     }
@@ -362,13 +359,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 if (widget.widgetType == WidgetType.CARD) {
                     visibleWidgets.add(widget)
                 } else {
-                    val lastLoadingWidget =
-                            if (isNewLazyLoad) {
-                                getLastLoadingWidget(lastVisible)
-                            } else {
-                                lastVisible
-                            }
-                    if (index in firstVisible..lastLoadingWidget) {
+                    if (index in firstVisible..lastVisible) {
                         visibleWidgets.add(widget)
                     }
                 }
@@ -376,21 +367,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
-    }
-
-    /**
-     * Get index of last widget which data will be loaded.
-     * This will be used to load widgets below the visible widgets for smooth scrolling
-     *
-     * @param   lastVisibleWidget   index of last visible widget on the screen
-     * @return  index of last widget that need its data to be loaded
-     */
-    private fun getLastLoadingWidget(lastVisibleWidget: Int): Int {
-        return if (lastVisibleWidget + HIDDEN_WIDGET_COUNT >= adapter.dataSize) {
-            adapter.lastIndex
-        } else {
-            lastVisibleWidget + HIDDEN_WIDGET_COUNT
-        }
     }
 
     private fun reloadPage() = view?.run {
@@ -811,6 +787,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (isWidgetHasError) {
             showErrorToaster()
         }
+
+        loadNextUnloadedWidget()
     }
 
     private fun isTheSameWidget(oldWidget: BaseWidgetUiModel<*>, newWidget: BaseWidgetUiModel<*>): Boolean {
@@ -994,7 +972,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
      */
     private fun loadNextUnloadedWidget() {
         if (isNewLazyLoad) {
-            adapter.data?.find { !it.isLoaded }?.let { newWidgets ->
+            adapter.data?.find { it.isNeedToLoad() }?.let { newWidgets ->
                 getWidgetsData(listOf(newWidgets))
             }
         }
@@ -1209,6 +1187,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         setDescription(errorMessage)
         visible()
     }
+
+    private fun BaseWidgetUiModel<*>.isNeedToLoad(): Boolean =
+            !isLoaded && this !is SectionWidgetUiModel && this !is TickerWidgetUiModel &&
+                    this !is DescriptionWidgetUiModel && this !is WhiteSpaceUiModel
 
     interface Listener {
         fun getShopInfo()

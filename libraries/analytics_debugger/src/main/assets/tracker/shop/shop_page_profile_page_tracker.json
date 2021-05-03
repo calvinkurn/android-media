@@ -4,12 +4,12 @@
   "query": [
     {
       "pageType": "/shoppage",
-      "eventCategory": "{{shop profile page - (buyer|seller)}}",
-      "shopId": "{{.+}}",
-      "shopType": "{{.+}}",
+      "eventCategory": "shop profile page - (buyer|seller)",
+      "shopId": ".+",
+      "shopType": ".+",
       "event": "clickShopPage",
       "eventAction": "click back",
-      "sessionIris": "{{.+}}",
+      "sessionIris": ".+",
       "eventLabel":""
     }
   ]

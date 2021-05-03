@@ -16,4 +16,5 @@ interface InboxFragmentContainer {
     fun decreaseReviewUnreviewedCounter()
     fun hideReviewCounter()
     fun showReviewCounter()
+    fun getPageSource(): String
 }
