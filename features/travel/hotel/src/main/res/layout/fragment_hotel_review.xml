@@ -66,7 +66,8 @@
                         android:layout_marginTop="@dimen/layout_lvl1"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/review_point_text_view"
-                        app:srcCompat="@drawable/ic_booking_logo" />
+                        app:srcCompat="@drawable/ic_booking_logo"
+                        android:contentDescription="@string/hotel_review_booking_logo"/>
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="wrap_content"
