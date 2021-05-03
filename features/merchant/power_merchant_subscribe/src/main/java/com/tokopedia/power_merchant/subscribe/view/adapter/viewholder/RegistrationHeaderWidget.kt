@@ -9,6 +9,7 @@ import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.utils.PMCommonUtils
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.adapter.RegistrationTermAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
@@ -39,21 +40,13 @@ class RegistrationHeaderWidget(
     }
 
     private fun setupView(element: WidgetRegistrationHeaderUiModel) {
-        with(itemView) {
-            val shopInfo = element.shopInfo
-            tvPmHeaderNewSellerLabel.visibility = if (shopInfo.isNewSeller) View.VISIBLE else View.GONE
-
-            setupPmSection(element)
-            setTickerVisibility(shopInfo)
-        }
+        val shopInfo = element.shopInfo
+        setupPmSection(element)
+        setTickerVisibility(shopInfo)
     }
 
     private fun setupPmSection(element: WidgetRegistrationHeaderUiModel) = with(itemView) {
-        val shopInfo = element.shopInfo
-        val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-
         pmsPmRegular.setTitle(context.getString(R.string.pm_power_merchant))
-        pmsPmRegular.setDescription(context.getString(R.string.pm_power_merchant_section_description, textColor, PM_CHARGING))
         pmsPmRegular.setOnClickListener {
             setupRegularPmState(element)
             element.selectedPmType = PMConstant.PMTierType.PM_REGULAR
@@ -61,7 +54,6 @@ class RegistrationHeaderWidget(
         }
 
         pmsPmPro.setTitle(context.getString(R.string.pm_power_merchant_pro))
-        setPmProSectionDescription(shopInfo.isEligiblePmPro)
         pmsPmPro.setOnClickListener {
             setupPmProState(element)
             element.selectedPmType = PMConstant.PMTierType.PM_PRO
@@ -76,13 +68,13 @@ class RegistrationHeaderWidget(
     }
 
     private fun setupRegularPmState(element: WidgetRegistrationHeaderUiModel) {
+        showPmChargingInfo(PMConstant.PMTierType.PM_REGULAR)
         setPmRegularSectionSelected()
-        setPmProSectionDescription(element.shopInfo.isEligiblePmPro)
         showTermList(element.pmTerms)
     }
 
     private fun setupPmProState(element: WidgetRegistrationHeaderUiModel) {
-        setPmProSectionDescription(true)
+        showPmChargingInfo(PMConstant.PMTierType.PM_PRO)
         setPmProSectionSelected()
         showTermList(element.pmProTerms)
     }
@@ -92,14 +84,13 @@ class RegistrationHeaderWidget(
         termAdapter.notifyDataSetChanged()
     }
 
-    private fun setPmProSectionDescription(isEligiblePmPro: Boolean) = with(itemView){
+    private fun showPmChargingInfo(selectedPmType: Int) = with(itemView) {
         val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-        val pmProDescription = if (isEligiblePmPro) {
-            context.getString(R.string.pm_power_merchant_section_description, textColor, PM_PRO_CHARGING)
-        } else {
-            context.getString(R.string.pm_not_eligible_yet)
-        }
-        pmsPmPro.setDescription(pmProDescription)
+        val isPmPro = selectedPmType == PMConstant.PMTierType.PM_PRO
+        val pmCharging = if (isPmPro) PM_PRO_CHARGING else PM_CHARGING
+
+        val pmDescription = context.getString(R.string.pm_power_merchant_section_description, textColor, pmCharging)
+        tvPmChargingInfo.text = pmDescription.parseAsHtml()
     }
 
     private fun setPmRegularSectionSelected() = with(itemView) {
@@ -108,6 +99,9 @@ class RegistrationHeaderWidget(
         imgPmHeaderBackdrop.loadImageDrawable(R.drawable.bg_pm_registration_header)
         imgPmHeaderImage.loadImage(PMConstant.Images.PM_REGISTRATION_PM)
         tvPmHeaderDesc.setText(R.string.pm_registration_header_pm)
+
+        val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+        context.getString(R.string.pm_power_merchant_section_description, textColor, PM_CHARGING)
     }
 
     private fun setPmProSectionSelected() = with(itemView) {

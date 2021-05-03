@@ -134,7 +134,6 @@
     <string name="pm_power_merchant_pro">Power Merchant Pro</string>
     <string name="pm_power_merchant_section_description"><![CDATA[<strong><font color=\"%1$s\">%2$s</font></strong> tiap produk terjual]]></string>
     <string name="pm_power_merchant_status">Power Merchant Status :</string>
-    <string name="pm_not_eligible_yet">Belum memenuhi syarat</string>
     <string name="pm_active">Aktif</string>
     <string name="pm_inactive">Tidak Aktif</string>
     <string name="pm_power_merchant_exclusive_features">Fitur Eksklusif Power Merchant</string>

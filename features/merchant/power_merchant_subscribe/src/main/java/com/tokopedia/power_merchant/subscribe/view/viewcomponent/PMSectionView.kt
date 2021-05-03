@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.unifyprinciples.Typography
 
@@ -22,23 +21,17 @@ class PowerMerchantSectionView : LinearLayout {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     private val tvTitle: Typography
-    private val tvDescription: Typography
     private val viewUnderline: View
 
     init {
         View.inflate(context, R.layout.view_pm_section, this)
 
         tvTitle = findViewById(R.id.tvPmSectionTitle)
-        tvDescription = findViewById(R.id.tvPmSectionDescription)
         viewUnderline = findViewById(R.id.viewPmSectionUnderline)
     }
 
     fun setTitle(title: String) {
         tvTitle.text = title
-    }
-
-    fun setDescription(description: String) {
-        tvDescription.text = description.parseAsHtml()
     }
 
     fun setSelectedStatus(isSelected: Boolean) {

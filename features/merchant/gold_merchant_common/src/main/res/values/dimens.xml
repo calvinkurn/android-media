@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="gmc_dimen_14dp">14dp</dimen>
     <dimen name="gmc_dimen_18dp">18dp</dimen>
     <dimen name="gmc_dimen_28dp">28dp</dimen>
     <dimen name="gmc_dimen_30dp">30dp</dimen>

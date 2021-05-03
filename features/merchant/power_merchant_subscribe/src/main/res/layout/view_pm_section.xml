@@ -10,25 +10,16 @@
         android:id="@+id/tvPmSectionTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:gravity="center"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="Power Merchant Pro" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvPmSectionDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:gravity="center"
-        android:textColor="@color/Unify_N700_68"
-        app:typographyType="body_3"
-        tools:text="1,25% tiap produk terjual" />
-
     <View
         android:id="@+id/viewPmSectionUnderline"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
-        android:layout_marginTop="@dimen/pm_spacing_10dp"
+        android:layout_marginTop="@dimen/unify_space_12"
         tools:background="@color/Unify_G500" />
 </LinearLayout>

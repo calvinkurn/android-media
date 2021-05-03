@@ -311,7 +311,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 WidgetDividerUiModel,
                 getPmGradeBenefitWidget()
         )
-
         adapter.data.clear()
         adapter.data.addAll(widgets)
         adapter.notifyDataSetChanged()

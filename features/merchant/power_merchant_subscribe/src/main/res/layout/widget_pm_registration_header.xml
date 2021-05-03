@@ -59,7 +59,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/unify_space_12"
             android:paddingBottom="@dimen/spacing_lvl2">
 
             <androidx.constraintlayout.widget.Guideline
@@ -94,47 +93,39 @@
                 app:layout_constraintStart_toEndOf="@+id/pmsPmRegular"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <View
-                android:id="@+id/verLinePm1"
-                android:layout_width="1dp"
-                android:layout_height="@dimen/layout_lvl4"
-                android:background="@color/Unify_N75"
-                app:layout_constraintBottom_toBottomOf="@+id/pmsPmRegular"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/pmsPmRegular"
-                app:layout_constraintVertical_bias="0.3" />
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icPmChargingInfo"
+                android:layout_width="@dimen/gmc_dimen_14dp"
+                android:layout_height="@dimen/gmc_dimen_14dp"
+                app:icon_name="INFORMATION"
+                app:layout_constraintBottom_toBottomOf="@+id/tvPmChargingInfo"
+                app:layout_constraintStart_toStartOf="@+id/guidelinePmSectionStart"
+                app:layout_constraintTop_toTopOf="@+id/tvPmChargingInfo" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPmChargingInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintStart_toEndOf="@+id/icPmChargingInfo"
+                app:layout_constraintTop_toBottomOf="@+id/pmsPmRegular"
+                app:typographyType="body_3"
+                tools:text="1,5% tiap produk terjual" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvPmHeaderTerms"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/unify_space_12"
                 android:text="@string/pm_registration_terms"
                 android:textAllCaps="true"
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintStart_toStartOf="@+id/guidelinePmSectionStart"
-                app:layout_constraintTop_toBottomOf="@+id/pmsPmRegular"
+                app:layout_constraintTop_toBottomOf="@+id/tvPmChargingInfo"
                 app:typographyType="body_3"
                 app:typographyWeight="bold" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvPmHeaderNewSellerLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl2"
-                android:background="@drawable/bg_pm_new_seller_status"
-                android:paddingStart="@dimen/spacing_lvl2"
-                android:paddingTop="@dimen/spacing_lvl1"
-                android:paddingEnd="@dimen/spacing_lvl2"
-                android:paddingBottom="@dimen/spacing_lvl1"
-                android:text="@string/pm_new_seller"
-                android:textColor="@color/Unify_G500"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/tvPmHeaderTerms"
-                app:layout_constraintStart_toEndOf="@+id/tvPmHeaderTerms"
-                app:layout_constraintTop_toTopOf="@+id/tvPmHeaderTerms"
-                app:typographyType="body_3" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPmRegistrationTerm"
