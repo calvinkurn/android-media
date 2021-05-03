@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class GetBuyerOrderDetailUseCase @Inject constructor(
@@ -21,6 +22,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
 
     suspend fun execute(params: GetBuyerOrderDetailParams): BuyerOrderDetailUiModel {
         useCase.setRequestParams(createRequestParam(params))
+        delay(5000)
         return mapper.mapDomainModelToUiModel(Gson().fromJson(FAKE_RESPONSE, GetBuyerOrderDetailResponse.Data::class.java).buyerOrderDetail)
     }
 

@@ -1,10 +1,15 @@
 package com.tokopedia.buyerorderdetail.presentation.fragment
 
+import android.animation.Animator
+import android.animation.AnimatorSet
 import android.animation.LayoutTransition
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
@@ -22,11 +27,19 @@ import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SecondaryActionBu
 import com.tokopedia.buyerorderdetail.presentation.model.*
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.empty_state.EmptyStateUnify
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_buyer_order_detail.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener, ProductViewHolder.ProductViewListener {
@@ -40,10 +53,19 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         }
 
         const val REQUEST_CANCEL_ORDER = 101
+
+        private const val CONTENT_CHANGING_ANIMATION_DURATION = 300L
+        private const val CONTENT_CHANGING_ANIMATION_DELAY = 45L
+        private const val SHOW_HIDE_CONTENT_ANIMATION_DURATION = 300L
+        private const val FADE_ANIMATION_DELAY = 60L
+        private const val TRANSLATION_ANIMATION_DELAY = 45L
     }
 
     @Inject
     lateinit var viewModel: BuyerOrderDetailViewModel
+
+    private var animatorShowContent: AnimatorSet? = null
+    private var animatorHideContent: AnimatorSet? = null
 
     private val cacheManager: SaveInstanceCacheManager by lazy {
         SaveInstanceCacheManager(requireContext())
@@ -101,20 +123,15 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
 
     private fun setupViews() {
         containerBuyerOrderDetail.layoutTransition.apply {
+            setInterpolator(LayoutTransition.CHANGING, AccelerateInterpolator())
             enableTransitionType(LayoutTransition.CHANGING)
-            setDuration(LayoutTransition.CHANGING, 300L)
-            setStartDelay(LayoutTransition.CHANGING, 45L)
+            setDuration(LayoutTransition.CHANGING, CONTENT_CHANGING_ANIMATION_DURATION)
+            setStartDelay(LayoutTransition.CHANGING, CONTENT_CHANGING_ANIMATION_DELAY)
         }
         setupToolbar()
+        setupGlobalError()
         setupSwipeRefreshLayout()
         setupRecyclerView()
-    }
-
-    private fun setupSwipeRefreshLayout() {
-        swipeRefreshBuyerOrderDetail?.isEnabled = false
-        swipeRefreshBuyerOrderDetail?.setOnRefreshListener {
-            loadBuyerOrderDetail()
-        }
     }
 
     private fun setupToolbar() {
@@ -124,61 +141,25 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
         }
     }
 
+    private fun setupGlobalError() {
+        globalErrorBuyerOrderDetail.setActionClickListener {
+            globalErrorBuyerOrderDetail.gone()
+            showLoadIndicator()
+            hideContent()
+            loadBuyerOrderDetail()
+        }
+    }
+
+    private fun setupSwipeRefreshLayout() {
+        swipeRefreshBuyerOrderDetail?.isEnabled = false
+        swipeRefreshBuyerOrderDetail?.setOnRefreshListener {
+            loadBuyerOrderDetail()
+        }
+        swipeRefreshBuyerOrderDetail?.translationY = getScreenHeight().toFloat()
+    }
+
     private fun setupRecyclerView() {
         rvBuyerOrderDetail.adapter = adapter
-    }
-
-    private fun loadBuyerOrderDetail() {
-        val orderId = arguments?.getString(BuyerOrderDetailConst.PARAM_ORDER_ID, "").orEmpty()
-        val paymentId = arguments?.getString(BuyerOrderDetailConst.PARAM_PAYMENT_ID, "").orEmpty()
-        val cart = arguments?.getString(BuyerOrderDetailConst.PARAM_CART_STRING, "").orEmpty()
-        viewModel.getBuyerOrderDetail(orderId, paymentId, cart)
-    }
-
-    private fun observeBuyerOrderDetail() {
-        showLoadIndicator()
-        loadBuyerOrderDetail()
-        viewModel.buyerOrderDetailResult.observe(viewLifecycleOwner, Observer { result ->
-            hideLoadIndicator()
-            rvBuyerOrderDetail.show()
-            when (result) {
-                is Success -> onSuccessGetBuyerOrderDetail(result.data)
-                is Fail -> onFailedGetBuyerOrderDetail(result.throwable)
-            }
-            swipeRefreshBuyerOrderDetail?.isRefreshing = false
-            swipeRefreshBuyerOrderDetail?.isEnabled = true
-        })
-    }
-
-    private fun showLoadIndicator() {
-        loaderBuyerOrderDetail.apply {
-            scaleX = 1f
-            scaleY = 1f
-        }
-    }
-
-    private fun hideLoadIndicator() {
-        loaderBuyerOrderDetail.apply {
-            scaleX = 0f
-            scaleY = 0f
-        }
-    }
-
-    private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
-        val newItems = mutableListOf<Visitable<BuyerOrderDetailTypeFactory>>().apply {
-            setupOrderStatusSection(data.orderStatusUiModel)
-            setupProductListSection(data.productListUiModel)
-            setupShipmentInfoSection(data.shipmentInfoUiModel)
-            setupPaymentInfoSection(data.paymentInfoUiModel)
-            setupActionButtonsSection(data.actionButtonsUiModel)
-        }
-        adapter.updateItems(newItems)
-    }
-
-    private fun onFailedGetBuyerOrderDetail(throwable: Throwable) {
-        view?.let { view ->
-            Toaster.build(view, throwable.message.orEmpty(), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderStatusSection(orderStatusUiModel: OrderStatusUiModel) {
@@ -291,5 +272,118 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ActionButtonClickListener
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addActionButtonsSection(actionButtonsUiModel: ActionButtonsUiModel) {
         add(actionButtonsUiModel)
+    }
+
+    private fun loadBuyerOrderDetail() {
+        val orderId = arguments?.getString(BuyerOrderDetailConst.PARAM_ORDER_ID, "").orEmpty()
+        val paymentId = arguments?.getString(BuyerOrderDetailConst.PARAM_PAYMENT_ID, "").orEmpty()
+        val cart = arguments?.getString(BuyerOrderDetailConst.PARAM_CART_STRING, "").orEmpty()
+        viewModel.getBuyerOrderDetail(orderId, paymentId, cart)
+    }
+
+    private fun observeBuyerOrderDetail() {
+        showLoadIndicator()
+        loadBuyerOrderDetail()
+        viewModel.buyerOrderDetailResult.observe(viewLifecycleOwner, Observer { result ->
+            hideLoadIndicator()
+            when (result) {
+                is Success -> onSuccessGetBuyerOrderDetail(result.data)
+                is Fail -> onFailedGetBuyerOrderDetail(result.throwable)
+            }
+            swipeRefreshBuyerOrderDetail?.isRefreshing = false
+            swipeRefreshBuyerOrderDetail?.isEnabled = true
+        })
+    }
+
+    private fun showLoadIndicator() {
+        loaderBuyerOrderDetail.show()
+    }
+
+    private fun hideLoadIndicator() {
+        loaderBuyerOrderDetail.gone()
+    }
+
+    private fun showContent() {
+        animatorShowContent = createShowContentAnimatorSet()
+        animatorHideContent?.pause()
+        animatorShowContent?.start()
+    }
+
+    private fun hideContent() {
+        animatorHideContent = createHideContentAnimatorSet()
+        animatorShowContent?.pause()
+        animatorHideContent?.start()
+    }
+
+    private fun createShowContentAnimatorSet(): AnimatorSet {
+        val showContentAnimator = createTranslationYAnimator(swipeRefreshBuyerOrderDetail, swipeRefreshBuyerOrderDetail.translationY, 0f)
+        val fadeInAnimator = createFadeAnimator(rvBuyerOrderDetail, rvBuyerOrderDetail.alpha, 1f)
+        return AnimatorSet().apply {
+            playTogether(showContentAnimator, fadeInAnimator)
+        }
+    }
+
+    private fun createHideContentAnimatorSet(): AnimatorSet {
+        val hideContentAnimator = createTranslationYAnimator(swipeRefreshBuyerOrderDetail, swipeRefreshBuyerOrderDetail.translationY, swipeRefreshBuyerOrderDetail.measuredHeight.toFloat())
+        val fadeOutAnimator = createFadeAnimator(rvBuyerOrderDetail, rvBuyerOrderDetail.alpha, 0f)
+        return AnimatorSet().apply {
+            playTogether(hideContentAnimator, fadeOutAnimator)
+        }
+    }
+
+    private fun createFadeAnimator(target: View, from: Float, to: Float): Animator {
+        return ObjectAnimator.ofFloat(target, View.ALPHA, from, to).apply {
+            interpolator = DecelerateInterpolator(2f)
+            duration = SHOW_HIDE_CONTENT_ANIMATION_DURATION
+            startDelay = FADE_ANIMATION_DELAY
+        }
+    }
+
+    private fun createTranslationYAnimator(target: View, from: Float, to: Float): Animator {
+        return ObjectAnimator.ofFloat(target, View.TRANSLATION_Y, from, to).apply {
+            interpolator = DecelerateInterpolator()
+            duration = SHOW_HIDE_CONTENT_ANIMATION_DURATION
+            startDelay = TRANSLATION_ANIMATION_DELAY
+        }
+    }
+
+    private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
+        val newItems = mutableListOf<Visitable<BuyerOrderDetailTypeFactory>>().apply {
+            setupOrderStatusSection(data.orderStatusUiModel)
+            setupProductListSection(data.productListUiModel)
+            setupShipmentInfoSection(data.shipmentInfoUiModel)
+            setupPaymentInfoSection(data.paymentInfoUiModel)
+            setupActionButtonsSection(data.actionButtonsUiModel)
+        }
+        adapter.updateItems(newItems)
+        showContent()
+    }
+
+    private fun onFailedGetBuyerOrderDetail(throwable: Throwable) {
+        val errorType = when (throwable) {
+            is MessageErrorException -> null
+            is SocketTimeoutException, is UnknownHostException -> GlobalError.NO_CONNECTION
+            else -> GlobalError.SERVER_ERROR
+        }
+
+        if (errorType == null) {
+            globalErrorBuyerOrderDetail?.gone()
+            emptyStateBuyerOrderDetail?.showMessageExceptionError(throwable)
+        } else {
+            globalErrorBuyerOrderDetail?.apply {
+                setType(errorType)
+                visible()
+            }
+            emptyStateBuyerOrderDetail?.gone()
+        }
+        hideContent()
+    }
+
+    private fun EmptyStateUnify.showMessageExceptionError(throwable: Throwable) {
+        val errorMessage = context?.let {
+            ErrorHandler.getErrorMessage(it, throwable)
+        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
+        setDescription(errorMessage)
+        visible()
     }
 }
