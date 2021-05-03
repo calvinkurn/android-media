@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.payment.setting.add.view.fragment.AddCreditCardFragment
 import com.tokopedia.payment.setting.list.model.PaymentSignature
 
@@ -23,7 +24,11 @@ class AddCreditCardActivity : BaseSimpleActivity() {
     }
 
     private fun setSecureWindowFlag() {
-        runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
+        if(GlobalConfig.APPLICATION_TYPE== GlobalConfig.CONSUMER_APPLICATION|| GlobalConfig.APPLICATION_TYPE== GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread {
+                window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+            }
+        }
     }
 
     private fun validateBundleData() {

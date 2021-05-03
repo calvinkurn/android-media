@@ -170,7 +170,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     public void onCreate(@NonNull Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setSecureWindowFlag();
         userSession = new UserSession(getContext());
         Bundle args = getArguments();
         if (args == null || !args.containsKey(KEY_URL)) {
@@ -183,14 +182,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         String host = Uri.parse(url).getHost();
         isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING);
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-    }
-
-    private void setSecureWindowFlag() {
-        if(getActivity() != null){
-            getActivity().runOnUiThread(() -> getActivity()
-                    .getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE));
-
-        }
     }
 
     private String getUrlFromArguments(Bundle args) {

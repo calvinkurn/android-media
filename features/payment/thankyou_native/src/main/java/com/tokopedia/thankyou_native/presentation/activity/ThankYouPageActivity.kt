@@ -36,6 +36,7 @@ import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCal
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+import com.tokopedia.config.GlobalConfig
 
 var idlingResource: TkpdIdlingResource? = null
 
@@ -80,7 +81,9 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
 
     private fun setSecureWindowFlag() {
-        runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
+        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
+        }
     }
 
 

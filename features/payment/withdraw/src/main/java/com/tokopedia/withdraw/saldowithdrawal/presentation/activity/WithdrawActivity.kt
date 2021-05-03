@@ -20,6 +20,7 @@ import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalFr
 import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalJoinRPCallback
 import kotlinx.android.synthetic.main.swd_activity_saldo_withdraw.*
 import javax.inject.Inject
+import com.tokopedia.config.GlobalConfig
 
 /**
  * For navigating to this class
@@ -46,8 +47,8 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback,
     }
 
     private fun setSecureWindowFlag() {
-        runOnUiThread {
-            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
         }
     }
 

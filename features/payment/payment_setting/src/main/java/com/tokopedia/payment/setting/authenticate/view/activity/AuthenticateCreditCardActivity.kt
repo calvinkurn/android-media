@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.payment.setting.authenticate.view.fragment.AuthenticateCreditCardFragment
 import com.tokopedia.payment.setting.di.DaggerSettingPaymentComponent
 import com.tokopedia.payment.setting.di.SettingPaymentComponent
@@ -21,7 +22,11 @@ class AuthenticateCreditCardActivity : BaseSimpleActivity(), HasComponent<Settin
     }
 
     private fun setSecureWindowFlag() {
-        runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
+        if(GlobalConfig.APPLICATION_TYPE== GlobalConfig.CONSUMER_APPLICATION|| GlobalConfig.APPLICATION_TYPE== GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread {
+                window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+            }
+        }
     }
 
     override fun getNewFragment(): Fragment {

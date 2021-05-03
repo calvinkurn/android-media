@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
@@ -94,7 +95,14 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
     }
 
     private void setSecureWindowFlag() {
-        runOnUiThread(() -> getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE));
+        if(GlobalConfig.APPLICATION_TYPE==GlobalConfig.CONSUMER_APPLICATION||GlobalConfig.APPLICATION_TYPE==GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread(() -> {
+                Window window = getWindow();
+                if (window != null) {
+                    window.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+                }
+            });
+        }
     }
 
 

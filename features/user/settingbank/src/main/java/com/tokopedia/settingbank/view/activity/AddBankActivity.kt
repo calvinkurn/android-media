@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.settingbank.di.DaggerSettingBankComponent
 import com.tokopedia.settingbank.di.SettingBankComponent
 import com.tokopedia.settingbank.di.SettingBankModule
@@ -26,8 +27,8 @@ class AddBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>
     }
 
     private fun setSecureWindowFlag() {
-        runOnUiThread {
-            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
         }
     }
 

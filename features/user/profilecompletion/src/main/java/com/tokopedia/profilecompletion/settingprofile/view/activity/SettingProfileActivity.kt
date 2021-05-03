@@ -18,6 +18,7 @@ import com.tokopedia.profilecompletion.settingprofile.view.fragment.SettingProfi
 
 class SettingProfileActivity: BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 
+
     override fun getComponent(): ProfileCompletionSettingComponent =
             DaggerProfileCompletionSettingComponent.builder()
                     .baseAppComponent((application as BaseMainApplication).baseAppComponent)
