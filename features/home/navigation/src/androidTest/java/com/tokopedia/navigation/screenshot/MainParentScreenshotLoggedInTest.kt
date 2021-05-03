@@ -1,8 +1,10 @@
-package com.tokopedia.navigation.screenshot
+package com.tokopedia.navigation.com.tokopedia.navigation.screenshot
 
 import android.content.Context
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.home.R
 import com.tokopedia.navigation.com.tokopedia.navigation.helper.NavigationInstrumentationHelper.disableCoachMark
 import com.tokopedia.navigation.com.tokopedia.navigation.mock.MainHomeMockResponseConfig
 import com.tokopedia.navigation.presentation.activity.MainParentActivity
@@ -13,6 +15,7 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSession
+import kotlinx.coroutines.cancelChildren
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -20,7 +23,7 @@ import org.junit.Test
 /**
  * Created by devarafikry on 12/04/21.
  */
-class MainParentScreenshotTest {
+class MainParentScreenshotLoggedInTest {
     val TAG = "MainParentScreenshotTest"
     val KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION"
     val KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING"
@@ -29,13 +32,14 @@ class MainParentScreenshotTest {
     @get:Rule
     var activityRule = object: ActivityTestRule<MainParentActivity>(MainParentActivity::class.java) {
         override fun beforeActivityLaunched() {
+            InstrumentationAuthHelper.clearUserSession()
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(MainHomeMockResponseConfig())
             setupDarkModeTest(false)
             setupHomeEnvironment()
             setupAbTestRemoteConfig()
             disableCoachMark(context)
-            InstrumentationAuthHelper.clearUserSession()
+            InstrumentationAuthHelper.loginInstrumentationTestUser1()
         }
     }
 
@@ -56,24 +60,7 @@ class MainParentScreenshotTest {
     }
 
     @Test
-    fun screenShotVisibleViewNonLoggedIn() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            activityRule.activity.recreate()
-        }
-        Thread.sleep(10000)
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            takeScreenShotVisibleViewInScreen(
-                    activityRule.activity.window.decorView,
-                    fileName(),
-                    "home".name(false)
-            )
-        }
-        activityRule.activity.finishAndRemoveTask()
-    }
-
-    @Test
     fun screenShotVisibleViewLoggedIn() {
-        loginScreenshotTest()
         Thread.sleep(10000)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             takeScreenShotVisibleViewInScreen(
@@ -109,11 +96,4 @@ class MainParentScreenshotTest {
     }
 
     private fun String.name(loggedIn: Boolean) = this + (if (loggedIn) "-login" else "-nonlogin")
-
-    private fun loginScreenshotTest() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            InstrumentationAuthHelper.loginInstrumentationTestUser1()
-            activityRule.activity.recreate()
-        }
-    }
 }

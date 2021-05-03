@@ -7,7 +7,7 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.home.R
 import com.tokopedia.home.component.disableCoachMark
-import com.tokopedia.home.component.waitForData
+import com.tokopedia.home.component.name
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
@@ -25,14 +25,13 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import kotlinx.coroutines.cancelChildren
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 /**
  * Created by devarafikry on 12/04/21.
  */
-class HomeScreenshotTest {
+class HomeScreenshotLoggedInTest {
     private val TAG = "HomeScreenshotTest"
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
@@ -40,40 +39,20 @@ class HomeScreenshotTest {
     @get:Rule
     var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
+            InstrumentationAuthHelper.clearUserSession()
             gtmLogDBSource.deleteAll().subscribe()
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(HomeMockResponseConfig())
             setupDarkModeTest(false)
             setupAbTestRemoteConfig()
             disableCoachMark(context)
-            InstrumentationAuthHelper.clearUserSession()
+            InstrumentationAuthHelper.loginInstrumentationTestUser1()
         }
-    }
-
-    @Before
-    fun resetAll() {
-        disableCoachMark(context)
-        gtmLogDBSource.deleteAll().subscribe()
-    }
-
-    @Test
-    fun screenShotVisibleViewNonLoggedIn() {
-        Thread.sleep(10000)
-        turnOffAnimation()
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            takeScreenShotVisibleViewInScreen(
-                    activityRule.activity.window.decorView,
-                    fileName(),
-                    "dc".name(false)
-            )
-        }
-        activityRule.activity.finishAndRemoveTask()
     }
 
     @Test
     fun screenShotVisibleViewLoggedIn() {
-        loginScreenshotTest()
-        Thread.sleep(10000)
+        Thread.sleep(4000)
         turnOffAnimation()
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             takeScreenShotVisibleViewInScreen(
@@ -87,27 +66,10 @@ class HomeScreenshotTest {
 
     @Test
     fun screenShotEachViewholders() {
-        loginScreenshotTest()
-        Thread.sleep(10000)
-        waitForData()
+        Thread.sleep(4000)
         turnOffAnimation()
         doScreenshotForEachViewholder()
         activityRule.activity.finishAndRemoveTask()
-    }
-
-    private fun setupAbTestRemoteConfig() {
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                NAVIGATION_EXP_TOP_NAV,
-                NAVIGATION_VARIANT_REVAMP)
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                CHOOSE_ADDRESS_ROLLENCE_KEY,
-                CHOOSE_ADDRESS_ROLLENCE_KEY)
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                BALANCE_EXP,
-                BALANCE_VARIANT_NEW)
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                HOME_EXP,
-                HOME_VARIANT_REVAMP)
     }
 
     private fun turnOffAnimation() {
@@ -166,13 +128,6 @@ class HomeScreenshotTest {
         }
     }
 
-    private fun loginScreenshotTest() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            InstrumentationAuthHelper.loginInstrumentationTestUser1()
-            activityRule.activity.recreate()
-        }
-    }
-
     private fun fileName(suffix: String? = null): String {
         val prefix = TAG
         suffix?.let {
@@ -180,8 +135,6 @@ class HomeScreenshotTest {
         }
         return prefix
     }
-
-    private fun String.name(loggedIn: Boolean) = this + (if (loggedIn) "-login" else "-nonlogin")
 
     private fun doActivityTest(position: Int, action: (viewHolder: RecyclerView.ViewHolder)-> Unit) {
         val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
@@ -196,6 +149,21 @@ class HomeScreenshotTest {
     private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
         val layoutManager = homeRecyclerView.layoutManager as LinearLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset   (position, 400) }
+    }
+
+    private fun setupAbTestRemoteConfig() {
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+                NAVIGATION_EXP_TOP_NAV,
+                NAVIGATION_VARIANT_REVAMP)
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+                CHOOSE_ADDRESS_ROLLENCE_KEY,
+                CHOOSE_ADDRESS_ROLLENCE_KEY)
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+                BALANCE_EXP,
+                BALANCE_VARIANT_NEW)
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+                HOME_EXP,
+                HOME_VARIANT_REVAMP)
     }
 
     data class ScreenshotModel(val name: String)

@@ -103,6 +103,8 @@ fun addDebugEnd() {
     Thread.sleep(2000)
 }
 
+fun String.name(loggedIn: Boolean) = this + (if (loggedIn) "-login" else "-nonlogin")
+
 
 //==================================== item action =============================================
 
