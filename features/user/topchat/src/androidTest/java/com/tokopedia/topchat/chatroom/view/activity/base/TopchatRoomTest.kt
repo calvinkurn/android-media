@@ -51,6 +51,8 @@ import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
+import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
+import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -144,9 +146,11 @@ abstract class TopchatRoomTest {
     open fun before() {
         Dispatchers.setMain(TestCoroutineDispatcher())
         setupResponse()
-        val baseComponent = (applicationContext as BaseMainApplication).baseAppComponent
+        val baseComponent = DaggerFakeBaseAppComponent.builder()
+                .fakeAppModule(FakeAppModule(applicationContext))
+                .build()
         chatComponentStub = DaggerChatComponentStub.builder()
-                .baseAppComponent(baseComponent)
+                .fakeBaseAppComponent(baseComponent)
                 .chatRoomContextModule(ChatRoomContextModule(context))
                 .build()
         chatComponentStub.inject(this)

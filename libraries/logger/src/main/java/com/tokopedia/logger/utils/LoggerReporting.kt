@@ -78,7 +78,13 @@ class LoggerReporting {
             put("log_installer", installer.toString())
             put("log_debug", debug.toString())
             put("log_priority", p.toString())
-            putAll(message)
+            for (item in message) {
+                if (item.value.length > Constants.MAX_LENGTH_PER_ITEM) {
+                    put(item.key, item.value.substring(0, Constants.MAX_LENGTH_PER_ITEM))
+                } else {
+                    put(item.key, item.value)
+                }
+            }
         }
 
         return mapMessage.convertMapToJsonString()
