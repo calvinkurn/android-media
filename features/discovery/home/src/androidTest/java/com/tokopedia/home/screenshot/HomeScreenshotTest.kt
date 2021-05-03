@@ -29,11 +29,11 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-private const val TAG = "HomeScreenshotTesting"
 /**
  * Created by devarafikry on 12/04/21.
  */
 class HomeScreenshotTest {
+    private val TAG = "HomeScreenshotTest"
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
 
