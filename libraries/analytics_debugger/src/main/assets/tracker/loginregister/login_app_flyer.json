@@ -3,9 +3,9 @@
   "mode": "exact",
   "query": [
     {
-      "user_email": "{{.*}}",
-      "user_id": "{{.*}}",
-      "timestamp": "{{.*}}"
+      "user_email": ".*",
+      "user_id": ".*",
+      "timestamp": ".*"
     }
   ]
 }

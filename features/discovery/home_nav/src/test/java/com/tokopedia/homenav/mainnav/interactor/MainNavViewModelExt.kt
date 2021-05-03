@@ -44,6 +44,7 @@ fun createViewModel (
                 .answers { HomeNavTickerDataModel() }
         every { it.getSectionTitle(identifier = any()) }
                 .answers { HomeNavTitleDataModel(identifier = firstArg()) }
+
     }
     val getNavNotificationMock = getOrUseDefault(getNavNotification) {
         coEvery { it.executeOnBackground() }.answers { NavNotificationModel(0) }
@@ -93,4 +94,13 @@ inline fun <reified T : Any> getOrUseDefault(any: T?, runObjectMockSetup: (obj: 
     } else {
         Lazy { any!! }
     }
+}
+
+fun getDefaultClientGeneratorMockValue(clientMenuGenerator: ClientMenuGenerator) {
+    every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+            .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+    every { clientMenuGenerator.getTicker(menuId = any()) }
+            .answers { HomeNavTickerDataModel() }
+    every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+            .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
 }

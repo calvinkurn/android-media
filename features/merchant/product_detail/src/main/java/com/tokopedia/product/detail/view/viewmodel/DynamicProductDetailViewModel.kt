@@ -37,6 +37,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.data.model.ratesestimate.ErrorBottomSheet
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
+import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionData
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
@@ -569,10 +570,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         launchCatchError(dispatcher.io, block = {
             val requestParams = ToggleFavoriteUseCase.createParams(shopID, if (isNplFollowerType) ToggleFavoriteUseCase.FOLLOW_ACTION else null)
             val favoriteData = toggleFavoriteUseCase.get().executeOnBackground(requestParams).followShop
-            if (favoriteData.isSuccess) {
+            if (favoriteData?.isSuccess == true) {
                 _toggleFavoriteResult.postValue((favoriteData.isSuccess to isNplFollowerType).asSuccess())
             } else {
-                _toggleFavoriteResult.postValue(Throwable(favoriteData.message).asFail())
+                _toggleFavoriteResult.postValue(Throwable(favoriteData?.message.orEmpty()).asFail())
             }
         }) {
             _toggleFavoriteResult.postValue(it.asFail())

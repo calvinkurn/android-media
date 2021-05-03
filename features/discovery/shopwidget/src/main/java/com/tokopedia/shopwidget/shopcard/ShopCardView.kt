@@ -203,7 +203,9 @@ class ShopCardView: BaseCustomView {
             productPreviewIndex: Int,
             shopCardListener: ShopCardListener
     ) {
-        imageViewShopItemProductImage?.loadImageRounded(productPreviewItem.imageUrl, 6.toPx().toFloat())
+        imageViewShopItemProductImage?.loadImageRounded(productPreviewItem.imageUrl, 6.toPx().toFloat()) {
+            setPlaceHolder(R.drawable.media_placeholder_grey)
+        }
 
         productPreviewItem.impressHolder?.let { impressHolder ->
             imageViewShopItemProductImage?.addOnImpressionListener(impressHolder) {
