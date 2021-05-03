@@ -1,10 +1,8 @@
 package com.tokopedia.navigation.screenshot
 
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.home.R
 import com.tokopedia.navigation.com.tokopedia.navigation.helper.NavigationInstrumentationHelper.disableCoachMark
 import com.tokopedia.navigation.com.tokopedia.navigation.mock.MainHomeMockResponseConfig
 import com.tokopedia.navigation.presentation.activity.MainParentActivity
@@ -15,7 +13,6 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSession
-import kotlinx.coroutines.cancelChildren
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,13 +29,13 @@ class MainParentScreenshotNonLoggedInTest {
     @get:Rule
     var activityRule = object: ActivityTestRule<MainParentActivity>(MainParentActivity::class.java) {
         override fun beforeActivityLaunched() {
-            InstrumentationAuthHelper.clearUserSession()
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(MainHomeMockResponseConfig())
             setupDarkModeTest(false)
             setupHomeEnvironment()
             setupAbTestRemoteConfig()
             disableCoachMark(context)
+            InstrumentationAuthHelper.clearUserSession()
         }
     }
 
