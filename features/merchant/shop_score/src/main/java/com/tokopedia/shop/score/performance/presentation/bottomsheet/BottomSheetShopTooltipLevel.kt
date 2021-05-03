@@ -21,7 +21,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_tooltip_information_level.*
 import javax.inject.Inject
 
-class BottomSheetShopTooltipLevel: BaseBottomSheetShopScore() {
+class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
 
     @Inject
     lateinit var shopPerformanceViewModel: ShopPerformanceViewModel
@@ -86,7 +86,7 @@ class BottomSheetShopTooltipLevel: BaseBottomSheetShopScore() {
 
     private fun setRecyclerView() {
         rvLevelCard?.apply {
-            if(itemDecorationCount.isZero()) {
+            if (itemDecorationCount.isZero()) {
                 addItemDecoration(TooltipLevelItemDecoration())
             }
             layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
@@ -97,19 +97,14 @@ class BottomSheetShopTooltipLevel: BaseBottomSheetShopScore() {
     private fun observeShopInfoLevel() {
         observe(shopPerformanceViewModel.shopInfoLevel) {
             loaderTooltipLevel?.hide()
-            when (it) {
-                is Success -> {
-                    val shopInfoLevelUiModel = ShopInfoLevelUiModel(
-                            shopIncome = shopIncome,
-                            productSold = productSold,
-                            periodDate = period,
-                            nextUpdate = nextUpdate,
-                            cardTooltipLevelList = it.data.cardTooltipLevelList
-                    )
-                    setShopLevelData(shopInfoLevelUiModel)
-                }
-                is Fail -> { }
-            }
+            val shopInfoLevelUiModel = ShopInfoLevelUiModel(
+                    shopIncome = shopIncome,
+                    productSold = productSold,
+                    periodDate = period,
+                    nextUpdate = nextUpdate,
+                    cardTooltipLevelList = it.cardTooltipLevelList
+            )
+            setShopLevelData(shopInfoLevelUiModel)
         }
         shopPerformanceViewModel.getShopInfoLevel(shopLevel)
     }

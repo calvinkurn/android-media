@@ -25,7 +25,7 @@
             tools:text="@string/example_title_detail_penalty" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvDateDetailPenalty"
+            android:id="@+id/tvStartDateDetailPenalty"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
@@ -48,7 +48,7 @@
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDateDetailPenalty"
+            app:layout_constraintTop_toBottomOf="@id/tvStartDateDetailPenalty"
             app:typographyType="body_3"
             tools:text="@string/example_summary_detail_penalty" />
 
@@ -156,7 +156,7 @@
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvDateResultDetailPenalty"
+            android:id="@+id/tvEndDateDetailPenalty"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"

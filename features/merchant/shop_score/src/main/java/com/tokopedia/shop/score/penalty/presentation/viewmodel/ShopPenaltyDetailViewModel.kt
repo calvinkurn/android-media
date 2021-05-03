@@ -11,22 +11,21 @@ import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiMo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ShopPenaltyDetailViewModel @Inject constructor(
-        private val dispatchers: CoroutineDispatchers,
+        dispatchers: CoroutineDispatchers,
         private val penaltyMapper: PenaltyMapper
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _penaltyDetailData = MutableLiveData<Result<ShopPenaltyDetailUiModel>>()
-    val penaltyDetailData: LiveData<Result<ShopPenaltyDetailUiModel>>
+    private val _penaltyDetailData = MutableLiveData<ShopPenaltyDetailUiModel>()
+    val penaltyDetailData: LiveData<ShopPenaltyDetailUiModel>
         get() = _penaltyDetailData
 
     fun getPenaltyDetailData(itemPenaltyUiModel: ItemPenaltyUiModel) {
-        launchCatchError(block = {
-            _penaltyDetailData.value = Success(penaltyMapper.mapToPenaltyDetail(itemPenaltyUiModel))
-        }, onError = {
-            _penaltyDetailData.value = Fail(it)
-        })
+        launch {
+            _penaltyDetailData.value = penaltyMapper.mapToPenaltyDetail(itemPenaltyUiModel)
+        }
     }
 }

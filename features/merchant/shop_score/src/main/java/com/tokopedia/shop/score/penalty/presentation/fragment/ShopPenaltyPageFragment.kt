@@ -280,6 +280,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
                 is Success -> {
                     showAllView()
                     showAllPenaltyData(it.data)
+                    onSuccessGetPenaltyListData(it.data.itemPenaltyUiModel)
                 }
                 is Fail -> {
                     containerShimmerPenalty?.hide()
@@ -307,7 +308,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
 
     private fun onSuccessGetPenaltyListData(data: Triple<List<ItemPenaltyUiModel>, Boolean, Boolean>) {
         globalErrorPenalty?.hide()
-        if (!data.third && data.first.isEmpty()) {
+        if (!data.second && data.first.isEmpty()) {
             penaltyPageAdapter.hideLoading()
             penaltyPageAdapter.setEmptyStatePenalty()
         } else {
@@ -315,7 +316,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             penaltyPageAdapter.hideLoading()
             penaltyPageAdapter.setPenaltyListDetailData(data.first)
         }
-        updateScrollListenerState(data.second)
+        updateScrollListenerState(data.third)
     }
 
     private fun setupGlobalErrorState(throwable: Throwable) {
@@ -344,16 +345,10 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     }
 
     private fun showAllPenaltyData(data: PenaltyDataWrapper) {
-        val penaltyList = data.itemPenaltyUiModel
         val penaltyFilterData = data.itemDetailPenaltyFilterUiModel
         val cardPenaltyData = data.cardShopPenaltyUiModel
         setupCardPenalty(cardPenaltyData)
         setupDetailPenaltyFilter(penaltyFilterData)
-        if(penaltyList.first.isNotEmpty()) {
-            penaltyPageAdapter.setPenaltyData(penaltyList.first)
-        } else {
-            penaltyPageAdapter.setEmptyStatePenalty()
-        }
     }
 
     private fun onDateClick() {

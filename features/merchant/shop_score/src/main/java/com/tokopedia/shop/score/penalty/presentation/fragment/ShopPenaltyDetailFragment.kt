@@ -18,11 +18,8 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
-import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.detail.PenaltyDetailStepperAdapter
-import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyStatusBottomSheet
-import com.tokopedia.shop.score.penalty.presentation.model.FilterTypePenaltyUiModelWrapper
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyDetailViewModel
@@ -30,12 +27,13 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_penalty_detail.*
 import javax.inject.Inject
 
-class ShopPenaltyDetailFragment: BaseDaggerFragment() {
+class ShopPenaltyDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var shopPenaltyDetailViewModel: ShopPenaltyDetailViewModel
 
-    @Inject lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
+    @Inject
+    lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
 
     private val penaltyDetailStepperAdapter by lazy { PenaltyDetailStepperAdapter() }
 
@@ -64,11 +62,7 @@ class ShopPenaltyDetailFragment: BaseDaggerFragment() {
 
     private fun observePenaltyDetailData() {
         observe(shopPenaltyDetailViewModel.penaltyDetailData) {
-            when (it) {
-                is Success -> {
-                    initDataView(it.data)
-                }
-            }
+            initDataView(it)
         }
     }
 
@@ -78,12 +72,12 @@ class ShopPenaltyDetailFragment: BaseDaggerFragment() {
 
     private fun initDataView(shopPenaltyDetailUiModel: ShopPenaltyDetailUiModel) {
         tvTitleDetailPenalty?.text = shopPenaltyDetailUiModel.titleDetail
-        tvDateDetailPenalty?.text = shopPenaltyDetailUiModel.dateDetail
+        tvStartDateDetailPenalty?.text = shopPenaltyDetailUiModel.startDateDetail
         tvSummaryDetailPenalty?.text = shopPenaltyDetailUiModel.summaryDetail
         tv_total_deduction_point_penalty?.text = MethodChecker.fromHtml(getString(R.string.total_deduction_point_performance,
                 shopPenaltyDetailUiModel.deductionPointPenalty))
-        tvDateResultDetailPenalty?.text = MethodChecker.fromHtml(getString(R.string.point_deduction_date_result_detail_penalty,
-                shopPenaltyDetailUiModel.statusDate))
+        tvEndDateDetailPenalty?.text = MethodChecker.fromHtml(getString(R.string.point_deduction_date_result_detail_penalty,
+                shopPenaltyDetailUiModel.endDateDetail))
         setupRvStepper(shopPenaltyDetailUiModel.stepperPenaltyDetailList)
 
         ic_info_status_penalty?.setOnClickListener {

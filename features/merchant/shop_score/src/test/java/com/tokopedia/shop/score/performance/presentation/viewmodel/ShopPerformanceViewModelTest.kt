@@ -79,12 +79,12 @@ class ShopPerformanceViewModelTest : ShopPerformanceViewModelTestFixture() {
         val level = 4
         val shopInfoLevelMapper = shopScoreMapper.mapToShopInfoLevelUiModel(level)
         shopPerformanceViewModel.getShopInfoLevel(level)
-        val actualResult = (shopPerformanceViewModel.shopInfoLevel.value as Success).data
-        assertEquals(shopInfoLevelMapper.nextUpdate, actualResult.nextUpdate)
-        assertEquals(shopInfoLevelMapper.periodDate, actualResult.periodDate)
-        assertEquals(shopInfoLevelMapper.productSold, actualResult.productSold)
-        assertEquals(shopInfoLevelMapper.shopIncome, actualResult.shopIncome)
-        assertEquals(shopInfoLevelMapper.cardTooltipLevelList, actualResult.cardTooltipLevelList)
+        val actualResult = shopPerformanceViewModel.shopInfoLevel.value
+        assertEquals(shopInfoLevelMapper.nextUpdate, actualResult?.nextUpdate)
+        assertEquals(shopInfoLevelMapper.periodDate, actualResult?.periodDate)
+        assertEquals(shopInfoLevelMapper.productSold, actualResult?.productSold)
+        assertEquals(shopInfoLevelMapper.shopIncome, actualResult?.shopIncome)
+        assertEquals(shopInfoLevelMapper.cardTooltipLevelList, actualResult?.cardTooltipLevelList)
     }
 
     @Test

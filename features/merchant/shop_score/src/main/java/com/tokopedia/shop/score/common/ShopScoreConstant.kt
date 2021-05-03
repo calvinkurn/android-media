@@ -73,7 +73,7 @@ object ShopScoreConstant {
     const val SINCE = "Sejak"
     const val START = "Mulai"
 
-    const val VIDEO_YOUTUBE_ID = "MjbnDFmWbZk"
+    const val VIDEO_YOUTUBE_ID = "z_zkBhyF714"
 
     const val SYSTEM_PENALTY_HELP_URL = "https://seller.tokopedia.com/edu/penalti-toko"
     const val HELP_URL = "https://www.tokopedia.com/help"

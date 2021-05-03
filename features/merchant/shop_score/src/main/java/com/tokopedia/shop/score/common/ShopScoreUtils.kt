@@ -68,13 +68,6 @@ fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): Str
     return sdf.format(timeMillis)
 }
 
-fun String.formatDate(beforePattern: String, targetPattern: String, locale: Locale = getLocale()): String {
-    val fromSimpleDateFormat = SimpleDateFormat(beforePattern, locale)
-    val parseDate = fromSimpleDateFormat.parse(this)
-    val convertFormatDate = SimpleDateFormat(targetPattern, locale)
-    return parseDate?.let { convertFormatDate.format(it) } ?: ""
-}
-
 fun getLocale(): Locale {
     return Locale("id")
 }

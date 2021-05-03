@@ -2,6 +2,7 @@ package com.tokopedia.shop.score.performance.domain.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.constant.NEW_SELLER_DAYS
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
@@ -166,10 +167,15 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 }
                 else -> {
                     if (shopAge >= SHOP_AGE_SIXTY) {
-                        if (isEligiblePM == true) {
-                            add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, shopAge))
+                        val isNewSellerPM = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
+                        if (isNewSellerPM) {
+                            add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerPM))
                         } else {
-                            add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
+                            if (isEligiblePM == true) {
+                                add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerPM))
+                            } else {
+                                add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
+                            }
                         }
                     }
                 }
@@ -432,7 +438,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
     private fun mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): SectionPotentialPMBenefitUiModel {
         return SectionPotentialPMBenefitUiModel(potentialPMBenefitList = mapToItemPotentialBenefit(),
-                transitionEndDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT))
+                transitionEndDate = DateFormatUtils.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT, shopInfoPeriodUiModel.periodEndDate))
     }
 
     private fun mapToSectionPeriodDetailPerformanceUiModel(shopScoreTooltipResponse: ShopLevelTooltipResponse.ShopLevel.Result?): PeriodDetailPerformanceUiModel {
@@ -441,7 +447,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     }
 
     private fun mapToTransitionPeriodReliefUiModel(endDate: String): TransitionPeriodReliefUiModel {
-        return TransitionPeriodReliefUiModel(dateTransitionPeriodRelief = endDate.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT), iconTransitionPeriodRelief = IC_SELLER_ANNOUNCE)
+        return TransitionPeriodReliefUiModel(dateTransitionPeriodRelief = DateFormatUtils.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT, endDate), iconTransitionPeriodRelief = IC_SELLER_ANNOUNCE)
     }
 
     private fun mapToItemRecommendationPMUiModel(recommendationTools: List<GetRecommendationToolsResponse.ValuePropositionGetRecommendationTools.RecommendationTool>?): SectionShopRecommendationUiModel {
@@ -459,7 +465,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     }
 
     private fun mapToSectionPMPro(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): SectionPotentialPMProUiModel {
-        return SectionPotentialPMProUiModel(potentialPMProPMBenefitList = mapToItemPMProBenefit(), transitionEndDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT))
+        return SectionPotentialPMProUiModel(potentialPMProPMBenefitList = mapToItemPMProBenefit(), transitionEndDate = DateFormatUtils.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT, shopInfoPeriodUiModel.periodEndDate))
     }
 
     private fun mapToItemPMProBenefit(): List<SectionPotentialPMProUiModel.ItemPMProBenefitUIModel> {
@@ -504,10 +510,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return itemPotentialPMBenefitList
     }
 
-    private fun mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel, shopAge: Int)
+    private fun mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel, isNewSeller: Boolean)
             : ItemStatusRMUiModel {
-        val updateDate = shopInfoPeriodUiModel.periodEndDate.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT)
-        val isNewSeller = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
+        val updateDate = DateFormatUtils.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT, shopInfoPeriodUiModel.periodEndDate)
         return ItemStatusRMUiModel(updateDatePotential = updateDate,
                 titleRMEligible =
                 if (isNewSeller)
