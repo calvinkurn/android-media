@@ -14,7 +14,10 @@
       "event": "view_item",
       "eventAction": "impression on popular keyword banner",
       "sessionIris": ".*",
-      "eventLabel": ".*"
+      "eventLabel": ".*",
+      "businessUnit": ".*",
+      "currentSite": ".*",
+      "userId": ".*"
     },
     {
       "promotions": [{
@@ -34,7 +37,10 @@
       "eventLabel": ".*",
       "categoryId": ".*",
       "channelId": ".*",
-      "campaignCode": ".*"
+      "campaignCode": ".*",
+      "businessUnit": ".*",
+      "currentSite": ".*",
+      "userId": ".*"
     },
     {
       "eventCategory": "homepage",
@@ -42,7 +48,10 @@
       "eventAction": "click view all on popular keyword banner",
       "sessionIris": ".*",
       "eventLabel": ".*",
-      "channelId": ".*"
+      "channelId": ".*",
+      "businessUnit": ".*",
+      "currentSite": ".*",
+      "userId": ".*"
     }
   ]
 }
