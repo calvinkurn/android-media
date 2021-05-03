@@ -693,7 +693,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             googleMap.uiSettings.isMapToolbarEnabled = true
             googleMap.uiSettings.isMyLocationButtonEnabled = false
             googleMap.uiSettings.isZoomGesturesEnabled = true
-            googleMap.uiSettings.isRotateGesturesEnabled = true
+            googleMap.uiSettings.isRotateGesturesEnabled = false
             googleMap.uiSettings.isScrollGesturesEnabled = true
 
             googleMap.setOnMarkerClickListener(this)
