@@ -295,7 +295,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun renderOperatorIcon(operator: RechargePrefix) {
-        emoneyPdpInputCardWidget.setOperator(operator.operator.attributes.imageUrl)
+        if (operator.operator != null) emoneyPdpInputCardWidget.setOperator(operator.operator.attributes.imageUrl)
     }
 
     private fun renderCardState(detailPassData: DigitalCategoryDetailPassData) {
@@ -303,7 +303,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun loadProducts(operator: TelcoOperator) {
-        emoneyPdpViewModel.getProductFromOperator(EmoneyPdpActivity.EMONEY_MENU_ID, operator.id)
+        if (operator != null) emoneyPdpViewModel.getProductFromOperator(EmoneyPdpActivity.EMONEY_MENU_ID, operator.id)
     }
 
     private fun renderProducts(productList: List<CatalogProduct>) {
@@ -329,10 +329,12 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     override fun onClickSeeDetailProduct(product: CatalogProduct) {
         val bottomSheet = EmoneyProductDetailBottomSheet(product)
-        bottomSheet.show(childFragmentManager, "")
+        bottomSheet.show(childFragmentManager, TAG)
     }
 
     companion object {
+        private const val TAG = "EmoneyProductDetailBottomSheet"
+
         private const val REQUEST_CODE_EMONEY_PDP_CHECK_SALDO = 1007
         private const val REQUEST_CODE_EMONEY_PDP_CAMERA_OCR = 1008
         private const val REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER = 1004
