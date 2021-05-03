@@ -140,7 +140,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
 
     fun onSuccess(data: Productlist) {
         data.catalogMVCWithProductsList?.let { loadCompleted(it, data) }
-        isLastPage = true
+        isLastPage = !data.tokopointsPaging?.hasNext!!
     }
 
     fun onError() {
