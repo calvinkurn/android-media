@@ -147,6 +147,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 hotelSearchMapViewModel.addFilter(listOf(selectedParam), false)
             }
 
+            val selectedSort = it.getString(ARG_SORT_PARAM) ?: ""
+            if (selectedSort.isNotEmpty()) {
+                hotelSearchMapViewModel.selectedSort = Sort(selectedSort)
+            }
+
             hotelSearchModel = it.getParcelable(ARG_HOTEL_SEARCH_MODEL) ?: HotelSearchModel()
             hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
 
@@ -1390,6 +1395,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         const val ARG_HOTEL_SEARCH_MODEL = "arg_hotel_search_model"
         private const val ARG_FILTER_PARAM = "arg_hotel_filter_param"
+        private const val ARG_SORT_PARAM = "arg_hotel_sort_param"
 
         const val SELECTED_POSITION_INIT = 0
         const val DELAY_BUTTON_RADIUS: Long = 1000L
@@ -1403,11 +1409,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val PREFERENCES_NAME = "hotel_search_map_preferences"
         private const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
 
-        fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchMapFragment =
+        fun createInstance(hotelSearchModel: HotelSearchModel,
+                           selectedParam: ParamFilterV2,
+                           selectedSort: String): HotelSearchMapFragment =
                 HotelSearchMapFragment().also {
                     it.arguments = Bundle().apply {
                         putParcelable(ARG_HOTEL_SEARCH_MODEL, hotelSearchModel)
                         putParcelable(ARG_FILTER_PARAM, selectedParam)
+                        putString(ARG_SORT_PARAM, selectedSort)
                     }
                 }
     }
