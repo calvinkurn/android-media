@@ -34,7 +34,7 @@
 
     <style name="TravelInputLabel">
         <item name="android:textColor">@color/Unify_N700_68</item>
-        <item name="android:textSize">12dp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
     </style>
