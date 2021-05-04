@@ -1,19 +1,16 @@
-package com.tokopedia.hotel.common.presentation.widget
+package com.tokopedia.common.travel.widget
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.tokopedia.hotel.R
+import com.tokopedia.common.travel.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-/**
- * @author by furqan on 11/04/19
- */
-class HotelMenuBottomSheets : BottomSheetUnify() {
+class TravelMenuBottomSheet : BottomSheetUnify() {
 
-    lateinit var listener: HotelMenuListener
+    lateinit var listener: TravelMenuListener
 
     private lateinit var menuOrderList: TextView
     private lateinit var menuPromo: TextView
@@ -31,16 +28,16 @@ class HotelMenuBottomSheets : BottomSheetUnify() {
     }
 
     private fun initChildLayout() {
-        val view = View.inflate(context, R.layout.bottom_sheets_hotel_menu, null)
+        val view = View.inflate(context, R.layout.travel_menu_bottom_sheet, null)
         setChild(view)
         initView(view)
     }
 
     fun initView(view: View) {
         with(view) {
-            menuOrderList = findViewById(R.id.tv_hotel_menu_order_list)
-            menuPromo = findViewById(R.id.tv_hotel_menu_promo)
-            menuHelp = findViewById(R.id.tv_hotel_menu_help)
+            menuOrderList = findViewById(R.id.tv_travel_menu_order_list)
+            menuPromo = findViewById(R.id.tv_travel_menu_promo)
+            menuHelp = findViewById(R.id.tv_travel_menu_help)
 
             menuOrderList.setOnClickListener {
                 if (::listener.isInitialized) listener.onOrderListClicked()
@@ -59,7 +56,7 @@ class HotelMenuBottomSheets : BottomSheetUnify() {
         }
     }
 
-    interface HotelMenuListener {
+    interface TravelMenuListener {
 
         fun onOrderListClicked()
 

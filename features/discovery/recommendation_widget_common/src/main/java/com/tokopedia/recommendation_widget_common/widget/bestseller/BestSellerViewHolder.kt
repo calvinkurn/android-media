@@ -2,6 +2,7 @@ package com.tokopedia.recommendation_widget_common.widget.bestseller
 
 import android.os.Bundle
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -73,13 +74,14 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
         }
         itemView.best_seller_subtitle.shouldShowWithAction(element.subtitle.isNotBlank()){
             itemView.best_seller_subtitle.text = element.subtitle
+            anchorSeeMoreButtonTo(R.id.best_seller_subtitle)
         }
         itemView.best_seller_see_more.shouldShowWithAction(element.seeMoreAppLink.isNotBlank()){
             itemView.best_seller_see_more.setOnClickListener {
                 listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, adapterPosition)
             }
         }
-        itemView.root.show()
+        itemView.container_best_seller_widget.show()
         itemView.show()
     }
 
@@ -121,6 +123,14 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             itemView.best_seller_recommendation_recycler_view.layoutParams.height = element.height
             itemView.best_seller_recommendation_recycler_view.layoutManager?.scrollToPosition(0)
         }
+    }
+
+    private fun anchorSeeMoreButtonTo(anchorRef: Int) {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(itemView.container_best_seller_widget)
+        constraintSet.connect(R.id.best_seller_see_more, ConstraintSet.TOP, anchorRef, ConstraintSet.TOP, 0)
+        constraintSet.connect(R.id.best_seller_see_more, ConstraintSet.BOTTOM, anchorRef, ConstraintSet.BOTTOM, 0)
+        constraintSet.applyTo(itemView.container_best_seller_widget)
     }
 
     override fun onFilterAnnotationClicked(annotationChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
