@@ -1564,13 +1564,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {
-        SearchTracking.trackEventClickBroadMatchSeeMore(queryKey, broadMatchDataView.keyword)
-
-        val applink = if (broadMatchDataView.applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
-            modifyApplinkToSearchResult(broadMatchDataView.applink)
-        else broadMatchDataView.applink
-
-        redirectionStartActivity(applink, broadMatchDataView.url)
+        presenter?.onBroadMatchSeeMoreClick(broadMatchDataView)
     }
 
     override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {
@@ -1935,5 +1929,13 @@ class ProductListFragment: BaseDaggerFragment(),
                 userId = getUserId(),
                 broadMatchItems = broadMatchItem,
         )
+    }
+
+    override fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView) {
+        SearchTracking.trackEventClickBroadMatchSeeMore(queryKey, broadMatchDataView.keyword)
+    }
+
+    override fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String) {
+        SearchTracking.trackEventClickDynamicProductCarouselSeeMore(type, queryKey, dynamicProductCarousel.keyword)
     }
 }

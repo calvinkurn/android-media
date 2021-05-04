@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -11,6 +12,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartPar
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartResult
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
@@ -1981,7 +1983,13 @@ class ProductListPresenter @Inject constructor(
     override fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView) {
         if (isViewNotAttached) return
 
-        view.trackEventClickBroadMatchItem(broadMatchItemDataView)
+        when(val carouselProductType = broadMatchItemDataView.carouselProductType) {
+            is BroadMatchProduct -> view.trackEventClickBroadMatchItem(broadMatchItemDataView)
+            is DynamicCarouselProduct -> view.trackDynamicProductCarouselClick(
+                    broadMatchItemDataView,
+                    carouselProductType.type
+            )
+        }
         view.redirectionStartActivity(broadMatchItemDataView.applink, broadMatchItemDataView.url)
 
         if (broadMatchItemDataView.isOrganicAds)
@@ -1997,6 +2005,33 @@ class ProductListPresenter @Inject constructor(
                 broadMatchItemDataView.imageUrl,
                 SearchConstant.TopAdsComponent.BROAD_MATCH_ADS
         )
+    }
+
+    override fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
+        if (isViewNotAttached || broadMatchDataView.broadMatchItemDataViewList.isEmpty()) return
+
+        when(val carouselProductType = broadMatchDataView.broadMatchItemDataViewList.first().carouselProductType) {
+            is BroadMatchProduct -> view.trackEventClickSeeMoreBroadMatch(broadMatchDataView)
+            is DynamicCarouselProduct -> view.trackEventClickSeeMoreDynamicProductCarousel(
+                    broadMatchDataView,
+                    carouselProductType.type
+            )
+        }
+
+        val applink = if (broadMatchDataView.applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
+            modifyApplinkToSearchResult(broadMatchDataView.applink)
+        else broadMatchDataView.applink
+
+        view.redirectionStartActivity(applink, broadMatchDataView.url)
+    }
+
+    private fun modifyApplinkToSearchResult(applink: String): String {
+        val urlParser = URLParser(applink)
+
+        val params = urlParser.paramKeyValueMap
+        params[SearchApiConst.PREVIOUS_KEYWORD] = view.queryKey
+
+        return ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + UrlParamUtils.generateUrlParamString(params)
     }
 
     override fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int) {

@@ -873,7 +873,7 @@ object SearchTracking {
         val map = DataLayer.mapOf(
                 SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_BROAD_MATCH,
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_DYNAMIC_PRODUCT_CAROUSEL,
                 SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", type, keyword),
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
@@ -881,31 +881,6 @@ object SearchTracking {
                 ECOMMERCE, DataLayer.mapOf(
                     "currencyCode", "IDR",
                     "impressions", DataLayer.listOf(*broadMatchItems.toTypedArray())
-                )
-        ) as HashMap<String, Any>
-
-        trackingQueue.putEETracking(map)
-    }
-
-    @JvmStatic
-    fun trackEventClickDynamicProductCarousel(
-            trackingQueue: TrackingQueue,
-            type: String?,
-            keyword: String?,
-            userId: String?,
-            broadMatchItems: List<Any>,
-    ) {
-        val map = DataLayer.mapOf(
-                SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
-                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_DYNAMIC_PRODUCT_CAROUSEL,
-                SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", type, keyword),
-                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-                SearchTrackingConstant.USER_ID, userId,
-                ECOMMERCE, DataLayer.mapOf(
-                    CURRENCY_CODE, IDR,
-                    IMPRESSIONS, DataLayer.listOf(*broadMatchItems.toTypedArray())
                 )
         ) as HashMap<String, Any>
 
@@ -930,10 +905,24 @@ object SearchTracking {
                         SearchTrackingConstant.USER_ID, userId,
                         ECOMMERCE, DataLayer.mapOf(CLICK,
                             DataLayer.mapOf(
-                                    ACTION_FIELD, DataLayer.mapOf("list", ""),
+                                    ACTION_FIELD, DataLayer.mapOf("list", "/search - carousel"),
                                     PRODUCTS, DataLayer.listOf(*broadMatchItems.toTypedArray())
                             )
                         )
+                )
+        )
+    }
+
+    @JvmStatic
+    fun trackEventClickDynamicProductCarouselSeeMore(type: String?,keyword: String?, alternativeKeyword: String?) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
+                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_DYNAMIC_PRODUCT_CAROUSEL_SEE_MORE,
+                        SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s - %s", type, keyword, alternativeKeyword),
+                        SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                        SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH
                 )
         )
     }

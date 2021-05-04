@@ -86,6 +86,7 @@ interface SearchEventTracking {
             const val CLICK_INSPIRATION_CAROUSEL_CHIPS_VARIANT = "click - inspiration carousel chips variant"
             const val IMPRESSION_DYNAMIC_PRODUCT_CAROUSEL = "impression - dynamic carousel product"
             const val CLICK_DYNAMIC_PRODUCT_CAROUSEL = "click - dynamic carousel product"
+            const val CLICK_DYNAMIC_PRODUCT_CAROUSEL_SEE_MORE = "click - dynamic carousel search"
         }
     }
 
