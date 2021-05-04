@@ -293,7 +293,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private fun renderPmProRegistrationWidgets(headerWidget: WidgetRegistrationHeaderUiModel) {
         val widgets = listOf(
                 headerWidget,
-                WidgetPmProStaticBenefit,
                 WidgetDividerUiModel,
                 getPmGradeBenefitWidget()
         )
