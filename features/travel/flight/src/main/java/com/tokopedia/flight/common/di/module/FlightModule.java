@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
+import com.tokopedia.flight.cancellationV2.data.FlightCancellationCloudDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.db.FlightRoomDb;
 import com.tokopedia.flight.common.data.model.FlightErrorResponse;

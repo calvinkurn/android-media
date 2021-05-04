@@ -1,14 +1,12 @@
 package com.tokopedia.flight.cancellationV2.domain
 
-import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationAttachmentUploadEntity
+import com.tokopedia.flight.cancellationV2.data.CancellationAttachmentUploadEntity
 import com.tokopedia.flight.common.domain.FlightRepository
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import rx.Observable
 import java.io.File
 import javax.inject.Inject
 
@@ -17,18 +15,7 @@ import javax.inject.Inject
  */
 class FlightCancellationAttachmentUploadUseCase @Inject constructor(
         private val flightRepository: FlightRepository,
-        private val userSession: UserSessionInterface)
-    : UseCase<CancellationAttachmentUploadEntity>() {
-
-    override fun createObservable(requestParams: RequestParams): Observable<CancellationAttachmentUploadEntity> {
-        val imageFile = File(requestParams.getString(PARAM_DOC, ""))
-        val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile)
-        val imageRequestToUpload = MultipartBody.Part.createFormData("doc", imageFile.name, requestFile)
-
-        return flightRepository.uploadCancellationAttachment(
-                requestParams.getObject(PARAM_MAPS) as Map<String, RequestBody>,
-                imageRequestToUpload)
-    }
+        private val userSession: UserSessionInterface) {
 
     suspend fun executeCoroutine(requestParams: RequestParams): CancellationAttachmentUploadEntity {
         val imageFile = File(requestParams.getString(PARAM_DOC, ""))
