@@ -29,6 +29,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
 
     var hotelSearchModel = HotelSearchModel()
     var selectedParam = ParamFilterV2()
+    var selectedSort = ""
 
     private lateinit var wrapper: LinearLayout
 
@@ -54,7 +55,8 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
                 // for older applink
                 when {
                     !uri.getQueryParameter(PARAM_HOTEL_ID).isNullOrEmpty() -> {
-                        hotelSearchModel.id = (uri.getQueryParameter(PARAM_HOTEL_ID) ?: "0").toLong()
+                        hotelSearchModel.id = (uri.getQueryParameter(PARAM_HOTEL_ID)
+                                ?: "0").toLong()
                         hotelSearchModel.name = uri.getQueryParameter(PARAM_HOTEL_NAME) ?: ""
                         hotelSearchModel.type = HotelTypeEnum.PROPERTY.value
                     }
@@ -64,18 +66,21 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
                         hotelSearchModel.type = HotelTypeEnum.CITY.value
                     }
                     !uri.getQueryParameter(PARAM_DISTRICT_ID).isNullOrEmpty() -> {
-                        hotelSearchModel.id = (uri.getQueryParameter(PARAM_DISTRICT_ID) ?: "0").toLong()
+                        hotelSearchModel.id = (uri.getQueryParameter(PARAM_DISTRICT_ID)
+                                ?: "0").toLong()
                         hotelSearchModel.name = uri.getQueryParameter(PARAM_DISTRICT_NAME) ?: ""
                         hotelSearchModel.type = HotelTypeEnum.DISTRICT.value
                     }
                     !uri.getQueryParameter(PARAM_REGION_ID).isNullOrEmpty() -> {
-                        hotelSearchModel.id = (uri.getQueryParameter(PARAM_REGION_ID) ?: "0").toLong()
+                        hotelSearchModel.id = (uri.getQueryParameter(PARAM_REGION_ID)
+                                ?: "0").toLong()
                         hotelSearchModel.name = uri.getQueryParameter(PARAM_REGION_NAME) ?: ""
                         hotelSearchModel.type = HotelTypeEnum.REGION.value
                     }
                 }
             }
 
+            hotelSearchModel.name = hotelSearchModel.name.replace(SPACE_ENCODE, " ")
             hotelSearchModel.checkIn = uri.getQueryParameter(PARAM_CHECK_IN) ?: ""
             hotelSearchModel.checkOut = uri.getQueryParameter(PARAM_CHECK_OUT) ?: ""
             hotelSearchModel.room = uri.getQueryParameter(PARAM_ROOM)?.toInt() ?: 1
@@ -84,6 +89,8 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
             selectedParam.name = uri.getQueryParameter(PARAM_FILTER_ID) ?: ""
             val values: String = uri.getQueryParameter(PARAM_FILTER_VALUE) ?: ""
             selectedParam.values = values.split(",").toMutableList()
+
+            selectedSort = uri.getQueryParameter(PARAM_SORT) ?: ""
 
         } else {
             //when activity open from intent
@@ -165,7 +172,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
     }
 
     override fun getNewFragment(): Fragment {
-        return HotelSearchResultFragment.createInstance(hotelSearchModel, selectedParam)
+        return HotelSearchResultFragment.createInstance(hotelSearchModel, selectedParam, selectedSort)
     }
 
     override fun getComponent(): HotelSearchPropertyComponent =
@@ -230,8 +237,11 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
         const val PARAM_REGION_NAME = "region_name"
         const val PARAM_FILTER_ID = "filter_selected_id"
         const val PARAM_FILTER_VALUE = "filter_selected_value"
+        const val PARAM_SORT = "sort"
 
         const val SEARCH_SCREEN_NAME = "/hotel/searchresult"
+
+        private const val SPACE_ENCODE = "%20"
 
         fun createIntent(context: Context, hotelSearchModel: HotelSearchModel): Intent =
                 Intent(context, HotelSearchResultActivity::class.java)

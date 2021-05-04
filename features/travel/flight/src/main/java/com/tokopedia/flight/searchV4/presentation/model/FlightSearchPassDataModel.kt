@@ -23,9 +23,19 @@ data class FlightSearchPassDataModel(var departureDate: String = "",
     fun getDate(isReturning: Boolean): String =
             if (isReturning) returnDate else departureDate
 
-    fun getDepartureAirport(isReturning: Boolean): String =
-            if(isReturning) arrivalAirport.airportCode else departureAirport.airportCode
+    fun getDepartureAirport(isReturning: Boolean): String {
+        return if(isReturning){
+            if(!arrivalAirport.airportCode.isNullOrEmpty()) arrivalAirport.airportCode else arrivalAirport.cityCode
+        } else {
+            if(!departureAirport.airportCode.isNullOrEmpty()) departureAirport.airportCode else departureAirport.cityCode
+        }
+    }
 
-    fun getArrivalAirport(isReturning: Boolean): String =
-            if(isReturning) departureAirport.airportCode else arrivalAirport.airportCode
+    fun getArrivalAirport(isReturning: Boolean): String {
+        return if(isReturning){
+            if(!departureAirport.airportCode.isNullOrEmpty()) departureAirport.airportCode else departureAirport.cityCode
+        } else {
+            if(!arrivalAirport.airportCode.isNullOrEmpty()) arrivalAirport.airportCode else arrivalAirport.cityCode
+        }
+    }
 }

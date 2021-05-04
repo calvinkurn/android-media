@@ -182,6 +182,7 @@ public interface ApplinkConst {
     String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
     String HOTEL_ORDER = "tokopedia://hotel/order";
     String HOTEL = "tokopedia://hotel";
+    String HOTEL_SRP = "tokopedia://hotel/result";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
     String TRAVEL_SUBHOMEPAGE_HOME = "tokopedia://travelentertainment/home";
 
@@ -631,5 +632,11 @@ public interface ApplinkConst {
         String PARAM_ROLE = "role";
         String VALUE_ROLE_BUYER = "buyer";
         String VALUE_ROLE_SELLER = "seller";
+
+        String PARAM_SOURCE = "source";
+    }
+
+    interface GeneralInfo {
+        String GENERAL_INFO_FORCE_CLOSE_PAGE = "tokopedia://general-info-close";
     }
 }

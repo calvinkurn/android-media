@@ -18,12 +18,10 @@ import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.interactor.IPromoCodeInteractor;
-import com.tokopedia.loyalty.view.util.CommonConstant;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.HashMap;
@@ -32,7 +30,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import timber.log.Timber;
 
 /**
  * @author anggaprasetiyo on 27/11/17.
