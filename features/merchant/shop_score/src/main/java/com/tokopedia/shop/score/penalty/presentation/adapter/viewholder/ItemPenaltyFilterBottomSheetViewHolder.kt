@@ -14,8 +14,8 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.filter.ItemChipsFil
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import kotlinx.android.synthetic.main.item_penalty_filter_list.view.*
 
-class ItemPenaltyFilterUiViewHolder(view: View,
-                                    private val penaltyBottomSheetListener: FilterPenaltyBottomSheetListener
+class ItemPenaltyFilterBottomSheetViewHolder(view: View,
+                                             private val penaltyBottomSheetListener: FilterPenaltyBottomSheetListener
 ): AbstractViewHolder<PenaltyFilterUiModel>(view) {
 
     companion object {

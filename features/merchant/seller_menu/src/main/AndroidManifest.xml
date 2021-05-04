@@ -6,6 +6,7 @@
             android:name=".presentation.activity.SellerMenuActivity"
             android:exported="true"
             android:label="@string/title_seller_menu"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>

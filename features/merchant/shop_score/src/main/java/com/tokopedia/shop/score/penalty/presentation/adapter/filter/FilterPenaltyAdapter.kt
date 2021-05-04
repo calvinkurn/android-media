@@ -1,9 +1,7 @@
 package com.tokopedia.shop.score.penalty.presentation.adapter.filter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.shop.score.penalty.presentation.model.ItemDetailPenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
-import com.tokopedia.sortfilter.SortFilterItem
 
 class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
         BaseAdapter<FilterPenaltyAdapterFactory>(adapterFactory) {

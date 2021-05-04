@@ -60,6 +60,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class ShopScoreMapper @Inject constructor(private val userSession: UserSessionInterface,
                                           @ApplicationContext val context: Context?) {
@@ -358,7 +359,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     } else {
                         if (shopScoreLevelResponse?.shopScore?.isZero() == true) "-" else shopScoreLevelResponse?.shopScore?.toString().orEmpty()
                     }
-            this.scorePenalty = shopScoreLevelResponse?.shopScoreDetail?.find { it.identifier == PENALTY_IDENTIFIER }?.rawValue
+            this.scorePenalty = shopScoreLevelResponse?.shopScoreDetail?.find { it.identifier == PENALTY_IDENTIFIER }?.rawValue?.roundToInt().orZero()
         }
         return headerShopPerformanceUiModel
     }
@@ -380,19 +381,39 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             val shopScoreLevelSize = shopScoreLevelFilter?.size.orZero()
             val sortShopScoreLevelParam = sortItemDetailPerformanceFormatted(shopScoreLevelFilter)
             sortShopScoreLevelParam.forEachIndexed { index, shopScoreDetail ->
+
+                val minValueFormattedPercent = (shopScoreDetail.nextMinValue * ONE_HUNDRED_PERCENT).roundToInt()
+                val roundNextMinValue = shopScoreDetail.nextMinValue.roundToInt()
+
                 val (targetDetailPerformanceText, parameterItemDetailPerformance) =
                         when (shopScoreDetail.identifier) {
-                            CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> Pair("${shopScoreDetail.nextMinValue} $minuteText", minuteText)
-                            ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY ->
-                                Pair("${shopScoreDetail.nextMinValue * ONE_HUNDRED_PERCENT}$percentText", percentText)
-                            TOTAL_BUYER_KEY -> Pair("${shopScoreDetail.nextMinValue} $peopleText", peopleText)
-                            OPEN_TOKOPEDIA_SELLER_KEY -> Pair("${shopScoreDetail.nextMinValue} $dayText", dayText)
+                            CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> {
+                                Pair("$roundNextMinValue $minuteText", minuteText)
+                            }
+                            ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY -> {
+                                Pair("$minValueFormattedPercent$percentText", percentText)
+                            }
+                            TOTAL_BUYER_KEY -> {
+                                Pair("$roundNextMinValue $peopleText", peopleText)
+                            }
+                            OPEN_TOKOPEDIA_SELLER_KEY -> {
+                                Pair("$roundNextMinValue $dayText", dayText)
+                            }
                             else -> Pair("-", "")
                         }
 
+                val rawValueFormatted = when (shopScoreDetail.identifier) {
+                    ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY -> {
+                        (shopScoreDetail.rawValue * ONE_HUNDRED_PERCENT).roundToInt().toString()
+                    }
+                    else -> {
+                        shopScoreDetail.rawValue.roundToInt().toString()
+                    }
+                }
+
                 add(ItemDetailPerformanceUiModel(
                         titleDetailPerformance = shopScoreDetail.title,
-                        valueDetailPerformance = if (shopAge < SHOP_AGE_SIXTY) "-" else shopScoreDetail.rawValue.toString(),
+                        valueDetailPerformance = if (shopAge < SHOP_AGE_SIXTY) "-" else rawValueFormatted,
                         colorValueDetailPerformance = shopScoreDetail.colorText,
                         targetDetailPerformance = targetDetailPerformanceText,
                         isDividerHide = index + 1 == shopScoreLevelSize,

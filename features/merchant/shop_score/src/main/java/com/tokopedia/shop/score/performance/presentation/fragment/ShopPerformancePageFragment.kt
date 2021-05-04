@@ -468,6 +468,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         val positionPMPro = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMProUiModel }
         val positionPM = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
         val positionRMNonEligible = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMBenefitUiModel }
+        val positionRMEligible = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
 
         var position = RecyclerView.NO_POSITION
 
@@ -480,6 +481,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             }
             positionRMNonEligible != RecyclerView.NO_POSITION -> {
                 position = positionRMNonEligible
+            }
+            positionRMEligible != RecyclerView.NO_POSITION -> {
+                position = positionRMEligible
             }
         }
 

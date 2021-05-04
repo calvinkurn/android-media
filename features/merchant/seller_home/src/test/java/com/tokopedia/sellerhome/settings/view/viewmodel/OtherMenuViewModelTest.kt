@@ -1,6 +1,9 @@
 package com.tokopedia.sellerhome.settings.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
+import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -41,6 +44,9 @@ class OtherMenuViewModelTest {
     lateinit var getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase
 
     @RelaxedMockK
+    lateinit var getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase
+
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
@@ -65,6 +71,7 @@ class OtherMenuViewModelTest {
                         coroutineTestRule.dispatchers,
                         getAllShopInfoUseCase,
                         getShopFreeShippingInfoUseCase,
+                        getShopInfoPeriodUseCase,
                         userSession,
                         remoteConfig
                 )
@@ -229,5 +236,23 @@ class OtherMenuViewModelTest {
         }
 
         assert(mViewModel.isFreeShippingActive.observeAwaitValue() == true)
+    }
+
+    @Test
+    fun `getShopPeriodType should success`() {
+        val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = TRANSITION_PERIOD)
+        coEvery {
+            getShopInfoPeriodUseCase.executeOnBackground()
+        } returns shopInfoPeriodUiModel
+
+        mViewModel.getShopPeriodType()
+
+        coVerify {
+            getShopInfoPeriodUseCase.executeOnBackground()
+        }
+
+        val actualResult = (mViewModel.shopPeriodType.observeAwaitValue() as Success).data
+        assert(mViewModel.shopPeriodType.observeAwaitValue() is Success)
+        assert(actualResult == shopInfoPeriodUiModel.periodType)
     }
 }
