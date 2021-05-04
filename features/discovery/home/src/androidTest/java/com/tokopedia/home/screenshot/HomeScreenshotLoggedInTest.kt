@@ -52,7 +52,7 @@ class HomeScreenshotLoggedInTest {
 
     @Test
     fun screenShotVisibleViewLoggedIn() {
-        Thread.sleep(4000)
+        Thread.sleep(10000)
         turnOffAnimation()
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             takeScreenShotVisibleViewInScreen(
@@ -66,7 +66,7 @@ class HomeScreenshotLoggedInTest {
 
     @Test
     fun screenShotEachViewholders() {
-        Thread.sleep(4000)
+        Thread.sleep(10000)
         turnOffAnimation()
         doScreenshotForEachViewholder()
         activityRule.activity.finishAndRemoveTask()
@@ -96,19 +96,19 @@ class HomeScreenshotLoggedInTest {
                 ScreenshotModel(name = "Lego6Image"),
                 ScreenshotModel(name = "Lego4Image"),
                 ScreenshotModel(name = "Lego3Image"),
-                ScreenshotModel(name = "1x2Banner")
-//                ScreenshotModel(name = "4BannerAuto"),
-//                ScreenshotModel(name = "6ImageAuto"),
-//                ScreenshotModel(name = "RecommendationListCarousel"),
-//                ScreenshotModel(name = "ProductHighlight"),
-//                ScreenshotModel(name = "CategoryWidget"),
-//                ScreenshotModel(name = "LeftCarousel"),
-//                ScreenshotModel(name = "DgBills"),
-//                ScreenshotModel(name = "HomeWidget2"),
-//                ScreenshotModel(name = "PopularKeyword"),
-//                ScreenshotModel(name = "SalamTodo"),
-//                ScreenshotModel(name = "HomeWidget"),
-//                ScreenshotModel(name = "HomeRecommendationSection")
+                ScreenshotModel(name = "1x2Banner"),
+                ScreenshotModel(name = "4BannerAuto"),
+                ScreenshotModel(name = "6ImageAuto"),
+                ScreenshotModel(name = "RecommendationListCarousel"),
+                ScreenshotModel(name = "ProductHighlight"),
+                ScreenshotModel(name = "CategoryWidget"),
+                ScreenshotModel(name = "LeftCarousel"),
+                ScreenshotModel(name = "DgBills"),
+                ScreenshotModel(name = "HomeWidget2"),
+                ScreenshotModel(name = "PopularKeyword"),
+                ScreenshotModel(name = "SalamTodo"),
+                ScreenshotModel(name = "HomeWidget"),
+                ScreenshotModel(name = "HomeRecommendationSection")
         )
         screenShotList(screenshotModelList)
     }
@@ -127,6 +127,7 @@ class HomeScreenshotLoggedInTest {
         doActivityTest(position) {
             if (it is BannerComponentViewHolder) {
                 resetBanner(it)
+                Thread.sleep(5000)
             }
             findViewHolderAndScreenshot(
                     recyclerViewId = recyclerViewId,
@@ -148,7 +149,7 @@ class HomeScreenshotLoggedInTest {
     private fun doActivityTest(position: Int, action: (viewHolder: RecyclerView.ViewHolder)-> Unit) {
         val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         scrollHomeRecyclerViewToPosition(homeRecyclerView, position)
-        Thread.sleep(5000)
+        Thread.sleep(8000)
         val viewHolder = homeRecyclerView.findViewHolderForAdapterPosition(position)
         viewHolder?.let {
             action.invoke(viewHolder)
