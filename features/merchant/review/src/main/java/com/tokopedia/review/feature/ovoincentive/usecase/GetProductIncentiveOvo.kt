@@ -1,10 +1,11 @@
-package com.tokopedia.review.feature.createreputation.domain.usecase
+package com.tokopedia.review.feature.ovoincentive.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.review.feature.createreputation.domain.usecase.OvoIncentive
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -28,6 +29,7 @@ class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: 
                     numbered_list
                     cta_text
                     amount
+                    bottom_sheet
                   }
                 }
             """
