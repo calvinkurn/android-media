@@ -3,6 +3,7 @@ package com.tokopedia.rechargegeneral.screenshot
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
@@ -57,6 +58,8 @@ class RechargeGeneralScreenShotTest {
 //        takeScreenShotVisibleViewInScreen(test, filePrefix(), "swipe_to_refresh")
 //        takeScreenshot("test.png")
 
+        val rv = mActivityRule.activity.findViewById<RecyclerView>(R.id.rv_digital_product)
+        takeScreenShotVisibleViewInScreen(rv, filePrefix(), "rv_digital_product")
         select_operator()
         select_product()
         see_promo()
@@ -66,8 +69,7 @@ class RechargeGeneralScreenShotTest {
         // Click "Jenis Produk Listrik"
         onView(withId(R.id.operator_select)).perform(ViewActions.click())
 
-        takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "operator_select")
-        Thread.sleep(1000)
+        takeScreenshot("operator_select")
 
         // Choose "Token Listrik"
         Thread.sleep(1000)
@@ -76,7 +78,7 @@ class RechargeGeneralScreenShotTest {
                         0, ViewActions.click()
                 )
         )
-        takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "operator_selected")
+        takeScreenshot("operator_selected")
     }
 
     private fun select_product() {
@@ -86,14 +88,14 @@ class RechargeGeneralScreenShotTest {
                         1, ViewActions.click()
                 )
         )
-        takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "product_select")
+        takeScreenshot("product_select")
         Thread.sleep(1000)
         onView(withId(R.id.rv_product_select_dropdown)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralProductSelectBottomSheet.DigitalProductSelectDropdownAdapter.DigitalProductSelectDropdownViewHolder>(
                         1, ViewActions.click()
                 )
         )
-        takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "product_selected")
+        takeScreenshot("product_selected")
         Thread.sleep(1000)
     }
 
