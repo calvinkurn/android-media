@@ -70,14 +70,14 @@ class PlayLiveStateProcessor(
         if (livePusherWrapper.pusherState is ApsaraLivePusherState.Stop) {
             livePusherWrapper.destroy()
         } else if (!isLiveStarted) {
-            scope.launch { livePusherWrapper.resume() }
+            resumeJob()
         }
 
         if (isLiveStarted) {
             if (isReachMaximumPauseDuration()) reachMaximumPauseDuration()
             else {
                 scope.launch {
-                    livePusherWrapper.resume()
+                    resumeJob().join()
                     if (!livePusherWrapper.isActivePushing) {
                         livePusherWrapper.reconnect()
                         broadcastState(PlayLivePusherState.Error(PlayLivePusherErrorState.NetworkLoss, IllegalStateException("Connection Loss")))
@@ -113,6 +113,8 @@ class PlayLiveStateProcessor(
     fun removeStateListener(listener: PlayLiveStateListener) {
         mListeners.remove(listener)
     }
+
+    private fun resumeJob() = scope.launch { livePusherWrapper.resume() }
 
     private fun reachMaximumPauseDuration() {
         broadcastState(PlayLivePusherState.Stop(isStopped = false, shouldNavigate = true))
