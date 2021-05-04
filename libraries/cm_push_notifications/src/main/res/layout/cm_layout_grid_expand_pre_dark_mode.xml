@@ -27,21 +27,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:scaleType="fitCenter" />
+                android:scaleType="fitXY" />
 
             <ImageView
                 android:id="@+id/iv_gridTwo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:scaleType="fitCenter" />
+                android:scaleType="fitXY" />
 
             <ImageView
                 android:id="@+id/iv_gridFive"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:scaleType="fitCenter" />
+                android:scaleType="fitXY" />
 
         </LinearLayout>
 
@@ -57,21 +57,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:scaleType="fitCenter" />
+                android:scaleType="fitXY" />
 
             <ImageView
                 android:id="@+id/iv_gridFour"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:scaleType="fitCenter" />
+                android:scaleType="fitXY" />
 
             <ImageView
                 android:id="@+id/iv_gridSix"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:scaleType="fitCenter" />
+                android:scaleType="fitXY" />
 
         </LinearLayout>
 
