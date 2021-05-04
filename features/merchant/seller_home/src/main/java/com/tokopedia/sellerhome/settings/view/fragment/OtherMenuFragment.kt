@@ -63,6 +63,8 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -377,6 +379,23 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     context?.startActivity(intent)
                 },
                 DividerUiModel(),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_product_package),
+                        null,
+                        // TODO: Add Tracker
+                        eventActionSuffix = SettingTrackingConstant.FINANCIAL_SERVICE,
+                        iconUnify = IconUnify.PACKAGE,
+                        isNewItem = true
+                ) {
+                    // TODO: Change URL to correct subdomain
+                    if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+                        val url = "https://156-staging-feature.tokopedia.com/jasa/print/kemasan-produk"
+                        RouteManager.route(context, ApplinkConst.WEBVIEW, url)
+                    } else {
+                        val url = "${TokopediaUrl.getInstance().WEB}jasa/print/kemasan-produk"
+                        RouteManager.route(context, ApplinkConst.WEBVIEW, url)
+                    }
+                },
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_finance_service),
                         null,
