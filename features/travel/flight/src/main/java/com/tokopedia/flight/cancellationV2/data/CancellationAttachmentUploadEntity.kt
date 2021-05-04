@@ -1,4 +1,4 @@
-package com.tokopedia.flight.cancellation.data.cloud.entity
+package com.tokopedia.flight.cancellationV2.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
