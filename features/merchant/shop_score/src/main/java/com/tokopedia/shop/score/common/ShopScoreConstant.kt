@@ -67,7 +67,12 @@ object ShopScoreConstant {
 
     const val POINTS_NOT_YET_DEDUCTED = "Poin belum terpotong"
     const val ON_GOING = "Sedang berlangsung"
-    const val PENALTY_DONE = "Penalti Selesai"
+    const val PENALTY_DONE = "Penalti selesai"
+
+    const val START_ACTIVE_PENALTY_DETAIL = "Mulai aktif pada"
+    const val ACTIVE_PENALTY_DETAIL = "Aktif hingga"
+    const val SINCE_FINISH_PENALTY_DETAIL = "Selesai sejak"
+
 
     const val FINISHED_IN = "Selesai di"
     const val SINCE = "Sejak"

@@ -6,10 +6,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.hideLoading
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import com.tokopedia.unifyprinciples.Typography
@@ -55,7 +52,7 @@ class PenaltyDetailStepperAdapter: RecyclerView.Adapter<PenaltyDetailStepperAdap
                 } else {
                     tv_title_status_stepper?.setWeight(Typography.REGULAR)
                 }
-                data.colorDotStepper?.let { ic_dot_stepper?.setColorFilter(ContextCompat.getColor(context, it) ) }
+                data.colorDotStepper?.let { ic_dot_stepper?.setColorFilter(ContextCompat.getColor(context, it)) }
             }
         }
     }

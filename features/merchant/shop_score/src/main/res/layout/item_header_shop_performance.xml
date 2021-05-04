@@ -218,7 +218,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
             android:visibility="gone"
             app:closeButtonVisibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"

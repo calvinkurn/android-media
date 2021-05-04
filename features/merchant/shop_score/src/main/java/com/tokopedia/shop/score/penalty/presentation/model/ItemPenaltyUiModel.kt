@@ -8,8 +8,10 @@ data class ItemPenaltyUiModel(val statusPenalty: String = "",
                               val endDateDetail: String = "",
                               val startDate: String = "",
                               val typePenalty: String = "",
-                              val descPenalty: String = "",
-                              val deductionPoint: Int = 0,
+                              val invoicePenalty: String = "",
+                              val prefixDatePenalty: String = "",
+                              val reasonPenalty: String = "",
+                              val deductionPoint: String = "",
                               @ColorRes val colorPenalty: Int? = null
 ): BasePenaltyPage {
     override fun type(typeFactory: PenaltyPageAdapterFactory): Int {
