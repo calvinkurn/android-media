@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import kotlinx.android.synthetic.main.activity_recharge_cc.*
 
 /*
