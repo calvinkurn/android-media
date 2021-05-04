@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -134,7 +133,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var isEditMode: Boolean = false
     private var feedbackId: Long = 0
     private var utmSource: String = ""
-    private var shouldShowThankYouBottomSheet = false
 
     lateinit var imgAnimationView: LottieAnimationView
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
@@ -606,9 +604,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain?) {
-        if (shouldShowThankYouBottomSheet) {
-            showThankYouBottomSheet(data)
-        }
         data?.productrevIncentiveOvo?.let {
             it.ticker.let {
                 ovoPointsTicker.apply {
@@ -795,8 +790,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         stopLoading()
         showLayout()
         if (isUserEligible() && !isReviewIncomplete) {
-            getIncentiveOvoData()
-            shouldShowThankYouBottomSheet = true && !isReviewIncomplete
+            showThankYouBottomSheet((createReviewViewModel.incentiveOvo.value as? CoroutineSuccess)?.data)
             return
         }
         finishIfRoot(success = true, feedbackId = feedbackId)
