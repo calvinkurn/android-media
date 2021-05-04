@@ -137,6 +137,8 @@ class AddEditProductDetailViewModel @Inject constructor(
                     .distinctUntilChanged()
                     .collect {
                         validateProductNameInput(it)
+                        delay(DEBOUNCE_DELAY_MILLIS)
+                        getProductPriceRecommendationByKeyword(it)
                     }
         }
     }
@@ -619,6 +621,15 @@ class AddEditProductDetailViewModel @Inject constructor(
                 priceSuggestionSuggestedPriceGetUseCase.executeOnBackground()
             }
             mProductPriceRecommendation.value = response.priceSuggestionSuggestedPriceGet
+        }, onError = {
+            // log error
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+        })
+    }
+
+    fun getProductPriceRecommendationByKeyword(keyword: String) {
+        launchCatchError(block = {
+            mProductPriceRecommendation.value = PriceSuggestionSuggestedPriceGet(suggestedPrice = 1989887.toDouble())
         }, onError = {
             // log error
             AddEditProductErrorHandler.logExceptionToCrashlytics(it)

@@ -29,6 +29,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
@@ -684,7 +686,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToSpecificationList()
         subscribeToSpecificationText()
         subscribeToInputStatus()
-        subscribeToProductPriceRecommendation()
+        subscribeToPriceRecommendation()
 
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
@@ -1453,7 +1455,24 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun subscribeToProductPriceRecommendation() {
+    private fun subscribeToPriceRecommendation() {
+        if (viewModel.isAdding) {
+            subscribeToAddingPriceRecommendation()
+        } else {
+            subscribeToEditingPriceRecommendation()
+        }
+    }
+
+    private fun subscribeToAddingPriceRecommendation() {
+        viewModel.productPriceRecommendation.observe(viewLifecycleOwner) {
+            productPriceRecommendation?.show()
+            productPriceRecommendation?.price = it.suggestedPrice.toString()
+            val priceDescriptionText = getString(R.string.label_price_recommendation_price_description, "Sungsang")
+            productPriceRecommendation?.priceDescription = priceDescriptionText
+        }
+    }
+
+    private fun subscribeToEditingPriceRecommendation() {
         //observe only if (1) product has product id, (2) if seller app, (3) has no variant
         if (viewModel.productInputModel.productId == 0L || !GlobalConfig.isSellerApp()
                 || viewModel.hasVariants) return
@@ -1540,12 +1559,24 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setupProductPriceRecommendationField() {
-        productPriceRecommendation?.setButtonToBlack()
-        productPriceRecommendation?.setOnButtonNextClicked {
-            showProductPriceRecommendationTips()
-        }
-        productPriceRecommendation?.setOnSuggestedPriceSelected { suggestedPrice ->
-            productPriceField.setText(suggestedPrice)
+        val checkIcon = getIconUnifyDrawable(requireContext(),
+                IconUnify.CHECK_CIRCLE,
+                ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G600))
+
+        productPriceRecommendation?.apply {
+            if (viewModel.isAdding) hideIconCheck()
+            setPriceDescriptionVisibility(viewModel.isAdding)
+            setButtonToBlack()
+            setOnButtonNextClicked {
+                showProductPriceRecommendationTips()
+            }
+            setOnSuggestedPriceSelected { suggestedPrice ->
+                productPriceField.setText(suggestedPrice)
+                if (viewModel.isAdding) {
+                    text = context.getString(R.string.title_price_recommendation_applied)
+                    titleIcon?.setImageDrawable(checkIcon)
+                }
+            }
         }
     }
 
