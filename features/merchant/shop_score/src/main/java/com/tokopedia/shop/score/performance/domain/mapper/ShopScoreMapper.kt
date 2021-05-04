@@ -123,6 +123,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     fun mapToShopPerformanceVisitable(shopScoreWrapperResponse: ShopScoreWrapperResponse, shopInfoPeriodUiModel: ShopInfoPeriodUiModel): List<BaseShopPerformance> {
         val shopScoreVisitableList = mutableListOf<BaseShopPerformance>()
         val isEligiblePM = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePm
+        val isEligiblePMPro = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePmPro
         val shopScoreResult = shopScoreWrapperResponse.shopScoreLevelResponse?.result
         val shopAge = if (shopScoreWrapperResponse.goldGetPMShopInfoResponse != null) {
             shopScoreWrapperResponse.goldGetPMShopInfoResponse?.shopAge
@@ -171,10 +172,16 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                         if (isNewSellerPM) {
                             add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerPM))
                         } else {
-                            if (isEligiblePM == true) {
-                                add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerPM))
-                            } else {
-                                add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
+                            when {
+                                isEligiblePMPro == true -> {
+                                    add(mapToSectionPMPro(shopInfoPeriodUiModel))
+                                }
+                                isEligiblePM == true -> {
+                                    add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerPM))
+                                }
+                                else -> {
+                                    add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
+                                }
                             }
                         }
                     }

@@ -14,6 +14,9 @@ data class GoldGetPMShopInfoResponse(
                 @SerializedName("is_eligible_pm")
                 val isEligiblePm: Boolean = false,
                 @Expose
+                @SerializedName("is_eligible_pm_pro")
+                val isEligiblePmPro: Boolean = false,
+                @Expose
                 @SerializedName("is_new_seller")
                 val isNewSeller: Boolean = false,
                 @Expose

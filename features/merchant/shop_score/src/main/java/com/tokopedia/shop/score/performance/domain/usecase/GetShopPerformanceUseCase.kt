@@ -26,6 +26,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
                 is_new_seller
                 shop_age
                 is_eligible_pm
+                is_eligible_pm_pro
               }
             }
         """.trimIndent()
