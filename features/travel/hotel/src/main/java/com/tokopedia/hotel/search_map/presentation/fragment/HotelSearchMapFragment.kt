@@ -537,7 +537,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_IN))
                         setupContentMargin(false)
-                        googleMap.uiSettings.setAllGesturesEnabled(true)
+
+                        googleMap.uiSettings.isZoomGesturesEnabled = true
+                        googleMap.uiSettings.isRotateGesturesEnabled = false
+                        googleMap.uiSettings.isScrollGesturesEnabled = true
 
                         if (!isViewFullMap) {
                             trackingHotelUtil.searchViewFullMap(context,
