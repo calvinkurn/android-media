@@ -5,6 +5,7 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 data class RecommendationWidget(
         val recommendationItemList: List<RecommendationItem> = listOf(),
         val title: String = "",
+        val subtitle: String = "",
         val foreignTitle: String = "",
         val source: String = "",
         val tid: String = "",

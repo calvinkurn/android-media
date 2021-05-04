@@ -62,7 +62,11 @@ class DigitalCartMyBillsWidget @JvmOverloads constructor(@NotNull context: Conte
         if (imageUrl.isNotEmpty()) {
             ivAdditionalFintechImage.loadImage(imageUrl)
             ivAdditionalFintechImage.show()
-        } else ivAdditionalFintechImage.hide()
+            bgAdditionalFintechImage.show()
+        } else {
+            ivAdditionalFintechImage.hide()
+            bgAdditionalFintechImage.hide()
+        }
     }
 
     interface ActionListener {

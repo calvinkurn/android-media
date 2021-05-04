@@ -488,7 +488,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
-        visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
+        if (!isCache) visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
     }
 
     private fun createBannerChannel(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
