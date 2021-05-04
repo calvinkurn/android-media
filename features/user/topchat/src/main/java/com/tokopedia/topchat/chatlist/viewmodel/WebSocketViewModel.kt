@@ -32,9 +32,9 @@ import javax.inject.Inject
  */
 
 open class WebSocketViewModel @Inject constructor(
-        protected val chatWebSocket: DefaultTopChatWebSocket,
+        private val chatWebSocket: DefaultTopChatWebSocket,
         protected val webSocketParser: WebSocketParser,
-        protected val webSocketStateHandler: WebSocketStateHandler,
+        private val webSocketStateHandler: WebSocketStateHandler,
         protected val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io), LifecycleObserver {
 
