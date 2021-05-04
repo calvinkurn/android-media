@@ -644,6 +644,21 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
+    fun hotelOnScrollName(context: Context?, destination: String, destinationType: String, searchParam: SearchParam = SearchParam(),
+                          property: Property = Property(), position: Int, screenName: String) {
+        val roomCount = searchParam.room
+        val guestCount = searchParam.guest.adult
+        val duration = HotelUtils.countDayDifference(searchParam.checkIn, searchParam.checkOut)
+
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
+        val eventLabel = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(searchParam.checkIn)} - $duration"
+
+        map.addGeneralEvent(PRODUCT_VIEW, VIEW_HOTEL_SRP_MAP, eventLabel)
+        map[ECOMMERCE_LABEL] = DataLayer.mapOf(CURRENCY_LABEL, IDR_LABEL, IMPRESSIONS_LABEL,
+                getPropertyList(listOf(property), currentIndex = position))
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
     private fun convertDate(date: String): String =
             TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.YYYYMMDD, date)
 

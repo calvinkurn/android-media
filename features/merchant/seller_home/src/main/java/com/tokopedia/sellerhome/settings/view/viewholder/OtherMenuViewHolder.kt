@@ -176,20 +176,20 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun showOperationalHourLayout(shopOperational: ShopOperationalUiModel) {
-        itemView.findViewById<View>(R.id.shopOperationalHour).run {
+        itemView.findViewById<View>(R.id.shopOperationalHour)?.run {
             val timeLabel = shopOperational.timeLabel
             val shopOperationalStatus = itemView.context.getString(shopOperational.status)
 
-            findViewById<Typography>(R.id.textOperationalHour).text = if(timeLabel != null) {
+            findViewById<Typography>(R.id.textOperationalHour)?.text = if(timeLabel != null) {
                 context.getString(timeLabel)
             } else {
                 shopOperational.time
             }
-            findViewById<Label>(R.id.labelShopStatus).apply {
+            findViewById<Label>(R.id.labelShopStatus)?.apply {
                 text = shopOperationalStatus
                 setLabelType(shopOperational.labelType)
             }
-            findViewById<ImageView>(R.id.imageOperationalHour).apply {
+            findViewById<ImageView>(R.id.imageOperationalHour)?.apply {
                 setImageDrawable(ContextCompat.getDrawable(context, shopOperational.icon))
             }
 
@@ -331,7 +331,7 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant) : View {
-        findViewById<Typography>(R.id.regularMerchantStatus).run {
+        findViewById<Typography>(R.id.regularMerchantStatus)?.run {
             text = when(regularMerchant) {
                 is RegularMerchant.NeedUpgrade -> context.resources.getString(R.string.setting_upgrade)
                 is RegularMerchant.NeedVerification -> context.resources.getString(R.string.setting_verifikasi)

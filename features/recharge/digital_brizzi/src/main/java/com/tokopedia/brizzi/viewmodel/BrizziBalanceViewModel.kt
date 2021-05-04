@@ -15,6 +15,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import id.co.bri.sdk.Brizzi
 import id.co.bri.sdk.BrizziCardObject
@@ -80,7 +82,6 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
                         balanceInquiry.attributesEmoneyInquiry?.let { attributes ->
                             if (attributes.pendingBalance == 0) {
-                                Timber.d("P2#BRIZZI#SUCCESS_GET_BALANCE#${it.cardNumber}, ${attributes.lastBalance.toDouble()}")
                                 emoneyInquiry.postValue(balanceInquiry)
                             } else {
                                 writeBalanceToCard(intent, rawLogBrizzi, brizziInstance)
@@ -90,7 +91,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 }
             })
         }) {
-            Timber.e("P2#BRIZZI#ERROR_FAILED_REFRESH_TOKEN#${NfcCardErrorTypeDef.FAILED_REFRESH_TOKEN}")
+            ServerLogger.log(Priority.P2, BRIZZI_TAG, mapOf("err" to "ERROR_FAILED_REFRESH_TOKEN"))
             errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_REFRESH_TOKEN)
         }
     }
@@ -123,15 +124,15 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
     private fun handleError(brizziException: BrizziException) {
         when (brizziException.errorCode) {
             BRIZZI_TOKEN_EXPIRED -> {
-                Timber.e("P2#BRIZZI#ERROR_TOKEN_NEED_REFRESH")
+                ServerLogger.log(Priority.P2, BRIZZI_TAG, mapOf("err" to "ERROR_TOKEN_NEED_REFRESH"))
                 tokenNeedRefresh.postValue(true)
             }
             BRIZZI_CARD_NOT_FOUND -> {
-                Timber.e("P2#BRIZZI#ERROR_CARD_IS_NOT_BRIZZI")
+                ServerLogger.log(Priority.P2, BRIZZI_TAG, mapOf("err" to "ERROR_CARD_IS_NOT_BRIZZI"))
                 cardIsNotBrizzi.postValue(true)
             }
             else -> {
-                Timber.e("P2#BRIZZI#ERROR_DEFAULT#${brizziException.message}")
+                ServerLogger.log(Priority.P2, BRIZZI_TAG, mapOf("err" to (brizziException.message ?: "")))
                 errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
             }
         }
@@ -150,7 +151,6 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
                 if (inquiryIdBrizzi > -1) {
                     balanceInquiry.attributesEmoneyInquiry?.let {
-                        Timber.d("P2#BRIZZI#SUCCESS_UPDATE_BALANCE#${it.cardNumber}, ${it.lastBalance.toDouble()}")
                         logBrizzi(inquiryIdBrizzi, it.cardNumber, logRawQuery, "success", it.lastBalance.toDouble())
                     }
                 }
@@ -167,6 +167,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
         const val RC = "rc"
         const val LAST_BALANCE = "last_balance"
         const val LOG_BRIZZI = "log"
+        const val BRIZZI_TAG = "BRIZZI"
 
         const val ISSUER_ID_BRIZZI = 2
         const val ETOLL_BRIZZI_OPERATOR_ID = "1015"

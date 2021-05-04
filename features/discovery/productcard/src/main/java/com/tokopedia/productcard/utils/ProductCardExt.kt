@@ -101,6 +101,7 @@ internal fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) 
 internal fun ImageView.loadImage(url: String?) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
+            setPlaceHolder(R.drawable.product_card_placeholder_grey)
             setErrorDrawable(R.drawable.product_card_placeholder_grey)
         }
     }
@@ -135,6 +136,7 @@ internal fun ImageView.loadImageRounded(url: String?) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
             setErrorDrawable(R.drawable.product_card_placeholder_grey)
+            setPlaceHolder(R.drawable.product_card_placeholder_grey)
             centerCrop()
             setRoundedRadius(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6).toFloat())
         }
@@ -256,11 +258,12 @@ internal fun View.expandTouchArea(left: Int, top: Int, right: Int, bottom: Int) 
 }
 
 internal fun renderLabelCampaign(
+        isShow: Boolean,
         labelCampaignBackground: ImageView?,
         textViewLabelCampaign: Typography?,
         productCardModel: ProductCardModel
 ) {
-    if (productCardModel.isShowLabelCampaign()) {
+    if (isShow) {
         val labelCampaign = productCardModel.getLabelCampaign() ?: return
 
         labelCampaignBackground?.show()
@@ -276,12 +279,13 @@ internal fun renderLabelCampaign(
 }
 
 internal fun renderLabelBestSeller(
+        isShow: Boolean,
         labelBestSeller: Typography?,
         productCardModel: ProductCardModel
 ) {
     labelBestSeller ?: return
 
-    if (productCardModel.isShowLabelBestSeller()) {
+    if (isShow) {
         labelBestSeller.initLabelBestSeller(productCardModel.getLabelBestSeller())
     }
     else {
