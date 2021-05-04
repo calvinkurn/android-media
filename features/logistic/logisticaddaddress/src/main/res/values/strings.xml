@@ -171,4 +171,8 @@
     <string name="rationale_need_contact">Untuk pakai fitur ini, izinkan Tokpedia mengakses kontakmu.</string>
     <string name="contact_title_coachmark">Pilih no. HP langsung dari kontakmu</string>
     <string name="contact_desc_coachmark">Jadi lebih mudah menambahkan nomor HP penerima pesanan!</string>
+
+    <!--Search Page-->
+    <string name="txt_hint_search">Tulis nama jalan/gedung/perumahan</string>
+    <string name="txt_message_initial_load">Mau cara lain? Isi alamat secara manual</string>
 </resources>

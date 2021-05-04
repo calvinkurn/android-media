@@ -64,7 +64,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:text="@string/message_advice_search_address"
         android:textSize="@dimen/sp_12"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"

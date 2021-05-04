@@ -10,4 +10,5 @@
     <color name="label_grey">#ae31353b</color>
     <color name="tkpd_green">#87d58b</color>
     <color name="tkpd_view_green_bg">#f3fef3</color>
+    <color name="colorAccent">#03DAC5</color>
 </resources>
