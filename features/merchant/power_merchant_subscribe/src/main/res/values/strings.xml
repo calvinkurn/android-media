@@ -174,7 +174,7 @@
     <string name="pm_shop_score_eligible"><![CDATA[Skor Toko: <font color=\"%1$s\">%2$d</font>]]></string>
     <string name="pm_shop_score_not_eligible"><![CDATA[Skor Toko: <font color=\"%1$s\">%2$d</font>]]></string>
     <string name="pm_shop_score_eligible_description"><![CDATA[Skormu sudah mencapai batas <strong>min. skor %1$d</strong> untuk daftar Power Merchant. Skor akan diperbarui setiap Senin, ya.]]></string>
-    <string name="pm_shop_score_not_eligible_description"><![CDATA[Tingkatkan skor tokomu <strong>min. skor %1$d</strong> untuk mendaftar jadi Power Merchant, ya. Pelajari Performa Toko]]></string>
+    <string name="pm_shop_score_not_eligible_description"><![CDATA[Tingkatkan skor hingga min. %1$d, ya! <br>Pelajari Performa Toko]]></string>
     <string name="pm_add_product">Tambah Produk</string>
     <string name="pm_learn_shop_performance">Pelajari Performa Toko</string>
     <string name="pm_learn_new_pm">Pelajari Perubahan</string>

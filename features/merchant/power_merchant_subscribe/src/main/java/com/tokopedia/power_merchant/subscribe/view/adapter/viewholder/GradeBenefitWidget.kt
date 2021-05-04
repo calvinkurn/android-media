@@ -56,7 +56,6 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         val selected = element.benefitPages.indexOfFirst { it.isActive }
         if (selected != RecyclerView.NO_POSITION) {
             itemView.rvPmGradeBenefitPager.scrollToPosition(selected)
-            itemView.tabPmGradeBenefit.tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
             itemView.tabPmGradeBenefit.tabLayout.getTabAt(selected)?.select()
         }
     }
@@ -75,6 +74,7 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
                 addNewTab(it.gradeName.asCamelCase())
             }
 
+            tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     val selectedTabIndex = tabPmGradeBenefit.tabLayout.selectedTabPosition

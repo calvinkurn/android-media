@@ -117,7 +117,7 @@ class RegistrationHeaderWidget(
         setOnExpandChanged(!isEligible, element)
 
         imgPmHeaderBackdrop.loadImageDrawable(R.drawable.bg_pm_registration_header)
-        imgPmHeaderImage.loadImageDrawable(R.drawable.ic_pm_badge_pm_pro_filled)
+        imgPmHeaderImage.loadImageDrawable(R.drawable.ic_pm_badge_pm_filled)
         tvPmHeaderDesc.setText(R.string.pm_registration_header_pm)
         tvPmHeaderTerms.setEligibility(isEligible)
     }
