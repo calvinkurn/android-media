@@ -33,10 +33,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
-import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
-import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
-import com.tokopedia.seller.menu.common.analytics.sendEventImpressionStatisticMenuItem
-import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
+import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
@@ -74,7 +71,7 @@ import javax.inject.Inject
 class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener {
 
     companion object {
-        private const val APPLINK_FORMAT = "%s?url=%s%s"
+        private const val APPLINK_FORMAT = "%s?url=%s"
 
         private const val START_OFFSET = 56 // Pixels when scrolled past toolbar height
         private const val HEIGHT_OFFSET = 24 // Pixels of status bar height, the view that could be affected by scroll change
@@ -374,7 +371,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         eventActionSuffix = SettingTrackingConstant.COMPLAINT,
                         iconUnify = IconUnify.PRODUCT_INFO
                 ) {
-                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, SellerBaseUrl.HOSTNAME, SellerBaseUrl.RESO_INBOX_SELLER)
+                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, "${SellerBaseUrl.HOSTNAME}${SellerBaseUrl.RESO_INBOX_SELLER}")
                     val intent = RouteManager.getIntent(context, applink)
                     context?.startActivity(intent)
                 },
@@ -382,20 +379,12 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_product_package),
                         null,
-                        // TODO: Add Tracker
-                        eventActionSuffix = SettingTrackingConstant.FINANCIAL_SERVICE,
+                        eventActionSuffix = SettingTrackingConstant.PRINTING,
+                        eventName = SettingTrackingConstant.EVENT_CLICK_PRINTING,
+                        eventLabel = SettingTrackingConstant.LABEL_CLICK_PRINTING,
                         iconUnify = IconUnify.PACKAGE,
                         isNewItem = true
-                ) {
-                    // TODO: Change URL to correct subdomain
-                    if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-                        val url = "https://156-staging-feature.tokopedia.com/jasa/print/kemasan-produk"
-                        RouteManager.route(context, ApplinkConst.WEBVIEW, url)
-                    } else {
-                        val url = "${TokopediaUrl.getInstance().WEB}jasa/print/kemasan-produk"
-                        RouteManager.route(context, ApplinkConst.WEBVIEW, url)
-                    }
-                },
+                ) { goToPrintingPage() },
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_finance_service),
                         null,
@@ -410,7 +399,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
                         iconUnify = IconUnify.SHOP_INFO
                 ) {
-                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, SellerBaseUrl.SELLER_HOSTNAME, SellerBaseUrl.SELLER_EDU)
+                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, "${SellerBaseUrl.SELLER_HOSTNAME}${SellerBaseUrl.SELLER_EDU}")
                     val intent = RouteManager.getIntent(context, applink)
                     context?.startActivity(intent)
                 },
@@ -579,6 +568,20 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             putExtra(EXTRA_SHOP_ID, userSession.shopId)
         }
         startActivity(shopFavouriteListIntent)
+    }
+
+    private fun goToPrintingPage() {
+        // TODO: Change URL to correct subdomain
+        val url =
+                if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+                    "https://156-staging-feature.tokopedia.com/jasa/print/kemasan-produk"
+                } else {
+                    "${TokopediaUrl.getInstance().WEB}jasa/print/kemasan-produk"
+                }
+        val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, url)
+        RouteManager.getIntent(context, applink)?.let {
+            context?.startActivity(it)
+        }
     }
 
     private fun isActivityResumed(): Boolean {

@@ -38,6 +38,7 @@ object SettingTrackingConstant {
     const val REVIEW = "review"
     const val DISCUSSION = "discussion"
     const val COMPLAINT = "complaint"
+    const val PRINTING = "printing"
     const val FINANCIAL_SERVICE = "financial service"
     const val SELLER_CENTER = "seller center"
     const val TOKOPEDIA_CARE = "tokopedia care"
@@ -65,4 +66,7 @@ object SettingTrackingConstant {
 
     const val PHYSICAL_GOODS = "physicalgoods"
     const val TOKOPEDIASELLER = "tokopediaseller"
+
+    const val EVENT_CLICK_PRINTING = "clickPrinting"
+    const val LABEL_CLICK_PRINTING = "local services - printing"
 }
