@@ -11,6 +11,6 @@
     <dimen name="width_img_benefit_pm_pro">83dp</dimen>
     <dimen name="height_img_benefit_pm_pro">45dp</dimen>
 
-    <dimen name="width_card_header_penalty">340dp</dimen>
-    <dimen name="height_card_header_penalty">164dp</dimen>
+    <dimen name="width_card_header_penalty">328dp</dimen>
+    <dimen name="height_card_header_penalty">152dp</dimen>
 </resources>
