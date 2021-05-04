@@ -93,13 +93,11 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_free_shipping"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginStart="@dimen/dp_9"
             android:layout_marginTop="@dimen/dp_9"
             android:gravity="center_vertical"
-            android:scaleType="fitStart"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/img_product"
             app:layout_constraintTop_toBottomOf="@+id/text_shop_name"
             app:unify_image_type="rect"
