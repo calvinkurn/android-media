@@ -35,7 +35,7 @@ class ChatListWebSocketViewModelTest {
     private val topchatWebSocket: DefaultTopChatWebSocket = mockk(relaxed = true)
     private val dispatchers = CoroutineTestDispatchersProvider
     private val userSession: UserSessionInterface = mockk(relaxed = true)
-    private val pendingMessageHandler: PendingMessageHandler = mockk(relaxed = true)
+    private val pendingMessageHandler: PendingMessageHandler = PendingMessageHandler(userSession)
     private val webSocket: WebSocket = mockk(relaxed = true)
     private val webSocketStateHandler: WebSocketStateHandler = mockk(relaxed = true)
     private val lifecycleRegistry = LifecycleRegistry(mockk(relaxed = true))
@@ -83,23 +83,23 @@ class ChatListWebSocketViewModelTest {
     }
 
     @Test
-    fun `connectWebSocket should queue the incoming message`() {
+    fun should_queue_pending_message_when_on_stop() {
         // Given
         val mapResponse = mapToIncomingChat(eventReplyMessage)
         val response = eventReplyMessageString
         val webSocketListener = slot<WebSocketListener>()
-        every { pendingMessageHandler.hasPendingMessage() } returns true
         every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
             webSocketListener.captured.onMessage(webSocket, response)
         }
 
         // When
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
         viewModel.connectWebSocket()
 
         // Then
-        verify(exactly = 1) {
-            pendingMessageHandler.addQueue(viewModel.role, mapResponse, false)
-        }
+        assert(viewModel.pendingMessages[mapResponse.msgId] != null)
+        assertThat(viewModel.pendingMessages.size, `is`(1))
     }
 
     @Test
@@ -115,15 +115,22 @@ class ChatListWebSocketViewModelTest {
     }
 
     @Test
-    fun `clearPendingMessages should clear the pending message`() {
+    fun should_have_no_pending_message_when_cleared() {
         // Given
-        every { pendingMessageHandler.pendingMessages.clear() } just runs
+        val response = eventReplyMessageString
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onMessage(webSocket, response)
+        }
 
         // When
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        viewModel.connectWebSocket()
         viewModel.clearPendingMessages()
 
         // Then
-        verify(exactly = 1) { pendingMessageHandler.pendingMessages.clear() }
+        assertThat(viewModel.pendingMessages.size, `is`(0))
     }
 
     @Test
