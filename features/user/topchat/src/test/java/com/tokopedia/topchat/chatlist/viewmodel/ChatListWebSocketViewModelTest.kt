@@ -158,6 +158,26 @@ class ChatListWebSocketViewModelTest {
     }
 
     @Test
+    fun should_have_reduced_pending_message_when_msgId_deleted() {
+        // Given
+        val expectedValue = mapToIncomingChat(eventReplyMessage)
+        val response = eventReplyMessageString
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onMessage(webSocket, response)
+        }
+
+        // When
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        viewModel.connectWebSocket()
+        viewModel.deletePendingMsgWithId(expectedValue.msgId)
+
+        // Then
+        assertThat(viewModel.pendingMessages.size, `is`(0))
+    }
+
+    @Test
     fun should_return_the_latest_role_assigned() {
         // When
         viewModel.role = RoleType.SELLER
