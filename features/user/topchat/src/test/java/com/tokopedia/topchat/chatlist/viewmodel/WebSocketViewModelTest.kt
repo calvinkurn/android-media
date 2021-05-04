@@ -177,6 +177,23 @@ class WebSocketViewModelTest {
         verify(exactly = 1) { webSocketStateHandler.retrySucceed() }
     }
 
+    @Test
+    fun should_reconnect_ws_when_onFailure() {
+        // Given
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onFailure(
+                    webSocket, Throwable(), mockk(relaxed = true)
+            )
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        coVerify(exactly = 1) { webSocketStateHandler.scheduleForRetry(any()) }
+    }
+
     companion object {
         val eventReplyMessageString = com.tokopedia.topchat.FileUtil.readFileContent(
                 "/ws_response_reply_text_is_opposite.json"
