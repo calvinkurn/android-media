@@ -10,10 +10,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggestedPriceGet
-import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
-import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
-import com.tokopedia.product.addedit.detail.domain.usecase.PriceSuggestionSuggestedPriceGetUseCase
-import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
@@ -55,6 +52,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
         private val annotationCategoryUseCase: AnnotationCategoryUseCase,
         private val priceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase,
+        private val priceSuggestionSuggestedPriceGetByKeywordUseCase: PriceSuggestionSuggestedPriceGetByKeywordUseCase,
         private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher) {
 
@@ -629,7 +627,11 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun getProductPriceRecommendationByKeyword(keyword: String) {
         launchCatchError(block = {
-            mProductPriceRecommendation.value = PriceSuggestionSuggestedPriceGet(suggestedPrice = 1989887.toDouble())
+            val response = withContext(Dispatchers.IO) {
+                priceSuggestionSuggestedPriceGetByKeywordUseCase.setParamsKeyword(keyword)
+                priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
+            }
+            mProductPriceRecommendation.value = response.priceSuggestionSuggestedPriceGet
         }, onError = {
             // log error
             AddEditProductErrorHandler.logExceptionToCrashlytics(it)
