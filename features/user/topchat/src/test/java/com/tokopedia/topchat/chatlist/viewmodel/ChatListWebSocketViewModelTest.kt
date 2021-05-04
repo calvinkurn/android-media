@@ -15,11 +15,15 @@ import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModelTest.Companion
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModelTest.Companion.eventReplyMessageString
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.slot
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
@@ -131,6 +135,26 @@ class ChatListWebSocketViewModelTest {
 
         // Then
         assertThat(viewModel.pendingMessages.size, `is`(0))
+    }
+
+    @Test
+    fun should_immediately_update_latest_itemChat() {
+        // Given
+        val expectedValue = mapToIncomingChat(eventReplyMessage)
+        val response = eventReplyMessageString
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onMessage(webSocket, response)
+        }
+
+        // When
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
+        viewModel.connectWebSocket()
+
+        // Then
+        val data = (viewModel.itemChat.value as? Success)?.data
+        assertThat(viewModel.itemChat.value, `is`(instanceOf(Success::class.java)))
+        assertThat(data?.messageId, `is`(expectedValue.messageId))
     }
 
     @Test
