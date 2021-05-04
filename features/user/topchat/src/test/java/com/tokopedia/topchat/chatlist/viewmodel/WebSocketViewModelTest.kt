@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatlist.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.topchat.callOnCleared
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
 import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket
@@ -226,6 +227,23 @@ class WebSocketViewModelTest {
 
         // Then
         coVerify(exactly = 0) { webSocketStateHandler.scheduleForRetry(any()) }
+    }
+
+    @Test
+    fun should_close_websocket_connection_onCleared() {
+        // Given
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onClosed(
+                    webSocket, CODE_NORMAL_CLOSURE, ""
+            )
+        }
+
+        // When
+        viewModel.callOnCleared()
+
+        // Then
+        verify(exactly = 1) { topchatWebSocket.close() }
     }
 
     companion object {
