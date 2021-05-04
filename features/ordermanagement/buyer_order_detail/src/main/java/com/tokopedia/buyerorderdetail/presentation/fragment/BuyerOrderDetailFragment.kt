@@ -1,21 +1,15 @@
 package com.tokopedia.buyerorderdetail.presentation.fragment
 
-import android.animation.Animator
-import android.animation.AnimatorSet
 import android.animation.LayoutTransition
-import android.animation.ObjectAnimator
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
-import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
@@ -25,8 +19,11 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickList
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
+import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailActionButtonAnimator
+import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SecondaryActionButtonBottomSheet
-import com.tokopedia.buyerorderdetail.presentation.model.*
+import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.empty_state.EmptyStateUnify
@@ -54,21 +51,22 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             }
         }
 
-        const val REQUEST_CANCEL_ORDER = 101
+        const val REQUEST_CODE_REQUEST_CANCEL_ORDER = 101
+        const val REQUEST_CODE_CREATE_RESOLUTION = 102
 
         private const val CONTENT_CHANGING_ANIMATION_DURATION = 300L
         private const val CONTENT_CHANGING_ANIMATION_DELAY = 45L
-        private const val SHOW_HIDE_CONTENT_ANIMATION_DURATION = 300L
-        private const val FADE_ANIMATION_DELAY = 60L
-        private const val TRANSLATION_ANIMATION_DELAY = 45L
     }
 
     @Inject
     lateinit var viewModel: BuyerOrderDetailViewModel
 
-    private var animatorShowContent: AnimatorSet? = null
-    private var animatorHideContent: AnimatorSet? = null
-
+    private val actionButtonAnimator by lazy {
+        BuyerOrderDetailActionButtonAnimator(containerActionButtons, containerBuyerOrderDetail)
+    }
+    private val contentVisibilityAnimator by lazy {
+        BuyerOrderDetailContentAnimator(swipeRefreshBuyerOrderDetail, rvBuyerOrderDetail)
+    }
     private val cacheManager: SaveInstanceCacheManager by lazy {
         SaveInstanceCacheManager(requireContext())
     }
@@ -113,6 +111,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_ASK_SELLER -> onAskSellerActionButtonClicked()
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_REQUEST_CANCEL -> onRequestCancelActionButtonClicked(button)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_TRACK_SHIPMENT -> onTrackShipmentActionButtonClicked(button)
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> onComplaintActionButtonClicked(button)
         }
     }
 
@@ -149,6 +148,14 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         }
     }
 
+    private fun onComplaintActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
+        viewModel.buyerOrderDetailResult.value?.let {
+            if (it is Success) {
+                BuyerOrderDetailNavigator.goToCreateResolution(this, button.url)
+            }
+        }
+    }
+
     private fun setupViews() {
         containerBuyerOrderDetail.layoutTransition.apply {
             setInterpolator(LayoutTransition.CHANGING, AccelerateInterpolator())
@@ -173,7 +180,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         globalErrorBuyerOrderDetail.setActionClickListener {
             globalErrorBuyerOrderDetail.gone()
             showLoadIndicator()
-            hideContent()
+            contentVisibilityAnimator.hideContent()
             loadBuyerOrderDetail()
         }
     }
@@ -188,110 +195,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun setupRecyclerView() {
         rvBuyerOrderDetail.adapter = adapter
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderStatusSection(orderStatusUiModel: OrderStatusUiModel) {
-        addOrderStatusHeaderSection(orderStatusUiModel.orderStatusHeaderUiModel)
-        addTickerSection(orderStatusUiModel.ticker)
-        addThinDividerSection()
-        addOrderStatusInfoSection(orderStatusUiModel.orderStatusInfoUiModel)
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupProductListSection(productListUiModel: ProductListUiModel) {
-        addThickDividerSection()
-        addProductListHeaderSection(productListUiModel.productListHeaderUiModel)
-        addProductListSection(productListUiModel.productList)
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupShipmentInfoSection(shipmentInfoUiModel: ShipmentInfoUiModel) {
-        addThickDividerSection()
-        addPlainHeaderSection(shipmentInfoUiModel.headerUiModel)
-        addTickerSection(shipmentInfoUiModel.ticker)
-        addCourierInfoSection(shipmentInfoUiModel.courierInfoUiModel)
-        if (shipmentInfoUiModel.courierDriverInfoUiModel.name.isNotBlank()) {
-            addThinDashedDividerSection()
-            addCourierDriverInfoSection(shipmentInfoUiModel.courierDriverInfoUiModel)
-            addThinDashedDividerSection()
-        }
-        addAwbInfoSection(shipmentInfoUiModel.awbInfoUiModel)
-        addReceiverAddressInfoSection(shipmentInfoUiModel.receiverAddressInfoUiModel)
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupPaymentInfoSection(paymentInfoUiModel: PaymentInfoUiModel) {
-        addThickDividerSection()
-        addPlainHeaderSection(paymentInfoUiModel.headerUiModel)
-        addPaymentMethodSection(paymentInfoUiModel.paymentMethodInfoItem)
-        addThinDividerSection()
-        addPaymentInfoSection(paymentInfoUiModel.paymentInfoItems)
-        addThinDividerSection()
-        addPaymentGrandTotalSection(paymentInfoUiModel.paymentGrandTotal)
-        addTickerSection(paymentInfoUiModel.ticker)
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPlainHeaderSection(headerUiModel: PlainHeaderUiModel) {
-        add(headerUiModel)
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addTickerSection(tickerUiModel: TickerUiModel) {
-        if (tickerUiModel.description.isNotBlank()) {
-            add(tickerUiModel)
-        }
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addThinDashedDividerSection() {
-        add(ThinDashedDividerUiModel())
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addThickDividerSection() {
-        add(ThickDividerUiModel())
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addThinDividerSection() {
-        add(ThinDividerUiModel())
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusHeaderSection(orderStatusHeaderUiModel: OrderStatusUiModel.OrderStatusHeaderUiModel) {
-        add(orderStatusHeaderUiModel)
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusInfoSection(orderStatusInfoUiModel: OrderStatusUiModel.OrderStatusInfoUiModel) {
-        add(orderStatusInfoUiModel)
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductListHeaderSection(productListHeaderUiModel: ProductListUiModel.ProductListHeaderUiModel) {
-        add(productListHeaderUiModel)
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductListSection(productList: List<ProductListUiModel.ProductUiModel>) {
-        addAll(productList)
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addCourierInfoSection(courierInfoUiModel: ShipmentInfoUiModel.CourierInfoUiModel) {
-        add(courierInfoUiModel)
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addCourierDriverInfoSection(courierDriverInfoUiModel: ShipmentInfoUiModel.CourierDriverInfoUiModel) {
-        add(courierDriverInfoUiModel)
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addAwbInfoSection(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel) {
-        add(awbInfoUiModel)
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addReceiverAddressInfoSection(receiverAddressInfoUiModel: ShipmentInfoUiModel.ReceiverAddressInfoUiModel) {
-        add(receiverAddressInfoUiModel)
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPaymentMethodSection(paymentMethodInfoItem: PaymentInfoUiModel.PaymentInfoItemUiModel) {
-        add(paymentMethodInfoItem)
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPaymentInfoSection(paymentInfoItems: List<PaymentInfoUiModel.PaymentInfoItemUiModel>) {
-        addAll(paymentInfoItems)
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPaymentGrandTotalSection(paymentGrandTotal: PaymentInfoUiModel.PaymentGrandTotalUiModel) {
-        add(paymentGrandTotal)
     }
 
     private fun loadBuyerOrderDetail() {
@@ -316,15 +219,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
-        val newItems = mutableListOf<Visitable<BuyerOrderDetailTypeFactory>>().apply {
-            setupOrderStatusSection(data.orderStatusUiModel)
-            setupProductListSection(data.productListUiModel)
-            setupShipmentInfoSection(data.shipmentInfoUiModel)
-            setupPaymentInfoSection(data.paymentInfoUiModel)
-        }
         setupActionButtons(data.actionButtonsUiModel)
-        adapter.updateItems(newItems)
-        showContent()
+        adapter.updateItems(data)
+        contentVisibilityAnimator.showContent()
     }
 
     private fun onFailedGetBuyerOrderDetail(throwable: Throwable) {
@@ -344,7 +241,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             }
             emptyStateBuyerOrderDetail?.gone()
         }
-        hideContent()
+        contentVisibilityAnimator.hideContent()
     }
 
     private fun EmptyStateUnify.showMessageExceptionError(throwable: Throwable) {
@@ -359,9 +256,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         if (actionButtonsUiModel.primaryActionButton.key.isNotBlank()) {
             setupPrimaryButton(actionButtonsUiModel.primaryActionButton)
             setupSecondaryButton()
-            showActionButtons()
+            actionButtonAnimator.showActionButtons()
         } else {
-            hideActionButtons()
+            actionButtonAnimator.hideActionButtons()
         }
     }
 
@@ -405,69 +302,5 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun hideLoadIndicator() {
         loaderBuyerOrderDetail.gone()
-    }
-
-    private fun showContent() {
-        animatorShowContent = createShowContentAnimatorSet()
-        animatorHideContent?.pause()
-        animatorShowContent?.start()
-    }
-
-    private fun hideContent() {
-        animatorHideContent = createHideContentAnimatorSet()
-        animatorShowContent?.pause()
-        animatorHideContent?.start()
-    }
-
-    private fun showActionButtons() {
-        containerActionButtons.apply {
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(containerBuyerOrderDetail)
-            constraintSet.connect(R.id.containerActionButtons, ConstraintSet.BOTTOM, R.id.containerBuyerOrderDetail, ConstraintSet.BOTTOM)
-            constraintSet.clear(R.id.containerActionButtons, ConstraintSet.TOP)
-            constraintSet.applyTo(containerBuyerOrderDetail)
-        }
-    }
-
-    private fun hideActionButtons() {
-        containerActionButtons.apply {
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(containerBuyerOrderDetail)
-            constraintSet.connect(R.id.containerActionButtons, ConstraintSet.TOP, R.id.containerBuyerOrderDetail, ConstraintSet.BOTTOM)
-            constraintSet.clear(R.id.containerActionButtons, ConstraintSet.BOTTOM)
-            constraintSet.applyTo(containerBuyerOrderDetail)
-        }
-    }
-
-    private fun createShowContentAnimatorSet(): AnimatorSet {
-        val showContentAnimator = createTranslationYAnimator(swipeRefreshBuyerOrderDetail, swipeRefreshBuyerOrderDetail.translationY, 0f)
-        val fadeInAnimator = createFadeAnimator(rvBuyerOrderDetail, rvBuyerOrderDetail.alpha, 1f)
-        return AnimatorSet().apply {
-            playTogether(showContentAnimator, fadeInAnimator)
-        }
-    }
-
-    private fun createHideContentAnimatorSet(): AnimatorSet {
-        val hideContentAnimator = createTranslationYAnimator(swipeRefreshBuyerOrderDetail, swipeRefreshBuyerOrderDetail.translationY, swipeRefreshBuyerOrderDetail.measuredHeight.toFloat())
-        val fadeOutAnimator = createFadeAnimator(rvBuyerOrderDetail, rvBuyerOrderDetail.alpha, 0f)
-        return AnimatorSet().apply {
-            playTogether(hideContentAnimator, fadeOutAnimator)
-        }
-    }
-
-    private fun createFadeAnimator(target: View, from: Float, to: Float): Animator {
-        return ObjectAnimator.ofFloat(target, View.ALPHA, from, to).apply {
-            interpolator = DecelerateInterpolator(2f)
-            duration = SHOW_HIDE_CONTENT_ANIMATION_DURATION
-            startDelay = FADE_ANIMATION_DELAY
-        }
-    }
-
-    private fun createTranslationYAnimator(target: View, from: Float, to: Float): Animator {
-        return ObjectAnimator.ofFloat(target, View.TRANSLATION_Y, from, to).apply {
-            interpolator = DecelerateInterpolator()
-            duration = SHOW_HIDE_CONTENT_ANIMATION_DURATION
-            startDelay = TRANSLATION_ANIMATION_DELAY
-        }
     }
 }

@@ -10,6 +10,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderDetailFragment
@@ -17,6 +18,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 
@@ -87,7 +89,7 @@ object BuyerOrderDetailNavigator {
                 val cacheId = cacheManager.generateUniqueRandomNumber()
                 cacheManager.put(cacheId, payload)
                 intent.putExtra(BuyerOrderDetailConst.PARAM_CACHE_ID, cacheId)
-                fragment.startActivityForResult(intent, BuyerOrderDetailFragment.REQUEST_CANCEL_ORDER)
+                fragment.startActivityForResult(intent, BuyerOrderDetailFragment.REQUEST_CODE_REQUEST_CANCEL_ORDER)
             }
         }
     }
@@ -105,6 +107,11 @@ object BuyerOrderDetailNavigator {
         intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, buyerOrderDetailData.paymentInfoUiModel.paymentGrandTotal.value)
         intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.SOURCE_ASK_SELLER)
         context.startActivity(intent)
+    }
+
+    fun goToCreateResolution(fragment: Fragment, url: String) {
+        val intent: Intent = RouteManager.getIntent(fragment.context, url)
+        fragment.startActivityForResult(intent, BuyerOrderDetailFragment.REQUEST_CODE_CREATE_RESOLUTION)
     }
 
     private fun composeCallIntentData(phoneNumber: String): Uri {
