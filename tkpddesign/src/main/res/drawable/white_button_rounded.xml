@@ -14,6 +14,6 @@
         android:top="8dp" />
 
     <stroke
-        android:color="@color/black_36"
+        android:color="@color/Unify_N700_32"
         android:width="1px"/>
 </shape>

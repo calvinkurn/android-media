@@ -311,7 +311,7 @@ di tempatmu.</string>
 
     <string name="flight_min_date_label">Berangkat</string>
     <string name="flight_max_date_label">Pulang</string>
-    <string name="flight_calendar_lowest_fare_price_color">#42b549</string>
+    <string name="flight_dms_calendar_lowest_fare_price_color">#42b549</string>
     <string name="flight_rupiah_label">Rp</string>
     <string name="flight_filter_lowest_price_label">Terendah</string>
     <string name="flight_filter_highest_price_label">Tertinggi</string>

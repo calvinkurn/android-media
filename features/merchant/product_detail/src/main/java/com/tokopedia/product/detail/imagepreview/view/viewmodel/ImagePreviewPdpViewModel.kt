@@ -12,7 +12,7 @@ class ImagePreviewPdpViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishlistUseCase: RemoveWishListUseCase,
-        val dispatcher: CoroutineDispatchers
+        dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     fun isShopOwner(shopId: String): Boolean = userSessionInterface.isLoggedIn && userSessionInterface.shopId == shopId

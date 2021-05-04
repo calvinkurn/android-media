@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <!-- Start of Coordinator Layout for Maps and BottomSheet-->
@@ -61,7 +60,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:itemCount="3"
-                tools:listitem="@layout/item_property_search_result_horizontal" />
+                tools:listitem="@layout/item_property_search_result_horizontal"/>
 
             <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
                 android:id="@+id/btnGetRadiusHotelSearchMap"
