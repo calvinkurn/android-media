@@ -1,16 +1,18 @@
 package com.tokopedia.topchat.chatlist.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.Observer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
 import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket
+import com.tokopedia.topchat.chatlist.domain.websocket.DefaultWebSocketParser
 import com.tokopedia.topchat.chatlist.domain.websocket.PendingMessageHandler
+import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketStateHandler
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModelTest.Companion.eventReplyMessage
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModelTest.Companion.eventReplyMessageString
-import com.tokopedia.topchat.chatlist.domain.websocket.DefaultWebSocketParser
-import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketStateHandler
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -53,13 +55,18 @@ class ChatListWebSocketViewModelTest {
     }
 
     @Test
-    fun `onLifeCycleStart should return isOnStop false and activeRoom is empty`() {
+    fun onLifeCycleStart_should_return_isOnStop_false_and_activeRoom_is_empty() {
+        // Given
+        val lifecycleRegistry = LifecycleRegistry(mockk(relaxed = true))
+        lifecycleRegistry.addObserver(viewModel)
+
+
         // When
-        viewModel.onLifeCycleStart()
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
 
         // Then
-        assertTrue(!viewModel.isOnStop)
-        assertTrue(viewModel.activeRoom.isEmpty())
+        assertThat(viewModel.isOnStop, `is`(false))
+        assertThat(viewModel.activeRoom, `is`(""))
     }
 
     @Test

@@ -36,7 +36,7 @@ class ChatListWebSocketViewModel @Inject constructor(
     var activeRoom: String = ""
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onLifeCycleStart() {
+    private fun onLifeCycleStart() {
         isOnStop = false
         activeRoom = ""
     }
