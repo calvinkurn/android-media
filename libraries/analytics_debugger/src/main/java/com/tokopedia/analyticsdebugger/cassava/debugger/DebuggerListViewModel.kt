@@ -4,8 +4,9 @@ import androidx.lifecycle.*
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DebuggerListViewModel(private val repo: GtmRepo) : ViewModel() {
+class DebuggerListViewModel @Inject constructor(private val repo: GtmRepo) : ViewModel() {
 
     /*
     * when the value is empty ("") it refreshes with all logs
