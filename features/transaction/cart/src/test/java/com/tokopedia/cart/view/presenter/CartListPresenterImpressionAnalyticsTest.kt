@@ -116,11 +116,6 @@ object CartListPresenterImpressionAnalyticsTest : Spek({
                 result = cartListPresenter.generateRecommendationImpressionDataAnalytics(0, recommendationDataList, false)
             }
 
-            Then("should be containing 1 product") {
-                val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as List<Map<String, Any>>
-                assertEquals(1, impression.size)
-            }
-
             Then("key `category` should be $categoryBreadcrumb") {
                 val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as ArrayList<Map<String, Any>>
                 val category = impression[0][EnhancedECommerceRecomProductCartMapData.KEY_CAT]
@@ -140,12 +135,7 @@ object CartListPresenterImpressionAnalyticsTest : Spek({
                 result = cartListPresenter.generateRecommendationImpressionDataAnalytics(0, recommendationDataList, false)
             }
 
-            Then("should be containing 1 product") {
-                val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as List<Map<String, Any>>
-                assertEquals(1, impression.size)
-            }
-
-            Then("dimension 83 should be `bebas ongkir`") {
+            Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR}") {
                 val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as ArrayList<Map<String, Any>>
                 val dimension83 = impression[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
                 Assert.assertTrue(dimension83 == EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR)
@@ -165,12 +155,7 @@ object CartListPresenterImpressionAnalyticsTest : Spek({
                 result = cartListPresenter.generateRecommendationImpressionDataAnalytics(0, recommendationDataList, false)
             }
 
-            Then("should be containing 1 product") {
-                val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as List<Map<String, Any>>
-                assertEquals(1, impression.size)
-            }
-
-            Then("dimension 83 should be `bebas ongkir extra`") {
+            Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA}") {
                 val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as ArrayList<Map<String, Any>>
                 val dimension83 = impression[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
                 Assert.assertTrue(dimension83 == EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA)
@@ -190,12 +175,7 @@ object CartListPresenterImpressionAnalyticsTest : Spek({
                 result = cartListPresenter.generateRecommendationImpressionDataAnalytics(0, recommendationDataList, false)
             }
 
-            Then("should be containing 1 product") {
-                val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as List<Map<String, Any>>
-                assertEquals(1, impression.size)
-            }
-
-            Then("dimension 83 should be `none / other`") {
+            Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER}") {
                 val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as ArrayList<Map<String, Any>>
                 val dimension83 = impression[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
                 Assert.assertTrue(dimension83 == EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)

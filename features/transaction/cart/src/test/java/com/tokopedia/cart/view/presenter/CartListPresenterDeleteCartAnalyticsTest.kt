@@ -81,10 +81,6 @@ object CartListPresenterDeleteCartAnalyticsTest : Spek({
                 add(CartItemData())
             }
 
-//            Given("update cart counter") {
-//                every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
-//            }
-
             When("generate cart data analytics") {
                 result = cartListPresenter.generateDeleteCartDataAnalytics(cartItemDataList)
             }
@@ -105,10 +101,6 @@ object CartListPresenterDeleteCartAnalyticsTest : Spek({
             val cartItemDataList = mutableListOf<CartItemData>().apply {
                 add(CartItemData(CartItemData.OriginData(categoryForAnalytics = categoryName)))
             }
-
-//            Given("update cart counter") {
-//                every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
-//            }
 
             When("generate cart data analytics") {
                 result = cartListPresenter.generateDeleteCartDataAnalytics(cartItemDataList)
@@ -138,10 +130,6 @@ object CartListPresenterDeleteCartAnalyticsTest : Spek({
                 add(CartItemData(CartItemData.OriginData(trackerAttribution = trackerAttributionValue)))
             }
 
-//            Given("update cart counter") {
-//                every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
-//            }
-
             When("generate cart data analytics") {
                 result = cartListPresenter.generateDeleteCartDataAnalytics(cartItemDataList)
             }
@@ -170,10 +158,6 @@ object CartListPresenterDeleteCartAnalyticsTest : Spek({
             val cartItemDataList = mutableListOf<CartItemData>().apply {
                 add(CartItemData(CartItemData.OriginData(trackerListName = trackerListNameValue)))
             }
-
-//            Given("update cart counter") {
-//                every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
-//            }
 
             When("generate cart data analytics") {
                 result = cartListPresenter.generateDeleteCartDataAnalytics(cartItemDataList)

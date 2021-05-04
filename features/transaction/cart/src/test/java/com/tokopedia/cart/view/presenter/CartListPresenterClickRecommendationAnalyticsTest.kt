@@ -106,12 +106,6 @@ object CartListPresenterClickRecommendationAnalyticsTest : Spek({
                 result = cartListPresenter.generateRecommendationDataOnClickAnalytics(RecommendationItem(categoryBreadcrumbs = categoryBreadcrumb), false, 0)
             }
 
-            Then("should be containing 1 product") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
-                Assert.assertEquals(1, productList.size)
-            }
-
             Then("key `category` should be $categoryBreadcrumb") {
                 val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
                 val products = click[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
@@ -133,13 +127,7 @@ object CartListPresenterClickRecommendationAnalyticsTest : Spek({
                 result = cartListPresenter.generateRecommendationDataOnClickAnalytics(recommendationItem, false, 0)
             }
 
-            Then("should be containing 1 product") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
-                Assert.assertEquals(1, productList.size)
-            }
-
-            Then("dimension 83 should be `bebas ongkir`") {
+            Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR}") {
                 val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
                 val products = click[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
                 val dimension83 = products[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
@@ -160,13 +148,7 @@ object CartListPresenterClickRecommendationAnalyticsTest : Spek({
                 result = cartListPresenter.generateRecommendationDataOnClickAnalytics(recommendationItem, false, 0)
             }
 
-            Then("should be containing 1 product") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
-                Assert.assertEquals(1, productList.size)
-            }
-
-            Then("dimension 83 should be `bebas ongkir extra`") {
+            Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA}") {
                 val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
                 val products = click[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
                 val dimension83 = products[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
@@ -186,13 +168,7 @@ object CartListPresenterClickRecommendationAnalyticsTest : Spek({
                 result = cartListPresenter.generateRecommendationDataOnClickAnalytics(recommendationItem, false, 0)
             }
 
-            Then("should be containing 1 product") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
-                Assert.assertEquals(1, productList.size)
-            }
-
-            Then("dimension 83 should be `none / other`") {
+            Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER}") {
                 val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
                 val products = click[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
                 val dimension83 = products[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]

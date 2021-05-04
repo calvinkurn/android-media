@@ -110,19 +110,7 @@ object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
                 result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(false, recommendationItem), AddToCartDataModel(), false)
             }
 
-            Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
-                Assert.assertEquals(1, products.size)
-            }
-
-            Then("key `list` value should be `cart`") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION)
-            }
-
-            Then("dimension 83 should be `bebas ongkir`") {
+            Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR}") {
                 val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
                 val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
                 val dimension83 = products[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
@@ -143,19 +131,7 @@ object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
                 result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(false, recommendationItem), AddToCartDataModel(), false)
             }
 
-            Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
-                Assert.assertEquals(1, products.size)
-            }
-
-            Then("key `list` value should be `cart`") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION)
-            }
-
-            Then("dimension 83 should be `bebas ongkir extra`") {
+            Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA}`") {
                 val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
                 val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
                 val dimension83 = products[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
@@ -175,19 +151,7 @@ object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
                 result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(false, recommendationItem), AddToCartDataModel(), false)
             }
 
-            Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
-                Assert.assertEquals(1, products.size)
-            }
-
-            Then("key `list` value should be `cart`") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION)
-            }
-
-            Then("dimension 83 should be `none / other`") {
+            Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER}") {
                 val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
                 val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
                 val dimension83 = products[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
@@ -204,13 +168,7 @@ object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
                 result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(false, RecommendationItem(isTopAds = true)), AddToCartDataModel(), false)
             }
 
-            Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
-                Assert.assertEquals(1, products.size)
-            }
-
-            Then("key `list` value should contain `top ads`") {
+            Then("key `list` value should contain ${EnhancedECommerceActionField.LIST_CART_RECOMMENDATION_TOPADS_TYPE}") {
                 val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
                 val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
                 Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String).contains(EnhancedECommerceActionField.LIST_CART_RECOMMENDATION_TOPADS_TYPE))
