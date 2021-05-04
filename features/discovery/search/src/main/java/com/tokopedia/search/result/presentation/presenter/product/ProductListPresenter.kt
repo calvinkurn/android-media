@@ -2008,9 +2008,9 @@ class ProductListPresenter @Inject constructor(
     }
 
     override fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
-        if (isViewNotAttached || broadMatchDataView.broadMatchItemDataViewList.isEmpty()) return
+        if (isViewNotAttached) return
 
-        when(val carouselProductType = broadMatchDataView.broadMatchItemDataViewList.first().carouselProductType) {
+        when(val carouselProductType = broadMatchDataView.broadMatchItemDataViewList.firstOrNull()?.carouselProductType ?: return) {
             is BroadMatchProduct -> view.trackEventClickSeeMoreBroadMatch(broadMatchDataView)
             is DynamicCarouselProduct -> view.trackEventClickSeeMoreDynamicProductCarousel(
                     broadMatchDataView,
