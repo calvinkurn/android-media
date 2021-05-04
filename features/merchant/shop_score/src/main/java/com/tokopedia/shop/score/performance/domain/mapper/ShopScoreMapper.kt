@@ -175,12 +175,15 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                             when {
                                 isEligiblePMPro == true -> {
                                     add(mapToSectionPMPro(shopInfoPeriodUiModel))
+                                    return@apply
                                 }
                                 isEligiblePM == true -> {
                                     add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerPM))
+                                    return@apply
                                 }
                                 else -> {
                                     add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
+                                    return@apply
                                 }
                             }
                         }
