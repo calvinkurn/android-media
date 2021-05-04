@@ -97,12 +97,10 @@ import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerVie
 import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
-import com.tokopedia.home.util.createProductCardOptionsModel
 import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
@@ -420,8 +418,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     fun callSubordinateTasks() {
         injectCouponTimeBased()
-        setGeolocationPermission()
-        needToShowGeolocationComponent()
     }
 
 
@@ -1214,10 +1210,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else {
                 val dataMap = data as Map<*, *>
                 sendEETracking(RecommendationListTracking.getAddToCartOnDynamicListCarousel(
-                        (dataMap[HomeViewModel.CHANNEL] as DynamicHomeChannel.Channels?)!!,
-                        (dataMap[HomeViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
-                        dataMap[HomeViewModel.POSITION] as Int,
-                        (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        (dataMap[HomeRevampViewModel.CHANNEL] as DynamicHomeChannel.Channels?)!!,
+                        (dataMap[HomeRevampViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
+                        dataMap[HomeRevampViewModel.POSITION] as Int,
+                        (dataMap[HomeRevampViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
                         "0",
                         viewModel.get().getUserId()
                 ) as HashMap<String, Any>)
@@ -1232,10 +1228,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else {
                 val dataMap = data as Map<*, *>
                 sendEETracking(RecommendationListTracking.getAddToCartOnDynamicListCarouselHomeComponent(
-                        (dataMap[HomeViewModel.CHANNEL] as ChannelModel),
-                        (dataMap[HomeViewModel.GRID] as ChannelGrid),
-                        dataMap[HomeViewModel.POSITION] as Int,
-                        (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        (dataMap[HomeRevampViewModel.CHANNEL] as ChannelModel),
+                        (dataMap[HomeRevampViewModel.GRID] as ChannelGrid),
+                        dataMap[HomeRevampViewModel.POSITION] as Int,
+                        (dataMap[HomeRevampViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
                         "0",
                         getHomeViewModel().getUserId()
                 ) as HashMap<String, Any>)
@@ -1829,63 +1825,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_NEW_BALANCE_WIDGET, true)
     }
 
-    private fun needToShowGeolocationComponent() {
-        val firebaseShowGeolocationComponent = getRemoteConfig().getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT, true)
-        if (!firebaseShowGeolocationComponent) {
-            getHomeViewModel().setNeedToShowGeolocationComponent(false)
-            return
-        }
-        var needToShowGeolocationComponent = true
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity?.let {
-                val userHasDeniedPermissionBefore = ActivityCompat
-                        .shouldShowRequestPermissionRationale(it,
-                                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)
-                if (userHasDeniedPermissionBefore) {
-                    getHomeViewModel().setNeedToShowGeolocationComponent(false)
-                    return
-                }
-            }
-        }
-        if (activity != null) {
-            if (getHomeViewModel().hasGeolocationPermission()) {
-                needToShowGeolocationComponent = false
-            }
-        }
-        if (needToShowGeolocationComponent && HIDE_GEO) {
-            getHomeViewModel().setNeedToShowGeolocationComponent(false)
-            return
-        }
-        getHomeViewModel().setNeedToShowGeolocationComponent(needToShowGeolocationComponent)
-    }
-
-    private fun setGeolocationPermission() {
-        if (activity == null) getHomeViewModel().setGeolocationPermission(false)
-        else getHomeViewModel().setGeolocationPermission(permissionCheckerHelper.get().hasPermission(
-                requireActivity(),
-                arrayOf(PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)))
-    }
-
-    private fun promptGeolocationPermission() {
-        permissionCheckerHelper.get().checkPermission(this,
-                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
-                object : PermissionCheckerHelper.PermissionCheckListener {
-                    override fun onPermissionDenied(permissionText: String) {
-                        HomePageTracking.eventClickNotAllowGeolocation()
-                        getHomeViewModel().onCloseGeolocation()
-                        showNotAllowedGeolocationSnackbar()
-                    }
-
-                    override fun onNeverAskAgain(permissionText: String) {}
-                    override fun onPermissionGranted() {
-                        HomePageTracking.eventClickAllowGeolocation()
-                        detectAndSendLocation()
-                        getHomeViewModel().onCloseGeolocation()
-                        showAllowedGeolocationSnackbar()
-                    }
-                }, "")
-    }
-
     private fun detectAndSendLocation() {
         activity?.let {
             Observable.just(true).map { aBoolean: Boolean? ->
@@ -1904,7 +1843,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun onGetLocation(): Function1<DeviceLocation, Unit> {
         return { (latitude, longitude) ->
             saveLocation(activity, latitude, longitude)
-            getHomeViewModel().sendGeolocationData()
         }
     }
 
@@ -2500,15 +2438,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         })
     }
 
-    override fun launchPermissionChecker() {
-        promptGeolocationPermission()
-    }
-
-    override fun onCloseGeolocationView() {
-        HIDE_GEO = true
-        getHomeViewModel().onCloseGeolocation()
-    }
-
     private fun getSnackBar(text: String, duration: Int): Snackbar {
         if (homeSnackbar != null) {
             homeSnackbar?.dismiss()
@@ -2849,5 +2778,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 saveStateReset(false)
             }
         }).show()
+    }
+
+    private fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {
+        val productCardOptionsModel = ProductCardOptionsModel()
+        productCardOptionsModel.hasWishlist = true
+        productCardOptionsModel.isWishlisted = isWishlist
+        productCardOptionsModel.productId = productId.toString()
+        productCardOptionsModel.isTopAds = isTopAds
+        productCardOptionsModel.topAdsWishlistUrl = wishlistUrl
+        productCardOptionsModel.productPosition = position
+        productCardOptionsModel.screenName = header
+        return productCardOptionsModel
     }
 }
