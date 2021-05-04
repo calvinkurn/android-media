@@ -506,6 +506,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 changeSearchParameter()
             }
 
+            headerHotelSearchMap.headerView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             headerHotelSearchMap.addCustomRightContent(wrapper)
             headerHotelSearchMap.isShowBackButton = true
             headerHotelSearchMap.setNavigationOnClickListener {

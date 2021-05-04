@@ -239,7 +239,8 @@
             android:id="@+id/headerHotelSearchMap"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:elevation="@dimen/layout_lvl0" />
+            app:elevation="@dimen/layout_lvl0"
+            app:unify_header_transparent_mode="true"/>
 
         <include
             android:id="@+id/shimmeringQuickFilterHotelSearchMap"
