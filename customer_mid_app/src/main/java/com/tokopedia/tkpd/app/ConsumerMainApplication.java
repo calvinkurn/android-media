@@ -510,6 +510,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
          * push notification data that aren't rendered yet.
          * then, put all of push_data into local storage.
          * */
+
         if (getAmplificationRemoteConfig()) {
             try {
                 AmplificationDataSource.invoke(ConsumerMainApplication.this);
@@ -525,7 +526,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     private Boolean getAmplificationRemoteConfig() {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_AMPLIFICATION, true);
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_AMPLIFICATION, false);
     }
 
     private void openShakeDetectCampaignPage(boolean isLongShake) {

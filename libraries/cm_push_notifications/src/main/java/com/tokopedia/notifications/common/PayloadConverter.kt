@@ -6,12 +6,15 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.notification.common.utils.NotificationTargetPriorities
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
 import com.tokopedia.notifications.model.*
 import org.json.JSONObject
 import java.util.*
+import kotlin.collections.ArrayList
 import com.tokopedia.notification.common.utils.NotificationValidationManager.NotificationPriorityType as NotificationPriorityType
 
 const val HOURS_24_IN_MILLIS: Long = 24 * 60 * 60 * 1000L
@@ -34,12 +37,12 @@ object PayloadConverter {
         val model = BaseNotificationModel()
         model.icon = data.getString(ICON, "")
         if (data.containsKey(NOTIFICATION_PRIORITY)) {
-            model.priorityPreOreo = Integer.parseInt(data.getString(NOTIFICATION_PRIORITY, "2"))
+            model.priorityPreOreo = data.getString(NOTIFICATION_PRIORITY, "2").toIntOrZero()
         }
         model.soundFileName = data.getString(SOUND, "")
-        model.notificationId = Integer.parseInt(data.getString(NOTIFICATION_ID, "500"))
-        model.campaignId = java.lang.Long.parseLong(data.getString(CAMPAIGN_ID, "0"))
-        model.parentId = java.lang.Long.parseLong(data.getString(PARENT_ID, "0"))
+        model.notificationId = data.getString(NOTIFICATION_ID, "500").toIntOrZero()
+        model.campaignId = data.getString(CAMPAIGN_ID, "0").toLongOrZero()
+        model.parentId = data.getString(PARENT_ID, "0").toLongOrZero()
         model.tribeKey = data.getString(TRIBE_KEY, "")
         model.type = data.getString(NOTIFICATION_TYPE, "")
         model.channelName = data.getString(CHANNEL, "")
@@ -52,7 +55,7 @@ object PayloadConverter {
         if (actionButtonList != null)
             model.actionButton = actionButtonList
         model.persistentButtonList = getPersistentNotificationData(data)
-        model.videoPushModel = getVideoNotificationData(data)
+        model.videoPushModel = getVideoNotificationData(data)//todo check
         model.customValues = data.getString(CUSTOM_VALUE, "")
         val carouselList = getCarouselList(data)
         if (carouselList != null) {
@@ -96,7 +99,110 @@ object PayloadConverter {
         model.blastId = data.getString(BLAST_ID)
 
         // webHook parameters
-        model.webHookParam = data.getString(WEBHOOK_PARAM)
+        model.webHookParam = data.getString(WEBHOOK_PARAM) //todo check
+
+        return model
+    }
+
+    fun convertToBaseModel(data: AmplificationBaseNotificationModel): BaseNotificationModel {
+        val model = BaseNotificationModel()
+        model.icon = data.icon
+        model.priorityPreOreo = data.priorityPreOreo ?: 2
+        model.soundFileName = data.soundFileName
+        model.notificationId = data.notificationId ?: 500
+        model.campaignId = data.campaignId ?: 0
+        model.parentId = data.parentId ?: 0
+        model.tribeKey = data.tribeKey
+        model.type = data.type
+        model.channelName = data.channelName
+        model.title = data.title
+        model.detailMessage = data.detailMessage
+        model.message = data.message
+        model.media = data.media
+        model.appLink = data.appLink ?: ApplinkConst.HOME
+        data.actionButton?.let {
+            val actionButtonList = ArrayList<ActionButton>()
+            it.forEach { actionButtonNullable ->
+                actionButtonNullable?.let { actionButtonNonNullable ->
+                    actionButtonList.add(actionButtonNonNullable)
+                }
+            }
+            model.actionButton = actionButtonList
+        }
+        data.persistentButtonList?.let {
+            val persButtonList = ArrayList<PersistentButton>()
+            it.forEach { persButtonNullable ->
+                persButtonNullable?.let { persButtonNonNullable ->
+                    persButtonList.add(persButtonNonNullable)
+                }
+            }
+            model.persistentButtonList = persButtonList
+        }
+        model.videoPushModel = data.videoPushModel?.let { JSONObject(it) }
+        model.customValues = data.customValues
+        data.carouselList?.let {
+            val carouselList = ArrayList<Carousel>()
+            it.forEach { carouselNullable ->
+                carouselNullable?.let { carouselNonNullable ->
+                    carouselList.add(carouselNonNullable)
+                }
+            }
+            model.carouselList = carouselList
+            model.carouselIndex = data.carouselIndex ?: 0
+        }
+
+        model.isVibration = data.isVibration ?: true
+        model.isUpdateExisting = data.isUpdateExisting ?: false
+        model.isTest = data.isTest == true
+
+        data.gridList?.let {
+            val gridList = ArrayList<Grid>()
+            it.forEach { gridNullable ->
+                gridNullable?.let { gridNonNullable ->
+                    gridList.add(gridNonNullable)
+                }
+            }
+            model.gridList = gridList
+        }
+
+        data.productInfoList?.let {
+            val productList = ArrayList<ProductInfo>()
+            it.forEach { productNullable ->
+                productNullable?.let { productNonNullable ->
+                    productList.add(productNonNullable)
+                }
+            }
+            model.productInfoList = productList
+        }
+        model.subText = data.subText
+        model.visualCollapsedImageUrl = data.visualCollapsedImageUrl
+        model.visualExpandedImageUrl = data.visualExpandedImageUrl
+        model.campaignUserToken = data.campaignUserToken
+
+        model.notificationMode =  if (data.notificationMode == true) NotificationMode.OFFLINE else NotificationMode.POST_NOW
+
+        //start end time,
+        model.startTime = data.startTime.toLongOrZero()
+        model.endTime = data.endTime.toLongOrZero()
+
+        if (model.notificationMode != NotificationMode.OFFLINE && (model.startTime == 0L ||
+                        model.endTime == 0L)) {
+            model.startTime = System.currentTimeMillis()
+            model.endTime = System.currentTimeMillis() + CMPushNotificationManager.instance.cmPushEndTimeInterval
+        }
+
+        model.status = NotificationStatus.PENDING
+        model.notificationProductType = data.notificationProductType
+
+        // notification attribution
+        model.transactionId = data.transactionId
+        model.userTransactionId = data.userTransactionId
+        model.userId = data.userId
+        model.shopId = data.shopId
+        model.blastId = data.blastId
+
+        // webHook parameters
+        model.webHookParam = data.webHookParam
 
         return model
     }
@@ -125,7 +231,7 @@ object PayloadConverter {
 
     private fun dataToLong(data: Bundle, key: String): Long {
         return try {
-            return data.getString(key)?.toLong()?: 0L
+            return data.getString(key)?.toLong() ?: 0L
         } catch (e: Exception) {
             0L
         }

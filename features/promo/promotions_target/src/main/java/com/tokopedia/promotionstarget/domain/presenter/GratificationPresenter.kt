@@ -58,11 +58,11 @@ class GratificationPresenter @Inject constructor(val context: Context,
     lateinit var dialogCreator: DialogCreator
 
     @Inject
-    @field:Named(IO)
+    @field:Named("IO")
     lateinit var worker: CoroutineDispatcher
 
     @Inject
-    @field:Named(MAIN)
+    @field:Named("MAIN")
     lateinit var uiWorker: CoroutineDispatcher
 
     private var job: Job? = null
