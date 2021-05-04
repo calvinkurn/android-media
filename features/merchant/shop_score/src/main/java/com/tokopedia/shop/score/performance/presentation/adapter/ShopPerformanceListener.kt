@@ -39,7 +39,7 @@ interface ItemPotentialRegularMerchantListener {
 }
 
 interface ItemRecommendationFeatureListener {
-    fun onItemClickedRecommendationFeature(appLink: String)
+    fun onItemClickedRecommendationFeature(appLink: String, identifier: String)
     fun onItemImpressRecommendationFeature()
 }
 

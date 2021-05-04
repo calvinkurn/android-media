@@ -297,8 +297,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     /**
      * ItemTimerNewSellerListener
      */
-    override fun onItemClickedRecommendationFeature(appLink: String) {
-        shopScorePenaltyTracking.clickMerchantToolsRecommendation()
+    override fun onItemClickedRecommendationFeature(appLink: String, identifier: String) {
+        shopScorePenaltyTracking.clickMerchantToolsRecommendation(identifier)
         RouteManager.route(context, appLink)
     }
 

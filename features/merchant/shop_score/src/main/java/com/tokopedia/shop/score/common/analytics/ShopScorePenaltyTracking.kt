@@ -1,5 +1,7 @@
 package com.tokopedia.shop.score.common.analytics
 
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.BROADCAST_CHAT
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.BROADCAST_CHAT_IDENTIFIER
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.BUSSINESS_UNIT
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_CHECK_PENALTY
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_COMPLETE_INFO
@@ -14,6 +16,8 @@ import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_WATCH_VIDEO
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_YOUR_SHOP_GET_PM
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CURRENT_SITE
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.FREE_SHIPPING
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.FREE_SHIPPING_IDENTIFIER
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_CALL_HELP_CENTER
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_CHECK_PENALTY
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.IMPRESSION_COMPLETE_INFO
@@ -36,6 +40,7 @@ import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.TRANS
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.TRANSITION_PERIOD_SHOP_SCORE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.USER_ID
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.VIEW_SHOP_SCORE_IRIS
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.VOUCHER_RECOMMENDATION_IDENTIFIER
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -45,6 +50,7 @@ import javax.inject.Inject
 /**
  * SHOP SCORE REVAMP
  * https://mynakama.tokopedia.com/datatracker/product/requestdetail/804
+ * https://mynakama.tokopedia.com/datatracker/product/requestdetail/949
  */
 class ShopScorePenaltyTracking @Inject constructor(private val userSession: UserSessionInterface) {
     private val tracker: ContextAnalytics by lazy { TrackApp.getInstance().gtm }
@@ -89,8 +95,13 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
         sendShopScoreTransitionItemEvent(CLICK_CONTACT_HELP_CENTER)
     }
 
-    fun clickMerchantToolsRecommendation() {
-        val toolsLabel = "" //to be confirm
+    fun clickMerchantToolsRecommendation(identifier: String) {
+        val toolsLabel = when (identifier) {
+            FREE_SHIPPING_IDENTIFIER -> FREE_SHIPPING
+            VOUCHER_RECOMMENDATION_IDENTIFIER -> FREE_SHIPPING
+            BROADCAST_CHAT_IDENTIFIER -> BROADCAST_CHAT
+            else -> ""
+        }
         val mapData = mapOf(
                 TrackAppUtils.EVENT to CLICK_SHOP_SCORE,
                 TrackAppUtils.EVENT_CATEGORY to TRANSITION_PERIOD_SHOP_SCORE,

@@ -78,6 +78,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
                   text
                   image_url
                   related_link_applink
+                  identifier
                 }
               }
             }

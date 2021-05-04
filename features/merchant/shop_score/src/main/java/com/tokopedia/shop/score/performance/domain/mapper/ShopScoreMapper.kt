@@ -485,7 +485,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                 iconRecommendationUrl = it.imageUrl,
                                 appLinkRecommendation = it.relatedLinkAppLink,
                                 descRecommendation = it.text,
-                                titleRecommendation = it.title
+                                titleRecommendation = it.title,
+                                identifier = it.identifier
                         ))
                     }
                 })
