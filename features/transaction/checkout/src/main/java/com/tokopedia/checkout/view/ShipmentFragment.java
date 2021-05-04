@@ -1561,12 +1561,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
                                     if (shipmentCartItemModel.getCartString().equals(voucherOrdersItemUiModel.getUniqueId())) {
                                         notEligiblePromoHolderdata.setShopName(shipmentCartItemModel.getShopName());
-                                        // Todo : refactor NotEligiblePromoHolderdata
-//                                        if (shipmentCartItemModel.isOfficialStore()) {
-//                                            notEligiblePromoHolderdata.setIconType(NotEligiblePromoHolderdata.getTYPE_ICON_OFFICIAL_STORE());
-//                                        } else if (shipmentCartItemModel.isGoldMerchant()) {
-//                                            notEligiblePromoHolderdata.setIconType(NotEligiblePromoHolderdata.getTYPE_ICON_POWER_MERCHANT());
-//                                        }
+                                        notEligiblePromoHolderdata.setShopBadge(shipmentCartItemModel.getShopTypeInfoData().getShopBadge());
                                         break;
                                     }
                                 }

@@ -1,14 +1,12 @@
 package com.tokopedia.purchase_platform.common.feature.promonoteligible
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.purchase_platform.common.databinding.ItemPromoRedStateBinding
-
-/**
- * Created by Irfan Khoirul on 2019-06-21.
- */
+import com.tokopedia.utils.image.ImageUtils
 
 class PromoNotEligibleViewHolder(private val binding: ItemPromoRedStateBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -19,11 +17,12 @@ class PromoNotEligibleViewHolder(private val binding: ItemPromoRedStateBinding) 
     fun bind(model: NotEligiblePromoHolderdata) {
         if (model.showShopSection) {
             binding.imageMerchant.show()
-            when (model.iconType) {
-                NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL -> binding.imageMerchant.setImageResource(R.drawable.ic_promo_global)
-                NotEligiblePromoHolderdata.TYPE_ICON_OFFICIAL_STORE -> binding.imageMerchant.setImageResource(R.drawable.ic_badge_shop_official)
-                NotEligiblePromoHolderdata.TYPE_ICON_POWER_MERCHANT -> binding.imageMerchant.setImageResource(R.drawable.ic_power_merchant)
-                else -> binding.imageMerchant.gone()
+            if (model.shopBadge.isNotBlank()) {
+                ImageHandler.loadImageWithoutPlaceholder(binding.imageMerchant, model.shopBadge)
+            } else if (model.iconType == NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL) {
+                binding.imageMerchant.setImageResource(R.drawable.ic_promo_global)
+            } else {
+                binding.imageMerchant.gone()
             }
         } else {
             binding.imageMerchant.gone()
