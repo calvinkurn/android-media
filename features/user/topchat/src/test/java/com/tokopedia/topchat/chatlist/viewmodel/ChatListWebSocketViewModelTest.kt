@@ -20,6 +20,7 @@ import io.mockk.*
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import org.hamcrest.CoreMatchers.`is`
+import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -37,6 +38,7 @@ class ChatListWebSocketViewModelTest {
     private val pendingMessageHandler: PendingMessageHandler = mockk(relaxed = true)
     private val webSocket: WebSocket = mockk(relaxed = true)
     private val webSocketStateHandler: WebSocketStateHandler = mockk(relaxed = true)
+    private val lifecycleRegistry = LifecycleRegistry(mockk(relaxed = true))
 
     private val viewModel = ChatListWebSocketViewModel(
             topchatWebSocket,
@@ -52,15 +54,16 @@ class ChatListWebSocketViewModelTest {
     @Before
     fun setUp() {
         viewModel.itemChat.observeForever(itemChatObserver)
+        lifecycleRegistry.addObserver(viewModel)
+    }
+
+    @After
+    fun tearDown() {
+        lifecycleRegistry.removeObserver(viewModel)
     }
 
     @Test
     fun onLifeCycleStart_should_return_isOnStop_false_and_activeRoom_is_empty() {
-        // Given
-        val lifecycleRegistry = LifecycleRegistry(mockk(relaxed = true))
-        lifecycleRegistry.addObserver(viewModel)
-
-
         // When
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
 
