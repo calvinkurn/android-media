@@ -11,7 +11,6 @@ import com.tokopedia.play.broadcaster.view.state.PlayLivePusherState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -71,16 +70,16 @@ class PlayLiveStateProcessor(
         if (livePusherWrapper.pusherState is ApsaraLivePusherState.Stop) {
             livePusherWrapper.destroy()
         } else if (!isLiveStarted) {
-            scope.launch { resume() }
+            scope.launch { livePusherWrapper.resume() }
         }
 
         if (isLiveStarted) {
             if (isReachMaximumPauseDuration()) reachMaximumPauseDuration()
             else {
                 scope.launch {
-                    resume()
+                    livePusherWrapper.resume()
                     if (!livePusherWrapper.isActivePushing) {
-                        reconnect()
+                        livePusherWrapper.reconnect()
                         broadcastState(PlayLivePusherState.Error(PlayLivePusherErrorState.NetworkLoss, IllegalStateException("Connection Loss")))
                     }
                 }
@@ -158,17 +157,9 @@ class PlayLiveStateProcessor(
         )
     }
 
-    private suspend fun resume() = withContext(dispatchers.default) {
-        livePusherWrapper.resume()
-    }
-
-    private suspend fun reconnect() = withContext(dispatchers.default) {
-        livePusherWrapper.reconnect()
-    }
-
     private fun autoReconnect() {
         autoReconnectJob = scope.launch {
-            reconnect()
+            livePusherWrapper.reconnect()
         }
     }
 
