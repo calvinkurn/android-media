@@ -56,7 +56,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.variant_common.model.ProductVariantCommon
+import com.tokopedia.variant_common.model.ProductVariant
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -1015,7 +1015,7 @@ class DynamicProductDetailViewModelTest {
      */
     @Test
     fun `process initial variant`() {
-        viewModel.processVariant(ProductVariantCommon(), mutableMapOf())
+        viewModel.processVariant(ProductVariant(), mutableMapOf())
 
         Assert.assertTrue(viewModel.initialVariantData.value != null)
     }
@@ -1024,7 +1024,7 @@ class DynamicProductDetailViewModelTest {
     fun `variant clicked not partial`() {
         val partialySelect = false
         val imageVariant = "image"
-        viewModel.onVariantClicked(ProductVariantCommon(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
+        viewModel.onVariantClicked(ProductVariant(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
         Assert.assertTrue(viewModel.onVariantClickedData.value != null)
         Assert.assertTrue(viewModel.updatedImageVariant.value == null)
     }
@@ -1034,7 +1034,7 @@ class DynamicProductDetailViewModelTest {
         val partialySelect = true
         val imageVariant = "image"
         viewModel.listOfParentMedia = mutableListOf(Media(uRLOriginal = "gambar 1"))
-        viewModel.onVariantClicked(ProductVariantCommon(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
+        viewModel.onVariantClicked(ProductVariant(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
         Assert.assertTrue(viewModel.onVariantClickedData.value == null)
         Assert.assertTrue(viewModel.updatedImageVariant.value != null)
         Assert.assertTrue(viewModel.updatedImageVariant.value?.second?.first()?.uRLOriginal == imageVariant)
@@ -1045,7 +1045,7 @@ class DynamicProductDetailViewModelTest {
         val partialySelect = true
         val imageVariant = "gambar gan"
         viewModel.listOfParentMedia = null
-        viewModel.onVariantClicked(ProductVariantCommon(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
+        viewModel.onVariantClicked(ProductVariant(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
         Assert.assertTrue(viewModel.onVariantClickedData.value == null)
         Assert.assertTrue(viewModel.updatedImageVariant.value != null)
         Assert.assertTrue(viewModel.updatedImageVariant.value?.second?.isEmpty() == true)

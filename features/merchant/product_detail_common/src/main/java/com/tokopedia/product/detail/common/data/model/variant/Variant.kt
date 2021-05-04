@@ -1,13 +1,12 @@
-package com.tokopedia.variant_common.model
+package com.tokopedia.product.detail.common.data.model.variant
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
- * Created by hendry on 01/02/19.
+ * Created by Yehezkiel on 01/07/20
  */
 data class Variant(
-
         @SerializedName("productVariantID")
         @Expose
         val pv: String? = null, //ex: 6528
@@ -15,10 +14,6 @@ data class Variant(
         @SerializedName("variantID")
         @Expose
         val v: String? = null, //ex:1
-
-        @SerializedName("variantUnitID")
-        @Expose
-        val vu: Int? = null, // ex: 0
 
         @SerializedName("name")
         @Expose
@@ -32,32 +27,27 @@ data class Variant(
         @Expose
         val unitName: String? = null, //example: International
 
-        @SerializedName("position")
-        @Expose
-        val position: Int? = null, //start from 1
-
         @SerializedName("option")
         @Expose
-        val options: List<Option> = listOf()
-) {
-    companion object {
-        const val SIZE = "size" // this is from api
-        const val COLOR = "colour" // this is from api
-    }
+        val options: List<VariantOption> = listOf()
+){
+        companion object {
+                const val SIZE = "size" // this is from api
+                const val COLOR = "colour" // this is from api
+        }
 
-    val isSizeIdentifier: Boolean
-        get() = SIZE.equals(identifier, false)
+        val isSizeIdentifier: Boolean
+                get() = SIZE.equals(identifier, false)
 }
 
-data class Option(
-
+data class VariantOption(
         @SerializedName("productVariantOptionID") // ex:23454
         @Expose
-        val id: Int? = null,
+        val id: String? = null,
 
         @SerializedName("variantUnitValueID") //ex: 1
         @Expose
-        val vuv: Int? = null,
+        val vuv: String? = null,
 
         @SerializedName("value")
         @Expose
@@ -70,8 +60,5 @@ data class Option(
         @SerializedName("picture")
         @Expose
         val picture: Picture? = null
-) {
-    fun isColor(): Boolean {
-        return hex != null
-    }
-}
+)
+

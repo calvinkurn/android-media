@@ -45,6 +45,7 @@ dependencies {
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.variantCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.productDetailCommon)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 

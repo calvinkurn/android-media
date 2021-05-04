@@ -4,7 +4,7 @@ package com.tokopedia.variant_common.model
  * Created by Yehezkiel on 08/03/20
  */
 data class VariantOptionWithAttribute(
-        val variantId: Int = 0,
+        val variantId: String = "",
         val currentState: Int = 0,
         val variantHex: String = "",
         val variantName: String = "",

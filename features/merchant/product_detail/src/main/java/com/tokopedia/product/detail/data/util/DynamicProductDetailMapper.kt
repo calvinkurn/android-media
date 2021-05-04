@@ -5,14 +5,13 @@ import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
 import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
-import com.tokopedia.variant_common.model.*
-import com.tokopedia.variant_common.model.ThematicCampaign
 
 object DynamicProductDetailMapper {
 
@@ -135,56 +134,18 @@ object DynamicProductDetailMapper {
 
     // Because the new variant data have several different type, we need to map this into the old one
     // the old variant data was from p2, but changed into p1 now
-    fun mapVariantIntoOldDataClass(data: PdpGetLayout): ProductVariantCommon? {
+    fun mapVariantIntoOldDataClass(data: PdpGetLayout): ProductVariant? {
         val networkData = data.components.find {
             it.type == ProductDetailConstant.VARIANT
         }?.componentData?.firstOrNull() ?: return null
 
-        val variants = networkData.variants.map { it ->
-            val newOption = it.options.map { data ->
-                Option(id = data.id.toIntOrZero(), vuv = data.vuv.toIntOrZero(), value = data.value, hex = data.hex, picture = Picture(original = data.picture?.original
-                        ?: "", thumbnail = data.picture?.thumbnail ?: "", url100 = data.picture?.url100 ?: ""))
-            }
-
-            Variant(pv = it.pv,
-                    v = it.v,
-                    name = it.name,
-                    identifier = it.identifier,
-                    options = newOption)
-        }
-
-        val child = networkData.children.map {
-            val stock = VariantStock(stock = it.stock?.stock.toIntOrZero(), isBuyable = it.stock?.isBuyable, stockWording = it.stock?.stockWording,
-                    stockWordingHTML = it.stock?.stockWordingHTML, minimumOrder = it.stock?.minimumOrder.toIntOrZero())
-
-            val newCampaignData = it.campaign
-            val campaign = Campaign(campaignID = newCampaignData?.campaignID, isActive = newCampaignData?.isActive, originalPrice = newCampaignData?.originalPrice,
-                    originalPriceFmt = newCampaignData?.originalPriceFmt, discountedPercentage = newCampaignData?.discountedPercentage, discountedPrice = newCampaignData?.discountedPrice,
-                    campaignType = newCampaignData?.campaignType.toIntOrZero(), campaignTypeName = newCampaignData?.campaignTypeName,
-                    startDate = newCampaignData?.startDate, endDateUnix = newCampaignData?.endDateUnix, stock = newCampaignData?.stock, isAppsOnly = newCampaignData?.isAppsOnly, applinks = newCampaignData?.applinks,
-                    stockSoldPercentage = newCampaignData?.stockSoldPercentage, isUsingOvo = newCampaignData?.isUsingOvo
-                    ?: false, isCheckImei = newCampaignData?.isCheckImei, minOrder = newCampaignData?.minOrder, hideGimmick = newCampaignData?.hideGimmick,
-                    background = newCampaignData?.background ?: "", campaignIdentifier = newCampaignData?.campaignIdentifier ?: 0)
-
-            val thematicCampaignData = it.thematicCampaign
-            val thematicCampaign = ThematicCampaign(
-                    campaignName = thematicCampaignData?.campaignName,
-                    icon = thematicCampaignData?.icon,
-                    background = thematicCampaignData?.background,
-                    additionalInfo = thematicCampaignData?.additionalInfo)
-
-            VariantChildCommon(productId = it.productId, price = it.price, priceFmt = it.priceFmt, sku = it.sku, stock = stock,
-                    optionIds = it.optionIds, name = it.name, url = it.url, picture = Picture(original = it.picture?.original, thumbnail = it.picture?.thumbnail),
-                    campaign = campaign, thematicCampaign = thematicCampaign,isCod = it.isCod)
-        }
-
-        return ProductVariantCommon(
+        return ProductVariant(
                 parentId = networkData.parentId,
                 errorCode = networkData.errorCode,
-                defaultChild = networkData.defaultChild,
                 sizeChart = networkData.sizeChart,
-                variant = variants,
-                children = child
+                defaultChild = networkData.defaultChild,
+                variants = networkData.variants,
+                children = networkData.children
         )
     }
 

@@ -9,6 +9,7 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
@@ -23,7 +24,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.variant_common.model.ProductVariantCommon
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -50,7 +50,7 @@ object DynamicProductDetailTracking {
         return ComponentTrackDataModel(data?.type() ?: "", data?.name() ?: "", position)
     }
 
-    fun generateVariantString(variant: ProductVariantCommon?, selectedProductId: String): String {
+    fun generateVariantString(variant: ProductVariant?, selectedProductId: String): String {
         return variant?.getOptionListString(selectedProductId)?.map {
             it
         }?.joinToString(",") ?: ""
@@ -422,7 +422,7 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, generateComponentTrackModel(variantData, variantPosition), ProductTrackingConstant.Action.CLICK_CHOOSE_PRODUCT_VARIANT)
         }
 
-        fun onVariantLevel1Clicked(productInfo: DynamicProductInfoP1?, variantData: VariantDataModel?, variantCommonData: ProductVariantCommon?, variantPosition: Int) {
+        fun onVariantLevel1Clicked(productInfo: DynamicProductInfoP1?, variantData: VariantDataModel?, variantCommonData: ProductVariant?, variantPosition: Int) {
 
             val variantLevel = variantData?.listOfVariantCategory?.size.toString().toList().joinToString(prefix = "level : ", postfix = ";")
             val variantTitle = variantData?.listOfVariantCategory?.map {

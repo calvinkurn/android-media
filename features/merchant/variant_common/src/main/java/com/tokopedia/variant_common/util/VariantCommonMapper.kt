@@ -1,45 +1,48 @@
 package com.tokopedia.variant_common.util
 
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.Variant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.variant_common.constant.VariantConstant
-import com.tokopedia.variant_common.model.*
+import com.tokopedia.variant_common.model.VariantCategory
+import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 
 /**
  * Created by Yehezkiel on 08/03/20
  */
 
 object VariantCommonMapper {
-    var selectedOptionId = listOf<Int>()
+    var selectedOptionId = listOf<String>()
 
-    fun mapVariantIdentifierToHashMap(variantData: ProductVariantCommon?): MutableMap<String, Int> {
-        return variantData?.variant?.associateBy({
+    fun mapVariantIdentifierToHashMap(variantData: ProductVariant?): MutableMap<String, String> {
+        return variantData?.variants?.associateBy({
             it.pv.toString()
         }, {
-            0
+            "0"
         })?.toMutableMap() ?: mutableMapOf()
     }
 
-    fun mapVariantIdentifierWithDefaultSelectedToHashMap(variantData: ProductVariantCommon?, selectedOptionIds: List<Int>): MutableMap<String, Int> {
-        val hashMap: MutableMap<String, Int> = mutableMapOf()
+    fun mapVariantIdentifierWithDefaultSelectedToHashMap(variantData: ProductVariant?, selectedOptionIds: List<String>): MutableMap<String, String> {
+        val hashMap: MutableMap<String, String> = mutableMapOf()
 
-        variantData?.variant?.mapIndexed { index, variant ->
-            hashMap[variant.pv.toString()] = selectedOptionIds.getOrNull(index) ?: 0
+        variantData?.variants?.mapIndexed { index, variant ->
+            hashMap[variant.pv.toString()] = selectedOptionIds.getOrNull(index) ?: "0"
         }
 
         return hashMap
     }
 
-    fun processVariant(variantData: ProductVariantCommon?, mapOfSelectedVariant: MutableMap<String, Int>? = mutableMapOf(), level: Int = -1, isPartialySelected: Boolean = false): List<VariantCategory>? {
-        val variantChilderValidation = validateVariantChildren(variantData?.children ?: listOf(), variantData?.variant?.size ?: 0)
+    fun processVariant(variantData: ProductVariant?, mapOfSelectedVariant: MutableMap<String, String>? = mutableMapOf(), level: Int = -1, isPartialySelected: Boolean = false): List<VariantCategory>? {
+        val variantChilderValidation = validateVariantChildren(variantData?.children ?: listOf(), variantData?.variants?.size ?: 0)
         if (variantData == null) return null
         if (!variantChilderValidation) return null
 
         val listOfVariant: MutableList<VariantCategory> = mutableListOf()
-        var updatedSelectedOptionsId: List<Int>
+        var updatedSelectedOptionsId: List<String>
         val isSelectedLevelOne = level < 1
 
         //Parse selectedOptionsId Map to List<Int>
-        val selectedOptionIds: List<Int> = mapOfSelectedVariant?.map {
+        val selectedOptionIds: List<String> = mapOfSelectedVariant?.map {
             //[Merah,S]
             it.value
         } ?: listOf()
@@ -47,7 +50,7 @@ object VariantCommonMapper {
         // If user selected only 1 level, we have to filter and generate only 1 list
         // If not we will get [0,SizeId] or [WarnaId,0]
         updatedSelectedOptionsId = selectedOptionIds.filterNot {
-            it == 0
+            it.toLong() == 0L
         }
 
         //Check wether selected product is buyable , if not get another  siblings that buyable
@@ -64,17 +67,17 @@ object VariantCommonMapper {
 
         selectedOptionId = updatedSelectedOptionsId
 
-        for ((level, variant: Variant) in variantData.variant.withIndex()) {
-            listOfVariant.add(convertVariantViewModel(variant, variantData, level, updatedSelectedOptionsId, (level + 1) == variantData.variant.size,
+        for ((level, variant: Variant) in variantData.variants.withIndex()) {
+            listOfVariant.add(convertVariantViewModel(variant, variantData, level, updatedSelectedOptionsId, (level + 1) == variantData.variants.size,
                     isSelectedProductBuyable, isPartialySelected, isSelectedLevelOne, isSelectedProductFlashSale))
         }
 
         return listOfVariant
     }
 
-    fun selectedProductData(variantData: ProductVariantCommon): Pair<Int, VariantChildCommon?>? {
-        var pairOfValue: Pair<Int, VariantChildCommon?>? = null
-        for ((index, it: VariantChildCommon) in variantData.children.withIndex()) {
+    fun selectedProductData(variantData: ProductVariant): Pair<Int, VariantChild?>? {
+        var pairOfValue: Pair<Int, VariantChild?>? = null
+        for ((index, it: VariantChild) in variantData.children.withIndex()) {
             if (it.optionIds == selectedOptionId) {
                 pairOfValue = Pair(index, it)
                 break
@@ -83,13 +86,13 @@ object VariantCommonMapper {
         return pairOfValue
     }
 
-    private fun updateSelectedOptionsIds(variantData: ProductVariantCommon, updatedSelectedOptionsId: List<Int>, mapOfSelectedVariant: MutableMap<String, Int>?) {
-        variantData.variant.forEachIndexed { index, variant ->
+    private fun updateSelectedOptionsIds(variantData: ProductVariant, updatedSelectedOptionsId: List<String>, mapOfSelectedVariant: MutableMap<String, String>?) {
+        variantData.variants.forEachIndexed { index, variant ->
             mapOfSelectedVariant?.set(variant.pv.toString(), updatedSelectedOptionsId[index])
         }
     }
 
-    private fun convertVariantViewModel(variant: Variant, variantData: ProductVariantCommon, level: Int, selectedOptionIds: List<Int>, isLeaf: Boolean,
+    private fun convertVariantViewModel(variant: Variant, variantData: ProductVariant, level: Int, selectedOptionIds: List<String>, isLeaf: Boolean,
                                         isSelectedProductBuyable: Boolean,
                                         partialySelected: Boolean,
                                         selectedLevelOne: Boolean,
@@ -121,7 +124,7 @@ object VariantCommonMapper {
                     }
                 } else {
                     // This Function is Fired When User Selected Partial Variant
-                    for (child: VariantChildCommon in variantData.children) {
+                    for (child: VariantChild in variantData.children) {
                         if (child.isBuyable && selectedOptionIds.first() in child.optionIds) {
                             currentState = VariantConstant.STATE_SELECTED
                             if (selectedLevelOne && child.isFlashSale) {
@@ -133,7 +136,7 @@ object VariantCommonMapper {
                 }
             } else {
                 //This Function is to determine unselect or empty variant
-                for (child: VariantChildCommon in variantData.children) {
+                for (child: VariantChild in variantData.children) {
                     //child.optionIds[1] means variant lvl2
                     //child.optionIds[0] means variant lvl1
                     //Check one by one wether childId is match with another Id
@@ -165,13 +168,13 @@ object VariantCommonMapper {
                             }
                         }
                     }
-                    stock = child.stock?.stock.orZero()
+                    stock = child.stock?.stock ?: 0
                 }
             }
 
             return@map VariantOptionWithAttribute(
                     variantName = option.value.orEmpty(),
-                    variantId = option.id.orZero(),
+                    variantId = option.id.orEmpty(),
                     image100 = option.picture?.url100.orEmpty(),
                     imageOriginal = option.picture?.original.orEmpty(),
                     variantHex = option.hex.orEmpty(),
@@ -195,14 +198,14 @@ object VariantCommonMapper {
         )
     }
 
-    private fun getOtherSiblingProduct(productInfoAndVariant: ProductVariantCommon?, optionId: List<Int>): VariantChildCommon? {
-        var selectedChild: VariantChildCommon? = null
+    private fun getOtherSiblingProduct(productInfoAndVariant: ProductVariant?, optionId: List<String>): VariantChild? {
+        var selectedChild: VariantChild? = null
         // we need to reselect other variant
         productInfoAndVariant?.run {
             var optionPartialSize = optionId.size - 1
             while (optionPartialSize > -1) {
                 val partialOptionIdList = optionId.subList(0, optionPartialSize)
-                for (childLoop: VariantChildCommon in children) {
+                for (childLoop: VariantChild in children) {
                     if (!childLoop.isBuyable) {
                         continue
                     }
@@ -224,7 +227,7 @@ object VariantCommonMapper {
         return selectedChild
     }
 
-    private fun getSelectedProductData(selectedOptionIds: List<Int>, variantData: ProductVariantCommon): VariantChildCommon? {
+    private fun getSelectedProductData(selectedOptionIds: List<String>, variantData: ProductVariant): VariantChild? {
         return variantData.children.find {
             it.optionIds == selectedOptionIds
         }
@@ -235,8 +238,8 @@ object VariantCommonMapper {
      * each child should have the same size option with the variant size.
      * Example: option[red,XL] has size 2, should same with the variant size (color and size)
      */
-    private fun validateVariantChildren(childList: List<VariantChildCommon>, variantSize: Int): Boolean {
-        for (childModel: VariantChildCommon in childList) {
+    private fun validateVariantChildren(childList: List<VariantChild>, variantSize: Int): Boolean {
+        for (childModel: VariantChild in childList) {
             if (childModel.optionIds.size != variantSize) {
                 return false
             }

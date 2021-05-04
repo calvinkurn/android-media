@@ -17,7 +17,7 @@ data class Etalase(
         val url: String = ""
 )
 
-data class Variant(
+data class VariantBasic(
         @SerializedName("parentID")
         @Expose
         val parentID: String = "",

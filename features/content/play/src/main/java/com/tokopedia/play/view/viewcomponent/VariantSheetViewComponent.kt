@@ -25,9 +25,9 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.variant_common.view.ProductVariantListener
@@ -121,7 +121,7 @@ class VariantSheetViewComponent(
 
         if (!listOfVariants.isNullOrEmpty()) {
             val pairSelectedProduct = VariantCommonMapper.selectedProductData(
-                    variantSheetUiModel?.parentVariant?: ProductVariantCommon())
+                    variantSheetUiModel?.parentVariant?: ProductVariant())
             val selectedProduct = pairSelectedProduct?.second
             if (selectedProduct != null) {
                 val stock = selectedProduct.stock
@@ -131,7 +131,7 @@ class VariantSheetViewComponent(
                         shopId = variantSheetUiModel?.product?.shopId.toEmptyStringIfNull(),
                         imageUrl = selectedProduct.picture?.original ?: "",
                         title = selectedProduct.name,
-                        stock = if (stock == null) OutOfStock else StockAvailable(stock.stock.orZero()),
+                        stock = if (stock == null) OutOfStock else StockAvailable(stock.stock ?: 0),
                         isVariantAvailable = true,
                         price = if (selectedProduct.campaign?.isActive == true) {
                             DiscountedPrice(
