@@ -5,11 +5,11 @@ import android.util.Log
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.refreshtoken.AccessTokenRefresh
 import com.tokopedia.user.session.UserSession
-import okhttp3.*
+import okhttp3.Authenticator
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.Route
 import okio.Buffer
-import org.json.JSONException
-import org.json.JSONObject
-import timber.log.Timber
 import java.util.regex.Pattern
 
 /**
@@ -64,33 +64,21 @@ class TkpdAuthenticator(
                         updateRequestWithNewToken(originalRequest)
                     }
                 } catch (ex: Exception) {
-                    Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';error='%s';path='%s'", "failed_authenticate", userSession.accessToken, formatThrowable(ex), path)
+                    networkRouter.logRefreshTokenException(formatThrowable(ex), "failed_authenticate", path, userSession.accessToken)
                     null
                 }
             else {
                 networkRouter.showForceLogoutTokenDialog("/")
-                Timber.w("P2#USER_AUTHENTICATOR#'%s'", "response_count")
+                networkRouter.logRefreshTokenException("", "response_count", "", "")
                 return null
             }
         } else {
             if(responseCount(response)!=0) {
-                Timber.w("P2#USER_AUTHENTICATOR#'%s'", "response_count")
+                networkRouter.logRefreshTokenException("", "response_count", "", "")
                 return null
             }
         }
         return response.request()
-    }
-
-    private fun createNewForceLogoutBody(response: Response): Response? {
-        val jsonObject = JSONObject()
-        return try {
-            jsonObject.put("message", FORCE_LOGOUT_AUTHENTICATOR)
-            val contentType = response.body()!!.contentType()
-            val body: ResponseBody = ResponseBody.create(contentType, jsonObject.toString())
-            return response.newBuilder().body(body).build()
-        } catch (e: JSONException) {
-            null
-        }
     }
 
     private fun responseCount(response: Response): Int {
@@ -102,7 +90,6 @@ class TkpdAuthenticator(
         }
         return result
     }
-
 
     private fun updateRequestWithNewToken(request: Request): Request{
         val newRequest = request.newBuilder()
@@ -122,11 +109,6 @@ class TkpdAuthenticator(
         private const val AUTHORIZATION = "authorization"
         private const val BEARER = "Bearer"
         private const val HEADER_PARAM_AUTHORIZATION = "authorization"
-
-        const val FORCE_LOGOUT_AUTHENTICATOR = "FORCED_LOGOUT_AUTHENTICATOR"
-        const val BYTE_COUNT = 512L
-
-        const val AUTHENTICATOR_REMOTE_CONFIG_KEY: String = "android_enable_authenticator"
 
         fun formatThrowable(throwable: Throwable): String {
             return try{

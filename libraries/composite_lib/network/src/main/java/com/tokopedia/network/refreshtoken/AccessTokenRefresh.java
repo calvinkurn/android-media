@@ -22,7 +22,6 @@ import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import timber.log.Timber;
 
 /**
  * @author ricoharisin .
@@ -61,7 +60,7 @@ public class AccessTokenRefresh {
 
             if (response.errorBody() != null) {
                 tokenResponseError = response.errorBody().string();
-                Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';error='%s';path='%s'", "error_refresh_token", userSession.getAccessToken(), tokenResponseError, path);
+                networkRouter.logRefreshTokenException(tokenResponseError, "error_refresh_token", path, userSession.getAccessToken());
                 networkRouter.sendRefreshTokenAnalytics(tokenResponseError);
                 checkShowForceLogout(tokenResponseError, networkRouter, path, userSession);
             } else if (response.body() != null) {
@@ -71,14 +70,14 @@ public class AccessTokenRefresh {
                 return "";
             }
         } catch (SocketException e) {
-            logExceptionToTimber(e, "socket_exception", path);
+            networkRouter.logRefreshTokenException(TkpdAuthenticator.Companion.formatThrowable(e), "socket_exception", path, "");
         } catch (IOException e) {
-            logExceptionToTimber(e, "io_exception", path);
+            networkRouter.logRefreshTokenException(TkpdAuthenticator.Companion.formatThrowable(e), "io_exception", path, "");
         }
         catch (Exception e) {
             e.printStackTrace();
             networkRouter.sendRefreshTokenAnalytics(e.toString());
-            Timber.w("P2#USER_AUTHENTICATOR#'%s';oldToken='%s';error='%s';path='%s'", "failed_refresh_token", userSession.getAccessToken(), TkpdAuthenticator.Companion.formatThrowable(e), path);
+            networkRouter.logRefreshTokenException(TkpdAuthenticator.Companion.formatThrowable(e), "failed_refresh_token", path, userSession.getAccessToken());
             forceLogoutAndShowDialogForLoggedInUsers(userSession, networkRouter, path);
         }
 
@@ -100,11 +99,6 @@ public class AccessTokenRefresh {
         } else {
             return "";
         }
-    }
-
-    private void logExceptionToTimber(Exception exception, String name, String path) {
-        exception.printStackTrace();
-        Timber.w("P2#USER_AUTHENTICATOR#'%s';error='%s';path='%s'", name, TkpdAuthenticator.Companion.formatThrowable(exception), path);
     }
 
     private void forceLogoutAndShowDialogForLoggedInUsers(UserSessionInterface userSession, NetworkRouter networkRouter, String path) {
