@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
@@ -186,7 +185,11 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         val dummyId: MutableList<Long> = mutableListOf()
         suggestions.add(DataSuggestions("group", dummyId))
         viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
-        viewModelKeyword.getSuggestionKeyword(productIds, 0, ::onSuccessRecommended)
+        if (productIds.isNotEmpty())
+            viewModelKeyword.getSuggestionKeyword(productIds, 0, ::onSuccessRecommended)
+        else {
+            setEmptyView()
+        }
     }
 
     private fun getLatestBid() {
@@ -302,11 +305,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun onDeleteItem(position: Int) {
-        ticker.gone()
-        adapter.items.removeAt(position)
-        adapter.notifyItemRemoved(position)
-        updateString()
-        setCount()
+        showConfirmationDialog(position)
     }
 
     private fun updateString() {

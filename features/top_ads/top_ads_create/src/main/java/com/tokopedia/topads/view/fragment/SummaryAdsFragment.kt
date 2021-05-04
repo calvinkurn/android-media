@@ -16,7 +16,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
@@ -58,6 +60,7 @@ private const val PRODUCT_INFO = "product_id: %s; keyword_name: %s; keyword_id: 
 
 const val DEBOUNCE_CONST: Long = 200
 const val DAILYBUDGET_FACTOR = 1000
+private const val AUTOBID_DEFUALT_BUDGET = 16000
 
 class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
@@ -80,6 +83,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private var suggestion = 0
     private var validation1 = true
     private var validation2 = true
+    var minBudget: Int = 0
 
 
     companion object {
@@ -160,24 +164,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if(stepperModel?.autoBidState?.isEmpty() == true) {
-            keyword_layout.visibility = View.VISIBLE
-            budget_layout.visibility = View.VISIBLE
-            autobid_layout.visibility = View.GONE
-            divider2.visibility = View.GONE
-            divider3.visibility = View.VISIBLE
-            divider4.visibility = View.VISIBLE
-        } else {
-            keyword_layout.visibility = View.GONE
-            budget_layout.visibility = View.GONE
-            autobid_layout.visibility = View.VISIBLE
-            divider3.visibility = View.GONE
-            divider4.visibility = View.GONE
-
-            goToAutobid.setOnClickListener {
-                stepperListener?.getToFragment(2, stepperModel)
-            }
-        }
+        setAutoBidState()
         btn_submit.setOnClickListener {
             if (groupInput?.textFieldInput?.text?.isNotEmpty() == true) {
                 loading?.visibility = View.VISIBLE
@@ -190,10 +177,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             }
         }
         setGroupName()
-        suggestion = (stepperModel?.finalBidPerClick ?: 0) * MULTIPLIER
-        stepperModel?.dailyBudget = suggestion
-        dailyBudget = (stepperModel?.finalBidPerClick ?: 0) * 40
-        daily_budget.textFieldInput.setText(dailyBudget.toString())
+        setUpInitialValues()
         toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 daily_budget.visibility = View.VISIBLE
@@ -201,10 +185,9 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 try {
                     budget = Integer.parseInt(daily_budget.textFieldInput.text.toString().removeCommaRawString())
                 } catch (e: NumberFormatException) {
-
                 }
                 if (budget < suggestion && daily_budget.isVisible) {
-                    daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), suggestion))
+                    daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), minBudget))
                     daily_budget.setError(true)
                     validation2 = false
                     actionEnable()
@@ -219,6 +202,41 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         }
         daily_budget.textFieldInput.addTextChangedListener(watcher())
         setLink()
+    }
+
+    private fun setAutoBidState() {
+        if (stepperModel?.autoBidState?.isEmpty() == true) {
+            keyword_layout.visible()
+            budget_layout.visible()
+            autobid_layout.gone()
+            divider2.gone()
+            divider3.visible()
+            divider4.visible()
+        } else {
+            keyword_layout.gone()
+            budget_layout.gone()
+            autobid_layout.visible()
+            divider3.gone()
+            divider4.gone()
+
+            goToAutobid.setOnClickListener {
+                stepperListener?.getToFragment(2, stepperModel)
+            }
+        }
+    }
+
+    private fun setUpInitialValues() {
+        suggestion = (stepperModel?.finalBidPerClick ?: 0) * MULTIPLIER
+        minBudget = if (stepperModel?.autoBidState?.isEmpty() != true)
+            AUTOBID_DEFUALT_BUDGET
+        else
+            suggestion
+        stepperModel?.dailyBudget = suggestion
+        dailyBudget = if (stepperModel?.autoBidState?.isEmpty() == true)
+            (stepperModel?.finalBidPerClick ?: 0) * MULTIPLIER
+        else
+            AUTOBID_DEFUALT_BUDGET
+        daily_budget.textFieldInput.setText(dailyBudget.toString())
     }
 
     private fun setGroupName() {
@@ -313,10 +331,11 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val input = number.toInt()
-                if (input < (stepperModel?.finalBidPerClick ?: 0) * MULTIPLIER
+                if ((input < (stepperModel?.finalBidPerClick
+                                ?: 0) * MULTIPLIER || input < minBudget)
                         && daily_budget.isVisible) {
                     daily_budget.setError(true)
-                    daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), suggestion))
+                    daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), minBudget))
                     validation2 = false
                     actionEnable()
                 } else if (input % DAILYBUDGET_FACTOR != 0) {
