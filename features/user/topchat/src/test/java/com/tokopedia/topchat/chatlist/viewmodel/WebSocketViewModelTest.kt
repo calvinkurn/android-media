@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
 import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket
+import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket.Companion.CODE_NORMAL_CLOSURE
 import com.tokopedia.topchat.chatlist.domain.websocket.DefaultWebSocketParser
 import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketStateHandler
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
@@ -13,7 +14,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.websocket.WebSocketResponse
 import io.mockk.*
-import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import org.junit.Assert.assertTrue
@@ -192,6 +192,40 @@ class WebSocketViewModelTest {
 
         // Then
         coVerify(exactly = 1) { webSocketStateHandler.scheduleForRetry(any()) }
+    }
+
+    @Test
+    fun should_reconnect_ws_when_onClose_code_is_other_than_1000() {
+        // Given
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onClosed(
+                    webSocket, 1001, ""
+            )
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        coVerify(exactly = 1) { webSocketStateHandler.scheduleForRetry(any()) }
+    }
+
+    @Test
+    fun should_not_reconnect_ws_when_onClose_code_is_1000() {
+        // Given
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onClosed(
+                    webSocket, CODE_NORMAL_CLOSURE, ""
+            )
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        coVerify(exactly = 0) { webSocketStateHandler.scheduleForRetry(any()) }
     }
 
     companion object {
