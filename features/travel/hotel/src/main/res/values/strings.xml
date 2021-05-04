@@ -288,7 +288,10 @@
     <string name="hotel_cancellation_a_hyperlink_close_tag">&lt;&#47;a&gt;</string>
 
     <string name="hotel_invoice_download_button">Unduh</string>
-
+    <string name="hotel_promo_btn_default_title">Makin hemat dengan promo</string>
+    <string name="hotel_pay_at_hotel_promo_header_title">Pakai Promo</string>
+    <string name="hotel_payathotel_promo_desc">Yaah, nggak ada promo yang bisa dipakai di transaksi ini</string>
+    <string name="hotel_payathotel_promo_button_title">Kembali ke Pemesanan</string>
     <string name="hotel_search_map_around_here">Cari di sekitar sini</string>
     <string name="hotel_search_map_search_with_map">Cari dengan peta</string>
     <string name="hotel_search_map_coach_mark_map_title">Sekarang bisa cari pakai peta, lho!</string>
@@ -303,4 +306,6 @@
     <string name="hotel_list_per_night">/malam</string>
     <string name="hotel_header_title_nearby">Hotel dekat lokasimu</string>
     <string name="hotel_header_title_nearby_area">Hotel di area pilihanmu</string>
+    <string name="hotel_sticky_calendar_content_desc">Hotel calendar</string>
+    <string name="hotel_review_booking_logo">Booking.com logo</string>
 </resources>

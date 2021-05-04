@@ -8,7 +8,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 
 /**
@@ -59,7 +61,14 @@ object DeeplinkMapperMerchant {
                 val feedbackId = segments.last()
                 return UriUtil.buildUri(ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, feedbackId)
             }
-            return ApplinkConstInternalMarketplace.INBOX_REPUTATION
+            return if (goToInboxUnified()) {
+                Uri.parse(ApplinkConstInternalMarketplace.INBOX).buildUpon().apply {
+                    appendQueryParameter(ApplinkConst.Inbox.PARAM_PAGE, ApplinkConst.Inbox.VALUE_PAGE_REVIEW)
+                    appendQueryParameter(ApplinkConst.Inbox.PARAM_ROLE, ApplinkConst.Inbox.VALUE_ROLE_BUYER)
+                }.build().toString()
+            } else {
+                return ApplinkConstInternalMarketplace.INBOX_REPUTATION
+            }
         }
         return deeplink
     }
@@ -345,7 +354,7 @@ object DeeplinkMapperMerchant {
 
     fun isProductDetailPageDeeplink(deeplink: String): Boolean {
         val uri = Uri.parse(deeplink)
-        return deeplink.startsWithPattern(ApplinkConst.PRODUCT_INFO) && uri.pathSegments.size == 1 && uri.lastPathSegment.toIntOrZero() != 0
+        return deeplink.startsWithPattern(ApplinkConst.PRODUCT_INFO) && uri.pathSegments.size == 1 && uri.lastPathSegment.toLongOrZero() != 0L
     }
 
     fun isProductDetailAffiliatePageDeeplink(deeplink: String): Boolean {
@@ -378,5 +387,20 @@ object DeeplinkMapperMerchant {
     fun isShopPageSettingSellerApp(deeplink: String): Boolean {
         val uri = Uri.parse(deeplink)
         return deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_SETTINGS_SELLER_APP) && uri.lastPathSegment == SHOP_PAGE_SETTING_SEGMENT
+    }
+
+    fun goToInboxUnified(): Boolean {
+        if(GlobalConfig.isSellerApp()) return false
+        return try {
+            val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                    AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+            ) == AbTestPlatform.VARIANT_NEW_INBOX
+            val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                    AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
+            ) == AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+            useNewInbox && useNewNav
+        } catch (e: Exception) {
+            false
+        }
     }
 }

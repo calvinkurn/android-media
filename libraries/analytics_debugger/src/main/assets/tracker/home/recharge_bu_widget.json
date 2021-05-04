@@ -5,10 +5,10 @@
     {
       "promotions": [
         {
-          "creative_name": "{{.+}}",
-          "creative_slot": "{{.+}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+}}",
+          "creative_name": ".+",
+          "creative_slot": ".+",
+          "item_id": ".+",
+          "item_name": ".+",
           "creative_url": ""
         }
       ],
@@ -16,18 +16,18 @@
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
       "event": "view_item",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "eventAction": "impression on banner card dynamic channel bu carousel",
-      "sessionIris": "{{.+}}",
+      "sessionIris": ".+",
       "eventLabel": ""
     },
     {
       "promotions": [
         {
-          "creative_name": "{{.+}}",
-          "creative_slot": "{{.+}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+}}",
+          "creative_name": ".+",
+          "creative_slot": ".+",
+          "item_id": ".+",
+          "item_name": ".+",
           "creative_url": ""
         }
       ],
@@ -35,18 +35,18 @@
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
       "event": "view_item",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "eventAction": "impression on banner dynamic channel bu carousel",
-      "sessionIris": "{{.+}}",
+      "sessionIris": ".+",
       "eventLabel": ""
     },
     {
       "promotions": [
         {
-          "creative_name": "{{.+}}",
-          "creative_slot": "{{.+}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+}}",
+          "creative_name": ".+",
+          "creative_slot": ".+",
+          "item_id": ".+",
+          "item_name": ".+",
           "creative_url": ""
         }
       ],
@@ -54,38 +54,38 @@
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
       "event": "select_content",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "eventAction": "click on banner card dynamic channel bu carousel",
-      "sessionIris": "{{.+}}",
-      "eventLabel": "{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel": ".+"
     },
     {
       "businessUnit": "home & browse",
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
       "event": "clickHomepage",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "eventAction": "click view all card on dynamic channel bu carousel",
-      "sessionIris": "{{.+}}",
-      "eventLabel": "{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel": ".+"
     },
     {
       "businessUnit": "home & browse",
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
       "event": "clickHomepage",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "eventAction": "click view all on dynamic channel bu carousel",
-      "sessionIris": "{{.+}}",
-      "eventLabel": "{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel": ".+"
     },
     {
       "promotions": [
         {
-          "creative_name": "{{.+}}",
-          "creative_slot": "{{.+}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+}}",
+          "creative_name": ".+",
+          "creative_slot": ".+",
+          "item_id": ".+",
+          "item_name": ".+",
           "creative_url": ""
         }
       ],
@@ -93,10 +93,10 @@
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
       "event": "select_content",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "eventAction": "click on banner dynamic channel bu carousel",
-      "sessionIris": "{{.+}}",
-      "eventLabel": "{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel": ".+"
     }
   ]
 }

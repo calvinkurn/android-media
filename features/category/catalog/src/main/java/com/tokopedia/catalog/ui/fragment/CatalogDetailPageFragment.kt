@@ -143,8 +143,8 @@ class CatalogDetailPageFragment : Fragment(),
 
     private fun setUpBottomSheet(){
         requireActivity().supportFragmentManager.beginTransaction().replace(
-                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogId,catalogUrl)
-        ).commit()
+                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogId,catalogUrl),
+                CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG).commit()
 
         mBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_fragment_container)
         mBottomSheetBehavior?.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
@@ -180,6 +180,7 @@ class CatalogDetailPageFragment : Fragment(),
                     catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
                     fullSpecificationDataModel = it.data.fullSpecificationDataModel
                     updateUi()
+                    setCatalogUrlForTracking()
                 }
                 is Fail -> {
                     onError(it.throwable)
@@ -187,6 +188,14 @@ class CatalogDetailPageFragment : Fragment(),
             }
 
         })
+    }
+
+    private fun setCatalogUrlForTracking() {
+        activity?.supportFragmentManager?.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG)?.let { fragment ->
+            if(fragment is CatalogPreferredProductsBottomSheet){
+                fragment.setCatalogUrl(catalogUrl)
+            }
+        }
     }
 
 

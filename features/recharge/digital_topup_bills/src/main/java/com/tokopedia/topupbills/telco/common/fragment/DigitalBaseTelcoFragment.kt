@@ -257,13 +257,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     private fun initiateMenuTelco(recom: List<TopupBillsRecommendation>, promo: List<TopupBillsPromo>) {
         listMenu.clear()
         var idTab = 1L
-        if (promo.isNotEmpty()) {
-            viewModel.setPromoTelco(promo)
-            listMenu.add(TelcoTabItem(null, TelcoComponentName.PROMO, idTab++))
-        }
         if (recom.isNotEmpty()) {
             viewModel.setRecommendationTelco(recom)
             listMenu.add(TelcoTabItem(null, TelcoComponentName.RECENTS, idTab++))
+        }
+        if (promo.isNotEmpty()) {
+            viewModel.setPromoTelco(promo)
+            listMenu.add(TelcoTabItem(null, TelcoComponentName.PROMO, idTab++))
         }
 
         viewModel.setTitleMenu(listMenu.size < 2)
