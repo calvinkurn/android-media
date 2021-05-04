@@ -129,6 +129,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
+    private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -431,7 +432,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     private boolean getLeakCanaryToggleValue() {
-        return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, false);
+        return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE);
     }
 
     private void initLogManager() {
