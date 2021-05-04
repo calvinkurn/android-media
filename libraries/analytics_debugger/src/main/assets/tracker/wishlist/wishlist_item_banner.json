@@ -5,11 +5,11 @@
     {
       "promotions": [
         {
-          "creative_url": "{{.+}}",
-          "creative_name": "{{.+}}",
-          "creative_slot": "{{\\d*.\\d*}}",
-          "item_id": "{{.*}}",
-          "item_name": "{{.+}}"
+          "creative_url": ".+",
+          "creative_name": ".+",
+          "creative_slot": "\\d*.\\d*",
+          "item_id": ".*",
+          "item_name": ".+"
         }
       ],
       "businessUnit": "home & browse",
@@ -17,19 +17,19 @@
       "currentSite": "tokopediamarketplace",
       "screenName": "/wishlist",
       "event": "view_item",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "impression - banner ads",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     },
     {
       "promotions": [
         {
-          "creative_url": "{{.+}}",
-          "creative_name": "{{.+}}",
-          "creative_slot": "{{\\d*.\\d*}}",
-          "item_id": "{{.*}}",
-          "item_name": "{{.+}}"
+          "creative_url": ".+",
+          "creative_name": ".+",
+          "creative_slot": "\\d*.\\d*",
+          "item_id": ".*",
+          "item_name": ".+"
         }
       ],
       "businessUnit": "home & browse",
@@ -37,10 +37,10 @@
       "currentSite": "tokopediamarketplace",
       "screenName": "/wishlist",
       "event": "select_content",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "click - banner ads",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     }
   ]
 }

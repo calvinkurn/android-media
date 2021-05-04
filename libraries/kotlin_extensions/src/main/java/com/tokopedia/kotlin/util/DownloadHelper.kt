@@ -1,6 +1,5 @@
 package com.tokopedia.kotlin.util
 
-import android.Manifest
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -8,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Environment
-import androidx.annotation.RequiresPermission
 import org.jetbrains.annotations.NotNull
 
 
@@ -24,7 +22,6 @@ class DownloadHelper(@NotNull val context: Context,
                      @NotNull val filename: String,
                      var listener: DownloadHelperListener?) {
 
-    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     fun downloadFile(isDownloadable: (String) -> Boolean) {
         val downloadUri = Uri.parse(uri)
 

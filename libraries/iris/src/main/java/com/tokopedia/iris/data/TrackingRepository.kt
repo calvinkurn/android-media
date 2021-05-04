@@ -63,7 +63,7 @@ class TrackingRepository(
 
                 val dbCount = trackingDao.getCount()
                 if (dbCount >= getLineDBFlush()) {
-                    ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to String.format("dbCountFlush %d lines", dbCount)))
+                    ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "dbCountFlush", "no" to dbCount.toString()))
                     trackingDao.flush()
                 } else if (dbCount >= getLineDBSend()) {
                     // if the line is big, send it
@@ -75,7 +75,7 @@ class TrackingRepository(
                     }
                 }
             } catch (e: Throwable) {
-                Timber.e("P1#IRIS#saveEvent %s", e.toString())
+                ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "saveEvent", "err" to e.toString()))
             }
         }
 
@@ -174,7 +174,6 @@ class TrackingRepository(
                 }
             } else {
                 lastSuccessSent = false
-                Timber.e("P1#IRIS#failedSendData;data='${request.take(ERROR_MAX_LENGTH).trim()}'")
                 ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "failedSendData",
                         "data" to request.take(ERROR_MAX_LENGTH).trim()))
                 break
