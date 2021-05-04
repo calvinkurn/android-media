@@ -1096,6 +1096,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 dialog.dismiss()
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LOGIN_EMAIL, Uri.encode(email), source)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
+                intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
                 startActivity(intent)
                 activity.finish()
             }
@@ -1204,10 +1205,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         activityShouldEnd = true
         registerPushNotif()
         activity?.let {
-            if (isFromAccount() || isFromOnboarding()) {
-                val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
-                startActivity(intent)
-            }
             val intent = Intent()
             intent.putExtra(PARAM_IS_SUCCESS_REGISTER, true)
 
@@ -1222,11 +1219,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         }
     }
 
-    private fun isFromAccount(): Boolean = source == SOURCE_ACCOUNT
-
     private fun isFromAtc(): Boolean = source == SOURCE_ATC
-
-    private fun isFromOnboarding(): Boolean = source == SOURCE_ONBOARDING
 
     private fun onGoToChangeName() {
         registerInitialRouter.goToChangeName(this)

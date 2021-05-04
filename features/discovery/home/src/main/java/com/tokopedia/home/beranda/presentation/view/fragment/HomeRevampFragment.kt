@@ -218,6 +218,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
+        private const val REQUEST_CODE_LOGIN = 131
         private const val REQUEST_CODE_REVIEW = 999
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -1552,12 +1553,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun onGoToLogin() {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT)
-        val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
-        intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        activity?.let {
-            it.startActivities(arrayOf(intentHome, intent))
-            it.finish()
-        }
+        activity?.startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
     private fun onGoToCreateShop() {
@@ -1714,6 +1710,19 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 handleWishlistAction(productCardOptionsModel)
                             }
                         })
+            }
+            REQUEST_CODE_LOGIN -> {
+                activity?.let {
+                    val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+                    val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
+                    intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    if (resultCode == Activity.RESULT_OK && getUserSession().isLoggedIn) {
+                        it.startActivities(arrayOf(intentHome, intentNewUser))
+                    } else {
+                        it.startActivity(intentHome)
+                    }
+                    it.finish()
+                }
             }
         }
     }

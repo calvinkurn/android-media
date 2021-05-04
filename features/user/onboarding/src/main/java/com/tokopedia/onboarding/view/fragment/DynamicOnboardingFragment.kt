@@ -1,6 +1,8 @@
 package com.tokopedia.onboarding.view.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,11 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
@@ -81,6 +81,25 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     override fun onBackPressed(): Boolean {
         finishOnBoarding()
         return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_NEXT_PAGE -> {
+                activity?.let {
+                    val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+                    val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
+                    intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    if (resultCode == Activity.RESULT_OK && userSession.isLoggedIn) {
+                        it.startActivities(arrayOf(intentHome, intentNewUser))
+                    } else {
+                        it.startActivity(intentHome)
+                    }
+                    finishOnBoarding()
+                }
+            }
+        }
     }
 
     @NotNull
@@ -158,14 +177,14 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     private fun globalButtonClickListener(appLink: String): View.OnClickListener {
         return View.OnClickListener {
             onboardingAnalytics.eventOnboardingJoin(viewPagerDynamicOnboarding?.currentItem ?: 0)
-            startActivityWithBackTask(appLink)
+            goToNextPage(appLink)
         }
     }
 
     private fun skipButtonClickListener(appLink: String): View.OnClickListener {
         return View.OnClickListener {
             onboardingAnalytics.eventOnboardingSkip(viewPagerDynamicOnboarding?.currentItem ?: 0)
-            startActivityWithBackTask(appLink)
+            goToNextPage(appLink)
         }
     }
 
@@ -206,31 +225,16 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         onboardingAnalytics.trackScreen(0)
     }
 
-    private fun startActivityWithBackTask(appLink: String) {
+    private fun goToNextPage(appLink: String) {
         context?.let {
-            val taskStackBuilder = TaskStackBuilder.create(it)
             val defferedDeeplinkPath = TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists
-            val homeIntent = RouteManager.getIntent(it, ApplinkConst.HOME)
             val page = RouteManager.getIntent(it, appLink)
-
             if (defferedDeeplinkPath.isEmpty()) {
-
-                if (appLink.contains(ApplinkConst.REGISTER)) {
-                    page.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, OnboardingConstant.PARAM_SOURCE_ONBOARDING)
-                }
-
-                if (appLink != ApplinkConst.HOME) {
-                    taskStackBuilder.addNextIntent(homeIntent)
-                    taskStackBuilder.addNextIntent(page)
-                    taskStackBuilder.startActivities()
-                } else {
-                    it.startActivity(page)
-                }
+                activity?.startActivityForResult(page, REQUEST_NEXT_PAGE)
             } else {
                 RouteManager.route(it, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
+                finishOnBoarding()
             }
-
-            finishOnBoarding()
         }
     }
 
@@ -269,6 +273,8 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     companion object {
         const val ARG_DYNAMIC_ONBAORDING_DATA = "dynamicOnabordingData"
+
+        private const val REQUEST_NEXT_PAGE = 679
 
         fun createInstance(bundle: Bundle): DynamicOnboardingFragment {
             val fragment = DynamicOnboardingFragment()
