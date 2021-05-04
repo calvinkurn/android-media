@@ -390,6 +390,7 @@ object DeeplinkMapperMerchant {
     }
 
     fun goToInboxUnified(): Boolean {
+        if(GlobalConfig.isSellerApp()) return false
         return try {
             val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                     AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
