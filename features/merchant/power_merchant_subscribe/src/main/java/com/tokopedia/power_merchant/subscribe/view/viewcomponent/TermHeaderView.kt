@@ -33,18 +33,23 @@ class TermHeaderView : LinearLayout {
         icExpandedStatus = findViewById(R.id.icPmHeaderTerms)
 
         setOnClickListener {
+            isExpanded = !isExpanded
             changeIconExpandedStatus()
             onClickCallback?.invoke(isExpanded)
         }
     }
 
     private fun changeIconExpandedStatus() {
-        isExpanded = !isExpanded
         if (isExpanded) {
             icExpandedStatus.setImage(IconUnify.CHEVRON_UP)
         } else {
             icExpandedStatus.setImage(IconUnify.CHEVRON_DOWN)
         }
+    }
+
+    fun setExpanded(isExpanded: Boolean) {
+        this.isExpanded = isExpanded
+        changeIconExpandedStatus()
     }
 
     fun setEligibility(isEligible: Boolean) {

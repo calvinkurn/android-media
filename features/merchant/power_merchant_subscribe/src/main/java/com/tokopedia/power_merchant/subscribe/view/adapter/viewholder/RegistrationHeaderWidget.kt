@@ -59,6 +59,7 @@ class RegistrationHeaderWidget(
 
     private fun setOnExpandChanged(isExpanded: Boolean, element: WidgetRegistrationHeaderUiModel) = with(itemView) {
         rvPmRegistrationTerm.isVisible = isExpanded
+        tvPmHeaderTerms.setExpanded(isExpanded)
         if (isExpanded) {
             setTickerVisibility(element.shopInfo)
         } else {
