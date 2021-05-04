@@ -124,4 +124,16 @@ class ChatListWebSocketViewModelTest {
         assertThat(viewModel.role, `is`(RoleType.SELLER))
     }
 
+    @Test
+    fun should_return_the_latest_activeRoom_assigned() {
+        // Given
+        val msgId = "111"
+
+        // When
+        viewModel.activeRoom = msgId
+
+        // Then
+        assertThat(viewModel.activeRoom, `is`(msgId))
+    }
+
 }
