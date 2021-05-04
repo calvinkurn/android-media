@@ -9,8 +9,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
-import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
-import com.tokopedia.logisticcart.shipping.model.CodModel
+import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -228,7 +227,7 @@ class ShipmentMapper @Inject constructor() {
             }
             productShopId = groupShop.shop.shopId.toString()
             productShopName = groupShop.shop.shopName
-            productShopType = generateShopType(groupShop.shop)
+            productShopType = generateShopType(groupShop.shop.shopTypeInfo)
             productVariant = ""
             productBrand = ""
             productQuantity = product.productQuantity
@@ -294,21 +293,11 @@ class ShipmentMapper @Inject constructor() {
     private fun mapShopData(shop: Shop): com.tokopedia.checkout.domain.model.cartshipmentform.Shop {
         return com.tokopedia.checkout.domain.model.cartshipmentform.Shop().apply {
             shopId = shop.shopId
-            userId = shop.userId
             shopName = shop.shopName
             shopImage = shop.shopImage
             shopUrl = shop.shopUrl
             shopStatus = shop.shopStatus
-            isGold = shop.goldMerchant.isGoldBadge
-            isGoldBadge = shop.goldMerchant.isGoldBadge
-            isOfficial = shop.isOfficial == 1
-            if (shop.isOfficial == 1) {
-                shopBadge = shop.officialStore.osLogoUrl
-            } else if (shop.goldMerchant.isGold == 1) {
-                shopBadge = shop.goldMerchant.goldMerchantLogoUrl
-            }
-            isFreeReturns = shop.isFreeReturns == 1
-            addressId = shop.addressId
+            shopTypeInfoData = mapShopTypeInfo(shop.shopTypeInfo)
             postalCode = shop.postalCode
             latitude = shop.latitude
             longitude = shop.longitude
@@ -320,6 +309,16 @@ class ShipmentMapper @Inject constructor() {
             cityId = shop.cityId
             cityName = shop.cityName
             shopAlertMessage = shop.shopAlertMessage
+        }
+    }
+
+    private fun mapShopTypeInfo(shopTypeInfo: ShopTypeInfo): ShopTypeInfoData {
+        return ShopTypeInfoData().apply {
+            shopTier = shopTypeInfo.shopTier
+            shopGrade = shopTypeInfo.shopGrade
+            shopBadge = shopTypeInfo.shopBadge
+            badgeSvg = shopTypeInfo.badgeSvg
+            title = shopTypeInfo.title
         }
     }
 
@@ -717,8 +716,10 @@ class ShipmentMapper @Inject constructor() {
         return hasError
     }
 
-    private fun generateShopType(shop: Shop): String {
-        return if (shop.isOfficial == 1) SHOP_TYPE_OFFICIAL_STORE else if (shop.goldMerchant.isGoldBadge) SHOP_TYPE_GOLD_MERCHANT else SHOP_TYPE_REGULER
+    private fun generateShopType(shopTypeInfo: ShopTypeInfo): String {
+        // Todo : read other field
+        return ""
+//        return if (shop.isOfficial == 1) SHOP_TYPE_OFFICIAL_STORE else if (shop.goldMerchant.isGoldBadge) SHOP_TYPE_GOLD_MERCHANT else SHOP_TYPE_REGULER
     }
 
     companion object {

@@ -1561,18 +1561,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
                                     if (shipmentCartItemModel.getCartString().equals(voucherOrdersItemUiModel.getUniqueId())) {
                                         notEligiblePromoHolderdata.setShopName(shipmentCartItemModel.getShopName());
-                                        if (shipmentCartItemModel.isOfficialStore()) {
-                                            notEligiblePromoHolderdata.setIconType(NotEligiblePromoHolderdata.getTYPE_ICON_OFFICIAL_STORE());
-                                        } else if (shipmentCartItemModel.isGoldMerchant()) {
-                                            notEligiblePromoHolderdata.setIconType(NotEligiblePromoHolderdata.getTYPE_ICON_POWER_MERCHANT());
-                                        }
+                                        // Todo : refactor NotEligiblePromoHolderdata
+//                                        if (shipmentCartItemModel.isOfficialStore()) {
+//                                            notEligiblePromoHolderdata.setIconType(NotEligiblePromoHolderdata.getTYPE_ICON_OFFICIAL_STORE());
+//                                        } else if (shipmentCartItemModel.isGoldMerchant()) {
+//                                            notEligiblePromoHolderdata.setIconType(NotEligiblePromoHolderdata.getTYPE_ICON_POWER_MERCHANT());
+//                                        }
                                         break;
                                     }
                                 }
 
                                 if (i <= 0) {
                                     notEligiblePromoHolderdata.setShowShopSection(true);
-                                } else if (voucherOrdersItemUiModels.get(i - 1).getUniqueId() != null && voucherOrdersItemUiModel.getUniqueId() != null && voucherOrdersItemUiModels.get(i - 1).getUniqueId().equals(voucherOrdersItemUiModel.getUniqueId())) {
+                                } else if (voucherOrdersItemUiModels.get(i - 1).getUniqueId().length() > 0 && voucherOrdersItemUiModel.getUniqueId().length() > 0 && voucherOrdersItemUiModels.get(i - 1).getUniqueId().equals(voucherOrdersItemUiModel.getUniqueId())) {
                                     notEligiblePromoHolderdata.setShowShopSection(false);
                                 } else {
                                     notEligiblePromoHolderdata.setShowShopSection(true);

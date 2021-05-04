@@ -78,16 +78,10 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
           }
           shop {
             shop_id
-            user_id
             shop_name
             shop_image
             shop_url
             shop_status
-            is_gold
-            is_gold_badge
-            is_official
-            is_free_returns
-            address_id
             postal_code
             latitude
             longitude
@@ -98,16 +92,14 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
             province_id
             city_id
             city_name
-            gold_merchant {
-              is_gold
-              is_gold_badge
-              gold_merchant_logo_url
-            }
-            official_store {
-              is_official
-              os_logo_url
-            }
             shop_alert_message
+            shop_type_info {
+              shop_tier
+              shop_grade
+              badge
+              badge_svg
+              title
+            }
           }
           shop_shipments {
             ship_id

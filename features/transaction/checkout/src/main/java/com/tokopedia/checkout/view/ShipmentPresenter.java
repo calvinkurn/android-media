@@ -1835,6 +1835,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setOriginLongitude(shipmentDetailData.getShipmentCartData().getOriginLongitude());
         shippingParam.setWeightInKilograms(shipmentDetailData.getShipmentCartData().getWeight() / 1000);
         shippingParam.setShopId(shipmentDetailData.getShopId());
+        shippingParam.setShopTier(shipmentDetailData.getShipmentCartData().getShopTier());
         shippingParam.setToken(shipmentDetailData.getShipmentCartData().getToken());
         shippingParam.setUt(shipmentDetailData.getShipmentCartData().getUt());
         shippingParam.setInsurance(shipmentDetailData.getShipmentCartData().getInsurance());
@@ -1852,7 +1853,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setFulfillment(shipmentDetailData.getShipmentCartData().isFulfillment());
 
         if (isTradeInDropOff && recipientAddressModel.getLocationDataModel() != null) {
-            shippingParam.setDestinationDistrictId(String.valueOf(recipientAddressModel.getLocationDataModel().getDistrict()));
+            shippingParam.setDestinationDistrictId(recipientAddressModel.getLocationDataModel().getDistrict());
             shippingParam.setDestinationPostalCode(recipientAddressModel.getLocationDataModel().getPostalCode());
             shippingParam.setDestinationLatitude(recipientAddressModel.getLocationDataModel().getLatitude());
             shippingParam.setDestinationLongitude(recipientAddressModel.getLocationDataModel().getLongitude());
