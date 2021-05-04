@@ -184,6 +184,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
      */
     fun setIcon(iconBuilder: IconBuilder) {
         val iconConfig = iconBuilder.build()
+        viewModel?.setRegisteredIconList(iconConfig)
         this.useCentralizedIconNotification = iconConfig.useCentralizedIconNotification
         navIconAdapter = NavToolbarIconAdapter(iconConfig, this)
         navIconAdapter?.setHasStableIds(true)
