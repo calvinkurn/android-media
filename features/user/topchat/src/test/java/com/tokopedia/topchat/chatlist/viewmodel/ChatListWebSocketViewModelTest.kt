@@ -17,6 +17,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import org.hamcrest.CoreMatchers.`is`
+import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -111,6 +113,15 @@ class ChatListWebSocketViewModelTest {
 
         // Then
         verify(exactly = 1) { pendingMessageHandler.pendingMessages.clear() }
+    }
+
+    @Test
+    fun should_return_the_latest_role_assigned() {
+        // When
+        viewModel.role = RoleType.SELLER
+
+        // Then
+        assertThat(viewModel.role, `is`(RoleType.SELLER))
     }
 
 }
