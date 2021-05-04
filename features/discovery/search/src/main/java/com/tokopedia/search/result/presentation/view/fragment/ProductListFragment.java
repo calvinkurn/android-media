@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConsInternalHome;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.coachmark.CoachMark2;
@@ -1539,9 +1540,28 @@ public class ProductListFragment
     public void showMessageSuccessWishlistAction(boolean isWishlisted) {
         if (getView() == null) return;
 
-        if (isWishlisted)
-            Toaster.build(getView(), getString(R.string.msg_add_wishlist), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
+        if (isWishlisted) showToastSuccess(
+                getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
+                getString(com.tokopedia.wishlist.common.R.string.lihat_label),
+                (view) -> goToWishlist());
         else Toaster.build(getView(), getString(R.string.msg_remove_wishlist), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
+    }
+
+    private void showToastSuccess(String message, String ctaText, View.OnClickListener ctaAction) {
+        if (getView() != null) {
+            Toaster.build(getView(),
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    ctaText,
+                    ctaAction).show();
+        }
+    }
+
+    private void goToWishlist() {
+        if (getContext() != null) {
+            RouteManager.route(getContext(), ApplinkConsInternalHome.HOME_WISHLIST);
+        }
     }
 
     @Override

@@ -2490,7 +2490,13 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun onSuccessAddWishlist(productId: String?) {
-        view?.showToasterSuccess(toasterWishlistText)
+        view?.showToasterSuccess(
+                message = toasterWishlistText,
+                ctaText = getString(com.tokopedia.wishlist.common.R.string.lihat_label),
+                ctaListener = {
+                    goToWishlist()
+                }
+        )
         pdpUiUpdater?.updateWishlistData(true)
         updateUi()
         DynamicProductDetailTracking.Branch.eventBranchAddToWishlist(viewModel.getDynamicProductInfoP1, (UserSession(activity)).userId, pdpUiUpdater?.productInfoMap?.data?.find { content ->
