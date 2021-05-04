@@ -104,9 +104,27 @@ class HotelDestinationViewModel @Inject constructor(
                 permissionCheckerHelper,
                 fusedLocationProviderClient,
                 activity.applicationContext)
-        locationDetectorHelper.getLocation(onGetLocation(), activity,
-                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                activity.getString(R.string.hotel_destination_need_permission))
+
+        activity.let {
+            permissionCheckerHelper.checkPermission(it,
+                    PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                        }
+
+                        override fun onPermissionGranted() {
+                            locationDetectorHelper.getLocation(onGetLocation(), activity,
+                                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                                    activity.getString(R.string.hotel_destination_need_permission))
+                        }
+
+                    }, activity.getString(R.string.hotel_destination_need_permission))
+        }
     }
 
     fun getLocationFromUpdates(fusedLocationProviderClient: FusedLocationProviderClient) {
