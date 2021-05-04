@@ -26,6 +26,7 @@ import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGen
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralFragment
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.test.application.espresso_component.CommonActions.findViewAndScreenShot
+import com.tokopedia.test.application.espresso_component.CommonActions.screenShotFullRecyclerView
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.test.application.espresso_component.CommonActions.takeScreenShotVisibleViewInScreen
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -74,8 +75,7 @@ class RechargeGeneralScreenShotTest {
 //        takeScreenShotVisibleViewInScreen(test, filePrefix(), "swipe_to_refresh")
 //        takeScreenshot("test.png")
 
-        val rv = activity.findViewById<RecyclerView>(R.id.rv_digital_product)
-        takeScreenShotVisibleViewInScreen(rv, filePrefix(), "rv_digital_product")
+        screenShotFullRecyclerView(R.id.rv_digital_product, 0, 2, "rv_digital_product")
         select_operator()
         select_product()
         see_promo()
