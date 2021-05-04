@@ -13,8 +13,8 @@ open class MenuItemUiModel(
     private val clickApplink: String? = null,
     eventActionSuffix: String = "",
     settingTypeInfix: String = "",
-    private val eventName: String? = null,
-    private val eventLabel: String? = null,
+    eventName: String? = null,
+    eventLabel: String? = null,
     open val trackingAlias: String? = null,
     open val iconUnify: Int? = null,
     open var notificationCount: Int = 0,
@@ -72,8 +72,7 @@ open class MenuItemUiModel(
                 "${SettingTrackingConstant.CLICK} $eventActionSuffix"
             }
 
-    override val clickEventLabel: String
-        get() = eventLabel ?: super.clickEventLabel
+    override val clickEventLabel: String = eventLabel ?: super.clickEventLabel
 
     val isNoIcon: Boolean
         get() = drawableReference == null && iconUnify == null
