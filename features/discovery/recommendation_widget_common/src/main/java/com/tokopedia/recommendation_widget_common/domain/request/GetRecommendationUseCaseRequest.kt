@@ -9,6 +9,7 @@ internal class GetRecommendationUseCaseRequest {
                       tID
                       source
                       title
+                      subtitle
                       foreignTitle
                       widgetUrl
                       pageName

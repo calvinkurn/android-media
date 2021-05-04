@@ -73,6 +73,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
             },
             title = title,
             foreignTitle = foreignTitle,
+            subtitle = subtitle,
             source = source,
             tid = tid,
             widgetUrl = widgetUrl,
@@ -82,7 +83,8 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
             nextPage = pagination.nextPage,
             prevPage = pagination.prevPage,
             hasNext = pagination.hasNext,
-            pageName = pageName)
+            pageName = pageName
+    )
 }
 
 fun List<RecommendationItem>.toProductCardModels(hasThreeDots: Boolean = false): List<ProductCardModel>{
