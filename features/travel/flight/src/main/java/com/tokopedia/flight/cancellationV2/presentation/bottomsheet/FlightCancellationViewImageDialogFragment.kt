@@ -24,24 +24,20 @@ class FlightCancellationViewImageDialogFragment : DialogFragment() {
         filePath = arguments?.getString(EXTRA_FILE_PATH) ?: ""
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.dialog_fragment_flight_cancellation_view_image, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.dialog_fragment_flight_cancellation_view_image, container, false)
+        view.setBackgroundResource(android.R.color.transparent)
+        view.requestLayout()
+        return view
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
-        flight_cancellation_image_iv_close.setOnClickListener {
-            closeDialog()
-        }
-
         showImage()
 
-    }
-
-    private fun closeDialog() {
-        dialog?.dismiss()
     }
 
     private fun showImage() {
