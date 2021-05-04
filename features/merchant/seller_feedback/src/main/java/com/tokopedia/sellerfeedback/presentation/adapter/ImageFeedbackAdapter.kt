@@ -21,10 +21,12 @@ class ImageFeedbackAdapter(private val imageClickListener: BaseImageFeedbackView
 
     private val addImageFeedbackUiModel by lazy { AddImageFeedbackUiModel() }
 
-    private var imageFeedbackData = mutableListOf<BaseImageFeedbackUiModel>()
+    private val imageFeedbackData = mutableListOf<BaseImageFeedbackUiModel>()
+    fun getImageFeedbackData(): List<BaseImageFeedbackUiModel> = imageFeedbackData
 
     fun setImageFeedbackData(data: List<ImageFeedbackUiModel>) {
-        imageFeedbackData = data.toMutableList()
+        imageFeedbackData.clear()
+        imageFeedbackData.addAll(data.toMutableList())
         checkAddImageFeedback()
         notifyDataSetChanged()
     }

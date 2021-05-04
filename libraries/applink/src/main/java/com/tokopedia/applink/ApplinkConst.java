@@ -471,6 +471,7 @@ public interface ApplinkConst {
         String SELLER_SHIPPING_EDITOR = "sellerapp://setting/shipping-editor";
         String STATISTIC_DASHBOARD = "sellerapp://gold-merchant-statistic-dashboard";
         String SHOP_SETTINGS_SELLER_APP = "sellerapp://shop/{shop_id}/settings";
+        String SELLER_FEEDBACK = "sellerapp://seller-feedback";
     }
 
     interface Query {

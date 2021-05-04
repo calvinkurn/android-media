@@ -66,6 +66,7 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
     private val feedbackDetailTextWatcher by lazy { getFeedbackDetailWatcher() }
     private val imageFeedbackAdapter by lazy { ImageFeedbackAdapter(this) }
     private val imagePickerBuilder by lazy { buildImagePicker() }
+    private val imagePickerMultipleSelectionBuilder by lazy { buildImagePickerMultipleSelectionBuilder() }
 
     private var viewModel: SellerFeedbackViewModel? = null
     private var backgroundHeader: FrameLayout? = null
@@ -103,6 +104,10 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
         textAreaFeedbackDetail = view.findViewById(R.id.textfield_feedback_detail)
         buttonSend = view.findViewById(R.id.button_send)
         rvImageFeedback = view.findViewById(R.id.rv_image_feedback)
+
+        if (!allPermissionsGranted()) {
+            requestPermissions(requiredPermissions.toTypedArray(), 5111)
+        }
 
         setupViewInteraction()
         observeViewModel()
@@ -201,6 +206,7 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
     }
 
     private val observerFeedbackImages = Observer<List<ImageFeedbackUiModel>> {
+
         imageFeedbackAdapter.setImageFeedbackData(it)
     }
 
@@ -231,13 +237,16 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
     }
 
     private fun buildImagePicker(): ImagePickerBuilder {
-        val multipleSelectionbuilder = ImagePickerMultipleSelectionBuilder(maximumNoPick = 3)
         return ImagePickerBuilder(
-                title = "Foto123",
+                title = "Foto",
                 galleryType = GalleryType.IMAGE_ONLY,
-                imagePickerTab = arrayOf(ImagePickerTab.TYPE_GALLERY),
-                imagePickerMultipleSelectionBuilder = multipleSelectionbuilder
-                // set image url to show in image picker, get from adapter
+                imagePickerTab = arrayOf(ImagePickerTab.TYPE_GALLERY)
+        )
+    }
+
+    private fun buildImagePickerMultipleSelectionBuilder(): ImagePickerMultipleSelectionBuilder {
+        return ImagePickerMultipleSelectionBuilder(
+                maximumNoPick = 3
         )
     }
 
@@ -247,6 +256,9 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
 
     override fun onClickAddImage() {
         val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
+        val currentSelectedImages = getSelectedImageUrl(imageFeedbackAdapter.getImageFeedbackData())
+        imagePickerMultipleSelectionBuilder.initialSelectedImagePathList = currentSelectedImages
+        imagePickerBuilder.imagePickerMultipleSelectionBuilder = imagePickerMultipleSelectionBuilder
         intent.putImagePickerBuilder(imagePickerBuilder)
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
@@ -268,6 +280,11 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
                 viewModel?.setImages(imageFeedbackUiModels)
             }
         }
+    }
+
+    private fun getSelectedImageUrl(imageFeedbackDataList: List<BaseImageFeedbackUiModel>): ArrayList<String> {
+        return imageFeedbackDataList.filterIsInstance(ImageFeedbackUiModel::class.java)
+                .map { it.imageUrl } as ArrayList<String>
     }
 
 

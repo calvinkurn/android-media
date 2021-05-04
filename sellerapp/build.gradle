@@ -215,6 +215,7 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.sellerAppWidget)
+    implementation project(rootProject.ext.features.sellerFeedback)
     implementation project(rootProject.ext.features.sellerHome)
     implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
@@ -370,6 +371,7 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
         exclude group: 'com.android.support'
     }
+    implementation project(path: ':libraries:screenshot_observer')
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

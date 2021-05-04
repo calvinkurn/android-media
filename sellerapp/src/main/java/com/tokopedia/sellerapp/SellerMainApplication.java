@@ -296,6 +296,12 @@ public class SellerMainApplication extends SellerRouterApplication implements
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
         registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
+        registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
+            @Override
+            public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
+                openFeedbackForm(uri, className, isFromScreenshot);
+            }
+        }));
     }
 
     @Override
@@ -364,6 +370,13 @@ public class SellerMainApplication extends SellerRouterApplication implements
     private Boolean getSliceRemoteConfig() {
         return remoteConfig != null
                 && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
+    }
+
+    private void openFeedbackForm(Uri uri, String className, boolean isFromScreenshot) {
+        Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.SellerApp.SELLER_FEEDBACK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(SellerFeedbackFragmentV2.EXTRA_URI_IMAGE, uri);
+        getApplicationContext().startActivity(intent);
     }
 
 

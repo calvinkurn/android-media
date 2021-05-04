@@ -87,10 +87,8 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
     }
 
     override fun onActivityPaused(activity: Activity) {
-        if (!GlobalConfig.isSellerApp()) {
-            unregister()
-            currentActivity = null
-        }
+        unregister()
+        currentActivity = null
     }
 
     override fun onActivityStarted(activity: Activity) {
@@ -109,12 +107,9 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
     }
 
     override fun onActivityResumed(activity: Activity) {
-        if (!GlobalConfig.isSellerApp()) {
-            register()
-            currentActivity = activity
-            className = activity.localClassName
-
-        }
+        register()
+        currentActivity = activity
+        className = activity.localClassName
     }
 
     override fun onScreenShotTaken(uri: Uri) {
