@@ -541,7 +541,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         }
                     }
                     BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                        if (searchPropertiesMap.size < 0){
+                        if (searchPropertiesMap.isNullOrEmpty()){
                             googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
                         }else{
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[0],
