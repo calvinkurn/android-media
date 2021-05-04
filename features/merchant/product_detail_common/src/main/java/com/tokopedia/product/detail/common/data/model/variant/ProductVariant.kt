@@ -23,7 +23,7 @@ data class ProductVariant(
         val sizeChart: String = "",
         @SerializedName("defaultChild")
         val defaultChild: String = "",
-        @SerializedName("variants")
+        @SerializedName(value = "variants", alternate = ["variant"])
         val variants: List<Variant> = listOf(),
         @SerializedName("children")
         val children: List<VariantChild> = listOf()
