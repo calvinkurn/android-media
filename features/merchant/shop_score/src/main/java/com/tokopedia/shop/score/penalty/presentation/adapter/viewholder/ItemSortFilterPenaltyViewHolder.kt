@@ -48,7 +48,6 @@ class ItemSortFilterPenaltyViewHolder(view: View, private val itemSortFilterPena
             it.listener = {
                 if (it.type != ChipsUnify.TYPE_DISABLE) {
                     itemSortFilterPenaltyListener.onChildSortFilterItemClick(it)
-                    it.toggle()
                 }
             }
         }
