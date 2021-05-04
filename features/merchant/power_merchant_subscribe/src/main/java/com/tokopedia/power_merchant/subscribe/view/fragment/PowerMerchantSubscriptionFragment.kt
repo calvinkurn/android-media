@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
@@ -66,10 +67,13 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         ViewModelProvider(this, viewModelFactory).get(PowerMerchantSubscriptionViewModel::class.java)
     }
 
+    private val recyclerView: RecyclerView?
+        get() = super.getRecyclerView(view)
     private var pmBasicInfo: PowerMerchantBasicInfoUiModel? = null
     private var cancelPmDeactivationWidgetPosition: Int? = null
     private var pmGradeBenefitAndShopInfo: PMGradeBenefitAndShopInfoUiModel? = null
     private var selectedPmType = PMConstant.PMTierType.PM_REGULAR
+    private var shouldRefreshPage = true
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
 
@@ -129,15 +133,19 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     override fun setOnTickerWidgetRemoved(position: Int) {
         adapter.data.removeAt(position)
-        adapter.notifyItemRemoved(position)
+        recyclerView?.post {
+            adapter.notifyItemRemoved(position)
+        }
     }
 
     override fun onPowerMerchantSectionClickListener(headerWidget: WidgetRegistrationHeaderUiModel) {
+        shouldRefreshPage = false
         selectedPmType = headerWidget.selectedPmType
         renderRegularPmRegistrationWidget(headerWidget)
     }
 
     override fun onPowerMerchantProSectionClickListener(headerWidget: WidgetRegistrationHeaderUiModel) {
+        shouldRefreshPage = false
         selectedPmType = headerWidget.selectedPmType
         renderPmProRegistrationWidgets(headerWidget)
     }
@@ -201,7 +209,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 }
                 is Fail -> {
                     cancelPmDeactivationWidgetPosition?.let { position ->
-                        adapter.notifyItemChanged(position)
+                        recyclerView?.post {
+                            adapter.notifyItemChanged(position)
+                        }
                     }
                     val actionText = getString(R.string.pm_try_again)
                     showErrorToaster(getErrorMessage(it.throwable), actionText)
@@ -229,6 +239,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun reloadPageContent() {
+        shouldRefreshPage = true
         if (pmBasicInfo == null) {
             mViewModel.getPowerMerchantBasicInfo()
         } else {
@@ -298,7 +309,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         )
         adapter.data.clear()
         adapter.data.addAll(widgets)
-        adapter.notifyDataSetChanged()
+        notifyOnWidgetChanged()
 
         setupFooterCta()
     }
@@ -306,15 +317,27 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private fun renderRegularPmRegistrationWidget(headerWidget: WidgetRegistrationHeaderUiModel) {
         val widgets = listOf(
                 headerWidget,
+                WidgetDividerUiModel,
                 WidgetPotentialUiModel,
                 WidgetDividerUiModel,
                 getPmGradeBenefitWidget()
         )
         adapter.data.clear()
         adapter.data.addAll(widgets)
-        adapter.notifyDataSetChanged()
+        notifyOnWidgetChanged()
 
         setupFooterCta()
+    }
+
+    private fun notifyOnWidgetChanged() {
+        recyclerView?.post {
+            if (shouldRefreshPage) {
+                adapter.notifyDataSetChanged()
+            } else {
+                val headerIndex = adapter.data.indexOfFirst { it is WidgetRegistrationHeaderUiModel }
+                adapter.notifyItemRangeChanged(headerIndex.plus(1), adapter.data.size.minus(1))
+            }
+        }
     }
 
     private fun getPmGradeBenefitWidget(): WidgetGradeBenefitUiModel {

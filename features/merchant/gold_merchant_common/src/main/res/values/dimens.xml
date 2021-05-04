@@ -6,6 +6,7 @@
     <dimen name="gmc_dimen_30dp">30dp</dimen>
     <dimen name="gmc_dimen_44dp">44dp</dimen>
     <dimen name="gmc_dimen_54dp">54dp</dimen>
+    <dimen name="gmc_dimen_76dp">76dp</dimen>
     <dimen name="gmc_dimen_80dp">80dp</dimen>
     <dimen name="gmc_dimen_162dp">162dp</dimen>
     <dimen name="gmc_dimen_176dp">176dp</dimen>
