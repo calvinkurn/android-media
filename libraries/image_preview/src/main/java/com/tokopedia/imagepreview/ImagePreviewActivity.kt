@@ -1,23 +1,19 @@
 package com.tokopedia.imagepreview
 
-import android.Manifest
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.request.target.CustomTarget
@@ -29,10 +25,10 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.design.component.ticker.TouchViewPager
 import com.tokopedia.design.list.adapter.TouchImageAdapter
 import com.tokopedia.imagepreview.ImagePreviewUtils.getUri
-import com.tokopedia.imagepreview.ImagePreviewUtils.processPictureName
-import com.tokopedia.imagepreview.ImagePreviewUtils.saveImageFromBitmap
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.file.FileUtil
+import com.tokopedia.utils.file.PublicFolderUtil
 import java.io.File
 import java.util.*
 
@@ -81,7 +77,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
 
         findViewById<View>(R.id.ivClose).setOnClickListener { finish() }
         findViewById<View>(R.id.ivDownload).setOnClickListener {
-            downloadImageCheckPermission()
+            actionDownloadAndSavePicture()
         }
 
         adapter?.SetonImageStateChangeListener(object : TouchImageAdapter.OnImageStateChange {
@@ -98,38 +94,15 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
         viewPager.currentItem = position
     }
 
-    private fun openImageDownloaded(path: String) {
-        val file = File(path)
+    private fun openImageDownloaded(uri: Uri) {
         val intent = Intent().apply {
             action = Intent.ACTION_VIEW
-            val uri = getUri(this@ImagePreviewActivity, file)
             setDataAndType(uri, "image/*")
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        startActivity(intent);
+        startActivity(intent)
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)
-    }
-
-    private fun downloadImageCheckPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            ActivityCompat.requestPermissions(this,
-                    permissions, REQUEST_PERMISSIONS)
-        } else {
-            actionDownloadAndSavePicture()
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.size == 1) {
-            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(this@ImagePreviewActivity, getString(R.string.storage_permission_enabled_needed), Toast.LENGTH_LONG).show()
-            } else {
-                actionDownloadAndSavePicture()
-            }
-        }
     }
 
     override fun getScreenName(): String? {
@@ -137,7 +110,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
     }
 
     private fun actionDownloadAndSavePicture() {
-        val filenameParam = processPictureName(viewPager.getCurrentItem())
+        val filenameParam = FileUtil.generateUniqueFileNameDateFormat(viewPager.currentItem)
         val notificationId = filenameParam.hashCode()
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationBuilder = NotificationCompat.Builder(this@ImagePreviewActivity,
@@ -151,30 +124,27 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
         notificationManager.notify(notificationId, notificationBuilder.build())
         val targetListener: CustomTarget<Bitmap> = object : CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                var path: String?
+                val fileAndUri: Pair<File?, Uri?>
                 try {
-                    path = saveImageFromBitmap(
+                    fileAndUri = PublicFolderUtil.putImageToPublicFolder(
                             this@ImagePreviewActivity,
-                            resource,
-                            filenameParam
-                    );
+                            bitmap = resource,
+                            fileName = filenameParam)
                 } catch (e: Throwable) {
                     showFailedDownload(notificationId, notificationBuilder)
                     return
                 }
-
-                if (path == null) {
+                val resultUri = fileAndUri.second
+                if (resultUri == null) {
                     showFailedDownload(notificationId, notificationBuilder)
                 } else {
                     val intent = Intent().apply {
                         action = Intent.ACTION_VIEW
                     }
-                    val file = File(path);
-                    val uri = getUri(this@ImagePreviewActivity, file);
-                    intent.setDataAndType(uri, "image/*");
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    intent.setDataAndType(resultUri, "image/*")
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-                    val pIntent = PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, 0);
+                    val pIntent = PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, 0)
 
                     notificationBuilder.setContentText(getString(R.string.download_success))
                             .setProgress(0, 0, false)
@@ -191,7 +161,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                             getString(R.string.download_success),
                             Snackbar.LENGTH_SHORT)
                     snackbar.setAction(getString(R.string.label_open)) {
-                        openImageDownloaded(path)
+                        openImageDownloaded(resultUri)
                     }
                     snackbar.addCallback(object : Snackbar.Callback() {
                         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {

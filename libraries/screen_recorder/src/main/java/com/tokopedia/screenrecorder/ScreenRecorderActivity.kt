@@ -21,7 +21,6 @@ class ScreenRecorderActivity : AppCompatActivity() {
         private const val REQUEST_PERMISSION_RECORD_SCREEN = 1;
         private val PERMISSIONS = arrayOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.RECORD_AUDIO
         )
 
