@@ -7,11 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokomart.home.R
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
 
@@ -24,24 +21,15 @@ class HomeChooseAddressWidgetViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_tokomart_choose_address_widget
 
-        const val ENABLE_CHOOSE_ADDRESS_WIDGET = "android_shop_page_enable_choose_address_widget_on_shop_page_header"
+        const val ENABLE_CHOOSE_ADDRESS_WIDGET = "android_tokomart_enable_choose_address_widget_on_home_page"
         const val SOURCE = "tokomart page"
     }
 
     private var chooseAddressWidget: ChooseAddressWidget? = null
-    private var remoteConfig: RemoteConfig? = null
     private var coachMark: CoachMark2? = null
 
-    init {
-        setupRemoteConfig()
-    }
-
     override fun bind(element: HomeChooseAddressWidgetUiModel?) {
-        remoteConfig?.run {
-            element?.isMyShop?.let {
-                setupChooseAddressWidget(this, it)
-            }
-        }
+        setupChooseAddressWidget()
     }
 
     override fun onLocalizingAddressUpdatedFromWidget() {
@@ -64,25 +52,9 @@ class HomeChooseAddressWidgetViewHolder(
 
     override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE
 
-    private fun setupRemoteConfig() {
-        remoteConfig = FirebaseRemoteConfigImpl(itemView.context)
-    }
-
-    private fun setupChooseAddressWidget(remoteConfig: RemoteConfig, isMyShop: Boolean) {
+    private fun setupChooseAddressWidget() {
         chooseAddressWidget = itemView.findViewById(R.id.choose_address_widget)
-        chooseAddressWidget?.let { widget ->
-            val isRollOutUser = ChooseAddressUtils.isRollOutUser(itemView.context)
-            val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
-                    ENABLE_CHOOSE_ADDRESS_WIDGET,
-                    true
-            )
-            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop) {
-                widget.show()
-                widget.bindChooseAddress(this)
-            } else {
-                widget.hide()
-            }
-        }
+        chooseAddressWidget?.bindChooseAddress(this)
         showCoachMark()
     }
 

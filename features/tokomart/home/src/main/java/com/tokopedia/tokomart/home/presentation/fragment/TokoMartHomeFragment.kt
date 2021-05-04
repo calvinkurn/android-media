@@ -8,22 +8,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokomart.home.R
 import com.tokopedia.tokomart.home.di.component.DaggerTokoMartHomeComponent
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapter
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeFactory
 import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
+import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokomart.home.presentation.viewmodel.TokoMartHomeViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -85,6 +80,9 @@ class TokoMartHomeFragment: Fragment() {
     private fun observeLiveData() {
         observe(viewModel.homeLayout) {
             if (it is Success) adapter.submitList(it.data)
+            if (!isChooseAddressWidgetShowed(false)) {
+                adapter.removeHomeChooseAddressWidget()
+            }
         }
     }
 
@@ -100,10 +98,21 @@ class TokoMartHomeFragment: Fragment() {
                         it
                 )
                 if (isUpdated) {
-                    adapter.updateHomeChooseAddress(HomeChooseAddressWidgetUiModel(true))
+                    adapter.updateHomeChooseAddressWidget(HomeChooseAddressWidgetUiModel(true))
                 }
             }
         }
+    }
+
+    private fun isChooseAddressWidgetShowed(isMyShop: Boolean): Boolean {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val isRollOutUser = ChooseAddressUtils.isRollOutUser(context)
+        val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
+                HomeChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
+                true
+        )
+//        return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop
+        return true
     }
 
     private fun updateCurrentPageLocalCacheModelData() {
