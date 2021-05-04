@@ -36,10 +36,7 @@ import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
-import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.R
@@ -376,14 +373,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     context?.startActivity(intent)
                 },
                 DividerUiModel(),
-                MenuItemUiModel(
+                PrintingMenuItemUiModel(
                         resources.getString(R.string.setting_menu_product_package),
-                        null,
-                        eventActionSuffix = SettingTrackingConstant.PRINTING,
-                        eventName = SettingTrackingConstant.EVENT_CLICK_PRINTING,
-                        eventLabel = SettingTrackingConstant.LABEL_CLICK_PRINTING,
-                        iconUnify = IconUnify.PACKAGE,
-                        isNewItem = true
+                        IconUnify.PACKAGE
                 ) { goToPrintingPage() },
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_finance_service),

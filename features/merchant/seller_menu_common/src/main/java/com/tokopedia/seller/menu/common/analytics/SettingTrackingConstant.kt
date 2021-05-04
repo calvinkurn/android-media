@@ -16,6 +16,7 @@ object SettingTrackingConstant {
     const val OTHERS_TAB = "others tab"
     const val VIEW_STATISTIC_IRIS = "viewStatistikIris"
     const val CLICK_STATISTIC = "clickStatistik"
+    const val CLICK_PRINTING = "clickPrinting"
 
     const val GOLD_MERCHANT = "gold_merchant"
     const val OFFICIAL_STORE = "official_store"
@@ -38,7 +39,6 @@ object SettingTrackingConstant {
     const val REVIEW = "review"
     const val DISCUSSION = "discussion"
     const val COMPLAINT = "complaint"
-    const val PRINTING = "printing"
     const val FINANCIAL_SERVICE = "financial service"
     const val SELLER_CENTER = "seller center"
     const val TOKOPEDIA_CARE = "tokopedia care"
@@ -67,6 +67,6 @@ object SettingTrackingConstant {
     const val PHYSICAL_GOODS = "physicalgoods"
     const val TOKOPEDIASELLER = "tokopediaseller"
 
-    const val EVENT_CLICK_PRINTING = "clickPrinting"
+    const val ACTION_CLICK_PRINTING = "click printing"
     const val LABEL_CLICK_PRINTING = "local services - printing"
 }
