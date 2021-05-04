@@ -569,7 +569,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setQty(cartItemData.updatedData?.quantity ?: 0)
             setShopId(cartItemData.originData?.shopId ?: "")
-            setShopType(cartItemData.originData?.shopType ?: "")
+            // Todo : read other field
+            setShopType(cartItemData.originData?.shopTypeInfoData?.title ?: "")
             setShopName(cartItemData.originData?.shopName ?: "")
             setCategoryId(cartItemData.originData?.categoryId)
             setAttribution(
@@ -890,7 +891,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setQty(cartItemData.updatedData?.quantity ?: 0)
             setShopId(cartItemData.originData?.shopId ?: "")
-            setShopType(cartItemData.originData?.shopType ?: "")
+            // Todo : read other field
+            setShopType(cartItemData.originData?.shopTypeInfoData?.title ?: "")
             setShopName(cartItemData.originData?.shopName ?: "")
             setCategoryId(cartItemData.originData?.categoryId)
             setWarehouseId(cartItemData.originData?.warehouseId.toString())
