@@ -61,13 +61,13 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         mRecyclerView = view
         recyclerViewPaddingTop = mRecyclerView?.paddingTop.orZero()
         mHeaderContainer = FrameLayout(context)
-        mHeaderContainer?.background = MethodChecker.getDrawable(context, R.drawable.shop_page_card_shadow_bottom)
+        mHeaderContainer?.background = MethodChecker.getDrawable(context, R.drawable.shop_page_view_bottom_shadow)
         mHeaderContainer?.clipToPadding = false
         mHeaderContainer?.clipChildren = false
         mHeaderContainer?.isClickable = true
         mHeaderContainer?.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         mHeaderContainer?.visibility = GONE
-        mHeaderContainer?.background = MethodChecker.getDrawable(context, R.drawable.shop_page_card_shadow_bottom)
+        mHeaderContainer?.background = MethodChecker.getDrawable(context, R.drawable.shop_page_view_bottom_shadow)
         addView(mHeaderContainer)
         val onScrollListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
