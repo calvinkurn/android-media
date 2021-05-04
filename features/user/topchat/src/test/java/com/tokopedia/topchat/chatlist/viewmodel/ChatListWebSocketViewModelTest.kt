@@ -73,12 +73,13 @@ class ChatListWebSocketViewModelTest {
     }
 
     @Test
-    fun `onLifeCycleStop should return isOnStop true`() {
+    fun onLifeCycleStop_should_return_isOnStop_true() {
         // When
-        viewModel.onLifeCycleStop()
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
 
         // Then
-        assertTrue(viewModel.isOnStop)
+        assertThat(viewModel.isOnStop, `is`(true))
     }
 
     @Test

@@ -42,7 +42,7 @@ class ChatListWebSocketViewModel @Inject constructor(
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun onLifeCycleStop() {
+    private fun onLifeCycleStop() {
         isOnStop = true
     }
 
