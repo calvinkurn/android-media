@@ -5,9 +5,9 @@ import androidx.lifecycle.Observer
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
 import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket
-import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
 import com.tokopedia.topchat.chatlist.domain.websocket.DefaultWebSocketParser
 import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketStateHandler
+import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -127,6 +127,23 @@ class WebSocketViewModelTest {
 
         // Then
         assertTrue(!viewModel.isOnStop)
+    }
+
+    @Test
+    fun should_not_handle_any_event_when_onStop_is_true() {
+//         Given
+        val response = eventReplyMessageString
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onMessage(webSocket, response)
+        }
+
+        // When
+        viewModel.onStop()
+        viewModel.connectWebSocket()
+
+        // Then
+        assert(viewModel.itemChat.value == null)
     }
 
     companion object {
