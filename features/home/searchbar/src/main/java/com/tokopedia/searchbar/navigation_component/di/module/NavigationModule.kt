@@ -1,6 +1,8 @@
 package com.tokopedia.searchbar.navigation_component.di.module
 
 import android.content.Context
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.searchbar.navigation_component.di.NavigationScope
 import com.tokopedia.user.session.UserSession
@@ -14,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 class NavigationModule(private val context: Context) {
     @NavigationScope
     @Provides
-    fun provideDispatcher(): CoroutineDispatcher = Dispatchers.IO
+    fun provideHomeDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @NavigationScope
     @Provides
