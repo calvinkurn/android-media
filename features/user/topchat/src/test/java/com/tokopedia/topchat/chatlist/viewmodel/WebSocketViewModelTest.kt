@@ -13,6 +13,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.websocket.WebSocketResponse
 import io.mockk.*
+import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import org.junit.Assert.assertTrue
@@ -159,6 +160,21 @@ class WebSocketViewModelTest {
 
         // Then
         assert(viewModel.itemChat.value == null)
+    }
+
+    @Test
+    fun should_call_retry_succeed_when_open_connection_to_ws() {
+        // Given
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onOpen(webSocket, mockk(relaxed = true))
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        verify(exactly = 1) { webSocketStateHandler.retrySucceed() }
     }
 
     companion object {
