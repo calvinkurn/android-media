@@ -80,7 +80,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
             val hasLabelCampaign = productCardModel.isShowLabelCampaign()
             val campaignLabelHeight = getLabelCampaignHeight(context, hasLabelCampaign)
 
-            val contentMarginTop = getListViewContentMarginTop(context, hasLabelBestSeller)
+            val hasLabelCampaignOrBestSeller = hasLabelCampaign || hasLabelBestSeller
+            val contentMarginTop = getListViewContentMarginTop(context, hasLabelCampaignOrBestSeller)
             val imageSize = context.resources.getDimensionPixelSize(R.dimen.product_card_list_image_size)
             val contentHeight = productCardModel.getContentHeightList(context)
             val buttonDeleteProductSectionHeight = productCardModel.getButtonDeleteProductSectionHeight(context)
@@ -104,8 +105,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
     }
 }
 
-private fun getListViewContentMarginTop(context: Context, hasLabelBestSeller: Boolean): Int {
-    return if (hasLabelBestSeller)
+private fun getListViewContentMarginTop(context: Context, hasLabelCampaignOrBestSeller: Boolean): Int {
+    return if (hasLabelCampaignOrBestSeller)
         context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin_top)
     else 0
 }

@@ -180,23 +180,27 @@ class PlayAnalytic(
         )
     }
 
-    fun impressionProductList(listOfProducts: List<PlayProductUiModel.Product>) {
-        if (listOfProducts.isNotEmpty()) {
-            trackingQueue.putEETracking(
-                    EventModel(
-                            "productView",
-                            KEY_TRACK_GROUP_CHAT_ROOM,
-                            "view product",
-                            "$mChannelId - ${listOfProducts[0].id} - ${mChannelType.value} - product in bottom sheet"
-                    ),
-                    hashMapOf<String, Any>(
-                            "ecommerce" to hashMapOf(
-                                    "currencyCode" to "IDR",
-                                    "impressions" to convertProductsToListOfObject(listOfProducts, "bottom sheet")
-                            )
-                    )
-            )
-        }
+    fun impressBottomSheetProducts(products: List<Pair<PlayProductUiModel.Product, Int>>) {
+        if (products.isEmpty()) return
+
+        trackingQueue.putEETracking(
+                EventModel(
+                        "productView",
+                        KEY_TRACK_GROUP_CHAT_ROOM,
+                        "view product",
+                        "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - product in bottom sheet"
+                ),
+                hashMapOf(
+                        "ecommerce" to hashMapOf(
+                                "currencyCode" to "IDR",
+                                "impressions" to mutableListOf<HashMap<String, Any>>().apply {
+                                    products.forEach {
+                                        add(convertProductToHashMapWithList(it.first, it.second, "bottom sheet"))
+                                    }
+                                }
+                        )
+                )
+        )
     }
 
     fun clickProduct(product: PlayProductUiModel.Product,
@@ -370,24 +374,31 @@ class PlayAnalytic(
         )
     }
 
-    fun impressionFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int) {
-        val finalPosition = position + 1
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                mapOf(
-                        KEY_EVENT to "productView",
-                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                        KEY_EVENT_ACTION to "view on featured product",
-                        KEY_EVENT_LABEL to "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging",
+    fun impressFeaturedProducts(products: List<Pair<PlayProductUiModel.Product, Int>>) {
+        if (products.isEmpty()) return
+
+        trackingQueue.putEETracking(
+                EventModel(
+                        "productView",
+                        KEY_TRACK_GROUP_CHAT_ROOM,
+                        "view on featured product",
+                        "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - featured product tagging",
+                ),
+                hashMapOf(
+                        "ecommerce" to hashMapOf(
+                                "currencyCode" to "IDR",
+                                "impressions" to mutableListOf<HashMap<String, Any>>().apply {
+                                    products.forEach {
+                                        add(convertProductToHashMapWithList(it.first, it.second + 1, "featured product"))
+                                    }
+                                }
+                        )
+                ),
+                hashMapOf(
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                        "ecommerce" to hashMapOf(
-                                "currencyCode" to "IDR",
-                                "impressions" to mutableListOf(
-                                        convertProductToHashMapWithList(featuredProduct, finalPosition,"featured product")
-                                )
-                        )
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
                 )
         )
     }

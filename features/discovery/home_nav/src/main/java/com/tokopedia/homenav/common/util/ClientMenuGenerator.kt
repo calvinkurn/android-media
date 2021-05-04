@@ -230,6 +230,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
                 appendQueryParameter(ApplinkConst.Inbox.PARAM_PAGE, ApplinkConst.Inbox.VALUE_PAGE_REVIEW)
                 appendQueryParameter(ApplinkConst.Inbox.PARAM_ROLE, ApplinkConst.Inbox.VALUE_ROLE_BUYER)
+                appendQueryParameter(ApplinkConst.Inbox.PARAM_SOURCE, PAGE_SOURCE)
             }.build().toString()
         } else {
             Uri.parse(ApplinkConst.REPUTATION).buildUpon().appendQueryParameter(PAGE_SOURCE_KEY, PAGE_SOURCE).build().toString()

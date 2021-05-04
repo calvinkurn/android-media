@@ -28,6 +28,7 @@
             android:id="@+id/textview_title"
             style="@style/TextView.Title.Bold"
             android:layout_width="match_parent"
+            android:textColor="@color/Unify_N700_68"
             tools:text="Dewasa" />
 
         <androidx.appcompat.widget.AppCompatTextView
