@@ -80,7 +80,7 @@ import javax.inject.Inject
  */
 class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
         BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener,
-        OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveListener, SubmitFilterListener {
+        OnMapReadyCallback, GoogleMap.OnMarkerClickListener, SubmitFilterListener, GoogleMap.OnCameraMoveStartedListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -345,8 +345,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         setGoogleMap()
     }
 
-    override fun onCameraMove() {
-        showFindNearHereView()
+    override fun onCameraMoveStarted(reason: Int) {
+        when (reason) {
+            GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE -> {
+                showFindNearHereView()
+            }
+            else -> hideFindNearHereView()
+        }
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -729,7 +734,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             googleMap.uiSettings.isScrollGesturesEnabled = true
 
             googleMap.setOnMarkerClickListener(this)
-            googleMap.setOnCameraMoveListener(this)
+            googleMap.setOnCameraMoveStartedListener(this)
 
             mapHotelSearchMap.setOnTouchListener(object : View.OnTouchListener {
                 override fun onTouch(v: View, motionEvent: MotionEvent): Boolean {
@@ -786,7 +791,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             btnGetRadiusHotelSearchMap.addItem(wrapper)
         }
         btnGetRadiusHotelSearchMap.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp), 0, 0)
-        btnGetRadiusHotelSearchMap.gone()
     }
 
     private fun onSearchByMap() {
