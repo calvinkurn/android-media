@@ -3,27 +3,27 @@
   "mode": "exact",
   "query": [
     {
-      "networkSpeed": "{{.*}}",
-      "clientId": "{{.*}}",
-      "productId": "{{.*}}",
-      "isLoggedInStatus": "{{true|false}}",
-      "appsflyerId": "{{.*}}",
-      "shopId": "{{.*}}",
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "productId": ".*",
+      "isLoggedInStatus": "true|false",
+      "appsflyerId": ".*",
+      "shopId": ".*",
       "screenName": "review detail page",
       "event": "openScreen",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "userId": ".*",
+      "sessionIris": ".*"
     },
     {
       "eventCategory": "review detail page",
-      "productId": "{{.*}}",
-      "shopId": "{{.*}}",
+      "productId": ".*",
+      "shopId": ".*",
       "screenName": "review detail page",
-      "isActive": "{{true|false}}",
+      "isActive": "true|false",
       "event": "clickReview",
       "eventAction": "click - quick filter on review detail page",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{filterBy:.*}}"
+      "sessionIris": ".*",
+      "eventLabel": "filterBy:.*"
     }
   ]
 }

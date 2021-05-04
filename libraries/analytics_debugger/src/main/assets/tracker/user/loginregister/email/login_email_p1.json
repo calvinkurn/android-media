@@ -7,15 +7,15 @@
       "eventCategory": "login page",
       "eventAction": "click on button selanjutnya - email",
       "eventLabel": "success",
-      "sessionIris": "{{.*}}",
-      "user_id": "{{.*}}"
+      "sessionIris": ".*",
+      "user_id": ".*"
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button masuk",
       "eventLabel": "click",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     }
   ]
 }
