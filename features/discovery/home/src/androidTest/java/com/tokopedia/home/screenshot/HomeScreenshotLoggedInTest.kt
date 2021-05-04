@@ -79,6 +79,12 @@ class HomeScreenshotLoggedInTest {
         (homeRv.findViewHolderForAdapterPosition(3) as? BannerComponentViewHolder)?.coroutineContext?.cancelChildren()
     }
 
+    private fun resetBanner(bannerComponentViewholder: BannerComponentViewHolder) {
+        //turn off slider banner
+        bannerComponentViewholder.coroutineContext?.cancelChildren()
+        bannerComponentViewholder.scrollTo(0)
+    }
+
     private fun doScreenshotForEachViewholder() {
         val screenshotModelList = listOf(
                 ScreenshotModel(name = "Header"),
@@ -119,6 +125,9 @@ class HomeScreenshotLoggedInTest {
     ) {
         val recyclerViewId = R.id.home_fragment_recycler_view
         doActivityTest(position) {
+            if (it is BannerComponentViewHolder) {
+                resetBanner(it)
+            }
             findViewHolderAndScreenshot(
                     recyclerViewId = recyclerViewId,
                     position = position,
