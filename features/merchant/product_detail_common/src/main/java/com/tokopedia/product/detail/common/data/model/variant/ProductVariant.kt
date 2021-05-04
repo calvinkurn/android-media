@@ -1,106 +1,56 @@
 package com.tokopedia.product.detail.common.data.model.variant
 
-import androidx.collection.ArrayMap
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ProductDetailVariantResponse(
-        @SerializedName("getProductVariant")
+/**
+ * Created by Yehezkiel on 01/07/20
+ */
+data class ProductP1Variant(
+        @SerializedName("productVariantID")
         @Expose
-        val data: ProductVariant = ProductVariant()
+        val pv: String? = null, //ex: 6528
+
+        @SerializedName("variantID")
+        @Expose
+        val v: String? = null, //ex:1
+
+        @SerializedName("name")
+        @Expose
+        val name: String? = null, //ex:Warna
+
+        @SerializedName("identifier")
+        @Expose
+        val identifier: String? = null, // ex: colour
+
+        @SerializedName("unitName")
+        @Expose
+        val unitName: String? = null, //example: International
+
+        @SerializedName("option")
+        @Expose
+        val options: List<ProductVariantOption> = listOf()
 )
 
-data class ProductVariant(
-
-        @SerializedName("parentID")
+data class ProductVariantOption(
+        @SerializedName("productVariantOptionID") // ex:23454
         @Expose
-        var parentId: Int = 0,
+        val id: String? = null,
 
-        @SerializedName("defaultChild")
+        @SerializedName("variantUnitValueID") //ex: 1
         @Expose
-        var defaultChild: Int = 0,
+        val vuv: String? = null,
 
-        @SerializedName("sizeChart")
+        @SerializedName("value")
         @Expose
-        var sizeChart: String = "",
+        val value: String? = null, // example: "White"
 
-        @SerializedName("alwaysAvailable")
+        @SerializedName("hex")
         @Expose
-        var alwaysAvailable: Boolean? = null,
+        val hex: String? = null,
 
-        @SerializedName("stock")
+        @SerializedName("picture")
         @Expose
-        var stock: Int? = null,
-
-        @SerializedName("variant")
-        @Expose
-        var variant: List<Variant> = listOf(),
-
-        @SerializedName("children")
-        @Expose
-        var children: List<Child> = listOf()
-) {
-    val hasChildren: Boolean
-        get() = with(children) { this.isNotEmpty() }
-
-    val hasVariant: Boolean
-        get() = with(variant) { this.isNotEmpty() }
-
-    val defaultChildString: String?
-        get() = if (defaultChild != null && defaultChild != 0) {
-            defaultChild.toString()
-        } else {
-            null
-        }
-
-    fun getVariant(selectedVariantId: String?): Child? {
-        if (selectedVariantId.isNullOrEmpty()) {
-            return null
-        }
-        if (hasChildren) {
-            for (child: Child in children) {
-                if (child.productId.toString().equals(selectedVariantId, false)) {
-                    return child
-                }
-            }
-        }
-        return null
-    }
-
-    fun getOptionListString(selectedVariantId: String?): List<String>? {
-        return getVariant(selectedVariantId)?.getOptionStringList(variant)
-    }
-
-    fun mapSelectedProductVariants(selectedVariantId: String?): ArrayMap<String, ArrayMap<String, String>>? {
-        val child = getChildProductVariant(selectedVariantId)
-        return child?.mapVariant(variant)
-    }
-
-    private fun getChildProductVariant(selectedVariantId: String?): Child? {
-        val variantId = selectedVariantId ?: defaultChildString
-        if (hasChildren) {
-            for (child: Child in children) {
-                if (child.productId.toString().equals(variantId, false)) {
-                    return child
-                }
-            }
-        }
-        return null
-    }
-
-
-}
-
-data class Picture(
-
-        @SerializedName("url")
-        @Expose
-        var original: String? = null,
-        @SerializedName("url200")
-        @Expose
-        var thumbnail: String? = null,
-        @SerializedName("url100")
-        @Expose
-        var url100: String? = null
-
+        val picture: Picture? = null
 )
+

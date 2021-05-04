@@ -15,9 +15,6 @@ data class DynamicProductInfoP1(
     val isUsingOvo: Boolean
         get() = data.campaign.isUsingOvo
 
-    val isLeasing: Boolean
-        get() = basic.isLeasing
-
     val shopTypeString: String
         get() {
             return if (data.isOS)

@@ -3,6 +3,8 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.*
+import com.tokopedia.product.detail.common.data.model.variant.ProductP1Variant
+import com.tokopedia.product.detail.common.data.model.variant.ProductP1VariantChild
 
 data class ComponentData(
         //region General data

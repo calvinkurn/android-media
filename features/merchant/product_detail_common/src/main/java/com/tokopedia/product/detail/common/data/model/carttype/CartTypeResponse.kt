@@ -3,6 +3,15 @@ package com.tokopedia.product.detail.common.data.model.carttype
 
 import com.google.gson.annotations.SerializedName
 
+data class CartRedirection(
+        @SerializedName("data")
+        val data: List<CartTypeData> = listOf(),
+        @SerializedName("error_message")
+        val errorMessage: List<Any> = listOf(),
+        @SerializedName("status")
+        val status: String = ""
+)
+
 data class CartTypeData(
         @SerializedName("product_id")
         val productId: String = "",
@@ -14,15 +23,6 @@ data class CartTypeData(
         val unavailableButtons: List<String> = listOf(),
         @SerializedName("hide_floating_button")
         val hideFloatingButton: Boolean = false
-)
-
-data class CartRedirection(
-        @SerializedName("data")
-        val data: List<CartTypeData> = listOf(),
-        @SerializedName("error_message")
-        val errorMessage: List<Any> = listOf(),
-        @SerializedName("status")
-        val status: String = ""
 )
 
 data class AvailableButton(

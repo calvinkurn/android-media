@@ -1,8 +1,8 @@
-package com.tokopedia.product.detail.common.data.model.pdplayout
+package com.tokopedia.product.detail.common.data.model.variant
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.common.data.model.variant.Picture
+import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 
 /**
  * Created by Yehezkiel on 01/07/20
@@ -26,7 +26,7 @@ data class ProductP1VariantChild(
 
         @SerializedName("stock")
         @Expose
-        val stock: ProductP1VariantStock? = null,
+        val stock: ProductVariantStock? = null,
 
         @SerializedName("optionID")
         @Expose
@@ -46,15 +46,11 @@ data class ProductP1VariantChild(
 
         @SerializedName("campaignInfo")
         @Expose
-        val campaign: ProductP1VariantCampaign? = null,
+        val campaign: ProductVariantCampaign? = null,
 
         @SerializedName("campaignStatus")
         @Expose
         val campaignStatus: String? = null,
-
-        @SerializedName("warehouseInfo")
-        @Expose
-        val warehouseInfo: ProductP1VariantWarehouse? = null,
 
         @SerializedName("isCOD")
         @Expose
@@ -64,29 +60,7 @@ data class ProductP1VariantChild(
         val thematicCampaign: ThematicCampaign? = null
 )
 
-data class ProductP1VariantWarehouse(
-        @SerializedName("warehouseID")
-        @Expose
-        val warehouseId: String = "",
-
-        @SerializedName("isFulfillment")
-        @Expose
-        val isFulfillment: Boolean = false,
-
-        @SerializedName("districtID")
-        @Expose
-        val districtId: String = "",
-
-        @SerializedName("postalCode")
-        @Expose
-        val postalCode: String = "",
-
-        @SerializedName("geoLocation")
-        @Expose
-        val geoLocation: String = ""
-)
-
-data class ProductP1VariantStock(
+data class ProductVariantStock(
         @SerializedName("stock")
         @Expose
         val stock: String? = "",
@@ -108,7 +82,7 @@ data class ProductP1VariantStock(
         val minimumOrder: String? = ""
 )
 
-data class ProductP1VariantCampaign(
+data class ProductVariantCampaign(
         @SerializedName("campaignID")
         @Expose
         val campaignID: String? = "",
