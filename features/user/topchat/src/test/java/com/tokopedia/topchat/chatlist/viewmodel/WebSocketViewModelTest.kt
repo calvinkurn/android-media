@@ -103,6 +103,21 @@ class WebSocketViewModelTest {
     }
 
     @Test
+    fun should_not_do_anything_when_receive_unknown_event() {
+        val response = eventUnknownEvent
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onMessage(webSocket, response)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assert(viewModel.itemChat.value == null)
+    }
+
+    @Test
     fun `clearItemChatValue should clearning the value of itemChat`() {
         // When
         viewModel.clearItemChatValue()
@@ -131,7 +146,7 @@ class WebSocketViewModelTest {
 
     @Test
     fun should_not_handle_any_event_when_onStop_is_true() {
-//         Given
+        // Given
         val response = eventReplyMessageString
         val webSocketListener = slot<WebSocketListener>()
         every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
@@ -169,6 +184,10 @@ class WebSocketViewModelTest {
         val eventEndTyping: WebSocketResponse = com.tokopedia.topchat.FileUtil.parseContent(
                 eventEndTypingString,
                 WebSocketResponse::class.java
+        )
+
+        val eventUnknownEvent = com.tokopedia.topchat.FileUtil.readFileContent(
+                "/ws_response_unknown_event.json"
         )
     }
 
