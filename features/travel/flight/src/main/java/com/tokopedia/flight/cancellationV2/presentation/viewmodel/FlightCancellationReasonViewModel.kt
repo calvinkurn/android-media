@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.R
-import com.tokopedia.flight.cancellation.domain.FlightCancellationAttachmentUploadUseCase
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationPassengerEntity
+import com.tokopedia.flight.cancellationV2.domain.FlightCancellationAttachmentUploadUseCase
 import com.tokopedia.flight.cancellationV2.presentation.model.*
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.passenger.constant.FlightBookingPassenger

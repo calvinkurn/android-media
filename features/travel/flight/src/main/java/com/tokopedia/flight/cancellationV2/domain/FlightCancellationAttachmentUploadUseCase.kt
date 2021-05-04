@@ -1,4 +1,4 @@
-package com.tokopedia.flight.cancellation.domain
+package com.tokopedia.flight.cancellationV2.domain
 
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationAttachmentUploadEntity
 import com.tokopedia.flight.common.domain.FlightRepository
