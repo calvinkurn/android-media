@@ -159,7 +159,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         context?.let { UpdateShopActiveService.startService(it) }
     }
 
-    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this)
+    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this, userSession = userSession)
 
     override fun onItemClicked(settingUiModel: SettingUiModel) {}
 
