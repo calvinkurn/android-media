@@ -267,7 +267,7 @@ class ScreenRecordService : Service(), CoroutineScope {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.screen_recorder_ic_notify_white).build()
-    }
+    }a
 
     private fun getOpenVideoResultPendingIntent(resultPath: String): PendingIntent {
 
