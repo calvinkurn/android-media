@@ -103,12 +103,12 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.7'
     unifyPrinciplesVersion = '1.3.5'
-    unifyComponentsVersion = '1.1.63'
-    unifyCoachMarkVersion = '1.2.10'
+    unifyComponentsVersion = '1.1.64'
+    unifyCoachMarkVersion = '1.2.11'
     unifyCalendarVersion = '1.1.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.9'
-    unifyDatePickerVersion = '1.0.6'
+    unifyDatePickerVersion = '1.0.8'
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.11.1'
     unifyGlobalErrorVersion = '1.0.12'
@@ -117,6 +117,7 @@ ext {
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.5'
+    unifyAccordionVersion = '1.1.2'
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -277,7 +278,8 @@ ext {
             javaxInject           :  "javax.inject:javax.inject:1",
             slice                 : "androidx.slice:slice-builders-ktx:$sliceVersion",
             sliceCore             : "androidx.slice:slice-core:$sliceCoreVersion",
-            transition            : "androidx.transition:transition:$transitionVersion"
+            transition            : "androidx.transition:transition:$transitionVersion",
+            newRelic              : 'com.newrelic.agent.android:android-agent:5.28.1',
     ]
 
     testDependencies = [
@@ -354,6 +356,7 @@ ext {
             iconNotification: "com.tokopedia.unify.compositions:icon_notification:${unifyIconNotificationVersion}@aar",
             sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar",
             carousel        : "com.tokopedia.unify.compositions:carousel:${unifyCarouselVersion}@aar",
+            accordion       : "com.tokopedia.unify.compositions:accordion:${unifyAccordionVersion}@aar",
             icons           : "com.tokopedia.unify:icons:${unifyIconsVersion}@aar"
     ]
 }

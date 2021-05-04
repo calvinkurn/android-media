@@ -38,6 +38,7 @@ import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.pendingCashBac
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.tokopointsListQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.tokopointsQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.walletBalanceQuery
+import com.tokopedia.home.beranda.di.module.query.QueryPopularKeyword.popularKeywordQuery
 import com.tokopedia.home.beranda.di.module.query.QuerySuggestedReview.dismissSuggestedQuery
 import com.tokopedia.home.beranda.di.module.query.QuerySuggestedReview.suggestedReviewQuery
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
@@ -181,8 +182,10 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun providePopularKeywordUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>): GetPopularKeywordUseCase {
-        return GetPopularKeywordUseCase(graphqlUseCase as com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.PopularKeywordQuery>)
+    fun providePopularKeywordUseCase(graphqlRepository: GraphqlRepository): GetPopularKeywordUseCase {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.PopularKeywordQuery>(graphqlRepository)
+        useCase.setGraphqlQuery(popularKeywordQuery)
+        return GetPopularKeywordUseCase(useCase)
     }
 
     @Provides

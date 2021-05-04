@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    
     android:orientation="vertical">
 
     <ScrollView
@@ -79,7 +78,7 @@
                 android:layout_marginLeft="@dimen/spacing_lvl5"
                 android:layout_marginRight="@dimen/spacing_lvl5"
                 android:contentDescription="@string/content_desc_socmed_btn_register"
-                android:text="@string/social_media"
+                android:text="@string/another_method"
                 android:textAllCaps="false"
                 app:unifyButtonType="alternate"
                 app:unifyButtonVariant="ghost" />

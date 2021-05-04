@@ -2,13 +2,12 @@ package com.tokopedia.home.beranda.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.common_wallet.balance.data.CacheUtil
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.GeolocationRemoteDataSource
@@ -22,13 +21,13 @@ import com.tokopedia.home.beranda.data.repository.HomeRevampRepository
 import com.tokopedia.home.beranda.data.repository.HomeRevampRepositoryImpl
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.util.HomeCommandProcessor
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
@@ -40,10 +39,6 @@ import dagger.Provides
     HomeUseCaseModule::class
 ])
 class HomeModule {
-
-    @HomeScope
-    @Provides
-    fun provideHomeDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @HomeScope
     @Provides

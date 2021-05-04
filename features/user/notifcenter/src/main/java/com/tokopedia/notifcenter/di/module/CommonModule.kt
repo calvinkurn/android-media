@@ -8,8 +8,6 @@ import com.tokopedia.notifcenter.analytics.NotificationTransactionAnalytics
 import com.tokopedia.notifcenter.di.scope.NotificationContext
 import com.tokopedia.notifcenter.di.scope.NotificationScope
 import com.tokopedia.notifcenter.util.CacheManager
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -32,10 +30,6 @@ import dagger.Provides
     @Provides
     @NotificationScope
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
-
-    @Provides
-    @NotificationScope
-    fun provideDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @Provides
     @NotificationScope

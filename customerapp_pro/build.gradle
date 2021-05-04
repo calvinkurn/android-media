@@ -284,7 +284,7 @@ dependencies {
     implementation project(rootProject.ext.features.feedbackForm)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.screenshot_observer)
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.features.productManageCommon)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

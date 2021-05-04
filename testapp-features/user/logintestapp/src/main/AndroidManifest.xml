@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.loginregister">
+    package="com.tokopedia.logintest">
 
     <uses-permission
         android:name="android.permission.GET_ACCOUNTS"
@@ -11,7 +10,7 @@
     <application>
 
         <activity
-            android:name=".login.view.activity.LoginActivity"
+            android:name=".login.view.activity.LoginTestAppActivity"
             android:label="@string/login"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

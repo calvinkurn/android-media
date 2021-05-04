@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="play_widget_dms_small_border_gradient_top">#FFD15C</color>
+    <color name="play_widget_dms_small_live_border_gradient_top">#FFD15C</color>
+    <color name="play_widget_dms_small_live_border_gradient_bottom">#FF5C84</color>
+
+    <color name="play_widget_dms_small_promo_border_gradient_top">#32AFFF</color>
+    <color name="play_widget_dms_small_promo_border_gradient_bottom">#00AA5B</color>
+
     <color name="play_widget_dms_light_gray">#e0e0e0</color>
     <color name="play_widget_dms_info_container">#CCFFFFFF</color>
 
@@ -11,6 +16,19 @@
     <color name="play_widget_dms_small_overlay_gradient_center">#4D000000</color>
     <color name="play_widget_dms_small_overlay_gradient_bottom">#CC000000</color>
 
+    <color name="play_widget_dms_medium_upcoming_date_text">#FA591D</color>
+    <color name="play_widget_dms_medium_title_text">#F531353B</color>
+    <color name="play_widget_dms_medium_shop_name_text">#AD31353B</color>
+
     <color name="play_dms_Y300">#FFC400</color>
+
+    <color name="play_widget_dms_bg_promo_detail_badge">#00AA5B</color>
+
+    <color name="play_widget_dms_reminder_background">#AD31353B</color>
+
+    <color name="play_widget_dms_bg_small_live_context">#EF144A</color>
+    <color name="play_widget_dms_bg_small_promo_context">#00AA5B</color>
+
+    <color name="play_widget_dms_bg_small_live_badge">#EF144A</color>
 
 </resources>

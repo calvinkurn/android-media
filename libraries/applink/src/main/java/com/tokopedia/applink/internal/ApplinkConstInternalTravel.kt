@@ -28,7 +28,10 @@ object ApplinkConstInternalTravel {
     val DASHBOARD_HOTEL = "$INTERNAL_HOTEL/dashboard"
 
     @JvmField
-    val HOTEL_SRP = "$INTERNAL_HOTEL/result"
+    val HOTEL_OLD_SRP = "$INTERNAL_HOTEL/result/oldsrp"
+
+    @JvmField
+    val HOTEL_MAP_SRP = "$INTERNAL_HOTEL/result/map"
 
     @JvmField
     val HOTEL_DETAIL = "$INTERNAL_HOTEL/detail"

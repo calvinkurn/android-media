@@ -619,6 +619,14 @@
             "enable": true,
             "total_profile": 0,
             "change_template_text": ""
+          },
+          "occ_remove_profile": {
+            "enable": true,
+            "ui_type": 2,
+            "message": {
+              "title": "",
+              "description": ""
+            }
           }
         }
       }

@@ -294,6 +294,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             broadCastButton?.hide()
         } else {
             viewModel.loadChatBlastSellerMetaData()
+            viewModel.loadChatBlastSellerMetaData()
         }
     }
 
@@ -373,7 +374,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                     chatFilter?.updateIsWhiteListTopBot(isWhiteListTopBot)
                 }
         )
-        viewModel.isChatAdminEligible.observe(viewLifecycleOwner) { result ->
+        viewModel.isChatAdminEligible.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
                     result.data.let { isEligible ->
@@ -388,7 +389,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                     showGetListError(result.throwable)
                 }
             }
-        }
+        })
     }
 
     private fun setupWebSocketObserver() {
