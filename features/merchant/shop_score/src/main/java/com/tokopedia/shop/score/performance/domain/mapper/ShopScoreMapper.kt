@@ -143,7 +143,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 val mapTimerNewSeller = mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller)
                 if (mapTimerNewSeller.second) {
                     add(mapTimerNewSeller.first)
-                    add(ItemLevelScoreProjectUiModel())
+                    if (shopAge < SHOP_AGE_SIXTY) {
+                        add(ItemLevelScoreProjectUiModel())
+                    }
                 }
             }
 
@@ -368,6 +370,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     }
                 }
             }
+            this.shopAge = shopAge
             this.shopLevel =
                     if (shopAge < SHOP_AGE_SIXTY) {
                         "-"
