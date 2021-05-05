@@ -905,7 +905,7 @@ object SearchTracking {
                         SearchTrackingConstant.USER_ID, userId,
                         ECOMMERCE, DataLayer.mapOf(CLICK,
                             DataLayer.mapOf(
-                                    ACTION_FIELD, DataLayer.mapOf("list", "/search - carousel"),
+                                    SearchEventTracking.ECommerce.ACTION_FIELD, DataLayer.mapOf("list", "/search - carousel"),
                                     PRODUCTS, DataLayer.listOf(*broadMatchItems.toTypedArray())
                             )
                         )
