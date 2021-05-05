@@ -143,6 +143,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
+            updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY, loadInitialData) {
+                shopCredibility?.run {
+                    isOs = it.data.isOS
+                    isPm = it.data.isPowerMerchant
+                }
+            }
+
             updateData(ProductDetailConstant.MINI_SOCIAL_PROOF, loadInitialData) {
                 miniSocialProofMap?.run {
                     rating = it.basic.stats.rating
