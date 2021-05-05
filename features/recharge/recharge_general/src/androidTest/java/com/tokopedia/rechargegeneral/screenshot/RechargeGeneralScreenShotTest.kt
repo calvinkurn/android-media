@@ -52,8 +52,12 @@ class RechargeGeneralScreenShotTest {
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(RechargeGeneralMockResponseConfig(RechargeGeneralProduct.LISTRIK))
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
-            Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         }
+    }
+
+    @Before
+    fun stubAllExternalIntents() {
+        Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     @Test
@@ -96,34 +100,44 @@ class RechargeGeneralScreenShotTest {
         // Click "Jenis Produk Listrik"
         onView(withId(R.id.operator_select)).perform(ViewActions.click())
 
-        takeScreenshot("operator_select")
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "recycler_view_operator_select")
+        }
 
         // Choose "Token Listrik"
-        Thread.sleep(1000)
+        Thread.sleep(3000)
         onView(withId(R.id.vg_input_dropdown_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<TopupBillsInputDropdownWidget.TopupBillsInputDropdownViewHolder>(
                         0, ViewActions.click()
                 )
         )
-        takeScreenshot("operator_selected")
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "visible_screen_pdp_2")
+        }
     }
 
     private fun select_product() {
         // Click "Nominal"
+        Thread.sleep(3000)
         onView(withId(R.id.rv_digital_product)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralProductSelectViewHolder>(
                         1, ViewActions.click()
                 )
         )
-        takeScreenshot("product_select")
-        Thread.sleep(1000)
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "recycler_view_product_item")
+        }
+        Thread.sleep(3000)
         onView(withId(R.id.rv_product_select_dropdown)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralProductSelectBottomSheet.DigitalProductSelectDropdownAdapter.DigitalProductSelectDropdownViewHolder>(
                         1, ViewActions.click()
                 )
         )
-        takeScreenshot("product_selected")
-        Thread.sleep(1000)
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "visible_screen_pdp_3")
+        }
     }
 
     private fun see_promo() {
