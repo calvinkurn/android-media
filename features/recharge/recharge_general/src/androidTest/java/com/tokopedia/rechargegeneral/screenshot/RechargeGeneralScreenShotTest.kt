@@ -18,6 +18,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
+import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.RechargeGeneralMockResponseConfig
 import com.tokopedia.rechargegeneral.cases.RechargeGeneralProduct
@@ -71,7 +72,15 @@ class RechargeGeneralScreenShotTest {
         // test
         takeScreenshot("test.png")
 
-        // ss center recyclerview
+        // ss operator cluster select
+        val operatorClusterView = mActivityRule.activity.findViewById<TopupBillsInputFieldWidget>(R.id.operator_cluster_select)
+        takeScreenShotVisibleViewInScreen(operatorClusterView, filePrefix(), "operator_cluster_select")
+
+        // ss operator select
+        val operatorView = mActivityRule.activity.findViewById<TopupBillsInputFieldWidget>(R.id.operator_select)
+        takeScreenShotVisibleViewInScreen(operatorView, filePrefix(), "operator_select")
+
+        // ss recyclerview product
         screenShotFullRecyclerView(
                 R.id.rv_digital_product,
                 0,
@@ -79,7 +88,6 @@ class RechargeGeneralScreenShotTest {
                 "rv_digital_product")
 
         select_operator()
-
         select_product()
         see_promo()
     }
@@ -120,9 +128,10 @@ class RechargeGeneralScreenShotTest {
 
     private fun see_promo() {
         findViewAndScreenShot(R.id.product_view_pager, filePrefix(), "view_pager")
+        findViewAndScreenShot(R.id.tab_layout, filePrefix(), "tab_layout")
     }
 
-    private fun filePrefix() = "recharge_general_"
+    private fun filePrefix() = "recharge_general"
 
     private fun getRecyclerViewItemCount(resId: Int): Int {
         val recyclerView = mActivityRule.activity.findViewById<RecyclerView>(resId)
