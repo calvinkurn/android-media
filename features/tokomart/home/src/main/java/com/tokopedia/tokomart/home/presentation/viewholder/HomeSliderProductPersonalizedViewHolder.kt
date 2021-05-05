@@ -2,13 +2,17 @@ package com.tokopedia.tokomart.home.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokomart.home.R
+import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeSliderProductPersonalizedAdapter
+import com.tokopedia.tokomart.home.presentation.adapter.delegate.TokoMartHomeSliderProductPersonalizedDelegate
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeSliderBannerUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeSliderProductPersonalizedUiModel
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.android.synthetic.main.item_tokomart_slider_product_personalized.view.*
 
 class HomeSliderProductPersonalizedViewHolder(
         itemView: View
@@ -19,33 +23,11 @@ class HomeSliderProductPersonalizedViewHolder(
         val LAYOUT = R.layout.item_tokomart_slider_product_personalized
     }
 
-    private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
-
     override fun bind(element: HomeSliderProductPersonalizedUiModel?) {
-        recommendationCard.applyCarousel()
-        recommendationCard.setProductModel(
-                ProductCardModel(
-                        productImageUrl = "https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-alt-512.png",
-                        productName = "tesing",
-                        discountPercentage = "20%",
-                        slashedPrice = "1000",
-                        formattedPrice = "1000",
-                        hasAddToCartButton = true,
-                        isTopAds = true,
-                        isOutOfStock = false,
-                        ratingCount = 100,
-                        reviewCount = 120,
-                        countSoldRating = "200",
-                        shopLocation = "netherland",
-//                        shopBadgeList = recommendation.grid.badges.map {
-//                            ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
-//                        }
-                )
-        )
-        val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
-        addToCartButton.text = "Buy it again"
-        recommendationCard.setAddToCartOnClickListener {}
-        itemView.setOnClickListener {}
+        val adapter = TokoMartHomeSliderProductPersonalizedAdapter()
+        itemView.rv_slider_product_personalized.adapter = adapter
+        itemView.rv_slider_product_personalized.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        adapter.addItems(listOf(HomeSliderProductPersonalizedUiModel(), HomeSliderProductPersonalizedUiModel(), HomeSliderProductPersonalizedUiModel()))
     }
 
 }

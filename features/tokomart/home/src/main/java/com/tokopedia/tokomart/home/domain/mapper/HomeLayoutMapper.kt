@@ -20,7 +20,7 @@ object HomeLayoutMapper {
         return response.filter { SUPPORTED_TYPE.contains(it.type) }.map {
             when(it.type) {
                 HomeLayoutType.ALL_CATEGORY -> HomeAllCategoryUiModel(it.id, it.title)
-                HomeLayoutType.SLIDER_BANNER -> HomeSliderBannerUiModel("", "")
+                HomeLayoutType.SLIDER_BANNER -> HomeSliderBannerUiModel(null, false)
                 HomeLayoutType.SLIDER_PRODUCT -> HomeSliderProductUiModel()
                 HomeLayoutType.CHOOSE_ADDRESS_WIDGET -> HomeChooseAddressWidgetUiModel(false)
                 HomeLayoutType.SLIDER_PRODUCT_PERSONALIZED -> HomeSliderProductPersonalizedUiModel()

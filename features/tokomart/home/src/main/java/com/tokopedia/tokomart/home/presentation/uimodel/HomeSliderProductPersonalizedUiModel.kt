@@ -2,7 +2,7 @@ package com.tokopedia.tokomart.home.presentation.uimodel
 
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeTypeFactory
 
-class HomeSliderProductPersonalizedUiModel : HomeLayoutUiModel  {
+class HomeSliderProductPersonalizedUiModel(val title: String = "", val price: String = "") : HomeLayoutUiModel  {
     override fun type(typeFactory: TokoMartHomeTypeFactory): Int {
         return typeFactory.type(this)
     }
