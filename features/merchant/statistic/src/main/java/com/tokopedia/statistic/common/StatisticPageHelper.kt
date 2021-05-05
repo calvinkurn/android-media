@@ -39,6 +39,28 @@ object StatisticPageHelper {
         )
     }
 
+    fun getProductStatistic(context: Context, userSession: UserSessionInterface): StatisticPageUiModel {
+        val title = context.getString(R.string.stc_product)
+        return StatisticPageUiModel(
+                pageTitle = title,
+                pageSource = Const.PageSource.PRODUCT_INSIGHT,
+                tickerPageName = Const.TickerPageName.PRODUCT_INSIGHT,
+                actionMenu = listOf(
+                        ActionMenuUiModel(
+                                title = context.getString(R.string.stc_give_suggestions),
+                                appLink = Const.Url.PRODUCT_GIVE_SUGGESTIONS,
+                                iconUnify = IconUnify.CHAT_REPORT
+                        ),
+                        ActionMenuUiModel(
+                                title = context.getString(R.string.stc_learn_more),
+                                appLink = Const.Url.PRODUCT_LEARN_MORE,
+                                iconUnify = IconUnify.HELP
+                        )
+                ),
+                dateFilters = getProductDateFilters(context, userSession)
+        )
+    }
+
     fun getBuyerStatistic(context: Context, userSession: UserSessionInterface): StatisticPageUiModel {
         val title = context.getString(R.string.stc_buyer)
         return StatisticPageUiModel(
@@ -73,6 +95,22 @@ object StatisticPageHelper {
                     getDateFilterPerDay(context),
                     getDateFilterPerWeek(context, false),
                     getFilterPerMonth(context, true),
+                    DateFilterItem.ApplyButton
+            )
+        }
+    }
+
+    private fun getProductDateFilters(context: Context, userSession: UserSessionInterface): List<DateFilterItem> {
+        // TODO: Change method to return correct filter data
+        return if (getRegularMerchantStatus(userSession)) {
+            listOf(getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true))
+        } else {
+            listOf(
+                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true),
+                    getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
+                    DateFilterItem.Divider,
+                    getDateFilterPerWeek(context, true),
+                    getFilterPerMonth(context, false),
                     DateFilterItem.ApplyButton
             )
         }

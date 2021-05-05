@@ -119,6 +119,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
             supportActionBar?.title = getString(R.string.stc_statistic)
             tabStatistic.visible()
             listOf(StatisticPageHelper.getShopStatistic(this, userSession),
+                    StatisticPageHelper.getProductStatistic(this, userSession),
                     StatisticPageHelper.getBuyerStatistic(this, userSession))
         } else {
             supportActionBar?.title = getString(R.string.stc_shop_statistic)
