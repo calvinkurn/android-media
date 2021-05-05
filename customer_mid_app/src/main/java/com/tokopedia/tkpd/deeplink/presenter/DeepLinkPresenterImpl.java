@@ -23,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
+import com.tokopedia.applink.travel.DeeplinkMapperTravel;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -361,7 +362,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         List<String> linkSegment = uri.getPathSegments();
         if (linkSegment.size() > 1) {
             if (linkSegment.get(1).equals("search")) {
-                RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_SRP + "?" + uri.getQuery());
+                String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_SRP);
+                RouteManager.route(context, applink + "?" + uri.getQuery());
                 context.finish();
             } else if (linkSegment.size() >= 4 && linkSegment.get(2).equals("h")) {
                 // eg : https://www.tokopedia.com/hotel/Indonesia/h/the-apurva-kempinski-bali-960088/

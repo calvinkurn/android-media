@@ -84,6 +84,7 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
 import com.tokopedia.topchat.chatroom.data.activityresult.ReviewRequestResult
+import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
@@ -357,6 +358,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         setupBeforeReplyTime()
         loadInitialData()
         initLoadMoreListener()
+        onReplyBoxEmpty()
     }
 
     private fun setupBackground() {
@@ -555,8 +557,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     ) {
         setupFirstTimeOnly(chatRoom, chat)
         setupFirstPage(chatRoom, chat)
+        setupPostFirstPage()
         fpm.stopTrace()
         setupDummyData()
+    }
+
+    private fun setupPostFirstPage() {
+        presenter.getShopFollowingStatus(
+                shopId, ::onErrorGetShopFollowingStatus, ::onSuccessGetShopFollowingStatus
+        )
     }
 
     private fun setupDummyData() {
@@ -575,9 +584,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun setupFirstTimeOnly(chatRoom: ChatroomViewModel, chat: ChatReplies) {
         updateViewData(chatRoom)
         checkCanAttachVoucher()
-        presenter.getShopFollowingStatus(
-                shopId, ::onErrorGetShopFollowingStatus, ::onSuccessGetShopFollowingStatus
-        )
         orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(
                 chatRoom, onToolbarClicked(), this, alertDialog
@@ -1093,7 +1099,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 status = variantResult.status.name
                 productName = "$productName - ${variantResult.productName}"
             }
-            showToasterMsgFromUpdateStock(productName, status)
+            showToasterMsgFromUpdateStock(updateProductResult, productName, status)
             adapter.updateProductStock(updateProductResult, stockCount, status)
             presenter.onGoingStockUpdate.remove(productId)
         } else {
@@ -1113,16 +1119,43 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return variantMap?.get(productId)
     }
 
-    private fun showToasterMsgFromUpdateStock(productName: String?, status: String) {
-        when (status) {
-            ProductStatus.ACTIVE.name -> {
-                view?.let {
-                    val name = productName?.ellipsize(20) ?: return
-                    val msg = it.context.getString(R.string.title_success_update_stock, name)
-                    Toaster.build(
-                            it, msg, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL
-                    ).show()
-                }
+    private fun showToasterMsgFromUpdateStock(
+            updateProductResult: UpdateProductStockResult,
+            productName: String?, currentStatus: String
+    ) {
+        val previousStatus = if (updateProductResult.product.hasEmptyStock()) {
+            ProductStatus.INACTIVE.name
+        } else {
+            ProductStatus.ACTIVE.name
+        }
+        val name = productName?.ellipsize(20) ?: return
+        var msg = ""
+        when {
+            // update active product stock
+            previousStatus == ProductStatus.ACTIVE.name &&
+                    currentStatus == ProductStatus.ACTIVE.name -> {
+                msg = context?.getString(R.string.title_success_update_stock, name) ?: ""
+            }
+            // deactivate
+            previousStatus == ProductStatus.ACTIVE.name &&
+                    currentStatus == ProductStatus.INACTIVE.name -> {
+                msg = context?.getString(
+                        R.string.title_success_deactivate_product_status, name
+                ) ?: ""
+            }
+            // activate
+            previousStatus == ProductStatus.INACTIVE.name &&
+                    currentStatus == ProductStatus.ACTIVE.name -> {
+                msg = context?.getString(
+                        R.string.title_success_activate_product_status, name
+                ) ?: ""
+            }
+        }
+        view?.let {
+            if (msg.isNotEmpty()) {
+                Toaster.build(
+                        it, msg, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL
+                ).show()
             }
         }
     }

@@ -97,6 +97,7 @@ public class ShippingCourierBottomsheet implements ShippingCourierContract.View,
             if (shippingCourierBottomsheetListener != null) {
                 shippingCourierBottomsheetListener.onCourierShipmentRecpmmendationCloseClicked();
             }
+            bottomSheet.dismiss();
             return Unit.INSTANCE;
         });
     }

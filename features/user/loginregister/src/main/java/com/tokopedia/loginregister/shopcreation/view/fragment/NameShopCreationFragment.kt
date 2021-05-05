@@ -25,6 +25,7 @@ import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Compan
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
+import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -252,7 +253,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         shopCreationAnalytics.eventSuccessClickContinueNameShopCreation()
         successRegisterTracking()
         userSession.clearToken()
-        userSession.setToken(registerInfo.accessToken, "Bearer", registerInfo.refreshToken)
+        userSession.setToken(registerInfo.accessToken, "Bearer", EncoderDecoder.Encrypt(registerInfo.refreshToken, userSession.refreshTokenIV))
         buttonContinue.isLoading = false
         activity?.let {
             it.setResult(Activity.RESULT_OK)
