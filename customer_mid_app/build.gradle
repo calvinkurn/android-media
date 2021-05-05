@@ -165,6 +165,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.videoplayer)
     implementation project(rootProject.ext.libraries.websocket)
     implementation project(rootProject.ext.libraries.baseAdapter)
+    implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.features.csat_rating)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.agerestriction)
