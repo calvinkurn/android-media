@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatlist.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.callOnCleared
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
@@ -247,31 +248,39 @@ class WebSocketViewModelTest {
     }
 
     companion object {
-        val eventReplyMessageString = com.tokopedia.topchat.FileUtil.readFileContent(
+        val eventReplyMessageString = FileUtil.readFileContent(
                 "/ws_response_reply_text_is_opposite.json"
         )
-        val eventReplyMessage: WebSocketResponse = com.tokopedia.topchat.FileUtil.parseContent(
+        val eventReplyMessage: WebSocketResponse = FileUtil.parseContent(
                 eventReplyMessageString,
                 WebSocketResponse::class.java
         )
 
-        val eventTypingString = com.tokopedia.topchat.FileUtil.readFileContent(
+        val eventReplyMessageString2 = FileUtil.readFileContent(
+                "/ws_response_reply_text_is_opposite_2.json"
+        )
+        val eventReplyMessage2: WebSocketResponse = FileUtil.parseContent(
+                eventReplyMessageString2,
+                WebSocketResponse::class.java
+        )
+
+        val eventTypingString = FileUtil.readFileContent(
                 "/ws_response_typing.json"
         )
-        val eventTyping: WebSocketResponse = com.tokopedia.topchat.FileUtil.parseContent(
+        val eventTyping: WebSocketResponse = FileUtil.parseContent(
                 eventTypingString,
                 WebSocketResponse::class.java
         )
 
-        val eventEndTypingString = com.tokopedia.topchat.FileUtil.readFileContent(
+        val eventEndTypingString = FileUtil.readFileContent(
                 "/ws_response_end_typing.json"
         )
-        val eventEndTyping: WebSocketResponse = com.tokopedia.topchat.FileUtil.parseContent(
+        val eventEndTyping: WebSocketResponse = FileUtil.parseContent(
                 eventEndTypingString,
                 WebSocketResponse::class.java
         )
 
-        val eventUnknownEvent = com.tokopedia.topchat.FileUtil.readFileContent(
+        val eventUnknownEvent = FileUtil.readFileContent(
                 "/ws_response_unknown_event.json"
         )
     }

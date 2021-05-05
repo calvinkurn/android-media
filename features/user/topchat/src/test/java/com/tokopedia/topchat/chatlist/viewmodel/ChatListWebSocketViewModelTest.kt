@@ -31,20 +31,20 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class ChatListWebSocketViewModelTest {
+open class ChatListWebSocketViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val topchatWebSocket: DefaultTopChatWebSocket = mockk(relaxed = true)
-    private val dispatchers = CoroutineTestDispatchersProvider
-    private val userSession: UserSessionInterface = mockk(relaxed = true)
-    private val pendingMessageHandler: PendingMessageHandler = PendingMessageHandler(userSession)
-    private val webSocket: WebSocket = mockk(relaxed = true)
-    private val webSocketStateHandler: WebSocketStateHandler = mockk(relaxed = true)
-    private val lifecycleRegistry = LifecycleRegistry(mockk(relaxed = true))
+    protected val topchatWebSocket: DefaultTopChatWebSocket = mockk(relaxed = true)
+    protected val dispatchers = CoroutineTestDispatchersProvider
+    protected val userSession: UserSessionInterface = mockk(relaxed = true)
+    protected val pendingMessageHandler: PendingMessageHandler = PendingMessageHandler(userSession)
+    protected val webSocket: WebSocket = mockk(relaxed = true)
+    protected val webSocketStateHandler: WebSocketStateHandler = mockk(relaxed = true)
+    protected val lifecycleRegistry = LifecycleRegistry(mockk(relaxed = true))
 
-    private val viewModel = ChatListWebSocketViewModel(
+    protected val viewModel = ChatListWebSocketViewModel(
             topchatWebSocket,
             DefaultWebSocketParser(),
             webSocketStateHandler,
@@ -53,7 +53,7 @@ class ChatListWebSocketViewModelTest {
             pendingMessageHandler
     )
 
-    private val itemChatObserver: Observer<Result<BaseIncomingItemWebSocketModel>> = mockk(relaxed = true)
+    protected val itemChatObserver: Observer<Result<BaseIncomingItemWebSocketModel>> = mockk(relaxed = true)
 
     @Before
     fun setUp() {
@@ -84,26 +84,6 @@ class ChatListWebSocketViewModelTest {
 
         // Then
         assertThat(viewModel.isOnStop, `is`(true))
-    }
-
-    @Test
-    fun should_queue_pending_message_when_on_stop() {
-        // Given
-        val mapResponse = mapToIncomingChat(eventReplyMessage)
-        val response = eventReplyMessageString
-        val webSocketListener = slot<WebSocketListener>()
-        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
-            webSocketListener.captured.onMessage(webSocket, response)
-        }
-
-        // When
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-        viewModel.connectWebSocket()
-
-        // Then
-        assert(viewModel.pendingMessages[mapResponse.msgId] != null)
-        assertThat(viewModel.pendingMessages.size, `is`(1))
     }
 
     @Test
