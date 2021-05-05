@@ -305,6 +305,7 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         Set<String> permissions = new HashSet<>();
         if (cameraIndex > -1) {
             permissions.add(Manifest.permission.CAMERA);
+            permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
         if (imagePickerBuilder.getGalleryIndex() > -1) {
             permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
