@@ -39,6 +39,30 @@ class ChatListWebSocketPendingMessageTest : ChatListWebSocketViewModelTest() {
     }
 
     @Test
+    fun should_queue_pending_message_when_pending_message_is_not_empty_and_on_stop() {
+        // Given
+        val mapResponse = mapToIncomingChat(eventReplyMessage)
+        val mapResponseSecond = mapToIncomingChat(eventReplyMessage2)
+        val response = eventReplyMessageString
+        val responseSecond = eventReplyMessageString2
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onMessage(webSocket, response)
+        }
+
+        // When
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        viewModel.connectWebSocket()
+        webSocketListener.captured.onMessage(webSocket, responseSecond)
+
+        // Then
+        assert(viewModel.pendingMessages[mapResponse.msgId] != null)
+        assert(viewModel.pendingMessages[mapResponseSecond.msgId] != null)
+        assertThat(viewModel.pendingMessages.size, `is`(2))
+    }
+
+    @Test
     fun should_queue_pending_message_when_pending_message_is_not_empty() {
         // Given
         val mapResponse = mapToIncomingChat(eventReplyMessage)
