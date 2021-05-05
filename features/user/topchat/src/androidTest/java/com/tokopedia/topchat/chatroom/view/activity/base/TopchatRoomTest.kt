@@ -53,7 +53,6 @@ import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.websocket.WebSocketResponse
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
 import org.junit.Before
@@ -137,7 +136,6 @@ abstract class TopchatRoomTest {
                 "2020/8/24/40768394/40768394_732546f9-371d-45c6-a412-451ea50aa22c.jpg.webp"
     }
 
-    @ExperimentalCoroutinesApi
     @Before
     open fun before() {
         setupResponse()
