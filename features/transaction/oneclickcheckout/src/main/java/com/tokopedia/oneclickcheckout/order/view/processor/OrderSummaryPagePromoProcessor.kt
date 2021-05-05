@@ -284,11 +284,8 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                 notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.titleDescription
                 if (orderCart.cartString == voucherOrdersItemUiModel.uniqueId) {
                     notEligiblePromoHolderdata.shopName = orderCart.shop.shopName
-                    if (orderCart.shop.isOfficial == 1) {
-                        notEligiblePromoHolderdata.iconType = NotEligiblePromoHolderdata.TYPE_ICON_OFFICIAL_STORE
-                    } else if (orderCart.shop.isGold == 1) {
-                        notEligiblePromoHolderdata.iconType = NotEligiblePromoHolderdata.TYPE_ICON_POWER_MERCHANT
-                    }
+                    // Todo : set shop badge
+//                    notEligiblePromoHolderdata.shopBadge =
                 }
                 if (i == 0) {
                     notEligiblePromoHolderdata.showShopSection = true
