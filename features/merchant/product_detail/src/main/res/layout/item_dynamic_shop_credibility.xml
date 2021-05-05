@@ -41,7 +41,6 @@
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_12"
             android:visibility="gone"
-            android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="@+id/shop_name"
             app:layout_constraintLeft_toRightOf="@+id/shop_ava"
             app:layout_constraintStart_toEndOf="@+id/shop_ava"
