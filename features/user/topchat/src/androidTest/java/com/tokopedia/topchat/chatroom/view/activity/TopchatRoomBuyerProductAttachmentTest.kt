@@ -459,7 +459,6 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         assertSrwContentIsHidden()
     }
 
-    // TODO: why this test sometimes fails
     @Test
     fun collapse_srw_when_user_open_keyboard() {
         // Given

@@ -11,6 +11,7 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -55,6 +56,7 @@ import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.websocket.WebSocketResponse
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import javax.inject.Inject
@@ -112,6 +114,9 @@ abstract class TopchatRoomTest {
 
     protected open lateinit var activity: TopChatRoomActivityStub
     protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
+    protected open var keyboardStateIdling: CountingIdlingResource = CountingIdlingResource(
+            "ChatRoom-Keyboard"
+    )
 
     protected open val exMessageId = "66961"
 
@@ -148,6 +153,12 @@ abstract class TopchatRoomTest {
                 .build()
         chatComponentStub.inject(this)
         setupDefaultResponseWhenFirstOpenChatRoom()
+        IdlingRegistry.getInstance().register(keyboardStateIdling)
+    }
+
+    @After
+    open fun tearDown() {
+        IdlingRegistry.getInstance().unregister(keyboardStateIdling)
     }
 
     protected open fun setupResponse() {
@@ -229,7 +240,7 @@ abstract class TopchatRoomTest {
     }
 
     protected fun inflateTestFragment() {
-        activity.setupTestFragment(chatComponentStub)
+        activity.setupTestFragment(chatComponentStub, keyboardStateIdling)
         waitForFragmentResumed()
     }
 
