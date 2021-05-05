@@ -76,9 +76,9 @@ class RechargeGeneralScreenShotTest {
         // test
         takeScreenshot("test.png")
 
-        // ss operator cluster select
-        val operatorClusterView = mActivityRule.activity.findViewById<TopupBillsInputFieldWidget>(R.id.operator_cluster_select)
-        takeScreenShotVisibleViewInScreen(operatorClusterView, filePrefix(), "operator_cluster_select")
+        // ss operator cluster select::: no Cluster in Product Listrik
+//        val operatorClusterView = mActivityRule.activity.findViewById<TopupBillsInputFieldWidget>(R.id.operator_cluster_select)
+//        takeScreenShotVisibleViewInScreen(operatorClusterView, filePrefix(), "operator_cluster_select")
 
         // ss operator select
         val operatorView = mActivityRule.activity.findViewById<TopupBillsInputFieldWidget>(R.id.operator_select)
