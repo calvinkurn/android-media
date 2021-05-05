@@ -393,7 +393,7 @@ public class MainParentActivity extends BaseActivity implements
         Fragment fragment = fragmentList.get(tabPosition);
         if (fragment != null) {
             this.currentFragment = fragment;
-            if (fragment instanceof OfficialHomeContainerFragment) {
+            if (fragment instanceof OfficialHomeContainerFragment && getIntent().getExtras() != null) {
                 if (getIntent().getExtras().getString(OfficialHomeContainerFragment.KEY_CATEGORY).equals(OS_KEY_MOBILE)) {
                     ((OfficialHomeContainerFragment) fragment).selectFirstTab();
                 } else {
