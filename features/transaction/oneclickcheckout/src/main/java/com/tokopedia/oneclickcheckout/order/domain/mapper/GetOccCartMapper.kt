@@ -85,11 +85,9 @@ class GetOccCartMapper @Inject constructor() {
             shopId = shop.shopId
             userId = shop.userId
             shopName = shop.shopName
-            shopBadge = when {
-                shop.isOfficial == 1 -> shop.officialStore.osLogoUrl
-                shop.isGoldBadge -> shop.goldMerchant.goldMerchantLogoUrl
-                else -> ""
-            }
+            shopBadge = shop.shopType.badge
+            shopTier = shop.shopType.shopTier
+            shopTypeName = shop.shopType.title
             isGold = shop.isGold
             isOfficial = shop.isOfficial
             postalCode = shop.postalCode
