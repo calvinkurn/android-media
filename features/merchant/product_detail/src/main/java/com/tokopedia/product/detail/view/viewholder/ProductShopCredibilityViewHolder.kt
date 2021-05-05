@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -157,7 +158,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
 
     private fun setupBadgeAndImage(avatar: String, shopTierBadgeUrl: String) = with(view) {
         iv_badge.shouldShowWithAction(shopTierBadgeUrl.isNotEmpty()) {
-            ImageHandler.LoadImage(iv_badge, shopTierBadgeUrl)
+            iv_badge.loadImage(shopTierBadgeUrl)
         }
 
         shop_ava.loadImageCircle(avatar)
