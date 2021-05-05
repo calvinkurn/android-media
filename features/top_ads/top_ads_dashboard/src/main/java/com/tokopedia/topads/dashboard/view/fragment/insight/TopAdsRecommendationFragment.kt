@@ -149,7 +149,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
                 if (position == 0 && checkFragmentPosition(CONST_0, PRODUK)) {
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_PRODUK_BERPOTENSI, userSession.userId, userSession.userId)
                     sendProductRecommendationEvent()
-                } else if (position == 1 && checkFragmentPosition(CONST_1, DAILY_BUDGET)) {
+                } else if ((position == 1) && checkFragmentPosition(CONST_1, DAILY_BUDGET) || (position == 0) && checkFragmentPosition(CONST_0, DAILY_BUDGET)) {
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_ANGARRAN_HARIAN, userSession.userId, userSession.userId)
                     sendDailyBudgetRecommendationEvent()
 
@@ -306,6 +306,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
 
     private fun sendProductRecommendationEvent() {
+        insightRecommendationModel.clear()
         productRecommendData?.products?.forEach {
             var insightProductRecommendationModel = InsightProductRecommendationModel().apply {
                 productid = it.productId
@@ -320,6 +321,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun sendDailyBudgetRecommendationEvent() {
+        dailyRecommendationModel.clear()
         dailyBudgetRecommendData?.data?.forEach {
             var dailyBudgetModel = InsightDailyBudgetModel().apply {
                 groupId = it.groupId
