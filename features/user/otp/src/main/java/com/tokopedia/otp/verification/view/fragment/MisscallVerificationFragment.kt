@@ -117,10 +117,6 @@ class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastR
         autoFillPhoneNumber(phoneNumber)
     }
 
-    override fun onErrorPhoneCallReceiverMessage(message: String) {
-        view?.let { it -> Toaster.build(it, message, Toaster.LENGTH_LONG).show() }
-    }
-
     private fun registerIncomingPhoneCall(context: Context) {
         if (phoneCallBroadcastReceiver.isRegistered) {
             return

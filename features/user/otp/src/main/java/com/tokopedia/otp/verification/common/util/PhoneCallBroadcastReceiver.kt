@@ -38,7 +38,6 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
             }
             isRegistered = true
         } else {
-            this.listener?.onErrorPhoneCallReceiverMessage("PhoneCallBroadcastReceiver already registered")
             sendLogTracker("PhoneCallBroadcastReceiver already registered")
         }
     }
@@ -55,7 +54,6 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
             telephony = context?.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         } catch (e: Exception) {
              e.printStackTrace()
-            listener?.onErrorPhoneCallReceiverMessage("PhoneCall - set telephony : ${e.printStackTrace()}")
         }
     }
 
@@ -68,7 +66,6 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
             }, PhoneStateListener.LISTEN_CALL_STATE)
         } catch (e: Exception) {
             sendLogTracker("error [PhoneCallBroadcastReceiver#onReceive(); msg=$e]")
-            listener?.onErrorPhoneCallReceiverMessage("PhoneCall on call changed : ${e.printStackTrace()}")
             e.printStackTrace()
         }
     }
@@ -105,7 +102,6 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
         fun onIncomingCallStart(phoneNumber: String)
         fun onIncomingCallEnded(phoneNumber: String)
         fun onMissedCall(phoneNumber: String)
-        fun onErrorPhoneCallReceiverMessage(message: String)
     }
 
     companion object {
