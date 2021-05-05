@@ -18,6 +18,7 @@ dependencies {
     implementation project(rootProject.ext.features.carouselProductCard)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.localizationchooseaddress)
     implementation project(rootProject.ext.features.homeComponent)
@@ -53,12 +54,12 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'home'
+    artifactId = 'tokomart'
     groupId = 'com.tokopedia.tokomart'
     versionName = "0.0.1"
-    artifactName ="home-release"
+    artifactName ="tokomart-release"
 }
 
-apply from: '../../../publish_local.gradle'
-apply from: '../../../jacoco_task.gradle'
-apply from: '../../../sonar_config.gradle'
+apply from: '../../publish_local.gradle'
+apply from: '../../jacoco_task.gradle'
+apply from: '../../sonar_config.gradle'
