@@ -4,29 +4,29 @@
   "query": [
     {
       "businessUnit": "travel & entertainment",
-      "clientId": "{{.*}}",
+      "clientId": ".*",
       "eventCategory": "digital - event",
       "currentSite": "tokopediadigitalevents",
-      "screenName": "{{.*}}",
+      "screenName": ".*",
       "category": "events",
       "event": "clickEvent",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "click lanjutkan",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     },
     {
       "businessUnit": "travel & entertainment",
-      "clientId": "{{.*}}",
+      "clientId": ".*",
       "eventCategory": "digital - event",
       "currentSite": "tokopediadigitalevents",
-      "screenName": "{{.*}}",
+      "screenName": ".*",
       "category": "events",
       "event": "clickEvent",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "pick date",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     }
   ]
 }

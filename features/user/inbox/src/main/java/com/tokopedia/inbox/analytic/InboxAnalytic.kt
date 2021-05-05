@@ -14,6 +14,7 @@ class InboxAnalytic @Inject constructor(
     class Event private constructor() {
         companion object {
             const val CLICK_INBOX_CHAT = "clickInboxChat"
+            const val CLICK_INBOX_REVIEW = "clickInboxReview"
             const val VIEW_INBOX_CHAT_IRIS = "viewInboxChatIris"
         }
     }
@@ -54,9 +55,10 @@ class InboxAnalytic @Inject constructor(
             @RoleType
             role: Int
     ) {
+        val event = getEvent(page)
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 createGeneralEvent(
-                        event = Event.CLICK_INBOX_CHAT,
+                        event = event,
                         eventCategory = EventCategory.INBOX_PAGE,
                         eventAction = EventAction.OPEN_INBOX,
                         eventLabel = getEventLabel(page, role),
@@ -84,9 +86,10 @@ class InboxAnalytic @Inject constructor(
     }
 
     fun trackClickBottomNaveMenu(page: Int, role: Int) {
+        val event = getEvent(page)
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 createGeneralEvent(
-                        event = Event.CLICK_INBOX_CHAT,
+                        event = event,
                         eventCategory = EventCategory.INBOX_PAGE,
                         eventAction = EventAction.CLICK_BOTTOM_NAV_MENU,
                         eventLabel = getEventLabel(page, role),
@@ -167,6 +170,14 @@ class InboxAnalytic @Inject constructor(
                         userId = userSession.userId
                 )
         )
+    }
+
+    private fun getEvent(page: Int): String {
+        return if (page == InboxFragmentType.REVIEW) {
+            Event.CLICK_INBOX_REVIEW
+        } else {
+            Event.CLICK_INBOX_CHAT
+        }
     }
 
     private fun getScreenName(@InboxFragmentType page: Int): String {
