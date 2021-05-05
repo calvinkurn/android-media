@@ -20,6 +20,14 @@ public class UserSessionTest {
     @Before
     public void clearAll(){
         UserSessionMap.map.clear();
+
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
+
+        SharedPreferences sharedPrefs = context.getApplicationContext().getSharedPreferences("LOGIN_SESSION_v2", Context.MODE_PRIVATE);
+        sharedPrefs.edit().clear().commit();
+
+        SharedPreferences sharedPrefs2 = context.getApplicationContext().getSharedPreferences("LOGIN_SESSION", Context.MODE_PRIVATE);
+        sharedPrefs2.edit().clear().commit();
     }
 
     @Test
@@ -52,9 +60,6 @@ public class UserSessionTest {
     public void testFresh3(){
         Context context = InstrumentationRegistry.getInstrumentation().getContext();
 
-        SharedPreferences sharedPrefs = context.getApplicationContext().getSharedPreferences("LOGIN_SESSION_v2", Context.MODE_PRIVATE);
-        sharedPrefs.edit().clear().commit();
-
         UserSession userSession = new UserSession(context);
         assertEquals(userSession.getEmail(),"");
 
@@ -69,11 +74,6 @@ public class UserSessionTest {
     @Test
     public void testFresh4(){
         Context context = InstrumentationRegistry.getInstrumentation().getContext();
-
-        // hapus shared pref lama
-        SharedPreferences sharedPrefs = context.getApplicationContext().getSharedPreferences("LOGIN_SESSION_v2", Context.MODE_PRIVATE);
-        sharedPrefs.edit().clear().commit();
-
 
         UserSession userSession = new UserSession(context);
 
@@ -103,11 +103,6 @@ public class UserSessionTest {
         // still return same value
         givenEmail = userSession.getEmail();
         assertEquals(givenEmail,email);
-
-        // ini harusnya dihapus
-        sharedPrefs = context.getSharedPreferences("LOGIN_SESSION", Context.MODE_PRIVATE);
-        String oldValue = sharedPrefs.getString("EMAIL", "none");
-        assertEquals("none",oldValue);
     }
 
 
@@ -116,7 +111,6 @@ public class UserSessionTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.tokopedia.user.session", appContext.getPackageName());
-//        assertThat(false);
+        assertEquals("com.tokopedia.user.session.test", appContext.getPackageName());
     }
 }
