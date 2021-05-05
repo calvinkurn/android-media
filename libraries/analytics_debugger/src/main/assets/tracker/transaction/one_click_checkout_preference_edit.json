@@ -5,63 +5,63 @@
       "eventCategory": "purchase setting",
       "event": "clickCheckoutExpress",
       "eventAction": "click pilih durasi pengiriman in add new address step",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     },
     {
       "eventCategory": "purchase setting",
       "event": "clickCheckoutExpress",
       "eventAction": "click available address option",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     },
     {
       "eventCategory": "purchase setting",
       "event": "clickCheckoutExpress",
       "eventAction": "click simpan alamat on pilih alamat pengiriman",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     },
     {
       "eventCategory": "purchase setting",
       "event": "clickCheckoutExpress",
       "eventAction": "click duration option in duration step",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     },
     {
       "eventCategory": "purchase setting",
       "event": "clickCheckoutExpress",
       "eventAction": "click pilih metode pembayaran in duration step",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     },
     {
       "eventCategory": "purchase setting",
       "event": "clickCheckoutExpress",
       "eventAction": "click payment method option in payment method step",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     },
     {
       "eventCategory": "purchase setting",
       "event": "clickCheckoutExpress",
-      "eventAction": "{{click ubah in (?:address|duration|payment) section on edit preference}}",
-      "sessionIris": "{{.*}}",
+      "eventAction": "click ubah in (?:address|duration|payment) section on edit preference",
+      "sessionIris": ".*",
       "eventLabel": ""
     },
     {
       "eventCategory": "purchase setting",
       "event": "clickCheckoutExpress",
       "eventAction": "click back in edit preference",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     },
     {
       "eventCategory": "purchase setting",
       "event": "clickCheckoutExpress",
       "eventAction": "click simpan on summary purchase setting",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     }
   ],

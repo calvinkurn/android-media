@@ -271,7 +271,10 @@ public class GTMAnalytics extends ContextAnalytics {
             }
             GtmLogger.getInstance(context).saveError(stacktrace.toString());
             if (!TextUtils.isEmpty(e.getMessage())) {
-                Timber.e("P2#GTM_ANALYTIC_ERROR#%s %s", e.getMessage(), stacktrace.toString());
+                Map<String, String> map = new HashMap<>();
+                map.put("msg", e.getMessage());
+                map.put("err", e.toString());
+                ServerLogger.log(Priority.P2, "GTM_ANALYTIC_ERROR", map);
             }
         }
         return true;
@@ -1094,20 +1097,28 @@ public class GTMAnalytics extends ContextAnalytics {
             if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
                 bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
             }
-            Map<String, Object> map = bundleToMap(bundle);
-            for(Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator(); it.hasNext(); ) {
-                Map.Entry<String, Object> entry = it.next();
-                if(TextUtils.isEmpty((String)entry.getValue())) {
-                    it.remove();
-                }
-            }
-            if(GlobalConfig.isSellerApp()){
-                NewRelicUtil.sendTrack(eventName, map);
-            }
+            publishNewRelic(eventName, bundle);
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public void publishNewRelic(String eventName, Bundle bundle) {
+        Map<String, Object> map = bundleToMap(bundle);
+        for(Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<String, Object> entry = it.next();
+            Object value = entry.getValue();
+            if (value != null & value instanceof String){
+                String value2 = (String)value;
+                if(TextUtils.isEmpty(value2)) {
+                    it.remove();
+                }
+            }
+        }
+        if(GlobalConfig.isSellerApp()){
+            NewRelicUtil.sendTrack(eventName, map);
         }
     }
 

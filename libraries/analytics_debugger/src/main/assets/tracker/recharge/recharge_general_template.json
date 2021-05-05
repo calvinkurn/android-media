@@ -6,139 +6,139 @@
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click dropdown operator cluster list",
-      "eventLabel": "{{.+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "choose operator cluster",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click dropdown operator list",
-      "eventLabel": "{{.+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "choose operator",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click dropdown product list",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click on product card",
-      "eventLabel": "{{.+ - .+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+ - .+ - .+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
-      "eventAction": "{{input manual number|input manual number \\d+}}",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventAction": "input manual number|input manual number \\d+",
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click check tagihan",
-      "eventLabel": "{{.+ - .+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+ - .+ - .+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "checklist subscription box",
-      "eventLabel": "{{.+ - .+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+ - .+ - .+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click close on inquiry",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+"
     },
     {
       "event": "add_to_cart",
       "eventCategory": "digital - native",
       "eventAction": "click beli",
-      "eventLabel": "{{.+ - .+}}",
+      "eventLabel": ".+ - .+",
       "currentSite": "tokopediadigital",
       "items": [
         {
-          "cart_id": "{{.+}}",
-          "category_id": "{{.+}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+}}",
-          "item_brand": "{{.+}}",
-          "item_variant": "{{.+}}",
-          "item_category": "{{.+}}",
-          "quantity": "{{\\d*.\\d*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "cart_id": ".+",
+          "category_id": ".+",
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_brand": ".+",
+          "item_variant": ".+",
+          "item_category": ".+",
+          "quantity": "\\d*.\\d*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d"
         }
       ],
-      "sessionIris": "{{.+}}"
+      "sessionIris": ".+"
     },
     {
       "event": "select_content",
       "eventCategory": "digital - homepage",
       "eventAction": "click recent icon",
-      "eventLabel": "{{.+ - .+}}",
+      "eventLabel": ".+ - .+",
       "items": [
         {
-          "dimension40": "{{.+}}",
-          "item_id": "{{.+}}",
-          "index": "{{.+}}",
-          "item_brand": "{{.+}}",
-          "item_variant": "{{.+}}",
-          "item_category": "{{.+}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "dimension40": ".+",
+          "item_id": ".+",
+          "index": ".+",
+          "item_brand": ".+",
+          "item_variant": ".+",
+          "item_category": ".+",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d"
         }
       ],
-      "item_list": "{{.+}}",
-      "sessionIris": "{{.+}}"
+      "item_list": ".+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click promo tab",
-      "eventLabel": "{{.+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click salin promo digital",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "user click back button from PDP",
-      "eventLabel": "{{.+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+",
+      "sessionIris": ".+"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "input from favorite number",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}"
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+"
     }
   ]
 }

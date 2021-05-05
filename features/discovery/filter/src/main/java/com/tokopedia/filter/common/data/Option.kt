@@ -83,7 +83,7 @@ class Option(@SerializedName("name")
         get() = Option.INPUT_TYPE_TEXTBOX == inputType
 
     val isPriceRange: Boolean
-        get() = key == KEY_PRICE_RANGE_1 || key == KEY_PRICE_RANGE_2 || key == KEY_PRICE_RANGE_3
+        get() = key == KEY_PRICE_RANGE_1 || key == KEY_PRICE_RANGE_2 || key == KEY_PRICE_RANGE_3 || key == KEY_PRICE_RANGE_4 || key == KEY_PRICE_RANGE_5
 
     val isMinPriceOption: Boolean
         get() = key == KEY_PRICE_MIN
@@ -118,6 +118,8 @@ class Option(@SerializedName("name")
         const val KEY_PRICE_RANGE_1 = "price_range_1"
         const val KEY_PRICE_RANGE_2 = "price_range_2"
         const val KEY_PRICE_RANGE_3 = "price_range_3"
+        const val KEY_PRICE_RANGE_4 = "price_range_4"
+        const val KEY_PRICE_RANGE_5 = "price_range_5"
         const val KEY_CATEGORY = "sc"
         const val KEY_OFFICIAL = "official"
         const val KEY_RATING = "rt"
