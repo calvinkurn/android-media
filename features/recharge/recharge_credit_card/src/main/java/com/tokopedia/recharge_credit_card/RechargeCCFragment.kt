@@ -264,6 +264,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
     }
 
     private fun instantCheckout() {
+        showLoading()
         if (userSession.isLoggedIn) {
             arguments?.let {
                 val signature = it.getString(PARAM_SIGNATURE) ?: ""
@@ -345,6 +346,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
             }
 
             REQUEST_CODE_LOGIN_INSTANT_CHECKOUT -> {
+                hideLoading()
                 if (userSession.isLoggedIn) {
                     instantCheckout()
                 }
