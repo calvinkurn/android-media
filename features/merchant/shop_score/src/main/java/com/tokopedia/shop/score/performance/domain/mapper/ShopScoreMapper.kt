@@ -643,7 +643,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
     private fun getNNextDaysTimeCalendar(nextDays: Int): Calendar {
         val date = Calendar.getInstance(getLocale())
-        date.add(Calendar.DATE, nextDays + 1)
+        date.add(Calendar.DATE, nextDays)
         date.set(Calendar.HOUR_OF_DAY, 0)
         date.set(Calendar.MINUTE, 0)
         date.set(Calendar.SECOND, 0)
