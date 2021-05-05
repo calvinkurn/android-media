@@ -2,7 +2,6 @@ package com.tokopedia.contactus.inboxticket2.view.activity
 
 import android.app.ActivityManager
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -36,17 +35,9 @@ class ClearCacheActivity : BaseSimpleActivity() {
     }
 
     private fun clearCache() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val activityManager = getSystemService(Context.ACTIVITY_SERVICE)
-            if (activityManager is ActivityManager) {
-                activityManager.clearApplicationUserData()
-            }
-        } else {
-            try {
-                val runtime = Runtime.getRuntime()
-                runtime.exec("pm clear ${packageName}")
-            } catch (e: Exception) {
-            }
+        val activityManager = getSystemService(Context.ACTIVITY_SERVICE)
+        if (activityManager is ActivityManager) {
+            activityManager.clearApplicationUserData()
         }
     }
 }
