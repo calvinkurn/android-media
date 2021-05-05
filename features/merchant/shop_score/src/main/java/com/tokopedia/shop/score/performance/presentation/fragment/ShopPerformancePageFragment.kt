@@ -70,6 +70,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         context?.let { CoachMark2(it) }
     }
 
+
     private val impressHolderMenuPenalty = ImpressHolder()
     private val impressHolderMenuShopInfo = ImpressHolder()
 
@@ -274,11 +275,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun toggleMenuForNewSeller() {
         if (isNewSeller) {
-            menu?.findItem(PENALTY_WARNING_MENU_ID)?.actionView?.hide()
-            menu?.findItem(INFO_MENU_ID)?.actionView?.hide()
+            menu?.findItem(PENALTY_WARNING_MENU_ID)?.isVisible = false
+            menu?.findItem(INFO_MENU_ID)?.isVisible = false
         } else {
-            menu?.findItem(PENALTY_WARNING_MENU_ID)?.actionView?.show()
-            menu?.findItem(INFO_MENU_ID)?.actionView?.show()
+            menu?.findItem(PENALTY_WARNING_MENU_ID)?.isVisible = true
+            menu?.findItem(INFO_MENU_ID)?.isVisible = true
         }
     }
 
@@ -376,15 +377,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
         coachMark?.isDismissed = false
 
-        rvShopPerformance?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
-            override fun onGlobalLayout() {
-                rvShopPerformance?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                val coachMarkItems = getCoachMarkItems()
-                if (coachMarkItems.isNotEmpty()) {
-                    coachMark?.showCoachMark(coachMarkItems)
-                }
+        rvShopPerformance?.post {
+            if (getCoachMarkItems().isNotEmpty()) {
+                coachMark?.showCoachMark(getCoachMarkItems())
             }
-        })
+        }
 
         coachMark?.onFinishListener = {
             shopScoreCoachMarkPrefs.setFinishCoachMark(true)
@@ -456,6 +453,19 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun scrollToItemParameterDetailCoachMark() {
+        val positionItemDetail = shopPerformanceAdapter.list.indexOfLast { it is ItemDetailPerformanceUiModel }
+        if (positionItemDetail != RecyclerView.NO_POSITION) {
+            val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_END
+                }
+            }
+            smoothScroller.targetPosition = positionItemDetail
+            rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
+        }
+    }
+
     private fun getCoachMarkItems(): ArrayList<CoachMark2Item> {
         return arrayListOf<CoachMark2Item>().apply {
             getHeaderPerformanceView()?.let { headerView ->
@@ -485,11 +495,13 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun getSectionLastItemViewCoachMark(): View? {
-        return getPositionLastItemCoachMark()?.let {
+        return getPositionLastItemCoachMark()?.let { lastItemPosition ->
             val layoutManager = rvShopPerformance?.layoutManager as? LinearLayoutManager
             val lastItemView = layoutManager?.findLastCompletelyVisibleItemPosition()
-            val view = lastItemView?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
-            val viewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
+            val view = lastItemView?.let { rvShopPerformance?.layoutManager?.getChildAt(lastItemPosition) }
+            val viewHolder = view?.let {
+                rvShopPerformance?.findContainingViewHolder(it)
+            }
             viewHolder?.itemView
         }
     }
@@ -553,6 +565,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     showPenaltyBadge()
                     if (!shopScoreCoachMarkPrefs.getFinishCoachMark() && !isNewSeller) {
                         Handler().postDelayed({
+                            scrollToItemParameterDetailCoachMark()
                             showCoachMark()
                         }, COACH_MARK_RENDER_SHOW)
                     }
