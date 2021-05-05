@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -172,6 +173,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
 
     private fun showNewBadge(shopTierBadgeUrl: String) = with(view) {
         iv_badge.shouldShowWithAction(shopTierBadgeUrl.isNotEmpty()) {
+            iv_badge.scaleType = ImageView.ScaleType.FIT_XY
             iv_badge.loadImage(shopTierBadgeUrl)
         }
     }
