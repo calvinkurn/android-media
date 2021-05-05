@@ -356,7 +356,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 changeMarkerState(cardListPosition)
                 if (cardListPosition != -1 &&
                         cardListPosition != lastHorizontalTrackingPositionSent &&
-                        adapterCardList.data[cardListPosition] is Property) {
+                        adapterCardList.data[cardListPosition] is Property && !adapterCardList.data.isNullOrEmpty()) {
 
                     lastHorizontalTrackingPositionSent = cardListPosition
                     trackingHotelUtil.hotelViewHotelListMapImpression(context,
