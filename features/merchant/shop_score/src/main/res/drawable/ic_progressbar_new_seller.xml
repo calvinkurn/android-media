@@ -7,7 +7,7 @@
       android:strokeWidth="1"
       android:pathData="M4,0.5H149C150.933,0.5 152.5,2.067 152.5,4C152.5,5.933 150.933,7.5 149,7.5H4C2.067,7.5 0.5,5.933 0.5,4C0.5,2.067 2.067,0.5 4,0.5Z"
       android:strokeAlpha="0.2"
-      android:fillColor="#000000"
-      android:strokeColor="#000000"
+      android:fillColor="@color/Unify_Static_Black"
+      android:strokeColor="@color/Unify_Static_Black"
       android:fillAlpha="0.2"/>
 </vector>
