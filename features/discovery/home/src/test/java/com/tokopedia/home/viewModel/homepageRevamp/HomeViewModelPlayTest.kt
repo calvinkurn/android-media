@@ -11,7 +11,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
-import com.tokopedia.home.viewModel.homepage.givenGetPlayLiveDynamicUseCaseReturn
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
