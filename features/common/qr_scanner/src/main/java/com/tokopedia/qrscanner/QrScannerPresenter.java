@@ -93,13 +93,10 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 onScanBranchIOLink(barcodeData);
             } else if (host.contains("tokopedia")) {
                 openActivity(barcodeData);
-            } else if (host.equals("qr") &&
+            } else if (host.equals("login") &&
                     uri.getPathSegments().get(0) != null &&
-                    uri.getPathSegments().get(1) != null &&
-                    !uri.getPathSegments().get(0).isEmpty() &&
-                    !uri.getPathSegments().get(1).isEmpty() &&
-                    uri.getPathSegments().get(0).equals("login")) {
-                getView().goToLoginByQr(uri.getPathSegments().get(1));
+                    uri.getPathSegments().get(0).equals("qr")) {
+                getView().goToLoginByQr(barcodeData);
             } else {
                 getView().showErrorGetInfo(context.getString(R.string.qr_scanner_msg_dialog_wrong_scan));
             }

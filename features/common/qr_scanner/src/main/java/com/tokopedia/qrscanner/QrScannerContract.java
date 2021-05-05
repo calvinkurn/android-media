@@ -32,7 +32,7 @@ public interface QrScannerContract {
 
         void goToEventRedeemPage(String url);
 
-        void goToLoginByQr(String data);
+        void goToLoginByQr(String applink);
     }
 
     interface Presenter extends CustomerPresenter<View> {

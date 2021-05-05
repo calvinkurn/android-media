@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.SignatureUtil
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
+import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.notif.data.SignResult
 import com.tokopedia.otp.notif.view.fragment.ReceiverNotifFragment
@@ -33,6 +34,8 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var analytics: TrackingOtpUtil
 
     private var uuid: String = ""
 
@@ -65,11 +68,14 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
         checkLogin()
     }
 
-    override fun onBackPressed(): Boolean = true
+    override fun onBackPressed(): Boolean {
+        analytics.trackClickBackApprovalPage()
+        return true
+    }
 
     private fun initVar() {
         arguments?.let {
-            uuid = it.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+            uuid = it.getString(PARAM_DATA, "")
         }
     }
 
@@ -89,12 +95,16 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     private fun initView() {
+        analytics.trackViewApprovalPage()
+
         viewBound.userName?.text = userSession.name ?: ""
 
         viewBound.approveButton?.setOnClickListener {
+            analytics.trackClickApprovedApprovalPage()
             verifyQrCode(uuid, "approved")
         }
         viewBound.rejectButton?.setOnClickListener {
+            analytics.trackClickRejectedApprovalPage()
             verifyQrCode(uuid, "rejected")
         }
     }
@@ -155,6 +165,7 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
     companion object {
 
         private const val LOGIN_QR_ALIAS = "LoginByQr"
+        private const val PARAM_DATA = "data"
 
         fun createInstance(bundle: Bundle): LoginByQrFragment {
             val fragment = LoginByQrFragment()

@@ -56,7 +56,7 @@
     <string name="subtitle_registered_device">Ingin berhenti terima notifikasi di salah satu perangkat? Keluar dari akunmu lewat perangkat tersebut.</string>
 
     <!--  otp qrcode  -->
-    <string name="main_title_login_by_qr">Ini adalah konfrimasi untuk login melalui desktop.</string>
+    <string name="main_title_login_by_qr">Ini adalah konfirmasi untuk login melalui desktop.</string>
     <string name="main_subtitle_login_by_qr">Pastikan kamu login di perangkatmu sendiri, dan jangan berikan akses masuk atas permintaan orang lain.</string>
     <string name="user_title_login_by_qr">Masuk Sebagai:</string>
     <string name="approve_button_login_by_qr">Ya, Konfirmasi masuk</string>
