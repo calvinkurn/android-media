@@ -78,7 +78,6 @@ class HomeViewModelReviewUnitTest {
 
         // home viewModel
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase, userSessionInterface = userSessionInterface).apply {
-            setNeedToShowGeolocationComponent(false)
         }
         homeViewModel.homeLiveData.observeForever(observerHome)
 
@@ -117,7 +116,6 @@ class HomeViewModelReviewUnitTest {
 
             // home viewModel
             homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase).also {
-                it.setNeedToShowGeolocationComponent(true)
                 launch {
                     channel.send(homeData2)
                 }
@@ -292,7 +290,6 @@ class HomeViewModelReviewUnitTest {
             )
             // home viewModel
             homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase).also {
-                it.setNeedToShowGeolocationComponent(true)
             }
 
 

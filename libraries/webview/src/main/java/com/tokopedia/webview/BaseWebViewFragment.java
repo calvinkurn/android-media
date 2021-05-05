@@ -669,6 +669,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (getActivity() == null) {
             return false;
         }
+        if ("".equals(url)) {
+            return false;
+        }
         Uri uri = Uri.parse(url);
         if (uri.isOpaque()) {
             return false;

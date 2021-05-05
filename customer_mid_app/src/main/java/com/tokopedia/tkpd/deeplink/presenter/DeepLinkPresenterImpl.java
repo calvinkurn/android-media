@@ -51,6 +51,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
+import com.tokopedia.applink.travel.DeeplinkMapperTravel;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -361,7 +362,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         List<String> linkSegment = uri.getPathSegments();
         if (linkSegment.size() > 1) {
             if (linkSegment.get(1).equals("search")) {
-                RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_SRP + "?" + uri.getQuery());
+                DeeplinkMapperTravel.getRegisteredNavigationTravel(context, uri.toString());
                 context.finish();
             } else if (linkSegment.size() >= 4 && linkSegment.get(2).equals("h")) {
                 // eg : https://www.tokopedia.com/hotel/Indonesia/h/the-apurva-kempinski-bali-960088/

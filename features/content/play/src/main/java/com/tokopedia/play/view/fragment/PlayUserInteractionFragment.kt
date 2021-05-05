@@ -808,8 +808,10 @@ class PlayUserInteractionFragment @Inject constructor(
         if (!this::onStatsInfoGlobalLayoutListener.isInitialized) {
             onStatsInfoGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener{
                 override fun onGlobalLayout() {
-                    playFragment.stopRenderMonitoring()
-                    statsInfoView.rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    if (isAdded) {
+                        playFragment.stopRenderMonitoring()
+                        statsInfoView.rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
                 }
             }
             statsInfoView.rootView.viewTreeObserver.addOnGlobalLayoutListener(onStatsInfoGlobalLayoutListener)

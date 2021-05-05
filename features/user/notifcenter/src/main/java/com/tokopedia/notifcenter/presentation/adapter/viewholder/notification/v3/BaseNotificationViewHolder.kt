@@ -7,7 +7,6 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -16,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
+import com.tokopedia.notifcenter.widget.NotificationConstraintLayout
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.time.TimeHelper
 
@@ -24,7 +24,7 @@ abstract class BaseNotificationViewHolder constructor(
         private val listener: NotificationItemListener?
 ) : AbstractViewHolder<NotificationUiModel>(itemView) {
 
-    protected val container: ConstraintLayout? = itemView?.findViewById(R.id.notification_container)
+    protected val container: NotificationConstraintLayout? = itemView?.findViewById(R.id.notification_container)
     protected val icon: ImageView? = itemView?.findViewById(R.id.iv_icon)
     protected val type: Typography? = itemView?.findViewById(R.id.txt_notification_type)
     protected val time: Typography? = itemView?.findViewById(R.id.txt_notification_time)
@@ -47,6 +47,9 @@ abstract class BaseNotificationViewHolder constructor(
     }
 
     protected open fun bindClick(element: NotificationUiModel) {
+        container?.setOnTouchUpListener {
+            markAsReadIfUnread(element)
+        }
         container?.setOnClickListener {
             markAsReadIfUnread(element)
             if (isLongerContent(element)) {

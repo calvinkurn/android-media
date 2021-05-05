@@ -398,6 +398,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                                       isCombined: Boolean,
                                       isCache: Boolean): Visitable<*> {
         val viewModel = DynamicChannelDataModel()
+        channel.isCache = isCache
         viewModel.channel = channel
         if (!isCache) {
             viewModel.trackingData = trackingData
@@ -488,7 +489,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
-        visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
+        if (!isCache) visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
     }
 
     private fun createBannerChannel(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
