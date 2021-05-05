@@ -540,7 +540,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     this.shopScoreWrapperResponse = it.data.second
                     counterPenalty = it.data.first.filterIsInstance<HeaderShopPerformanceUiModel>().firstOrNull()?.scorePenalty.orZero()
                     showPenaltyBadge()
-                    if (!shopScoreCoachMarkPrefs.getFinishCoachMark()) {
+                    if (!shopScoreCoachMarkPrefs.getFinishCoachMark() && !isNewSeller) {
                         Handler().postDelayed({
                             showCoachMark()
                         }, COACH_MARK_RENDER_SHOW)
