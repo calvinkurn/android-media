@@ -45,7 +45,7 @@ class ItemFeatureRecommendationAdapter(private val itemRecommendationFeatureList
                 tvItemRecommendedDescription?.text = data.descRecommendation
                 ivRecommendedPromo?.loadImage(data.iconRecommendationUrl)
                 setOnClickListener {
-                    itemRecommendationFeatureListener.onItemClickedRecommendationFeature(data.appLinkRecommendation)
+                    itemRecommendationFeatureListener.onItemClickedRecommendationFeature(data.appLinkRecommendation, data.identifier)
                 }
                 addOnImpressionListener(impressHolder) {
                     itemRecommendationFeatureListener.onItemImpressRecommendationFeature()

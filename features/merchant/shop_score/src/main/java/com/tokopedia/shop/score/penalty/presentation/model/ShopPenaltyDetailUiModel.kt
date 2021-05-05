@@ -7,6 +7,7 @@ data class ShopPenaltyDetailUiModel(val titleDetail: String = "",
                                     val summaryDetail: String = "",
                                     val deductionPointPenalty: String = "",
                                     val endDateDetail: String = "",
+                                    val prefixDateDetail: String = "",
                                     val stepperPenaltyDetailList: List<StepperPenaltyDetail> = listOf()) {
 
     data class StepperPenaltyDetail(

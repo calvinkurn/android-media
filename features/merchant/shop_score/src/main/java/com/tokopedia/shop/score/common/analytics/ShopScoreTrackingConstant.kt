@@ -47,5 +47,10 @@ object ShopScoreTrackingConstant {
     const val IMPRESSION_CALL_HELP_CENTER = "impression - hubungi pusat bantuan"
     const val IMPRESSION_WATCH_VIDEO = "impression - tonton video"
     const val IMPRESSION_LEARN_SHOP_PERFORMANCE = "impression - pelajari performa toko"
-    const val IMPRESSION_HELP_CENTER = ""
+    const val IMPRESSION_HELP_CENTER = "impression - hubungi pusat bantuan"
+
+    const val FREE_SHIPPING_IDENTIFIER = "bebas_ongkir_recommendation"
+    const val VOUCHER_RECOMMENDATION_IDENTIFIER = "voucher_recommendation"
+    const val BROADCAST_CHAT_IDENTIFIER = "broadcast_chat_recommendation"
+
 }

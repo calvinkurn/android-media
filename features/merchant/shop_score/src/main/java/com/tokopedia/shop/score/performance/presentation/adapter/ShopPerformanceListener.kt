@@ -1,7 +1,5 @@
 package com.tokopedia.shop.score.performance.presentation.adapter
 
-import android.view.View
-
 interface ShopPerformanceListener {
     fun onTooltipLevelClicked(level: Int)
     fun onTooltipScoreClicked()
@@ -14,39 +12,27 @@ interface ItemShopPerformanceListener {
                                          identifierPerformanceDetail: String)
 }
 
-interface CardPotentialPMBenefitListener {
-    fun onItemRMNonEligibleListener(view: View)
-}
-
 interface ItemStatusPMProListener {
-    fun onItemPMProListener(view: View)
     fun onGotoPMProPage()
 }
 
-interface PeriodDetailPerformanceListener {
-    fun onAddCoachMarkItemPeriod(view: View)
-}
-
 interface ItemHeaderShopPerformanceListener {
-    fun onViewHeaderListener(view: View)
     fun onImpressHeaderTicker()
 }
 
 interface ItemPotentialRegularMerchantListener {
     fun onItemClickedBenefitPotentialRM()
-    fun onViewRegularMerchantListener(view: View)
     fun onImpressBenefitSeeAll()
 }
 
 interface ItemRecommendationFeatureListener {
-    fun onItemClickedRecommendationFeature(appLink: String)
+    fun onItemClickedRecommendationFeature(appLink: String, identifier: String)
     fun onItemImpressRecommendationFeature()
 }
 
 interface ItemStatusPowerMerchantListener {
     fun onItemClickedGotoPMPro()
     fun onItemClickedGoToPMActivation()
-    fun onViewItemPowerMerchantListener(view: View)
     fun onImpressHeaderPowerMerchantSection()
 }
 

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.ShopScoreConstant.ACTIVE_PENALTY_DETAIL
 import com.tokopedia.shop.score.common.ShopScoreConstant.FINISHED_IN
 import com.tokopedia.shop.score.common.ShopScoreConstant.ON_GOING
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM
@@ -12,11 +13,13 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_PENALTY_DATE_TE
 import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_DONE
 import com.tokopedia.shop.score.common.ShopScoreConstant.POINTS_NOT_YET_DEDUCTED
 import com.tokopedia.shop.score.common.ShopScoreConstant.SINCE
+import com.tokopedia.shop.score.common.ShopScoreConstant.SINCE_FINISH_PENALTY_DETAIL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST_VALUE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST_VALUE
 import com.tokopedia.shop.score.common.ShopScoreConstant.START
+import com.tokopedia.shop.score.common.ShopScoreConstant.START_ACTIVE_PENALTY_DETAIL
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_SORT
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
@@ -25,6 +28,7 @@ import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltySummaryR
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyTypesResponse
 import com.tokopedia.shop.score.penalty.presentation.model.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context?) {
 
@@ -32,9 +36,10 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
         return ShopPenaltyDetailUiModel(
                 titleDetail = itemPenaltyUiModel.typePenalty,
                 startDateDetail = itemPenaltyUiModel.startDate,
-                summaryDetail = itemPenaltyUiModel.descPenalty,
-                deductionPointPenalty = itemPenaltyUiModel.deductionPoint.toString(),
+                summaryDetail = itemPenaltyUiModel.reasonPenalty,
+                deductionPointPenalty = itemPenaltyUiModel.deductionPoint,
                 endDateDetail = itemPenaltyUiModel.endDateDetail,
+                prefixDateDetail = itemPenaltyUiModel.prefixDatePenalty,
                 stepperPenaltyDetailList = mapToStepperPenaltyDetail(itemPenaltyUiModel.statusPenalty)
         )
     }
@@ -163,28 +168,33 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                         null
                     }
                 }
-                val endDateText = when (it.status) {
+
+                val (prefixDatePenaltyDetail, endDateText) = when (it.status) {
                     ON_GOING -> {
-                        "$FINISHED_IN ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}"
+                        Pair(ACTIVE_PENALTY_DETAIL,"$FINISHED_IN ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
                     }
                     PENALTY_DONE -> {
-                        "$SINCE ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}"
+                        Pair(SINCE_FINISH_PENALTY_DETAIL,"$SINCE ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
                     }
                     POINTS_NOT_YET_DEDUCTED -> {
-                        "$START ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}"
+                        Pair(START_ACTIVE_PENALTY_DETAIL, "$START ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
                     }
-                    else -> DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)
+                    else -> Pair("", DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate))
                 }
+
+                val scoreAbs = abs(it.score).toString()
 
                 add(ItemPenaltyUiModel(
                         statusPenalty = it.status,
-                        deductionPoint = it.score,
-                        startDate = DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyStartDate),
+                        deductionPoint = scoreAbs,
+                        startDate = DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.createTime),
                         endDate = endDateText,
                         endDateDetail = DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate),
                         typePenalty = it.typeName,
-                        descPenalty = it.reason,
-                        colorPenalty = colorTypePenalty
+                        invoicePenalty = it.invoiceNumber,
+                        reasonPenalty = it.reason,
+                        colorPenalty = colorTypePenalty,
+                        prefixDatePenalty = prefixDatePenaltyDetail
                 ))
             }
         }
@@ -192,10 +202,10 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
         return Triple(itemPenaltyList, shopScorePenaltyDetailResponse.hasPrev, shopScorePenaltyDetailResponse.hasNext)
     }
 
-    fun mapToItemVisitablePenaltyList(shopScorePenaltySummaryWrapper: ShopPenaltySummaryTypeWrapper,
-                             shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail,
-                             dateFilter: Pair<String, String>,
-                             typeId: Int): Triple<List<BasePenaltyPage>, Boolean, Boolean> {
+    private fun mapToItemVisitablePenaltyList(shopScorePenaltySummaryWrapper: ShopPenaltySummaryTypeWrapper,
+                                              shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail,
+                                              dateFilter: Pair<String, String>,
+                                              typeId: Int): Triple<List<BasePenaltyPage>, Boolean, Boolean> {
         val visitablePenaltyPage = mutableListOf<BasePenaltyPage>()
 
         visitablePenaltyPage.apply {
@@ -218,27 +228,31 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                             null
                         }
                     }
-                    val endDateText = when (it.status) {
+                    val (prefixDatePenaltyDetail, endDateText) = when (it.status) {
                         ON_GOING -> {
-                            "$FINISHED_IN ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}"
+                            Pair(ACTIVE_PENALTY_DETAIL,"$FINISHED_IN ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
                         }
                         PENALTY_DONE -> {
-                            "$SINCE ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}"
+                            Pair(SINCE_FINISH_PENALTY_DETAIL,"$SINCE ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
                         }
                         POINTS_NOT_YET_DEDUCTED -> {
-                            "$START ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}"
+                            Pair(START_ACTIVE_PENALTY_DETAIL, "$START ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
                         }
-                        else -> DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)
+                        else -> Pair("", DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate))
                     }
+
+                    val scoreAbs = abs(it.score).toString()
 
                     add(ItemPenaltyUiModel(
                             statusPenalty = it.status,
-                            deductionPoint = it.score,
+                            deductionPoint = scoreAbs,
                             startDate = DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyStartDate),
                             endDate = endDateText,
                             endDateDetail = DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate),
                             typePenalty = it.typeName,
-                            descPenalty = it.reason,
+                            reasonPenalty = it.reason,
+                            invoicePenalty = it.invoiceNumber,
+                            prefixDatePenalty = prefixDatePenaltyDetail,
                             colorPenalty = colorTypePenalty
                     ))
                 }

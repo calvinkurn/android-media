@@ -123,6 +123,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     fun mapToShopPerformanceVisitable(shopScoreWrapperResponse: ShopScoreWrapperResponse, shopInfoPeriodUiModel: ShopInfoPeriodUiModel): List<BaseShopPerformance> {
         val shopScoreVisitableList = mutableListOf<BaseShopPerformance>()
         val isEligiblePM = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePm
+        val isEligiblePMPro = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePmPro
         val shopScoreResult = shopScoreWrapperResponse.shopScoreLevelResponse?.result
         val shopAge = if (shopScoreWrapperResponse.goldGetPMShopInfoResponse != null) {
             shopScoreWrapperResponse.goldGetPMShopInfoResponse?.shopAge
@@ -134,6 +135,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         } else {
             shopInfoPeriodUiModel.isNewSeller
         } ?: false
+
+        val isNewSellerPM = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
+
         shopScoreVisitableList.apply {
             if (isNewSeller || shopAge < SHOP_AGE_SIXTY) {
                 val mapTimerNewSeller = mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller)
@@ -162,20 +166,37 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                         if (shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD) {
                             add(mapToTransitionPeriodReliefUiModel(shopInfoPeriodUiModel.periodEndDate))
                         }
-                        add(mapToItemPMUiModel(shopAge))
+                    }
+
+                    if (shopAge >= SHOP_AGE_SIXTY) {
+                        if (isNewSellerPM) {
+                            add(mapToItemPMUiModel(shopAge, isNewSellerPM))
+                            return@apply
+                        } else {
+                            when (isEligiblePMPro) {
+                                true -> {
+                                    add(mapToSectionPMPro(shopInfoPeriodUiModel))
+                                    return@apply
+                                }
+                                else -> {
+                                    add(mapToItemPMUiModel(shopAge, isNewSellerPM))
+                                    return@apply
+                                }
+                            }
+                        }
                     }
                 }
                 else -> {
-                    if (shopAge >= SHOP_AGE_SIXTY) {
-                        val isNewSellerPM = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
-                        if (isNewSellerPM) {
+                    if (isNewSellerPM) {
+                        add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerPM))
+                        return@apply
+                    } else {
+                        if (isEligiblePM == true) {
                             add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerPM))
+                            return@apply
                         } else {
-                            if (isEligiblePM == true) {
-                                add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerPM))
-                            } else {
-                                add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
-                            }
+                            add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
+                            return@apply
                         }
                     }
                 }
@@ -447,8 +468,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return copyItemDetail
     }
 
-    private fun mapToItemPMUiModel(shopAge: Int): ItemStatusPMUiModel {
-        val isNewSeller = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
+    private fun mapToItemPMUiModel(shopAge: Int, isNewSeller: Boolean): ItemStatusPMUiModel {
         return ItemStatusPMUiModel(isNewSeller = isNewSeller,
                 descPM = if (isNewSeller)
                     context?.getString(R.string.desc_pm_section_new_seller).orEmpty()
@@ -478,7 +498,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                 iconRecommendationUrl = it.imageUrl,
                                 appLinkRecommendation = it.relatedLinkAppLink,
                                 descRecommendation = it.text,
-                                titleRecommendation = it.title
+                                titleRecommendation = it.title,
+                                identifier = it.identifier
                         ))
                     }
                 })

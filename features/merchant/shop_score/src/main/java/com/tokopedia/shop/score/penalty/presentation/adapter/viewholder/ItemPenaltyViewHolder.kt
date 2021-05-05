@@ -29,7 +29,7 @@ class ItemPenaltyViewHolder(view: View,
             tv_date_status_penalty?.text = element.startDate
             tv_title_type_penalty?.text = element.typePenalty
 
-            tv_invoice_transaction_penalty?.text = element.descPenalty
+            tv_invoice_transaction_penalty?.text = element.invoicePenalty
 
             ic_transaction_penalty_to_detail?.setOnClickListener {
                 itemDetailPenaltyListener.onItemPenaltyClick(element)

@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -72,11 +74,12 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
 
     private fun initDataView(shopPenaltyDetailUiModel: ShopPenaltyDetailUiModel) {
         tvTitleDetailPenalty?.text = shopPenaltyDetailUiModel.titleDetail
-        tvStartDateDetailPenalty?.text = shopPenaltyDetailUiModel.startDateDetail
+        tvStartDateDetailPenalty?.text = getString(R.string.date_penalty_detail, shopPenaltyDetailUiModel.startDateDetail)
         tvSummaryDetailPenalty?.text = shopPenaltyDetailUiModel.summaryDetail
         tv_total_deduction_point_penalty?.text = MethodChecker.fromHtml(getString(R.string.total_deduction_point_performance,
                 shopPenaltyDetailUiModel.deductionPointPenalty))
         tvEndDateDetailPenalty?.text = MethodChecker.fromHtml(getString(R.string.point_deduction_date_result_detail_penalty,
+                shopPenaltyDetailUiModel.prefixDateDetail,
                 shopPenaltyDetailUiModel.endDateDetail))
         setupRvStepper(shopPenaltyDetailUiModel.stepperPenaltyDetailList)
 
@@ -95,8 +98,16 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupRvStepper(stepperList: List<ShopPenaltyDetailUiModel.StepperPenaltyDetail>) {
+        val gridLayoutManager = GridLayoutManager(context, 5)
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return if (stepperList.size == position+1) {
+                    SPAN_WIDTH_LAST_ITEM
+                } else SPAN_WIDTH_DEFAULT
+            }
+        }
         rv_timeline_status_penalty?.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = gridLayoutManager
             adapter = penaltyDetailStepperAdapter
         }
         penaltyDetailStepperAdapter.setStepperPenaltyDetail(stepperList)
@@ -110,6 +121,8 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     companion object {
         const val KEY_ITEM_PENALTY_DETAIL = "key_item_penalty_detail"
         const val KEY_CACHE_MANAGE_ID = "extra_cache_manager_id"
+        const val SPAN_WIDTH_DEFAULT = 2
+        const val SPAN_WIDTH_LAST_ITEM = 1
 
         fun newInstance(): ShopPenaltyDetailFragment {
             return ShopPenaltyDetailFragment()
