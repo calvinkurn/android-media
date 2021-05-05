@@ -31,7 +31,7 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
     private var currentActivity: Activity? = null
     private var savedUri: Uri? = null
     private var className: String = ""
-    private val requiredPermissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+    private val requiredPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
 
     init {
         mHandlerThread.start()
