@@ -26,6 +26,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
 
     override fun bind(element: HeaderShopPerformanceUiModel?) {
         setBackgroundRadiusHeader()
+        setupProgressBarScore(element)
         setupShopScoreLevelHeader(element)
         setupClickListenerHeader(element)
         setupDescHeaderShopPerformance(element)
@@ -38,10 +39,21 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
 
             tvShopScoreValue?.text = if (element?.shopScore != null) element.shopScore else "-"
 
-            progressBarScorePerformance?.setValue(element?.shopScore.toIntOrZero())
-
             ivLevelBarShopScore?.background = ContextCompat.getDrawable(context,
                     ShopScoreUtils.getLevelBarWhite(element?.shopLevel.toIntOrZero()))
+        }
+    }
+
+    private fun setupProgressBarScore(element: HeaderShopPerformanceUiModel?) {
+        with(itemView) {
+            if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
+                progressBarNewSeller?.show()
+                progressBarScorePerformance?.hide()
+            } else {
+                progressBarNewSeller?.hide()
+                progressBarScorePerformance?.show()
+                progressBarScorePerformance?.setValue(element?.shopScore.toIntOrZero())
+            }
         }
     }
 

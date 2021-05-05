@@ -89,6 +89,18 @@
             app:layout_constraintTop_toBottomOf="@id/tvTitleShopPerformance"
             app:unify_progress_bar_height="8" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/progressBarNewSeller"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            app:layout_constraintEnd_toEndOf="@id/ic_shop_score_performance"
+            app:layout_constraintStart_toStartOf="@id/tvTitleShopPerformance"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleShopPerformance"
+            app:srcCompat="@drawable/ic_progressbar_new_seller"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShopScoreValue"
             android:layout_width="wrap_content"
