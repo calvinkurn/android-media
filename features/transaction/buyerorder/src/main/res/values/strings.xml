@@ -215,8 +215,8 @@ Anda di sini.</string>
     <string name="uoh_reset_filter_msg">Seluruh transaksi dari #date_limit telah ditampilkan.</string>
     <string name="uoh_recommendation_title">Rekomendasi untuk Kamu</string>
     <string name="uoh_finish_order_desc">Dengan klik "Selesai", dana akan diteruskan ke penjual dan kamu tidak dapat mengajukan komplain.</string>
-    <string name="uoh_finish_order_1">1. Pastikan kamu sudah menerima pesananmu.</string>
-    <string name="uoh_finish_order_2">2. Pastikan barang yang kamu terima sesuai pesanan.</string>
+    <string name="uoh_finish_order_1">Pastikan kamu sudah menerima barang yang sesuai dengan pesananmu.</string>
+    <string name="uoh_finish_order_2">Jika memenuhi syarat &amp; Ketentuan, cashback dari transaksi yang pakai promo akan dikirim maks. 24 jam ke depan.</string>
     <string name="btn_ajukan_komplain">Ajukan Komplain</string>
     <string name="btn_finish_order">Selesai</string>
     <string name="placeholder_email">Alamat E-mail</string>

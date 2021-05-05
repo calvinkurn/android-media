@@ -34,14 +34,14 @@
 
         <!--  start success views  -->
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/tickerSomList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:enableAutoSlide="true"
-            app:layout_constraintTop_toBottomOf="@id/som_list_toolbar"
-            app:tickerType="announcement" />
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/tickerSomList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:enableAutoSlide="true"
+        app:layout_constraintTop_toBottomOf="@id/som_list_toolbar"
+        app:tickerType="announcement" />
 
         <com.tokopedia.unifycomponents.SearchBarUnify
             android:id="@+id/searchBarSomList"

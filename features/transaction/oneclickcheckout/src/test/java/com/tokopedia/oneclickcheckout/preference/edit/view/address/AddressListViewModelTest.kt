@@ -5,7 +5,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.oneclickcheckout.common.dispatchers.TestDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import io.mockk.every
@@ -27,7 +27,7 @@ class AddressListViewModelTest {
 
     @Before
     fun setUp() {
-        addressListViewModel = AddressListViewModel(getAddressCornerUseCase, TestDispatchers)
+        addressListViewModel = AddressListViewModel(getAddressCornerUseCase, CoroutineTestDispatchersProvider)
     }
 
     @Test

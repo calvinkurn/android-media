@@ -9,18 +9,16 @@ import com.tokopedia.settingnotif.usersetting.base.SettingRepository
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.data.domain.TroubleshootStatusUseCase
-import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManager
-import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManagerImpl
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManager
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManagerImpl
+import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManager
+import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManagerImpl
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManager
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManagerImpl
 import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneModeService
 import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneModeServiceImpl
 import com.tokopedia.troubleshooter.notification.di.TroubleshootContext
 import com.tokopedia.troubleshooter.notification.di.TroubleshootScope
-import com.tokopedia.troubleshooter.notification.util.dispatchers.AppDispatcherProvider
-import com.tokopedia.troubleshooter.notification.util.dispatchers.DispatcherProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -41,12 +39,6 @@ import javax.inject.Named
             @TroubleshootContext context: Context
     ): UserSessionInterface {
         return UserSession(context)
-    }
-
-    @Provides
-    @TroubleshootScope
-    fun provideMainDispatcher(): DispatcherProvider {
-        return AppDispatcherProvider()
     }
 
     @Provides

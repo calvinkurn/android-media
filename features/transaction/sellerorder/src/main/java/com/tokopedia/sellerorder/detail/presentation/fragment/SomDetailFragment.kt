@@ -32,7 +32,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.datepicker.DatePickerUnify
+import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
@@ -40,11 +40,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.convertFormatDate
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
@@ -60,6 +56,8 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippi
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
+import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
+import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
 import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
 import com.tokopedia.sellerorder.common.util.SomConsts
@@ -103,6 +101,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OTH
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RESPONSE
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_OTHER
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
+import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 import com.tokopedia.sellerorder.detail.analytic.performance.SomDetailLoadTimeMonitoring
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
@@ -114,7 +114,6 @@ import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
-import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.*
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.unifycomponents.*
@@ -154,7 +153,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         SomDetailAdapter.ActionListener,
         SomBottomSheetRejectReasonsAdapter.ActionListener,
         SomBottomSheetCourierProblemsAdapter.ActionListener, Toolbar.OnMenuItemClickListener {
-    
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -181,10 +180,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private var refreshHandler: RefreshHandler? = null
     private var bottomSheetCourierProblems: BottomSheetUnify? = null
 
+    private var somOrderHasCancellationRequestDialog: SomOrderHasRequestCancellationDialog? = null
     private var secondaryBottomSheet: SomDetailSecondaryActionBottomSheet? = null
     private var orderRequestCancelBottomSheet: SomOrderRequestCancelBottomSheet? = null
 
     private var progressBar: ProgressBar? = null
+    private var pendingAction: SomPendingAction? = null
 
     protected var orderId = ""
     protected var detailResponse: SomDetailOrder.Data.GetSomDetail? = SomDetailOrder.Data.GetSomDetail()
@@ -277,6 +278,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         observingSetDelivered()
         observingUserRoles()
         observeRejectCancelOrder()
+        observeValidateOrder()
     }
 
     override fun onPause() {
@@ -372,6 +374,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     private fun observingAcceptOrder() {
         somDetailViewModel.acceptOrderResult.observe(viewLifecycleOwner, Observer {
+            btn_primary?.isLoading = false
             when (it) {
                 is Success -> {
                     SomAnalytics.eventClickAcceptOrderPopup(true)
@@ -640,10 +643,19 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     setOnClickListener {
                         eventClickCtaActionInOrderDetail(buttonResp.displayName, detailResponse?.statusText.orEmpty())
                         when {
-                            buttonResp.key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
+                            buttonResp.key.equals(KEY_ACCEPT_ORDER, true) -> {
+                                btn_primary?.isLoading = true
+                                setActionAcceptOrder(buttonResp.displayName, orderId, skipOrderValidation())
+                            }
                             buttonResp.key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(buttonResp)
-                            buttonResp.key.equals(KEY_REQUEST_PICKUP, true) -> setActionRequestPickup()
-                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true) -> setActionConfirmShipping()
+                            buttonResp.key.equals(KEY_REQUEST_PICKUP, true) -> {
+                                btn_primary?.isLoading = true
+                                setActionRequestPickup(buttonResp.displayName)
+                            }
+                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true) -> {
+                                btn_primary?.isLoading = true
+                                setActionConfirmShipping(buttonResp.displayName)
+                            }
                             buttonResp.key.equals(KEY_VIEW_COMPLAINT_SELLER, true) -> setActionSeeComplaint(buttonResp.url)
                             buttonResp.key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
                             buttonResp.key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
@@ -718,18 +730,33 @@ open class SomDetailFragment : BaseDaggerFragment(),
         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
-    private fun setActionAcceptOrder(orderId: String) {
+    private fun setActionAcceptOrder(actionName: String, orderId: String, skipOrderValidation: Boolean) {
         if (detailResponse?.flagOrderMeta?.flagFreeShipping == true) {
             showFreeShippingAcceptOrderDialog(orderId)
         } else {
-            acceptOrder(orderId)
+            acceptOrder(actionName, orderId, skipOrderValidation)
         }
     }
 
-    private fun acceptOrder(orderId: String) {
-        if (orderId.isNotBlank()) {
-            somDetailViewModel.acceptOrder(orderId)
+    private fun acceptOrder(actionName: String, orderId: String, skipOrderValidation: Boolean) {
+        if (!skipOrderValidation) {
+            pendingAction = SomPendingAction(actionName, orderId) {
+                btn_primary?.isLoading = true
+                if (orderId.isNotBlank()) {
+                    somDetailViewModel.acceptOrder(orderId)
+                }
+            }
+            somDetailViewModel.validateOrders(listOf(orderId))
+        } else {
+            btn_primary?.isLoading = true
+            if (orderId.isNotBlank()) {
+                somDetailViewModel.acceptOrder(orderId)
+            }
         }
+    }
+
+    private fun skipOrderValidation(): Boolean{
+        return detailResponse?.buyerRequestCancel?.isRequestCancel == true && detailResponse?.buyerRequestCancel?.status == 0
     }
 
     private fun rejectCancelOrder() {
@@ -818,11 +845,38 @@ open class SomDetailFragment : BaseDaggerFragment(),
         RouteManager.route(context, routingAppLink)
     }
 
-    protected open fun setActionRequestPickup() {
-        goToRequestPickupPage(this, orderId)
+    protected open fun setActionRequestPickup(actionName: String) {
+        if (!skipOrderValidation()) {
+            pendingAction = SomPendingAction(actionName, orderId) {
+                requestPickUp()
+            }
+            somDetailViewModel.validateOrders(listOf(orderId))
+        } else {
+            requestPickUp()
+        }
     }
 
-    private fun setActionConfirmShipping() {
+    private fun requestPickUp() {
+        btn_primary?.isLoading = true
+        Intent(activity, SomConfirmReqPickupActivity::class.java).apply {
+            putExtra(PARAM_ORDER_ID, orderId)
+            startActivityForResult(this, FLAG_CONFIRM_REQ_PICKUP)
+        }
+    }
+
+    private fun setActionConfirmShipping(actionName: String) {
+        if (!skipOrderValidation()) {
+            pendingAction = SomPendingAction(actionName, orderId) {
+                confirmShipping()
+            }
+            somDetailViewModel.validateOrders(listOf(orderId))
+        } else {
+            confirmShipping()
+        }
+    }
+
+    private fun confirmShipping() {
+        btn_primary?.isLoading = true
         if (detailResponse?.onlineBooking?.isRemoveInputAwb == true) {
             val btSheet = BottomSheetUnify()
             val infoLayout = View.inflate(context, R.layout.partial_info_layout, null)
@@ -852,7 +906,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
                     key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(it)
                     key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
-                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
+                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it.displayName, orderId, skipOrderValidation())
                     key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                     key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
                     key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
@@ -939,7 +993,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun showBuyerRequestCancelBottomSheet(button: SomDetailOrder.Data.GetSomDetail.Button) {
         view?.let { view ->
             if (view is ViewGroup) {
-                orderRequestCancelBottomSheet = orderRequestCancelBottomSheet?.apply { 
+                orderRequestCancelBottomSheet = orderRequestCancelBottomSheet?.apply {
                     setupBuyerRequestCancelBottomSheet(this, view, button.popUp)
                 } ?: SomOrderRequestCancelBottomSheet(view.context).apply {
                     setupBuyerRequestCancelBottomSheet(this, view, button.popUp)
@@ -955,8 +1009,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun setupBuyerRequestCancelBottomSheet(bottomSheet: SomOrderRequestCancelBottomSheet, view: ViewGroup, popUp: PopUp) {
         bottomSheet.apply {
             setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
-                override fun onAcceptOrder() {
-                    setActionAcceptOrder(orderId)
+                override fun onAcceptOrder(actionName: String) {
+                    setActionAcceptOrder(actionName, orderId, true)
                 }
 
                 override fun onRejectOrder(reasonBuyer: String) {
@@ -991,10 +1045,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onTextCopied(label: String, str: String) {
+    override fun onTextCopied(label: String, str: String, readableDataName: String) {
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
-        showCommonToaster(getString(R.string.resi_tersalin))
+        showCommonToaster(getString(R.string.message_success_copy, readableDataName))
     }
 
     override fun onInvalidResiUpload(awbUploadUrl: String) {
@@ -1023,7 +1077,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         clipboardManager.setPrimaryClip(ClipData.newPlainText(address, str))
         showCommonToaster(getString(R.string.alamat_pengiriman_tersalin))
     }
-    
+
     private fun setProductEmpty(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
         somBottomSheetStockEmptyAdapter = SomBottomSheetStockEmptyAdapter()
         val bottomSheetProductEmpty = BottomSheetUnify()
@@ -1371,7 +1425,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
             maxDate.add(Calendar.YEAR, 100)
 
             fragmentManager?.let {
-                val datePicker = DatePickerUnify(context, dateNow, dateNow, maxDate)
+                val datePicker = DateTimePickerUnify(
+                        context = context,
+                        minDate = dateNow,
+                        defaultDate = dateNow,
+                        maxDate = maxDate,
+                        type = DateTimePickerUnify.TYPE_DATEPICKER)
                 datePicker.setTitle(getString(R.string.end_shop_closed_label))
                 datePicker.show(it, "")
                 datePicker.datePickerButton.setOnClickListener {
@@ -1410,6 +1469,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        btn_primary?.isLoading = false
         if (requestCode == SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 if (data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
@@ -1564,6 +1624,39 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun stopLoadTimeMonitoring() {
         somDetailLoadTimeMonitoring?.stopRenderPerformanceMonitoring()
         (activity as? SomDetailActivity)?.somLoadTimeMonitoringListener?.onStopPltMonitoring()
+    }
+
+    private fun observeValidateOrder() {
+        somDetailViewModel.validateOrderResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> onSuccessValidateOrder(result.data)
+                is Fail -> onFailedValidateOrder()
+            }
+        })
+    }
+
+    private fun onFailedValidateOrder() {
+        showToasterError(getString(R.string.som_error_validate_order), view)
+    }
+
+    private fun onSuccessValidateOrder(valid: Boolean) {
+        val pendingAction = pendingAction ?: return
+        if (valid) {
+            pendingAction.action.invoke()
+        } else {
+            context?.let { context ->
+                btn_primary?.isLoading = false
+                val somOrderHasCancellationRequestDialog = somOrderHasCancellationRequestDialog ?: SomOrderHasRequestCancellationDialog(context)
+                this.somOrderHasCancellationRequestDialog = somOrderHasCancellationRequestDialog
+                somOrderHasCancellationRequestDialog.apply {
+                    setupActionButton(pendingAction.actionName, pendingAction.action)
+                    setupGoToOrderDetailButton {
+                        loadDetail()
+                    }
+                    show()
+                }
+            }
+        }
     }
 
     protected open fun onSuccessAcceptOrder() {

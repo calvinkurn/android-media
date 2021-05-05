@@ -35,3 +35,9 @@ fun <T> LiveData<T>.getOrAwaitValue(
 infix fun LiveData<*>.isEqualsTo(any: Any) {
     Assertions.assertThat(this.getOrAwaitValue()).isEqualTo(any)
 }
+
+infix fun Any?.isEqualsTo(any: Any) {
+    if (this == null) return
+
+    Assertions.assertThat(this.javaClass).isEqualTo(any.javaClass)
+}

@@ -320,9 +320,9 @@ open class SomListOrderViewHolder(
         element.buttons.firstOrNull()?.let { button ->
             when (button.key) {
                 KEY_TRACK_SELLER -> listener.onTrackButtonClicked(element.orderId, button.url)
-                KEY_CONFIRM_SHIPPING -> listener.onConfirmShippingButtonClicked(element.orderId)
-                KEY_ACCEPT_ORDER -> listener.onAcceptOrderButtonClicked(element.orderId)
-                KEY_REQUEST_PICKUP -> listener.onRequestPickupButtonClicked(element.orderId)
+                KEY_CONFIRM_SHIPPING -> listener.onConfirmShippingButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
+                KEY_ACCEPT_ORDER -> listener.onAcceptOrderButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
+                KEY_REQUEST_PICKUP -> listener.onRequestPickupButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
                 KEY_RESPOND_TO_CANCELLATION -> listener.onRespondToCancellationButtonClicked(element)
                 KEY_VIEW_COMPLAINT_SELLER -> listener.onViewComplaintButtonClicked(element)
                 KEY_UBAH_NO_RESI -> listener.onEditAwbButtonClicked(element.orderId)
@@ -364,21 +364,29 @@ open class SomListOrderViewHolder(
     }
 
     protected open fun setupOrderCard(element: SomListOrderUiModel) {
-        itemView.cardSomOrder.alpha = if (listener.isMultiSelectEnabled() && element.cancelRequest != 0 && element.cancelRequestStatus != 0) 0.5f else 1f
+        itemView.cardSomOrder.alpha = if (listener.isMultiSelectEnabled() && hasActiveRequestCancellation(element)) 0.5f else 1f
         itemView.setOnClickListener {
             if (listener.isMultiSelectEnabled()) touchCheckBox(element)
-            else listener.onOrderClicked(adapterPosition)
+            else listener.onOrderClicked(element)
         }
+    }
+
+    private fun hasActiveRequestCancellation(element: SomListOrderUiModel): Boolean {
+        return element.cancelRequest != 0 && element.cancelRequestStatus != 0
+    }
+
+    private fun skipValidateOrder(element: SomListOrderUiModel): Boolean {
+        return element.cancelRequest != 0 && element.cancelRequestStatus == 0
     }
 
     interface SomListOrderItemListener {
         fun onCheckChanged()
         fun onCheckBoxClickedWhenDisabled()
-        fun onOrderClicked(position: Int)
+        fun onOrderClicked(order: SomListOrderUiModel)
         fun onTrackButtonClicked(orderId: String, url: String)
-        fun onConfirmShippingButtonClicked(orderId: String)
-        fun onAcceptOrderButtonClicked(orderId: String)
-        fun onRequestPickupButtonClicked(orderId: String)
+        fun onConfirmShippingButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
+        fun onAcceptOrderButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
+        fun onRequestPickupButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
         fun onRespondToCancellationButtonClicked(order: SomListOrderUiModel)
         fun onViewComplaintButtonClicked(order: SomListOrderUiModel)
         fun onEditAwbButtonClicked(orderId: String)

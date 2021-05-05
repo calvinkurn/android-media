@@ -34,7 +34,7 @@
     <string name="play_pip_permission_rationale_title">Aktifkan akses Draw over other apps</string>
     <string name="play_pip_permission_rationale_desc">Akses ini dibutuhkan untuk dapat membuka Tokopedia Play dalam mode Picture-in-Picture</string>
     <string name="play_pip_activate">Aktifkan</string>
-    <string name="play_pip_cancel">Batalkan</string>
+    <string name="play_pip_cancel">Abaikan</string>
 
     <!--mock-->
     <string name="play_mock_cart">99+</string>

@@ -13,7 +13,7 @@ import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
-import com.tokopedia.home.beranda.common.HomeDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.isSalamWidgetAvailable
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperRechargetoReminder
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperSalamtoReminder
@@ -43,7 +43,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifM
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.PendingCashbackModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
@@ -59,6 +58,8 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
@@ -82,10 +83,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
-import retrofit2.Response
-import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -113,7 +110,6 @@ open class HomeRevampViewModel @Inject constructor(
         private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
         private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
         private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
-        private val sendGeolocationInfoUseCase: Lazy<SendGeolocationInfoUseCase>,
         private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
         private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
@@ -122,10 +118,10 @@ open class HomeRevampViewModel @Inject constructor(
         private val getRechargeBUWidgetUseCase: Lazy<GetRechargeBUWidgetUseCase>,
         private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
         private val bestSellerMapper: Lazy<BestSellerMapper>,
-        private val homeDispatcher: Lazy<HomeDispatcherProvider>,
+        private val homeDispatcher: Lazy<CoroutineDispatchers>,
         private val homeProcessor: Lazy<HomeCommandProcessor>,
         private val playWidgetTools: Lazy<PlayWidgetTools>
-) : BaseCoRoutineScope(homeDispatcher.get().io()), ResultCommandProcessor {
+) : BaseCoRoutineScope(homeDispatcher.get().io), ResultCommandProcessor {
 
     companion object {
         private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
@@ -134,16 +130,14 @@ open class HomeRevampViewModel @Inject constructor(
         const val GRID = "grid"
         const val QUANTITY = "quantity"
         const val POSITION = "position"
-        private var lastRequestTimeHomeData: Long = 0
-        private var lastRequestTimeSendGeolocation: Long = 0
-        private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
     }
 
     private var navRollanceType: String = ""
     private var useNewBalanceWidget: Boolean = true
+    private var popularKeywordRefreshCount = 1
 
     var currentTopAdsBannerToken: String = ""
-    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().ui())
+    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().main)
     private lateinit var initialShimmerData: HomeInitialShimmerDataModel
 
 // ============================================================================================
@@ -264,8 +258,6 @@ open class HomeRevampViewModel @Inject constructor(
 
     private var fetchFirstData = false
     private var compositeSubscription: CompositeSubscription = CompositeSubscription()
-    private var hasGeoLocationPermission = false
-    private var isNeedShowGeoLocation = false
     private var headerDataModel: HeaderDataModel? = null
 
     private var homeFlowDataCancelled = false
@@ -301,13 +293,9 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun refresh(isFirstInstall: Boolean, forceRefresh: Boolean = false){
-        val needSendGeolocationRequest = lastRequestTimeHomeData + REQUEST_DELAY_SEND_GEOLOCATION < System.currentTimeMillis()
         if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
-        }
-        if (needSendGeolocationRequest && hasGeoLocationPermission) {
-            _sendLocationLiveData.postValue(Event(needSendGeolocationRequest))
         }
         balanceRemoteConfigCondition(
                 isNewBalanceWidget = {
@@ -422,20 +410,6 @@ open class HomeRevampViewModel @Inject constructor(
                 ))
             }
         }
-    }
-
-    fun sendGeolocationData() {
-        sendGeolocationInfoUseCase.get().createObservable(RequestParams.EMPTY)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<Response<String>>() {
-                    override fun onCompleted() {}
-                    override fun onError(e: Throwable) {}
-                    override fun onNext(s: Response<String>?) {
-                        lastRequestTimeSendGeolocation = System.currentTimeMillis()
-                    }
-                })
     }
 
     override fun onCleared() {
@@ -612,25 +586,6 @@ open class HomeRevampViewModel @Inject constructor(
         return homeDataModel
     }
 
-    private fun evaluateGeolocationComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
-        homeDataModel?.let {
-            if (!isNeedShowGeoLocation) {
-                val currentList = homeDataModel.list.toMutableList()
-                currentList.let {
-                    val mutableIterator = currentList.iterator()
-                    for (e in mutableIterator) {
-                        if(e is GeoLocationPromptDataModel){
-                            mutableIterator.remove()
-                            break
-                        }
-                    }
-                    return homeDataModel.copy(list = it)
-                }
-            }
-        }
-        return homeDataModel
-    }
-
     fun getPlayBanner(position: Int){
         val playBanner =
                 if (position < homeVisitableListData.size
@@ -665,16 +620,6 @@ open class HomeRevampViewModel @Inject constructor(
             homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(it.value, it.index, this))
         }
     }
-
-    fun setNeedToShowGeolocationComponent(needToShowGeolocation: Boolean){
-        this.isNeedShowGeoLocation = needToShowGeolocation
-    }
-
-    fun setGeolocationPermission(hasGeolocationPermission: Boolean){
-        this.hasGeoLocationPermission = hasGeolocationPermission
-    }
-
-    fun hasGeolocationPermission() = hasGeoLocationPermission
 
 // =================================================================================
 // ================================ View Controller ================================
@@ -786,14 +731,6 @@ open class HomeRevampViewModel @Inject constructor(
                 homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(it, position, this))
             }
         }
-    }
-
-    fun onCloseGeolocation() {
-        val detectGeolocation = homeVisitableListData.find { visitable -> visitable is GeoLocationPromptDataModel }
-        (detectGeolocation as? GeoLocationPromptDataModel)?.let {
-            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(it, -1, this))
-        }
-        setNeedToShowGeolocationComponent(false)
     }
 
     fun onCloseTicker() {
@@ -1079,9 +1016,14 @@ open class HomeRevampViewModel @Inject constructor(
                     }
                     homeData?.let {
                         if (it.list.isEmpty()) {
-                            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_empty_update;" +
-                                    "reason='Visitables is empty';" +
-                                    "data='isProcessingDynamicChannel=${it.isProcessingDynamicChannle}, isProcessingAtf=${it.isProcessingAtf}, isFirstPage=${it.isFirstPage}, isCache=${it.isCache}'")
+                            ServerLogger.log(Priority.P2, "HOME_STATUS",
+                                    mapOf("type" to "revamp_empty_update",
+                                            "reason" to "Visitables is empty",
+                                            "isProcessingDynamicChannel" to it.isProcessingDynamicChannle.toString(),
+                                            "isProcessingAtf" to it.isProcessingAtf.toString(),
+                                            "isFirstPage" to it.isFirstPage.toString(),
+                                            "isCache" to it.isCache.toString()
+                                    ))
                         }
                         homeProcessor.get().sendWithQueueMethod(UpdateHomeData(it, this@HomeRevampViewModel))
 
@@ -1120,15 +1062,19 @@ open class HomeRevampViewModel @Inject constructor(
         }) {
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
-            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_init_flow;reason='${it.message?:""
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${stackTrace
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+            ServerLogger.log(Priority.P2, "HOME_STATUS",
+                    mapOf("type" to "revamp_error_init_flow",
+                            "reason" to (it.message ?: "".take(ConstantKey.HomeTimber.MAX_LIMIT)),
+                            "data" to stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
+                    ))
         }.invokeOnCompletion {
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
-            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_cancelled_init_flow;reason='${it?.message?:"No error propagated"
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${stackTrace
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+            ServerLogger.log(Priority.P2, "HOME_STATUS",
+                    mapOf("type" to "revamp_cancelled_init_flow",
+                            "reason" to (it?.message ?: "No error propagated").take(ConstantKey.HomeTimber.MAX_LIMIT),
+                            "data" to stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
+                    ))
             homeFlowDataCancelled = true
         }
     }
@@ -1156,9 +1102,11 @@ open class HomeRevampViewModel @Inject constructor(
             homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
 
-            Timber.w("${ConstantKey.HomeTimber.TAG}revamp_error_refresh;reason='${it.message?:""
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}';data='${Log.getStackTraceString(it)
-                    .take(ConstantKey.HomeTimber.MAX_LIMIT)}'")
+            ServerLogger.log(Priority.P2, "HOME_STATUS",
+                    mapOf("type" to "revamp_error_refresh",
+                            "reason" to (it.message ?: "").take(ConstantKey.HomeTimber.MAX_LIMIT),
+                            "data" to Log.getStackTraceString(it).take(ConstantKey.HomeTimber.MAX_LIMIT)
+                    ))
         }
     }
 
@@ -1425,14 +1373,28 @@ open class HomeRevampViewModel @Inject constructor(
     fun getPopularKeywordData() {
         if(getPopularKeywordJob?.isActive == true) return
         getPopularKeywordJob = launchCatchError(coroutineContext, {
-            popularKeywordUseCase.get().setParams()
+            popularKeywordUseCase.get().setParams(page = popularKeywordRefreshCount)
             val results = popularKeywordUseCase.get().executeOnBackground()
             if (results.data.keywords.isNotEmpty()) {
-                val resultList = convertPopularKeywordDataList(results.data.keywords)
+                val resultList = convertPopularKeywordDataList(results.data)
                 homeVisitableListData.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
                     val oldData = indexedData.value
                     if (oldData is PopularKeywordListDataModel) {
-                        homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(oldData.copy(popularKeywordList = resultList, isErrorLoad = false), indexedData.index, this@HomeRevampViewModel))
+                        homeProcessor.get().sendWithQueueMethod(
+                                UpdateWidgetCommand(oldData.copy(
+                                        title = results.data.title,
+                                        subTitle = results.data.subTitle,
+                                        popularKeywordList = resultList,
+                                        isErrorLoad = false
+                                ), indexedData.index, this@HomeRevampViewModel))
+                    }
+                }
+                popularKeywordRefreshCount++
+            } else {
+                homeVisitableListData.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
+                    val oldData = indexedData.value
+                    if (oldData is PopularKeywordListDataModel) {
+                        homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(oldData.copy(isErrorLoad = true), indexedData.index, this@HomeRevampViewModel))
                     }
                 }
             }
@@ -1569,6 +1531,7 @@ open class HomeRevampViewModel @Inject constructor(
             try {
                 walletContent = getWalletBalanceContent()
             } catch (e: Exception) {
+                homeBalanceModel.isTokopointsOrOvoFailed = true
                 homeBalanceModel.mapErrorWallet()
                 newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
             }
@@ -1576,6 +1539,7 @@ open class HomeRevampViewModel @Inject constructor(
             try {
                 tokopointContent = getTokopointBalanceContent()
             } catch (e: Exception) {
+                homeBalanceModel.isTokopointsOrOvoFailed = true
                 homeBalanceModel.mapErrorTokopoints()
                 newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_ERROR))
             }
@@ -1597,6 +1561,7 @@ open class HomeRevampViewModel @Inject constructor(
                             )
                         }
                     } catch (e: Exception) {
+                        homeBalanceModel.isTokopointsOrOvoFailed = true
                         newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
                     }
                 } else {
@@ -1808,7 +1773,7 @@ open class HomeRevampViewModel @Inject constructor(
         launchCatchError(block = {
             val response = playWidgetTools.get().getWidgetFromNetwork(
                     PlayWidgetUseCase.WidgetType.Home,
-                    homeDispatcher.get().io()
+                    homeDispatcher.get().io
             )
             val uiModel = playWidgetTools.get().mapWidgetToModel(response)
             homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(dataModel.copy(
@@ -1840,7 +1805,7 @@ open class HomeRevampViewModel @Inject constructor(
             val response = playWidgetTools.get().updateToggleReminder(
                     channelId,
                     reminderType,
-                    homeDispatcher.get().io()
+                    homeDispatcher.get().io
             )
 
             when (val success = playWidgetTools.get().mapWidgetToggleReminder(response)) {
@@ -1893,10 +1858,18 @@ open class HomeRevampViewModel @Inject constructor(
 // ================================== Mapper Function =========================================
 // ============================================================================================
 
-    private fun convertPopularKeywordDataList(list: List<HomeWidget.PopularKeyword>): MutableList<PopularKeywordDataModel> {
+    private fun convertPopularKeywordDataList(popularKeywordList: HomeWidget.PopularKeywordList): MutableList<PopularKeywordDataModel> {
+        val keywordList = popularKeywordList.keywords
         val dataList: MutableList<PopularKeywordDataModel> = mutableListOf()
-        for (pojo in list) {
-            dataList.add(PopularKeywordDataModel(pojo.url, pojo.imageUrl, pojo.keyword, pojo.productCount))
+        for (pojo in keywordList) {
+            dataList.add(
+                    PopularKeywordDataModel(
+                            recommendationType = popularKeywordList.recommendationType,
+                            applink = pojo.url,
+                            imageUrl = pojo.imageUrl,
+                            title = pojo.keyword,
+                            productCount = pojo.productCount)
+            )
         }
         return dataList
     }

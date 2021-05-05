@@ -91,13 +91,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         app:layout_constraintTop_toBottomOf="@id/separator">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtRecommendation"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:text="@string/topads_common_label_top_ads_keyword"
             android:textAllCaps="true"
@@ -151,12 +151,12 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/keyword_list"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/dp_0"
         android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintBottom_toTopOf="@id/selected_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headlineList"
-        app:layout_constraintBottom_toTopOf="@id/selected_info"
         tools:itemCount="5"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/topads_create_layout_keyword_list_item" />
@@ -165,13 +165,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchList"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/dp_0"
         android:layout_marginTop="@dimen/dp_12"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/selected_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headlineList"
-        app:layout_constraintBottom_toTopOf="@id/selected_info"
         tools:itemCount="5"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/topads_create_layout_keyword_list_item"
@@ -188,7 +188,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.tokopedia.unifycomponents.DividerUnify
+    <View
         android:id="@+id/view2"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_8"
@@ -200,10 +200,10 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_next"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
         android:text="@string/topads_common_keyword_list_step"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -213,9 +213,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/selected_info"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_weight="1"
         android:padding="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="@+id/btn_next"
@@ -229,8 +229,8 @@
     <include
         android:id="@+id/emptyLayout"
         layout="@layout/topads_common_keyword_empty_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
         android:layout_margin="@dimen/dp_24"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view2"

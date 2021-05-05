@@ -24,6 +24,7 @@ import com.tokopedia.play.util.video.state.*
 import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
@@ -35,7 +36,7 @@ import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -68,7 +69,7 @@ class PlayViewModel @Inject constructor(
         private val playSocketToModelMapper: PlaySocketToModelMapper,
         private val playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatcherProvider,
+        private val dispatchers: CoroutineDispatchers,
         private val remoteConfig: RemoteConfig,
         private val playPreference: PlayPreference,
         private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
@@ -252,6 +253,7 @@ class PlayViewModel @Inject constructor(
                 if (pinnedProduct != null) {
                     val newPinnedProduct = pinnedProduct.copy(
                             productTags = pinnedProduct.productTags.setContent(
+                                    basicInfo = it.data.basicInfo,
                                     productList = it.data.productList,
                                     voucherList = it.data.voucherList
                             )
@@ -482,11 +484,15 @@ class PlayViewModel @Inject constructor(
     }
 
     fun requestWatchInPiP() {
-        _observableEventPiPState.value = Event(PiPState.Requesting(PiPMode.WatchInPip))
+        _observableEventPiPState.value = Event(PiPState.Requesting(PiPMode.WatchInPiP))
     }
 
-    fun requestPiPBrowsingPage() {
-        _observableEventPiPState.value = Event(PiPState.Requesting(PiPMode.BrowsingOtherPage))
+    fun requestPiPBrowsingPage(applinkModel: OpenApplinkUiModel) {
+        _observableEventPiPState.value = Event(
+                PiPState.Requesting(
+                        PiPMode.BrowsingOtherPage(applinkModel)
+                )
+        )
     }
 
     fun stopPiP() {
@@ -615,6 +621,15 @@ class PlayViewModel @Inject constructor(
                     status = PlayLikeStatusInfoUiModel(
                             totalLike = finalTotalLike,
                             totalLikeFormatted = finalTotalLike.toAmountString(amountStringStepArray, separator = "."),
+                            isLiked = shouldLike,
+                            source = LikeSource.UserAction
+                    )
+            )
+        } else {
+            _observableLikeInfo.value = likeInfo.copy(
+                    status = PlayLikeStatusInfoUiModel(
+                            totalLike = likeInfo.status.totalLike,
+                            totalLikeFormatted = likeInfo.status.totalLikeFormatted,
                             isLiked = shouldLike,
                             source = LikeSource.UserAction
                     )

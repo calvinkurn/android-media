@@ -2,16 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_promo"
-        android:title="@string/flight_title_promo"
-        app:showAsAction="never"
-        />
-    <item
-        android:id="@+id/menu_transaction_list"
-        android:title="@string/flight_title_transaction_list"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/menu_help"
-        android:title="@string/flight_title_help"
-        app:showAsAction="never" />
+        android:id="@+id/action_overflow_menu"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_toolbar_overflow_level_two_black"
+        android:title="" />
 </menu>

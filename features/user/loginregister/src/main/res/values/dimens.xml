@@ -2,6 +2,8 @@
 <resources>
     <dimen name="dp_52">52dp</dimen>
 
+    <dimen name="login_register_1dp">1dp</dimen>
+    <dimen name="login_register_52dp">52dp</dimen>
     <dimen name="login_layout_12">12dp</dimen>
     <dimen name="shop_img_size">58dp</dimen>
     <dimen name="shop_vertical_padding">16dp</dimen>
