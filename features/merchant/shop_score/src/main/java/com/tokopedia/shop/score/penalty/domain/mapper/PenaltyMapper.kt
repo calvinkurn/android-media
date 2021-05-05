@@ -177,9 +177,19 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                         Pair(SINCE_FINISH_PENALTY_DETAIL,"$SINCE ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
                     }
                     POINTS_NOT_YET_DEDUCTED -> {
-                        Pair(START_ACTIVE_PENALTY_DETAIL, "$START ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
+                        Pair(START_ACTIVE_PENALTY_DETAIL, "$START ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyStartDate)}")
                     }
-                    else -> Pair("", DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate))
+                    else -> Pair("", "")
+                }
+
+                val endDateDetail = when (it.status) {
+                    ON_GOING, PENALTY_DONE -> {
+                       DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)
+                    }
+                    POINTS_NOT_YET_DEDUCTED -> {
+                        DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyStartDate)
+                    }
+                    else -> ""
                 }
 
                 val scoreAbs = abs(it.score).toString()
@@ -189,7 +199,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                         deductionPoint = scoreAbs,
                         startDate = DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.createTime),
                         endDate = endDateText,
-                        endDateDetail = DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate),
+                        endDateDetail = endDateDetail,
                         typePenalty = it.typeName,
                         invoicePenalty = it.invoiceNumber,
                         reasonPenalty = it.reason,
@@ -236,9 +246,9 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                             Pair(SINCE_FINISH_PENALTY_DETAIL,"$SINCE ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
                         }
                         POINTS_NOT_YET_DEDUCTED -> {
-                            Pair(START_ACTIVE_PENALTY_DETAIL, "$START ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
+                            Pair(START_ACTIVE_PENALTY_DETAIL, "$START ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyStartDate)}")
                         }
-                        else -> Pair("", DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate))
+                        else -> Pair("", "")
                     }
 
                     val scoreAbs = abs(it.score).toString()
@@ -246,14 +256,13 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                     add(ItemPenaltyUiModel(
                             statusPenalty = it.status,
                             deductionPoint = scoreAbs,
-                            startDate = DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyStartDate),
+                            startDate = DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.createTime),
                             endDate = endDateText,
-                            endDateDetail = DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate),
                             typePenalty = it.typeName,
-                            reasonPenalty = it.reason,
                             invoicePenalty = it.invoiceNumber,
-                            prefixDatePenalty = prefixDatePenaltyDetail,
-                            colorPenalty = colorTypePenalty
+                            reasonPenalty = it.reason,
+                            colorPenalty = colorTypePenalty,
+                            prefixDatePenalty = prefixDatePenaltyDetail
                     ))
                 }
             }
