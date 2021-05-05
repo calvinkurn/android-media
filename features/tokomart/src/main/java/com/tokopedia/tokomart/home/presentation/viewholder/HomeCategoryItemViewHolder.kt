@@ -6,17 +6,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.tokomart.R
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryMenuUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryItemUiModel
 import kotlinx.android.synthetic.main.item_tokomart_home_category_menu.view.*
 
-class HomeCategoryMenuViewHolder(itemView: View): AbstractViewHolder<HomeCategoryMenuUiModel>(itemView) {
+class HomeCategoryItemViewHolder(itemView: View): AbstractViewHolder<HomeCategoryItemUiModel>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokomart_home_category_menu
     }
 
-    override fun bind(data: HomeCategoryMenuUiModel) {
+    override fun bind(data: HomeCategoryItemUiModel) {
         itemView.apply {
             textCategory.text = data.title
             imageCategory.loadImage(data.iconUrl) {

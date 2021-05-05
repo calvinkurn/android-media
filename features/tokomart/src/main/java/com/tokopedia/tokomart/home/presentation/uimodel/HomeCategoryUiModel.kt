@@ -5,7 +5,7 @@ import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeTypeFactory
 data class HomeCategoryUiModel(
     val id: String,
     val title: String,
-    val menuList: List<HomeCategoryMenuUiModel>
+    val categoryList: List<HomeCategoryItemUiModel>
 ): HomeLayoutUiModel {
     override fun type(typeFactory: TokoMartHomeTypeFactory): Int {
         return typeFactory.type(this)

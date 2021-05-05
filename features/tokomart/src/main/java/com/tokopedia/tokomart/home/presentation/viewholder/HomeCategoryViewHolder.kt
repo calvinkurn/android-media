@@ -31,7 +31,7 @@ class HomeCategoryViewHolder(itemView: View): AbstractViewHolder<HomeCategoryUiM
                 layoutManager = GridLayoutManager(context, GRID_SPAN_COUNT)
             }
 
-            adapter.submitList(data.menuList)
+            adapter.submitList(data.categoryList)
         }
     }
 }
