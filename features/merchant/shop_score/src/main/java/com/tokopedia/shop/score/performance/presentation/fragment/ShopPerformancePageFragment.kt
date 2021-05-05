@@ -475,11 +475,14 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun getSectionLastItemViewCoachMark(): View? {
-        val layoutManager = rvShopPerformance?.layoutManager as? LinearLayoutManager
-        val lastItemView = layoutManager?.findLastCompletelyVisibleItemPosition()
-        val view = lastItemView?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
-        val viewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
-        return viewHolder?.itemView
+        getPositionLastItemCoachMark()?.let {
+            val layoutManager = rvShopPerformance?.layoutManager as? LinearLayoutManager
+            val lastItemView = layoutManager?.findLastCompletelyVisibleItemPosition()
+            val view = lastItemView?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
+            val viewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
+            return viewHolder?.itemView
+        }
+        return null
     }
 
     private fun getHeaderPerformanceView(): View? {
