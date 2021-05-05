@@ -9,10 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.tokomart.R
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.tokomart.home.R
 import com.tokopedia.tokomart.home.di.component.DaggerTokoMartHomeComponent
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapter
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeFactory
