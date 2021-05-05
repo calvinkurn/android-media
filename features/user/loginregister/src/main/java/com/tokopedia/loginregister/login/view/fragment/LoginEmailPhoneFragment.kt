@@ -57,10 +57,7 @@ import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
@@ -520,7 +517,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun loginEmail(email: String, password: String, isSmartLock: Boolean = false, useHash: Boolean = false) {
-        showLoadingLogin()
+        if(isValid(email, password)) {
+            showLoadingLogin()
+        }
         currentEmail = email
         resetError()
         if(isValid(email, password)) {
@@ -928,6 +927,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     })
         }
         emailExtension?.hide()
+
+        callTokopediaCare?.showWithCondition(!isLoading)
     }
 
     override fun goToRegisterInitial(source: String) {
