@@ -187,15 +187,15 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
         private const val FAKE_RESPONSE = """
             {
               "mpBOMDetail": {
-                "order_id": 675721450,
+                "order_id": 761897512,
                 "order_finished_time": 132301300,
-                "invoice": "INV/20210104/XXI/I/717282191",
-                "invoice_url": "https://staging.tokopedia.com/invoice.pl?id=166515916&pdf=Invoice-8969212-479933-20210204144519-cnJycnJycnIx",
-                "payment_date": "4 Feb 2021, 14:45 WIB",
+                "invoice": "INV/20210413/MPL/1168387783",
+                "invoice_url": "https://www.tokopedia.com/invoice.pl?id=761897512&pdf=Invoice-825707-1479278-20210413120947-cnJycnJycnIx",
+                "payment_date": "13 Apr 2021, 12:09 WIB",
                 "cashback_info": "Cashback Rp30.000 (30.000 OVO Points)",
                 "order_status": {
-                  "id": 220,
-                  "status_name": "Menunggu Konfirmasi",
+                  "id": 500,
+                  "status_name": "Pesanan Dikirim",
                   "indicator_color": "#FFC400"
                 },
                 "ticker_info": {
@@ -211,18 +211,16 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   "color": "#FF8800"
                 },
                 "shop": {
-                  "shop_id": 6551490,
-                  "shop_name": "stagingaj",
-                  "shop_url": "https://staging.tokopedia.com/stagingaj"
+                  "shop_id": 1479278,
+                  "shop_name": "Tumbler Starbucks 123",
+                  "shop_url": "https://www.tokopedia.com/tumblersbux"
                 },
                 "products": [
                   {
-                    "order_detail_id": 324092389,
-                    "product_id": 2147534898,
-                    "product_name": "baju 567",
-                    "product_url": "https://staging.tokopedia.com/stagingaj/baju-567",
-                    "snapshot_url": "https://staging.tokopedia.com/snapshot_product?order_id=166806597&dtl_id=20518952&source=bom",
-                    "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/hDjmkQ/2021/4/8/6188a16d-f725-4017-ba36-109a6d45037c.jpg",
+                    "order_detail_id": 1168387789,
+                    "product_id": 199047378,
+                    "product_name": "Product 49",
+                    "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2016/12/17/12299749/12299749_a943a8f6-af0e-4507-8bbd-399f397a081a_300_300.jpg",
                     "price": 1000,
                     "price_text": "Rp 1.000",
                     "quantity": 2,
@@ -257,7 +255,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   "shipping_info": {
                     "title": "Jaminan Tepat Waktu",
                     "notes": "Ongkir kembali jika pesanan tiba lebih dari <b>04 Feb 2021</b> 18:00 WIB.",
-                    "url_detail": "https://gw-staging.tokopedia.com/rates/otdg_info",
+                    "url_detail": "https://gw.tokopedia.com/rates/otdg_info",
                     "url_text": "S&K Berlaku"
                   }
                 },
@@ -286,7 +284,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   "display_name": "Lacak",
                   "color": "#03AC0E",
                   "style": "filled",
-                  "url": "https://staging.tokopedia.com/ajax/logistic/v1/tracking,1,JNE18273,1617904754,0",
+                  "url": "tokopedia://order/track/761897512?url=",
                   "popup": {
                     "title": "",
                     "body": "",
@@ -297,7 +295,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   {
                     "key": "ask_seller",
                     "display_name": "Chat Penjual",
-                    "url": "",
+                    "url": "tokopedia://topchat/askseller/1479278?invoiceUrl=https%3A%2F%2Fwww.tokopedia.com%2Finvoice.pl%3Fid%3D761897512%26pdf%3DInvoice-825707-1479278-20210413120947-cnJycnJycnIx",
                     "popup": {
                       "title": "",
                       "body": "",
@@ -305,13 +303,24 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     }
                   },
                   {
-                    "key": "help",
-                    "display_name": "Bantuan",
-                    "url": "",
+                    "key": "complaint",
+                    "display_name": "Komplain",
+                    "url": "https://m.tokopedia.com/resolution-center/create/761897512",
                     "popup": {
-                      "title": "",
-                      "body": "",
-                      "action_button": []
+                      "title": "Komplain Pesanan",
+                      "body": "Apakah pesanan Anda bermasalah ?",
+                      "action_button": [
+                        {
+                          "key": "back",
+                          "display_name": "Kembali",
+                          "url": ""
+                        },
+                        {
+                          "display_name": "Komplain",
+                          "url": "https://m.tokopedia.com/resolution-center/create/761897512",
+                          "key": "complaint"
+                        }
+                      ]
                     }
                   },
                   {
@@ -322,6 +331,27 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                       "title": "",
                       "body": "",
                       "action_button": []
+                    }
+                  },
+                  {
+                    "key": "receive_confirmation",
+                    "display_name": "Selesai",
+                    "url": "",
+                    "popup": {
+                      "title": "Selesaikan pesanan",
+                      "body": "Dengan klik Selesai, dana akan diteruskan ke penjual dan kamu tidak dapat mengajukan komplain.",
+                      "action_button": [
+                        {
+                          "key": "back",
+                          "display_name": "Kembali",
+                          "url": ""
+                        },
+                        {
+                          "key": "do_receive_confirmation",
+                          "display_name": "Selesai",
+                          "url": "https://ws.tokopedia.com/v4/action/tx-order/delivery_finish_order.pl"
+                        }
+                      ]
                     }
                   }
                 ],

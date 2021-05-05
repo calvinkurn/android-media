@@ -94,7 +94,9 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
 
     private fun mapButtonPopUp(popup: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button.Popup): ActionButtonsUiModel.ActionButton.PopUp {
         return ActionButtonsUiModel.ActionButton.PopUp(
-                actionButton = mapActionButtons(popup.actionButton)
+                actionButton = mapActionButtons(popup.actionButton),
+                body = popup.body,
+                title = popup.title
         )
     }
 

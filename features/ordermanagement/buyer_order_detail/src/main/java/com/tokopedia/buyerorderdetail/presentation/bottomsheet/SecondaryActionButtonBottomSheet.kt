@@ -49,4 +49,8 @@ class SecondaryActionButtonBottomSheet(
     fun show(fragmentManager: FragmentManager) {
         bottomSheet.show(fragmentManager, SecondaryActionButtonBottomSheet::class.java.simpleName)
     }
+
+    fun dismiss() {
+        bottomSheet.dismiss()
+    }
 }

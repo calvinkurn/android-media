@@ -5,6 +5,8 @@ object BuyerOrderDetailConst {
     const val ACTION_BUTTON_KEY_REQUEST_CANCEL = "request_cancel"
     const val ACTION_BUTTON_KEY_TRACK_SHIPMENT = "track"
     const val ACTION_BUTTON_KEY_COMPLAINT = "complaint"
+    const val ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION = "receive_confirmation"
+    const val ACTION_BUTTON_KEY_DO_RECEIVE_CONFIRMATION = "do_receive_confirmation"
 
     const val SECTION_HEADER_PRODUCT_LIST = "Daftar Produk"
     const val SECTION_HEADER_SHIPMENT_INFO = "Info Pengiriman"
@@ -26,4 +28,6 @@ object BuyerOrderDetailConst {
     const val PARAM_CART_STRING = "cart_string"
 
     const val TICKER_TYPE_INFO = "info"
+
+    const val ACTION_FINISH_ORDER = "event_dialog_deliver_finish"
 }

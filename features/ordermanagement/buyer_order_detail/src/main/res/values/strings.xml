@@ -18,4 +18,10 @@
     <string name="html_link">%1$s &lt;a href=\"%2$s\"&gt;%3$s&lt;/a&gt;</string>
     <string name="label_product_price_and_quantity">%1$d x %2$s</string>
     <string name="failed_to_get_information">Informasi gagal dimuat</string>
+    <string name="bottomsheet_finish_order_description">Dengan klik Selesai, dana akan diteruskan ke penjual dan kamu tidak dapat mengajukan komplain.</string>
+    <string name="bottomsheet_finish_order_product_description">Pastikan kamu sudah menerima barang yang sesuai dengan pesananmu.</string>
+    <string name="bottomsheet_finish_order_cashback_description"><![CDATA[Jika memenuhi Syarat & Ketentuan, cashback dari transaksi yang pakai promo akan dikirim maks. 24 jam ke depan.]]></string>
+    <string name="label_complaint">Ajukan Komplain</string>
+    <string name="label_finish">Selesai</string>
+    <string name="receive_confirmation_bottomsheet_header">Selesaikan pesanan ini?</string>
 </resources>

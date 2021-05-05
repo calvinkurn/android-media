@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerType
 
@@ -19,6 +20,14 @@ object Utils {
     private const val STRING_TICKER_TYPE_ERROR = "error"
     private const val STRING_TICKER_TYPE_INFO = "info"
     private const val STRING_TICKER_TYPE_WARNING = "warning"
+
+    private const val STRING_BUTTON_TYPE_ALTERNATE = "alternate"
+    private const val STRING_BUTTON_TYPE_MAIN = "main"
+    private const val STRING_BUTTON_TYPE_TRANSACTION = "transaction"
+
+    private const val STRING_BUTTON_VARIANT_FILLED = "filled"
+    private const val STRING_BUTTON_VARIANT_GHOST = "ghost"
+    private const val STRING_BUTTON_VARIANT_TEXT_ONLY = "text_only"
 
     fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
         val color = if (colorHex.length > 1) Color.parseColor(colorHex)
@@ -41,6 +50,24 @@ object Utils {
             STRING_TICKER_TYPE_INFO -> Ticker.TYPE_INFORMATION
             STRING_TICKER_TYPE_WARNING -> Ticker.TYPE_WARNING
             else -> Ticker.TYPE_INFORMATION
+        }
+    }
+
+    fun mapButtonType(typeString: String): Int {
+        return when (typeString) {
+            STRING_BUTTON_TYPE_ALTERNATE -> UnifyButton.Type.ALTERNATE
+            STRING_BUTTON_TYPE_MAIN -> UnifyButton.Type.MAIN
+            STRING_BUTTON_TYPE_TRANSACTION -> UnifyButton.Type.TRANSACTION
+            else -> UnifyButton.Type.MAIN
+        }
+    }
+
+    fun mapButtonVariant(variantString: String): Int {
+        return when (variantString) {
+            STRING_BUTTON_VARIANT_FILLED -> UnifyButton.Variant.FILLED
+            STRING_BUTTON_VARIANT_GHOST -> UnifyButton.Variant.GHOST
+            STRING_BUTTON_VARIANT_TEXT_ONLY -> UnifyButton.Variant.TEXT_ONLY
+            else -> UnifyButton.Variant.FILLED
         }
     }
 }

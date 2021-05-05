@@ -110,7 +110,7 @@ object BuyerOrderDetailNavigator {
     }
 
     fun goToCreateResolution(fragment: Fragment, url: String) {
-        val intent: Intent = RouteManager.getIntent(fragment.context, url)
+        val intent: Intent = RouteManager.getIntent(fragment.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
         fragment.startActivityForResult(intent, BuyerOrderDetailFragment.REQUEST_CODE_CREATE_RESOLUTION)
     }
 

@@ -15,12 +15,14 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
+import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailActionButtonAnimator
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
+import com.tokopedia.buyerorderdetail.presentation.bottomsheet.ReceiveConfirmationBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SecondaryActionButtonBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
@@ -34,6 +36,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_buyer_order_detail.*
@@ -60,6 +63,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     @Inject
     lateinit var viewModel: BuyerOrderDetailViewModel
+
+    private var bottomSheetReceiveConfirmation: ReceiveConfirmationBottomSheet? = null
 
     private val actionButtonAnimator by lazy {
         BuyerOrderDetailActionButtonAnimator(containerActionButtons, containerBuyerOrderDetail)
@@ -100,6 +105,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         observeBuyerOrderDetail()
+        observeReceiveConfirmation()
     }
 
     override fun onBuyAgainButtonClicked() {
@@ -112,6 +118,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_REQUEST_CANCEL -> onRequestCancelActionButtonClicked(button)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_TRACK_SHIPMENT -> onTrackShipmentActionButtonClicked(button)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> onComplaintActionButtonClicked(button)
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION -> onReceiveConfirmationActionButtonClicked(button)
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_DO_RECEIVE_CONFIRMATION -> onDoReceiveConfirmationActionButtonClicked(button)
         }
     }
 
@@ -154,6 +162,14 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
                 BuyerOrderDetailNavigator.goToCreateResolution(this, button.url)
             }
         }
+    }
+
+    private fun onReceiveConfirmationActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
+        showReceiveConfirmationBottomSheet(button)
+    }
+
+    private fun onDoReceiveConfirmationActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
+        viewModel.finishOrder()
     }
 
     private fun setupViews() {
@@ -216,6 +232,28 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             swipeRefreshBuyerOrderDetail?.isRefreshing = false
             swipeRefreshBuyerOrderDetail?.isEnabled = true
         })
+    }
+
+    private fun observeReceiveConfirmation() {
+        viewModel.finishOrderResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> onSuccessReceiveConfirmation(result.data)
+                is Fail -> onFailedReceiveConfirmation(result.throwable)
+            }
+        })
+    }
+
+    private fun onSuccessReceiveConfirmation(data: FinishOrderResponse.Data.FinishOrderBuyer) {
+        bottomSheetReceiveConfirmation?.dismiss()
+        secondaryActionButtonBottomSheet.dismiss()
+        showCommonToaster(data.message.firstOrNull().orEmpty())
+        swipeRefreshBuyerOrderDetail.isRefreshing = true
+        loadBuyerOrderDetail()
+    }
+
+    private fun onFailedReceiveConfirmation(throwable: Throwable) {
+        bottomSheetReceiveConfirmation?.finishLoading()
+        throwable.showErrorToaster()
     }
 
     private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
@@ -302,5 +340,44 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun hideLoadIndicator() {
         loaderBuyerOrderDetail.gone()
+    }
+
+    private fun showReceiveConfirmationBottomSheet(button: ActionButtonsUiModel.ActionButton) {
+        val bottomSheetReceiveConfirmation = bottomSheetReceiveConfirmation?.apply {
+            reInit(button)
+        } ?: createReceiveConfirmationBottomSheet(button)
+        this.bottomSheetReceiveConfirmation = bottomSheetReceiveConfirmation
+        bottomSheetReceiveConfirmation.show(childFragmentManager)
+    }
+
+    private fun createReceiveConfirmationBottomSheet(button: ActionButtonsUiModel.ActionButton): ReceiveConfirmationBottomSheet {
+        return ReceiveConfirmationBottomSheet(requireContext(), button, this)
+    }
+
+    private fun showCommonToaster(message: String, actionText: String = "", onActionClicked: () -> Unit = {}) {
+        if (message.isNotBlank()) {
+            view?.let { view ->
+                Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, actionText, View.OnClickListener {
+                    onActionClicked()
+                }).show()
+            }
+        }
+    }
+
+    private fun showErrorToaster(message: String, actionText: String = "", onActionClicked: () -> Unit = {}) {
+        if (message.isNotBlank()) {
+            view?.let { view ->
+                Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, actionText, View.OnClickListener {
+                    onActionClicked()
+                }).show()
+            }
+        }
+    }
+
+    private fun Throwable.showErrorToaster() {
+        val errorMessage = context?.let {
+            ErrorHandler.getErrorMessage(it, this)
+        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
+        showErrorToaster(errorMessage)
     }
 }
