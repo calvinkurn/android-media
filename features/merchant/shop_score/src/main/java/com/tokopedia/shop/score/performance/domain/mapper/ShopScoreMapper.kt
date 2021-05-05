@@ -130,16 +130,12 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         } else {
             shopInfoPeriodUiModel.shopAge
         } ?: 0
-        val isNewSeller = if (shopScoreWrapperResponse.goldGetPMShopInfoResponse != null) {
-            shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isNewSeller
-        } else {
-            shopInfoPeriodUiModel.isNewSeller
-        } ?: false
+        val isNewSeller = shopInfoPeriodUiModel.isNewSeller
 
         val isNewSellerProjection = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
 
         shopScoreVisitableList.apply {
-            if (isNewSeller || shopAge < SHOP_AGE_SIXTY) {
+            if (isNewSeller || shopAge < NEW_SELLER_DAYS) {
                 val mapTimerNewSeller = mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller)
                 if (mapTimerNewSeller.second) {
                     add(mapTimerNewSeller.first)
