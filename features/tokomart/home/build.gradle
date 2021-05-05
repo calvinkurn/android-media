@@ -20,6 +20,7 @@ dependencies {
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation project(rootProject.ext.features.homeComponent)
 
     implementation project(rootProject.ext.libraries.adapterDelegate)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
