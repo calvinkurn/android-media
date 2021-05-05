@@ -33,6 +33,12 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
     private val textLabelCardNumber: TextView
     private val textCardNumber: TextView
     private val imageIssuer: ImageView
+    private val textLabelBalanceLoader: LoaderTextView
+    private val textRemainingBalanceLoader: LoaderTextView
+    private val textDateLoader: LoaderTextView
+    private val textLabelCardNumberLoader: LoaderTextView
+    private val textCardNumberLoader: LoaderTextView
+    private val imageIssuerLoader: LoaderTextView
 
     val cardNumber: String
         get() = attributesEmoneyInquiry.cardNumber
@@ -49,11 +55,19 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
         textCardNumber = view.findViewById(R.id.text_card_number)
         textDate = view.findViewById(R.id.text_date)
         imageIssuer = view.findViewById(R.id.image_issuer)
+
+        textLabelBalanceLoader = view.findViewById(R.id.text_label_balance_loader)
+        textRemainingBalanceLoader = view.findViewById(R.id.text_remaining_balance_loader)
+        textDateLoader = view.findViewById(R.id.text_date_loader)
+        imageIssuerLoader = view.findViewById(R.id.image_issuer_loader)
+        textLabelCardNumberLoader = view.findViewById(R.id.text_label_card_number_loader)
+        textCardNumberLoader = view.findViewById(R.id.text_card_number_loader)
+
     }
 
     fun showCardInfo(attributesEmoneyInquiry: AttributesEmoneyInquiry) {
         this.attributesEmoneyInquiry = attributesEmoneyInquiry
-
+        viewVisible()
         imageIssuer.visibility = View.VISIBLE
         ImageHandler.LoadImage(imageIssuer, attributesEmoneyInquiry.imageIssuer)
 
@@ -70,10 +84,11 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
         val simpleDateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm",
                 DateFormatUtils.DEFAULT_LOCALE)
         val date = Date()
-        textDate.text = resources.getString(R.string.emoney_nfc_date_format, simpleDateFormat.format(date))
+        textDate.text = simpleDateFormat.format(date)
     }
 
     fun showLoading() {
+        viewInvisible()
         resources.getString(R.string.emoney_card_info_label_card_balance)
         textLabelBalance.measure(0, 0)
         val paramsTextLabelBalance = textLabelBalance.layoutParams
@@ -91,15 +106,10 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
         val paramsTextDate = textDate.layoutParams
         paramsTextDate.width = textDate.measuredWidth
         textDate.layoutParams = paramsTextDate
-
-        (findViewById<View>(R.id.text_label_balance) as LoaderTextView).resetLoader()
-        (findViewById<View>(R.id.text_remaining_balance) as LoaderTextView).resetLoader()
-        (findViewById<View>(R.id.text_label_card_number) as LoaderTextView).resetLoader()
-        (findViewById<View>(R.id.text_card_number) as LoaderTextView).resetLoader()
-        (findViewById<View>(R.id.text_date) as LoaderTextView).resetLoader()
     }
 
     fun removeCardInfo() {
+        viewVisible()
         textLabelCardNumber.text = resources.getString(R.string.emoney_card_info_label_card_number)
         textCardNumber.text = resources.getString(R.string.emoney_card_info_is_not_available_yet)
         textCardNumber.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
@@ -109,6 +119,47 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
         textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textDate.text = ""
         imageIssuer.setImageDrawable(null)
+    }
+
+    private fun viewVisible(){
+        imageIssuerLoader.visibility = View.GONE
+        imageIssuer.visibility = View.VISIBLE
+
+        textLabelCardNumberLoader.visibility = View.GONE
+        textLabelCardNumber.visibility = View.VISIBLE
+
+        textCardNumberLoader.visibility = View.GONE
+        textCardNumber.visibility = View.VISIBLE
+
+        textLabelBalanceLoader.visibility = View.GONE
+        textLabelBalance.visibility = View.VISIBLE
+
+        textDateLoader.visibility = View.GONE
+        textDate.visibility = View.VISIBLE
+
+        textRemainingBalanceLoader.visibility = View.GONE
+        textRemainingBalance.visibility = View.VISIBLE
+
+    }
+
+    private fun viewInvisible(){
+        imageIssuerLoader.visibility = View.VISIBLE
+        imageIssuer.visibility = View.GONE
+
+        textLabelCardNumberLoader.visibility = View.VISIBLE
+        textLabelCardNumber.visibility = View.GONE
+
+        textCardNumberLoader.visibility = View.VISIBLE
+        textCardNumber.visibility = View.GONE
+
+        textLabelBalanceLoader.visibility = View.VISIBLE
+        textLabelBalance.visibility = View.GONE
+
+        textDateLoader.visibility = View.VISIBLE
+        textDate.visibility = View.GONE
+
+        textRemainingBalanceLoader.visibility = View.VISIBLE
+        textRemainingBalance.visibility = View.GONE
     }
 
     fun getCardLastBalance(): String {
