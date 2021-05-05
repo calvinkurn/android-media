@@ -165,6 +165,56 @@
       "businessUnit": "search",
       "currentSite": "tokopediamarketplace",
       "userId": "{{.+}}"
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "search result",
+      "eventAction": "click - dynamic carousel product",
+      "eventLabel": "{{.+ - .+}}",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/search - carousel",
+      "items": [
+        {
+          "index": "{{\\d*.\\d*}}",
+          "item_brand": "none / other",
+          "item_category": "none / other",
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "item_variant": "none / other",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+        }
+      ],
+      "userId": "{{.+}}"
+    },
+    {
+      "event":"view_item_list",
+      "eventCategory":"search result",
+      "eventAction":"impression - dynamic carousel product",
+      "eventLabel": "{{.+ - .+}}",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "items": [
+        {
+          "index": "{{\\d*.\\d*}}",
+          "item_brand": "none / other",
+          "item_category": "none / other",
+          "item_id": "{{.+}}",
+          "item_name": "{{.+}}",
+          "item_variant": "none / other",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+        }
+      ],
+      "userId": "{{.+}}"
+    },
+    {
+      "event": "clickSearchResult",
+      "eventCategory": "search result",
+      "eventAction": "click - dynamic carousel search",
+      "eventLabel": "{{.+ - .+ - .+}}",
+      "sessionIris": "{{.+}}",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace"
     }
   ]
 }
