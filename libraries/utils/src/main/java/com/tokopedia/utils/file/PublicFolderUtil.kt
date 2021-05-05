@@ -12,7 +12,7 @@ import java.io.*
 
 /***
  * Util to put file/image/video into public folder without using legacy Environment.getExternalStoragePublicDirectory
- * No need to request WRITE_EXTERNAL_STORAGE.
+ * WRITE_EXTERNAL_STORAGE Permission is still need to be asked for android 28 and below
  */
 object PublicFolderUtil {
 
@@ -22,6 +22,8 @@ object PublicFolderUtil {
      * @param compressFormat: Compress Format for image, default is jpeg
      * @param mimeType: mimeType for Image, default "image/jpeg"
      * @param directory: (API 29 and above only) public directory to put, default is Directory Pictures
+     *
+     * Note: WRITE_EXTERNAL_STORAGE Permission is still need to be asked for android 28 and below
      */
     fun putImageToPublicFolder(
             context: Context, bitmap: Bitmap, fileName: String,
@@ -53,6 +55,8 @@ object PublicFolderUtil {
      * @param outputFileName: output fileName, without prefix directory
      * @param mimeType: mimeType for Image, default "image/jpeg"
      * @param directory: (API 29 and above only) public directory to put. If not given, will determine automatically by mimeType
+     *
+     * Note: WRITE_EXTERNAL_STORAGE Permission is still need to be asked for android 28 and below
      */
     fun putFileToPublicFolder(
             context: Context,
