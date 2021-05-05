@@ -289,153 +289,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
         connectionMonitor?.end()
     }
 
-    override fun getScreenName(): String = ""
-
-    override fun initInjector() {
-        getComponent(SomDetailComponent::class.java).inject(this)
-    }
-
-    override fun onBottomSheetItemClick(key: String) {
-        detailResponse?.button?.forEach {
-            if (key.equals(it.key, true)) {
-                eventClickSecondaryActionInOrderDetail(it.displayName, detailResponse?.statusCode.toString(), detailResponse?.statusText.orEmpty())
-                secondaryBottomSheet?.dismiss()
-                when {
-                    key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(it)
-                    key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
-                    key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
-                    key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
-                    key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(it)
-                    key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
-                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
-                    key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
-                    key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
-                    key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
-                }
-            }
-        }
-    }
-
     override fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.Data.GetSomDetail.Button) {
         showBuyerRequestCancelBottomSheet(it)
-    }
-
-    override fun onRejectReasonItemClick(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
-        when (rejectReason.reasonCode) {
-            1 -> setProductEmpty(rejectReason)
-            4 -> setShopClosed(rejectReason)
-            7 -> setCourierProblems(rejectReason)
-            15 -> setBuyerNoResponse(rejectReason)
-            14 -> setOtherReason(rejectReason)
-        }
-    }
-
-    override fun onTextCopied(label: String, str: String) {
-        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
-        showCommonToaster(getString(R.string.resi_tersalin))
-    }
-
-    override fun onInvalidResiUpload(awbUploadUrl: String) {
-        openWebview(awbUploadUrl)
-    }
-
-    override fun onSeeInvoice(url: String, invoice: String) {
-        SomAnalytics.eventClickViewInvoice(detailResponse?.statusCode?.toString().orEmpty(), detailResponse?.statusText.orEmpty())
-        Intent(activity, SomSeeInvoiceActivity::class.java).apply {
-            putExtra(KEY_URL, url)
-            putExtra(PARAM_INVOICE, invoice)
-            putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice))
-            putExtra(PARAM_ORDER_CODE, detailResponse?.statusCode.toString())
-            startActivity(this)
-        }
-    }
-
-    override fun onCopiedInvoice(invoice: String, str: String) {
-        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager.setPrimaryClip(ClipData.newPlainText(invoice, str))
-        showCommonToaster(getString(R.string.invoice_tersalin))
-    }
-
-    override fun onCopiedAddress(address: String, str: String) {
-        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager.setPrimaryClip(ClipData.newPlainText(address, str))
-        showCommonToaster(getString(R.string.alamat_pengiriman_tersalin))
-    }
-
-    override fun onChooseOptionCourierProblem(optionCourierProblem: SomReasonRejectData.Data.SomRejectReason.Child) {
-        if (optionCourierProblem.reasonText.equals(VALUE_COURIER_PROBLEM_OTHERS, ignoreCase = true)) {
-            bottomSheetCourierProblems?.tf_extra_notes?.visibility = View.VISIBLE
-            bottomSheetCourierProblems?.tf_extra_notes?.setLabelStatic(true)
-            bottomSheetCourierProblems?.tf_extra_notes?.setPlaceholder(getString(R.string.placeholder_reject_reason))
-        } else {
-            reasonCourierProblemText = optionCourierProblem.reasonText
-            bottomSheetCourierProblems?.tf_extra_notes?.visibility = View.GONE
-        }
-    }
-
-    override fun onDialPhone(strPhoneNo: String) {
-        val intent = Intent(Intent.ACTION_DIAL)
-        val phone = "tel:$strPhoneNo"
-        intent.data = Uri.parse(phone)
-        startActivity(intent)
-    }
-
-    override fun onShowInfoLogisticAll(logisticInfoList: List<SomDetailOrder.Data.GetSomDetail.LogisticInfo.All>) {
-        startActivity(Intent(activity, SomDetailLogisticInfoActivity::class.java).apply {
-            val logisticInfo = LogisticInfoAllWrapper(ArrayList(logisticInfoList))
-            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-            cacheManager?.put(SomDetailLogisticInfoFragment.KEY_SOM_LOGISTIC_INFO_ALL, logisticInfo)
-            putExtra(KEY_ID_CACHE_MANAGER_INFO_ALL, cacheManager?.id)
-        })
-    }
-
-    override fun onShowBookingCode(bookingCode: String, bookingType: String) {
-        Intent(activity, SomDetailBookingCodeActivity::class.java).apply {
-            putExtra(PARAM_BOOKING_CODE, detailResponse?.bookingInfo?.onlineBooking?.bookingCode)
-            putExtra(PARAM_BARCODE_TYPE, detailResponse?.bookingInfo?.onlineBooking?.barcodeType)
-            startActivity(this)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                if (data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
-                    val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
-                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                        putExtra(RESULT_PROCESS_REQ_PICKUP, resultProcessReqPickup)
-                    })
-                    activity?.finish()
-                }
-            }
-        } else if (requestCode == SomNavigator.REQUEST_CONFIRM_SHIPPING && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                if (data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
-                    val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
-                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                        putExtra(RESULT_CONFIRM_SHIPPING, resultConfirmShippingMsg)
-                    })
-                    activity?.finish()
-                }
-            }
-        }
-    }
-
-    override fun onClickProduct(orderDetailId: Int) {
-        val appLinkSnapShot = "${ApplinkConst.SNAPSHOT_ORDER}/$orderId/$orderDetailId"
-        val intent = RouteManager.getIntent(activity, appLinkSnapShot)
-        intent.putExtra(ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM, true)
-        startActivity(intent)
-        SomAnalytics.clickProductNameToSnapshot(detailResponse?.statusText.orEmpty(), userSession.userId.orEmpty())
-    }
-
-    override fun onRefresh(view: View?) {
-        if (isShowDetailEligible(somDetailViewModel.somDetailChatEligibility.value)) {
-            loadDetail()
-        } else {
-            checkUserRole()
-        }
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
@@ -474,6 +329,26 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 checkUserRole()
             }
         }
+    }
+
+    protected open fun loadDetail() {
+        showLoading()
+        if (connectionMonitor?.isConnected == true) {
+            activity?.let {
+                SomAnalytics.sendScreenName(SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId)
+                it.resources?.let { r ->
+                    somDetailViewModel.loadDetailOrder(orderId)
+                }
+            }
+        } else {
+            showErrorState(GlobalError.NO_CONNECTION)
+        }
+    }
+
+    override fun getScreenName(): String = ""
+
+    override fun initInjector() {
+        getComponent(SomDetailComponent::class.java).inject(this)
     }
 
     private fun observingDetail() {
@@ -645,6 +520,23 @@ open class SomDetailFragment : BaseDaggerFragment(),
         somDetailAdminPermissionView?.gone()
         somDetailLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
         loadDetail()
+    }
+
+    protected open fun renderDetail() {
+        showSuccessState()
+        listDetailData = arrayListOf()
+        somDetailAdapter.listDataDetail = arrayListOf()
+        renderHeader()
+        renderProducts()
+        renderShipment()
+        renderPayment()
+        renderButtons()
+
+        somDetailAdapter.listDataDetail = listDetailData.toMutableList()
+        rv_detail.addOneTimeGlobalLayoutListener {
+            stopLoadTimeMonitoring()
+        }
+        somDetailAdapter.notifyDataSetChanged()
     }
 
     private fun renderHeader() {
@@ -926,6 +818,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
         RouteManager.route(context, routingAppLink)
     }
 
+    protected open fun setActionRequestPickup() {
+        goToRequestPickupPage(this, orderId)
+    }
+
     private fun setActionConfirmShipping() {
         if (detailResponse?.onlineBooking?.isRemoveInputAwb == true) {
             val btSheet = BottomSheetUnify()
@@ -944,12 +840,41 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onBottomSheetItemClick(key: String) {
+        detailResponse?.button?.forEach {
+            if (key.equals(it.key, true)) {
+                eventClickSecondaryActionInOrderDetail(it.displayName, detailResponse?.statusCode.toString(), detailResponse?.statusText.orEmpty())
+                secondaryBottomSheet?.dismiss()
+                when {
+                    key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(it)
+                    key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
+                    key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
+                    key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
+                    key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(it)
+                    key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
+                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
+                    key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
+                    key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
+                    key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
+                }
+            }
+        }
+    }
+
     private fun setActionChangeCourier() {
         createIntentConfirmShipping(true)
     }
 
     private fun setActionUploadAwb(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
         openWebview(buttonResp.url)
+    }
+
+    protected open fun createIntentConfirmShipping(isChangeShipping: Boolean) {
+        if (isChangeShipping) {
+            goToChangeCourierPage(this, orderId)
+        } else {
+            goToConfirmShippingPage(this, orderId)
+        }
     }
 
     private fun setActionRejectOrder() {
@@ -1054,6 +979,49 @@ open class SomDetailFragment : BaseDaggerFragment(),
             hideKnob()
             showCloseButton()
         }
+    }
+
+    override fun onRejectReasonItemClick(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
+        when (rejectReason.reasonCode) {
+            1 -> setProductEmpty(rejectReason)
+            4 -> setShopClosed(rejectReason)
+            7 -> setCourierProblems(rejectReason)
+            15 -> setBuyerNoResponse(rejectReason)
+            14 -> setOtherReason(rejectReason)
+        }
+    }
+
+    override fun onTextCopied(label: String, str: String) {
+        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
+        showCommonToaster(getString(R.string.resi_tersalin))
+    }
+
+    override fun onInvalidResiUpload(awbUploadUrl: String) {
+        openWebview(awbUploadUrl)
+    }
+
+    override fun onSeeInvoice(url: String, invoice: String) {
+        SomAnalytics.eventClickViewInvoice(detailResponse?.statusCode?.toString().orEmpty(), detailResponse?.statusText.orEmpty())
+        Intent(activity, SomSeeInvoiceActivity::class.java).apply {
+            putExtra(KEY_URL, url)
+            putExtra(PARAM_INVOICE, invoice)
+            putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice))
+            putExtra(PARAM_ORDER_CODE, detailResponse?.statusCode.toString())
+            startActivity(this)
+        }
+    }
+
+    override fun onCopiedInvoice(invoice: String, str: String) {
+        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(invoice, str))
+        showCommonToaster(getString(R.string.invoice_tersalin))
+    }
+
+    override fun onCopiedAddress(address: String, str: String) {
+        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(address, str))
+        showCommonToaster(getString(R.string.alamat_pengiriman_tersalin))
     }
     
     private fun setProductEmpty(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
@@ -1332,6 +1300,17 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onChooseOptionCourierProblem(optionCourierProblem: SomReasonRejectData.Data.SomRejectReason.Child) {
+        if (optionCourierProblem.reasonText.equals(VALUE_COURIER_PROBLEM_OTHERS, ignoreCase = true)) {
+            bottomSheetCourierProblems?.tf_extra_notes?.visibility = View.VISIBLE
+            bottomSheetCourierProblems?.tf_extra_notes?.setLabelStatic(true)
+            bottomSheetCourierProblems?.tf_extra_notes?.setPlaceholder(getString(R.string.placeholder_reject_reason))
+        } else {
+            reasonCourierProblemText = optionCourierProblem.reasonText
+            bottomSheetCourierProblems?.tf_extra_notes?.visibility = View.GONE
+        }
+    }
+
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
         activity?.resources?.let {
             somDetailViewModel.rejectOrder(orderRejectRequestParam)
@@ -1406,6 +1385,70 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onDialPhone(strPhoneNo: String) {
+        val intent = Intent(Intent.ACTION_DIAL)
+        val phone = "tel:$strPhoneNo"
+        intent.data = Uri.parse(phone)
+        startActivity(intent)
+    }
+
+    override fun onShowInfoLogisticAll(logisticInfoList: List<SomDetailOrder.Data.GetSomDetail.LogisticInfo.All>) {
+        startActivity(Intent(activity, SomDetailLogisticInfoActivity::class.java).apply {
+            val logisticInfo = LogisticInfoAllWrapper(ArrayList(logisticInfoList))
+            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+            cacheManager?.put(SomDetailLogisticInfoFragment.KEY_SOM_LOGISTIC_INFO_ALL, logisticInfo)
+            putExtra(KEY_ID_CACHE_MANAGER_INFO_ALL, cacheManager?.id)
+        })
+    }
+
+    override fun onShowBookingCode(bookingCode: String, bookingType: String) {
+        Intent(activity, SomDetailBookingCodeActivity::class.java).apply {
+            putExtra(PARAM_BOOKING_CODE, detailResponse?.bookingInfo?.onlineBooking?.bookingCode)
+            putExtra(PARAM_BARCODE_TYPE, detailResponse?.bookingInfo?.onlineBooking?.barcodeType)
+            startActivity(this)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                if (data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
+                    val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
+                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                        putExtra(RESULT_PROCESS_REQ_PICKUP, resultProcessReqPickup)
+                    })
+                    activity?.finish()
+                }
+            }
+        } else if (requestCode == SomNavigator.REQUEST_CONFIRM_SHIPPING && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                if (data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
+                    val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
+                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                        putExtra(RESULT_CONFIRM_SHIPPING, resultConfirmShippingMsg)
+                    })
+                    activity?.finish()
+                }
+            }
+        }
+    }
+
+    override fun onClickProduct(orderDetailId: Int) {
+        val appLinkSnapShot = "${ApplinkConst.SNAPSHOT_ORDER}/$orderId/$orderDetailId"
+        val intent = RouteManager.getIntent(activity, appLinkSnapShot)
+        intent.putExtra(ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM, true)
+        startActivity(intent)
+        SomAnalytics.clickProductNameToSnapshot(detailResponse?.statusText.orEmpty(), userSession.userId.orEmpty())
+    }
+
+    override fun onRefresh(view: View?) {
+        if (isShowDetailEligible(somDetailViewModel.somDetailChatEligibility.value)) {
+            loadDetail()
+        } else {
+            checkUserRole()
+        }
+    }
+
     private fun openWebview(url: String) {
         startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url))
     }
@@ -1461,6 +1504,28 @@ open class SomDetailFragment : BaseDaggerFragment(),
         showErrorToaster(getString(R.string.som_error_message_server_fault))
     }
 
+    protected fun showLoading() {
+        progressBarSom?.show()
+        rv_detail?.hide()
+        somGlobalError?.hide()
+        containerBtnDetail?.hide()
+        setLoadingIndicator(true)
+        refreshHandler?.finishRefresh()
+    }
+
+    protected fun showErrorState(type: Int) {
+        when (type) {
+            GlobalError.NO_CONNECTION -> showNoInternetConnectionGlobalError()
+            GlobalError.SERVER_ERROR -> showServerErrorGlobalError()
+            else -> showNoInternetConnectionGlobalError()
+        }
+        progressBarSom?.hide()
+        rv_detail?.hide()
+        containerBtnDetail?.hide()
+        setLoadingIndicator(false)
+        refreshHandler?.finishRefresh()
+    }
+
     private fun showSuccessState() {
         rv_detail?.show()
         containerBtnDetail?.show()
@@ -1501,37 +1566,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
         (activity as? SomDetailActivity)?.somLoadTimeMonitoringListener?.onStopPltMonitoring()
     }
 
-    protected open fun renderDetail() {
-        showSuccessState()
-        listDetailData = arrayListOf()
-        somDetailAdapter.listDataDetail = arrayListOf()
-        renderHeader()
-        renderProducts()
-        renderShipment()
-        renderPayment()
-        renderButtons()
-
-        somDetailAdapter.listDataDetail = listDetailData.toMutableList()
-        rv_detail.addOneTimeGlobalLayoutListener {
-            stopLoadTimeMonitoring()
-        }
-        somDetailAdapter.notifyDataSetChanged()
-    }
-
-    protected open fun loadDetail() {
-        showLoading()
-        if (connectionMonitor?.isConnected == true) {
-            activity?.let {
-                SomAnalytics.sendScreenName(SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId)
-                it.resources?.let { r ->
-                    somDetailViewModel.loadDetailOrder(orderId)
-                }
-            }
-        } else {
-            showErrorState(GlobalError.NO_CONNECTION)
-        }
-    }
-
     protected open fun onSuccessAcceptOrder() {
         activity?.setResult(Activity.RESULT_OK, Intent().apply {
             putExtra(RESULT_ACCEPT_ORDER, this@SomDetailFragment.acceptOrderResponse)
@@ -1546,40 +1580,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
     protected open fun onSuccessEditAwb() {
         showCommonToaster(successEditAwbResponse.mpLogisticEditRefNum.listMessage.first())
         loadDetail()
-    }
-
-    protected open fun setActionRequestPickup() {
-        goToRequestPickupPage(this, orderId)
-    }
-
-    protected open fun createIntentConfirmShipping(isChangeShipping: Boolean) {
-        if (isChangeShipping) {
-            goToChangeCourierPage(this, orderId)
-        } else {
-            goToConfirmShippingPage(this, orderId)
-        }
-    }
-
-    protected fun showLoading() {
-        progressBarSom?.show()
-        rv_detail?.hide()
-        somGlobalError?.hide()
-        containerBtnDetail?.hide()
-        setLoadingIndicator(true)
-        refreshHandler?.finishRefresh()
-    }
-
-    protected fun showErrorState(type: Int) {
-        when (type) {
-            GlobalError.NO_CONNECTION -> showNoInternetConnectionGlobalError()
-            GlobalError.SERVER_ERROR -> showServerErrorGlobalError()
-            else -> showNoInternetConnectionGlobalError()
-        }
-        progressBarSom?.hide()
-        rv_detail?.hide()
-        containerBtnDetail?.hide()
-        setLoadingIndicator(false)
-        refreshHandler?.finishRefresh()
     }
 
     protected fun dismissBottomSheets() {
