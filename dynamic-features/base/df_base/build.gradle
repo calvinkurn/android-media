@@ -109,6 +109,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.brandlist)
     implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.atcVariant)
     implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.reviewProduct)
     implementation project(rootProject.ext.features.shopPage)

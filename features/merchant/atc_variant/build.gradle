@@ -1,0 +1,62 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+        jcenter()
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.utils)
+
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+}
+
+project.ext {
+    artifactId = "atc_variant"
+    groupId = "com.tokopedia.atc_variant"
+    versionName = "0.0.1"
+    artifactName = "atc_variant-release"
+}
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
+
