@@ -584,7 +584,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         val INFO_MENU_ID = R.id.menu_info_shop_performance
 
         private const val PENALTY_BADGE_DELAY = 1000L
-        private const val COACH_MARK_RENDER_SHOW = 3000L
+        private const val COACH_MARK_RENDER_SHOW = 1000L
 
         private const val COACHMARK_LAST_POSITION_PM_RM = 2
         private const val COACHMARK_HEADER_POSITION = 0
