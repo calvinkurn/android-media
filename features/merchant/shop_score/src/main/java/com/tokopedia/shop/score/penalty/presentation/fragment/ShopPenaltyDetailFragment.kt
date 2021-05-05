@@ -41,7 +41,6 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
 
     private val impressHolderHelpCenter = ImpressHolder()
 
-
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -81,6 +80,7 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
         tvEndDateDetailPenalty?.text = MethodChecker.fromHtml(getString(R.string.point_deduction_date_result_detail_penalty,
                 shopPenaltyDetailUiModel.prefixDateDetail,
                 shopPenaltyDetailUiModel.endDateDetail))
+        tvDescResultDetailPenalty?.text = shopPenaltyDetailUiModel.descStatusPenalty
         setupRvStepper(shopPenaltyDetailUiModel.stepperPenaltyDetailList)
 
         ic_info_status_penalty?.setOnClickListener {

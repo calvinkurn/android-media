@@ -35,6 +35,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
     fun mapToPenaltyDetail(itemPenaltyUiModel: ItemPenaltyUiModel): ShopPenaltyDetailUiModel {
         return ShopPenaltyDetailUiModel(
                 titleDetail = itemPenaltyUiModel.typePenalty,
+                descStatusPenalty = itemPenaltyUiModel.descStatusPenalty,
                 startDateDetail = itemPenaltyUiModel.startDate,
                 summaryDetail = itemPenaltyUiModel.reasonPenalty,
                 deductionPointPenalty = itemPenaltyUiModel.deductionPoint,
@@ -171,10 +172,10 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
 
                 val (prefixDatePenaltyDetail, endDateText) = when (it.status) {
                     ON_GOING -> {
-                        Pair(ACTIVE_PENALTY_DETAIL,"$FINISHED_IN ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
+                        Pair(ACTIVE_PENALTY_DETAIL, "$FINISHED_IN ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
                     }
                     PENALTY_DONE -> {
-                        Pair(SINCE_FINISH_PENALTY_DETAIL,"$SINCE ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
+                        Pair(SINCE_FINISH_PENALTY_DETAIL, "$SINCE ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
                     }
                     POINTS_NOT_YET_DEDUCTED -> {
                         Pair(START_ACTIVE_PENALTY_DETAIL, "$START ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyStartDate)}")
@@ -184,10 +185,23 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
 
                 val endDateDetail = when (it.status) {
                     ON_GOING, PENALTY_DONE -> {
-                       DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)
+                        DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)
                     }
                     POINTS_NOT_YET_DEDUCTED -> {
                         DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyStartDate)
+                    }
+                    else -> ""
+                }
+
+                val descStatusPenaltyDetail = when (it.status) {
+                    POINTS_NOT_YET_DEDUCTED -> {
+                        context?.getString(R.string.desc_point_have_not_been_deducted) ?: ""
+                    }
+                    ON_GOING -> {
+                        context?.getString(R.string.desc_on_going_status_penalty) ?: ""
+                    }
+                    PENALTY_DONE -> {
+                        context?.getString(R.string.desc_done_status_penalty) ?: ""
                     }
                     else -> ""
                 }
@@ -204,7 +218,8 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                         invoicePenalty = it.invoiceNumber,
                         reasonPenalty = it.reason,
                         colorPenalty = colorTypePenalty,
-                        prefixDatePenalty = prefixDatePenaltyDetail
+                        prefixDatePenalty = prefixDatePenaltyDetail,
+                        descStatusPenalty = descStatusPenaltyDetail
                 ))
             }
         }

@@ -48,13 +48,9 @@ class ItemTimerNewSellerViewHolder(view: View,
                 }
                 btn.setOnClickListener {
                     if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
-                        itemTimerNewSellerListener.onBtnShopPerformanceToInterruptClicked(GMCommonUrl.SHOP_INTERRUPT_PAGE)
+                        itemTimerNewSellerListener.onBtnShopPerformanceToFaqClicked()
                     } else {
-                        if (element?.isTenureDate == true) {
-                            itemTimerNewSellerListener.onBtnShopPerformanceToInterruptClicked(GMCommonUrl.SHOP_INTERRUPT_PAGE)
-                        } else {
-                            itemTimerNewSellerListener.onBtnShopPerformanceToFaqClicked()
-                        }
+                        itemTimerNewSellerListener.onBtnShopPerformanceToInterruptClicked(GMCommonUrl.SHOP_INTERRUPT_PAGE)
                     }
                 }
             }

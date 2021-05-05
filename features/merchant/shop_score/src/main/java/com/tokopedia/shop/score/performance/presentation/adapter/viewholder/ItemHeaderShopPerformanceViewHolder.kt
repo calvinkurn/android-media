@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScoreUtils
 import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
@@ -25,6 +26,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
 
     override fun bind(element: HeaderShopPerformanceUiModel?) {
         setBackgroundRadiusHeader()
+        setupProgressBarScore(element)
         setupShopScoreLevelHeader(element)
         setupClickListenerHeader(element)
         setupDescHeaderShopPerformance(element)
@@ -37,15 +39,33 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
 
             tvShopScoreValue?.text = if (element?.shopScore != null) element.shopScore else "-"
 
-            progressBarScorePerformance?.setValue(element?.shopScore.toIntOrZero())
-
             ivLevelBarShopScore?.background = ContextCompat.getDrawable(context,
                     ShopScoreUtils.getLevelBarWhite(element?.shopLevel.toIntOrZero()))
         }
     }
 
+    private fun setupProgressBarScore(element: HeaderShopPerformanceUiModel?) {
+        with(itemView) {
+            if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
+                progressBarNewSeller?.show()
+                progressBarScorePerformance?.hide()
+            } else {
+                progressBarNewSeller?.hide()
+                progressBarScorePerformance?.show()
+                progressBarScorePerformance?.setValue(element?.shopScore.toIntOrZero())
+            }
+        }
+    }
+
     private fun setupClickListenerHeader(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
+
+            if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
+                ic_shop_score_performance?.hide()
+            } else {
+                ic_shop_score_performance?.show()
+            }
+
             ic_performance_level_information?.setOnClickListener {
                 shopPerformanceListener.onTooltipLevelClicked(element?.shopLevel.toIntOrZero())
             }

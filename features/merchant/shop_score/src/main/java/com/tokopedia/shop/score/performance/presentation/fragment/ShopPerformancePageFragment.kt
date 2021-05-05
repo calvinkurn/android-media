@@ -144,8 +144,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 shopLevel = level,
                 shopIncome = shopLevelData?.niv?.toString().orEmpty(),
                 productSold = shopLevelData?.itemSold.toString(),
-                period = shopLevelData?.period.toString(),
-                nextUpdate = shopLevelData?.nextUpdate.toString())
+                period = shopLevelData?.period.orEmpty(),
+                nextUpdate = shopLevelData?.nextUpdate ?: "-")
         bottomSheetShopTooltipLevel.show(childFragmentManager)
     }
 
@@ -270,6 +270,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onImpressHelpCenter() {
         shopScorePenaltyTracking.impressHelpCenterFaqNewSeller(isNewSeller)
+    }
+
+    private fun toggleMenuForNewSeller() {
+        if (isNewSeller) {
+            menu?.findItem(PENALTY_WARNING_MENU_ID)?.actionView?.hide()
+            menu?.findItem(INFO_MENU_ID)?.actionView?.hide()
+        } else {
+            menu?.findItem(PENALTY_WARNING_MENU_ID)?.actionView?.show()
+            menu?.findItem(INFO_MENU_ID)?.actionView?.show()
+        }
     }
 
     private fun impressMenuShopPerformance() {
@@ -520,6 +530,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 is Success -> {
                     viewModel.getShopScoreLevel(it.data)
                     this.isNewSeller = it.data.isNewSeller
+                    toggleMenuForNewSeller()
                 }
                 is Fail -> {
                     shopPerformanceAdapter.hideLoading()
@@ -540,7 +551,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     this.shopScoreWrapperResponse = it.data.second
                     counterPenalty = it.data.first.filterIsInstance<HeaderShopPerformanceUiModel>().firstOrNull()?.scorePenalty.orZero()
                     showPenaltyBadge()
-                    if (!shopScoreCoachMarkPrefs.getFinishCoachMark()) {
+                    if (!shopScoreCoachMarkPrefs.getFinishCoachMark() && !isNewSeller) {
                         Handler().postDelayed({
                             showCoachMark()
                         }, COACH_MARK_RENDER_SHOW)
