@@ -3,14 +3,12 @@ package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.performance.presentation.adapter.CardPotentialPMBenefitListener
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemPotentialPMBenefitAdapter
 import com.tokopedia.shop.score.performance.presentation.model.SectionPotentialPMBenefitUiModel
 import kotlinx.android.synthetic.main.item_non_eligible_status_power_merchant.view.*
 
-class CardPotentialPMBenefitViewHolder(view: View, private val cardPotentialPMBenefitListener: CardPotentialPMBenefitListener):
+class CardPotentialPMBenefitViewHolder(view: View):
         AbstractViewHolder<SectionPotentialPMBenefitUiModel>(view) {
 
     companion object {
@@ -22,7 +20,6 @@ class CardPotentialPMBenefitViewHolder(view: View, private val cardPotentialPMBe
     override fun bind(element: SectionPotentialPMBenefitUiModel?) {
         itemPotentialPMBenefitAdapter = ItemPotentialPMBenefitAdapter()
         with(itemView) {
-            cardPotentialPMBenefitListener.onItemRMNonEligibleListener(this)
             tvDescNonEligiblePowerMerchant.text = getString(R.string.desc_non_eligible_power_merchant,
                     element?.transitionEndDate)
             setPotentialPMBenefitAdapter(element)

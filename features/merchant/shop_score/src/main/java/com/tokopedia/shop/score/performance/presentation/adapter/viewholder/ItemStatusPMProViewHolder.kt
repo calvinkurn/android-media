@@ -21,7 +21,6 @@ class ItemStatusPMProViewHolder(view: View, private val itemStatusPMProListener:
     override fun bind(element: SectionPotentialPMProUiModel?) {
         itemPMProBenefitAdapter = ItemPMProBenefitAdapter()
         with(itemView) {
-            itemStatusPMProListener.onItemPMProListener(this)
             tvDescPMPro?.text = getString(R.string.desc_potential_pm_pro,
                     element?.transitionEndDate)
             tv_see_all_benefit_pm_pro?.setOnClickListener {

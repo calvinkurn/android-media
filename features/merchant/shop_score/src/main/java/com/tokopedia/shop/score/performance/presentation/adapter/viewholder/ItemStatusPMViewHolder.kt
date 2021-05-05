@@ -22,8 +22,6 @@ class ItemStatusPMViewHolder(view: View,
 
     override fun bind(element: ItemStatusPMUiModel?) {
         with(itemView) {
-            itemStatusPowerMerchantListener.onViewItemPowerMerchantListener(containerPowerMerchant)
-
             potentialPowerMerchantWidget?.addOnImpressionListener(impressHolderPowerMerchantHeader) {
                 itemStatusPowerMerchantListener.onImpressHeaderPowerMerchantSection()
             }

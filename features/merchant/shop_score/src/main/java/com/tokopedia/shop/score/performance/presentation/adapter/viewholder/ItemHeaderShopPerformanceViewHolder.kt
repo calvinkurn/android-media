@@ -8,15 +8,13 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreUtils
-import com.tokopedia.shop.score.performance.presentation.adapter.ItemHeaderShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.item_header_shop_performance.view.*
 
 class ItemHeaderShopPerformanceViewHolder(view: View,
-                                          private val shopPerformanceListener: ShopPerformanceListener,
-                                          private val itemHeaderShopPerformanceListener: ItemHeaderShopPerformanceListener
+                                          private val shopPerformanceListener: ShopPerformanceListener
 ) : AbstractViewHolder<HeaderShopPerformanceUiModel>(view) {
 
     companion object {
@@ -26,10 +24,6 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
     private val impressHolderTicker = ImpressHolder()
 
     override fun bind(element: HeaderShopPerformanceUiModel?) {
-        with(itemView) {
-            itemHeaderShopPerformanceListener.onViewHeaderListener(containerCornerShopPerformance)
-        }
-
         setBackgroundRadiusHeader()
         setupShopScoreLevelHeader(element)
         setupClickListenerHeader(element)

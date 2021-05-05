@@ -24,7 +24,6 @@ class ItemStatusRMViewHolder(view: View,
     override fun bind(element: ItemStatusRMUiModel?) {
         if (element == null) return
         with(itemView) {
-            itemPotentialPowerMerchantListener.onViewRegularMerchantListener(containerRegularMerchantSection)
             tv_see_all_benefit_pm?.addOnImpressionListener(impressHolderBenefitPM) {
                 itemPotentialPowerMerchantListener.onImpressBenefitSeeAll()
             }
