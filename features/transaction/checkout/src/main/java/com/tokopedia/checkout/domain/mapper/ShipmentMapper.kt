@@ -227,7 +227,7 @@ class ShipmentMapper @Inject constructor() {
             }
             productShopId = groupShop.shop.shopId.toString()
             productShopName = groupShop.shop.shopName
-            productShopType = generateShopType(groupShop.shop.shopTypeInfo)
+            productShopType = groupShop.shop.shopTypeInfo.titleFmt
             productVariant = ""
             productBrand = ""
             productQuantity = product.productQuantity
@@ -319,6 +319,7 @@ class ShipmentMapper @Inject constructor() {
             shopBadge = shopTypeInfo.shopBadge
             badgeSvg = shopTypeInfo.badgeSvg
             title = shopTypeInfo.title
+            titleFmt = shopTypeInfo.titleFmt
         }
     }
 
@@ -716,17 +717,7 @@ class ShipmentMapper @Inject constructor() {
         return hasError
     }
 
-    private fun generateShopType(shopTypeInfo: ShopTypeInfo): String {
-        // Todo : read other field
-        return ""
-//        return if (shop.isOfficial == 1) SHOP_TYPE_OFFICIAL_STORE else if (shop.goldMerchant.isGoldBadge) SHOP_TYPE_GOLD_MERCHANT else SHOP_TYPE_REGULER
-    }
-
     companion object {
-        private const val SHOP_TYPE_OFFICIAL_STORE = "official_store"
-        private const val SHOP_TYPE_GOLD_MERCHANT = "gold_merchant"
-        private const val SHOP_TYPE_REGULER = "reguler"
-
         const val DISABLED_DROPSHIPPER = "dropshipper"
         const val DISABLED_ORDER_PRIORITY = "order_prioritas"
         const val DISABLED_EGOLD = "egold"

@@ -217,6 +217,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             shopBadge = shopTypeInfo.shopBadge
             badgeSvg = shopTypeInfo.badgeSvg
             title = shopTypeInfo.title
+            titleFmt = shopTypeInfo.titleFmt
         }
     }
 

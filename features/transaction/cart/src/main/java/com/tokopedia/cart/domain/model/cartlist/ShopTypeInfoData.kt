@@ -9,5 +9,6 @@ data class ShopTypeInfoData(
         var shopGrade: Int = 0,
         var shopBadge: String = "",
         var badgeSvg: String = "",
-        var title: String = ""
+        var title: String = "",
+        var titleFmt: String = ""
 ) : Parcelable

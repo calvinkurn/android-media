@@ -12,5 +12,7 @@ data class ShopTypeInfo(
         @SerializedName("badge_svg")
         val badgeSvg: String = "",
         @SerializedName("title")
-        val title: String = ""
+        val title: String = "",
+        @SerializedName("title_fmt")
+        val titleFmt: String = "" // Used for analytics `dimension81`
 )
