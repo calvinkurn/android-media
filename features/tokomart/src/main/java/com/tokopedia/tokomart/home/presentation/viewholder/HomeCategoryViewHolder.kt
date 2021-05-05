@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.tokomart.home.R
+import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapter
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeFactory
 import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer

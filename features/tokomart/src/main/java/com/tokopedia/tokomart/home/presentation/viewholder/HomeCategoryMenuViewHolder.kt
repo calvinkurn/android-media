@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
-import com.tokopedia.tokomart.home.R
+import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryMenuUiModel
 import kotlinx.android.synthetic.main.item_tokomart_home_category_menu.view.*
 
