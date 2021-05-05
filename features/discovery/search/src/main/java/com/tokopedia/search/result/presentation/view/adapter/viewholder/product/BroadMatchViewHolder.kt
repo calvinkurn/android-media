@@ -53,6 +53,7 @@ class BroadMatchViewHolder(
     private fun setupRecyclerView(dataData: BroadMatchDataView){
         val products = dataData.broadMatchItemDataViewList
         itemView.searchBroadMatchList?.bindCarouselProductCardViewGrid(
+                recyclerViewPool = broadMatchListener.carouselRecycledViewPool,
                 productCardModelList = products.map {
                     ProductCardModel(
                             productName = it.name,
