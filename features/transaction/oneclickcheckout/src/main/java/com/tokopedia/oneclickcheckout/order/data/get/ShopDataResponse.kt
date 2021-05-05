@@ -34,7 +34,9 @@ data class ShopDataResponse(
         @SerializedName("gold_merchant")
         val goldMerchant: GoldMerchant = GoldMerchant(),
         @SerializedName("official_store")
-        val officialStore: OfficialStore = OfficialStore()
+        val officialStore: OfficialStore = OfficialStore(),
+        @SerializedName("shop_type_info")
+        val shopType: ShopTypeResponse = ShopTypeResponse()
 )
 
 data class OccShopShipment(
@@ -84,4 +86,13 @@ data class GoldMerchant(
         val isGoldBadge: Boolean = false,
         @SerializedName("gold_merchant_logo_url")
         val goldMerchantLogoUrl: String = ""
+)
+
+data class ShopTypeResponse(
+        @SerializedName("shop_tier")
+        val shopTier: Int = 0,
+        @SerializedName("badge")
+        val badge: String = "",
+        @SerializedName("title")
+        val title: String = ""
 )

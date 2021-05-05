@@ -7,6 +7,8 @@ data class OrderShop(
         var userId: Long = 0,
         var shopName: String = "",
         var shopBadge: String = "",
+        var shopTier: Int = 0,
+        var shopTypeName: String = "",
         var isGold: Int = 0,
         var isOfficial: Int = 0,
         var postalCode: String = "",
