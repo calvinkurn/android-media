@@ -398,6 +398,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                                       isCombined: Boolean,
                                       isCache: Boolean): Visitable<*> {
         val viewModel = DynamicChannelDataModel()
+        channel.isCache = isCache
         viewModel.channel = channel
         if (!isCache) {
             viewModel.trackingData = trackingData

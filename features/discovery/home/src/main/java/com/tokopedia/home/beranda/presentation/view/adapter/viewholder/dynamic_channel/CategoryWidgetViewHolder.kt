@@ -30,13 +30,15 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         val recyclerView = itemView.recycleList
-        itemView.addOnImpressionListener(channel) {
-            categoryListener.putEEToIris(
+        if (!channel.isCache) {
+            itemView.addOnImpressionListener(channel) {
+                categoryListener.putEEToIris(
                         CategoryWidgetTracking.getCategoryWidgetBannerImpression(
-                        channel.grids.toList(),
-                        categoryListener.userId,
-                        true,
-                        channel) as HashMap<String, Any>)
+                                channel.grids.toList(),
+                                categoryListener.userId,
+                                true,
+                                channel) as HashMap<String, Any>)
+            }
         }
         recyclerView.adapter = CategoryWidgetItemAdapter(channel, categoryListener, adapterPosition)
         recyclerView.layoutManager = GridLayoutManager(
