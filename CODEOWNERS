@@ -83,6 +83,7 @@
 /features/merchant/youtube_common/                      @tokopedia/android-minionken-dev
 /features/merchant/shop_settings/                       @tokopedia/android-minionken-dev
 /features/merchant/voucher_creation/                    @tokopedia/android-minionken-dev
+/features/tokomart/                                     @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionskywalker-dev
 /features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionskywalker-dev

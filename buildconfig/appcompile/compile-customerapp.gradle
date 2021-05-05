@@ -154,6 +154,8 @@ include "features:merchant:shop_score"
 include "features:merchant:shop_showcase"
 include "features:merchant:youtube_common"
 
+include "features:tokomart"
+
 include "features:operational:contact_us"
 include "features:operational:csat_rating"
 include "features:ovop2p"
