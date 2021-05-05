@@ -43,7 +43,7 @@ class RechargeHomepageProductBannerViewHolder(
             itemView.view_recharge_home_product_banner_shimmering.show()
             itemView.view_recharge_home_product_banner_layout.hide()
 
-            listener.loadRechargeSectionData(element.visitableId(), element.isLoadFromCloud)
+            listener.loadRechargeSectionData(element.visitableId())
         }
     }
 

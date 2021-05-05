@@ -2,17 +2,17 @@
   "mode": "exact",
   "query": [
     {
-      "eventAction": "{{click promo section with promo (?:applied|not applied)}}",
+      "eventAction": "click promo section with promo (?:applied|not applied)",
       "eventCategory": "cart",
       "event": "clickATC",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     },
     {
       "eventAction": "view promo already applied in cart list",
       "eventCategory": "cart",
       "event": "viewATCIris",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     }
   ],

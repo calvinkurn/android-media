@@ -3,17 +3,14 @@ package com.tokopedia.digital.home.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital.home.model.RechargeHomepageSectionAction
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeTickerHomepageModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
@@ -45,16 +42,17 @@ class RechargeHomepageViewModel @Inject constructor(
     val rechargeTickerHomepageModel: LiveData<Result<RechargeTickerHomepageModel>>
         get() = mutableRechargeTickerHomepageModel
 
-    fun getRechargeHomepageSectionSkeleton(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+    val calledSectionIds = hashSetOf<Int>()
+
+    fun getRechargeHomepageSectionSkeleton(mapParams: Map<String, Any>) {
+        onRefreshData()
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
                     RechargeHomepageQueries.SKELETON_QUERY,
                     RechargeHomepageSectionSkeleton.Response::class.java, mapParams
             )
-            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response
 
             mutableRechargeHomepageSectionSkeleton.postValue(Success(data))
@@ -66,17 +64,20 @@ class RechargeHomepageViewModel @Inject constructor(
         }
     }
 
-    fun getRechargeHomepageSections(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
-        val requestIDs = (mapParams[PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS] as? List<Int>) ?: listOf()
+    fun getRechargeHomepageSections(mapParams: Map<String, Any>) {
+        val requestIDs = (mapParams[PARAM_RECHARGE_HOMEPAGE_SECTIONS_SECTION_IDS] as? List<Int>)
+                ?: listOf()
+
+        if (calledSectionIds.contains(requestIDs.firstOrNull() ?: 0)) return
+        calledSectionIds.add(requestIDs.firstOrNull() ?: 0)
+
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
                     RechargeHomepageQueries.SECTION_QUERY,
                     RechargeHomepageSections.Response::class.java, mapParams
             )
-            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeHomepageSections.Response>().response
             data.requestIDs = requestIDs
 
@@ -98,6 +99,10 @@ class RechargeHomepageViewModel @Inject constructor(
                 mutableRechargeHomepageSections.value = localRechargeHomepageSections
             }
         }
+    }
+
+    private fun onRefreshData() {
+        calledSectionIds.clear()
     }
 
     fun triggerRechargeSectionAction(mapParams: Map<String, Any>) {

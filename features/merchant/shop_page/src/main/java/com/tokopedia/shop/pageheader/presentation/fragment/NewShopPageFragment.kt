@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.*
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -59,7 +60,6 @@ import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
-import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -100,6 +100,7 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
+import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -139,6 +140,7 @@ import kotlinx.android.synthetic.main.new_shop_page_fragment_content_layout.*
 import kotlinx.android.synthetic.main.new_shop_page_main.*
 import java.io.File
 import javax.inject.Inject
+
 
 class NewShopPageFragment :
         BaseDaggerFragment(),
@@ -587,7 +589,7 @@ class NewShopPageFragment :
         })
 
         shopViewModel?.shopPageShopShareData?.observe(owner, Observer { result ->
-            if(result is Success){
+            if (result is Success) {
                 shopPageHeaderDataModel?.let {
                     it.shopSnippetUrl = result.data.shopSnippetUrl
                     it.shopCoreUrl = result.data.shopCore.url
@@ -1283,16 +1285,13 @@ class NewShopPageFragment :
                 }
                 setIcon(it.tabIconInactive)
             }
-            tabLayout.addTab(tab,false)
+            tabLayout.addTab(tab, false)
         }
         viewPagerAdapter?.notifyDataSetChanged()
         tabLayout?.apply {
             for (i in 0 until tabCount) {
-                getTabAt(i)?.customView = viewPagerAdapter?.getTabView(i, selectedPosition, isFirstTimeShowTabLabel() ?: true)
+                getTabAt(i)?.customView = viewPagerAdapter?.getTabView(i, selectedPosition)
             }
-        }
-        if (isFirstTimeShowTabLabel() == false && isUsingNewNavigation()) {
-            saveFirstShowTabLabel()
         }
         viewPager.setCurrentItem(selectedPosition, false)
         tabLayout?.getTabAt(selectedPosition)?.select()
@@ -1305,40 +1304,46 @@ class NewShopPageFragment :
                 viewPagerAdapter?.handleSelectedTab(tab, false)
             }
 
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    val position = tab.position
-                    viewPager.setCurrentItem(position, false)
-                    tabLayout.getTabAt(position)?.let{
-                        viewPagerAdapter?.handleSelectedTab(it, true)
-                    }
-                    if(isTabClickByUser) {
-                        shopPageTracking?.clickTab(
-                                shopViewModel?.isMyShop(shopId) == true,
-                                listShopPageTabModel[position].tabTitle,
-                                CustomDimensionShopPage.create(
-                                        shopId,
-                                        shopPageHeaderDataModel?.isOfficial ?: false,
-                                        shopPageHeaderDataModel?.isGoldMerchant ?: false
-                                )
-                        )
-                    }
-                    if (isSellerMigrationEnabled(context)) {
-                        if(isMyShop && viewPagerAdapter?.isFragmentObjectExists(FeedShopFragment::class.java) == true){
-                            val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(FeedShopFragment::class.java)
-                            if (position == tabFeedPosition) {
-                                showBottomSheetSellerMigration()
-                            } else {
-                                hideBottomSheetSellerMigration()
-                            }
-                        }else{
-                            hideBottomSheetSellerMigration()
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                val position = tab.position
+                viewPager.setCurrentItem(position, false)
+                tabLayout.getTabAt(position)?.let{
+                    viewPagerAdapter?.handleSelectedTab(it, true)
+                    listShopPageTabModel[tab.position].apply {
+                        if (tabFragment is ShopPageShowcaseFragment && isUsingNewNavigation()) {
+                            tabIconInactive = iconTabShowcaseInactive
+                            saveFirstShowTabLabel()
                         }
                     }
-                    viewPager?.post {
-                        checkIfShouldShowOrHideScrollToTopButton(position)
-                    }
-                    isTabClickByUser = false
                 }
+                if(isTabClickByUser) {
+                    shopPageTracking?.clickTab(
+                            shopViewModel?.isMyShop(shopId) == true,
+                            listShopPageTabModel[position].tabTitle,
+                            CustomDimensionShopPage.create(
+                                    shopId,
+                                    shopPageHeaderDataModel?.isOfficial ?: false,
+                                    shopPageHeaderDataModel?.isGoldMerchant ?: false
+                            )
+                    )
+                }
+                if (isSellerMigrationEnabled(context)) {
+                    if(isMyShop && viewPagerAdapter?.isFragmentObjectExists(FeedShopFragment::class.java) == true){
+                        val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(FeedShopFragment::class.java)
+                        if (position == tabFeedPosition) {
+                            showBottomSheetSellerMigration()
+                        } else {
+                            hideBottomSheetSellerMigration()
+                        }
+                    }else{
+                        hideBottomSheetSellerMigration()
+                    }
+                }
+                viewPager?.post {
+                    checkIfShouldShowOrHideScrollToTopButton(position)
+                }
+                isTabClickByUser = false
+            }
         })
     }
 
