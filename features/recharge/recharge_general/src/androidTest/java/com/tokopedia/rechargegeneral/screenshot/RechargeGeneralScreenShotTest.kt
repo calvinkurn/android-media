@@ -81,8 +81,11 @@ class RechargeGeneralScreenShotTest {
 //        takeScreenShotVisibleViewInScreen(operatorClusterView, filePrefix(), "operator_cluster_select")
 
         // ss operator select
-        val operatorView = mActivityRule.activity.findViewById<TopupBillsInputFieldWidget>(R.id.operator_select)
-        takeScreenShotVisibleViewInScreen(operatorView, filePrefix(), "operator_select")
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            val operatorView = mActivityRule.activity.findViewById<TopupBillsInputFieldWidget>(R.id.operator_select)
+            takeScreenShotVisibleViewInScreen(operatorView, filePrefix(), "operator_select")
+        }
 
         // ss recyclerview product
         screenShotFullRecyclerView(
@@ -105,7 +108,7 @@ class RechargeGeneralScreenShotTest {
         }
 
         // Choose "Token Listrik"
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         onView(withId(R.id.vg_input_dropdown_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<TopupBillsInputDropdownWidget.TopupBillsInputDropdownViewHolder>(
                         0, ViewActions.click()
@@ -119,7 +122,7 @@ class RechargeGeneralScreenShotTest {
 
     private fun select_product() {
         // Click "Nominal"
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         onView(withId(R.id.rv_digital_product)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralProductSelectViewHolder>(
                         1, ViewActions.click()
@@ -128,7 +131,7 @@ class RechargeGeneralScreenShotTest {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "recycler_view_product_item")
         }
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         onView(withId(R.id.rv_product_select_dropdown)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralProductSelectBottomSheet.DigitalProductSelectDropdownAdapter.DigitalProductSelectDropdownViewHolder>(
                         1, ViewActions.click()
@@ -142,7 +145,6 @@ class RechargeGeneralScreenShotTest {
 
     private fun see_promo() {
         findViewAndScreenShot(R.id.product_view_pager, filePrefix(), "view_pager")
-        findViewAndScreenShot(R.id.tab_layout, filePrefix(), "tab_layout")
     }
 
     private fun filePrefix() = "recharge_general"
