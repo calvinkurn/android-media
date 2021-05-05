@@ -1,19 +1,19 @@
 <resources>
 
-    <string name="emoney_card_info_label_card_number">Nomor Kartu:</string>
-    <string name="emoney_card_info_label_card_balance">Saldo Kartu:</string>
+    <string name="emoney_card_info_label_card_number">Nomor Kartu</string>
+    <string name="emoney_card_info_label_card_balance">Saldo Kartu</string>
     <string name="emoney_button_check_balance">Cek Saldo</string>
-    <string name="emoney_tap_card_instruction_title">Tempelkan Kartu Anda</string>
-    <string name="emoney_tap_card_instruction_message">Tempelkan Kartu pada bagian belakang Smartphone Anda.</string>
+    <string name="emoney_tap_card_instruction_title">Tempelkan kartu kamu ke belakang HP</string>
+    <string name="emoney_tap_card_instruction_message">Untuk mulai, tempelkan kartu e-money kamu ke bagian belakang HP kamu.</string>
     <string name="emoney_button_topup">Top-up E-Money</string>
     <string name="emoney_label_check_balance">Silahkan cek sisa saldo Anda</string>
     <string name="emoney_activate_nfc">Aktifkan NFC</string>
     <string name="emoney_nfc_is_not_activated_label">NFC pada smartphone belum diaktifkan, silakan tekan tombol dibawah</string>
     <string name="emoney_reading_card_label_title">Sedang membaca kartu…</string>
-    <string name="emoney_reading_card_label_message">Jangan mengubah posisi kartu hingga selesai</string>
+    <string name="emoney_reading_card_label_message">Tahan kartunya di posisi yang sama, ya.</string>
     <string name="emoney_update_card_balance_failed_title">Tempelkan Ulang Kartu Anda</string>
-    <string name="emoney_update_card_balance_progress_label_title">Saldo sedang diperbarui…</string>
-    <string name="emoney_update_card_balance_progress_label_message">Jangan mengubah posisi kartu selama proses berlangsung</string>
+    <string name="emoney_update_card_balance_progress_label_title">Sedang membaca kartu...</string>
+    <string name="emoney_update_card_balance_progress_label_message">Tahan kartunya di posisi yang sama, ya.</string>
     <string name="emoney_card_isnot_supported">Kartu tidak didukung</string>
     <string name="emoney_device_isnot_supported">Perangkat tidak didukung untuk kartu ini</string>
     <string name="emoney_update_balance_failed">Pembaruan informasi saldo Gagal, silakan tempelkan ulang kartu Anda.</string>

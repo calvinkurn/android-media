@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/spacing_lvl2"
+    app:cardCornerRadius="@dimen/spacing_lvl3"
     app:cardElevation="@dimen/spacing_lvl2"
     app:cardUseCompatPadding="true">
 
@@ -27,6 +27,11 @@
                 android:layout_weight="1"
                 android:padding="@dimen/spacing_lvl2"
                 tools:src="@drawable/digital_ic_emoney" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/Unify_N75" />
 
             <LinearLayout
                 android:layout_width="@dimen/layout_lvl0"
@@ -62,8 +67,8 @@
 
         <View
             android:layout_width="wrap_content"
-            android:layout_height="0.5dp"
-            android:background="@color/Unify_N700" />
+            android:layout_height="1dp"
+            android:background="@color/Unify_N75" />
 
         <LinearLayout
             android:id="@+id/view_remaining_balance"
@@ -78,7 +83,7 @@
                 android:id="@+id/text_label_balance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/spacing_lvl2"
                 android:gravity="center"
                 android:text="@string/emoney_card_info_label_card_balance"
                 app:corners="16"
@@ -91,8 +96,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
                 android:gravity="center"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_N700_96"
                 android:textSize="@dimen/fontSize_lvl8"
+                android:textStyle="bold"
                 app:corners="16"
                 app:height_weight="1"
                 app:width_weight="1"
@@ -100,10 +106,11 @@
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/text_date"
-                android:layout_width="wrap_content"
+                android:gravity="center"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:corners="16"
-                tools:text="12 Mei 2018, 06:50" />
+                tools:text="(12 Mei 2018, 06:50)" />
 
         </LinearLayout>
 

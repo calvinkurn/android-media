@@ -65,12 +65,12 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
         textLabelBalance.text = resources.getString(R.string.emoney_card_info_label_card_balance)
         textRemainingBalance.text = CurrencyFormatUtil
                 .convertPriceValueToIdrFormat(attributesEmoneyInquiry.lastBalance, true)
-        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
+        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
 
         val simpleDateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm",
                 DateFormatUtils.DEFAULT_LOCALE)
         val date = Date()
-        textDate.text = simpleDateFormat.format(date)
+        textDate.text = resources.getString(R.string.emoney_nfc_date_format, simpleDateFormat.format(date))
     }
 
     fun showLoading() {

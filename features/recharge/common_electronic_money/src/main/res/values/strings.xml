@@ -4,10 +4,10 @@
     <string name="emoney_tap_card_instruction_title">Tempelkan Kartu Anda</string>
     <string name="emoney_tap_card_instruction_message">Tempelkan Kartu pada bagian belakang Smartphone Anda.</string>
     <string name="emoney_reading_card_label_title">Sedang membaca kartu…</string>
-    <string name="emoney_reading_card_label_message">Jangan mengubah posisi kartu hingga selesai</string>
+    <string name="emoney_reading_card_label_message">Tahan kartunya di posisi yang sama, ya.</string>
     <string name="emoney_update_card_balance_failed_title">Tempelkan Ulang Kartu Anda</string>
-    <string name="emoney_update_card_balance_progress_label_title">Saldo sedang diperbarui…</string>
-    <string name="emoney_update_card_balance_progress_label_message">Jangan mengubah posisi kartu selama proses berlangsung</string>
+    <string name="emoney_update_card_balance_progress_label_title">Sedang membaca kartu...</string>
+    <string name="emoney_update_card_balance_progress_label_message">Tahan kartunya di posisi yang sama, ya.</string>
     <string name="emoney_toolbar_title_etoll_check_balance">Cek Saldo</string>
     <string name="emoney_card_info_is_not_available_yet">Belum Tersedia</string>
     <string name="emoney_nfc_permission_rationale_message" translatable="false">Aplikasi ini membutuhkan izin untuk mengakses NFC</string>
@@ -20,4 +20,5 @@
 
     <string name="emoney_nfc_grpc_timeout">grpc timeout</string>
     <string name="emoney_nfc_grpc_label_error">Oops, ada kendala koneksi. Coba lagi, yuk.</string>
+    <string name="emoney_nfc_date_format">(%s)</string>
 </resources>
