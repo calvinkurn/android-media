@@ -37,46 +37,49 @@ import org.junit.Test
 
 class RechargeGeneralScreenShotTest {
 
-//    @get:Rule
-//    var mActivityRule: IntentsTestRule<RechargeGeneralActivity> = object : IntentsTestRule<RechargeGeneralActivity>(RechargeGeneralActivity::class.java) {
-//        override fun getActivityIntent(): Intent {
-//            val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-//            return Intent(targetContext, RechargeGeneralActivity::class.java).apply {
-//                putExtra(RechargeGeneralActivity.PARAM_MENU_ID, 113)
-//                putExtra(RechargeGeneralActivity.PARAM_CATEGORY_ID, 3)
-//            }
-//        }
-//
-//        override fun beforeActivityLaunched() {
-//            super.beforeActivityLaunched()
-//            setupGraphqlMockResponse(RechargeGeneralMockResponseConfig(RechargeGeneralProduct.LISTRIK))
-//            InstrumentationAuthHelper.loginInstrumentationTestUser1()
-//        }
-//    }
-
     @get:Rule
-    var mActivityRule: ActivityTestRule<RechargeGeneralActivity> = ActivityTestRule(RechargeGeneralActivity::class.java, false, false)
+    var mActivityRule: IntentsTestRule<RechargeGeneralActivity> = object : IntentsTestRule<RechargeGeneralActivity>(RechargeGeneralActivity::class.java) {
+        override fun getActivityIntent(): Intent {
+            val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+            return Intent(targetContext, RechargeGeneralActivity::class.java).apply {
+                putExtra(RechargeGeneralActivity.PARAM_MENU_ID, 113)
+                putExtra(RechargeGeneralActivity.PARAM_CATEGORY_ID, 3)
+            }
+        }
 
-    @Before
-    fun setup() {
-        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-        setupGraphqlMockResponse(RechargeGeneralMockResponseConfig(RechargeGeneralProduct.LISTRIK))
-
-        val intent = RechargeGeneralActivity.newInstance(targetContext, 3, 113)
-        mActivityRule.launchActivity(intent)
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            setupGraphqlMockResponse(RechargeGeneralMockResponseConfig(RechargeGeneralProduct.LISTRIK))
+            InstrumentationAuthHelper.loginInstrumentationTestUser1()
+            Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        }
     }
 
     @Test
     fun screenshot() {
-        val activity = mActivityRule.activity
-//        val test = mActivityRule.activity.findViewById<SwipeToRefresh>(R.id.recharge_general_swipe_refresh_layout)
-//        takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "visible_screen_pdp")
-//        takeScreenShotVisibleViewInScreen(test, filePrefix(), "swipe_to_refresh")
-//        takeScreenshot("test.png")
+        // ss visible screen
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "visible_screen_pdp")
+        }
 
-        screenShotFullRecyclerView(R.id.rv_digital_product, 0, 2, "rv_digital_product")
+        // ss full layout
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            val test = mActivityRule.activity.findViewById<SwipeToRefresh>(R.id.recharge_general_swipe_refresh_layout)
+            takeScreenShotVisibleViewInScreen(test, filePrefix(), "swipe_to_refresh")
+        }
+
+        // test
+        takeScreenshot("test.png")
+
+        // ss center recyclerview
+        screenShotFullRecyclerView(
+                R.id.rv_digital_product,
+                0,
+                getRecyclerViewItemCount(R.id.rv_digital_product),
+                "rv_digital_product")
+
         select_operator()
+
         select_product()
         see_promo()
     }
@@ -121,4 +124,8 @@ class RechargeGeneralScreenShotTest {
 
     private fun filePrefix() = "recharge_general_"
 
+    private fun getRecyclerViewItemCount(resId: Int): Int {
+        val recyclerView = mActivityRule.activity.findViewById<RecyclerView>(resId)
+        return recyclerView.adapter?.itemCount ?: 0
+    }
 }
