@@ -2,46 +2,21 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:id="@+id/tab_icon_layout"
     android:background="@color/clr_transparent">
 
-    <LinearLayout
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/shop_page_tab_view_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:adjustViewBounds="true"
+        android:src="@drawable/ic_shop_tab_showcase_inactive"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/shop_page_tab_view_icon"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            android:layout_marginTop="@dimen/dp_6"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ic_shop_tab_showcase_inactive"
-            />
-
-        <TextView
-            android:id="@+id/icon_tab_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_11"
-            android:text="@string/shop_page_label_new_icon_tab"
-            android:textSize="@dimen/label_text_size"
-            android:textStyle="bold"
-            android:letterSpacing="0.1"
-            android:background="@drawable/bg_tab_icon_label"
-            android:textColor="@color/Unify_N0"
-            android:paddingStart="@dimen/dp_4"
-            android:paddingEnd="@dimen/dp_4"
-            android:visibility="gone"
-            tools:visibility="visible"
-            />
-
-    </LinearLayout>
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

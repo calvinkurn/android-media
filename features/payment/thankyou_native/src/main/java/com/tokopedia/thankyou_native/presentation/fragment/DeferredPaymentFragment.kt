@@ -1,7 +1,9 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -22,6 +24,7 @@ import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.utils.htmltags.HtmlUtil
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 
 class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.ThankTimerViewListener {
@@ -130,8 +133,14 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     private fun showDigitAnnouncementTicker() {
         tickerAnnouncementExactDigits.visible()
-        tickerAnnouncementExactDigits
-                .setTextDescription(getString(R.string.thank_exact_transfer_upto_3_digits))
+        tickerAnnouncementExactDigits.tickerTitle = getString(R.string.thank_pending)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            tickerAnnouncementExactDigits.setTextDescription(HtmlUtil
+                    .fromHtml(getString(R.string.thank_exact_transfer_upto_3_digits)).trim())
+        } else {
+           tickerAnnouncementExactDigits
+                   .setHtmlDescription(getString(R.string.thank_exact_transfer_upto_3_digits))
+        }
         view_divider_3.gone()
     }
 

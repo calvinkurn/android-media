@@ -80,6 +80,7 @@ ext {
             remoteConfig            : ":libraries:remote_config",
             remoteResourceRequest   : ":libraries:remoteresourcerequest",
             shakeDetect             : ":libraries:shake_detect",
+            pageInfoPusher          : ":libraries:page_info_pusher",
             preReleaseInspector     : ":libraries:pre_release_inspector",
             preReleaseInspectorNoop : ":libraries:pre_release_inspector_no_op",
             diffUtilRecycler        : ":libraries:smart_recycler_diffutil_helper",

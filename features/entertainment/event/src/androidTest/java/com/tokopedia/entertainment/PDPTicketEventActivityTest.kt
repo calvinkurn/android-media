@@ -26,7 +26,6 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.entertainment.home.fragment.EventHomeFragment
 import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity
 import com.tokopedia.entertainment.pdp.adapter.viewholder.PackageParentViewHolder
 import com.tokopedia.entertainment.pdp.fragment.EventPDPTicketFragment

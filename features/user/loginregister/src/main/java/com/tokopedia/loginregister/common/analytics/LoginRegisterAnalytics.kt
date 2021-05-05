@@ -719,16 +719,78 @@ class LoginRegisterAnalytics @Inject constructor(
         ))
     }
 
-    fun eventFailedLogin(actionLoginMethod: String, errorMessage: String?) {
+    fun eventFailedLogin(actionLoginMethod: String, errorMessage: String?, isFromRegister: Boolean = false) {
 
         when (actionLoginMethod) {
-            UserSessionInterface.LOGIN_METHOD_EMAIL -> onErrorLoginWithEmail(errorMessage)
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onErrorLoginWithFacebook(errorMessage)
-            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onErrorLoginWithGoogle(errorMessage)
-            UserSessionInterface.LOGIN_METHOD_PHONE -> onErrorLoginWithPhone(errorMessage)
-            UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> onErrorLoginWithSmartLock(errorMessage)
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> {
+                if (isFromRegister) {
+                    onErrorLoginWithEmailSmartRegister(errorMessage)
+                } else {
+                    onErrorLoginWithEmail(errorMessage)
+                }
+            }
+            UserSessionInterface.LOGIN_METHOD_PHONE -> {
+                if (isFromRegister) {
+                    onErrorLoginWithPhoneSmartRegister(errorMessage)
+                } else {
+                    onErrorLoginWithPhone(errorMessage)
+                }
+            }
+            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> {
+                if (isFromRegister) {
+                    onErrorLoginWithFacebookSmartRegister(errorMessage)
+                } else {
+                    onErrorLoginWithFacebook(errorMessage)
+                }
+            }
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> {
+                if (isFromRegister) {
+                    onErrorLoginWithGoogleSmartRegister(errorMessage)
+                } else {
+                    onErrorLoginWithGoogle(errorMessage)
+                }
+            }
+            UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> {
+                onErrorLoginWithSmartLock(errorMessage)
+            }
 
         }
+    }
+
+    private fun onErrorLoginWithEmailSmartRegister(errorMessage: String?) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
+                LABEL_FAILED + errorMessage
+        ))
+    }
+
+    private fun onErrorLoginWithPhoneSmartRegister(errorMessage: String?) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE,
+                LABEL_FAILED + errorMessage
+        ))
+    }
+
+    private fun onErrorLoginWithFacebookSmartRegister(errorMessage: String?) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                "click on button $FACEBOOK",
+                LABEL_FAILED + errorMessage
+        ))
+    }
+
+    private fun onErrorLoginWithGoogleSmartRegister(errorMessage: String?) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                "click on button $GOOGLE",
+                LABEL_FAILED + errorMessage
+        ))
     }
 
     private fun onErrorLoginWithSmartLock(errorMessage: String?) {
@@ -935,6 +997,7 @@ class LoginRegisterAnalytics @Inject constructor(
         private val LABEL_NO = "no - "
         private val LABEL_BEBAS_ONGKIR = "bebas ongkir"
         private val LABEL_LOGIN_SUCCESS = "login success"
+        private val LABEL_FAILED = "failed - "
 
         val GOOGLE = "google"
         val FACEBOOK = "facebook"
