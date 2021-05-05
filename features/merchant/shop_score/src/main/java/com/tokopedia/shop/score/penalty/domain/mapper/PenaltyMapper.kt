@@ -225,47 +225,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                 add(ItemSortFilterPenaltyUiModel(itemSortFilterWrapperList = mapToSortFilterPenalty(it, typeId)))
             }
 
-            val itemPenaltyFilterList = mutableListOf<ItemPenaltyUiModel>().apply {
-                shopScorePenaltyDetailResponse.result.forEach {
-                    val colorTypePenalty = when (it.status) {
-                        POINTS_NOT_YET_DEDUCTED, PENALTY_DONE -> {
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN500
-                        }
-                        ON_GOING -> {
-                            com.tokopedia.unifyprinciples.R.color.Unify_RN600
-                        }
-                        else -> {
-                            null
-                        }
-                    }
-                    val (prefixDatePenaltyDetail, endDateText) = when (it.status) {
-                        ON_GOING -> {
-                            Pair(ACTIVE_PENALTY_DETAIL,"$FINISHED_IN ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
-                        }
-                        PENALTY_DONE -> {
-                            Pair(SINCE_FINISH_PENALTY_DETAIL,"$SINCE ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyExpirationDate)}")
-                        }
-                        POINTS_NOT_YET_DEDUCTED -> {
-                            Pair(START_ACTIVE_PENALTY_DETAIL, "$START ${DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.penaltyStartDate)}")
-                        }
-                        else -> Pair("", "")
-                    }
-
-                    val scoreAbs = abs(it.score).toString()
-
-                    add(ItemPenaltyUiModel(
-                            statusPenalty = it.status,
-                            deductionPoint = scoreAbs,
-                            startDate = DateFormatUtils.formatDate(PATTERN_PENALTY_DATE_PARAM, PATTERN_PENALTY_DATE_TEXT, it.createTime),
-                            endDate = endDateText,
-                            typePenalty = it.typeName,
-                            invoicePenalty = it.invoiceNumber,
-                            reasonPenalty = it.reason,
-                            colorPenalty = colorTypePenalty,
-                            prefixDatePenalty = prefixDatePenaltyDetail
-                    ))
-                }
-            }
+            val itemPenaltyFilterList = mapToItemPenaltyList(shopScorePenaltyDetailResponse).first
             addAll(itemPenaltyFilterList)
         }
 
