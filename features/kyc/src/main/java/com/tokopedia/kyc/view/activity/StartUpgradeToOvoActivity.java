@@ -166,18 +166,16 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
             finish();
             return;
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            String permission = Manifest.permission.CAMERA;
-            permissionsToRequest = new ArrayList<>();
+        String permission = Manifest.permission.CAMERA;
+        permissionsToRequest = new ArrayList<>();
 
-            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                permissionsToRequest.add(permission);
-            }
+        if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            permissionsToRequest.add(permission);
+        }
 
-            if (!permissionsToRequest.isEmpty()) {
-                ActivityCompat.requestPermissions(this,
-                        permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
-            }
+        if (!permissionsToRequest.isEmpty()) {
+            ActivityCompat.requestPermissions(this,
+                    permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
         }
     }
 }
