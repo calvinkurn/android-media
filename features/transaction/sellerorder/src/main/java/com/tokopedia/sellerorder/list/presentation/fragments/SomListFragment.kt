@@ -1570,9 +1570,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         } else if (data.firstOrNull()?.searchParam == searchBarSomList.searchBarTextField.text.toString()) {
             if (isLoadingInitialData) {
                 (adapter as SomListOrderAdapter).updateOrders(data)
-                tvSomListOrderCounter?.text = getString(R.string.som_list_order_counter, somListSortFilterTab?.getSelectedFilterOrderCount().orZero())
-                multiEditViews?.showWithCondition((somListSortFilterTab?.shouldShowBulkAction()?.and(canMultiAcceptOrder)
-                        ?: false) && GlobalConfig.isSellerApp())
+                multiEditViews?.showWithCondition((somListSortFilterTab?.shouldShowBulkAction()?.and(canMultiAcceptOrder) ?: false) && GlobalConfig.isSellerApp())
                 toggleTvSomListBulkText()
                 toggleBulkActionCheckboxVisibility()
                 toggleBulkActionButtonVisibility()
@@ -1608,7 +1606,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         val order = result.order
         if (order == null) {
             (adapter as SomListOrderAdapter).removeOrder(result.orderId)
-            updateOrderCounter()
             checkLoadMore()
         } else {
             (adapter as SomListOrderAdapter).updateOrder(order)
@@ -2205,7 +2202,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         sortFilterShimmer4?.translationY = translation
         sortFilterShimmer5?.translationY = translation
         bulkActionCheckBoxContainer?.translationY = translation
-        bulkActionCheckBoxContainer?.translationY = translation
+        dividerMultiSelect?.translationY = translation
         val params = (swipeRefreshLayoutSomList?.layoutParams as? ViewGroup.MarginLayoutParams)
         params?.topMargin = translation.toInt()
         swipeRefreshLayoutSomList?.layoutParams = params
@@ -2360,6 +2357,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         if (realtimeDataChangeCount == 0 || !result.data.fromCache) {
             selectFilterTab(result, realtimeDataChangeCount)
             somListSortFilterTab?.show(result.data)
+            updateOrderCounter()
         }
         return if (!result.data.fromCache) realtimeDataChangeCount + 1 else realtimeDataChangeCount
     }
