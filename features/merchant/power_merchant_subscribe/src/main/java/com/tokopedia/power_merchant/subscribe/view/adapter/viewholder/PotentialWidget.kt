@@ -3,6 +3,7 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.adapter.PotentialAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.PotentialItemUiModel
@@ -27,10 +28,12 @@ class PotentialWidget(itemView: View) : AbstractViewHolder<WidgetPotentialUiMode
                 override fun canScrollVertically(): Boolean = false
             }
             rvPmPotential.adapter = PotentialAdapter(benefitList)
+
+            tvPmPotentialDescription.text = getString(R.string.pm_registration_potential_description, PMConstant.POWER_MERCHANT_CHARGING)
         }
     }
 
-    private fun getBenefitList(): Lazy<List<PotentialItemUiModel>>  {
+    private fun getBenefitList(): Lazy<List<PotentialItemUiModel>> {
         return lazy {
             listOf(
                     PotentialItemUiModel(

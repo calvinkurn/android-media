@@ -5,6 +5,9 @@ package com.tokopedia.gm.common.constant
  */
 
 object PMConstant {
+
+    const val POWER_MERCHANT_CHARGING = "1,25%"
+    const val POWER_MERCHANT_PRO_CHARGING = "1,5%"
     const val PM_SETTING_INFO_SOURCE = "power-merchant-subscription-ui"
     const val TRANSITION_PERIOD_START_DATE = "31 Mei 2021"
 

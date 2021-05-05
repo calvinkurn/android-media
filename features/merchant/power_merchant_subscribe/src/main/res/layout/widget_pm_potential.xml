@@ -14,11 +14,11 @@
         android:id="@+id/tvPmPotentialDescription"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:text="@string/pm_registration_potential_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2" />
+        app:typographyType="body_2"
+        tools:text="@string/pm_registration_potential_description" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPmPotential"
