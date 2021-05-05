@@ -15,7 +15,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 10/03/21
  */
 
-class GetPMGradeWithBenefitUseCase @Inject constructor(
+class GetPMGradeBenefitUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val mapper: PMGradeBenefitInfoMapper
 ) : BaseGqlUseCase<List<PMGradeWithBenefitsUiModel>>() {

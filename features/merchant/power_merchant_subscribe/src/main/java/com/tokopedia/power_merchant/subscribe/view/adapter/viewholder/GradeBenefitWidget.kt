@@ -42,7 +42,7 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
             RouteManager.route(context, Constant.Url.POWER_MERCHANT_EDU)
         }
 
-        val isPmPro = element.selectedPmTireType == PMConstant.PMTierType.PM_PRO
+        val isPmPro = element.selectedPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         if (isPmPro) {
             tvPmGradeBenefitTitle.text = getString(R.string.pm_grade_benefit_widget_title_pm_pro)
             tvPmGradeBenefitDescription.visible()

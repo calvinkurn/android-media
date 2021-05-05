@@ -28,7 +28,16 @@ object PMConstant {
     }
 
     object PMTierType {
-        const val PM_REGULAR = 0
-        const val PM_PRO = 1
+        const val NA = -1
+        const val POWER_MERCHANT = 0
+        const val POWER_MERCHANT_PRO = 1
+    }
+
+    object ShopTierType {
+        const val NA = -1
+        const val REGULAR_MERCHANT = 0
+        const val POWER_MERCHANT = 1
+        const val OFFICIAL_STORE = 2
+        const val POWER_MERCHANT_PRO = 3
     }
 }

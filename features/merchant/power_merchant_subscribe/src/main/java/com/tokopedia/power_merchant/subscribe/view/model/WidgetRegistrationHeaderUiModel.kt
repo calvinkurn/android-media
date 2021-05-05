@@ -12,7 +12,7 @@ data class WidgetRegistrationHeaderUiModel(
         val shopInfo: PMShopInfoUiModel,
         val pmTerms: List<RegistrationTermUiModel> = emptyList(),
         val pmProTerms: List<RegistrationTermUiModel> = emptyList(),
-        var selectedPmType: Int = PMConstant.PMTierType.PM_REGULAR
+        var selectedPmType: Int = PMConstant.PMTierType.POWER_MERCHANT
 ) : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

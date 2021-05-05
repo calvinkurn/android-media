@@ -50,7 +50,7 @@ class RegistrationHeaderWidget(
     }
 
     private fun getPmEligibilityStatus(element: WidgetRegistrationHeaderUiModel): Boolean {
-        return if (element.selectedPmType == PMConstant.PMTierType.PM_PRO) {
+        return if (element.selectedPmType == PMConstant.PMTierType.POWER_MERCHANT_PRO) {
             element.shopInfo.isEligiblePmPro
         } else {
             element.shopInfo.isEligiblePm
@@ -69,7 +69,7 @@ class RegistrationHeaderWidget(
 
     private fun setupPmSection(element: WidgetRegistrationHeaderUiModel) = with(itemView) {
         tabPmTypeSection.tabLayout.removeAllTabs()
-        val isPmPro = element.selectedPmType == PMConstant.PMTierType.PM_PRO
+        val isPmPro = element.selectedPmType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         tabPmTypeSection.addNewTab(pmRegularLabel)
         tabPmTypeSection.addNewTab(pmProLabel, isPmPro)
 
@@ -99,12 +99,12 @@ class RegistrationHeaderWidget(
     private fun setOnPmTypeTabIndexSelected(tabIndex: Int, element: WidgetRegistrationHeaderUiModel) {
         when (tabIndex) {
             PM_REGULAR_TAB_POSITION -> {
-                element.selectedPmType = PMConstant.PMTierType.PM_REGULAR
+                element.selectedPmType = PMConstant.PMTierType.POWER_MERCHANT
                 setupRegularPmState(element)
                 listener.onPowerMerchantSectionClickListener(element)
             }
             PM_PRO_TAB_POSITION -> {
-                element.selectedPmType = PMConstant.PMTierType.PM_PRO
+                element.selectedPmType = PMConstant.PMTierType.POWER_MERCHANT_PRO
                 setupPmProState(element)
                 listener.onPowerMerchantProSectionClickListener(element)
             }

@@ -4,6 +4,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.GoldActivationSubscriptio
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 /**
@@ -39,7 +40,7 @@ class PowerMerchantActivateUseCase @Inject constructor(
                reason
              }
              data {
-               shop_id
+               shop_tier
                product {
                  id
                  initial_duration
@@ -51,5 +52,13 @@ class PowerMerchantActivateUseCase @Inject constructor(
            }
          }
         """.trimIndent()
+
+        private const val NEXT_SHOP_TIER = "next_shop_tier"
+
+        fun createActivationParam(nextShopTierType: Int): RequestParams {
+            return RequestParams.create().apply {
+                putInt(NEXT_SHOP_TIER, nextShopTierType)
+            }
+        }
     }
 }

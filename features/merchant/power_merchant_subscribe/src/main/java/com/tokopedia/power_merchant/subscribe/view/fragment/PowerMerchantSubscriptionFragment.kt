@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.*
+import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
 import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
@@ -71,8 +72,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         get() = super.getRecyclerView(view)
     private var pmBasicInfo: PowerMerchantBasicInfoUiModel? = null
     private var cancelPmDeactivationWidgetPosition: Int? = null
-    private var pmGradeBenefitAndShopInfo: PMGradeBenefitAndShopInfoUiModel? = null
-    private var selectedPmType = PMConstant.PMTierType.PM_REGULAR
+    private var pmGradeBenefitList: List<PMGradeWithBenefitsUiModel>? = null
+    private var selectedPmType = PMConstant.PMTierType.POWER_MERCHANT
     private var shouldRefreshPage = true
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
@@ -175,7 +176,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         mViewModel.powerMerchantBasicInfo.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    this.pmBasicInfo = it.data
+                    initBasicInfo(it.data)
                     fetchPageContent()
                 }
                 is Fail -> {
@@ -281,23 +282,26 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         view?.pmRegistrationFooterView?.gone()
     }
 
-    private fun initPmActiveData(data: PMGradeBenefitAndShopInfoUiModel) {
-        this.pmGradeBenefitAndShopInfo = data
-        selectedPmType = if (data.shopInfo.isEligiblePmPro) {
-            PMConstant.PMTierType.PM_PRO
+    private fun initBasicInfo(data: PowerMerchantBasicInfoUiModel) {
+        this.pmBasicInfo = data
+        val isEligiblePmPro = data.shopInfo.isEligiblePmPro
+        selectedPmType = if (isEligiblePmPro) {
+            PMConstant.PMTierType.POWER_MERCHANT_PRO
         } else {
-            PMConstant.PMTierType.PM_REGULAR
+            PMConstant.PMTierType.POWER_MERCHANT
         }
     }
 
-    private fun renderPmRegistrationWidgets(data: PMGradeBenefitAndShopInfoUiModel) {
-        adapter.data.clear()
-        val registrationHeaderWidget = getRegistrationHeaderWidgetData(data.shopInfo)
+    private fun renderPmRegistrationWidgets() {
+        pmBasicInfo?.shopInfo?.let { shopInfo ->
+            adapter.data.clear()
+            val registrationHeaderWidget = getRegistrationHeaderWidgetData(shopInfo)
 
-        if (data.shopInfo.isEligiblePmPro) {
-            renderPmProRegistrationWidgets(registrationHeaderWidget)
-        } else {
-            renderRegularPmRegistrationWidget(registrationHeaderWidget)
+            if (shopInfo.isEligiblePmPro) {
+                renderPmProRegistrationWidgets(registrationHeaderWidget)
+            } else {
+                renderRegularPmRegistrationWidget(registrationHeaderWidget)
+            }
         }
     }
 
@@ -341,7 +345,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun getPmGradeBenefitWidget(): WidgetGradeBenefitUiModel {
-        val gradeBenefitList = pmGradeBenefitAndShopInfo?.gradeBenefitList.orEmpty()
+        val gradeBenefitList = pmGradeBenefitList.orEmpty()
         return WidgetGradeBenefitUiModel(
                 selectedPmTireType = selectedPmType,
                 benefitPages = gradeBenefitList.filter { it.pmTier == selectedPmType }
@@ -400,8 +404,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun setupFooterCta() = view?.run {
-        val shopInfo = pmGradeBenefitAndShopInfo?.shopInfo ?: return@run
-        val isPmPro = selectedPmType == PMConstant.PMTierType.PM_PRO
+        val shopInfo = pmBasicInfo?.shopInfo ?: return@run
+        val isPmPro = selectedPmType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val isEligiblePm = if (isPmPro) shopInfo.isEligiblePmPro else shopInfo.isEligiblePm
 
         val registrationTerms = if (isPmPro) {
@@ -494,7 +498,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun showShopScoreTermBottomSheet(shopInfo: PMShopInfoUiModel) {
-        val isPmPro = selectedPmType == PMConstant.PMTierType.PM_PRO
+        val isPmPro = selectedPmType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val shopScoreThreshold = if (isPmPro) shopInfo.shopScorePmProThreshold else shopInfo.shopScoreThreshold
         val pmLabel = if (isPmPro) getString(R.string.pm_power_merchant_pro) else getString(R.string.pm_power_merchant)
 
@@ -528,7 +532,16 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
 
         showActivationProgress()
-        mViewModel.submitPMActivation()
+        val shopTireType = getShopTireByPmTire(selectedPmType)
+        mViewModel.submitPMActivation(shopTireType)
+    }
+
+    private fun getShopTireByPmTire(pmTire: Int): Int {
+        return when (pmTire) {
+            PMConstant.PMTierType.POWER_MERCHANT -> PMConstant.ShopTierType.POWER_MERCHANT
+            PMConstant.PMTierType.POWER_MERCHANT_PRO -> PMConstant.ShopTierType.POWER_MERCHANT_PRO
+            else -> PMConstant.ShopTierType.NA
+        }
     }
 
     private fun observePmActiveState() {
@@ -581,12 +594,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun observePmRegistrationPage() {
-        mViewModel.shopInfoAndPMGradeBenefits.observe(viewLifecycleOwner, Observer {
+        mViewModel.pmGradeBenefitInfo.observe(viewLifecycleOwner, Observer {
             hideSwipeRefreshLoading()
             when (it) {
                 is Success -> {
-                    initPmActiveData(it.data)
-                    renderPmRegistrationWidgets(it.data)
+                    this.pmGradeBenefitList = it.data
+                    renderPmRegistrationWidgets()
                 }
                 is Fail -> {
                     showErrorState()

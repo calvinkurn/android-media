@@ -8,9 +8,9 @@ data class GoldActivationSubscription(
         @Expose
         val goldActivationData: GMActivation = GMActivation()
 ) {
-        fun isSuccess() : Boolean {
-                return goldActivationData.header.errorCode == ""
-        }
+    fun isSuccess(): Boolean {
+        return goldActivationData.header.errorCode == ""
+    }
 }
 
 data class GMActivation(
@@ -24,10 +24,9 @@ data class GMActivation(
 )
 
 data class GMActivationData(
-        @SerializedName("shop_id")
+        @SerializedName("shop_tier")
         @Expose
-        val shopId: Int = 0,
-
+        val shopTier: Int = 0,
         @SerializedName("product")
         @Expose
         val product: GMActivationProduct = GMActivationProduct(),
