@@ -14,7 +14,7 @@ class ShopPenaltyDetailViewModelTest : ShopPenaltyDetailViewModelTestFixture() {
             val itemPenaltyUiModel = ItemPenaltyUiModel(
                     statusPenalty = ShopScoreConstant.ON_GOING,
                     endDateDetail = "09 Mei 2021", startDate = "12 Apr 2021",
-                    typePenalty = "Penolakan Pengiriman", deductionPoint = -1,
+                    typePenalty = "Penolakan Pengiriman", deductionPoint = "-1",
                     reasonPenalty = "Seller melakukan cash advance pada transaksi INV/20210126/XX/V/553738330"
             )
 
