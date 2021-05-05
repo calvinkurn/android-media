@@ -62,7 +62,7 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
         }
     }
 
-    private fun submitCreditCard(mapParam: HashMap<String, String>) {
+    fun submitCreditCard(mapParam: HashMap<String, String>) {
         launchCatchError(block = {
             val data = withContext(dispatcher) {
                 submitCCUseCase.setMapParam(mapParam)
