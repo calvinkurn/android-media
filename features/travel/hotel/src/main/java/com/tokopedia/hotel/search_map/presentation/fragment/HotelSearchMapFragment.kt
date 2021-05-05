@@ -358,7 +358,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         allMarker.forEach {
             if (it.tag == marker.tag) {
                 cardListPosition = it.tag as Int
-                rvHorizontalPropertiesHotelSearchMap.scrollToPosition(cardListPosition)
+                rvHorizontalPropertiesHotelSearchMap.smoothScrollToPosition(cardListPosition)
                 changeMarkerState(cardListPosition)
                 with(hotelSearchMapViewModel.searchParam) {
                     if (cardListPosition >= 0) {
