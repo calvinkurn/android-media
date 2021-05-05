@@ -200,7 +200,8 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 actionEnable()
             }
         }
-        daily_budget.textFieldInput.addTextChangedListener(watcher())
+        if (toggle?.isChecked == true)
+            daily_budget.textFieldInput.addTextChangedListener(watcher())
         setLink()
     }
 
@@ -237,6 +238,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         else
             AUTOBID_DEFUALT_BUDGET
         daily_budget.textFieldInput.setText(dailyBudget.toString())
+        groupInput.textFieldInput.setText(stepperModel?.groupName)
     }
 
     private fun setGroupName() {
@@ -326,14 +328,18 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         info_text?.append(spannableText)
     }
 
+    private fun isMinValidation(input: Int): Boolean {
+        return (input < (stepperModel?.finalBidPerClick
+                ?: 0) * MULTIPLIER && stepperModel?.autoBidState?.isEmpty() == true) ||
+                (input < minBudget && stepperModel?.autoBidState?.isEmpty() != true) && daily_budget.isVisible
+    }
+
     private fun watcher(): NumberTextWatcher? {
         return object : NumberTextWatcher(daily_budget.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val input = number.toInt()
-                if ((input < (stepperModel?.finalBidPerClick
-                                ?: 0) * MULTIPLIER || input < minBudget)
-                        && daily_budget.isVisible) {
+                if (isMinValidation(input)) {
                     daily_budget.setError(true)
                     daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), minBudget))
                     validation2 = false

@@ -17,6 +17,7 @@ import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
+import com.tokopedia.topads.edit.utils.Constants.BUDGET_LIMITED
 import com.tokopedia.topads.edit.utils.Constants.DAILY_BUDGET
 import com.tokopedia.topads.edit.utils.Constants.DEBOUNCE_CONST
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
@@ -113,10 +114,9 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     fun onSuccessGroupName(data: ResponseGroupValidateName.TopAdsGroupValidateName) {
         if (data.errors.isEmpty()) {
-            group_name?.setError(false)
+            group_name?.setError(true)
             validation1 = true
             actionEnable()
-            group_name?.setMessage("")
         } else {
             onErrorGroupName(data.errors[0].detail)
         }
@@ -139,17 +139,20 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         sharedViewModel.getDailyBudget().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             setCurrentDailyBudget(it.toString())
+            currentBudget = it
         })
         if (arguments?.getString(GROUP_ID)?.isNotEmpty()!!) {
             groupId = arguments?.getString(GROUP_ID)?.toInt()
             sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
         }
-        if (toggle?.isChecked != false) {
-            daily_budget?.visibility = View.GONE
-            validation3 = true
-            actionEnable()
-        } else {
-            daily_budget?.visibility = View.VISIBLE
+        toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (toggle?.isChecked == true) {
+                daily_budget?.visibility = View.VISIBLE
+            } else {
+                daily_budget?.visibility = View.GONE
+                validation3 = true
+                actionEnable()
+            }
         }
 
         group_name?.textFieldInput?.addTextChangedListener(object : TextWatcher {
@@ -176,9 +179,9 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 when {
-                    number < MULTIPLIER * currentBudget -> {
+                    number < currentBudget -> {
                         daily_budget?.setError(true)
-                        daily_budget?.setMessage(String.format(getString(R.string.min_bid_error), MULTIPLIER * currentBudget))
+                        daily_budget?.setMessage(String.format(getString(R.string.min_bid_error), currentBudget))
                         validation3 = false
                         actionEnable()
 
@@ -232,6 +235,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             dataMap[GROUP_NAME] = getCurrentTitle()
             dataMap[DAILY_BUDGET] = getCurrentDailyBudget()
             dataMap[GROUP_ID] = groupId
+            dataMap[BUDGET_LIMITED] = toggle?.isChecked
             dataMap[NAME_EDIT] = getCurrentTitle() != groupName
         } catch (e: NumberFormatException) {
         }

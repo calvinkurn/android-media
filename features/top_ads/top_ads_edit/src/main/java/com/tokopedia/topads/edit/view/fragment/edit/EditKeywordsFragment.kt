@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +28,7 @@ import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.view.sheet.ChooseKeyBottomSheet
+import com.tokopedia.topads.common.view.sheet.InfoBottomSheet
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.KeySharedModel
@@ -60,7 +60,9 @@ import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeyword
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import javax.inject.Inject
@@ -96,12 +98,16 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var keywordTitle: LinearLayout
     private lateinit var budgetInput: TextFieldUnify
-    private lateinit var selectedKeyword: TextView
+    private lateinit var selectedKeyword: Typography
+    private lateinit var selected_Keyword: Typography
+    private lateinit var info1: UnifyImageButton
+    private lateinit var info2: UnifyImageButton
+    private lateinit var div: View
 
     private var productId: MutableList<String> = mutableListOf()
 
     private var userID: String = ""
-    private lateinit var addKeyword: TextView
+    private lateinit var addKeyword: Typography
     private lateinit var ticker: Ticker
     private var minBid = "0"
     private var maxBid = "0"
@@ -138,12 +144,17 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(resources.getLayout(R.layout.topads_create_fragment_budget_list), container, false)
-        recyclerView = view.findViewById(R.id.bid_list)
-        addKeyword = view.findViewById(R.id.addKeyword)
-        ticker = view.findViewById(R.id.ticker)
-        keywordTitle = view.findViewById(R.id.keyword_title)
-        budgetInput = view.findViewById(R.id.budget)
-        selectedKeyword = view.findViewById(R.id.selectedKeyword)
+        recyclerView = view.findViewById(com.tokopedia.topads.common.R.id.bid_list)
+        addKeyword = view.findViewById(com.tokopedia.topads.common.R.id.addKeyword)
+        ticker = view.findViewById(com.tokopedia.topads.common.R.id.ticker)
+        keywordTitle = view.findViewById(com.tokopedia.topads.common.R.id.keyword_title)
+        budgetInput = view.findViewById(com.tokopedia.topads.common.R.id.budget)
+        selectedKeyword = view.findViewById(com.tokopedia.topads.common.R.id.selectedKeyword)
+        selected_Keyword = view.findViewById(com.tokopedia.topads.common.R.id.selected_keyword)
+        info1 = view.findViewById(com.tokopedia.topads.common.R.id.info1)
+        info2 = view.findViewById(com.tokopedia.topads.common.R.id.info2)
+        div = view.findViewById(com.tokopedia.topads.common.R.id.div)
+
         setAdapter()
         return view
     }
@@ -309,8 +320,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun updateString() {
-        //      if (adapter.items.count() == 0)
-        // onEmptySuggestion()
+        if (adapter.items.count() == 0)
+            setEmptyView()
     }
 
     private fun setCount() {
@@ -452,6 +463,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userID = UserSession(view.context).userId
+
+        info1.setOnClickListener {
+            InfoBottomSheet.newInstance().show(childFragmentManager, 0)
+        }
+        info2.setOnClickListener {
+            InfoBottomSheet.newInstance().show(childFragmentManager, 1)
+        }
+
         sharedViewModel.getProuductIds().observe(viewLifecycleOwner, Observer {
             productIds = it.joinToString(",")
         })
@@ -511,10 +530,13 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun setVisibilityOperation(visibility: Int) {
-        recyclerView.visibility = visibility
+//        recyclerView.visibility = visibility
         addKeyword.visibility = visibility
         ticker.visibility = visibility
         keywordTitle.visibility = visibility
+        selected_Keyword.visibility = visibility
+        info2.visibility = visibility
+        div.visibility = visibility
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

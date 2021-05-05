@@ -1,73 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_empty"
+        android:layout_width="@dimen/dp_180"
+        android:layout_height="@dimen/dp_120"
+        app:layout_constraintBottom_toTopOf="@+id/text_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_50"
+        android:gravity="center_horizontal"
+        android:text="@string/topads_dash_insight_empty_title"
+        app:layout_constraintBottom_toTopOf="@id/text_desc"
+        app:layout_constraintTop_toBottomOf="@id/image_empty"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/image_empty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/text_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_32"
+        android:gravity="center_horizontal"
+        android:text="@string/topads_dash_insight_empty_desc"
+        app:layout_constraintTop_toBottomOf="@id/text_title"
+        app:typographyType="body_2" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_50"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_50"
-            android:gravity="center_horizontal"
-            app:typographyWeight="bold"
-            android:text="@string/topads_dash_insight_empty_title"
-            app:layout_constraintBottom_toTopOf="@id/text_desc"
-            app:layout_constraintTop_toBottomOf="@id/image_empty"
-            app:typographyType="heading_3" />
+    <LinearLayout
+        android:id="@+id/tipsLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_8"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/text_desc"
+        app:layout_constraintStart_toStartOf="@+id/text_desc"
+        app:layout_constraintTop_toBottomOf="@+id/text_desc" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_desc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_32"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_32"
-            android:gravity="center_horizontal"
-            android:text="@string/topads_dash_insight_empty_desc"
-            app:layout_constraintTop_toBottomOf="@id/text_title"
-            app:typographyType="body_2" />
-
-        <LinearLayout
-            android:id="@+id/tipsLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginStart="@dimen/dp_32"
-            android:layout_marginTop="@dimen/dp_8"
-            app:layout_constraintStart_toStartOf="@+id/text_desc"
-            app:layout_constraintEnd_toEndOf="@+id/text_desc"
-            app:layout_constraintTop_toBottomOf="@+id/text_desc" />
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/addBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
-            app:unifyButtonType="main"
-            app:unifyButtonVariant="filled"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@+id/text_desc"
-            app:layout_constraintEnd_toEndOf="@+id/text_desc"
-            app:layout_constraintTop_toBottomOf="@+id/tipsLayout" />
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/addBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_24"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/text_desc"
+        app:layout_constraintStart_toStartOf="@+id/text_desc"
+        app:layout_constraintTop_toBottomOf="@+id/tipsLayout"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
