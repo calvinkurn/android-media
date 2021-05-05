@@ -107,6 +107,14 @@
     <string name="review_create_dialog_body">Tinggal sedikit lagi, lho. Ulasanmu tidak tersimpan jika kamu keluar halaman ini.</string>
     <string name="review_create_activity_title">Tulis Ulasan</string>
     <string name="review_create_submit_edit">Simpan</string>
+    <string name="review_form_progress_bar_good_empty">Makin lengkap, makin mantap 👍</string>
+    <string name="review_form_progress_bar_good_need_photo">Fotoin barangnya dong 📸</string>
+    <string name="review_form_progress_bar_good_need_text">Ceritain dong pengalamanmu</string>
+    <string name="review_form_progress_bar_good_complete">Udah lengkap nih, keren! 😍</string>
+    <string name="review_form_progress_bar_bad_empty">Ceritain dulu alasanmu 🙏</string>
+    <string name="review_form_progress_bar_bad_need_photo">Lengkapi juga dengan foto 📸</string>
+    <string name="review_form_progress_bar_bad_need_text">Ceritain dulu alasanmu 🙏</string>
+    <string name="review_form_progress_bar_bad_complete">Oke, udah siap kirim! 👉</string>
 
     <string name="review_date">• %s</string>
     <string name="review_refresh">Refresh</string>
@@ -271,6 +279,7 @@
     <string name="review_create_thank_you_title">Terima kasih untuk ulasanmu!</string>
     <string name="review_create_thank_you_subtitle">Ulasan lengkap akan mendapatkan %d Points yang akan masuk dalam waktu maks. 24 jam.</string>
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
+    <string name="review_create_incentives_label">Dapatkan TokoPoints</string>
 
     <!-- Review Reminder -->
     <string name="review_reminder_tab_title_1">Kirim Pesan</string>
