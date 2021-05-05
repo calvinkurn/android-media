@@ -24,6 +24,7 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
 
     private var lastState = TelephonyManager.CALL_STATE_IDLE
     private var isIncomingCall = false
+    private var miscallStateListener: MiscallStateListener? = null
 
     var isRegistered = false
     private var telephony: TelephonyManager? = null
@@ -34,6 +35,7 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
         if (!isRegistered) {
             context?.let {
                 it.registerReceiver(this, getIntentFilter())
+                miscallStateListener = MiscallStateListener()
                 setTelephonyListener(it)
             }
             isRegistered = true
@@ -59,11 +61,11 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         try {
-            telephony?.listen(object : PhoneStateListener() {
-                override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-                    onStateChanged(state, phoneNumber.orEmpty())
+            if(intent?.action == ACTION_PHONE_STATE) {
+                miscallStateListener?.let {
+                    telephony?.listen(it, PhoneStateListener.LISTEN_CALL_STATE)
                 }
-            }, PhoneStateListener.LISTEN_CALL_STATE)
+            }
         } catch (e: Exception) {
             sendLogTracker("error [PhoneCallBroadcastReceiver#onReceive(); msg=$e]")
             e.printStackTrace()
@@ -98,6 +100,13 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
         }
     }
 
+    inner class MiscallStateListener: PhoneStateListener() {
+        override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+            super.onCallStateChanged(state, phoneNumber)
+            onStateChanged(state, phoneNumber.orEmpty())
+        }
+    }
+
     interface OnCallStateChange {
         fun onIncomingCallStart(phoneNumber: String)
         fun onIncomingCallEnded(phoneNumber: String)
@@ -105,9 +114,10 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
     }
 
     companion object {
+        private const val ACTION_PHONE_STATE = "android.intent.action.PHONE_STATE"
         private fun getIntentFilter(): IntentFilter {
             val intentFilter = IntentFilter()
-            intentFilter.addAction("android.intent.action.PHONE_STATE")
+            intentFilter.addAction(ACTION_PHONE_STATE)
             return intentFilter
         }
     }
