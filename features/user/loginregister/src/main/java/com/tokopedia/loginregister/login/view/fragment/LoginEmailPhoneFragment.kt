@@ -517,12 +517,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun loginEmail(email: String, password: String, isSmartLock: Boolean = false, useHash: Boolean = false) {
-        if(isValid(email, password)) {
-            showLoadingLogin()
-        }
         currentEmail = email
         resetError()
         if(isValid(email, password)) {
+            showLoadingLogin()
             if(isEnableEncryption() && useHash) {
                 viewModel.loginEmailV2(email = email, password = password, isSmartLock = isSmartLock, useHash = useHash)
             }else {
