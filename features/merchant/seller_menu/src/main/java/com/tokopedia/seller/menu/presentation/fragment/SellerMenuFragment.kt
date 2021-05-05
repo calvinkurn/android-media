@@ -78,6 +78,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private var canShowErrorToaster = true
     private var isNewSeller = false
     private var periodType = ""
+    private var shopAge = 0
 
     private val adapter by lazy {
         SellerMenuAdapter(OtherMenuAdapterTypeFactory(
@@ -206,6 +207,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 is Success -> {
                     isNewSeller = it.data.isNewSeller
                     periodType = it.data.periodType
+                    shopAge = it.data.shopAge
                     getAllShopInfo()
                 }
             }
@@ -290,7 +292,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     private fun getAllShopInfo() {
-        viewModel.getAllSettingShopInfo(periodType = periodType)
+        viewModel.getAllSettingShopInfo(periodType = periodType, shopAge = shopAge)
         viewModel.getProductCount()
         viewModel.getNotifications()
     }
@@ -323,7 +325,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun retryFetchAfterError() {
         showShopInfoLoading()
         viewModel.getShopAccountTickerPeriod()
-        viewModel.getAllSettingShopInfo(isToasterRetry = true, periodType = periodType)
+        viewModel.getAllSettingShopInfo(isToasterRetry = true, periodType = periodType, shopAge = shopAge)
     }
 
     private fun showShopInfoLoading() {

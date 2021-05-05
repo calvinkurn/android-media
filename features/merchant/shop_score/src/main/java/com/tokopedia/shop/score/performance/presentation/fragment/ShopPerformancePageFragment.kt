@@ -272,6 +272,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         shopScorePenaltyTracking.impressHelpCenterFaqNewSeller(isNewSeller)
     }
 
+    private fun toggleMenuForNewSeller() {
+        if (isNewSeller) {
+            menu?.findItem(PENALTY_WARNING_MENU_ID)?.actionView?.hide()
+            menu?.findItem(INFO_MENU_ID)?.actionView?.hide()
+        } else {
+            menu?.findItem(PENALTY_WARNING_MENU_ID)?.actionView?.show()
+            menu?.findItem(INFO_MENU_ID)?.actionView?.show()
+        }
+    }
+
     private fun impressMenuShopPerformance() {
         menu?.findItem(PENALTY_WARNING_MENU_ID)?.actionView?.addOnImpressionListener(impressHolderMenuPenalty) {
             shopScorePenaltyTracking.impressMenuPenalty()
@@ -520,6 +530,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 is Success -> {
                     viewModel.getShopScoreLevel(it.data)
                     this.isNewSeller = it.data.isNewSeller
+                    toggleMenuForNewSeller()
                 }
                 is Fail -> {
                     shopPerformanceAdapter.hideLoading()
