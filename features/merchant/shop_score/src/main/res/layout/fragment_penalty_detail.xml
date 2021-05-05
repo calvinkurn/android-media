@@ -148,7 +148,7 @@
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl5"
             android:layout_marginEnd="@dimen/spacing_lvl5"
-            android:text="@string/example_desc_result_detail_penalty"
+            tools:text="@string/example_desc_result_detail_penalty"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

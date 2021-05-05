@@ -4,6 +4,7 @@ import androidx.annotation.ColorRes
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
 
 data class ItemPenaltyUiModel(val statusPenalty: String = "",
+                              val descStatusPenalty: String = "",
                               val endDate: String = "",
                               val endDateDetail: String = "",
                               val startDate: String = "",

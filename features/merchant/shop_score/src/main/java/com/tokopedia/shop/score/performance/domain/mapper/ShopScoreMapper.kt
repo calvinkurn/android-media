@@ -136,14 +136,14 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             shopInfoPeriodUiModel.isNewSeller
         } ?: false
 
-        val isNewSellerPM = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
+        val isNewSellerProjection = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
 
         shopScoreVisitableList.apply {
             if (isNewSeller || shopAge < SHOP_AGE_SIXTY) {
                 val mapTimerNewSeller = mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller)
                 if (mapTimerNewSeller.second) {
                     add(mapTimerNewSeller.first)
-                    if (shopAge < SHOP_AGE_SIXTY) {
+                    if (shopAge >= SHOP_AGE_SIXTY) {
                         add(ItemLevelScoreProjectUiModel())
                     }
                 }
@@ -171,8 +171,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     }
 
                     if (shopAge >= SHOP_AGE_SIXTY) {
-                        if (isNewSellerPM) {
-                            add(mapToItemPMUiModel(shopAge, isNewSellerPM))
+                        if (isNewSellerProjection) {
+                            add(mapToItemPMUiModel(isNewSeller, isNewSellerProjection))
                             return@apply
                         } else {
                             when (isEligiblePMPro) {
@@ -181,7 +181,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                     return@apply
                                 }
                                 else -> {
-                                    add(mapToItemPMUiModel(shopAge, isNewSellerPM))
+                                    add(mapToItemPMUiModel(isNewSeller, isNewSellerProjection))
                                     return@apply
                                 }
                             }
@@ -189,12 +189,12 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     }
                 }
                 else -> {
-                    if (isNewSellerPM) {
-                        add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerPM))
+                    if (isNewSellerProjection) {
+                        add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerProjection))
                         return@apply
                     } else {
                         if (isEligiblePM == true) {
-                            add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerPM))
+                            add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerProjection))
                             return@apply
                         } else {
                             add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
@@ -471,9 +471,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return copyItemDetail
     }
 
-    private fun mapToItemPMUiModel(shopAge: Int, isNewSeller: Boolean): ItemStatusPMUiModel {
+    private fun mapToItemPMUiModel(isNewSeller: Boolean, isNewSellerProjection: Boolean): ItemStatusPMUiModel {
         return ItemStatusPMUiModel(isNewSeller = isNewSeller,
-                descPM = if (isNewSeller)
+                descPM = if (isNewSellerProjection)
                     context?.getString(R.string.desc_pm_section_new_seller).orEmpty()
                 else
                     context?.getString(R.string.desc_content_pm_section).orEmpty())
@@ -554,16 +554,16 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return itemPotentialPMBenefitList
     }
 
-    private fun mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel, isNewSeller: Boolean)
+    private fun mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel, isNewSellerProjection: Boolean)
             : ItemStatusRMUiModel {
         val updateDate = DateFormatUtils.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT, shopInfoPeriodUiModel.periodEndDate)
         return ItemStatusRMUiModel(updateDatePotential = updateDate,
                 titleRMEligible =
-                if (isNewSeller)
+                if (isNewSellerProjection)
                     context?.getString(R.string.title_header_rm_section_new_seller).orEmpty()
                 else
                     context?.getString(R.string.title_header_rm_section).orEmpty(),
-                descRMEligible = if (isNewSeller)
+                descRMEligible = if (isNewSellerProjection)
                     context?.getString(R.string.desc_potential_rm_section_new_seller).orEmpty()
                 else
                     context?.getString(R.string.desc_potential_eligible_power_merchant, updateDate).orEmpty()

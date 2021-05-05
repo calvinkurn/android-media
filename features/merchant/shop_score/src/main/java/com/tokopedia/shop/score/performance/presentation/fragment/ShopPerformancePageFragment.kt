@@ -144,8 +144,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 shopLevel = level,
                 shopIncome = shopLevelData?.niv?.toString().orEmpty(),
                 productSold = shopLevelData?.itemSold.toString(),
-                period = shopLevelData?.period.toString(),
-                nextUpdate = shopLevelData?.nextUpdate.toString())
+                period = shopLevelData?.period.orEmpty(),
+                nextUpdate = shopLevelData?.nextUpdate ?: "-")
         bottomSheetShopTooltipLevel.show(childFragmentManager)
     }
 
