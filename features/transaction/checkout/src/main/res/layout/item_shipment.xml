@@ -32,7 +32,7 @@
 
             <include
                 layout="@layout/item_shipment_other_product"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
             <!--Shipping: Shipping Experience-->
             <include

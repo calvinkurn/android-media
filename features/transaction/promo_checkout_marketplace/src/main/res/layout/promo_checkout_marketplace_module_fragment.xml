@@ -34,8 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/container_action_bottom"
-            android:layout_below="@+id/app_bar_layout"
-            android:background="@color/Unify_N50">
+            android:layout_below="@+id/app_bar_layout">
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipe_refresh_layout"
