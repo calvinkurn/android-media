@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.R
-import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationRefundAdapter
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationRefund
+import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationRefundAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import java.util.*
 
