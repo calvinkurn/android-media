@@ -33,6 +33,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
@@ -769,7 +770,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun showSetDeliveredDialog() {
         secondaryBottomSheet?.dismiss()
         context?.let { ctx ->
-            val dialog = DialogUnify(ctx, HORIZONTAL_ACTION, NO_IMAGE)
+            val dialog = DialogUnify(ctx, HORIZONTAL_ACTION, NO_IMAGE).apply {
+                if (DeviceScreenInfo.isTablet(context)) {
+                    dialogMaxWidth = getScreenWidth() / 2
+                }
+            }
             val gqlQuery = GraphqlHelper.loadRawString(resources, R.raw.som_set_delivered)
 
             val dialogView = View.inflate(ctx, R.layout.dialog_set_delivered, null).apply {
@@ -806,6 +811,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun showFreeShippingAcceptOrderDialog(orderId: String) {
         view?.context?.let {
             val dialogUnify = DialogUnify(it, HORIZONTAL_ACTION, NO_IMAGE).apply {
+                if (DeviceScreenInfo.isTablet(context)) {
+                    dialogMaxWidth = getScreenWidth() / 2
+                }
                 setUnlockVersion()
                 val dialogView = View.inflate(it, R.layout.dialog_accept_order_free_shipping_som, null).apply {
                     val msgReguler1 = getString(R.string.confirm_msg_1a)

@@ -3,7 +3,9 @@ package com.tokopedia.sellerorder.common.presenter.bottomsheet
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
@@ -99,6 +101,9 @@ class SomOrderRequestCancelBottomSheet(context: Context) : SomBottomSheet(contex
             primaryButtonClickAction: () -> Unit) {
         context?.run {
             DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                if (DeviceScreenInfo.isTablet(context)) {
+                    dialogMaxWidth = getScreenWidth() / 2
+                }
                 setTitle(title)
                 setDescription(description)
                 setPrimaryCTAText(primaryButtonText)
