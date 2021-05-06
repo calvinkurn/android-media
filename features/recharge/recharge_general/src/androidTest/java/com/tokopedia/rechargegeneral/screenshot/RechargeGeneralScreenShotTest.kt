@@ -123,8 +123,8 @@ class RechargeGeneralScreenShotTest {
         )
 
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            val frameLayout = mActivityRule.activity.findViewById<FrameLayout>(R.id.parent_view)
-            takeScreenShotVisibleViewInScreen(frameLayout, filePrefix(), "favorite_number")
+            val frameLayout = mActivityRule.activity.findViewById<FrameLayout>(com.tokopedia.common.topupbills.R.id.parent_view)
+            takeScreenShotVisibleViewInScreen(frameLayout, filePrefix(), "favorite_number_new")
         }
 
         Thread.sleep(1000)
@@ -160,15 +160,11 @@ class RechargeGeneralScreenShotTest {
                         1, ViewActions.click()
                 )
         )
-
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "visible_screen_pdp_2")
-        }
     }
 
     private fun see_promo() {
         findViewAndScreenShot(R.id.product_view_pager, filePrefix(), "view_pager")
-        findViewAndScreenShot(R.id.tab_layout, filePrefix(), "view_pager")
+        findViewAndScreenShot(R.id.tab_layout, filePrefix(), "tab_layout")
     }
 
     private fun filePrefix() = "recharge_general"
