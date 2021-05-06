@@ -10,8 +10,8 @@ import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.categorylist.presentation.adapter.TokoMartCategoryListAdapter
 import com.tokopedia.tokomart.categorylist.presentation.adapter.TokoMartCategoryListAdapterTypeFactory
 import com.tokopedia.tokomart.categorylist.presentation.adapter.decoration.TokoMartCategoryListDecoration
+import com.tokopedia.tokomart.categorylist.presentation.adapter.differ.TokoMartCategoryListDiffer
 import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListItemUiModel
-import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
 import kotlinx.android.synthetic.main.item_tokomart_category_child.view.imageCategory
 import kotlinx.android.synthetic.main.item_tokomart_category_child.view.textTitle
 import kotlinx.android.synthetic.main.item_tokomart_category_list.view.*
@@ -26,7 +26,7 @@ class CategoryListItemViewHolder(itemView: View) : AbstractViewHolder<CategoryLi
     private val adapter by lazy {
         TokoMartCategoryListAdapter(
             TokoMartCategoryListAdapterTypeFactory(),
-            TokoMartHomeListDiffer()
+            TokoMartCategoryListDiffer()
         )
     }
 

@@ -1,9 +1,11 @@
 package com.tokopedia.tokomart.categorylist.presentation.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeSectionUiModel
+import com.tokopedia.tokomart.base.adapter.BaseTokoMartDiffer
+import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListChildUiModel
+import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListItemUiModel
 
-class TokoMartCategoryListDiffer: TokoMartCategoryDiffer() {
+class TokoMartCategoryListDiffer : BaseTokoMartDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
     private var newList: List<Visitable<*>> = emptyList()
 
@@ -11,7 +13,9 @@ class TokoMartCategoryListDiffer: TokoMartCategoryDiffer() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return if(oldItem is HomeSectionUiModel && newItem is HomeSectionUiModel) {
+        return if (oldItem is CategoryListItemUiModel && newItem is CategoryListItemUiModel) {
+            oldItem.id == newItem.id
+        } else if (oldItem is CategoryListChildUiModel && newItem is CategoryListChildUiModel) {
             oldItem.id == newItem.id
         } else {
             oldItem == newItem
@@ -29,7 +33,7 @@ class TokoMartCategoryListDiffer: TokoMartCategoryDiffer() {
     override fun create(
         oldList: List<Visitable<*>>,
         newList: List<Visitable<*>>
-    ): TokoMartCategoryDiffer {
+    ): BaseTokoMartDiffer {
         this.oldList = oldList
         this.newList = newList
         return this

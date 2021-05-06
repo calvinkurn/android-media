@@ -14,8 +14,8 @@ import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.categorylist.di.component.DaggerTokoMartCategoryListComponent
 import com.tokopedia.tokomart.categorylist.presentation.adapter.TokoMartCategoryListAdapter
 import com.tokopedia.tokomart.categorylist.presentation.adapter.TokoMartCategoryListAdapterTypeFactory
+import com.tokopedia.tokomart.categorylist.presentation.adapter.differ.TokoMartCategoryListDiffer
 import com.tokopedia.tokomart.categorylist.presentation.viewmodel.TokoMartCategoryListViewModel
-import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_tokomart_category_list.*
@@ -37,7 +37,7 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify() {
     private val adapter by lazy {
         TokoMartCategoryListAdapter(
             TokoMartCategoryListAdapterTypeFactory(),
-            TokoMartHomeListDiffer()
+            TokoMartCategoryListDiffer()
         )
     }
 

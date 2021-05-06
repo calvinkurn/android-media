@@ -1,10 +1,10 @@
 package com.tokopedia.tokomart.categorylist.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokomart.home.base.adapter.BaseHomeListAdapter
-import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
+import com.tokopedia.tokomart.base.adapter.BaseTokoMartListAdapter
+import com.tokopedia.tokomart.categorylist.presentation.adapter.differ.TokoMartCategoryListDiffer
 
 class TokoMartCategoryListAdapter(
     typeFactory: TokoMartCategoryListAdapterTypeFactory,
-    differ: TokoMartHomeListDiffer
-): BaseHomeListAdapter<Visitable<*>, TokoMartCategoryListAdapterTypeFactory>(typeFactory, differ)
+    differ: TokoMartCategoryListDiffer
+) : BaseTokoMartListAdapter<Visitable<*>, TokoMartCategoryListAdapterTypeFactory>(typeFactory, differ)
