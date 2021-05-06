@@ -58,6 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_lvl2"
                     android:text="@string/emoney_card_info_label_card_number"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3" />
 
                 <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -72,7 +73,7 @@
                     android:id="@+id/text_card_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700"
+                    android:textColor="@color/Unify_N700_96"
                     app:typographyWeight="bold"
                     app:typographyType="body_2"
                     tools:text="1234 - 1234 - 1234 - 1234" />
@@ -109,6 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_lvl2"
                 android:gravity="center"
+                android:textColor="@color/Unify_N700_68"
                 android:text="@string/emoney_card_info_label_card_balance"
                 app:typographyType="body_3"
                 />

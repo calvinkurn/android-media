@@ -117,12 +117,10 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
             }
         })
 
-        nfcDisabledView.setListener(object : NFCDisabledView.OnActivateNFCClickListener {
-            override fun onClick() {
-                emoneyAnalytics.onClickActivateNFC()
-                navigateToNFCSettings()
-            }
-        })
+        nfcDisabledView.buttonActivateNFC.setOnClickListener {
+            emoneyAnalytics.onClickActivateNFC()
+            navigateToNFCSettings()
+        }
 
         emoneyAnalytics.openScreenNFC(operatorName, userSession.userId, irisSessionId)
     }

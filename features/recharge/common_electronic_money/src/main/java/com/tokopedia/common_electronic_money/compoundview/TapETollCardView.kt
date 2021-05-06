@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.common_electronic_money.R
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -92,11 +93,11 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
     }
 
     fun showErrorDeviceUnsupportedState(errorMessage: String) {
-        textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
-        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
+        textTitle.text = resources.getString(R.string.emoney_nfc_device_not_support)
         textLabel.text = errorMessage
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE
+        imageviewError.loadImage(resources.getString(R.string.emoney_nfc_not_found), R.drawable.emoney_ic_nfc_inactive_placeholder)
         buttonTryAgain.visibility = View.GONE
     }
 

@@ -11,14 +11,18 @@
     <string name="emoney_toolbar_title_etoll_check_balance">Cek Saldo</string>
     <string name="emoney_card_info_is_not_available_yet">Belum Tersedia</string>
     <string name="emoney_nfc_permission_rationale_message" translatable="false">Aplikasi ini membutuhkan izin untuk mengakses NFC</string>
-    <string name="emoney_nfc_not_supported">Perangkat tidak didukung, aplikasi ini membutuhkan NFC</string>
+    <string name="emoney_nfc_not_supported">Coba cek saldo di fasilitas lain sesuai penyedia kartu kamu, ya.</string>
     <string name="emoney_nfc_feature_unavailable">Fitur ini belum tersedia</string>
     <string name="emoney_button_topup">Top-up E-Money</string>
-    <string name="emoney_nfc_is_not_activated_label">NFC pada smartphone belum diaktifkan, silakan tekan tombol dibawah</string>
+    <string name="emoney_nfc_is_not_activated_label">Pastikan fungsi NFC di HP kamu sudah aktif untuk cek saldo.</string>
+    <string name="emoney_nfc_is_not_activated_title">Aktifkan NFC kamu dulu</string>
     <string name="emoney_activate_nfc">Aktifkan NFC</string>
     <string name="emoney_nfc_tap_card_button_label_error">Coba Lagi</string>
 
     <string name="emoney_nfc_grpc_timeout">grpc timeout</string>
     <string name="emoney_nfc_grpc_label_error">Oops, ada kendala koneksi. Coba lagi, yuk.</string>
-    <string name="emoney_nfc_date_format">(%s)</string>
+    <string name="emoney_nfc_device_not_support">Yaah, HP-mu nggak dukung fitur NFC</string>
+
+    <string name="emoney_nfc_inactive_link">https://images.tokopedia.net/img/emoney_revamp_nfc_inactive_fourx.png</string>
+    <string name="emoney_nfc_not_found">https://images.tokopedia.net/img/emoney_revamp_device_not_nfc.png</string>
 </resources>
