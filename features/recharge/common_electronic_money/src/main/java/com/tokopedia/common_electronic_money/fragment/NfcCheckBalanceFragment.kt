@@ -182,6 +182,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
         if (eTollUpdateBalanceResultView.visibility == View.VISIBLE) {
             eTollUpdateBalanceResultView.showError(updatedErrorMessage)
+            //todo check error here
         } else {
             tapETollCardView.visibility = View.VISIBLE
             tapETollCardView.showInitialState()
