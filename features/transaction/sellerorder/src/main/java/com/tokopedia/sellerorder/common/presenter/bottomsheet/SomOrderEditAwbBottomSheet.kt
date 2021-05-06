@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.crashlytics.internal.common.CommonUtils.hideKeyboard
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
@@ -25,20 +26,22 @@ class SomOrderEditAwbBottomSheet(context: Context) : SomBottomSheet(context) {
             tf_cancel_notes?.clearFocus()
             tf_cancel_notes?.setLabelStatic(true)
             tf_cancel_notes?.setMessage(context.getString(R.string.change_no_resi_notes))
-            tf_cancel_notes?.textFieldInput?.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    btnContainer?.let {
-                        val layoutParams = it.layoutParams
-                        layoutParams.height = layoutParams.height + getKeyboardHeightEstimation()
-                        it.layoutParams = layoutParams
+            if (DeviceScreenInfo.isTablet(context)) {
+                tf_cancel_notes?.textFieldInput?.setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        btnContainer?.let {
+                            val layoutParams = it.layoutParams
+                            layoutParams.height = layoutParams.height + getKeyboardHeightEstimation()
+                            it.layoutParams = layoutParams
+                        }
+                    } else {
+                        btnContainer?.let {
+                            val layoutParams = it.layoutParams
+                            layoutParams.height = layoutParams.height - getKeyboardHeightEstimation()
+                            it.layoutParams = layoutParams
+                        }
+                        hideKeyboard(context, tf_cancel_notes?.rootView)
                     }
-                } else {
-                    btnContainer?.let {
-                        val layoutParams = it.layoutParams
-                        layoutParams.height = layoutParams.height - getKeyboardHeightEstimation()
-                        it.layoutParams = layoutParams
-                    }
-                    hideKeyboard(context, tf_cancel_notes?.rootView)
                 }
             }
             tf_cancel_notes?.textFieldInput?.hint = context.getString(R.string.change_no_resi_hint)
