@@ -18,7 +18,6 @@ import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.notif.data.SignResult
-import com.tokopedia.otp.notif.view.fragment.ReceiverNotifFragment
 import com.tokopedia.otp.qrcode.domain.pojo.VerifyQrData
 import com.tokopedia.otp.qrcode.view.viewbinding.LoginByQrViewBinding
 import com.tokopedia.otp.qrcode.viewmodel.LoginByQrViewModel
@@ -26,6 +25,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import java.security.KeyPair
 import javax.inject.Inject
 
 class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
@@ -36,6 +36,8 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var analytics: TrackingOtpUtil
+
+    private lateinit var keyPair: KeyPair
 
     private var uuid: String = ""
 
@@ -101,11 +103,11 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
 
         viewBound.approveButton?.setOnClickListener {
             analytics.trackClickApprovedApprovalPage()
-            verifyQrCode(uuid, "approved")
+            verifyQrCode(uuid, STATUS_APPROVE)
         }
         viewBound.rejectButton?.setOnClickListener {
             analytics.trackClickRejectedApprovalPage()
-            verifyQrCode(uuid, "rejected")
+            verifyQrCode(uuid, STATUS_REJECT)
         }
     }
 
@@ -121,7 +123,11 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
     private fun signDataVerifyQr(uuid: String, status: String): SignResult {
         val datetime = (System.currentTimeMillis() / 1000).toString()
         val data = uuid + status
-        return SignatureUtil.signData(data, datetime, LOGIN_QR_ALIAS)
+        return if(SignatureUtil.generateKey(LOGIN_QR_ALIAS) != null) {
+            SignatureUtil.signData(data, datetime, LOGIN_QR_ALIAS)
+        } else {
+            SignResult()
+        }
     }
 
     private fun onSuccessVerifyQr(): (VerifyQrData) -> Unit {
@@ -166,6 +172,8 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
 
         private const val LOGIN_QR_ALIAS = "LoginByQr"
         private const val PARAM_DATA = "data"
+        private const val STATUS_APPROVE = "approve"
+        private const val STATUS_REJECT = "reject"
 
         fun createInstance(bundle: Bundle): LoginByQrFragment {
             val fragment = LoginByQrFragment()

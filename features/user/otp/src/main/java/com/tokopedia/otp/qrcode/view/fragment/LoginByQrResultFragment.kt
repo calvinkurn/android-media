@@ -4,18 +4,19 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
+import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.qrcode.view.viewbinding.LoginByQrResultViewBinding
-import com.tokopedia.otp.qrcode.viewmodel.LoginByQrViewModel
 import javax.inject.Inject
 
-class LoginByQrResultFragment: BaseOtpToolbarFragment(), IOnBackPressed {
+class LoginByQrResultFragment : BaseOtpToolbarFragment(), IOnBackPressed {
+
+    @Inject
+    lateinit var analytics: TrackingOtpUtil
 
     private var imglink: String = ""
     private var messageTitle: String = ""
@@ -41,7 +42,14 @@ class LoginByQrResultFragment: BaseOtpToolbarFragment(), IOnBackPressed {
         initView()
     }
 
-    override fun onBackPressed(): Boolean = true
+    override fun onBackPressed(): Boolean {
+        if (status == SUCCESS_STATUS) {
+            analytics.trackClickCloseApprovalApprovedPage()
+        } else {
+            analytics.trackClickCloseApprovalExpiredPage()
+        }
+        return true
+    }
 
     private fun initVar() {
         arguments?.run {
@@ -57,13 +65,27 @@ class LoginByQrResultFragment: BaseOtpToolbarFragment(), IOnBackPressed {
         (activity as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_cancel_grey_otp)
         viewBound.title?.text = messageTitle
         viewBound.subtitle?.text = messageBody
-        viewBound.btnMain?.text = getText(R.string.close_result_push_notif)
+        viewBound.mainImage?.setImageUrl(imglink)
+        viewBound.btnMain?.text = ctaType
         viewBound.btnMain?.setOnClickListener {
+            if (status == SUCCESS_STATUS) {
+                analytics.trackClickTutupApprovalApprovedPage()
+            } else {
+                analytics.trackClickScanApprovalExpiredPage()
+            }
             activity?.finish()
+        }
+
+        if (status == SUCCESS_STATUS) {
+            analytics.trackViewApprovalApprovedPage()
+        } else {
+            analytics.trackViewApprovalExpiredPage()
         }
     }
 
     companion object {
+
+        private const val SUCCESS_STATUS = "success2"
 
         fun createInstance(bundle: Bundle): LoginByQrResultFragment {
             val fragment = LoginByQrResultFragment()

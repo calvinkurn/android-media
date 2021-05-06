@@ -41,6 +41,6 @@ class VerifyQrUseCase @Inject constructor(
     companion object {
         private const val PARAM_DATA = "data"
         private const val PARAM_STATUS = "status"
-        private const val PARAM_SIGNATURE = "param_signature"
+        private const val PARAM_SIGNATURE = "signature"
     }
 }

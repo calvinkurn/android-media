@@ -1,13 +1,12 @@
 package com.tokopedia.otp.common
 
 import android.os.Build
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 import android.util.Base64
 import androidx.annotation.RequiresApi
 import com.tokopedia.otp.notif.data.SignResult
-import java.security.KeyStore
-import java.security.PrivateKey
-import java.security.PublicKey
-import java.security.Signature
+import java.security.*
 
 object SignatureUtil {
 
@@ -15,6 +14,21 @@ object SignatureUtil {
     private const val PUBLIC_KEY_PREFIX = "-----BEGIN PUBLIC KEY-----\n"
     private const val PUBLIC_KEY_SUFFIX = "\n-----END PUBLIC KEY-----"
     private const val ANDROID_KEY_STORE = "AndroidKeyStore"
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun generateKey(alias: String): KeyPair? {
+        val keyPairGenerator: KeyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, ANDROID_KEY_STORE)
+
+        val parameterSpec: KeyGenParameterSpec = KeyGenParameterSpec.Builder(alias,
+                KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY).run {
+            setDigests(KeyProperties.DIGEST_SHA256)
+            setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
+            build()
+        }
+
+        keyPairGenerator.initialize(parameterSpec)
+        return keyPairGenerator.genKeyPair()
+    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun signData(data: String, datetime: String, alias: String): SignResult {

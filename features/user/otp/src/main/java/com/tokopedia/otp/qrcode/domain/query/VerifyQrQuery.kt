@@ -8,7 +8,7 @@ object VerifyQrQuery {
 
     val query: String = """
         query verify_qr($data: String!, $signature: String!, $status: String!){
-            VerifyQR(data: $data, signature: $signature, status: $status) {
+            VerifyQR(data: $data, signature: $signature, status: $status, otpType:"152") {
                 success
                 message
                 errorMessage
