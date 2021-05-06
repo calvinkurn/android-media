@@ -152,7 +152,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         SearchListener, BroadcastSpamHandlerViewHolder.Listener,
         RoomSettingFraudAlertViewHolder.Listener, ReviewViewHolder.Listener,
         TopchatProductAttachmentListener, UploadImageBroadcastListener,
-        SrwQuestionViewHolder.Listener, SrwLinearLayout.Listener, ReplyBoxTextListener {
+        SrwQuestionViewHolder.Listener, ReplyBoxTextListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -243,7 +243,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initSrw() {
-        rvSrw?.initialize(this, this)
+        rvSrw?.initialize(this, object : SrwLinearLayout.Listener {
+            override fun onRetrySrw() {
+                presenter.getSmartReplyWidget(messageId)
+            }
+            override fun trackViewSrw() {
+                analytics.eventViewSrw(shopId, session.userId)
+            }
+            override fun onExpandStateChanged(isExpanded: Boolean) {
+                if (isExpanded) {
+                    getViewState().hideKeyboard()
+                }
+            }
+        })
     }
 
     private fun initUserLocation() {
@@ -594,14 +606,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (!isSeller()) {
             presenter.getSmartReplyWidget(messageId)
         }
-    }
-
-    override fun onRetrySrw() {
-        presenter.getSmartReplyWidget(messageId)
-    }
-
-    override fun trackViewSrw() {
-        analytics.eventViewSrw(shopId, session.userId)
     }
 
     private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
