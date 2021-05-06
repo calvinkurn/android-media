@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.R
@@ -28,23 +29,23 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_MOVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
-import com.tokopedia.topads.dashboard.data.model.GroupListDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity
-import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemViewModel
-import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupViewModel
+import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemModel
+import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupModel
 import com.tokopedia.topads.dashboard.view.adapter.product.ProductAdapter
 import com.tokopedia.topads.dashboard.view.adapter.product.ProductAdapterTypeFactoryImpl
-import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemModel
+import com.tokopedia.topads.dashboard.view.interfaces.FetchDate
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.MovetoGroupSheetList
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.actionbar
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_list.loader
+import kotlinx.android.synthetic.main.topads_dash_fragment_non_group_list.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.coroutines.CoroutineScope
@@ -61,7 +62,6 @@ private const val CLICK_TAMBAH_PRODUK = "click - tambah produk"
 
 class ProductTabFragment : BaseDaggerFragment() {
 
-
     private lateinit var adapter: ProductAdapter
     private var totalProductCount = -1
     private var singleAction = false
@@ -73,6 +73,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     private var totalPage = 0
     private var currentPageNum = 1
     private var adIds: MutableList<String> = mutableListOf()
+    private lateinit var loader: LoaderUnify
 
     companion object {
         fun createInstance(bundle: Bundle): ProductTabFragment {
@@ -94,14 +95,10 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private val groupFilterSheet: TopadsGroupFilterSheet by lazy {
-        context.run {
-            TopadsGroupFilterSheet.newInstance(context!!)
-        }
+        TopadsGroupFilterSheet.newInstance(context)
     }
     private val movetoGroupSheet: MovetoGroupSheetList by lazy {
-        context.run {
-            MovetoGroupSheetList.newInstance(context!!)
-        }
+        MovetoGroupSheetList.newInstance(requireContext())
     }
 
     override fun getScreenName(): String {
@@ -120,6 +117,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_product_list), container, false)
         recyclerView = view.findViewById(R.id.product_list)
+        loader = view.findViewById(R.id.loader)
         setAdapter()
         return view
     }
@@ -148,10 +146,10 @@ class ProductTabFragment : BaseDaggerFragment() {
         loader.visibility = View.VISIBLE
         val startDate = getDateCallBack?.getStartDate() ?: ""
         val endDate = getDateCallBack?.getEndDate() ?: ""
-        viewModel.getGroupProductData(resources, page, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
-                ?: 0, searchBar?.searchBarTextField?.text.toString(),
-                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId()
-                , startDate, endDate, ::onProductFetch, ::onEmptyProduct)
+        viewModel.getGroupProductData(page, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
+                ?: 0, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                groupFilterSheet.getSelectedStatusId(), startDate
+                , endDate, onSuccess = ::onProductFetch, onEmpty = ::onEmptyProduct)
     }
 
 
@@ -159,7 +157,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         fetchData()
         btnFilter.setOnClickListener {
-            groupFilterSheet.show()
+            groupFilterSheet.show(childFragmentManager, "")
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
 
@@ -183,7 +181,9 @@ class ProductTabFragment : BaseDaggerFragment() {
             }
         }
         delete.setOnClickListener {
-            showConfirmationDialog(context!!)
+            context?.let {
+                showConfirmationDialog(it)
+            }
         }
         btnAddItem.setOnClickListener {
             startEditActivity()
@@ -235,22 +235,22 @@ class ProductTabFragment : BaseDaggerFragment() {
 
     fun fetchgroupList(search: String) {
         movetoGroupSheet.updateData(mutableListOf())
-        viewModel.getGroupList(resources, search, ::onSuccessGroupList)
+        viewModel.getGroupList(search, ::onSuccessGroupList)
     }
 
     private fun onSuccessGroupList(list: List<GroupListDataItem>) {
-        val groupList: MutableList<MovetoGroupViewModel> = mutableListOf()
+        val groupList: MutableList<MovetoGroupModel> = mutableListOf()
         val groupIds: MutableList<String> = mutableListOf()
 
         list.forEach {
             if (it.groupName != arguments?.getString(TopAdsDashboardConstant.GROUP_NAME)) {
-                groupList.add(MovetoGroupItemViewModel(it))
-                groupIds.add(it.groupId.toString())
+                groupList.add(MovetoGroupItemModel(it))
+                groupIds.add(it.groupId)
             }
         }
         if (list.isEmpty()) {
             movetoGroupSheet.setButtonDisable()
-            groupList.add(MovetoGroupEmptyViewModel())
+            groupList.add(MovetoGroupEmptyModel())
         } else
             viewModel.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
         movetoGroupSheet.updateData(groupList)
@@ -276,7 +276,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         else
             ACTION_DEACTIVATE
         viewModel.setProductAction(::onSuccessAction, actionActivate,
-                listOf((adapter.items[pos] as ProductItemViewModel).data.adId.toString()), resources, null)
+                listOf((adapter.items[pos] as ProductItemModel).data.adId.toString()), resources, null)
     }
 
     private fun onSuccessAction() {
@@ -306,9 +306,9 @@ class ProductTabFragment : BaseDaggerFragment() {
         val startDate = getDateCallBack?.getStartDate() ?: ""
         val endDate = getDateCallBack?.getEndDate() ?: ""
 
-        viewModel.getGroupProductData(resources, 1, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
-                ?: 0, searchBar?.searchBarTextField?.text.toString(),
-                groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(), startDate, endDate, ::onProductFetch, ::onEmptyProduct)
+        viewModel.getGroupProductData(1, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
+                ?: 0, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                groupFilterSheet.getSelectedStatusId(), startDate, endDate, onSuccess = ::onProductFetch, onEmpty = ::onEmptyProduct)
     }
 
     private fun onProductFetch(response: NonGroupResponse.TopadsDashboardGroupProducts) {
@@ -327,12 +327,13 @@ class ProductTabFragment : BaseDaggerFragment() {
         }
         response.data.forEach {
             adIds.add(it.adId.toString())
-            adapter.items.add(ProductItemViewModel(it))
+            adapter.items.add(ProductItemModel(it))
         }
         if (adIds.isNotEmpty()) {
             val startDate = getDateCallBack?.getStartDate() ?: ""
             val endDate = getDateCallBack?.getEndDate() ?: ""
-            viewModel.getProductStats(resources, startDate, endDate, adIds, ::onSuccessStats)
+            viewModel.getProductStats(resources, startDate, endDate, adIds, ::onSuccessStats, groupFilterSheet.getSelectedSortId(),
+                    groupFilterSheet.getSelectedStatusId())
         }
         setFilterCount()
         (activity as TopAdsGroupDetailViewActivity).setProductCount(totalCount)
@@ -351,7 +352,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private fun onEmptyProduct() {
-        adapter.items.add(ProductEmptyViewModel())
+        adapter.items.add(ProductEmptyModel())
         (activity as TopAdsGroupDetailViewActivity).setProductCount(0)
         adapter.notifyDataSetChanged()
         setFilterCount()
@@ -406,9 +407,5 @@ class ProductTabFragment : BaseDaggerFragment() {
         getDateCallBack = null
     }
 
-    interface FetchDate {
-        fun getStartDate(): String
-        fun getEndDate(): String
-    }
 
 }

@@ -20,7 +20,9 @@ data class SellerMenuNotificationResponse(
         @SerializedName("newOrder")
         val newOrder: Int,
         @SerializedName("readyToShip")
-        val readyToShip: Int
+        val readyToShip: Int,
+        @SerializedName("inResolution")
+        val inResolution: Int
     )
 
     data class NotifCenterTotalUnread(

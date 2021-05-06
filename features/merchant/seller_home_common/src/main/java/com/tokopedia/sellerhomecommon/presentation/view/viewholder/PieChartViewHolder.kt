@@ -49,7 +49,7 @@ class PieChartViewHolder(
             data == null -> setOnLoading()
             data.error.isNotBlank() -> {
                 setOnError()
-                listener.setOnErrorWidget(adapterPosition, element)
+                listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> setOnSuccess(element)
         }
@@ -93,7 +93,7 @@ class PieChartViewHolder(
             tvPieChartValue.gone()
             tvPieChartSubValue.gone()
 
-            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+            ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         }
     }
 

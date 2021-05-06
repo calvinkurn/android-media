@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class ProductrevGetReviewDetailReview(
         @SerializedName("feedbackID")
         @Expose
-        val feedbackId: Int = 0,
+        val feedbackId: Long = 0,
         @SerializedName("rating")
         @Expose
         val rating: Int = 0,

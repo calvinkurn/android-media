@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="?toolbarTheme"
+            app:titleTextColor="@color/Unify_N700"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
@@ -30,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 style="@style/TextView.Title.Green"
-                android:text="@string/label_next"
+                android:text="@string/label_next_short"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_8"
                 android:paddingLeft="@dimen/dp_8"
@@ -79,7 +80,7 @@
                 android:divider="@drawable/bg_line_separator"
                 android:showDividers="end">
 
-                <com.tokopedia.imagepicker.picker.gallery.widget.SquareFrameLayout
+                <com.tokopedia.imagepicker.common.widget.SquareFrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -98,7 +99,7 @@
                         android:indeterminate="true"
                         android:visibility="gone"
                         tools:visibility="visible" />
-                </com.tokopedia.imagepicker.picker.gallery.widget.SquareFrameLayout>
+                </com.tokopedia.imagepicker.common.widget.SquareFrameLayout>
             </LinearLayout>
 
             <FrameLayout
@@ -232,6 +233,7 @@
                             android:paddingTop="@dimen/dp_20"
                             android:paddingBottom="@dimen/dp_20"
                             android:textSize="@dimen/sp_18"
+                            android:textColor="@color/Unify_N700"
                             android:text="@string/image_picker_label_cancel"
                             android:clickable="true"
                             android:focusable="true"/>
@@ -280,6 +282,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
+                android:textColor="@color/Unify_N700"
                 android:text="@string/downloading_images" />
         </LinearLayout>
 

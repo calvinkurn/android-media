@@ -17,7 +17,7 @@ class ImageReviewGalleryActivity : BaseSimpleActivity() {
 
     var bottomSheetImageReviewSlider: BottomSheetImageReviewSlider? = null
         private set
-    var productId: Int = 0
+    var productId: String = ""
         private set
     var defaultPosition: Int = 0
         private set
@@ -37,9 +37,9 @@ class ImageReviewGalleryActivity : BaseSimpleActivity() {
         val uri = intent.data
         if (uri != null) {
             val segments = uri.pathSegments
-            productId = segments[1].toInt()
+            productId = segments[1]
         } else {
-            productId = intent.getIntExtra(EXTRA_PRODUCT_ID, 0)
+            productId = intent.getStringExtra(EXTRA_PRODUCT_ID) ?: ""
         }
         defaultPosition = intent.getIntExtra(EXTRA_DEFAULT_POSITION, 0)
         imageUrlList = intent.getStringArrayListExtra(EXTRA_IMAGE_URL_LIST)
@@ -63,13 +63,17 @@ class ImageReviewGalleryActivity : BaseSimpleActivity() {
         return R.layout.activity_review_gallery
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.activity_review_gallery_parent_view
+    }
+
     companion object {
 
         private val EXTRA_PRODUCT_ID = "product_id"
         private val EXTRA_IMAGE_URL_LIST = "EXTRA_IMAGE_URL_LIST"
         private val EXTRA_DEFAULT_POSITION = "EXTRA_DEFAULT_POSITION"
 
-        fun moveTo(activity: Activity?, productId: Int) {
+        fun moveTo(activity: Activity?, productId: String) {
             if (activity != null) {
                 val intent = Intent(activity, ImageReviewGalleryActivity::class.java)
                 intent.putExtra(EXTRA_PRODUCT_ID, productId)

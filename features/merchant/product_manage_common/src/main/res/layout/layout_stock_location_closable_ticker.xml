@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.ticker.Ticker xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ticker"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:descriptionText="@string/product_manage_closable_stock_ticker_description"
+    app:tickerShapeType="full"
+    app:tickerType="announcement"
+    app:titleText="@string/product_manage_closable_stock_ticker_title" />

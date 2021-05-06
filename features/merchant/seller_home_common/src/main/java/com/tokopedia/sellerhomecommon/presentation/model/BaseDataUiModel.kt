@@ -5,7 +5,10 @@ package com.tokopedia.sellerhomecommon.presentation.model
  */
 
 interface BaseDataUiModel {
-    val dataKey: String
+    var dataKey: String
     var error: String
     var isFromCache: Boolean
+    val showWidget: Boolean
+
+    fun shouldRemove(): Boolean
 }

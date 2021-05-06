@@ -15,7 +15,6 @@ import javax.inject.Named
 /**
  * Author errysuprayogi on 22,October,2019
  */
-@TopAdsSheetScope
 @Module
 class TopAdsSheetModule {
 

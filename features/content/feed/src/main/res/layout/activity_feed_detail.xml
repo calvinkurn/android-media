@@ -10,18 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="@color/white"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="@style/Theme.White"
-            app:elevation="@dimen/dp_8"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
-            tools:targetApi="lollipop" />
-
         <include
             android:id="@+id/shop_info_card"
             layout="@layout/feed_detail_header" />
@@ -42,7 +30,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:clickable="true"
         android:elevation="@dimen/dp_4"
         android:focusable="true"
@@ -84,7 +72,7 @@
             android:foreground="?android:attr/selectableItemBackground"
             android:gravity="center"
             android:text="@string/see_shop"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/share_button"

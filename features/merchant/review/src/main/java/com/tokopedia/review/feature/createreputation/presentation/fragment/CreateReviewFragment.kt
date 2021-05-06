@@ -26,12 +26,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.*
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
@@ -104,13 +104,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
 
-        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Int, utmSource: String) = CreateReviewFragment().also {
+        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Long, utmSource: String) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
                 putString(REPUTATION_ID, reviewId)
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
                 putBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, isEditMode)
-                putInt(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
+                putLong(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
                 putString(ReviewConstants.PARAM_UTM_SOURCE, utmSource)
             }
         }
@@ -128,11 +128,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
     private var shouldPlayAnimation: Boolean = true
     private var reviewClickAt: Int = 0
-    private var reputationId: Int = 0
-    private var productId: Int = 0
+    private var reputationId: Long = 0
+    private var productId: Long = 0
     private var shopId: String = ""
     private var isEditMode: Boolean = false
-    private var feedbackId: Int = 0
+    private var feedbackId: Long = 0
     private var utmSource: String = ""
     private var shouldShowThankYouBottomSheet = false
     private var ovoIncentiveAmount = 0
@@ -202,11 +202,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
         CreateReviewTracking.openScreen(screenName)
 
         arguments?.let {
-            productId = it.getString(PRODUCT_ID_REVIEW, "").toIntOrNull() ?: 0
+            productId = it.getString(PRODUCT_ID_REVIEW, "").toLongOrZero()
             reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
-            reputationId = it.getString(REPUTATION_ID, "").toIntOrNull() ?: 0
+            reputationId = it.getString(REPUTATION_ID, "").toLongOrZero()
             isEditMode = it.getBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, false)
-            feedbackId = it.getInt(ReviewConstants.PARAM_FEEDBACK_ID, 0)
+            feedbackId = it.getLong(ReviewConstants.PARAM_FEEDBACK_ID, 0)
             utmSource = it.getString(ReviewConstants.PARAM_UTM_SOURCE, "")
         }
 
@@ -372,19 +372,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
     override fun onAddImageClick() {
         clearFocusAndHideSoftInput(view)
         context?.let {
-            val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_CAMERA, ImagePickerTabTypeDef.TYPE_GALLERY),
-                    GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, false,
-                    ImagePickerEditorBuilder(
-                            intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
-                                    ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
-                            false, null),
-                    ImagePickerMultipleSelectionBuilder(
-                            createReviewViewModel.getSelectedImagesUrl(), null, -1, 5
-                    ))
-
-            val intent = ImagePickerActivity.getIntent(it, builder)
+            val builder = ImagePickerBuilder.getSquareImageBuilder(it)
+                    .withSimpleEditor()
+                    .withSimpleMultipleSelection(initialImagePathList = createReviewViewModel.getSelectedImagesUrl())
+                    .apply {
+                        title = getString(R.string.image_picker_title)
+                    }
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
+            intent.putImagePickerBuilder(builder)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
@@ -458,10 +453,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
         when (requestCode) {
             REQUEST_CODE_IMAGE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-                    val originalImageUrl = data.getStringArrayListExtra(ImageEditorActivity.RESULT_PREVIOUS_IMAGE)
-                    val isEdited = data.getSerializableExtra(ImageEditorActivity.RESULT_IS_EDITTED) as ArrayList<Boolean>
-
+                    val result = ImagePickerResultExtractor.extract(data)
+                    val selectedImage = result.imageUrlOrPathList
+                    val imagesFedIntoPicker = result.imagesFedIntoPicker
                     createReviewViewModel.clearImageData()
 
                     CreateReviewTracking.reviewOnImageUploadTracker(
@@ -474,7 +468,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     )
 
                     if (!selectedImage.isNullOrEmpty()) {
-                        val imageListData = createReviewViewModel.getAfterEditImageList(selectedImage, originalImageUrl, isEdited)
+                        val imageListData = createReviewViewModel.getAfterEditImageList(selectedImage, imagesFedIntoPicker)
                         imageAdapter.setImageReviewData(imageListData)
                         rv_img_review.show()
                         createReviewAddPhotoEmpty.hide()
@@ -495,7 +489,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         createReviewViewModel.getReviewDetails(feedbackId)
     }
 
-    private fun getIncentiveOvoData(productId: Int = 0, reputationId: Int = 0) {
+    private fun getIncentiveOvoData(productId: Long = 0, reputationId: Long = 0) {
         createReviewViewModel.getProductIncentiveOvo(productId, reputationId)
     }
 
@@ -513,7 +507,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 createReviewViewModel.isUserEligible() && isReviewComplete()
         )
         if (isEditMode) {
-            createReviewViewModel.editReview(feedbackId, reputationId, productId, shopId.toIntOrZero(),
+            if(reviewMessage.isBlank()) {
+                showToasterError(getString(R.string.review_edit_blank_error))
+                return
+            }
+            createReviewViewModel.editReview(feedbackId, reputationId, productId, shopId.toLongOrZero(),
                     createReviewScore.getScore(), animatedReviewPicker.getReviewClickAt(), reviewMessage, createReviewAnonymousCheckbox.isChecked)
         } else {
             if (!isReviewComplete() && isUserEligible()) {
@@ -531,7 +529,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun submitNewReview() {
         val reviewMessage = createReviewExpandableTextArea.getText()
-        createReviewViewModel.submitReview(reputationId, productId, shopId.toIntOrZero(),
+        createReviewViewModel.submitReview(reputationId, productId, shopId.toLongOrZero(),
                 createReviewScore.getScore(), animatedReviewPicker.getReviewClickAt(), reviewMessage, createReviewAnonymousCheckbox.isChecked, utmSource)
     }
 
@@ -568,6 +566,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         stopNetworkRequestPerformanceMonitoring()
         startRenderPerformanceMonitoring()
         with(data.productrevGetForm) {
+            updateProductId(productData.productID)
             when {
                 !validToReview -> {
                     finishIfRoot(false, getString(R.string.review_pending_invalid_to_review))
@@ -993,6 +992,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
             text = incentiveHelper
             show()
         }
+    }
+
+    private fun updateProductId(productId: Long) {
+        this.productId = productId
     }
 
     fun getOrderId(): String {

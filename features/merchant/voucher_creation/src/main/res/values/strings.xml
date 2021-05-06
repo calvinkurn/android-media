@@ -29,6 +29,8 @@
     <string name="mvc_create_step_desc_voucher_period">Periode voucher</string>
     <string name="mvc_create_step_desc_voucher_review">Review voucher</string>
     <string name="mvc_create_step_desc_cashback">Cashback</string>
+    <string name="mvc_create_step_desc_voucher_information">Informasi Voucher</string>
+    <string name="mvc_create_step_desc_voucher_adjustment">Pengaturan Voucher</string>
 
     <!--Prompt back-->
     <string name="mvc_create_prompt_back_title">Yakin mau batalkan tambah voucher?</string>
@@ -157,6 +159,10 @@
     <string name="mvc_share_on_messenger_group_desription">Jangan lupa manfaatkan jaringan pribadimu! Walau terdengar konvensional, tapi cara ini ampuh juga loh! Ingat, pilih grup sesuai konteks jualanmu.</string>
     <string name="mvc_private_voucher_tips_trick_info"><![CDATA[Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.]]></string>
     <string name="mvc_public_voucher_tips_trick_info"><![CDATA[Kode promo akan tampil ditokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.]]></string>
+    <string name="mvc_voucher_recommendation_title">Rekomendasi terbaik buat voucher tokomu</string>
+    <string name="mvc_voucher_recommendation">Yuk, tingkatkan minat pembeli dengan\npakai rekomendasi voucher dibawah ini.</string>
+    <string name="mvc_voucher_recommendation_cta_title">Yuk, Gunakan Rekomendasi Voucher</string>
+    <string name="mvc_voucher_recommendation_cta">Nggak pakai ribet, tarik banyak pembeli\ndengan rekomendasi dari kami. Terapkan</string>
 
     <!-- common -->
     <string name="mvc_create_set_period">Tentukan periode voucher aktif</string>
@@ -209,7 +215,10 @@
     <string name="mvc_whatsapp">Whatsapp</string>
     <string name="mvc_line">Line</string>
     <string name="mvc_twitter">Twitter</string>
+    <string name="mvc_broadcast_chat_tkpd">Broadcast Chat Tokopedia</string>
     <string name="mvc_broadcast_chat">Broadcast Chat</string>
+    <string name="mvc_broadcast_chat_quota">Untuk %s calon pembeli</string>
+    <string name="mvc_broadcast_chat_announcement">Kini kamu bisa bagikan voucher toko lewat\n Broadcast Chat. Yuk, cobain!</string>
     <string name="mvc_others">Lainnya</string>
     <string name="mvc_rp">Rp</string>
     <string name="mvc_rb">Rb</string>
@@ -257,6 +266,7 @@
     <string name="mvc_free_delivery_alert_duplicate">Duplikat Voucher Gratis Ongkir hanya tersedia di desktop</string>
     <string name="mvc_voucher_name">Voucher %s</string>
     <string name="mvc_general_error">Oops, ada gangguan yang perlu kami bereskan.</string>
+    <string name="mvc_ic_social_media_icon">ikon sosial media</string>
 
     <!-- voucher list -->
     <string name="mvc_ongoing">Berlangsung</string>

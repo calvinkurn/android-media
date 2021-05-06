@@ -137,7 +137,7 @@ class VoucherListActivity : BaseActivity(),
     private fun setWhiteStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
-                setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.transparent))
+                setStatusBarColor(Color.TRANSPARENT)
                 setLightStatusBar(true)
             } catch (ex: Resources.NotFoundException) {
                 Timber.e(ex)

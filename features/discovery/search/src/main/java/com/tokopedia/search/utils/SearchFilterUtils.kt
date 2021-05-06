@@ -10,7 +10,8 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sortfilter.SortFilter
 
-private const val NON_FILTER_PREFIX = "srp_"
+private const val NON_FILTER_SRP_PREFIX = "srp_"
+private const val NON_FILTER_USER_PREFIX = "user_"
 internal val nonFilterParameterKeyList = setOf(
         SearchApiConst.Q,
         SearchApiConst.RF,
@@ -82,8 +83,12 @@ private fun Map.Entry<String, Any>.isNotSortAndFilterEntry(): Boolean {
 }
 
 private fun Map.Entry<String, Any>.isNotFilterAndSortKey(): Boolean {
-    return nonFilterParameterKeyList.contains(key) || key.startsWith(NON_FILTER_PREFIX)
+    return nonFilterParameterKeyList.contains(key)
+            || key.matchesWithNonFilterPrefix()
 }
+
+private fun String?.matchesWithNonFilterPrefix(): Boolean =
+        this != null && (startsWith(NON_FILTER_SRP_PREFIX) || startsWith(NON_FILTER_USER_PREFIX))
 
 private fun Map.Entry<String, Any>.isPriceFilterWithZeroValue(): Boolean {
     return (key == SearchApiConst.PMIN && value.toString() == "0")
@@ -111,18 +116,23 @@ fun Map<String, Any>.isSortHasDefaultValue(): Boolean {
     return sortValue == SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
 }
 
-internal fun getSortFilterParamsString(mapParameter: Map<String, Any>): String {
+internal fun getSortFilterParamsString(mapParameter: Map<String?, Any?>): String {
     val sortAndFilterParameter = mapParameter
-            .filter { !it.key.startsWith(NON_FILTER_PREFIX) }
+            .removeWithNonFilterPrefix()
             .minus(nonFilterParameterKeyList)
 
     return UrlParamUtils.generateUrlParamString(sortAndFilterParameter)
 }
 
-internal fun getFilterParams(mapParameter: Map<String, String>): Map<String, String> {
+private fun <T> Map<String?, T?>.removeWithNonFilterPrefix(): Map<String?, T?> =
+        filter { !it.key.matchesWithNonFilterPrefix() }
+
+@Suppress("UNCHECKED_CAST")
+internal fun getFilterParams(mapParameter: Map<String?, String?>): Map<String, String> {
     return mapParameter
-            .filter { !it.key.startsWith(NON_FILTER_PREFIX) }
+            .removeWithNonFilterPrefix()
             .minus(nonFilterParameterKeyList + listOf(SearchApiConst.OB))
+            as Map<String, String>
 }
 
 internal fun createSearchProductDefaultFilter() = Gson().fromJson(createSearchProductDefaultFilterJSON(), DynamicFilterModel::class.java)

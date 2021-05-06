@@ -5,18 +5,21 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.menu.common.R
-import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
-import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
-import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
-import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
+import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
+import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.setting_menu_list.view.*
 
 class MenuItemsViewHolder(
     itemView: View,
+    private val userSession: UserSessionInterface?,
     private val trackingListener: SettingTrackingListener,
     private val sellerMenuTracker: SellerMenuTracker?
 ) : AbstractViewHolder<MenuItemUiModel>(itemView) {
@@ -43,6 +46,7 @@ class MenuItemsViewHolder(
             } else {
                 sendSettingShopInfoImpressionTracking(element, trackingListener::sendImpressionDataIris)
             }
+            bindNotificationCounter(element.notificationCount)
             setOnClickListener {
                 element.run {
                     sendTracker(this)
@@ -56,9 +60,24 @@ class MenuItemsViewHolder(
         }
     }
 
+    private fun bindNotificationCounter(notificationCount: Int) {
+        with(itemView) {
+            if (notificationCount > 0) {
+                settingMenuCounterIcon.setNotification(
+                        notificationCount.toString(),
+                        NotificationUnify.COUNTER_TYPE,
+                        NotificationUnify.COLOR_PRIMARY)
+                settingMenuCounterIcon.show()
+            } else {
+                settingMenuCounterIcon.gone()
+            }
+        }
+    }
+
     private fun sendTracker(menuItem: MenuItemUiModel) {
         when(menuItem) {
             is SellerMenuItemUiModel -> sendClickSellerMenuEvent(menuItem)
+            is StatisticMenuItemUiModel -> sendEventClickStatisticMenuItem(userSession?.userId.orEmpty())
             else -> menuItem.sendSettingShopInfoClickTracking()
         }
     }

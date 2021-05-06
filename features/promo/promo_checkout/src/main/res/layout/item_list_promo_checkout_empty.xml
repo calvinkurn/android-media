@@ -1,0 +1,76 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_retry"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/Unify_N0"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_10">
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_weight="2" />
+    <!-- Untuk onRetry satu halaman -->
+    <ImageView
+        android:id="@+id/no_result_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:gravity="center_horizontal"
+        app:srcCompat="@drawable/ic_empty_state" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_view_empty_title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl2"
+        android:gravity="center"
+        android:maxWidth="@dimen/dp_250"
+        app:typographyType="body_1"
+        tools:text="ajasjd aiahkshj akshdkhkusdi" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_view_empty_content_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl2"
+        android:gravity="center"
+        android:maxLines="4"
+        app:typographyType="body_2"
+        tools:text="jsdjjdjhds jsjdjsjsj kihakshkjsadjs sugdjghsadhsahdghsagdh hjashasg" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_view_empty_content_item_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_20"
+        android:textColor="@color/Unify_G400"
+        android:visibility="gone"
+        app:typographyType="body_2"
+        tools:text="@string/app_name" />
+
+    <!-- text will be override programmatically -->
+    <Button
+        android:id="@+id/button_add_promo"
+        android:layout_width="@dimen/dp_150"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:background="@drawable/button_border_green"
+        android:padding="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_G400"
+        android:visibility="visible"
+        tools:text="@string/app_name" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_weight="3" />
+
+</LinearLayout>

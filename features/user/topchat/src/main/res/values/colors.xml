@@ -10,7 +10,6 @@
     <color name="color_chat_buyer">#2AB4C2</color>
     <color name="color_chat_seller">#b94a48</color>
     <color name="black_alpha_12">#26000000</color>
-    <color name="color_white_fafafa">#fafafa</color>
     <color name="color_notification">#ea212d</color>
     <color name="topchat_admin_label_text_color">#ca8600</color>
     <color name="topchat_admin_label_shape_color">#ffeaac</color>
@@ -29,11 +28,15 @@
     <color name="topchat_header_chat">#333333</color>
     <color name="topchat_charcoal_grey_68">#ae31353b</color>
     <color name="topchat_grey">#7031353B</color>
-    <color name="topchat_message_shadow">#26000000</color>
+    <color name="topchat_dms_message_shadow">#26000000</color>
     <color name="topchat_message_broadcast_item_shadow">#1E31353B</color>
     <color name="topchat_chatroom_background">#F3F5F8</color>
     <color name="topchat_invoice_price">#F531353B</color>
 
     <color name="topchat_transparent">#00000000</color>
-
+    <color name="topchat_dms_image_upload_overlay">#00eeeeee</color>
+    <color name="topchat_dms_image_upload_overlay_start_color">#50000000</color>
+    <color name="topchat_dms_black_12">#1F000000</color>
+    <color name="topchat_dms_icon_compose">#525A67</color>
+    <color name="topchat_dms_send_button_gray_bg">#DAE2ED</color>
 </resources>

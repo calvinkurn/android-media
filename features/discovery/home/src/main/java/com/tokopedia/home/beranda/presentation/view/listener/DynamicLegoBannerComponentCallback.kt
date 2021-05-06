@@ -5,6 +5,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -69,7 +70,7 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
     override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
         homeCategoryListener.putEEToIris(
                 LegoBannerTracking.getLegoBannerSixImageImpression(
-                        channelModel, parentPosition, true
+                        channelModel, parentPosition, isToIris = true
                 ) as HashMap<String, Any>
         )
     }
@@ -86,6 +87,28 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
         homeCategoryListener.putEEToIris(
                 LegoBannerTracking.getLegoBannerThreeImageImpression(
                         channelModel, parentPosition, true
+                ) as HashMap<String, Any>
+        )
+    }
+
+    override fun onSeeAllTwoImage(channelModel: ChannelModel, position: Int) {
+    }
+
+    override fun onClickGridTwoImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+        LegoBannerTracking.sendLegoBannerTwoClick(channelModel, channelGrid, position, homeCategoryListener.userId)
+        RouteManager.route(context,
+                if (channelGrid.applink.isNotEmpty())
+                    channelGrid.applink else channelGrid.url)
+    }
+
+    override fun onImpressionGridTwoImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onChannelImpressionTwoImage(channelModel: ChannelModel, parentPosition: Int) {
+        homeCategoryListener.putEEToIris(
+                LegoBannerTracking.getLegoBannerTwoImageImpression(
+                        channelModel, parentPosition, true, homeCategoryListener.userId
                 ) as HashMap<String, Any>
         )
     }

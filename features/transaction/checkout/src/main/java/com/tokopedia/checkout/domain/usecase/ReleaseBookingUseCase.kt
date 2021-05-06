@@ -1,10 +1,9 @@
 package com.tokopedia.checkout.domain.usecase
 
+import com.tokopedia.checkout.data.model.response.ReleaseBookingResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesGqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.checkout.data.model.response.ReleaseBookingResponse
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -12,7 +11,7 @@ import javax.inject.Inject
 
 class ReleaseBookingUseCase @Inject constructor(private val gql: GraphqlUseCase) {
 
-    fun execute(productId: Int): Observable<ReleaseBookingResponse> {
+    fun execute(productId: Long): Observable<ReleaseBookingResponse> {
         val param = mapOf("params" to arrayOf(
                 mapOf(
                         "product_id" to productId

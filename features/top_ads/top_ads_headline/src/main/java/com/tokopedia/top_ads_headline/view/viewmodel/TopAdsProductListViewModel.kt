@@ -8,7 +8,7 @@ import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.GetRecommendedHeadlineProductsData
 import com.tokopedia.top_ads_headline.data.TopAdsHeadlineTabModel
 import com.tokopedia.top_ads_headline.usecase.GetRecommendedHeadlineProductsUseCase
-import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetListProductUseCase
 import javax.inject.Inject
 
@@ -26,7 +26,7 @@ class TopAdsProductListViewModel @Inject constructor(private val topAdsGetListPr
     }
 
     fun getTopAdsProductList(shopId: Int, keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int, start: Int, tabId: Int?,
-                             onSuccess: ((List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) -> Unit),
+                             onSuccess: ((List<TopAdsProductModel>, eof: Boolean) -> Unit),
                              onError: ((Throwable) -> Unit)) {
         viewModelScope.launchCatchError(
                 block = {
@@ -52,12 +52,12 @@ class TopAdsProductListViewModel @Inject constructor(private val topAdsGetListPr
         )
     }
 
-    private fun getResponseInProductModel(response: GetRecommendedHeadlineProductsData): List<ResponseProductList.Result.TopadsGetListProduct.Data> {
-        val list = ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>()
+    private fun getResponseInProductModel(response: GetRecommendedHeadlineProductsData): List<TopAdsProductModel> {
+        val list = ArrayList<TopAdsProductModel>()
         response.topadsGetRecommendedHeadlineProducts.recommendedProducts.products.forEach {
-            list.add(ResponseProductList.Result.TopadsGetListProduct.Data(productID = it.id.toIntOrZero(),
+            list.add(TopAdsProductModel(productID = it.id,
                     productName = it.name, productPrice = it.priceFmt, productPriceNum = it.price, productImage = it.imageURL, productRating = it.rating.toIntOrZero(),
-                    productReviewCount = it.reviewCount.toIntOrZero(), departmentId = it.category.id.toIntOrZero(), departmentName = it.category.name, isRecommended = true
+                    productReviewCount = it.reviewCount.toIntOrZero(), departmentID = it.category.id.toIntOrZero(), departmentName = it.category.name, isRecommended = true
             ))
         }
         return list

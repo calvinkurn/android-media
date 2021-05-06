@@ -21,7 +21,7 @@ data class GetAdProductResponse(
         data class DataItem(
 
                 @field:SerializedName("itemID")
-                val itemID: Int = 0,
+                val itemID: String = "0",
 
                 @field:SerializedName("adPriceBidFmt")
                 val adPriceBidFmt: String = "",
@@ -30,7 +30,7 @@ data class GetAdProductResponse(
                 val groupName: String = "",
 
                 @field:SerializedName("adID")
-                val adID: Int = 0,
+                val adID: String = "0",
 
                 @field:SerializedName("groupID")
                 val groupID: Int = 0,

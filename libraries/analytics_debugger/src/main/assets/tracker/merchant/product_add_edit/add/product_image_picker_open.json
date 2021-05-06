@@ -1,0 +1,9 @@
+{
+  "readme": "open product image picker",
+  "mode": "subset",
+  "query": [
+    {
+      "screenName": "/addproductpage - choose photo"
+    }
+  ]
+}

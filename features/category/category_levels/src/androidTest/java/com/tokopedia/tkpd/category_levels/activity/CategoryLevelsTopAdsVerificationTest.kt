@@ -1,20 +1,23 @@
 package com.tokopedia.tkpd.category_levels.activity
 
 import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.common_category.viewholders.ProductCardViewHolder
+import com.tokopedia.categorylevels.view.activity.CategoryRevampActivity
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
-import com.tokopedia.tkpd.category_levels.InstrumentationProductNavTestActivity
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -27,7 +30,7 @@ class CategoryLevelsTopAdsVerificationTest {
     var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     @get:Rule
-    var activityRule = object: ActivityTestRule<InstrumentationProductNavTestActivity>(InstrumentationProductNavTestActivity::class.java) {
+    var activityRule = object: ActivityTestRule<CategoryRevampActivity>(CategoryRevampActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
@@ -41,6 +44,10 @@ class CategoryLevelsTopAdsVerificationTest {
                 activityRule.activity,
                 activityRule.activity.application as TopAdsVerificatorInterface
         )
+        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+        activityRule.launchActivity(Intent(targetContext, CategoryRevampActivity::class.java).apply {
+            data = Uri.parse("tokopedia-android-internal://category/25?categoryName=Audio")
+        })
     }
 
     @After
@@ -52,7 +59,7 @@ class CategoryLevelsTopAdsVerificationTest {
     fun testTopAdsCategory() {
         waitForData()
 
-        val productsRecyclerView = activityRule.activity.findViewById<RecyclerView>(com.tokopedia.categorylevels.R.id.product_recyclerview)
+        val productsRecyclerView = activityRule.activity.findViewById<RecyclerView>(com.tokopedia.discovery2.R.id.recycler_view)
         val itemCount = productsRecyclerView.adapter?.itemCount?:0
 
         for (i in 0 until itemCount) {
@@ -64,10 +71,10 @@ class CategoryLevelsTopAdsVerificationTest {
 
     private fun checkProductOnDynamicChannel(recyclerView: RecyclerView, i: Int) {
         when (recyclerView.findViewHolderForAdapterPosition(i)) {
-            is ProductCardViewHolder -> {
+            is MasterProductCardItemViewHolder -> {
                 try {
-                    onView(withId(com.tokopedia.categorylevels.R.id.product_recyclerview)).perform(RecyclerViewActions.actionOnItemAtPosition<ProductCardViewHolder>(
-                            i,CommonActions.clickChildViewWithId(com.tokopedia.common_category.R.id.productCardView)))
+                    onView(withId(com.tokopedia.discovery2.R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition<MasterProductCardItemViewHolder>(
+                            i,CommonActions.clickChildViewWithId(com.tokopedia.discovery2.R.id.cardViewProductCard)))
                 } catch (e:Exception){
                     e.printStackTrace()
                 }

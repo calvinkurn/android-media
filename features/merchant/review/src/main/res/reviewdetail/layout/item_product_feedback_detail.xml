@@ -10,10 +10,23 @@
         android:id="@+id/ivRatingFeedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toTopOf="@id/kejarUlasanLabel"
+        app:layout_constraintBottom_toBottomOf="@id/kejarUlasanLabel"
         tools:src="@drawable/review_ic_rating_star_four"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/kejarUlasanLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="@string/kejar_ulasan_label"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        app:labelType="general_light_orange"
+        app:layout_constraintStart_toEndOf="@id/ivRatingFeedback"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivOptionReviewFeedback"

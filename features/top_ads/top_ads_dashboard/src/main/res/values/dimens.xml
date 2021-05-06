@@ -5,4 +5,5 @@
     <dimen name="spacing_show_case">12dp</dimen>
     <dimen name="arrow_width_show_case">16dp</dimen>
     <dimen name="fontvs">12sp</dimen>
+    <dimen name="dp_55">55dp</dimen>
 </resources>

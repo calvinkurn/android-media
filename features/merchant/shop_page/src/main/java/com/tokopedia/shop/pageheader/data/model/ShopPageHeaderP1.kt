@@ -14,6 +14,5 @@ data class ShopPageHeaderP1(
         val shopInfoTopContentData: ShopInfo = ShopInfo(),
         val shopInfoHomeTypeData: ShopPageGetHomeType = ShopPageGetHomeType(),
         val shopInfoCoreAndAssetsData: ShopInfo = ShopInfo(),
-        val feedWhitelist: Whitelist = Whitelist(),
-        val productList: ShopProduct.GetShopProduct = ShopProduct.GetShopProduct()
+        val feedWhitelist: Whitelist = Whitelist()
 )

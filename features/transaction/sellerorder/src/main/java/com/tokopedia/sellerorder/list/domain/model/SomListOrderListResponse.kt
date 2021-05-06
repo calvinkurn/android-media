@@ -19,7 +19,7 @@ data class SomListOrderListResponse(
         data class OrderList(
                 @SerializedName("cursor_order_id")
                 @Expose
-                val cursorOrderId: Int = 0,
+                val cursorOrderId: String = "0",
                 @SerializedName("list")
                 @Expose
                 val list: List<Order> = listOf()
@@ -37,6 +37,9 @@ data class SomListOrderListResponse(
                     @SerializedName("cancel_request_time")
                     @Expose
                     val cancelRequestTime: String = "",
+                    @SerializedName("cancel_request_status")
+                    @Expose
+                    val cancelRequestStatus: Int = 0,
                     @SerializedName("deadline_color")
                     @Expose
                     val deadlineColor: String = "",
@@ -54,16 +57,16 @@ data class SomListOrderListResponse(
                     val orderResi: String = "",
                     @SerializedName("order_status_id")
                     @Expose
-                    val orderStatusId: Int = 0,
+                    val orderStatusId: String = "0",
                     @SerializedName("status")
                     @Expose
                     val status: String = "",
                     @SerializedName("status_color")
                     @Expose
-                    val statusColor: String = "#FFFFFF",
+                    val statusColor: String = "",
                     @SerializedName("status_indicator_color")
                     @Expose
-                    val statusIndicatorColor: String = "#FFFFFF",
+                    val statusIndicatorColor: String = "",
                     @SerializedName("destination_province")
                     @Expose
                     val destinationProvince: String = "",

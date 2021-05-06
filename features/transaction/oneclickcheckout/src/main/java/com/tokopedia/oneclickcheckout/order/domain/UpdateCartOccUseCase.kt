@@ -11,10 +11,12 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import java.util.*
 import javax.inject.Inject
 
-class UpdateCartOccUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) {
+class UpdateCartOccUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                               private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
 
     suspend fun executeSuspend(param: UpdateCartOccRequest): OccPrompt? {
         val request = GraphqlRequest(QUERY, UpdateCartOccGqlResponse::class.java, generateParam(param))
@@ -30,6 +32,9 @@ class UpdateCartOccUseCase @Inject constructor(private val graphqlRepository: Gr
     }
 
     private fun generateParam(param: UpdateCartOccRequest): Map<String, Any?> {
+        if (param.chosenAddress == null) {
+            param.chosenAddress = chosenAddressRequestHelper.getChosenAddress()
+        }
         return mapOf(PARAM_KEY to param)
     }
 

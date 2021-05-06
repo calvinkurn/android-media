@@ -10,6 +10,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainS
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
+import com.tokopedia.shop.open.common.EspressoIdlingResource
 import com.tokopedia.shop.open.data.model.*
 import com.tokopedia.shop.open.domain.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -78,6 +79,7 @@ class ShopOpenRevampViewModel @Inject constructor(
         }
 
         currentShopName = shopName
+        EspressoIdlingResource.increment()
         validateShopName(shopName)
     }
 
@@ -216,6 +218,7 @@ class ShopOpenRevampViewModel @Inject constructor(
         }
 
         currentShopDomain = domain
+        EspressoIdlingResource.increment()
         validateDomainName(domain)
     }
 

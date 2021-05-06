@@ -1,15 +1,17 @@
 package com.tokopedia.discovery2.usecase
 
-import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.datamapper.mapDiscoveryResponseToPageData
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import javax.inject.Inject
 
 class DiscoveryDataUseCase @Inject constructor(private val discoveryPageRepository: DiscoveryPageRepository) {
 
-    suspend fun getDiscoveryPageDataUseCase(pageIdentifier: String, queryParameterMap: MutableMap<String, String?>): DiscoveryPageData {
+    suspend fun getDiscoveryPageDataUseCase(pageIdentifier: String,
+                                            queryParameterMap: MutableMap<String, String?>,
+                                            userAddressData: LocalCacheModel?): DiscoveryPageData {
         return mapDiscoveryResponseToPageData(discoveryPageData[pageIdentifier]?.let {
             it
         } ?: discoveryPageRepository.getDiscoveryPageData(pageIdentifier).apply {
@@ -20,7 +22,7 @@ class DiscoveryDataUseCase @Inject constructor(private val discoveryPageReposito
 //            component = ComponentsItem(id = "PARENT_ID",pageEndPoint = pageInfo.identifier?:"").apply {
 //                componentMap[id] = this
 //            }
-        }, queryParameterMap)
+        }, queryParameterMap, userAddressData)
     }
 
     fun clearPage(pageIdentifier: String) {

@@ -5,11 +5,16 @@ package com.tokopedia.sellerhomecommon.presentation.model
  */
 
 data class BarChartDataUiModel(
-        override val dataKey: String = "",
+        override var dataKey: String = "",
         override var error: String = "",
         override var isFromCache: Boolean = false,
+        override val showWidget: Boolean = false,
         val chartData: BarChartUiModel = BarChartUiModel()
-) : BaseDataUiModel
+) : BaseDataUiModel {
+    override fun shouldRemove(): Boolean {
+        return chartData.yAxis.all { it.value == 0 }
+    }
+}
 
 data class BarChartUiModel(
         val metrics: List<BarChartMetricsUiModel> = emptyList(),

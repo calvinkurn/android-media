@@ -15,4 +15,5 @@
     <dimen name="text_size_reward_label">16sp</dimen>
     <dimen name="text_size_cta_button">16sp</dimen>
     <bool name="gami_is_tablet">false</bool>
+    <integer name="gami_bottom_sheet_span_count">2</integer>
 </resources>

@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     app:unify_header_is_show_back_button="true"
                     app:unify_header_is_show_shadow="false"
-                    app:unify_header_title="@string/topads_group_detail" />
+                    app:unify_header_title="@string/topads_headline_detail_title" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -90,19 +90,11 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-            <com.google.android.material.tabs.TabLayout
+            <com.tokopedia.unifycomponents.TabsUnify
                 android:id="@+id/tab_layout"
+                android:layout_gravity="fill"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                app:tabMode="scrollable"
-                android:textAlignment="viewStart"
-                app:elevation="4dp"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:tabIndicatorColor="@color/topads_common_tab_green"
-                app:tabSelectedTextColor="@color/Green_G500"
-                app:tabTextAppearance="@style/tabTopAdsStyle"
-                app:tabTextColor="@color/font_black_disabled_38" />
+                android:layout_height="wrap_content" />
         </com.google.android.material.appbar.AppBarLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

@@ -4,6 +4,14 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.BADGE_URL.OFFICIAL_STORE_URL
 import com.tokopedia.discovery2.Constant.BADGE_URL.POWER_MERCHANT_URL
+import com.tokopedia.discovery2.Constant.ProductCardModel.PDP_VIEW_THRESHOLD
+import com.tokopedia.discovery2.Constant.ProductCardModel.PRODUCT_STOCK
+import com.tokopedia.discovery2.Constant.ProductCardModel.SALE_PRODUCT_STOCK
+import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_LOWER_LIMIT
+import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_UPPER_LIMIT
+import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
+import com.tokopedia.discovery2.TRANSPARENT_BLACK
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
@@ -13,15 +21,13 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"
-private const val SALE_PRODUCT_STOCK = 100
-private const val PRODUCT_STOCK = 0
-private const val SOLD_PERCENTAGE_UPPER_LIMIT = 100
-private const val SOLD_PERCENTAGE_LOWER_LIMIT = 0
+private const val TERJUAL_HABIS = "Terjual Habis"
 
 class DiscoveryDataMapper {
 
@@ -172,17 +178,23 @@ class DiscoveryDataMapper {
         val slashedPrice: String
         val formattedPrice: String
         val isOutOfStock: Boolean
+        val labelGroupList : ArrayList<ProductCardModel.LabelGroup> = ArrayList()
 
-        if (componentName == ComponentNames.ProductCardSprintSaleItem.componentName || componentName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName) {
+        if (componentName == ComponentNames.ProductCardSprintSaleItem.componentName
+                || componentName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName
+                || componentName == ComponentNames.ProductCardSprintSaleCarousel.componentName
+                || componentName == ComponentNames.ProductCardSprintSale.componentName) {
             productName = dataItem.title ?: ""
-            slashedPrice = dataItem.price ?: ""
-            formattedPrice = dataItem.discountedPrice ?: ""
+            slashedPrice = setSlashPrice(dataItem)
+            formattedPrice = setFormattedPrice(dataItem)
             isOutOfStock = outOfStockLabelStatus(dataItem.stockSoldPercentage, SALE_PRODUCT_STOCK)
+            if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
         } else {
             productName = dataItem.name ?: ""
             slashedPrice = dataItem.discountedPrice ?: ""
             formattedPrice = dataItem.price ?: ""
             isOutOfStock = outOfStockLabelStatus(dataItem.stock, PRODUCT_STOCK)
+            if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
         }
         return ProductCardModel(
                 productImageUrl = dataItem.imageUrlMobile ?: "",
@@ -194,32 +206,53 @@ class DiscoveryDataMapper {
                 } else {
                     ""
                 },
-                countSoldRating = if (dataItem.isOldRating) {
-                    ""
-                } else {
-                    dataItem.averageRating
-                },
-                ratingCount = if (dataItem.isOldRating) {
-                    dataItem.rating.toIntOrZero()
-                } else 0,
-                reviewCount = if (dataItem.isOldRating) {
-                    dataItem.countReview.toIntOrZero()
-                } else 0,
+                countSoldRating = dataItem.averageRating,
                 isTopAds = dataItem.isTopads ?: false,
                 freeOngkir = ProductCardModel.FreeOngkir(imageUrl = dataItem.freeOngkir?.freeOngkirImageUrl
                         ?: "", isActive = dataItem.freeOngkir?.isActive ?: false),
-                pdpViewCount = dataItem.pdpView.takeIf { it.toIntOrZero() != 0 } ?: "",
-                labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                    dataItem.labelsGroupList?.forEach { add(ProductCardModel.LabelGroup(it.position, it.title, it.type)) }
+                pdpViewCount = getPDPViewCount(dataItem.pdpView),
+                labelGroupList = labelGroupList.apply {
+                    dataItem.labelsGroupList?.forEach {
+                        add(ProductCardModel.LabelGroup(it.position,
+                                it.title,
+                                it.type,
+                                it.url))
+                    }
                 },
                 shopLocation = getShopLocation(dataItem),
                 shopBadgeList = getShopBadgeList(dataItem),
                 stockBarPercentage = setStockProgress(dataItem),
                 stockBarLabel = dataItem.stockWording?.title ?: "",
+                stockBarLabelColor = dataItem.stockWording?.color ?: "",
                 isOutOfStock = isOutOfStock,
-                hasNotifyMeButton =  dataItem.hasNotifyMe,
+                hasNotifyMeButton = dataItem.hasNotifyMe,
                 hasThreeDots = dataItem.hasThreeDots
         )
+    }
+
+    private fun setSlashPrice(dataItem: DataItem): String {
+        if(dataItem.discountedPrice.isNullOrEmpty()){
+            return ""
+        }else if(dataItem.discountedPrice == dataItem.price){
+            return ""
+        }
+        return dataItem.price ?: ""
+    }
+
+    private fun setFormattedPrice(dataItem: DataItem): String {
+        if (dataItem.discountedPrice.isNullOrEmpty()) {
+            return dataItem.price ?: ""
+        }
+        return dataItem.discountedPrice ?: ""
+    }
+
+    private fun getPDPViewCount(pdpView: String): String {
+        val pdpViewData = pdpView.toDoubleOrZero()
+        return if (pdpViewData >= PDP_VIEW_THRESHOLD) {
+            Utils.getCountView(pdpViewData)
+        } else {
+            ""
+        }
     }
 
     private fun setStockProgress(dataItem: DataItem): Int {

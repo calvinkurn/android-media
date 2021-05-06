@@ -13,4 +13,6 @@
     <string name="recharge_home_empty_banner_title">Beli produk digital di Tokopedia</string>
     <string name="recharge_home_empty_banner_desc">Mulai dari Pulsa, Paket Data, Listrik PLN, semua bisa kamu beli di Tokopedia.</string>
     <string name="recharge_home_product_banner_buy_button_label">Beli Sekarang</string>
+
+    <string name="recharge_home_close_button_content_description">Close Button</string>
 </resources>

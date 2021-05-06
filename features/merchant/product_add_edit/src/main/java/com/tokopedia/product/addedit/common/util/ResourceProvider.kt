@@ -86,8 +86,12 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_empty_product_stock)
     }
 
-    fun getMinLimitProductStockErrorMessage(): String? {
-        return getString(R.string.error_minimum_stock_quantity_is_one)
+    fun getMinLimitProductStockErrorMessage(minStock: Int = 1): String? {
+        return try {
+            context?.getString(R.string.error_minimum_stock_quantity, minStock)
+        } catch (e: Resources.NotFoundException) {
+            null
+        }
     }
 
     fun getMaxLimitProductStockErrorMessage(): String? {
@@ -104,8 +108,8 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_minimum_order_cant_be_zero)
     }
 
-    fun getMaxLimitOrderQuantityErrorMessage(): String? {
-        return getString(R.string.error_maximum_order_exceeding_max_limit)
+    fun getMinOrderExceedLimitQuantityErrorMessage(): String? {
+        return getString(R.string.error_minimum_order_exceed_max_limit)
     }
 
     fun getMinOrderExceedStockErrorMessage(): String? {
@@ -168,6 +172,30 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
 
     fun getInvalidPhotoReachErrorMessage(): String? {
         return getString(R.string.error_invalid_photo_reach_maximum)
+    }
+
+    // Product specification properties
+
+    fun getProductSpecificationTips(): String {
+        return getString(R.string.label_product_specification_tips).orEmpty()
+    }
+
+    fun getProductSpecificationCounter(count: Int): String {
+        return try {
+            context?.getString(R.string.action_specification_counter, count).orEmpty()
+        } catch (e: Resources.NotFoundException) {
+            ""
+        }
+    }
+
+    // admin multi location string properties
+
+    fun getAddProductMultiLocationMessage(): String? {
+        return getString(R.string.message_add_product_stock_only_main_location)
+    }
+
+    fun getEditProductMultiLocationMessage(): String? {
+        return getString(R.string.message_edit_product_stock_only_main_location)
     }
 
     // Network errors

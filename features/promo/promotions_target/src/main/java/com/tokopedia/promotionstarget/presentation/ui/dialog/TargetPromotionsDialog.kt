@@ -48,8 +48,8 @@ import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
 import com.tokopedia.promotionstarget.data.claim.PopGratificationActionButton
 import com.tokopedia.promotionstarget.data.coupon.CouponUiData
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
-import com.tokopedia.promotionstarget.data.di.modules.AppModule
 import com.tokopedia.promotionstarget.data.di.components.DaggerPromoTargetComponent
+import com.tokopedia.promotionstarget.data.di.modules.AppModule
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.domain.usecase.ClaimCouponApi
 import com.tokopedia.promotionstarget.domain.usecase.ClaimCouponApiResponseCallback
@@ -65,7 +65,7 @@ import com.tokopedia.promotionstarget.presentation.ui.dialog.BtnType.Companion.R
 import com.tokopedia.promotionstarget.presentation.ui.dialog.PopUpVersion.Companion.AUTO_CLAIM
 import com.tokopedia.promotionstarget.presentation.ui.dialog.PopUpVersion.Companion.NORMAL
 import com.tokopedia.promotionstarget.presentation.ui.recycleViewHelper.CouponItemDecoration
-import com.tokopedia.promotionstarget.presentation.ui.viewmodel.TargetPromotionsDialogVM
+import com.tokopedia.promotionstarget.presentation.ui.viewmodel.TargetPromotionsDialogViewModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -92,7 +92,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private lateinit var tvTitleRight: AppCompatTextView
     private lateinit var tvSubTitleRight: AppCompatTextView
 
-    lateinit var viewModel: TargetPromotionsDialogVM
+    lateinit var viewModel: TargetPromotionsDialogViewModel
     private lateinit var gratificationData: GratificationData
     private var catalogId: Int = 0
     private lateinit var claimCouponApi: ClaimCouponApi
@@ -171,7 +171,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     fun showNonLoggedInUi(activityContext: Context,
                           data: GetPopGratificationResponse,
-                          couponDetailResponse: GetCouponDetailResponse,
+                          couponDetailResponse: GetCouponDetailResponse?,
                           gratificationData: GratificationData): Dialog? {
 
         DestroyedActivity.couponDetailResponse = couponDetailResponse
@@ -180,14 +180,14 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         return nonLoggedInUiUi(activityContext, data, couponDetailResponse, gratificationData)
     }
 
-    private fun nonLoggedInUiUi(activityContext: Context, getPopGratificationResponse: GetPopGratificationResponse, couponDetailResponse: GetCouponDetailResponse, gratificationData: GratificationData): Dialog? {
+    private fun nonLoggedInUiUi(activityContext: Context, getPopGratificationResponse: GetPopGratificationResponse, couponDetailResponse: GetCouponDetailResponse?, gratificationData: GratificationData): Dialog? {
         popUpVersion = AUTO_CLAIM
 
         val pair = prepareBottomSheet(activityContext, TargetPromotionsCouponType.SINGLE_COUPON)
         val view = pair.first
 
         initViews(view, activityContext, getPopGratificationResponse, couponDetailResponse, gratificationData)
-        setUiData(couponDetailResponse)
+
         setNonLoggedInListeners()
 
         prePareCatalogId(getPopGratificationResponse)
@@ -246,6 +246,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             }
 
             showErrorUIForClaimGratificationLoggedIn()
+            expandBottomSheet()
         } else {
             setLoggedInUiForSuccessClaimGratificationVersionAutoClaim(claimPopGratificationResponse, couponDetailResponse)
         }
@@ -338,7 +339,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         return bottomSheet
     }
 
-    private fun autoApplyApi(){
+    private fun autoApplyApi() {
         val canHitAutoApply = !TextUtils.isEmpty(couponCodeAfterClaim) && shouldCallAutoApply
         if (canHitAutoApply) {
             viewModel.autoApply(couponCodeAfterClaim!!)
@@ -348,7 +349,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     }
 
     private fun prepareBottomSheet(activityContext: Context, couponUiType: TargetPromotionsCouponType): Pair<View, BottomSheetDialog> {
-        val bottomSheet = CloseableBottomSheetDialog.createInstanceCloseableRounded(activityContext,{})
+        val bottomSheet = CloseableBottomSheetDialog.createInstanceCloseableRounded(activityContext, {})
         val view = LayoutInflater.from(activityContext).inflate(getLayout(couponUiType), null, false)
         bottomSheet.setCustomContentView(view, "", true)
         bottomSheet.show()
@@ -378,7 +379,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         try {
             val imageClose = (root.parent.parent as ConstraintLayout).findViewById<ImageView>(R.id.close_button_rounded)
             imageClose.setImageResource(R.drawable.t_promo_close)
-        }catch (th:Throwable){}
+        } catch (th: Throwable) {
+        }
 
         screenWidth = activityContext.resources.displayMetrics.widthPixels.toFloat()
         rightViewList.add(imageViewRight)
@@ -542,15 +544,20 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
         val couponDetailList = ArrayList<CouponUiData>()
         couponDetailResponse?.couponList?.let {
-            imageViewRight.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
-            couponDetailList.addAll(it)
-            couponListAdapter = CouponListAdapter(couponDetailList)
-            recyclerView.adapter = couponListAdapter
-            viewFlipper.displayedChild = CONTAINER_COUPON
+            if (!it.isNullOrEmpty()) {
+                if (it[0].id != null && it[0].id != 0) {
+                    imageViewRight.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
+                    couponDetailList.addAll(it)
+                    couponListAdapter = CouponListAdapter(couponDetailList)
+                    recyclerView.adapter = couponListAdapter
+                    viewFlipper.displayedChild = CONTAINER_COUPON
+                }
+            }
         }
 
         if (couponDetailList.isEmpty()) {
+            viewFlipper.displayedChild = CONTAINER_IMAGE
             imageView.loadImageWithNoPlaceholder(data.popGratificationClaim?.imageUrl) { success ->
                 expandBottomSheet()
             }
@@ -873,7 +880,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         component.inject(this)
         activity.run {
             val viewModelProvider = ViewModelProviders.of(activityContext, viewModelFactory)
-            viewModel = viewModelProvider[TargetPromotionsDialogVM::class.java]
+            viewModel = viewModelProvider[TargetPromotionsDialogViewModel::class.java]
         }
     }
 

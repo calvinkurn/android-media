@@ -119,7 +119,6 @@
                 android:padding="@dimen/spacing_lvl4">
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_estimate_label"
                     app:typographyType="heading_4"
                     android:textColor="@color/Unify_N700_96"
                     android:layout_width="match_parent"

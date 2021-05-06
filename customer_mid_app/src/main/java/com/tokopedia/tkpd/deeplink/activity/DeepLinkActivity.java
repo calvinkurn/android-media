@@ -24,10 +24,15 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.customer_mid_app.R;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
 import com.tokopedia.utils.uri.DeeplinkUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -41,7 +46,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
     private static final String APPLINK_URL = "url";
     private Uri uriData;
-    private View mainView;
+    private boolean isOriginalUrlAmp;
 
     @Override
     public String getScreenName() {
@@ -54,7 +59,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         TrackingUtils.sendAppsFlyerDeeplink(DeepLinkActivity.this);
 
         checkUrlMapToApplink();
-        presenter.sendAuthenticatedEvent(uriData, getScreenName());
+        sendCampaignTrack(uriData, isOriginalUrlAmp);
 
 
         isAllowFetchDepartmentView = true;
@@ -68,7 +73,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         String applink = DeeplinkMapper.getRegisteredNavigation(this, uriData.toString());
         if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(this, applink)) {
             String screenName = AppScreen.SCREEN_NATIVE_RECHARGE;
-            presenter.sendCampaignGTM(this, applink, screenName);
+            presenter.sendCampaignGTM(this, applink, screenName, isOriginalUrlAmp);
             RouteManager.route(this, applink);
             finish();
         } else {
@@ -76,14 +81,14 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         }
     }
 
-    private void sendCampaignTrack(Uri uriData) {
-        String applink = DeeplinkMapper.getRegisteredNavigation(this, uriData.toString());
-        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(this, Uri.parse(applink));
+    private void sendCampaignTrack(Uri uriData, boolean isOriginalUrlAmp) {
+        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(this, Uri.parse(uriData.toString()), isOriginalUrlAmp);
         presenter.sendAuthenticatedEvent(uriData, campaign, getScreenName());
     }
 
     @Override
     protected void setupURIPass(Uri data) {
+        isOriginalUrlAmp = DeepLinkChecker.isAmpUrl(data);
         this.uriData = DeepLinkChecker.getRemoveAmpLink(this, data);
     }
 
@@ -103,7 +108,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     protected void initView() {
-        mainView = findViewById(R.id.main_view);
+
     }
 
     @Override
@@ -133,16 +138,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
-    public void networkError(final Uri uriData) {
-        NetworkErrorHelper.showEmptyState(this, mainView, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
-            }
-        });
-    }
-
-    @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
@@ -160,13 +155,20 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void initDeepLink() {
         if (uriData != null || getIntent().getBooleanExtra(EXTRA_STATE_APP_WEB_VIEW, false)) {
-            if (getIntent().getBooleanExtra(DeepLink.IS_DEEP_LINK, false)) {
-                Bundle bundle = getIntent().getExtras();
-                uriData = DeepLinkChecker.getRemoveAmpLink(this, Uri.parse(bundle.getString(APPLINK_URL)));
+            Bundle bundle = getIntent().getExtras();
+            boolean deeplink = getIntent().getBooleanExtra(DeepLink.IS_DEEP_LINK, false);
+            String applinkUrl = null;
+            if (bundle != null) {
+                applinkUrl = bundle.getString(APPLINK_URL);
+            }
+            if (deeplink && !TextUtils.isEmpty(applinkUrl)) {
+                Uri uri = Uri.parse(applinkUrl);
+                isOriginalUrlAmp = DeepLinkChecker.isAmpUrl(uri);
+                uriData = DeepLinkChecker.getRemoveAmpLink(this, uri);
                 presenter.actionGotUrlFromApplink(uriData);
             } else {
                 presenter.checkUriLogin(uriData);
-                presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
+                presenter.processDeepLinkAction(DeepLinkActivity.this, uriData, isOriginalUrlAmp);
             }
         }
     }
@@ -186,8 +188,10 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Timber.d("FCM onNewIntent " + intent.getData());
-        if (intent.getData() != null) {
-            uriData = DeepLinkChecker.getRemoveAmpLink(this, intent.getData());
+        Uri data = intent.getData();
+        if (data != null) {
+            isOriginalUrlAmp = DeepLinkChecker.isAmpUrl(data);
+            uriData = DeepLinkChecker.getRemoveAmpLink(this, data);
         }
     }
 
@@ -195,7 +199,11 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         String referrer = DeeplinkUtils.INSTANCE.getReferrerCompatible(this);
         Uri extraReferrer = DeeplinkUtils.INSTANCE.getExtraReferrer(this);
         Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
-        Timber.w("P1#DEEPLINK_OPEN_APP#%s;referrer='%s';extra_referrer='%s';uri='%s'",
-                getClass().getSimpleName(), referrer, extraReferrer.toString(), uri.toString());
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", getClass().getSimpleName());
+        messageMap.put("referrer", referrer);
+        messageMap.put("extra_referrer", extraReferrer.toString());
+        messageMap.put("uri", uri.toString());
+        ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_APP", messageMap);
     }
 }

@@ -8,7 +8,7 @@
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_1"
     app:cardPreventCornerOverlap="false"
-    app:cardBackgroundColor="@color/cardview_light_background"
+    app:cardBackgroundColor="@color/Unify_N0"
     android:layout_margin="@dimen/dp_4"
     tools:ignore="PrivateResource">
 
@@ -20,16 +20,16 @@
             android:id="@+id/post_thumbnail"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:scaleType="centerCrop"
             android:adjustViewBounds="true"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            android:contentDescription="null"
+            android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="H,1:1"
-            tools:srcCompat="@tools:sample/avatars"
-            tools:ignore="ContentDescription" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
 
         <ImageView
             android:id="@+id/badge"
@@ -37,19 +37,20 @@
             android:layout_height="@dimen/dp_24"
             android:layout_margin="@dimen/dp_8"
             android:visibility="gone"
+            android:contentDescription="null"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             tools:srcCompat="@tools:sample/avatars"
-            tools:visibility="visible"
-            tools:ignore="ContentDescription" />
-        
+            tools:visibility="visible" />
+
         <ImageView
             android:id="@+id/creator_img"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
+            android:contentDescription="null"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@+id/creator_name"
@@ -60,7 +61,7 @@
             android:id="@+id/creator_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
@@ -81,7 +82,7 @@
             android:id="@+id/post_descr"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:lineSpacingExtra="@dimen/sp_4"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_8"

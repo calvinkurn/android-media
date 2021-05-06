@@ -44,6 +44,7 @@ https://phab.tokopedia.com/XXXXX
 - **/check instrument** - run TopAds Checker instrumentation test
 - **/check datatest** - run data tracking test (Cassava)
 - **/check performance** - run performance check
+- **/check smoketest <MA_APK_LINK> <SA_APK_LINK>** - run auto mention smoke test request to slack due to changed libs version, with MainApp and SellerApp apk google drive link to test (the changed libraries version will be listed automatically)
 
 ## Gatekeeper Spells
 - **approved for app-size** - send along with the approval to cast the magic 
@@ -57,4 +58,7 @@ https://phab.tokopedia.com/XXXXX
 
 - **approved for new module** - send along with the approval to cast the magic 
 *(more info: @tokopedia/android-gatekeeper-new-module)*
+
+- **approved for dark mode** - send along with the approval to cast the magic
+*(more info: @tokopedia/android-gatekeeper-dark-mode)*
 

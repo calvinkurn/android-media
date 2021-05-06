@@ -23,6 +23,7 @@
     <ImageView
         android:layout_width="@dimen/dp_18"
         android:layout_height="17dp"
+        android:contentDescription="@string/content_desc_play_widget"
         app:srcCompat="@drawable/ic_chip_home_play_viewers"/>
 
     <TextView
@@ -30,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:textColor="#f531353b"
+        android:textColor="@color/dynamicbanner_dms_text_total_viewers"
         android:textSize="@dimen/sp_11"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"

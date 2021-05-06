@@ -9,8 +9,6 @@ import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData
 import com.tokopedia.cart.domain.model.cartlist.UndoDeleteCartData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -37,8 +35,6 @@ interface ICartListView : CustomerView {
 
     fun getCartId(): String
 
-    fun getInsuranceCartShopData(): ArrayList<InsuranceCartDigitalProduct>?
-
     fun showProgressLoading()
 
     fun hideProgressLoading()
@@ -62,15 +58,13 @@ interface ICartListView : CustomerView {
 
     fun updateCashback(cashback: Double)
 
-    fun showToastMessageRed(message: String, ctaText: String = "", ctaClickListener: View.OnClickListener? = null)
-
-    fun showToastMessageRed(throwable: Throwable, ctaText: String = "", ctaClickListener: View.OnClickListener? = null)
+    fun showToastMessageRed(message: String, actionText: String = "", ctaClickListener: View.OnClickListener? = null)
 
     fun showToastMessageRed(throwable: Throwable)
 
-    fun showToastMessageGreen(message: String, showDefaultAction: Boolean = true)
+    fun showToastMessageRed()
 
-    fun showToastMessageGreen(message: String, action: String, onClickListener: View.OnClickListener? = null)
+    fun showToastMessageGreen(message: String, actionText: String = "", onClickListener: View.OnClickListener? = null)
 
     fun renderLoadGetCartData()
 
@@ -105,14 +99,6 @@ interface ICartListView : CustomerView {
     fun setHasTriedToLoadRecommendation()
 
     fun triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataResponseModel: AddToCartDataModel, productModel: Any)
-
-    fun renderInsuranceCartData(insuranceCartResponse: InsuranceCartResponse?, isRecommendation: Boolean)
-
-    fun removeInsuranceProductItem(productId: List<Long>)
-
-    fun showMessageRemoveInsuranceProductSuccess()
-
-    fun showMessageUpdateInsuranceProductSuccess()
 
     fun getAdsId(): String?
 

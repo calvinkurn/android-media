@@ -12,28 +12,35 @@ import android.webkit.WebView
 import androidx.core.app.TaskStackBuilder
 import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
+import com.tokopedia.webview.BaseSimpleWebViewActivity.DeeplinkIntent.APP_WHITELISTED_DOMAINS_URL
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
-import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
+import timber.log.Timber
+import java.util.*
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     protected lateinit var url: String
     var showTitleBar = true
     var pullToRefresh = false
-    private set
+        private set
     protected var allowOverride = true
     protected var needLogin = false
     var webViewTitle = ""
+    var whiteListedDomains = WhiteListedDomains()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        getWhiteListedDomains()
         init(intent)
         super.onCreate(savedInstanceState)
         setupToolbar()
@@ -80,6 +87,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             val needTitle = getQueryParameter(KEY_TITLE)
             needTitle?.let { webViewTitle = it }
         }
+        logWebViewApplink()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -117,10 +125,10 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         reloadWebViewIfNeeded()
     }
 
-    private fun reloadWebViewIfNeeded(){
+    private fun reloadWebViewIfNeeded() {
         val needReload = try {
             PersistentCacheManager.instance.get(KEY_CACHE_RELOAD_WEBVIEW, Int::class.javaPrimitiveType!!, 0) == 1
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             false
         }
         if (needReload) {
@@ -192,15 +200,67 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         return false
     }
 
+    private fun logWebViewApplink() {
+        val domain = getDomainName(url)
+        if (domain.isNotEmpty()) {
+            val baseDomain = getBaseDomain(domain)
+            if (!baseDomain.equals(TOKOPEDIA_DOMAIN, ignoreCase = true)) {
+                if(!isDomainWhitelisted(baseDomain) && whiteListedDomains.isEnabled) {
+                    ServerLogger.log(Priority.P1, "WEBVIEW_OPENED", mapOf("type" to "browser", "domain" to domain, "url" to url))
+                    redirectToNativeBrowser()
+                    return
+                }
+                ServerLogger.log(Priority.P1, "WEBVIEW_OPENED", mapOf("type" to "webview", "domain" to domain, "url" to url))
+            }
+        }
+    }
+
+    private fun redirectToNativeBrowser() {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(browserIntent)
+        finish()
+    }
+
+    private fun isDomainWhitelisted(domain: String): Boolean {
+        if(whiteListedDomains.isEnabled) {
+            whiteListedDomains.domains.forEach {
+                if(it.contains(domain)) {
+                    return true
+                }
+            }
+            return false
+        }
+        return false
+    }
+
+    private fun getWhiteListedDomains() {
+        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(this.applicationContext)
+        val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
+        if(whiteListedDomainsCsv.isNotBlank()) {
+            whiteListedDomains = Gson().fromJson(whiteListedDomainsCsv, WhiteListedDomains::class.java)
+        }
+    }
+
+    private fun getBaseDomain(host: String): String {
+        val split = host.split('.')
+        return if (split.size > 2) split[1] else split[0]
+    }
+
+    private fun getDomainName(url: String): String {
+        return Uri.parse(url).host ?: ""
+    }
+
     companion object {
 
+        const val TOKOPEDIA_DOMAIN = "tokopedia"
+
         fun getStartIntent(
-            context: Context,
-            url: String,
-            showToolbar: Boolean = true,
-            allowOverride: Boolean = true,
-            needLogin: Boolean = false,
-            title: String = ""
+                context: Context,
+                url: String,
+                showToolbar: Boolean = true,
+                allowOverride: Boolean = true,
+                needLogin: Boolean = false,
+                title: String = ""
         ): Intent {
             return Intent(context, BaseSimpleWebViewActivity::class.java).apply {
                 putExtra(KEY_URL, url.encodeOnce())
@@ -216,6 +276,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
         const val SELLERAPP_PACKAGE = "com.tokopedia.sellerapp"
         const val CUSTOMERAPP_PACKAGE = "com.tokopedia.tkpd"
+        const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
 
         @DeepLink(ApplinkConst.WEBVIEW_PARENT_HOME)
         @JvmStatic
@@ -233,7 +294,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         @JvmStatic
         fun getInstanceIntentAppLink(context: Context, extras: Bundle): Intent {
             var webUrl = extras.getString(
-                KEY_URL, TokopediaUrl.getInstance().WEB
+                    KEY_URL, TokopediaUrl.getInstance().WEB
             )
             var showToolbar: Boolean
             var needLogin: Boolean

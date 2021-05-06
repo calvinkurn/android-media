@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:orientation="horizontal">
 
         <com.tokopedia.feedcomponent.view.custom.MentionEditText
@@ -38,6 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="@dimen/dp_10"
+            android:contentDescription="null"
             app:srcCompat="@drawable/kol_ic_send_24dp_green"/>
 
     </LinearLayout>
@@ -47,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@id/view_comment"
-        android:background="@color/grey_300"/>
+        android:background="@color/Unify_N100"/>
 
     <include
         android:id="@+id/kol_comment_product"
@@ -63,13 +64,13 @@
         android:layout_height="match_parent"
         android:layout_above="@id/view_comment"/>
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.ProgressBarUnify
         android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:indeterminate="true"
         android:visibility="invisible"/>
 </RelativeLayout>

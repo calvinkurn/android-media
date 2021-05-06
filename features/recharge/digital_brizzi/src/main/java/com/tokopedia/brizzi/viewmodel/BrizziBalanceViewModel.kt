@@ -15,6 +15,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import id.co.bri.sdk.Brizzi
 import id.co.bri.sdk.BrizziCardObject
@@ -22,6 +24,7 @@ import id.co.bri.sdk.Callback
 import id.co.bri.sdk.exception.BrizziException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
@@ -88,6 +91,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 }
             })
         }) {
+            ServerLogger.log(Priority.P2, BRIZZI_TAG, mapOf("err" to "ERROR_FAILED_REFRESH_TOKEN"))
             errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_REFRESH_TOKEN)
         }
     }
@@ -119,9 +123,18 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
     private fun handleError(brizziException: BrizziException) {
         when (brizziException.errorCode) {
-            BRIZZI_TOKEN_EXPIRED -> tokenNeedRefresh.postValue(true)
-            BRIZZI_CARD_NOT_FOUND -> cardIsNotBrizzi.postValue(true)
-            else -> errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
+            BRIZZI_TOKEN_EXPIRED -> {
+                ServerLogger.log(Priority.P2, BRIZZI_TAG, mapOf("err" to "ERROR_TOKEN_NEED_REFRESH"))
+                tokenNeedRefresh.postValue(true)
+            }
+            BRIZZI_CARD_NOT_FOUND -> {
+                ServerLogger.log(Priority.P2, BRIZZI_TAG, mapOf("err" to "ERROR_CARD_IS_NOT_BRIZZI"))
+                cardIsNotBrizzi.postValue(true)
+            }
+            else -> {
+                ServerLogger.log(Priority.P2, BRIZZI_TAG, mapOf("err" to (brizziException.message ?: "")))
+                errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
+            }
         }
     }
 
@@ -154,6 +167,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
         const val RC = "rc"
         const val LAST_BALANCE = "last_balance"
         const val LOG_BRIZZI = "log"
+        const val BRIZZI_TAG = "BRIZZI"
 
         const val ISSUER_ID_BRIZZI = 2
         const val ETOLL_BRIZZI_OPERATOR_ID = "1015"

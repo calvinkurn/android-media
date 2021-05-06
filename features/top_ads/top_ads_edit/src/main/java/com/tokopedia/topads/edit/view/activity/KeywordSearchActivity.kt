@@ -61,7 +61,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
     private lateinit var search: SearchBarUnify
     private var groupId: String = ""
     private var userID: String = ""
-    private var manualKeywords:MutableList<SearchData> = mutableListOf()
+    private var manualKeywords: MutableList<SearchData> = mutableListOf()
     private var tvToolTipText: Typography? = null
     private var imgTooltipIcon: ImageUnify? = null
 
@@ -86,8 +86,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
         keyword_list.layoutManager = LinearLayoutManager(this)
         val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
             tvToolTipText = this.findViewById(R.id.tooltip_text)
-            tvToolTipText?.text = getString(R.string.topads_common_tip_memilih_kata_kunci)
-
+            tvToolTipText?.text = getString(com.tokopedia.topads.common.R.string.topads_common_tip_memilih_kata_kunci)
             imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
             imgTooltipIcon?.setImageDrawable(AppCompatResources.getDrawable(this.context, com.tokopedia.topads.common.R.drawable.topads_ic_tips))
         }
@@ -156,34 +155,40 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
                 onSelectedItem()
             } else {
                 txtError.visibility = View.GONE
-                viewModel.searchKeyword(search.searchBarTextField.text.toString(), intent?.getStringExtra(PRODUCT_IDS_SELECTED)
-                        ?: "", ::onSuccessSearch)
-
+                if (!intent?.getStringExtra(PRODUCT_IDS_SELECTED).isNullOrEmpty()) {
+                    viewModel.searchKeyword(search.searchBarTextField.text.toString(), intent?.getStringExtra(PRODUCT_IDS_SELECTED)
+                            ?: "", ::onSuccessSearch)
+                } else {
+                    setEmpty(true)
+                    if (manualKeywords.isNotEmpty())
+                        adapter.items.addAll(manualKeywords)
+                    checkIfNeedsManualAddition(null)
+                }
             }
         }
     }
 
     private fun onSuccessSearch(data: List<SearchData>) {
-        val listKeywords:MutableList<String> = mutableListOf()
-        if(manualKeywords.isNotEmpty())
+        val listKeywords: MutableList<String> = mutableListOf()
+        if (manualKeywords.isNotEmpty())
             adapter.items.addAll(manualKeywords)
         data.forEach {
             adapter.items.add(it)
             listKeywords.add(it.keyword ?: "")
         }
         checkIfNeedsManualAddition(listKeywords)
-        if(manualKeywords.isEmpty())
+        if (manualKeywords.isEmpty())
             setEmpty(data.isEmpty())
         onSelectedItem()
         adapter.notifyDataSetChanged()
     }
 
-    private fun checkIfNeedsManualAddition(listKeywords: MutableList<String>) {
-        if (listKeywords.find { key -> search.searchBarTextField.text.toString() == key } == null) {
+    private fun checkIfNeedsManualAddition(listKeywords: MutableList<String>?) {
+        if (listKeywords?.find { key -> search.searchBarTextField.text.toString() == key } == null) {
             manualAd.visibility = View.VISIBLE
             dividerManual.visibility = View.VISIBLE
             manualAd.text = Html.fromHtml(String.format(getString(R.string.topads_common_new_manual_key), search.searchBarTextField.text.toString()))
-            setSpannable(getString(R.string.topads_common_tambah_button),rootView)
+            setSpannable(getString(R.string.topads_common_tambah_button), rootView)
         }
     }
 
@@ -211,9 +216,9 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
     }
 
     private fun addManualKeyword() {
-        if(adapter.getSelectedItem().find { it.keyword == search.searchBarTextField.text.toString() }!=null){
+        if (adapter.getSelectedItem().find { it.keyword == search.searchBarTextField.text.toString() } != null) {
             makeToast()
-        }else {
+        } else {
             headlineList.visibility = View.VISIBLE
             manualAd.visibility = View.GONE
             dividerManual.visibility = View.GONE

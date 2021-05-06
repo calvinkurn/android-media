@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Tokopedia</string>
-    <string name="lihat_smua_promo">Lihat Semua Promo</string>
 
-    <string name="GOOGLE_API_KEY">AIzaSyAqJLm1orGnm6BYnTu0a9uIjwS4gd8ThRY</string>
+    <string name="asset_statements">[{\"include\": \"https://www.tokopedia.com/.well-known/assetlinks.json\"}]</string>
+    <string name="lihat_smua_promo">Lihat Semua Promo</string>
 
     <!-- Push Notif -->
     <string name="purchase_finish">Pesanan Selesai</string>
@@ -194,4 +194,26 @@
     <string name="title_filter">Filter</string>
     <string name="title_report">Laporkan</string>
 
+    <!-- Product Detail -->
+    <string name="title_activity_product_detail">Rincian Produk</string>
+    <string name="product_detail_courier">Pengiriman</string>
+    <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
+    <string name="label_product_installment">Cicilan</string>
+    <string name="label_product_wholesale">Harga Grosir</string>
+    <string name="label_product_desc">Deskripsi Produk</string>
+    <string name="label_image_preview_pdp">Gambar produk</string>
+
+
+    <!-- Travel slice custom query -->
+    <string-array name="HotelSliceCustomQuery">
+        <item>(find)? (search)? (a)? hotel(s)? in $city1</item>
+        <item>Book (a)? hotel(s)? in $city1</item>
+        <item>Search for cheap hotels in $city1</item>
+    </string-array>
+
+    <string-array name="TravelOrderListCustomQuery">
+        <item>(view)? my $type1 reservation(s)?</item>
+        <item>(check)? my $type1 reservation(s)?</item>
+        <item>(view)? my $type1 booking(s)?</item>
+    </string-array>
 </resources>

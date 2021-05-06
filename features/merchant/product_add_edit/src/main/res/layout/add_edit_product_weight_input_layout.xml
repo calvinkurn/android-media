@@ -65,7 +65,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintHorizontal_weight="2"
         app:layout_constraintLeft_toRightOf="@id/tf_weight_unit"
         app:layout_constraintRight_toRightOf="parent"
@@ -73,5 +72,18 @@
         app:text_field_input_type="number"
         app:text_field_label="@string/label_weight"
         app:text_field_label_static="true" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_weight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toBottomOf="@+id/tf_weight_amount"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="@string/label_shipment_weight_ticker"
+        app:tickerShapeType="loose"
+        app:tickerType="warning" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -41,9 +41,6 @@ object Constants {
     const val REQUEST_OK = 1
     const val ADDED_PRODUCTS = "addedProducts"
     const val DELETED_PRODUCTS = "deletedProducts"
-    const val PRODUK_NAME = " Produk"
-    const val KATA_KUNCI = " Kata Kunci"
-    const val ATUR_NAME = " Atur"
     const val EDIT_SOURCE = "dashboard_edit_group_app"
     const val ACTION_EDIT = "edit"
     const val ACTION_ADD = "add"
@@ -51,7 +48,7 @@ object Constants {
     const val ACTION_CREATE = "create"
     const val ACTION_DELETE = "delete"
     const val PUBLISHED = "published"
-    const val POSTIVE_PHRASE = "positive_phrase"
+    const val POSITIVE_PHRASE = "positive_phrase"
     const val POSITIVE_SPECIFIC = "positive_exact"
     const val NEGATIVE_PHRASE = "negative_phrase"
     const val NEGATIVE_SPECIFIC = "negative_exact"
@@ -59,7 +56,7 @@ object Constants {
     const val KEYWORD_SOURCE = "es"
     const val INPUT = "input"
     const val DEBOUNCE_CONST: Long = 200
-    const val MULTIPLY_CONST = 50
+    const val MULTIPLY_CONST = "50"
     const val groupId = "groupId"
     const val priceBid = "price_bid"
     const val groupName = "groupName"
@@ -74,5 +71,8 @@ object Constants {
     const val KEYWORD_ID = "keywordId"
     const val KEYWORD_TYPE = "keywordType"
     const val IS_DATA_CHANGE = "dataChange"
+    const val PRODUK_NAME = " Produk"
+    const val KATA_KUNCI = " Kata Kunci"
+    const val ATUR_NAME = " Atur"
 
 }

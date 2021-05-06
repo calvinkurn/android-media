@@ -13,6 +13,16 @@
               "show": false,
               "list": []
             },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "",
             "ctaText": "Tambah produk sekarang!"
@@ -48,6 +58,16 @@
                 }
               ]
             },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "",
             "ctaText": ""
@@ -61,6 +81,16 @@
               "content": "",
               "show": false,
               "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
             },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "newOrder",
@@ -76,6 +106,16 @@
               "show": false,
               "list": []
             },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "readyToShipOrder",
             "ctaText": ""
@@ -90,6 +130,16 @@
               "show": false,
               "list": []
             },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "complaint",
             "ctaText": ""
@@ -103,6 +153,16 @@
               "content": "",
               "show": false,
               "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
             },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "unreadChat",
@@ -123,6 +183,16 @@
                 }
               ]
             },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "discussion",
             "ctaText": ""
@@ -136,6 +206,16 @@
               "content": "",
               "show": false,
               "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
             },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "unrepliedReview",
@@ -164,6 +244,16 @@
                 }
               ]
             },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "",
             "ctaText": ""
@@ -177,6 +267,16 @@
               "content": "",
               "show": false,
               "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
             },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "productViewStatistic",
@@ -192,6 +292,16 @@
               "show": false,
               "list": []
             },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "productSoldVerified",
             "ctaText": ""
@@ -205,6 +315,16 @@
               "content": "",
               "show": false,
               "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
             },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "netRevenueVerified",
@@ -220,6 +340,16 @@
               "show": false,
               "list": []
             },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "",
             "ctaText": ""
@@ -233,6 +363,16 @@
               "content": "",
               "show": false,
               "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
             },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "shopScore",
@@ -248,6 +388,16 @@
               "show": false,
               "list": []
             },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "home",
             "ctaText": "Selengkapnya"
@@ -262,6 +412,16 @@
               "show": false,
               "list": []
             },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "sellerInfo",
             "ctaText": "Selengkapnya"
@@ -275,6 +435,16 @@
               "content": "",
               "show": false,
               "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
             },
             "applink": "tokopedia-android-internal://sellerapp/sellerhome",
             "dataKey": "article",

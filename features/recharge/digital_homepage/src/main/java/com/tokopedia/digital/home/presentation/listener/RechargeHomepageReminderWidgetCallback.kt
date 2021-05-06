@@ -5,18 +5,18 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 
 class RechargeHomepageReminderWidgetCallback(val listener: RechargeHomepageItemListener): ReminderWidgetListener {
     override fun onReminderWidgetClickListener(reminderData: ReminderWidgetModel) {
-        listener.onRechargeReminderWidgetClicked(reminderData.visitableId()?.toIntOrNull() ?: -1)
+        listener.onRechargeReminderWidgetClicked(reminderData.visitableId() ?: "")
     }
 
     override fun onReminderWidgetDeclineClickListener(reminderData: ReminderWidgetModel, toggleTracking: Boolean) {
-        listener.onRechargeReminderWidgetClosed(reminderData.visitableId()?.toIntOrNull() ?: -1, toggleTracking)
+        listener.onRechargeReminderWidgetClosed(reminderData.visitableId() ?: "", toggleTracking)
     }
 
     override fun onReminderWidgetImpressionListener(reminderData: ReminderWidgetModel) {
-        listener.onRechargeReminderWidgetImpression(reminderData.visitableId()?.toIntOrNull() ?: -1)
+        listener.onRechargeReminderWidgetImpression(reminderData.visitableId() ?: "")
     }
 
     override fun getReminderWidgetData(reminderData: ReminderWidgetModel) {
-        listener.loadRechargeSectionData(reminderData.visitableId()?.toIntOrNull() ?: -1)
+        listener.loadRechargeSectionData(reminderData.visitableId() ?: "")
     }
 }

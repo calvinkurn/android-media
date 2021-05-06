@@ -18,13 +18,8 @@ import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
 import com.tokopedia.digital.common.di.DigitalRestApiRetrofit;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
-import com.tokopedia.digital.product.data.mapper.USSDMapper;
-import com.tokopedia.digital.product.data.repository.UssdCheckBalanceRepository;
-import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
 import com.tokopedia.digital.product.domain.interactor.GetOperatorsByCategoryIdUseCase;
 import com.tokopedia.digital.product.domain.interactor.GetProductsByOperatorIdUseCase;
-import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
-import com.tokopedia.digital.product.domain.interactor.ProductDigitalInteractor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
@@ -58,27 +53,8 @@ public class DigitalProductModule {
 
     @Provides
     @DigitalProductScope
-    USSDMapper provideUSSDMapper() {
-        return new USSDMapper();
-    }
-
-    @Provides
-    @DigitalProductScope
-    IUssdCheckBalanceRepository provideUssdCheckBalanceRepository(DigitalRestApi digitalRestApi,
-                                                                  USSDMapper ussdMapper) {
-        return new UssdCheckBalanceRepository(digitalRestApi, ussdMapper);
-    }
-
-    @Provides
-    @DigitalProductScope
     ChuckerInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
         return new ChuckerInterceptor(context);
-    }
-
-    @Provides
-    @DigitalProductScope
-    IProductDigitalInteractor provideProductDigitalInteractor(IUssdCheckBalanceRepository ussdCheckBalanceRepository) {
-        return new ProductDigitalInteractor(ussdCheckBalanceRepository);
     }
 
     @Provides

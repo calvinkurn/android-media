@@ -14,13 +14,13 @@ import kotlinx.android.synthetic.main.topads_headline_keyword_item.view.*
  * Created by Pika on 6/10/20.
  */
 
-class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int) -> Unit),
-                                       private val onError: ((enable: Boolean) -> Unit)) : RecyclerView.Adapter<TopAdsHeadlineKeySelectedAdapter.ViewHolder>() {
+class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int, keywordDataItem: KeywordDataItem) -> Unit),
+                                       private val onBidChange: ((enable: Boolean, keywordDataItem: KeywordDataItem) -> Unit)) : RecyclerView.Adapter<TopAdsHeadlineKeySelectedAdapter.ViewHolder>() {
 
     var items: MutableList<KeywordDataItem> = mutableListOf()
-    private var minBid = 0
-    private var maxBid = 0
-    private var suggestedBid = 0
+    private var minBid = "0"
+    private var maxBid = "0"
+    private var suggestedBid = "0"
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -40,9 +40,10 @@ class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int) -> 
         holder.view.keywordDesc.visibility = View.GONE
         holder.view.setOnClickListener {
             holder.view.checkBox.isChecked = !holder.view.checkBox.isChecked
-            items[holder.adapterPosition].onChecked = holder.view.checkBox.isChecked
-            if (holder.adapterPosition != RecyclerView.NO_POSITION)
-                onCheck(holder.adapterPosition)
+            if (holder.adapterPosition != RecyclerView.NO_POSITION) {
+                items[holder.adapterPosition].onChecked = holder.view.checkBox.isChecked
+                onCheck(holder.adapterPosition, items[holder.adapterPosition])
+            }
         }
         setBidInfo(holder)
     }
@@ -53,37 +54,37 @@ class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int) -> 
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()
-                items[holder.adapterPosition].bidSuggest = result
+                items[holder.adapterPosition].bidSuggest = result.toString()
                 when {
-                    result < minBid -> {
+                    result < minBid.toDouble() -> {
                         holder.view.keywordBid.setError(true)
                         holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_min_bid), minBid))
-                        onError(false)
+                        onBidChange(false, items[holder.adapterPosition])
                     }
-                    result < suggestedBid -> {
+                    result < suggestedBid.toDouble() -> {
                         holder.view.keywordBid.setError(false)
                         holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_recom_bid), suggestedBid))
-                        onError(true)
+                        onBidChange(true, items[holder.adapterPosition])
                     }
-                    result > maxBid -> {
+                    result > maxBid.toDouble() -> {
                         holder.view.keywordBid.setError(true)
                         holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_max_bid), maxBid))
-                        onError(false)
+                        onBidChange(false, items[holder.adapterPosition])
                     }
                     else -> {
                         holder.view.keywordBid.setError(false)
                         holder.view.keywordBid.setMessage("")
-                        onError(true)
+                        onBidChange(true, items[holder.adapterPosition])
                     }
                 }
             }
         })
     }
 
-    fun setDefaultValues(maxBid: Int?, minBid: Int?, suggestionBid: Int?) {
-        this.maxBid = maxBid ?: 0
-        this.minBid = minBid ?: 0
-        this.suggestedBid = suggestionBid ?: 0
+    fun setDefaultValues(maxBid: String?, minBid: String?, suggestionBid: String?) {
+        this.maxBid = maxBid ?: "0"
+        this.minBid = minBid ?: "0"
+        this.suggestedBid = suggestionBid ?: "0"
         notifyDataSetChanged()
     }
 }

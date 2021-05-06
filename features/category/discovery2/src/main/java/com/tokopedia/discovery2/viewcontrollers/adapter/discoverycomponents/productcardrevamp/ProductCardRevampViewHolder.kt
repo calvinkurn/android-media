@@ -32,7 +32,6 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
                 if (needResync) {
                     (fragment as DiscoveryFragment).reSync()
                 }
-
             })
             mProductRevampComponentViewModel.getProductCarouselHeaderData().observe(it, Observer { component ->
                 addCardHeader(component)

@@ -13,6 +13,7 @@ enum class PlayChannelStatusType(val value: String) {
     Moderated("5"),
     Deleted("-1"),
     Transcoding("6"),
+    ScheduledLive("8"),
     Unknown("-2");
 
     companion object {

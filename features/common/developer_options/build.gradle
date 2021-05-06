@@ -18,6 +18,7 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.pushNotificationCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -26,6 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.libraries.screenRecorder)
+    implementation project(rootProject.ext.libraries.deviceFingerprint)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/dp_20">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/leftFirst"
+        android:layout_width="@dimen/gamification_shimmer_w"
+        android:layout_height="@dimen/gamification_shimmer_w"
+        android:layout_marginStart="@dimen/dp_10"
+        app:layout_constraintEnd_toEndOf="@id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/leftSecond"
+        android:layout_width="@dimen/gamification_shimmer_w"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintEnd_toEndOf="@+id/leftFirst"
+        app:layout_constraintStart_toStartOf="@+id/leftFirst"
+        app:layout_constraintTop_toBottomOf="@id/leftFirst" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/leftThird"
+        android:layout_width="@dimen/gamification_shimmer_w"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintEnd_toEndOf="@+id/leftSecond"
+        app:layout_constraintStart_toStartOf="@+id/leftSecond"
+        app:layout_constraintTop_toBottomOf="@id/leftSecond" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/rightFirst"
+        android:layout_width="@dimen/gamification_shimmer_w"
+        android:layout_height="@dimen/gamification_shimmer_w"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/rightSecond"
+        android:layout_width="@dimen/gamification_shimmer_w"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintEnd_toEndOf="@+id/rightFirst"
+        app:layout_constraintStart_toStartOf="@+id/rightFirst"
+        app:layout_constraintTop_toBottomOf="@id/rightFirst" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="@dimen/gamification_shimmer_w"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintEnd_toEndOf="@+id/rightSecond"
+        app:layout_constraintStart_toStartOf="@+id/rightSecond"
+        app:layout_constraintTop_toBottomOf="@id/rightSecond" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

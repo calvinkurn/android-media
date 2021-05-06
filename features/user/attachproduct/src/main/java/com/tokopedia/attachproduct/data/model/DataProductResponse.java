@@ -17,7 +17,7 @@ public class DataProductResponse {
     private String productName;
     @SerializedName("id")
     @Expose
-    private int productId;
+    private String productId;
     @SerializedName("image_url_700")
     @Expose
     private String productImageFull;
@@ -47,11 +47,11 @@ public class DataProductResponse {
         this.productName = productName;
     }
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 

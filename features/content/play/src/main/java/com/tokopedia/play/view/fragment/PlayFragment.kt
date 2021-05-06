@@ -17,26 +17,22 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.play.ERR_STATE_SOCKET
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
-import com.tokopedia.play.analytic.PlayAnalytics
+import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
+import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
-import com.tokopedia.play.util.PlaySensorOrientationManager
-import com.tokopedia.play.util.keyboard.KeyboardWatcher
+import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.contract.PlayFragmentContract
-import com.tokopedia.play.view.contract.PlayNewChannelInteractor
-import com.tokopedia.play.view.contract.PlayOrientationListener
+import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.BoundsKey
 import com.tokopedia.play.view.measurement.bounds.manager.videobounds.PlayVideoBoundsManager
@@ -44,21 +40,22 @@ import com.tokopedia.play.view.measurement.bounds.manager.videobounds.VideoBound
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
-import com.tokopedia.play.view.type.BottomInsetsState
-import com.tokopedia.play.view.type.BottomInsetsType
-import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.PinnedProductUiModel
-import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
-import com.tokopedia.play.view.viewcomponent.*
+import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.isYouTube
+import com.tokopedia.play.view.viewcomponent.FragmentBottomSheetViewComponent
+import com.tokopedia.play.view.viewcomponent.FragmentUserInteractionViewComponent
+import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
+import com.tokopedia.play.view.viewcomponent.FragmentYouTubeViewComponent
+import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
@@ -67,17 +64,17 @@ import javax.inject.Inject
  */
 class PlayFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
-        private val pageMonitoring: PlayPltPerformanceCallback
+        private val pageMonitoring: PlayPltPerformanceCallback,
+        private val dispatchers: CoroutineDispatchers,
+        private val analytic: PlayAnalytic,
 ) :
         TkpdBaseV4Fragment(),
-        PlayOrientationListener,
         PlayFragmentContract,
         FragmentVideoViewComponent.Listener,
         FragmentYouTubeViewComponent.Listener,
         PlayVideoScalingManager.Listener {
 
     private lateinit var ivClose: ImageView
-    private lateinit var loaderPage: LoaderUnify
     private val fragmentVideoView by viewComponent {
         FragmentVideoViewComponent(channelId, it, R.id.fl_video, childFragmentManager, this)
     }
@@ -90,26 +87,20 @@ class PlayFragment @Inject constructor(
     private val fragmentYouTubeView by viewComponent {
         FragmentYouTubeViewComponent(channelId, it, R.id.fl_youtube, childFragmentManager, this)
     }
-    private val fragmentErrorView by viewComponent {
-        FragmentErrorViewComponent(channelId, it, R.id.fl_global_error, childFragmentManager)
-    }
 
+    private lateinit var playParentViewModel: PlayParentViewModel
     private lateinit var playViewModel: PlayViewModel
 
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
-    private lateinit var orientationManager: PlaySensorOrientationManager
     private val keyboardWatcher = KeyboardWatcher()
-
-    private var requestedOrientation: Int
-        get() = requireActivity().requestedOrientation
-        set(value) {
-            requireActivity().requestedOrientation = value
-        }
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+
+    private val playNavigation: PlayNavigation
+        get() = requireActivity() as PlayNavigation
 
     private var videoScalingManager: VideoScalingManager? = null
     private var videoBoundsManager: VideoBoundsManager? = null
@@ -117,15 +108,17 @@ class PlayFragment @Inject constructor(
 
     private var isFirstTopBoundsCalculated = false
 
-    private var hasFetchedChannelInfo: Boolean = false
-
     override fun getScreenName(): String = "Play"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setOrientation()
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        playViewModel.getChannelInfo(channelId)
+
+        val theActivity = requireActivity()
+        if (theActivity is PlayActivity) {
+            playParentViewModel = ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
+            processChannelInfo()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -147,9 +140,8 @@ class PlayFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        orientationManager.enable()
         stopPrepareMonitoring()
-        playViewModel.getChannelInfo(channelId)
+        onPageFocused()
         view?.postDelayed({
             view?.let { registerKeyboardListener(it) }
         }, 200)
@@ -157,9 +149,12 @@ class PlayFragment @Inject constructor(
 
     override fun onPause() {
         unregisterKeyboardListener(requireView())
-        playViewModel.stopJob()
+        playParentViewModel.setLatestChannelStorageData(
+                channelId,
+                playViewModel.latestCompleteChannelData
+        )
+        onPageDefocused()
         super.onPause()
-        if (::orientationManager.isInitialized) orientationManager.disable()
     }
 
     override fun onDestroyView() {
@@ -180,19 +175,21 @@ class PlayFragment @Inject constructor(
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onOrientationChanged(screenOrientation: ScreenOrientation, isTilting: Boolean) {
-        if (requestedOrientation != screenOrientation.requestedOrientation && !onInterceptOrientationChangedEvent(screenOrientation))
-            requestedOrientation = screenOrientation.requestedOrientation
-
-        sendTrackerWhenRotateScreen(screenOrientation, isTilting)
-    }
-
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
         val isIntercepted = childFragmentManager.fragments.asSequence()
                 .filterIsInstance<PlayFragmentContract>()
                 .any { it.onInterceptOrientationChangedEvent(newOrientation) }
         val videoOrientation = playViewModel.videoOrientation
         return isIntercepted || !videoOrientation.isHorizontal
+    }
+
+    override fun onEnterPiPState(pipState: PiPState) {
+        if (playViewModel.isPiPAllowed) {
+            childFragmentManager.fragments
+                    .forEach {
+                        if (it is PlayFragmentContract) it.onEnterPiPState(pipState)
+                    }
+        }
     }
 
     /**
@@ -259,17 +256,30 @@ class PlayFragment @Inject constructor(
      * @return true means the onBackPressed() has been handled by this fragment
      */
     fun onBackPressed(): Boolean {
-        val isHandled = playViewModel.onBackPressed()
+        val isHandled = playViewModel.goBack()
         return when {
             isHandled -> isHandled
             else -> false
         }
     }
 
-    fun onNewChannelId(channelId: String?) {
-        if (this.channelId != channelId && activity is PlayNewChannelInteractor) {
-            (activity as PlayNewChannelInteractor).onNewChannel(channelId)
-        }
+    private fun processChannelInfo() {
+        try {
+            playViewModel.createPage(playParentViewModel.getLatestChannelStorageData(channelId))
+        } catch (e: Throwable) {}
+    }
+
+    //TODO("Somehow when clearing viewpager, onResume is called, and when it happens, channel id is already empty so this might cause crash")
+    private fun onPageFocused() {
+        try {
+            playViewModel.focusPage(playParentViewModel.getLatestChannelStorageData(channelId))
+            analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType)
+            sendSwipeRoomAnalytic()
+        } catch (e: Throwable) {}
+    }
+
+    private fun onPageDefocused() {
+        playViewModel.defocusPage(shouldPauseVideo = !playViewModel.pipState.isInPiP)
     }
 
     private fun invalidateVideoTopBounds(
@@ -310,14 +320,9 @@ class PlayFragment @Inject constructor(
         ViewCompat.setOnApplyWindowInsetsListener(requireView(), null)
     }
 
-    private fun setOrientation() {
-        orientationManager = PlaySensorOrientationManager(requireContext(), this)
-    }
-
     private fun initView(view: View) {
         with (view) {
             ivClose = findViewById(R.id.iv_close)
-            loaderPage = findViewById(R.id.loader_page)
         }
     }
 
@@ -343,100 +348,87 @@ class PlayFragment @Inject constructor(
     }
 
     private fun setupObserve() {
-        observeGetChannelInfo()
-        observeChannelErrorEvent()
         observeSocketInfo()
-        observeEventUserInfo()
+        observeStatusInfo()
         observeVideoMeta()
+        observeChannelInfo()
         observeBottomInsetsState()
         observePinned()
+        observePiPEvent()
     }
 
     //region observe
     /**
      * Observe
      */
-    private fun observeGetChannelInfo() {
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver { result ->
-            when (result) {
-                NetworkResult.Loading -> {
-                    if (!hasFetchedChannelInfo) loaderPage.show()
-                    else loaderPage.hide()
-
-                    fragmentErrorViewOnStateChanged(shouldShow = false)
-                }
-                is NetworkResult.Success -> {
-                    hasFetchedChannelInfo = true
-                    loaderPage.hide()
-                    fragmentErrorViewOnStateChanged(shouldShow = false)
-                    PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
-                }
-                is NetworkResult.Fail -> {
-                    loaderPage.hide()
-                    if (!hasFetchedChannelInfo) fragmentErrorViewOnStateChanged(shouldShow = true)
-                }
-            }
-        })
-    }
-
-    private fun observeChannelErrorEvent() {
-        playViewModel.observableChannelErrorEvent.observe(viewLifecycleOwner, EventObserver {
-            resetMonitoring()
-        })
-    }
 
     private fun observeSocketInfo() {
         playViewModel.observableSocketInfo.observe(viewLifecycleOwner, DistinctObserver {
             when(it) {
                 is PlaySocketInfo.Reconnect ->
-                    PlayAnalytics.errorState(channelId, "$ERR_STATE_SOCKET: ${getString(R.string.play_message_socket_reconnect)}", playViewModel.channelType)
+                    analytic.trackSocketError(getString(R.string.play_message_socket_reconnect))
                 is PlaySocketInfo.Error ->
-                    PlayAnalytics.errorState(channelId, "$ERR_STATE_SOCKET: ${it.throwable.localizedMessage}", playViewModel.channelType)
+                    analytic.trackSocketError(it.throwable.localizedMessage.orEmpty())
             }
         })
     }
 
-    private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.isFreeze) {
+    private fun observeStatusInfo() {
+        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
+            if (it.statusType.isFreeze) {
                 try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
-            } else if (it.isBanned) {
-                showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
+
+                if (!playViewModel.bottomInsets.isAnyBottomSheetsShown && it.shouldAutoSwipeOnFreeze) doAutoSwipe()
+
+            } else if (it.statusType.isBanned) {
+                showEventDialog(it.bannedModel.title, it.bannedModel.message, it.bannedModel.btnTitle)
             }
-            if (it.isFreeze || it.isBanned) {
+            if (it.statusType.isFreeze || it.statusType.isBanned) {
                 unregisterKeyboardListener(requireView())
-                onBottomInsetsViewHidden()
             }
 
-            fragmentVideoViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
-            fragmentBottomSheetViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
-            fragmentYouTubeViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
+            fragmentVideoViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
+            fragmentBottomSheetViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
+            fragmentYouTubeViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
         })
     }
 
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
-            meta.videoStream?.let {
-                setWindowSoftInputMode(it.channelType.isLive)
-                setBackground(it.backgroundUrl)
-            }
-
             fragmentVideoViewOnStateChanged(videoPlayer = meta.videoPlayer)
             fragmentYouTubeViewOnStateChanged(videoPlayer = meta.videoPlayer)
+        })
+    }
+
+    private fun observeChannelInfo() {
+        playViewModel.observableChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
+            setWindowSoftInputMode(it.channelType.isLive)
+            setBackground(it.backgroundUrl)
         })
     }
 
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             buttonCloseViewOnStateChanged(bottomInsets = it)
+            fragmentBottomSheetViewOnStateChanged(bottomInsets = it)
+
+            if (it.isAnyShown) playNavigation.requestDisableNavigation()
+            else playNavigation.requestEnableNavigation()
         })
     }
 
     private fun observePinned() {
         playViewModel.observablePinned.observe(viewLifecycleOwner, DistinctObserver {
-            if (it is PinnedProductUiModel) fragmentBottomSheetView.safeInit()
+            if (it is PlayPinnedUiModel.PinnedProduct) fragmentBottomSheetView.safeInit()
         })
     }
+
+    private fun observePiPEvent() {
+        playViewModel.observableEventPiPState.observe(viewLifecycleOwner, EventObserver {
+            if (it is PiPState.Requesting) onEnterPiPState(it)
+        })
+    }
+    //endregion
 
     private fun showEventDialog(title: String, message: String, buttonTitle: String, buttonUrl: String = "") {
         activity?.let {
@@ -475,9 +467,7 @@ class PlayFragment @Inject constructor(
         stopPageMonitoring()
     }
 
-    private fun resetMonitoring() {
-        pageMonitoring.invalidate()
-    }
+    fun getVideoLatency() = playViewModel.videoLatency
 
     private fun stopPageMonitoring() {
         pageMonitoring.stopMonitoring()
@@ -506,7 +496,7 @@ class PlayFragment @Inject constructor(
 
             override fun onKeyboardHidden() {
                 playViewModel.onKeyboardHidden()
-                if (!playViewModel.getStateHelper(orientation).bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
+                if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
             }
         })
     }
@@ -520,13 +510,8 @@ class PlayFragment @Inject constructor(
         playViewModel.hideInsets(isKeyboardHandled = true)
     }
 
-    private fun sendTrackerWhenRotateScreen(screenOrientation: ScreenOrientation, isTilting: Boolean) {
-        if (screenOrientation.isLandscape && isTilting) {
-            PlayAnalytics.userTiltFromPortraitToLandscape(
-                    userId = playViewModel.userId,
-                    channelId = channelId,
-                    channelType = playViewModel.channelType)
-        }
+    fun sendTrackerWhenRotateFullScreen() {
+        analytic.userTiltFromPortraitToLandscape()
     }
 
     private fun setBackground(backgroundUrl: String) {
@@ -539,6 +524,14 @@ class PlayFragment @Inject constructor(
         })
     }
 
+    private fun doAutoSwipe() {
+        playNavigation.navigateToNextPage()
+    }
+
+    private fun sendSwipeRoomAnalytic() {
+        if (playParentViewModel.startingChannelId != channelId) analytic.swipeRoom()
+    }
+
     //region onStateChanged
     /**
      * OnStateChanged
@@ -549,26 +542,28 @@ class PlayFragment @Inject constructor(
     }
 
     private fun fragmentVideoViewOnStateChanged(
-            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
-            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
-        if (videoPlayer.isYouTube || isFreezeOrBanned) {
+        if (videoPlayer.isYouTube || (isFreezeOrBanned && !bottomInsets.isAnyBottomSheetsShown)) {
             fragmentVideoView.safeRelease()
             fragmentVideoView.hide()
         }
     }
 
     private fun fragmentBottomSheetViewOnStateChanged(
-            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
-        if (isFreezeOrBanned) {
+        if (isFreezeOrBanned && !bottomInsets.isAnyBottomSheetsShown) {
             fragmentBottomSheetView.safeRelease()
             fragmentBottomSheetView.hide()
         }
     }
 
     private fun fragmentYouTubeViewOnStateChanged(
-            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (isFreezeOrBanned) {
@@ -580,17 +575,6 @@ class PlayFragment @Inject constructor(
         if (videoPlayer.isYouTube && isFirstTopBoundsCalculated) {
             fragmentYouTubeView.safeInit()
             fragmentYouTubeView.show()
-        }
-    }
-
-    private fun fragmentErrorViewOnStateChanged(
-            shouldShow: Boolean
-    ) {
-        if (shouldShow) {
-            fragmentErrorView.safeInit()
-            fragmentErrorView.show()
-        } else {
-            fragmentErrorView.hide()
         }
     }
     //endregion

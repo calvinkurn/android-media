@@ -15,15 +15,14 @@ data class ChatReplyUiModel(
         @SerializedName("createTimeStr")
         val timeStamp: String = "",
         @SerializedName("msgId")
-        val msgId: Int = 0,
+        val msgId: Long = 0L,
         @SerializedName("productId")
-        val productId: String = "",
-        @SerializedName("replyId")
-        val replyId: Int = 0
+        val productId: String = ""
 ) : Visitable<ChatSearchTypeFactory> {
 
     val tag get() = contact.attributes.tag
     val thumbnailUrl: String get() = contact.attributes.thumbnail
+    val timeStampMillis get() = timeStamp.toLongOrZero()
 
     val modifiedTimeStamp: String get() {
         val addOffsetTimeStamp = timeStamp.toLongOrZero() + 5000

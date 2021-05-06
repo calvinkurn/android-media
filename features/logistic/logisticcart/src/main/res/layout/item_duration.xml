@@ -11,9 +11,9 @@
         android:id="@+id/rl_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:paddingTop="@dimen/dp_16"
+        android:background="@color/Unify_N0"
         android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">
 
         <FrameLayout
@@ -25,15 +25,16 @@
                 android:id="@+id/layout_mvc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
-                android:layout_marginBottom="@dimen/dp_4">
+                android:layout_marginBottom="@dimen/dp_4"
+                android:visibility="visible">
 
                 <ImageView
                     android:id="@+id/img_mvc"
                     android:layout_width="@dimen/dp_20"
                     android:layout_height="@dimen/dp_20"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_mvc_text"
@@ -42,13 +43,13 @@
                     android:layout_marginStart="@dimen/dp_7"
                     android:layout_toEndOf="@id/img_mvc"
                     android:lineSpacingExtra="@dimen/sp_4"
-                    android:textColor="@color/text_mvc"
-                    app:typographyType="body_3"
-                    app:typographyWeight="bold"
-                    tools:text="@string/tv_mvc_text"
+                    android:textColor="@color/Unify_G500"
+                    app:layout_constraintBottom_toBottomOf="@id/img_mvc"
                     app:layout_constraintStart_toEndOf="@id/img_mvc"
                     app:layout_constraintTop_toTopOf="@id/img_mvc"
-                    app:layout_constraintBottom_toBottomOf="@id/img_mvc"/>
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
+                    tools:text="@string/tv_mvc_text" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -61,6 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/fl_container"
             android:lineSpacingExtra="@dimen/sp_4"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="@string/tv_duration" />
@@ -78,7 +80,7 @@
             android:paddingRight="@dimen/dp_8"
             android:paddingBottom="@dimen/dp_2"
             android:text="@string/label_text_promo_potency"
-            android:textColor="@color/text_promo_potency"
+            android:textColor="@color/Unify_R600"
             android:visibility="gone"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
@@ -88,12 +90,12 @@
             android:id="@+id/lbl_cod_available"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignTop="@id/tv_duration_or_price"
+            android:layout_alignBottom="@id/tv_duration_or_price"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_toEndOf="@+id/tv_duration_or_price"
             android:layout_toRightOf="@+id/tv_duration_or_price"
-            android:layout_alignBottom="@id/tv_duration_or_price"
-            android:layout_alignTop="@id/tv_duration_or_price"
             android:text="@string/tersedia_bayar_di_tempat"
             android:visibility="gone"
             app:labelType="general_light_green" />
@@ -103,10 +105,10 @@
             android:id="@+id/lbl_cod_available_eta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
             android:layout_below="@+id/tv_duration_or_price"
-            android:visibility="gone"
+            android:layout_marginTop="@dimen/dp_4"
             android:text="@string/tersedia_bayar_di_tempat"
+            android:visibility="gone"
             app:labelType="general_light_green" />
 
         <!--price in old view, duration in ETA-->
@@ -116,6 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/lbl_cod_available_eta"
             android:layout_marginTop="@dimen/dp_4"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="@string/tv_price" />
@@ -124,8 +127,8 @@
             android:id="@+id/lbl_ontime_delivery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
             android:layout_below="@+id/tv_price_or_duration"
+            android:layout_marginTop="@dimen/dp_4"
             android:text="@string/jaminan_tepat_waktu"
             android:visibility="gone"
             app:labelType="general_light_green" />
@@ -136,6 +139,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/lbl_ontime_delivery"
             android:layout_marginTop="@dimen/dp_4"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="@string/tv_text_desc" />
@@ -146,6 +150,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_text_desc"
             android:layout_marginTop="@dimen/dp_4"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Tersedia layanan Order Prioritas" />
@@ -157,6 +162,7 @@
             android:layout_below="@+id/tv_order_prioritas"
             android:layout_marginTop="@dimen/dp_4"
             android:text="@string/label_shipping_information"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="small"
             app:typographyWeight="reguler" />
 
@@ -167,6 +173,7 @@
             android:layout_below="@+id/tv_shipping_information"
             android:layout_marginTop="@dimen/dp_4"
             android:text="@string/label_shipping_information"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="small"
             app:typographyWeight="reguler" />
 
@@ -176,7 +183,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_mvc_error"
             android:layout_marginTop="4dp"
-            android:textColor="@color/text_courier_error_red"
+            android:textColor="@color/Unify_R600"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="@string/tv_error" />
@@ -187,8 +194,8 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/tv_duration_or_price"
             android:layout_alignParentRight="true"
-            app:srcCompat="@drawable/ic_check"
-            android:contentDescription="@string/content_img_check"/>
+            android:contentDescription="@string/content_img_check"
+            app:srcCompat="@drawable/ic_check" />
 
     </RelativeLayout>
 
@@ -198,6 +205,6 @@
         android:layout_height="@dimen/dp_half"
         android:layout_below="@+id/rl_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/separator_color" />
+        android:background="@color/Unify_N100" />
 
 </RelativeLayout>

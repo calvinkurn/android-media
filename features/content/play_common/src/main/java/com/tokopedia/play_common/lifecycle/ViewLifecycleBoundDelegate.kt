@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
  */
 class ViewLifecycleBoundDelegate<T: Any> internal constructor(
         creator: (Fragment) -> T,
-        onLifecycle: DefaultOnLifecycle<T>
+        onLifecycle: DefaultOnLifecycle<T>? = null
 ) : AbstractLifecycleBoundDelegate<Fragment, T>(creator, onLifecycle) {
 
     override val lock: Any = this

@@ -6,10 +6,7 @@ import com.tokopedia.calendar.Legend
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.entertainment.pdp.EventJsonMapper.getJson
 import com.tokopedia.entertainment.pdp.data.*
-import com.tokopedia.entertainment.pdp.data.pdp.EventPDPAboutEntity
-import com.tokopedia.entertainment.pdp.data.pdp.EventPDPHighlightEntity
-import com.tokopedia.entertainment.pdp.data.pdp.EventPDPInformationEntity
-import com.tokopedia.entertainment.pdp.data.pdp.EventPDPLocationDetailEntity
+import com.tokopedia.entertainment.pdp.data.pdp.*
 import com.tokopedia.entertainment.pdp.data.redeem.validate.EventValidateResponse
 import com.tokopedia.entertainment.pdp.network_api.GetWhiteListValidationUseCase
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
@@ -54,7 +51,6 @@ class EventPDPViewModelTest {
         MockKAnnotations.init(this)
         eventPDPViewModel = EventPDPViewModel(Dispatchers.Unconfined, eventProductDetailUseCase,
                 usecaseHoliday, getEventWhiteListValidationUseCase)
-        eventPDPViewModel.getIntialList()
     }
 
     @Test
@@ -67,6 +63,7 @@ class EventPDPViewModelTest {
     @Test
     fun `PDPandHolidayData_ShouldReturnPDPandHoliday_ShowActualResult`(){
         //given
+        eventPDPViewModel.getIntialList()
         val pdpMock = Gson().fromJson(getJson("pdp_mock.json"), EventProductDetailEntity::class.java)
         val contentMock = Gson().fromJson(getJson("content_mock.json"), EventContentByIdEntity::class.java)
 
@@ -97,6 +94,7 @@ class EventPDPViewModelTest {
     @Test
     fun `PDPandHolidayData_ShouldFailPDPandSuccessHoliday_FailActualResult`(){
         //given
+        eventPDPViewModel.getIntialList()
         val travelHoliday = TravelCalendarHoliday(id = "123123", attribute = TravelCalendarHoliday.HolidayAttribute("2020-01-01", label = "LabelTest"))
         val travelHolidayData = TravelCalendarHoliday.HolidayData(listOf(travelHoliday))
 
@@ -124,6 +122,7 @@ class EventPDPViewModelTest {
     @Test
     fun `PDPandHolidayData_ShouldSuccessPDPandFailHoliday_FailActualResult`(){
         //given
+        eventPDPViewModel.getIntialList()
         val pdpMock = Gson().fromJson(getJson("pdp_mock.json"), EventProductDetailEntity::class.java)
         val contentMock = Gson().fromJson(getJson("content_mock.json"), EventContentByIdEntity::class.java)
 
@@ -150,6 +149,7 @@ class EventPDPViewModelTest {
     @Test
     fun `PDPandHolidayData_ShouldFailPDPandFailHoliday_FailActualResult`(){
         //given
+        eventPDPViewModel.getIntialList()
         val error = Throwable("Error PDP")
         coEvery {
             eventProductDetailUseCase.executeUseCase("", "", true, "")
@@ -174,6 +174,7 @@ class EventPDPViewModelTest {
     @Test
     fun `PDPHighlightMapper_ShouldReturnHighlightMapper_ShowActualResult`(){
         //given
+        eventPDPViewModel.getIntialList()
         val eventHighlight = EventPDPHighlightEntity("aaa", "bbb", listOf())
         //when
         eventPDPViewModel.getDataHighlight(eventHighlight)
@@ -185,6 +186,7 @@ class EventPDPViewModelTest {
     @Test
     fun `PDPAboutMapper_ShouldReturnAboutMapper_ShowActualResult`(){
         //given
+        eventPDPViewModel.getIntialList()
         val eventPDPAbout = EventPDPAboutEntity("tetirully", SectionData(listOf(), 11, "rulll"))
         //when
         eventPDPViewModel.getDataAbout(eventPDPAbout)
@@ -196,6 +198,7 @@ class EventPDPViewModelTest {
     @Test
     fun `PDPLocationMapper_ShouldReturnLocationMapper_ShowActualResult`(){
         //given
+        eventPDPViewModel.getIntialList()
         val eventPDPLocationDetailEntity = EventPDPLocationDetailEntity(Outlet("q2331", "asdasda"), SectionData(listOf(), 55, "123") )
         //when
         eventPDPViewModel.getDataLocationDetail(eventPDPLocationDetailEntity)
@@ -207,6 +210,7 @@ class EventPDPViewModelTest {
     @Test
     fun `PDPInformationMapper_ShouldReturnInformationMapper_ShowActualResult`(){
         //given
+        eventPDPViewModel.getIntialList()
         val eventPDPInformationEntity = EventPDPInformationEntity(SectionData(listOf(), 1231, "saidsaiRull"))
         //when
         eventPDPViewModel.getDataInformation(eventPDPInformationEntity)
@@ -218,6 +222,7 @@ class EventPDPViewModelTest {
     @Test
     fun `PDPWhiteList_ShouldReturnWhiteListTrue_ShowActualResult`(){
         //given
+        eventPDPViewModel.getIntialList()
         val whiteListMock = Gson().fromJson(getJson("whitelist_mock.json"), EventValidateResponse::class.java)
         val restResponse = RestResponse(whiteListMock, 200, false)
         val whiteListMapped = mapOf<Type, RestResponse>(
@@ -241,6 +246,7 @@ class EventPDPViewModelTest {
     @Test
     fun `PDPWhiteList_ShouldReturnWhiteListFalse_ShowFalseResult`(){
         //given
+        eventPDPViewModel.getIntialList()
         val restResponse = RestResponse(EventValidateResponse(), 400, false)
         val whiteListMapped = mapOf<Type, RestResponse>(
                 EventValidateResponse::class.java to restResponse
@@ -256,5 +262,86 @@ class EventPDPViewModelTest {
         //then
         assertNotNull(eventPDPViewModel.validateScanner.value)
         assertEquals(eventPDPViewModel.validateScanner.value, false)
+    }
+
+    @Test
+    fun `PDPandHolidayData_ShouldReturnPDPandHoliday_ShowNullResult`(){
+        //given
+        eventPDPViewModel.getIntialList()
+        val pdpMock = Gson().fromJson(getJson("pdp_null_mock.json"), EventProductDetailEntity::class.java)
+        val contentMock = Gson().fromJson(getJson("content_null_mock.json"), EventContentByIdEntity::class.java)
+
+        val eventCombined = EventPDPContentCombined(contentMock, pdpMock)
+
+        val travelHoliday = TravelCalendarHoliday(id = "123123", attribute = TravelCalendarHoliday.HolidayAttribute("2020-01-01", label = "LabelTest"))
+        val travelHolidayData = TravelCalendarHoliday.HolidayData(listOf(travelHoliday))
+
+        coEvery {
+            eventProductDetailUseCase.executeUseCase("", "", true, "")
+        } returns Success(eventCombined)
+
+        coEvery {
+            usecaseHoliday.execute()
+        } returns Success(travelHolidayData)
+
+        //when
+        eventPDPViewModel.getDataProductDetail("", "", "")
+
+        //then
+        assertNotNull(eventPDPViewModel.eventProductDetail.value)
+        assertNotNull(eventPDPViewModel.eventHoliday.value)
+        assertNull(eventPDPViewModel.isError.value)
+
+        assertEquals(eventPDPViewModel.eventProductDetail.value, pdpMock)
+    }
+
+    @Test
+    fun `PDPHighlightMapper_ShouldReturnHighlightMapper_ShowNullResult`(){
+        //given
+        val eventHighlight = EventPDPHighlightEntity("aaa", "bbb", listOf())
+        //when
+        eventPDPViewModel.getDataHighlight(eventHighlight)
+        //then
+        assertNull(eventPDPViewModel.eventProductDetailList.value)
+    }
+
+    @Test
+    fun `PDPAboutMapper_ShouldReturnAboutMapper_ShowNullResult`(){
+        //given
+        val eventPDPAbout = EventPDPAboutEntity("tetirully", SectionData(listOf(), 11, "rulll"))
+        //when
+        eventPDPViewModel.getDataAbout(eventPDPAbout)
+        //then
+        assertNull(eventPDPViewModel.eventProductDetailList.value)
+    }
+
+    @Test
+    fun `PDPLocationMapper_ShouldReturnLocationMapper_ShowNullResult`(){
+        //given
+        val eventPDPLocationDetailEntity = EventPDPLocationDetailEntity(Outlet("q2331", "asdasda"), SectionData(listOf(), 55, "123") )
+        //when
+        eventPDPViewModel.getDataLocationDetail(eventPDPLocationDetailEntity)
+        //then
+        assertNull(eventPDPViewModel.eventProductDetailList.value)
+    }
+
+    @Test
+    fun `PDPInformationMapper_ShouldReturnInformationMapper_ShowNullResult`(){
+        //given
+        val eventPDPInformationEntity = EventPDPInformationEntity(SectionData(listOf(), 1231, "saidsaiRull"))
+        //when
+        eventPDPViewModel.getDataInformation(eventPDPInformationEntity)
+        //then
+        assertNull(eventPDPViewModel.eventProductDetailList.value)
+    }
+
+    @Test
+    fun `PDPFacilitiesMapper_ShouldReturnFacilitiesMapper_ShowNullResult`(){
+        //given
+        val eventPDPFacilitiesEntity = EventPDPFacilitiesEntity(listOf())
+        //when
+        eventPDPViewModel.getDataFacilities(eventPDPFacilitiesEntity)
+        //then
+        assertNull(eventPDPViewModel.eventProductDetailList.value)
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
@@ -171,6 +173,12 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     textFieldPhone.setError(false)
                     clearMessageFieldPhone()
                 }
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                super.afterTextChanged(s)
+                removeFirstZeroPhoneNUmber(s)
+                removePhoneMaskingAtFirst(s)
             }
         })
 
@@ -356,6 +364,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_LOGIN_PHONE_NUMBER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, getIsLoginRegisterFlow())
         startActivityForResult(intent, REQUEST_LOGIN_PHONE)
     }
 
@@ -368,6 +377,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_REGISTER_PHONE_NUMBER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, getIsLoginRegisterFlow())
         startActivityForResult(intent, REQUEST_REGISTER_PHONE)
     }
 
@@ -378,7 +388,16 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, getIsLoginRegisterFlow())
         startActivityForResult(intent, REQUEST_COTP_PHONE_VERIFICATION)
+    }
+
+    private fun getIsLoginRegisterFlow(): Boolean {
+        return if(GlobalConfig.isSellerApp()) {
+            true
+        } else {
+            return !userSession.isLoggedIn
+        }
     }
 
     private fun goToRegisterAddNamePage(phone: String) {
@@ -393,6 +412,22 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
         startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
+    }
+
+    private fun removeFirstZeroPhoneNUmber(s: Editable) {
+        s.toString()?.let {
+            if (it.isNotEmpty() && it.first().toString() == "0") {
+                textFieldPhone.textFieldInput.setText(it.drop(1))
+            }
+        }
+    }
+
+    private fun removePhoneMaskingAtFirst(s: Editable) {
+        s.toString()?.let {
+            if (it.isNotEmpty() && it.first().toString() == "-") {
+                textFieldPhone.textFieldInput.setText(it.drop(1))
+            }
+        }
     }
 
     companion object {
@@ -415,7 +450,6 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
             return fragment
         }
 
-        fun isValidPhone(phone: String): Boolean = Patterns.PHONE.matcher(phone).matches() &&
-                phone.length >= 6
+        fun isValidPhone(phone: String): Boolean = Patterns.PHONE.matcher(phone).matches() && phone.length >= 6
     }
 }

@@ -7,8 +7,8 @@ import com.tokopedia.vouchercreation.R
 enum class VoucherCreationStepInfo(val stepPosition: Int,
                                    @StringRes val stepDescriptionRes: Int,
                                    val progressPercentage: Int = stepPosition.plus(1) * StepDescriptionText.percentagePerStep) {
-    STEP_ONE(VoucherCreationStep.TARGET, R.string.mvc_create_step_desc_cashback),
-    STEP_TWO(VoucherCreationStep.BENEFIT, R.string.mvc_create_step_desc_cashback),
+    STEP_ONE(VoucherCreationStep.TARGET, R.string.mvc_create_step_desc_voucher_information),
+    STEP_TWO(VoucherCreationStep.BENEFIT, R.string.mvc_create_step_desc_voucher_adjustment),
     STEP_THREE(VoucherCreationStep.PERIOD, R.string.mvc_create_step_desc_voucher_period),
     STEP_FOUR(VoucherCreationStep.REVIEW, R.string.mvc_create_step_desc_voucher_review)
 }

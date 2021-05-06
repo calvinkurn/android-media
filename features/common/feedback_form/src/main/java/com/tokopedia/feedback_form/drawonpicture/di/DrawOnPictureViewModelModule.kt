@@ -13,7 +13,6 @@ import dagger.multibindings.IntoMap
  * @author by furqan on 01/10/2020
  */
 @Module
-@DrawOnPictureScope
 abstract class DrawOnPictureViewModelModule {
     @DrawOnPictureScope
     @Binds

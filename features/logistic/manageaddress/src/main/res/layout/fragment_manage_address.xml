@@ -4,24 +4,35 @@
     android:layout_height="match_parent"
     android:id="@+id/swipe_refresh"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:enabled="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/Unify_N0">
 
-        <com.tokopedia.design.text.SearchInputView
-            android:layout_marginTop="@dimen/dp_8"
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tickerType="announcement"
+            app:closeButtonVisibility="gone"
+            android:visibility="gone"/>
+
+        <com.tokopedia.unifycomponents.SearchBarUnify
+            android:layout_marginTop="@dimen/dp_10"
             android:id="@+id/search_input_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ticker_info"
             app:search_bar_show_icon="false"/>
 
         <LinearLayout
@@ -40,7 +51,8 @@
                 android:layout_height="@dimen/dp_140"
                 android:layout_marginLeft="@dimen/dp_60"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginRight="@dimen/dp_60"/>
+                android:layout_marginRight="@dimen/dp_60"
+                android:contentDescription="@string/image_desc" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title_empty_search"
@@ -73,11 +85,11 @@
             android:id="@+id/address_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/dp_18"
+            android:layout_marginBottom="@dimen/dp_8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/search_input_view" />
+            app:layout_constraintBottom_toTopOf="@id/ll_btn"
+            app:layout_constraintTop_toBottomOf="@id/search_input_view"/>
 
 
         <include
@@ -96,6 +108,36 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/ll_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="vertical"
+            android:background="@color/Unify_N0">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_4"
+                android:background="@drawable/manageaddress_shadow_top" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_choose_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
+                app:unifyButtonVariant="filled"
+                app:unifyButtonType="main"
+                android:text="@string/pilih_alamat"
+                android:textAlignment="center"/>
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

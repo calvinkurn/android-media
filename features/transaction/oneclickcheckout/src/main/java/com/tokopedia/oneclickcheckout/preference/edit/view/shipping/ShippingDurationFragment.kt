@@ -1,13 +1,11 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view.shipping
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.Group
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -55,15 +53,15 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     private var contentLayout: Group? = null
     private var globalError: GlobalError? = null
 
-    private var isNewLayout = false
-
     companion object {
         private const val ARG_IS_EDIT = "is_edit"
+        private const val ARG_ADDRESS_STATE = "address_state"
 
-        fun newInstance(isEdit: Boolean = false): ShippingDurationFragment {
+        fun newInstance(isEdit: Boolean = false, addressState: Int): ShippingDurationFragment {
             val shippingDurationFragment = ShippingDurationFragment()
             val bundle = Bundle()
             bundle.putBoolean(ARG_IS_EDIT, isEdit)
+            bundle.putInt(ARG_ADDRESS_STATE, addressState)
             shippingDurationFragment.arguments = bundle
             return shippingDurationFragment
         }
@@ -86,10 +84,8 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
 
     private fun initViewModel() {
         val parent = activity
-        if (parent is PreferenceEditParent) {
-            if (parent.getShippingId() > 0) {
-                viewModel.selectedId = parent.getShippingId()
-            }
+        if (parent is PreferenceEditParent && parent.getShippingId() > 0) {
+            viewModel.selectedId = parent.getShippingId()
         }
 
         viewModel.shippingDuration.observe(viewLifecycleOwner, {
@@ -131,7 +127,9 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     }
 
     private fun initViews() {
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         tickerInfo = view?.findViewById(R.id.ticker_info)
         shippingDurationList = view?.findViewById(R.id.shipping_duration_rv)
@@ -163,7 +161,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     private fun hitRates() {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            viewModel.getRates(parent.getListShopShipment(), parent.getShippingParam(), parent.isNewFlow())
+            viewModel.getRates(parent.getListShopShipment(), parent.getShippingParam())
         }
     }
 
@@ -176,7 +174,8 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                 if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
                     parent.goBack()
                 } else {
-                    parent.addFragment(PaymentMethodFragment.newInstance())
+                    val addressState = arguments?.getInt(ARG_ADDRESS_STATE) ?: 0
+                    parent.addFragment(PaymentMethodFragment.newInstance(addressState = addressState))
                 }
             }
 

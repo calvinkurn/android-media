@@ -7,12 +7,8 @@ import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
-import com.tokopedia.cart.view.subscriber.FollowShopSubscriber
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -52,9 +48,6 @@ object CartListPresenterFollowShopTest : Spek({
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
     val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
-    val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
-    val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
-    val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
@@ -70,8 +63,7 @@ object CartListPresenterFollowShopTest : Spek({
                     addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
-                    addToCartExternalUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
-                    updateInsuranceProductDataUsecase, seamlessLoginUsecase, updateCartCounterUseCase,
+                    addToCartExternalUseCase, seamlessLoginUsecase, updateCartCounterUseCase,
                     updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
                     followShopUseCase, TestSchedulers
             )
@@ -103,7 +95,7 @@ object CartListPresenterFollowShopTest : Spek({
             Then("should render success") {
                 verifyOrder {
                     view.hideProgressLoading()
-                    view.showToastMessageGreen(dataFollowShop.followShop.message, FollowShopSubscriber.CTA_WORDING)
+                    view.showToastMessageGreen(dataFollowShop.followShop?.message.orEmpty())
                 }
             }
         }
@@ -125,7 +117,7 @@ object CartListPresenterFollowShopTest : Spek({
             Then("should show error") {
                 verifyOrder {
                     view.hideProgressLoading()
-                    view.showToastMessageRed(exception, FollowShopSubscriber.CTA_WORDING)
+                    view.showToastMessageRed(exception)
                 }
             }
         }

@@ -1,93 +1,70 @@
 package com.tokopedia.topads.view.model
 
-import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
-import com.tokopedia.topads.common.data.internal.ParamObject.REQUEST_TYPE
-import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
-import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE
 import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE_VALUE
-import com.tokopedia.topads.common.data.internal.ParamObject.SUGGESTION
 import com.tokopedia.topads.common.data.model.DataSuggestions
-import com.tokopedia.topads.create.R
-import com.tokopedia.topads.data.response.BidInfoDataItem
-import com.tokopedia.topads.data.response.ResponseBidInfo
-import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.tokopedia.topads.common.data.response.KeywordData
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
+import com.tokopedia.topads.common.domain.usecase.SuggestionKeywordUseCase
+import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Author errysuprayogi on 06,November,2019
  */
 class BudgetingAdsViewModel @Inject constructor(
-        private val context: Context,
-        private val userSession: UserSessionInterface,
-        @Named("Main")
-        private val dispatcher: CoroutineDispatcher,
-        private val repository: GraphqlRepository) : BaseViewModel(dispatcher) {
+        dispatcher: CoroutineDispatchers,
+        private val bidInfoUseCase: BidInfoUseCase,
+        private val bidInfoUseCaseDefault: BidInfoUseCase,
+        private val suggestionKeywordUseCase: SuggestionKeywordUseCase) : BaseViewModel(dispatcher.main) {
 
 
-    fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<BidInfoDataItem>) -> Unit, onEmpty: (() -> Unit)) {
+    fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit, onEmpty: (() -> Unit)) {
 
-        launchCatchError(
-                block = {
-                    val queryMap = HashMap<String, Any?>()
-                    queryMap[SHOP_Id] = Integer.parseInt(userSession.shopId)
-                    queryMap[SOURCE] = SOURCE_VALUE
-                    queryMap[SUGGESTION] = suggestions
-                    queryMap[REQUEST_TYPE] = KEYWORD
-                    val data = withContext(Dispatchers.IO) {
-                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_bid_info), ResponseBidInfo.Result::class.java, queryMap)
-                        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
-                        repository.getReseponse(listOf(request), cacheStrategy)
-                    }
-                    data.getSuccessData<ResponseBidInfo.Result>().let {
-                        if (it.topadsBidInfo.data.isEmpty()) {
-                            onEmpty()
-                        } else {
-                            onSuccess(it.topadsBidInfo.data)
-                        }
-                    }
-
-                },
-                onError = {
-                    it.printStackTrace()
+        launch(block = {
+            bidInfoUseCase.setParams(suggestions, KEYWORD, SOURCE_VALUE)
+            bidInfoUseCase.executeQuerySafeMode({
+                if (it.topadsBidInfo.data.isEmpty()) {
+                    onEmpty()
+                } else {
+                    onSuccess(it.topadsBidInfo.data)
                 }
-        )
+            }, {
+                it.printStackTrace()
+            })
+        })
     }
 
-    fun getBidInfoDefault(suggestions: List<DataSuggestions>, onSuccess: (List<BidInfoDataItem>) -> Unit) {
-
-        launchCatchError(
-                block = {
-                    val queryMap = HashMap<String, Any?>()
-                    queryMap[SHOP_Id] = Integer.parseInt(userSession.shopId)
-                    queryMap[SOURCE] = SOURCE_VALUE
-                    queryMap[SUGGESTION] = suggestions
-                    queryMap[REQUEST_TYPE] = PRODUCT
-                    val data = withContext(Dispatchers.IO) {
-                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_bid_info), ResponseBidInfo.Result::class.java, queryMap)
-                        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
-                        repository.getReseponse(listOf(request), cacheStrategy)
+    fun getSuggestionKeyword(productIds: String, groupId: Int, onSuccess: ((List<KeywordData>) -> Unit), onEmpty: (() -> Unit)) {
+        launch {
+            suggestionKeywordUseCase.setParams(groupId, productIds)
+            suggestionKeywordUseCase.executeQuerySafeMode(
+                    {
+                        if (it.topAdsGetKeywordSuggestionV3.data.isEmpty()) {
+                            onEmpty()
+                        } else {
+                            onSuccess(it.topAdsGetKeywordSuggestionV3.data)
+                        }
+                    },
+                    {
+                        it.printStackTrace()
                     }
-                    data.getSuccessData<ResponseBidInfo.Result>().let {
-                        onSuccess(it.topadsBidInfo.data)
-                    }
+            )
+        }
+    }
 
-                },
-                onError = {
-                    it.printStackTrace()
-                })
+    fun getBidInfoDefault(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
+        launch(block = {
+            bidInfoUseCaseDefault.setParams(suggestions, PRODUCT, SOURCE_VALUE)
+            bidInfoUseCaseDefault.executeQuerySafeMode({
+                onSuccess(it.topadsBidInfo.data)
+            }, {
+                it.printStackTrace()
+            })
+        })
     }
 }

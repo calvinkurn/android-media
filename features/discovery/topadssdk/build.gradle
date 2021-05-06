@@ -30,6 +30,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.shopWidget)
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.libraries.logger)
 
 
     if (rootProject.ext.debugToolsEnabled) {
@@ -48,8 +50,6 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.0'
     implementation rootProject.ext.networkDependencies.glide
@@ -64,6 +64,9 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    implementation rootProject.ext.miscDependencies.viewModelKtx
 
     implementation('de.hdodenhof:circleimageview:2.2.0') {
         exclude group: 'com.android.support', module: 'support-annotations'

@@ -1,7 +1,6 @@
 package com.tokopedia.review.common.util
 
 import android.content.Context
-import android.os.Build
 import android.text.Spanned
 import android.util.TypedValue
 import android.widget.ListView
@@ -9,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.relativeDate
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants.ANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
@@ -16,6 +16,7 @@ import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import java.text.SimpleDateFormat
@@ -77,12 +78,11 @@ fun getReviewStar(ratingCount: Int): Int {
     }
 }
 
-fun String.toReviewDescriptionFormatted(maxChar: Int): Spanned {
+fun String.toReviewDescriptionFormatted(maxChar: Int, context: Context): CharSequence? {
     return if (MethodChecker.fromHtml(this).toString().length > maxChar) {
         val subDescription = MethodChecker.fromHtml(this).toString().substring(0, maxChar)
-        MethodChecker
-                .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
-                        + "<font color='#42b549'>Selengkapnya</font>")
+        HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
+                + context.getString(R.string.review_expand)).spannedString
     } else {
         MethodChecker.fromHtml(this)
     }
@@ -91,8 +91,8 @@ fun String.toReviewDescriptionFormatted(maxChar: Int): Spanned {
 infix fun String.toRelativeDate(format: String): String {
     return if (this.isNotEmpty()) {
         val sdf = SimpleDateFormat(format, Locale.getDefault())
-        val date: Date = sdf.parse(this)
-        val millis: Long = date.time
+        val date = sdf.parse(this)
+        val millis: Long = date?.time.orZero()
 
         return try {
             val cal = Calendar.getInstance()
@@ -124,15 +124,13 @@ fun ChipsUnify.toggle() {
 
 fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int) {
     val clickedItem = this.getItemAtPosition(position) as ListItemUnify
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-        when (choiceMode) {
-            ListView.CHOICE_MODE_SINGLE -> {
-                items.filter {
-                    it.listRightRadiobtn?.isChecked ?: false
-                }.filterNot { it == clickedItem }.onEach { it.listRightRadiobtn?.isChecked = false }
+    when (choiceMode) {
+        ListView.CHOICE_MODE_SINGLE -> {
+            items.filter {
+                it.listRightRadiobtn?.isChecked ?: false
+            }.filterNot { it == clickedItem }.onEach { it.listRightRadiobtn?.isChecked = false }
 
-                clickedItem.listRightRadiobtn?.isChecked = true
-            }
+            clickedItem.listRightRadiobtn?.isChecked = true
         }
     }
 }

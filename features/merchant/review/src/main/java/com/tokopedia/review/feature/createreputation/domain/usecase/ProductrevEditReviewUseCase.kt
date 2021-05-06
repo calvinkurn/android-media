@@ -36,7 +36,7 @@ class ProductrevEditReviewUseCase @Inject constructor(private val gqlUseCase: Mu
 
     private var requestParams = RequestParams.EMPTY
 
-    fun setParams(feedbackId: Int, reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int, reviewText: String, isAnonymous: Boolean, oldAttachmentUrls: List<String> = emptyList(), attachmentIds: List<String> = emptyList()) {
+    fun setParams(feedbackId: Long, reputationId: Long, productId: Long, shopId: Long, reputationScore: Int = 0, rating: Int, reviewText: String, isAnonymous: Boolean, oldAttachmentUrls: List<String> = emptyList(), attachmentIds: List<String> = emptyList()) {
         requestParams = RequestParams.create().apply {
             putString(PARAM_FEEDBACK_ID, feedbackId.toString())
             putString(PARAM_REPUTATION_ID, reputationId.toString())

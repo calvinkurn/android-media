@@ -1,0 +1,181 @@
+[
+  {
+    "data": {
+      "fetchLineGraphWidgetData": {
+        "data": [
+          {
+            "dataKey": "productViewTrend",
+            "description": "\u003cspan style\u003dcolor:#31353B;\u003e\u003cb\u003e0%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu",
+            "header": "Rp0",
+            "yLabels": [
+              {
+                "yValPrecise": 0,
+                "yLabel": "0"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "0"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "0"
+              }
+            ],
+            "list": [
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "4 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "5 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "6 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "7 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "8 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "9 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "10 Oct"
+              }
+            ],
+            "error": ""
+          },
+          {
+            "dataKey": "conversionRate",
+            "description": "\u003cspan style\u003dcolor:#31353B;\u003e\u003cb\u003e0%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu",
+            "header": "Rp0",
+            "yLabels": [
+              {
+                "yValPrecise": 0,
+                "yLabel": "0"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "0"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "0"
+              }
+            ],
+            "list": [
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "4 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "5 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "6 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "7 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "8 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "9 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "10 Oct"
+              }
+            ],
+            "error": ""
+          },
+          {
+            "dataKey": "totalOrderStatistic",
+            "description": "\u003cspan style\u003dcolor:#31353B;\u003e\u003cb\u003e0%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu",
+            "header": "Rp0",
+            "yLabels": [
+              {
+                "yValPrecise": 0,
+                "yLabel": "0"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "0"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "0"
+              }
+            ],
+            "list": [
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "4 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "5 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "6 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "7 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "8 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "9 Oct"
+              },
+              {
+                "yValPrecise": 0,
+                "yLabel": "Rp0",
+                "xLabel": "10 Oct"
+              }
+            ],
+            "error": ""
+          }
+        ]
+      }
+    }
+  }
+]

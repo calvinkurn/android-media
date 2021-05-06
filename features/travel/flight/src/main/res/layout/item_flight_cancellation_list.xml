@@ -12,35 +12,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingRight="@dimen/spacing_lvl4">
+        android:paddingStart="@dimen/layout_lvl0"
+        android:paddingEnd="@dimen/spacing_lvl4">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_cancellation_created_time"
+            android:id="@+id/tgCancellationCreatedTime"
             style="@style/TextView.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/layout_lvl0"
             android:paddingTop="@dimen/spacing_lvl4"
             android:paddingEnd="@dimen/spacing_lvl4"
-            android:paddingRight="@dimen/spacing_lvl4"
             android:textColor="@color/Unify_N700_44"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Tanggal Pembatalan: 12 Apr 2018, 11:30" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_cancellation_journey"
+            android:id="@+id/tgCancellationJourney"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/layout_lvl0"
             android:paddingTop="@dimen/spacing_lvl2"
             android:paddingEnd="@dimen/spacing_lvl4"
-            android:paddingRight="@dimen/spacing_lvl4"
             android:textColor="@color/Unify_N700_68"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Jakarta (CGK) - Surabaya (SUB)" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_cancellation_status"
+            android:id="@+id/tgCancellationStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
@@ -50,23 +51,22 @@
             tools:text="BERHASIL" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_cancellation_notes"
+            android:id="@+id/tgCancellationNotes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/flight_dp_10"
+            android:paddingStart="@dimen/layout_lvl0"
             android:paddingEnd="@dimen/spacing_lvl3"
-            android:paddingRight="@dimen/spacing_lvl3"
             app:typographyType="body_3"
             tools:text="Proses verifikasi berlangsung maks. 1x24 jam" />
 
     </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/img_arrow"
+    <com.tokopedia.iconunify.IconUnify
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        app:srcCompat="@drawable/ic_arrow_right_grey" />
+        app:icon_name="CHEVRON_RIGHT" />
 
 </RelativeLayout>

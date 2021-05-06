@@ -31,12 +31,13 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
         const val KEY_STATE_LAST_TAB_POSITION = "last_tab_position"
 
         const val PRODUCT_TAB = 0
-        const val CHAT_TAB = 1
-        const val REVIEW_TAB = 2
-        const val ADS_TAB = 3
-        const val STATISTIC_TAB = 4
-        const val FEED_PLAY_TAB = 5
-        const val FINANCIAL_SERVICES_TAB = 6
+        const val DISCUSSION_TAB = 1
+        const val CHAT_TAB = 2
+        const val REVIEW_TAB = 3
+        const val ADS_TAB = 4
+        const val STATISTIC_TAB = 5
+        const val FEED_PLAY_TAB = 6
+        const val FINANCIAL_SERVICES_TAB = 7
 
         fun createInstance(@SellerMigrationFeatureName featureName: String): SellerMigrationFragment {
             return SellerMigrationFragment().apply {
@@ -164,6 +165,9 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
             SellerMigrationFeatureName.FEATURE_FINANCIAL_SERVICES -> {
                 FINANCIAL_SERVICES_TAB
             }
+            SellerMigrationFeatureName.FEATURE_DISCUSSION -> {
+                DISCUSSION_TAB
+            }
             else -> {
                 PRODUCT_TAB
             }
@@ -177,6 +181,7 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
 
     private fun addTabFragments() {
         tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureProductTabFragment>(), getString(R.string.seller_migration_fragment_tab_product)))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureDiscussionTabFragment>(), getString(R.string.seller_migration_fragment_tab_discussion)))
         tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureChatTabFragment>(), getString(R.string.seller_migration_fragment_tab_chat)))
         tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureReviewTabFragment>(), getString(R.string.seller_migration_fragment_tab_review)))
         tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureAdsPromoTabFragment>(), getString(R.string.seller_migration_fragment_tab_promo_and_ads)))

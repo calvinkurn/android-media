@@ -124,12 +124,14 @@
                     android:textColor="@color/Unify_N700_96"
                     app:typographyType="heading_4" />
 
-                <androidx.appcompat.widget.AppCompatImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/image_expendable_passenger"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/flight_dp_20"
                     android:layout_gravity="center_vertical"
-                    app:srcCompat="@drawable/ic_arrow_up" />
+                    app:icon_name="CHEVRON_UP"
+                    app:icon_color_light_enable="@color/Unify_G500"
+                    app:icon_color_night_enable="@color/Unify_G500"/>
 
             </LinearLayout>
 

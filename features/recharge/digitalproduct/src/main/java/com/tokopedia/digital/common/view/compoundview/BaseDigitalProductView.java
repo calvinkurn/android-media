@@ -1,18 +1,17 @@
 package com.tokopedia.digital.common.view.compoundview;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
+
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 
@@ -37,7 +36,6 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
     protected C data;
     protected H historyClientNumber;
 
-    protected BottomSheetView bottomSheetView;
     protected int source = 1;
 
     public void setActionListener(ActionListener actionListener) {
@@ -63,7 +61,6 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         this.context = context;
         LayoutInflater.from(context).inflate(getHolderLayoutId(), this, true);
         onCreateView();
-        setBottomSheetDialog();
     }
 
     public void renderData(C data, H historyClientNumber) {
@@ -110,15 +107,15 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         }
     }
 
-    private void setBottomSheetDialog() {
-        bottomSheetView = new BottomSheetView(context);
-        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .setTitle(context.getString(R.string.title_tooltip_instan_payment))
-                .setBody(context.getString(R.string.body_tooltip_instan_payment))
-                .setImg(R.drawable.digital_ic_digital_instant_payment)
-                .build());
-    }
+//    private void setBottomSheetDialog() {
+//        bottomSheetView = new BottomSheetView(context);
+//        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+//                .BottomSheetFieldBuilder()
+//                .setTitle(context.getString(R.string.title_tooltip_instan_payment))
+//                .setBody(context.getString(R.string.body_tooltip_instan_payment))
+//                .setImg(R.drawable.digital_ic_digital_instant_payment)
+//                .build());
+//    }
 
     @NonNull
     protected CompoundButton.OnCheckedChangeListener getInstantCheckoutChangeListener() {
@@ -149,6 +146,8 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
     public abstract void renderClientNumber(String clientNumber);
 
     public abstract boolean isInstantCheckoutChecked();
+
+    public abstract void onBuyButtonLoading(Boolean showLoading);
 
     public abstract String getClientNumber();
 

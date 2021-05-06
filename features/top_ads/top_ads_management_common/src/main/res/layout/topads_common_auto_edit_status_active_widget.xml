@@ -42,7 +42,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_8"
         android:text="@string/topads_common_anggaran_harian"
         android:textColor="@color/Unify_N700_68"
@@ -51,16 +50,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="small" />
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.ProgressBarUnify
         android:id="@+id/progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_18"
-        android:layout_marginRight="@dimen/dp_18"
-        android:progress="0"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="18dp"
+        app:unify_progress_bar_value="50"
         app:layout_constraintEnd_toStartOf="@id/btn_switch"
         app:layout_constraintStart_toEndOf="@id/auto_ad_status_image"
         app:layout_constraintTop_toBottomOf="@id/daily_usage_status" />
@@ -70,7 +66,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_2"
         android:includeFontPadding="false"
         android:text="@string/topads_dash_group_item_progress_status"
@@ -85,7 +80,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_2"
-        android:layout_marginLeft="@dimen/dp_2"
         android:layout_marginTop="@dimen/dp_2"
         android:text="@string/topads_dash_group_item_progress_status"
         android:textColor="@color/Unify_N700_68"
@@ -100,23 +94,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/btn_switch"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/topads_common_setting" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

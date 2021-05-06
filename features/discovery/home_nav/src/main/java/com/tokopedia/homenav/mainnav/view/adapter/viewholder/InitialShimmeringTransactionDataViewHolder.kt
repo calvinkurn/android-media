@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.mainnav.view.viewmodel.InitialShimmerTransactionDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.InitialShimmerTransactionDataModel
 
 class InitialShimmeringTransactionDataViewHolder (itemView: View)
     : AbstractViewHolder<InitialShimmerTransactionDataModel>(itemView) {

@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.BannerTitle;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,10 +69,10 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 );
                 bannerItemHolder.tvVoucherCode.setBackgroundColor(context
                         .getResources()
-                        .getColor(R.color.digital_voucher_copied_color));
+                        .getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400));
                 bannerItemHolder.tvVoucherCode.setTextColor(context
                         .getResources()
-                        .getColor(com.tokopedia.design.R.color.white));
+                        .getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
             } else {
                 bannerItemHolder.mainContainer.setBackgroundDrawable(
                         context.getResources().getDrawable(
@@ -80,7 +81,7 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 );
                 bannerItemHolder.tvVoucherCode.setTextColor(context
                         .getResources()
-                        .getColor(R.color.digital_voucher_copied_color));
+                        .getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400));
                 bannerItemHolder.tvVoucherCode.setBackgroundColor(context
                         .getResources()
                         .getColor(android.R.color.transparent));
@@ -163,7 +164,7 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private LinearLayout mainContainer;
         private TextView tvDescBanner;
         private TextView tvVoucherCode;
-        private TextView btnCopy;
+        private UnifyButton btnCopy;
         private LinearLayout holderVoucherCode;
 
         BannerItemHolder(View itemView) {

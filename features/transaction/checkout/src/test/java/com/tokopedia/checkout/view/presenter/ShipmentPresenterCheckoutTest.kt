@@ -13,7 +13,6 @@ import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
-import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
@@ -24,12 +23,11 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -64,9 +62,6 @@ class ShipmentPresenterCheckoutTest {
     private lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
 
     @MockK
-    private lateinit var codCheckoutUseCase: CodCheckoutUseCase
-
-    @MockK
     private lateinit var getRatesUseCase: GetRatesUseCase
 
     @MockK
@@ -91,13 +86,7 @@ class ShipmentPresenterCheckoutTest {
     private lateinit var analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection
 
     @MockK
-    private lateinit var codAnalytics: CodAnalytics
-
-    @MockK
     private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
-
-    @MockK
-    private lateinit var getInsuranceCartUseCase: GetInsuranceCartUseCase
 
     @MockK(relaxed = true)
     private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
@@ -120,15 +109,13 @@ class ShipmentPresenterCheckoutTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        presenter = ShipmentPresenter(compositeSubscription,
-                checkoutUseCase, getShipmentAddressFormGqlUseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase,
-                saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase,
-                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
-                ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
-                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
-                getInsuranceCartUseCase, shipmentDataConverter, releaseBookingUseCase,
+        presenter = ShipmentPresenter(
+                compositeSubscription, checkoutUseCase, getShipmentAddressFormGqlUseCase,
+                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
+                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
+                submitHelpTicketUseCase, ratesStatesConverter, shippingCourierConverter,
+                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
+                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers)
         presenter.attachView(view)
     }
@@ -147,7 +134,7 @@ class ShipmentPresenterCheckoutTest {
         })
 
         // When
-        presenter.processCheckout(false, false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "")
 
         // Then
         verifyOrder {
@@ -171,7 +158,7 @@ class ShipmentPresenterCheckoutTest {
         every { view.activityContext } returns mockContext
 
         // When
-        presenter.processCheckout(false, false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "")
 
         // Then
         verifyOrder {
@@ -196,7 +183,7 @@ class ShipmentPresenterCheckoutTest {
         every { view.activityContext } returns mockContext
 
         // When
-        presenter.processCheckout(false, false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "")
 
         // Then
         verifyOrder {
@@ -225,7 +212,7 @@ class ShipmentPresenterCheckoutTest {
         })
 
         // When
-        presenter.processCheckout(false, false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "")
 
         // Then
         verifyOrder {
@@ -253,7 +240,7 @@ class ShipmentPresenterCheckoutTest {
         every { checkoutUseCase.createObservable(any()) } returns Observable.just(checkoutData)
 
         // When
-        presenter.processCheckout(false, false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "")
 
         // Then
         verifyOrder {
@@ -275,7 +262,7 @@ class ShipmentPresenterCheckoutTest {
         every { checkoutUseCase.createObservable(any()) } returns Observable.error(IOException())
 
         // When
-        presenter.processCheckout(false, false, false, false, "0", "0", "0")
+        presenter.processCheckout(false, false, false, "0", "0", "0")
 
         // Then
         verifyOrder {
@@ -296,24 +283,11 @@ class ShipmentPresenterCheckoutTest {
         presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, false, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 
         // Then
         assert(checkoutRequest.promos.isNotEmpty())
         assert(checkoutRequest.promoCodes.isNotEmpty())
-    }
-
-    @Test
-    fun `WHEN generate checkout request with insurance THEN request should contains insurance flag true`() {
-        // Given
-        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
-
-        // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, true, 0, "")
-
-        // Then
-        assert(checkoutRequest.hasMacroInsurance)
     }
 
     @Test
@@ -323,7 +297,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, false, 1, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 1, "")
 
         // Then
         assert(checkoutRequest.isDonation == 1)
@@ -342,7 +316,7 @@ class ShipmentPresenterCheckoutTest {
         }
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, false, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 
         // Then
         assert(checkoutRequest.egoldData.isEgold)
@@ -363,11 +337,11 @@ class ShipmentPresenterCheckoutTest {
         }
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, false, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 
         // Then
         assert(checkoutRequest.cornerData.isTokopediaCorner)
-        assert(checkoutRequest.cornerData.cornerId == tmpCornerId.toInt())
+        assert(checkoutRequest.cornerData.cornerId == tmpCornerId.toLongOrZero())
         assert(checkoutRequest.cornerData.userCornerId == tmpUserCornerId)
     }
 
@@ -377,7 +351,7 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
         val deviceId = "12345"
-        val checkoutRequest = presenter.generateCheckoutRequest(null, false, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 
         // When
         val checkoutParams = presenter.generateCheckoutParams(true, true, false, deviceId, checkoutRequest)
@@ -394,7 +368,7 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
         val deviceId = "12345"
-        val checkoutRequest = presenter.generateCheckoutRequest(null, false, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 
         // When
         val checkoutParams = presenter.generateCheckoutParams(true, true, true, deviceId, checkoutRequest)
@@ -440,7 +414,7 @@ class ShipmentPresenterCheckoutTest {
         every { view.generateNewCheckoutRequest(any(), any()) } returns listOf(dataCheckoutRequest)
 
         // When
-        presenter.processCheckout(false, false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "")
 
         // Then
         verifyOrder {

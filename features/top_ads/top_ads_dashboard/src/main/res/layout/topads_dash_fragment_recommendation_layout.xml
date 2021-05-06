@@ -5,14 +5,13 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <com.tokopedia.unifycomponents.SearchBarUnify
-        android:id="@+id/searchBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_16"
-        app:search_bar_show_icon="false"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loderRecom"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,17 +20,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
         android:background="@color/white"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/view_pager"
-        app:layout_constraintTop_toBottomOf="@id/searchBar"
-        android:layout_marginLeft="@dimen/dp_16" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.topads.common.CustomViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rvTabInsight" />

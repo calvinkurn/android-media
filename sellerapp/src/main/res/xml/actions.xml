@@ -9,4 +9,22 @@
                 urlParameter="orderDate"/>
         </fulfillment>
     </action>
+
+    <!-- Commenting lines below as we are still waiting for GET_ORDER intent to be accepted first. -->
+    <!-- GET_THING intent is still not supporting Indonesian locale (id-ID), so we commented these lines -->
+    <!-- to enable and speed up review process for Sellerapp while waiting for the confirmation from the Google Team -->
+<!--    <action intentName="actions.intent.GET_THING">-->
+<!--        <fulfillment-->
+<!--            fulfillmentMode="actions.fulfillment.DEEPLINK"-->
+<!--            urlTemplate="sellerapp://seller-search{?keyword}">-->
+<!--            <parameter-mapping-->
+<!--                intentParameter="thing.name"-->
+<!--                required="true"-->
+<!--                urlParameter="keyword"/>-->
+<!--        </fulfillment>-->
+<!--        <fulfillment-->
+<!--            fulfillmentMode="actions.fulfillment.DEEPLINK"-->
+<!--            urlTemplate="sellerapp://seller-search">-->
+<!--        </fulfillment>-->
+<!--    </action>-->
 </actions>

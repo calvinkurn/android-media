@@ -4,6 +4,16 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.search.result.domain.model.AceSearchProductModel
 import com.tokopedia.search.result.domain.model.ProductTopAdsModel
+import com.tokopedia.usecase.RequestParams
+
+internal fun graphqlRequests(request: MutableList<GraphqlRequest>.() -> Unit) =
+        mutableListOf<GraphqlRequest>().apply {
+                request()
+        }
+
+internal fun MutableList<GraphqlRequest>.addAceSearchProductRequest(params: String) {
+        add(createAceSearchProductRequest(params))
+}
 
 internal fun createAceSearchProductRequest(params: String) =
         GraphqlRequest(
@@ -11,6 +21,12 @@ internal fun createAceSearchProductRequest(params: String) =
                 AceSearchProductModel::class.java,
                 mapOf(SearchConstant.GQL.KEY_PARAMS to params)
         )
+
+internal fun MutableList<GraphqlRequest>.addProductAdsRequest(requestParams: RequestParams, params: String) {
+        if (!requestParams.isSkipProductAds()) {
+                add(createTopAdsProductRequest(params = params))
+        }
+}
 
 internal fun createTopAdsProductRequest(params: String) =
         GraphqlRequest(
@@ -41,6 +57,12 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     text
                     query
                     typeId
+                }
+                banner {
+                    position
+                    text
+                    applink
+                    imageUrl
                 }
                 related {
                     relatedKeyword
@@ -221,6 +243,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                         position
                         type
                         title
+                        url
                     }
                 }
                 shop{

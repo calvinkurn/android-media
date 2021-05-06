@@ -1,10 +1,6 @@
 package com.tokopedia.home.explore.view.adapter.viewholder;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,21 +9,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
-import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
+import com.tokopedia.media.loader.JvmMediaLoader;
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy;
+import com.tokopedia.home.explore.view.adapter.datamodel.CategoryFavoriteDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.LayoutRes;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by errysuprayogi on 1/31/18.
  */
 
-public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavoriteViewModel> {
+public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavoriteDataModel> {
 
     private static final String MARKETPLACE = "Marketplace";
     private static final String DIGITAL = "Digital";
@@ -59,7 +61,7 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
     }
 
     @Override
-    public void bind(CategoryFavoriteViewModel element) {
+    public void bind(CategoryFavoriteDataModel element) {
         titleTxt.setText(element.getTitle());
         rowModelList.addAll(element.getItemList());
         adapter.setData(rowModelList);
@@ -103,7 +105,10 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
         public void onBindViewHolder(ItemAdapter.ItemViewHolder holder, final int position) {
             final LayoutRows rowModel = data.get(position);
             holder.title.setText(rowModel.getName());
-            ImageHandler.loadImageThumbs(context, holder.icon, rowModel.getImageUrl());
+            JvmMediaLoader.loadImage(holder.icon, rowModel.getImageUrl(), properties -> {
+                properties.setCacheStrategy(MediaCacheStrategy.RESOURCE);
+                return null;
+            });
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

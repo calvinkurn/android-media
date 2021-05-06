@@ -117,11 +117,13 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     private fun renderBackgroundColor() {
-        if (!state.hasSeen) {
-            cardOrderContainer?.setBackgroundColor(State.COLOR_NOT_SEEN.toInt())
+        val colorRes = if (!state.hasSeen) {
+            State.COLOR_NOT_SEEN
         } else {
-            cardOrderContainer?.setBackgroundColor(State.COLOR_SEEN)
+            State.COLOR_SEEN
         }
+        val color = MethodChecker.getColor(context, colorRes)
+        cardOrderContainer?.setBackgroundColor(color)
     }
 
     private fun renderStateDescription() {
@@ -332,7 +334,7 @@ class TransactionOrderProgressLayout : LinearLayout {
         }
 
         companion object {
-            const val COLOR_NOT_SEEN = 0xFFEBFFEF
+            val COLOR_NOT_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_G100
             var COLOR_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_N0
 
             const val OPEN = "Tutup"

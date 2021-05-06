@@ -9,7 +9,8 @@ import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.View
 import android.widget.CompoundButton
-import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.unifycomponents.Toaster
 import rx.Emitter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -20,12 +21,6 @@ import kotlin.math.roundToInt
  * Created by fwidjaja on 2019-04-25.
  */
 object Utils {
-    @JvmStatic
-    fun getFormattedCurrency(price: Int): String {
-        return if (price == 0) "" else CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
-
-    }
-
     @JvmStatic
     fun getHtmlFormat(text: String?): String {
         if (text == null) return ""
@@ -53,6 +48,19 @@ object Utils {
     fun removeDecimalSuffix(currencyString: String): String {
         return currencyString.removeDecimalSuffix()
     }
+
+    @JvmStatic
+    fun setToasterCustomBottomHeight(bottomHeight: Int) {
+        Toaster.toasterCustomBottomHeight = bottomHeight
+    }
+
+    @JvmStatic
+    fun isNotNullOrEmptyOrZero(string: String): Boolean {
+        if (string.toLongOrZero() == 0L) {
+            return false
+        }
+        return true
+    }
 }
 
 fun convertToString(stringList: List<String>?): String {
@@ -78,6 +86,10 @@ fun String.removeDecimalSuffix(): String = this.removeSuffix(".00")
 fun joinToString(strings: List<String>, separator: String): String = strings.joinToString(separator)
 
 fun joinToStringFromListInt(ints: List<Int>, separator: String): String = ints.joinToString(separator)
+
+fun String.isNotBlankOrZero(): Boolean {
+    return this.isNotBlank() && this.toLongOrZero() != 0L
+}
 
 const val DEFAULT_DEBOUNCE_IN_MILIS = 250L
 fun rxViewClickDebounce(view: View, timeout: Long = DEFAULT_DEBOUNCE_IN_MILIS): Observable<Boolean> =

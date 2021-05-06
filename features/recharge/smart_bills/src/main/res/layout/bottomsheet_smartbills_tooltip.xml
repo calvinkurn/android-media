@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_sbm_tooltip"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/img_sbm_tooltip"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_tooltip_1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_sbm_tooltip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/smart_bills_tooltip_title"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/bullet_desc_tooltip1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_tooltip_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/smart_bills_tooltip_bullet"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:typographyType="body_2"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_desc_tooltip1"
+        app:layout_constraintTop_toBottomOf="@+id/tg_tooltip_1"
+        app:layout_constraintLeft_toRightOf="@+id/bullet_desc_tooltip1"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/smart_bills_tooltip_desc_1"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:typographyType="body_2"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/bullet_desc_tooltip2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_desc_tooltip1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/smart_bills_tooltip_bullet"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:typographyType="body_2"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_desc_tooltip2"
+        app:layout_constraintTop_toBottomOf="@+id/tg_desc_tooltip1"
+        app:layout_constraintLeft_toRightOf="@+id/bullet_desc_tooltip2"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/smart_bills_tooltip_desc_2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:typographyType="body_2"
+        />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        app:layout_constraintTop_toBottomOf="@+id/tg_desc_tooltip2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/btn_tooltip_sbm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/smart_bills_tooltip_button"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginBottom="@dimen/spacing_lvl5"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

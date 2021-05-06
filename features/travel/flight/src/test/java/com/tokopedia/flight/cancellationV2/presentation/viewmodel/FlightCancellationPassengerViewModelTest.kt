@@ -1,10 +1,11 @@
 package com.tokopedia.flight.cancellationV2.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationGetPassengerUseCase
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationPassengerModel
 import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dummy.DUMMY_CANCELLATION_JOURNEY
 import com.tokopedia.flight.dummy.DUMMY_CANCELLED_PASSENGER
 import com.tokopedia.flight.dummy.DUMMY_EMPTY_PASSENGER_SELECTED_CANCELLATION
@@ -13,6 +14,7 @@ import com.tokopedia.flight.shouldBe
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import org.junit.Before
@@ -30,7 +32,7 @@ class FlightCancellationPassengerViewModelTest {
     @RelaxedMockK
     private lateinit var flightAnalytics: FlightAnalytics
 
-    private val testDispatcherProvider = TravelTestDispatcherProvider()
+    private val testDispatcherProvider = CoroutineTestDispatchersProvider
 
     private val userSession: UserSessionInterface = mockk()
     private val cancellationPassengerUseCase: FlightCancellationGetPassengerUseCase = mockk()
@@ -52,6 +54,7 @@ class FlightCancellationPassengerViewModelTest {
         // then
         viewModel.selectedCancellationPassengerList.size shouldBe 0
         viewModel.canGoNext() shouldBe false
+        viewModel.invoiceId shouldBe ""
     }
 
     @Test
@@ -67,7 +70,7 @@ class FlightCancellationPassengerViewModelTest {
     }
 
     @Test
-    fun canGoNext_withSelectedPassenger_shouldBeFalse() {
+    fun canGoNext_withSelectedPassenger_shouldBeTrue() {
         // given
         viewModel.selectedCancellationPassengerList.addAll(DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION)
 
@@ -267,5 +270,29 @@ class FlightCancellationPassengerViewModelTest {
 
         // then
         isPassengerChecked shouldBe true
+    }
+
+    @Test
+    fun trackOnNext() {
+        // given
+        viewModel.invoiceId = "1234567890"
+        viewModel.selectedCancellationPassengerList.addAll(DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION)
+        coEvery { userSession.userId } returns "0987654321"
+
+        // when
+        viewModel.trackOnNext()
+
+        // then
+        for (item in viewModel.selectedCancellationPassengerList) {
+            val route = "${item.flightCancellationJourney.departureAirportId}${item.flightCancellationJourney.arrivalAirportId}"
+            val departureDate = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, item.flightCancellationJourney.departureTime)
+
+            coVerify {
+                flightAnalytics.eventClickNextOnCancellationPassenger(
+                        "$route - ${item.flightCancellationJourney.airlineName} - $departureDate - 1234567890",
+                        "0987654321"
+                )
+            }
+        }
     }
 }

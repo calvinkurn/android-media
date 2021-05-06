@@ -2,9 +2,6 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.content.Context
 import android.graphics.Color
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.google.android.flexbox.AlignItems
@@ -12,6 +9,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -28,11 +26,11 @@ import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_REJECTED
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.common.util.Utils.toStringFormatted
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLabelAdapter
-import com.tokopedia.unifycomponents.UrlSpanNoUnderline
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.detail_header_item.view.*
@@ -58,7 +56,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     warehouseLabel.hide()
                 }
 
-                if(item.dataObject.statusIndicatorColor.isNotBlank()) {
+                if (item.dataObject.statusIndicatorColor.isNotBlank()) {
                     somOrderDetailIndicator.background = Utils.getColoredIndicator(context, item.dataObject.statusIndicatorColor)
                 }
 
@@ -69,13 +67,25 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 }
 
                 if (item.dataObject.tickerInfo.text.isNotEmpty() || item.dataObject.awbUploadProofText.isNotEmpty()) {
-                    setupTicker(ticker_detail_buyer_request_cancel, item.dataObject.tickerInfo)
+                    val tickerContent = if (item.dataObject.tickerInfo.text.isNotEmpty()) {
+                        item.dataObject.tickerInfo.text
+                    } else {
+                        item.dataObject.awbUploadProofText
+                    }
+                    val isAwb = item.dataObject.tickerInfo.text.isEmpty()
+                    val tickerUrl = if (item.dataObject.tickerInfo.actionUrl.isNotEmpty()) {
+                        item.dataObject.tickerInfo.actionUrl
+                    } else {
+                        item.dataObject.awbUploadUrl
+                    }
+
+                    setupTicker(ticker_detail_buyer_request_cancel, item.dataObject.tickerInfo, tickerContent, tickerUrl, isAwb)
                     ticker_detail_buyer_request_cancel?.show()
                 } else {
                     ticker_detail_buyer_request_cancel?.gone()
                 }
 
-                header_buyer_value?.text = item.dataObject.custName
+                header_buyer_value?.text = item.dataObject.custName.toStringFormatted(MAX_BUYER_NAME)
                 header_date_value?.text = item.dataObject.paymentDate
 
                 if (item.dataObject.deadlineText.isNotEmpty()) {
@@ -129,15 +139,15 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         }
     }
 
-    private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo) {
+    private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo, tickerContent: String, tickerUrl: String, isAwb: Boolean) {
         tickerBuyerRequestCancel?.apply {
-            val tickerDescription = makeTickerDescription(context, tickerInfo)
-            setTextDescription(tickerDescription)
+            val tickerDescription = makeTickerDescription(context, tickerInfo, tickerContent, isAwb)
+            setHtmlDescription(tickerDescription)
 
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    if (tickerInfo.actionUrl.isNotBlank()) {
-                        RouteManager.route(context, String.format("%s?=url", ApplinkConst.WEBVIEW, tickerInfo.actionUrl))
+                    if (tickerUrl.isNotBlank()) {
+                        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, tickerUrl)
                     }
                 }
 
@@ -148,28 +158,17 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         }
     }
 
-    private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo): String {
+    private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo, tickerContent: String, isAwb: Boolean): String {
         val message = Utils.getL2CancellationReason(tickerInfo.text, context.getString(R.string.som_header_detail_ticker_cancellation))
-        val messageLink = tickerInfo.actionText
-        val spannedMessage = SpannableStringBuilder()
-                .append(message)
-                .append(" $messageLink")
-
-        if (messageLink.isNotBlank()) {
-            spannedMessage.setSpan(
-                    UrlSpanNoUnderline(messageLink),
-                    message.length + 2,
-                    message.length + messageLink.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            spannedMessage.setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)),
-                    message.length + 2,
-                    message.length + messageLink.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+        val additionalInvalidResi = itemView.context.getString(R.string.additional_invalid_resi)
+        return if (isAwb) {
+            String.format(itemView.context.getString(R.string.som_detail_ticker_description), tickerContent, additionalInvalidResi)
+        } else {
+            String.format(itemView.context.getString(R.string.som_detail_ticker_description), message, tickerInfo.actionText)
         }
+    }
 
-        return spannedMessage.toString()
+    companion object {
+        const val MAX_BUYER_NAME = 35
     }
 }

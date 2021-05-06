@@ -11,6 +11,6 @@
     android:paddingTop="@dimen/spacing_lvl2"
     android:paddingEnd="@dimen/spacing_lvl4"
     android:paddingBottom="@dimen/spacing_lvl2"
-    android:textColor="@color/Neutral_N0"
+    android:textColor="@color/Unify_Static_White"
     android:textSize="@dimen/fontSize_lvl2"
     tools:text="134134" />

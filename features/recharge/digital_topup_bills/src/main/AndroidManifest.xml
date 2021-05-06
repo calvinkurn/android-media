@@ -10,10 +10,10 @@
             android:label="@string/digital_title_prepaid_page"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.WhiteUnify" >
 
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data
@@ -29,10 +29,10 @@
             android:label="@string/digital_title_postpaid_page"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.WhiteUnify" >
 
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data
@@ -48,7 +48,7 @@
             android:label="@string/digital_title_fav_number"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysVisible"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.WhiteUnify" />
 
     </application>
 

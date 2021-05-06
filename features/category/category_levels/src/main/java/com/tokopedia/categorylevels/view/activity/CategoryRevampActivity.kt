@@ -1,6 +1,7 @@
 package com.tokopedia.categorylevels.view.activity
 
 import android.os.Bundle
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.categorylevels.analytics.CategoryRevampAnalytics
 import com.tokopedia.categorylevels.di.CategoryRevampRepoProvider
 import com.tokopedia.common.RepositoryProvider
@@ -13,6 +14,7 @@ const val CATEGORY_LEVELS_RESULT_TRACE = "category_levels_result_trace"
 const val CATEGORY_LEVELS_PLT_PREPARE_METRICS = "category_levels_plt_prepare_metrics"
 const val CATEGORY_LEVELS_PLT_NETWORK_METRICS = "category_levels_plt_network_metrics"
 const val CATEGORY_LEVELS_PLT_RENDER_METRICS = "category_levels_plt_render_metrics"
+const val EXTRA_CATEGORY_NAME = "categoryName"
 
 class CategoryRevampActivity : DiscoveryActivity() {
 
@@ -28,9 +30,9 @@ class CategoryRevampActivity : DiscoveryActivity() {
         intent.data?.let {
             categoryUrl = it.toString()
             departmentId = it.pathSegments[0]
-            departmentName = it.getQueryParameter(CategoryNavActivity.EXTRA_CATEGORY_NAME) ?: ""
+            departmentName = it.getQueryParameter(EXTRA_CATEGORY_NAME) ?: ""
         }
-        return CategoryRevampRepoProvider(departmentName, departmentId, categoryUrl)
+        return CategoryRevampRepoProvider((application as BaseMainApplication).baseAppComponent, departmentName, departmentId, categoryUrl)
     }
 
     override fun getPageIdentifier(): String {

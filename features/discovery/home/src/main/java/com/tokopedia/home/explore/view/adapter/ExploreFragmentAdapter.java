@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.ExploreSectionDataModel;
 import com.tokopedia.home.explore.view.fragment.ExploreFragment;
 
 import java.util.ArrayList;
@@ -16,14 +16,14 @@ import java.util.List;
 
 public class ExploreFragmentAdapter extends FragmentStatePagerAdapter {
 
-    private List<ExploreSectionViewModel> modelList;
+    private List<ExploreSectionDataModel> modelList;
 
     public ExploreFragmentAdapter(FragmentManager fm) {
         super(fm);
         modelList = new ArrayList<>();
     }
 
-    public void setData(List<ExploreSectionViewModel> modelList) {
+    public void setData(List<ExploreSectionDataModel> modelList) {
         this.modelList = modelList;
         notifyDataSetChanged();
     }

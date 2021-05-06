@@ -20,7 +20,8 @@
             android:id="@+id/user_avatar"
             android:layout_width="@dimen/chatcommon_40dp"
             android:layout_height="@dimen/chatcommon_40dp"
-            tools:src="@color/Unify_Y500" />
+            tools:src="@color/Unify_Y500"
+            android:contentDescription="user_avatar"/>
 
         <ImageView
             android:id="@+id/online_status"
@@ -29,7 +30,8 @@
             android:layout_gravity="end|bottom"
             android:visibility="gone"
             tools:srcCompat="@drawable/status_indicator_offline"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="online_status"/>
 
     </FrameLayout>
 
@@ -44,7 +46,8 @@
         android:background="@color/Unify_N0"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_toolbar_overflow_level_two_black"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:contentDescription="header_menu"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -68,7 +71,8 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RtlSymmetry"
             tools:src="@drawable/ic_badge_shop_official"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="badge"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
@@ -77,7 +81,7 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -117,10 +121,17 @@
             android:textColor="@color/Unify_N700_32"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title"
+            app:layout_constraintTop_toBottomOf="@id/title"
             app:typographyType="body_3"
             tools:text="Terakhir online 3 menit yang lalu"
             tools:visibility="visible" />
+
+        <include
+            android:id="@+id/cl_typing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            layout="@layout/layout_typing"
+            app:layout_constraintTop_toBottomOf="@id/title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

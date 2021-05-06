@@ -14,8 +14,13 @@ import java.util.*
 import javax.inject.Inject
 
 
-class SendGiftRespository @Inject constructor(private val mStartSendGift: MultiRequestGraphqlUseCase,
-                                              private val mRedeemCouponUseCase: MultiRequestGraphqlUseCase, private val map: Map<String, String>) {
+class SendGiftRespository @Inject constructor( private val map: Map<String, String>) {
+
+    @Inject
+    lateinit var mStartSendGift: MultiRequestGraphqlUseCase
+
+    @Inject
+    lateinit var mRedeemCouponUseCase: MultiRequestGraphqlUseCase
 
     suspend fun sendGift(id: Int?, email: String, notes: String) = withContext(Dispatchers.IO) {
         val variables: MutableMap<String, Any?> = HashMap()

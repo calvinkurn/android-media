@@ -16,12 +16,12 @@ import com.tokopedia.linker.model.UserData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
-import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
 
 import com.tokopedia.iris.util.*
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 
 /**
  * @author by nisie on 10/2/18.
@@ -35,9 +35,8 @@ class LoginRegisterAnalytics @Inject constructor(
 ) {
 
     fun trackScreen(activity: Activity, screenName: String) {
-        Timber.w("P2#FINGERPRINT#screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
-                + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
-                + " | " + Build.TAGS)
+        val screenNameMessage =  " $screenName | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}"
+        ServerLogger.log(Priority.P2, "FINGERPRINT", mapOf("screenName" to screenNameMessage))
 
         val hashMap = mutableMapOf<String, String>()
         hashMap[KEY_SESSION_IRIS] = irisSession.getSessionId()
@@ -547,7 +546,7 @@ class LoginRegisterAnalytics @Inject constructor(
         ))
     }
 
-    fun eventSuccessRegisterEmail(context: Context?, userId: Int, name: String, email: String) {
+    fun eventSuccessRegisterEmail(context: Context?, userId: String, name: String, email: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,
                 CATEGORY_REGISTER,
@@ -555,7 +554,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 LABEL_EMAIL
         ))
 
-        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), "Email")
+        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId, "Email")
         sendBranchRegisterEvent(email)
 
     }
@@ -595,13 +594,36 @@ class LoginRegisterAnalytics @Inject constructor(
     }
 
 
-    fun eventSuccessLogin(context: Context?, actionLoginMethod: String, registerAnalytics: RegisterAnalytics) {
-
+    fun eventSuccessLogin(actionLoginMethod: String, isFromRegister: Boolean) {
         when (actionLoginMethod) {
-            UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessLoginWithEmail(registerAnalytics)
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessLoginWithFacebook()
-            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessLoginWithGoogle()
-            UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessLoginWithPhone(registerAnalytics)
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> {
+                if (!isFromRegister) {
+                    onSuccessLoginWithEmail()
+                } else {
+                    onSuccessLoginWithEmailSmartRegister()
+                }
+            }
+            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> {
+                if (!isFromRegister) {
+                    onSuccessLoginWithFacebook()
+                } else {
+                    onSuccessLoginWithFacebookSmartRegister()
+                }
+            }
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> {
+                if (!isFromRegister) {
+                    onSuccessLoginWithGoogle()
+                } else {
+                    onSuccessLoginWithGoogleSmartRegister()
+                }
+            }
+            UserSessionInterface.LOGIN_METHOD_PHONE -> {
+                if (!isFromRegister) {
+                    onSuccessLoginWithPhone()
+                } else {
+                    onSuccessLoginWithPhoneSmartRegister()
+                }
+            }
             UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> onSuccessLoginWithSmartLock()
 
         }
@@ -619,7 +641,7 @@ class LoginRegisterAnalytics @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(hashmap)
     }
 
-    private fun onSuccessLoginWithPhone(registerAnalytics: RegisterAnalytics) {
+    private fun onSuccessLoginWithPhone() {
 
         trackLoginPhoneNumberSuccess()
 
@@ -628,6 +650,15 @@ class LoginRegisterAnalytics @Inject constructor(
                 CATEGORY_LOGIN_PAGE,
                 UserSessionInterface.LOGIN_METHOD_PHONE,
                 "success"
+        ))
+    }
+
+    private fun onSuccessLoginWithPhoneSmartRegister() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE,
+                LABEL_LOGIN_SUCCESS
         ))
     }
 
@@ -641,6 +672,15 @@ class LoginRegisterAnalytics @Inject constructor(
         ))
     }
 
+    private fun onSuccessLoginWithFacebookSmartRegister() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_LOGIN_FACEBOOK,
+                LABEL_LOGIN_SUCCESS
+        ))
+    }
+
     //#12
     private fun onSuccessLoginWithGoogle() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -651,7 +691,16 @@ class LoginRegisterAnalytics @Inject constructor(
         ))
     }
 
-    private fun onSuccessLoginWithEmail(registerAnalytics: RegisterAnalytics) {
+    private fun onSuccessLoginWithGoogleSmartRegister() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_LOGIN_GOOGLE,
+                LABEL_LOGIN_SUCCESS
+        ))
+    }
+
+    private fun onSuccessLoginWithEmail() {
         trackClickOnLoginButtonSuccess()
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_LOGIN_SUCCESS,
@@ -659,19 +708,89 @@ class LoginRegisterAnalytics @Inject constructor(
                 ACTION_LOGIN_SUCCESS,
                 LABEL_EMAIL
         ))
-
     }
 
-    fun eventFailedLogin(actionLoginMethod: String, errorMessage: String?) {
+    private fun onSuccessLoginWithEmailSmartRegister() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
+                LABEL_LOGIN_SUCCESS
+        ))
+    }
+
+    fun eventFailedLogin(actionLoginMethod: String, errorMessage: String?, isFromRegister: Boolean = false) {
 
         when (actionLoginMethod) {
-            UserSessionInterface.LOGIN_METHOD_EMAIL -> onErrorLoginWithEmail(errorMessage)
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onErrorLoginWithFacebook(errorMessage)
-            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onErrorLoginWithGoogle(errorMessage)
-            UserSessionInterface.LOGIN_METHOD_PHONE -> onErrorLoginWithPhone(errorMessage)
-            UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> onErrorLoginWithSmartLock(errorMessage)
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> {
+                if (isFromRegister) {
+                    onErrorLoginWithEmailSmartRegister(errorMessage)
+                } else {
+                    onErrorLoginWithEmail(errorMessage)
+                }
+            }
+            UserSessionInterface.LOGIN_METHOD_PHONE -> {
+                if (isFromRegister) {
+                    onErrorLoginWithPhoneSmartRegister(errorMessage)
+                } else {
+                    onErrorLoginWithPhone(errorMessage)
+                }
+            }
+            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> {
+                if (isFromRegister) {
+                    onErrorLoginWithFacebookSmartRegister(errorMessage)
+                } else {
+                    onErrorLoginWithFacebook(errorMessage)
+                }
+            }
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> {
+                if (isFromRegister) {
+                    onErrorLoginWithGoogleSmartRegister(errorMessage)
+                } else {
+                    onErrorLoginWithGoogle(errorMessage)
+                }
+            }
+            UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> {
+                onErrorLoginWithSmartLock(errorMessage)
+            }
 
         }
+    }
+
+    private fun onErrorLoginWithEmailSmartRegister(errorMessage: String?) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
+                LABEL_FAILED + errorMessage
+        ))
+    }
+
+    private fun onErrorLoginWithPhoneSmartRegister(errorMessage: String?) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE,
+                LABEL_FAILED + errorMessage
+        ))
+    }
+
+    private fun onErrorLoginWithFacebookSmartRegister(errorMessage: String?) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                "click on button $FACEBOOK",
+                LABEL_FAILED + errorMessage
+        ))
+    }
+
+    private fun onErrorLoginWithGoogleSmartRegister(errorMessage: String?) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                "click on button $GOOGLE",
+                LABEL_FAILED + errorMessage
+        ))
     }
 
     private fun onErrorLoginWithSmartLock(errorMessage: String?) {
@@ -863,6 +982,8 @@ class LoginRegisterAnalytics @Inject constructor(
         private val ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED = "click on button close socmed"
         private val ACTION_CLICK_ON_BUTTON_POPUP_SMART_LOGIN = "click on button popup smart login"
         private val ACTION_VIEW_BANNER = "view banner"
+        private val ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL = "click on button daftar - email"
+        private val ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE = "click on button daftar - phone number"
 
         private val LABEL_REGISTER = "Register"
         private val LABEL_PASSWORD = "Kata Sandi"
@@ -875,6 +996,8 @@ class LoginRegisterAnalytics @Inject constructor(
         private val LABEL_YES = "yes - "
         private val LABEL_NO = "no - "
         private val LABEL_BEBAS_ONGKIR = "bebas ongkir"
+        private val LABEL_LOGIN_SUCCESS = "login success"
+        private val LABEL_FAILED = "failed - "
 
         val GOOGLE = "google"
         val FACEBOOK = "facebook"

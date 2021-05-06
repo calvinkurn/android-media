@@ -26,6 +26,7 @@ open class DeepLinkDFMapperTestFixture {
         every { Uri.parse(any()).buildUpon().build() } returns mockUri
         every { Uri.parse(any()).buildUpon().build().host } returns mockHost
         every { Uri.parse(any()).buildUpon().build().pathSegments } returns mockPaths
+        every { Uri.parse(any()).pathSegments } returns mockPaths
     }
 
     @After

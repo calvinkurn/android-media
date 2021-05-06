@@ -5,10 +5,9 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Space
 import androidx.constraintlayout.widget.Group
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -19,7 +18,10 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.QuantityEditorUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -42,16 +44,16 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val ivShop by lazy { view.findViewById<ImageUnify>(R.id.iv_shop) }
     private val tvProductPrice by lazy { view.findViewById<Typography>(R.id.tv_product_price) }
     private val tvProductSlashPrice by lazy { view.findViewById<Typography>(R.id.tv_product_slash_price) }
-    private val ivFreeShipping by lazy { view.findViewById<ImageUnify>(R.id.iv_free_shipping) }
+    private val iuImageFulfillment by lazy { view.findViewById<ImageUnify>(R.id.iu_image_fulfill) }
+    private val iuFreeShipping by lazy { view.findViewById<ImageUnify>(R.id.iu_free_shipping) }
+    private val separatorFreeShipping by lazy { view.findViewById<Typography>(R.id.separator_free_shipping) }
     private val labelError by lazy { view.findViewById<Label>(R.id.label_error) }
-    private val dividerTop by lazy { view.findViewById<View>(R.id.divider_top) }
     private val cbPurchaseProtection by lazy { view.findViewById<CheckboxUnify>(R.id.cb_purchase_protection) }
     private val tvProtectionTitle by lazy { view.findViewById<Typography>(R.id.tv_protection_title) }
     private val tvProtectionDescription by lazy { view.findViewById<Typography>(R.id.tv_protection_description) }
-    private val btnProtectionInfo by lazy { view.findViewById<UnifyImageButton>(R.id.btn_protection_info) }
+    private val btnProtectionInfo by lazy { view.findViewById<IconUnify>(R.id.btn_protection_info) }
     private val tvProtectionPrice by lazy { view.findViewById<Typography>(R.id.tv_protection_price) }
     private val tvProtectionUnit by lazy { view.findViewById<Typography>(R.id.tv_protection_unit) }
-    private val spacePurchaseProtection by lazy { view.findViewById<Space>(R.id.space_purchase_protection) }
     private val groupPurchaseProtection by lazy { view.findViewById<Group>(R.id.group_purchase_protection) }
 
     private var quantityTextWatcher: TextWatcher? = null
@@ -182,7 +184,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 }
             }
             cbPurchaseProtection.isEnabled = !product.purchaseProtectionPlanData.isProtectionCheckboxDisabled
-            cbPurchaseProtection.setOnCheckedChangeListener { buttonView, isChecked ->
+            cbPurchaseProtection.setOnCheckedChangeListener { _, isChecked ->
                 handleOnPurchaseProtectionCheckedChange(isChecked)
             }
             val lastState = listener.getLastPurchaseProtectionCheckState()
@@ -230,13 +232,21 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             tvProductSlashPrice.gone()
         }
 
-        if (product.isFreeOngkir && product.freeOngkirImg.isNotEmpty()) {
-            ivFreeShipping?.let {
-                ImageHandler.LoadImage(it, product.freeOngkirImg)
+        if (product.freeOngkirImg.isNotEmpty()) {
+            iuFreeShipping?.let {
+                it.setImageUrl(product.freeOngkirImg)
                 it.visible()
             }
+            val contentDescriptionStringResource = if (product.isFreeOngkirExtra) {
+                com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
+            } else {
+                com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
+            }
+            iuFreeShipping?.contentDescription = view.context.getString(contentDescriptionStringResource)
+            separatorFreeShipping?.visible()
         } else {
-            ivFreeShipping?.gone()
+            iuFreeShipping?.gone()
+            separatorFreeShipping?.gone()
         }
     }
 
@@ -245,10 +255,28 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         if (orderShop.shopBadge.isNotEmpty()) {
             ivShop?.setImageUrl(orderShop.shopBadge)
             ivShop?.visible()
+            val shopType = if (orderShop.isOfficial == 1) {
+                view.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_official_store)
+            } else {
+                view.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_power_merchant)
+            }
+            ivShop?.contentDescription = view.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopType)
         } else {
             ivShop?.gone()
         }
-        tvShopLocation?.text = orderShop.cityName
+        if (orderShop.cityName.isNotEmpty()) {
+            if (orderShop.isFulfillment && orderShop.fulfillmentBadgeUrl.isNotEmpty()) {
+                iuImageFulfillment?.setImageUrl(orderShop.fulfillmentBadgeUrl)
+                iuImageFulfillment?.visible()
+            } else {
+                iuImageFulfillment?.gone()
+            }
+            tvShopLocation?.text = orderShop.cityName
+            tvShopLocation?.visible()
+        } else {
+            tvShopLocation?.gone()
+            iuImageFulfillment?.gone()
+        }
         val error = orderShop.errors.firstOrNull()
         if (error?.isNotEmpty() == true) {
             labelError.setLabel(error)

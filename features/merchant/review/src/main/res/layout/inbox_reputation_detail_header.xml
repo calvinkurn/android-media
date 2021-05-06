@@ -20,6 +20,7 @@
             android:id="@+id/user_avatar"
             android:layout_width="@dimen/user_avatar"
             android:layout_height="@dimen/user_avatar"
+            android:contentDescription="@null"
             android:layout_marginRight="@dimen/dp_10" />
 
         <LinearLayout
@@ -30,15 +31,16 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lineSpacingExtra="8sp"
                 android:textColor="@color/Unify_N700_96"
-                style="@style/TextView.Small.Bold"
                 android:maxLines="1"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
                 tools:text="Pretty Sugar Shop"
                 />
 
@@ -74,16 +76,15 @@
             android:paddingRight="@dimen/dp_12"
             tools:visibility="visible">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/favorite_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
                 android:textColor="@color/Unify_N0"
-                style="@style/TextView.Micro"
                 tools:text="@string/already_favorite"
-
+                app:typographyType="body_3"
                 />
         </LinearLayout>
 
@@ -128,9 +129,10 @@
                 android:layout_width="@dimen/icon_prod_size"
                 android:layout_height="@dimen/icon_prod_size"
                 android:layout_margin="@dimen/dp_5"
+                android:contentDescription="@null"
                 app:srcCompat="@drawable/ic_red_hourglass"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/deadline_text"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
@@ -139,7 +141,7 @@
                 android:layout_toRightOf="@id/icon_deadline"
                 android:textColor="@color/Unify_N700_68"
                 android:gravity="center_vertical"
-                style="@style/TextView.Micro.BlackSecondary"
+                app:typographyType="body_3"
                 tools:text="Batas memberikan penilaian 3 hari lagi"/>
 
         </RelativeLayout>
@@ -176,9 +178,10 @@
                 android:layout_width="@dimen/icon_prod_size"
                 android:layout_height="@dimen/icon_prod_size"
                 android:layout_margin="@dimen/dp_5"
+                android:contentDescription="@null"
                 app:srcCompat="@drawable/ic_locked2"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/locked_text"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
@@ -187,8 +190,8 @@
                 android:textColor="@color/Unify_N700_68"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_toRightOf="@id/icon_locked"
-                android:text="@string/locked_reputation"
-                style="@style/TextView.Micro.BlackSecondary"/>
+                app:typographyType="body_3"
+                android:text="@string/locked_reputation" />
 
         </RelativeLayout>
 
@@ -207,20 +210,20 @@
         android:layout_marginRight="@dimen/padding_activity"
         android:layout_marginTop="@dimen/dp_10">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/prompt_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="6sp"
-            style="@style/TextView.Small"
             tools:text="Bagaimana pen"
             android:layout_marginTop="@dimen/dp_8"
+            app:typographyType="body_3"
             android:textColor="@color/Unify_N700_96"
             />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/change_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -228,7 +231,7 @@
             android:lineSpacingExtra="7sp"
             android:text="@string/change"
             android:textColor="@color/Unify_G400"
-            style="@style/TextView.Small.Green"
+            app:typographyType="body_3"
             android:layout_marginTop="@dimen/dp_8"
             />
     </RelativeLayout>
@@ -256,7 +259,7 @@
         android:layout_marginTop="@dimen/dp_4"
         android:layout_marginBottom="@dimen/dp_4">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/opponent_smiley_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -264,9 +267,9 @@
             android:layout_marginRight="@dimen/dp_5"
             android:gravity="center_vertical"
             android:lineSpacingExtra="6sp"
-            style="@style/TextView.Micro.BlackSecondary"
             android:textColor="@color/Unify_N700_68"
             tools:text="Penjual Belum Menilai"
+            app:typographyType="body_3"
             android:layout_marginTop="@dimen/dp_4"
             />
 
@@ -277,8 +280,8 @@
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/dp_5"
             android:layout_toEndOf="@id/opponent_smiley_text"
-            android:layout_toRightOf="@id/opponent_smiley_text"
             android:gravity="center_vertical"
+            android:contentDescription="@null"
             tools:src="@drawable/review_ic_smiley_empty"/>
     </RelativeLayout>
 </LinearLayout>

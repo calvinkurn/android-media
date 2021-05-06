@@ -2,21 +2,21 @@ package com.tokopedia.seller.action.common.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.seller.action.common.analytics.SellerActionAnalytics
 import com.tokopedia.seller.action.common.analytics.SellerActionAnalyticsImpl
-import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcher
-import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
 import com.tokopedia.seller.action.common.presentation.presenter.SellerActionPresenter
+import com.tokopedia.seller.action.common.provider.SellerActionProvider
+import com.tokopedia.seller.action.common.provider.SellerActionProviderImpl
 import com.tokopedia.seller.action.order.domain.usecase.SliceMainOrderListUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@SellerActionScope
 @Module
 class SellerActionModule {
 
@@ -25,10 +25,6 @@ class SellerActionModule {
     fun provideGraphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
-
-    @SellerActionScope
-    @Provides
-    fun provideDispatchers(): SellerActionDispatcherProvider = SellerActionDispatcher
 
     @SellerActionScope
     @Provides
@@ -44,7 +40,12 @@ class SellerActionModule {
 
     @SellerActionScope
     @Provides
+    fun providerSellerActionProvider(): SellerActionProvider = SellerActionProviderImpl()
+
+    @SellerActionScope
+    @Provides
     fun providePresenter(sliceMainOrderListUseCase: SliceMainOrderListUseCase,
-                         dispatcher: SellerActionDispatcherProvider): SellerActionPresenter = SellerActionPresenter(sliceMainOrderListUseCase, dispatcher)
+                         dispatcher: CoroutineDispatchers,
+                         provider: SellerActionProvider): SellerActionPresenter = SellerActionPresenter(sliceMainOrderListUseCase, dispatcher, provider)
 
 }

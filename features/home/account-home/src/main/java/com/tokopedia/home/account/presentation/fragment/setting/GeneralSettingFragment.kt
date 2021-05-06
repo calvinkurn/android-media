@@ -13,8 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -58,6 +58,7 @@ import com.tokopedia.home.account.presentation.presenter.RedDotGimmickPresenter
 import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
+import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -71,6 +72,8 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_general_setting.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -93,6 +96,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     private lateinit var notifPreference: NotifPreference
     private lateinit var googleSignInClient: GoogleSignInClient
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
+    private val reviewHelper by lazy { createReviewHelper(context?.applicationContext) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -181,15 +185,15 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             }
         }
 
-        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_OCC_PREFERENCE_ID,
-                getString(R.string.title_occ_preference_setting), getString(R.string.subtitle_occ_preference_setting)))
-
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)))
         settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SHAKE_ID,
                 getString(R.string.title_shake_setting), getString(R.string.subtitle_shake_setting), false))
         settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_GEOLOCATION_ID,
                 getString(R.string.title_geolocation_setting), getString(R.string.subtitle_geolocation_setting), true))
+
+        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_IMAGE_QUALITY,
+                getString(R.string.image_quality_setting_screen), getString(R.string.image_quality_setting_title)))
 
         if (settingsPresenter.adultAgeVerified)
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SAFE_SEARCH_ID,
@@ -267,7 +271,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             }
             SettingConstant.SETTING_APP_REVIEW_ID -> {
                 accountAnalytics.eventClickSetting(APPLICATION_REVIEW)
-                goToPlaystore()
+                goToReviewApp()
             }
             SettingConstant.SETTING_HELP_CENTER_ID -> {
                 accountAnalytics.eventClickSetting(HELP_CENTER)
@@ -288,11 +292,21 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             SettingConstant.SETTING_FEEDBACK_FORM -> {
                 RouteManager.route(context, ApplinkConst.FEEDBACK_FORM)
             }
-            SettingConstant.SETTING_OCC_PREFERENCE_ID -> {
-                RouteManager.route(context, ApplinkConstInternalMarketplace.PREFERENCE_LIST)
+            SettingConstant.SETTING_IMAGE_QUALITY -> {
+                RouteManager.route(context, ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING)
             }
             else -> {
             }
+        }
+    }
+
+    private fun goToReviewApp() {
+        if (reviewHelper != null) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                reviewHelper?.checkForCustomerReview(context, childFragmentManager, ::goToPlaystore)
+            }
+        } else {
+            goToPlaystore()
         }
     }
 
@@ -461,7 +475,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         accessDialog.setBodyText(dialogBodyMsg)
         accessDialog.setPositiveButton(dialogPositiveButton)
         accessDialog.setNegativeButton(dialogNegativeButton)
-        accessDialog.show(activity!!.supportFragmentManager, AccessRequestDialogFragment.TAG)
+        accessDialog.show(requireActivity().supportFragmentManager, AccessRequestDialogFragment.TAG)
     }
 
     override fun refreshSafeSearchOption() {
@@ -488,7 +502,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     override fun onErrorSendNotif(throwable: Throwable) {
         if (view != null) {
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
-            Toaster.showError(view!!, errorMessage, Snackbar.LENGTH_LONG)
+            Toaster.showError(requireView(), errorMessage, Snackbar.LENGTH_LONG)
         }
     }
 

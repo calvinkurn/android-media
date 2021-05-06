@@ -1,12 +1,13 @@
 {
   "readme": "Search Product Inspiration Card Tracking",
+  "mode": "exact",
   "query": [
     {
       "event": "clickSearchResult",
       "eventCategory": "search result",
       "eventAction": "click inspiration card",
-      "eventLabel": "{{.* - .* - .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".* - .* - .*",
+      "sessionIris": ".*"
     }
   ]
 }

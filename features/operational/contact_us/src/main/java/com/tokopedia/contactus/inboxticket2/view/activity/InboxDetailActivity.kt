@@ -17,7 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
@@ -41,10 +43,9 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBotto
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.listeners.InboxDetailListener
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -249,10 +250,6 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         return R.menu.contactus_menu_details
     }
 
-    override fun getBottomSheetLayoutRes(): Int {
-        return R.layout.layout_bad_csat
-    }
-
     override fun doNeedReattach(): Boolean {
         return false
     }
@@ -279,12 +276,9 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     private fun showImagePickerDialog() {
-        val builder = ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
-                intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
-                GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
-                null, null)
-        val intent = ImagePickerActivity.getIntent(getActivity(), builder)
+        val builder = ImagePickerBuilder.getOriginalImageBuilder(this);
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.IMAGE_PICKER)
+        intent.putImagePickerBuilder(builder)
         startActivityForResult(intent, InboxBaseView.REQUEST_IMAGE_PICKER)
     }
 
@@ -292,8 +286,8 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == InboxBaseView.REQUEST_IMAGE_PICKER
                 && resultCode == Activity.RESULT_OK) {
-            val imagePathList = data?.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-            if (imagePathList == null || imagePathList.size <= 0) {
+            val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+            if (imagePathList.size <= 0) {
                 return
             }
             val imagePath = imagePathList[0]

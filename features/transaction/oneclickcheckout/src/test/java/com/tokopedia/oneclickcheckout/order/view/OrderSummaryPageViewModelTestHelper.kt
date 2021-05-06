@@ -1,10 +1,10 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.*
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.*
 import com.tokopedia.oneclickcheckout.order.view.model.*
 
 class OrderSummaryPageViewModelTestHelper {
@@ -69,16 +69,18 @@ class OrderSummaryPageViewModelTestHelper {
     val logisticPromo = LogisticPromoUiModel("bbo", "bbo", "bbo", firstCourierSecondDuration.productData.shipperName,
             secondDuration.serviceData.serviceId, firstCourierSecondDuration.productData.shipperId, firstCourierSecondDuration.productData.shipperProductId,
             "", "", "", false, "",
-            500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo())
+            500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), false)
 
     val shippingRecommendationData = ShippingRecommendationData().apply {
         shippingDurationViewModels = listOf(firstDuration, secondDuration)
         logisticPromo = this@OrderSummaryPageViewModelTestHelper.logisticPromo
     }
 
+    val address = OrderProfileAddress(addressId = 1)
+
     val shipment = OrderProfileShipment(serviceId = 1)
 
-    val preference = OrderProfile(shipment = shipment, profileId = 1)
+    val preference = OrderProfile(address = address, shipment = shipment)
 
     val orderShipment = OrderShipment(serviceId = firstDuration.serviceData.serviceId,
             serviceName = firstDuration.serviceData.serviceName,
@@ -87,7 +89,7 @@ class OrderSummaryPageViewModelTestHelper {
             shipperProductId = firstCourierFirstDuration.productData.shipperProductId,
             shippingRecommendationData = shippingRecommendationData,
             logisticPromoViewModel = logisticPromo,
-    logisticPromoTickerMessage = "Tersedia bbo")
+            logisticPromoTickerMessage = "Tersedia bbo")
 
     val product = OrderProduct(productId = 1, quantity = QuantityUiModel(orderQuantity = 1))
 

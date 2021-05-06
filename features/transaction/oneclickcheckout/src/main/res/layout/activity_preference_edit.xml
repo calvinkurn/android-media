@@ -10,7 +10,7 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,17 +18,19 @@
             android:layout_height="?actionBarSize"
             android:minHeight="?attr/actionBarSize">
 
-            <com.tokopedia.unifycomponents.UnifyImageButton
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btn_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:padding="@dimen/dp_8"
+                app:icon_name="ARROW_BACK"
                 app:layout_constraintBottom_toTopOf="@+id/stepper"
+                app:layout_constraintDimensionRatio="1,1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_arrow_back_black"
-                app:unifyImageButtonVariant="image"
-                tools:ignore="ContentDescription" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_title"
@@ -37,7 +39,7 @@
                 android:layout_above="@+id/tv_subtitle"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintBottom_toTopOf="@+id/tv_subtitle"
                 app:layout_constraintEnd_toStartOf="@+id/btn_delete"
                 app:layout_constraintStart_toEndOf="@+id/btn_back"
@@ -50,42 +52,40 @@
                 android:id="@+id/tv_subtitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Neutral_N700_44"
+                android:textColor="@color/Unify_N700_44"
                 app:layout_constraintBottom_toTopOf="@+id/stepper"
                 app:layout_constraintEnd_toEndOf="@+id/tv_title"
                 app:layout_constraintStart_toStartOf="@+id/tv_title"
                 app:layout_constraintTop_toBottomOf="@+id/tv_title"
                 app:typographyType="body_3" />
 
-            <com.tokopedia.unifycomponents.UnifyImageButton
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btn_add"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_8"
-                android:visibility="gone"
+                android:padding="@dimen/dp_8"
+                app:icon_name="ADD"
                 app:layout_constraintBottom_toBottomOf="@+id/stepper"
+                app:layout_constraintDimensionRatio="1,1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_add_grey"
-                app:unifyImageButtonVariant="image"
-                tools:ignore="ContentDescription" />
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <com.tokopedia.unifycomponents.UnifyImageButton
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btn_delete"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_8"
-                android:visibility="gone"
+                android:padding="@dimen/dp_8"
+                app:icon_name="DELETE"
                 app:layout_constraintBottom_toBottomOf="@+id/stepper"
+                app:layout_constraintDimensionRatio="1,1"
                 app:layout_constraintEnd_toStartOf="@+id/btn_add"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_delete_cart"
-                app:unifyImageButtonVariant="image"
-                tools:ignore="ContentDescription" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.unifycomponents.ProgressBarUnify
                 android:id="@+id/stepper"

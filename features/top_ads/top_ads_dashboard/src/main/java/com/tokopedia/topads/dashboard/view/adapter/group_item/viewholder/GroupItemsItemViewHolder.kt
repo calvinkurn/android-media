@@ -15,7 +15,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_TAMPIL
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
-import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemModel
 import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -32,7 +32,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
                                var actionDelete: ((pos: Int) -> Unit),
                                var actionStatusChange: ((pos: Int, status: Int) -> Unit),
                                private var editDone: ((groupId: Int) -> Unit),
-                               private var onClickItem: ((id: Int, priceSpent: String, groupName: String) -> Unit)) : GroupItemsViewHolder<GroupItemsItemViewModel>(view) {
+                               private var onClickItem: ((id: Int, priceSpent: String, groupName: String) -> Unit)) : GroupItemsViewHolder<GroupItemsItemModel>(view) {
 
     companion object {
         @LayoutRes
@@ -43,10 +43,14 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         TopadsSelectActionSheet.newInstance()
     }
 
-    override fun bind(item: GroupItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
+    override fun bind(item: GroupItemsItemModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
         item.let {
 
             view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_folder))
+            view.img_total.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_total))
+            view.img_key.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_key))
+            view.scheduleImg.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
+            view.img_menu.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_topads_menu))
             if (selectedMode) {
                 view.img_menu.visibility = View.INVISIBLE
                 view.check_box.visibility = View.VISIBLE
@@ -110,7 +114,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         }
 
         view.img_menu.setOnClickListener {
-            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName)
+            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName, item.data.groupId)
             sheet?.onEditAction = {
                 editDone.invoke(item.data.groupId)
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_ATUR_IKLAN, "")

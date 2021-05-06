@@ -5,19 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
@@ -27,18 +27,17 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_OPERATOR_ID
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
+import com.tokopedia.topupbills.common.util.DigitalTopupBillsGqlQuery
 import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
+import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
 import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
-import com.tokopedia.topupbills.telco.common.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.topupbills.telco.common.viewmodel.TelcoTabViewModel
 import com.tokopedia.topupbills.telco.data.RechargePrefix
@@ -49,20 +48,18 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.prepaid.viewmodel.SharedTelcoPrepaidViewModel
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
-import com.tokopedia.topupbills.telco.prepaid.widget.TelcoNestedCoordinatorLayout
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
-import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity.Companion.RECHARGE_PRODUCT_EXTRA
 
 /**
  * Created by nabillasabbaha on 11/04/19.
  */
 class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
+    private lateinit var dynamicSpacer: View
     private lateinit var telcoClientNumberWidget: DigitalClientNumberWidget
-    private lateinit var mainContainer: TelcoNestedCoordinatorLayout
-    private lateinit var appBarLayout: AppBarLayout
+    private lateinit var mainContainer: CoordinatorLayout
     private lateinit var buyWidget: TopupBillsCheckoutWidget
     private lateinit var sharedModelPrepaid: SharedTelcoPrepaidViewModel
     private lateinit var telcoTabViewModel: TelcoTabViewModel
@@ -72,17 +69,19 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var separator: View
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var localCacheHandler: LocalCacheHandler
-    private lateinit var rechargeProductFromSlice: String
 
     override var menuId = TelcoComponentType.TELCO_PREPAID
     private var inputNumberActionType = InputNumberActionType.MANUAL
 
+    private var rechargeProductFromSlice: String = ""
     private var clientNumber = ""
     private var operatorId = ""
     private var autoSelectTabProduct = false
     private var traceStop = false
     private var showProducts = false
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
+
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,15 +132,32 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         sharedModelPrepaid.selectedFilter.observe(viewLifecycleOwner, Observer {
             if (operatorId.isNotEmpty()) {
-                sharedModelPrepaid.getCatalogProductList(GraphqlHelper.loadRawString(activity?.resources,
-                        R.raw.query_catalog_product_telco), menuId, operatorId, it)
+                sharedModelPrepaid.getCatalogProductList(DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, it)
             }
         })
 
         sharedModelPrepaid.expandView.observe(viewLifecycleOwner, Observer {
-            if (it) telcoClientNumberWidget.setVisibleResultNumber(false)
-            else telcoClientNumberWidget.setVisibleResultNumber(true)
+            if (it) {
+                telcoClientNumberWidget.setVisibleResultNumber(false)
+                hideDynamicSpacer()
+            } else {
+                telcoClientNumberWidget.setVisibleResultNumber(true)
+                if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) showDynamicSpacer() else hideDynamicSpacer()
+            }
         })
+    }
+
+    private fun showDynamicSpacer() {
+        val defaultSpaceHeight = 81
+        dynamicSpacer.layoutParams.height =
+                context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space)
+                        ?: defaultSpaceHeight
+        dynamicSpacer.requestLayout()
+    }
+
+    private fun hideDynamicSpacer() {
+        dynamicSpacer.layoutParams.height = 0
+        dynamicSpacer.requestLayout()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -150,6 +166,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         mainContainer = view.findViewById(R.id.telco_main_container)
         appBarLayout = view.findViewById(R.id.telco_appbar_input_number)
         telcoClientNumberWidget = view.findViewById(R.id.telco_input_number)
+        dynamicSpacer = view.findViewById(R.id.digital_telco_dynamic_banner_spacer)
+        bannerImage = view.findViewById(R.id.telco_bg_img_banner)
         viewPager = view.findViewById(R.id.telco_view_pager)
         tabLayout = view.findViewById(R.id.telco_tab_layout)
         buyWidget = view.findViewById(R.id.telco_buy_widget)
@@ -166,7 +184,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         initViewPager()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
-        if(rechargeProductFromSlice.isNotEmpty()) {
+        if (rechargeProductFromSlice.isNotEmpty()) {
             rechargeAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
             rechargeAnalytics.onOpenPageFromSlice(TITLE_PAGE)
         }
@@ -314,6 +332,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
                     categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                    sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
                 }
                 if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
                     menuId = digitalTelcoExtraParam.menuId.toInt()
@@ -338,6 +357,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun getCheckoutView(): TopupBillsCheckoutWidget? {
         return telco_buy_widget
+    }
+
+    override fun initAddToCartViewModel() {
+        addToCartViewModel = viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java)
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
@@ -394,6 +417,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
+    override fun onLoadingAtc(showLoading: Boolean) {
+        buyWidget.onBuyButtonLoading(showLoading)
+    }
+
     private val clientNumberCallback = object : DigitalClientNumberWidget.ActionListener {
         override fun onNavigateToContact() {
             inputNumberActionType = InputNumberActionType.CONTACT
@@ -441,8 +468,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun getProductListData() {
         if (operatorId.isNotEmpty()) {
-            sharedModelPrepaid.getCatalogProductList(GraphqlHelper.loadRawString(activity?.resources,
-                    R.raw.query_catalog_product_telco), menuId, operatorId, null)
+            sharedModelPrepaid.getCatalogProductList(DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, null,
+                    productId)
         }
     }
 
@@ -583,7 +610,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 topupBillsRecommendation.productId.toString())
 
         if (userSession.isLoggedIn) {
-            navigateToCart()
+            addToCart()
         } else {
             navigateToLoginPage()
         }
@@ -599,27 +626,27 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun showOnBoarding() {
-        val coachMarkHasShown = localCacheHandler.getBoolean(TELCO_COACH_MARK_HAS_SHOWN, false)
-        if (coachMarkHasShown) {
-            return
-        }
+        context?.run {
+            val coachMarkHasShown = localCacheHandler.getBoolean(TELCO_COACH_MARK_HAS_SHOWN, false)
+            if (coachMarkHasShown) {
+                return
+            }
 
-        val coachMarks = ArrayList<CoachMarkItem>()
-        coachMarks.add(CoachMarkItem(telcoClientNumberWidget,
-                getString(R.string.Telco_title_showcase_client_number),
-                getString(R.string.telco_label_showcase_client_number)))
-        coachMarks.add(CoachMarkItem(viewPager,
-                getString(R.string.telco_title_showcase_promo),
-                getString(R.string.telco_label_showcase_promo)))
+            val coachMarks = ArrayList<CoachMark2Item>()
+            coachMarks.add(CoachMark2Item(telcoClientNumberWidget,
+                    getString(R.string.Telco_title_showcase_client_number),
+                    getString(R.string.telco_label_showcase_client_number)))
+            coachMarks.add(CoachMark2Item(viewPager,
+                    getString(R.string.telco_title_showcase_promo),
+                    getString(R.string.telco_label_showcase_promo)))
 
-        val coachMark = CoachMarkBuilder().build().apply {
-            enableSkip = true
-        }
-        coachMark.show(activity, javaClass.name, coachMarks)
+            val coachMark = CoachMark2(this)
+            coachMark.showCoachMark(coachMarks)
 
-        localCacheHandler.apply {
-            putBoolean(TELCO_COACH_MARK_HAS_SHOWN, true)
-            applyEditor()
+            localCacheHandler.apply {
+                putBoolean(TELCO_COACH_MARK_HAS_SHOWN, true)
+                applyEditor()
+            }
         }
     }
 

@@ -27,10 +27,10 @@ data class SomListGetOrderListParam(
         var statusList: List<Int> = listOf(),
         @SerializedName("shipping_list")
         @Expose
-        var shippingList: List<Int> = arrayListOf(),
+        var shippingList: MutableSet<Int> = mutableSetOf(),
         @SerializedName("order_type_list")
         @Expose
-        var orderTypeList: List<Int> = arrayListOf(),
+        var orderTypeList: MutableSet<Int> = mutableSetOf(),
         @SerializedName("sort_by")
         @Expose
         var sortBy: Int = SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING,
@@ -39,7 +39,7 @@ data class SomListGetOrderListParam(
         var isMobile: Boolean = true,
         @SerializedName("next_order_id")
         @Expose
-        var nextOrderId: Int = 0,
+        var nextOrderId: Long = 0,
         @SerializedName("lang")
         @Expose
         var lang: String = "id",
@@ -49,12 +49,13 @@ data class SomListGetOrderListParam(
         @SerializedName("batch_page")
         @Expose
         var batchPage: Int = 0,
-
         @SerializedName("is_shipping_printed")
         @Expose
         var isShippingPrinted: Int = 0,
-
         @SerializedName("deadline")
         @Expose
-        var deadline: Int = 0
-): Parcelable
+        var deadline: Int = 0,
+        @SerializedName("source")
+        @Expose
+        var source: String = "som-list"
+) : Parcelable

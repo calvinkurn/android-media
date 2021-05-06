@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerSawOrderListEmpty"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/saw_shape_rectangle_white_radius_16dp"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <ImageView
+        android:id="@+id/imgSawOrderEmptyState"
+        android:layout_width="@dimen/saw_dimen_180dp"
+        android:layout_height="@dimen/saw_dimen_140dp"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tvSawOrderMessageOnEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_N700"
+        android:textSize="@dimen/unify_font_14"
+        android:textStyle="bold"
+        tools:text="@string/saw_order_new_order_on_empty_message" />
+
+    <TextView
+        android:id="@+id/tvSawOrderSubMessageOnEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_N700_44"
+        android:textSize="@dimen/unify_font_12"
+        tools:text="@string/saw_order_new_order_on_empty_sub_message" />
+</LinearLayout>

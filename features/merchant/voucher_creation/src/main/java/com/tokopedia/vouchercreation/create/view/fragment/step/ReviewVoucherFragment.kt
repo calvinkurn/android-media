@@ -32,6 +32,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
+import com.tokopedia.vouchercreation.common.consts.VoucherRecommendationStatus
 import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
@@ -70,6 +71,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         @JvmStatic
         fun createInstance(getVoucherReviewUiModel: () -> VoucherReviewUiModel,
                            getToken: () -> String,
+                           getRecommendationStatus: () -> Int,
                            getPostBaseUiModel: () -> PostBaseUiModel,
                            onReturnToStep: (Int) -> Unit,
                            getBannerBitmap: () -> Bitmap?,
@@ -80,6 +82,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                            isEdit: Boolean): ReviewVoucherFragment = ReviewVoucherFragment().apply {
             this.getVoucherReviewUiModel = getVoucherReviewUiModel
             this.getToken = getToken
+            this.getRecommendationStatus = getRecommendationStatus
             this.getPostBaseUiModel = getPostBaseUiModel
             this.onReturnToStep = onReturnToStep
             this.getBannerBitmap = getBannerBitmap
@@ -106,6 +109,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
     private var getVoucherReviewUiModel: () -> VoucherReviewUiModel = { VoucherReviewUiModel() }
     private var getToken: () -> String = { "" }
+    private var getRecommendationStatus: () -> Int = { 0 }
     private var getPostBaseUiModel: () -> PostBaseUiModel = {
         PostBaseUiModel(
                 VoucherUrl.POST_IMAGE_URL,
@@ -198,7 +202,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     private val isDuplicate by lazy {
-        activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, false) ?: false
+        activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, false)
+                ?: false
     }
 
     private val isFromVoucherList by lazy {
@@ -212,7 +217,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private var postVoucherUiModel: PostVoucherUiModel? = null
 
     private var squareVoucherBitmap: Bitmap? = null
-        set(value){
+        set(value) {
             if (field == null && isDuplicate) {
                 recycler_view?.scrollToPosition(adapter.dataSize - 1)
             }
@@ -281,7 +286,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     override fun onInfoContainerCtaClick(dataKey: String) {
         with(dataKey) {
             val eventAction =
-                    when(this) {
+                    when (this) {
                         VOUCHER_INFO_DATA_KEY -> VoucherCreationAnalyticConstant.EventAction.Click.EDIT_INFO_VOUCHER
                         VOUCHER_BENEFIT_DATA_KEY -> VoucherCreationAnalyticConstant.EventAction.Click.EDIT_VOUCHER_BENEFIT
                         PERIOD_DATA_KEY -> VoucherCreationAnalyticConstant.EventAction.Click.EDIT_PERIOD
@@ -295,7 +300,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                     isDuplicate = isDuplicate
             )
         }
-        val step = when(dataKey) {
+        val step = when (dataKey) {
             VOUCHER_INFO_DATA_KEY -> VoucherCreationStep.TARGET
             VOUCHER_BENEFIT_DATA_KEY -> VoucherCreationStep.BENEFIT
             PERIOD_DATA_KEY -> VoucherCreationStep.PERIOD
@@ -374,7 +379,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     override fun onImpression(dataKey: String) {
-        when(dataKey) {
+        when (dataKey) {
             PERIOD_DATA_KEY -> {
                 if (!isEdit) {
                     VoucherCreationTracking.sendCreateVoucherImpressionTracking(
@@ -401,9 +406,18 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         viewLifecycleOwner.run {
             observe(viewModel.createVoucherResponseLiveData) { result ->
                 if (isWaitingForResult) {
-                    when(result) {
+                    when (result) {
                         is Success -> {
                             context?.run {
+                                val eventLabel =
+                                        when (getRecommendationStatus()) {
+                                            VoucherRecommendationStatus.WITH_RECOMMENDATION -> VoucherCreationAnalyticConstant.EventLabel.WITH_RECOMMENDATION + result.data.toString()
+                                            VoucherRecommendationStatus.EDITED_RECOMMENDATION -> VoucherCreationAnalyticConstant.EventLabel.EDITED_RECOMMENDATION + result.data.toString()
+                                            VoucherRecommendationStatus.NO_RECOMMENDATION -> VoucherCreationAnalyticConstant.EventLabel.NO_RECOMMENDATION + result.data.toString()
+                                            else -> VoucherCreationAnalyticConstant.EventLabel.NO_RECOMMENDATION + result.data.toString()
+                                        }
+                                VoucherCreationTracking.sendVoucherRecommendationStatus(eventLabel, userSession.shopId, userSession.userId)
+
                                 // Send success voucher id to voucher list to display success bottomsheet/toaster
                                 val intent = VoucherListActivity.createInstance(this, true).apply {
                                     putExtra(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY, result.data)
@@ -443,7 +457,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             }
             observe(viewModel.updateVoucherSuccessLiveData) { result ->
                 if (isWaitingForResult) {
-                    when(result) {
+                    when (result) {
                         is Success -> {
                             context?.run {
                                 val intent = VoucherListActivity.createInstance(this, true).apply {
@@ -539,7 +553,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                                          shopAvatar: String,
                                          shopName: String,
                                          promoCode: String,
-                                         promoPeriod: String) : PostVoucherUiModel {
+                                         promoPeriod: String): PostVoucherUiModel {
         var promoCodeString = promoCode
         if (promoCode.isBlank()) {
             promoCodeString = NO_PROMO_CODE_DISPLAY

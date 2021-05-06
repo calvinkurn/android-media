@@ -6,45 +6,44 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btnMoreInfo"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:paddingTop="@dimen/spacing_lvl4"
-        android:paddingBottom="@dimen/spacing_lvl5"
+        android:paddingTop="@dimen/unify_space_16"
+        android:paddingBottom="@dimen/unify_space_24"
         android:text="@string/swd_more_info"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewDivider"
         app:typographyType="body_2" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/viewDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Neutral_N75"
-        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/unify_space_24"
         app:layout_constraintTop_toBottomOf="@+id/rvAutoWDInfo" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAutoWDInfo"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/unify_space_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/awdJoinRPTicker" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/awdJoinRPTicker"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
+        app:closeButtonVisibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tickerShapeType="loose"
-        app:closeButtonVisibility="gone"
         app:tickerType="announcement" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

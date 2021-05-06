@@ -17,9 +17,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       donation_checkbox_status
       open_prerequisite_site
       eligible_new_shipping_experience
-      ab_test_button {
-        enable
-      }
+      pop_up_message
       group_address {
         errors
         user_address {
@@ -42,6 +40,8 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
           longitude
           corner_id
           is_corner
+          state
+          state_detail
         }
         group_shop {
           errors
@@ -49,12 +49,20 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
           sp_id
           is_insurance
           is_fulfillment_service
+          toko_cabang {
+            message
+            badge_url
+          }
           cart_string
           has_promo_list
           shipment_information {
             shop_location
             estimation
             free_shipping {
+              eligible
+              badge_url
+            }
+            free_shipping_extra {
               eligible
               badge_url
             }
@@ -201,6 +209,10 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
               eligible
               badge_url
             }
+            free_shipping_extra {
+              eligible
+              badge_url
+            }
             product_ticker {
               show_ticker
               message
@@ -236,6 +248,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       egold_attributes {
         eligible
         is_tiering
+        is_opt_in
         range {
           min
           max
@@ -387,6 +400,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
                 type
                 amount_str
                 amount
+                currency_details_str
               }
               message_info {
                 message

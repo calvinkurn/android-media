@@ -9,14 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        app:unifyEmptyStateOrientation="horizontal"
+        app:unifyEmptyStateOrientation="vertical"
+        app:unifyEmptyStateType="page"
+        app:unifyEmptyStatePrimaryCTAText="@string/recom_empty_filter_button"
         app:unifyEmptyStateDescription="@string/recom_empty_filter_desc"
         app:unifyEmptyStateTitle="@string/recom_empty_filter_title"/>
-    <com.tokopedia.sortfilter.SortFilter
-        android:id="@+id/sort_filter_empty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        app:sort_filter_relationship="AND"
-        app:sort_filter_type="advanced"/>
 </LinearLayout>

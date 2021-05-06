@@ -14,6 +14,8 @@ object ApplinkConstInternalTravel {
     val HOST_FLIGHT = "pesawat"
     @JvmField
     val HOST_TRAVEL_HOMEPAGE = "travelentertainment"
+    @JvmField
+    val HOST_TRAVEL_SLICE = "travelslice"
 
     @JvmField
     val INTERNAL_HOTEL = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_HOTEL"
@@ -26,7 +28,10 @@ object ApplinkConstInternalTravel {
     val DASHBOARD_HOTEL = "$INTERNAL_HOTEL/dashboard"
 
     @JvmField
-    val HOTEL_SRP = "$INTERNAL_HOTEL/result"
+    val HOTEL_OLD_SRP = "$INTERNAL_HOTEL/result/oldsrp"
+
+    @JvmField
+    val HOTEL_MAP_SRP = "$INTERNAL_HOTEL/result/map"
 
     @JvmField
     val HOTEL_DETAIL = "$INTERNAL_HOTEL/detail"
@@ -50,4 +55,6 @@ object ApplinkConstInternalTravel {
     @JvmField
     val EXTRA_DESTINATION_WEB_URL = "EXTRA_DESTINATION_WEB_URL"
 
+    @JvmField
+    val TRAVEL_ACTION = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_TRAVEL_SLICE/main"
 }

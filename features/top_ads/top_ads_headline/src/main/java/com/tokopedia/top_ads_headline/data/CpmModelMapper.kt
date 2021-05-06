@@ -3,7 +3,7 @@ package com.tokopedia.top_ads_headline.data
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.top_ads_headline.R
-import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.user.session.UserSessionInterface
@@ -14,7 +14,7 @@ private const val SHOP_BADGE = "https://ecs7-p.tokopedia.net/ta/icon/badge/OS-Ba
 class CpmModelMapper @Inject constructor(@ApplicationContext private val context: Context,
                                          private val userSession: UserSessionInterface) {
 
-    fun getCpmModelResponse(response: List<ResponseProductList.Result.TopadsGetListProduct.Data>, promotionalMessage: String): CpmModel {
+    fun getCpmModelResponse(response: List<TopAdsProductModel>, promotionalMessage: String): CpmModel {
         return CpmModel().apply {
             data.add(CpmData().apply {
                 cpm = Cpm().apply {
@@ -31,7 +31,7 @@ class CpmModelMapper @Inject constructor(@ApplicationContext private val context
         }
     }
 
-    private fun mapCpmShop(response: List<ResponseProductList.Result.TopadsGetListProduct.Data>, promotionalMessage: String): CpmShop {
+    private fun mapCpmShop(response: List<TopAdsProductModel>, promotionalMessage: String): CpmShop {
         return CpmShop().apply {
             id = userSession.shopId
             name = userSession.shopName
@@ -58,17 +58,17 @@ class CpmModelMapper @Inject constructor(@ApplicationContext private val context
 
     }
 
-    private fun mapProducts(data: ResponseProductList.Result.TopadsGetListProduct.Data): Product {
+    private fun mapProducts(data: TopAdsProductModel): Product {
         return Product().apply {
             data.let {
-                id = it.productID.toString()
+                id = it.productID
                 name = it.productName
                 priceFormat = it.productPrice
                 applinks = it.productUri
                 countReviewFormat = it.productReviewCount.toString()
                 productRating = it.productRating
                 imageProduct = ImageProduct().apply {
-                    id = it.productID.toString()
+                    id = it.productID
                     name = it.productName
                     imageUrl = it.productImage
                 }

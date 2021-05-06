@@ -5,12 +5,10 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
 import com.tokopedia.shop.common.di.ShopQualifier;
-import com.tokopedia.topads.common.data.util.CacheApiTKPDResponseValidator;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsScope;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -24,16 +22,8 @@ import retrofit2.Retrofit;
  * Created by hadi.putra on 24/04/18.
  */
 
-@TopAdsScope
 @Module
 public class TopAdsShopModule {
-
-    @ShopQualifier
-    @TopAdsScope
-    @Provides
-    public CacheApiInterceptor provideApiCacheInterceptor(@ApplicationContext Context context) {
-        return new CacheApiInterceptor(context, new CacheApiTKPDResponseValidator<>(TkpdV4ResponseError.class));
-    }
 
     @ShopQualifier
     @TopAdsScope
@@ -62,10 +52,8 @@ public class TopAdsShopModule {
     @Provides
     public OkHttpClient provideOkHttpClient(ShopAuthInterceptor shopAuthInterceptor,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
-                                            @ShopQualifier ErrorResponseInterceptor errorResponseInterceptor,
-                                            CacheApiInterceptor cacheApiInterceptor) {
+                                            @ShopQualifier ErrorResponseInterceptor errorResponseInterceptor) {
         return new OkHttpClient.Builder()
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(shopAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)

@@ -1,5 +1,6 @@
 package com.tokopedia.flight.common.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.view.Menu;
@@ -10,10 +11,11 @@ import androidx.annotation.Nullable;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.common.travel.widget.TravelMenuBottomSheet;
 import com.tokopedia.flight.FlightComponentInstance;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.common.util.FlightAnalytics;
-import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
@@ -25,7 +27,7 @@ import static com.tokopedia.flight.common.constant.FlightUrl.FLIGHT_PROMO_APPLIN
  * Created by alvarisi on 12/5/17.
  */
 
-public abstract class BaseFlightActivity extends BaseSimpleActivity {
+public abstract class BaseFlightActivity extends BaseSimpleActivity implements TravelMenuBottomSheet.TravelMenuListener {
 
 
     @Inject
@@ -35,6 +37,9 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
 
     private FlightComponent component;
 
+    static String TAG_FLIGHT_MENU = "flightMenu";
+
+    static int REQUEST_CODE_LOGIN_FLIGHT = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +61,16 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.clear();
         getMenuInflater().inflate(com.tokopedia.flight.R.menu.menu_flight_dashboard, menu);
-        updateOptionMenuColorWhite(menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_overflow_menu){
+            showBottomMenu();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     protected FlightComponent getFlightComponent() {
@@ -76,23 +89,44 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == com.tokopedia.flight.R.id.menu_promo) {
-            navigateToAllPromoPage();
-            return true;
-        } else if (item.getItemId() == com.tokopedia.flight.R.id.menu_transaction_list) {
-            if (userSession.isLoggedIn()) {
-                flightAnalytics.eventClickTransactions(getScreenName());
-                startActivity(FlightOrderListActivity.getCallingIntent(this));
-            } else {
-                RouteManager.route(this, ApplinkConst.LOGIN);
-            }
-            return true;
-        } else if (item.getItemId() == com.tokopedia.flight.R.id.menu_help) {
-            navigateToHelpPage();
-            return true;
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        showBottomMenu();
+        return false;
+    }
+
+    public void showBottomMenu(){
+        TravelMenuBottomSheet flightMenuBottomSheet = new TravelMenuBottomSheet();
+        flightMenuBottomSheet.listener = this;
+        flightMenuBottomSheet.show(getSupportFragmentManager(), TAG_FLIGHT_MENU);
+    }
+
+    @Override
+    public void onHelpClicked() {
+        navigateToHelpPage();
+    }
+
+    @Override
+    public void onOrderListClicked() {
+        if (userSession.isLoggedIn()) {
+            flightAnalytics.eventClickTransactions(getScreenName());
+            RouteManager.route(this, ApplinkConst.FLIGHT_ORDER);
         } else {
-            return super.onOptionsItemSelected(item);
+            Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
+            startActivityForResult(intent, REQUEST_CODE_LOGIN_FLIGHT);
+        }
+    }
+
+    @Override
+    public void onPromoClicked() {
+        navigateToAllPromoPage();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_LOGIN_FLIGHT) {
+            RouteManager.route(this, ApplinkConst.FLIGHT_ORDER);
         }
     }
 }

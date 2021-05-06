@@ -8,6 +8,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
  */
 
 class ProgressWidgetUiModel(
+        override val id: String,
         override val widgetType: String,
         override val title: String,
         override val appLink: String,
@@ -21,10 +22,19 @@ class ProgressWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
+        override var isNeedToBeRemoved: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<ProgressDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun copy(): BaseWidgetUiModel<ProgressDataUiModel> {
+        return ProgressWidgetUiModel(id, widgetType, title, appLink, subtitle, tooltip, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+    }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<ProgressDataUiModel>): Boolean {
+        return dataKey != other.dataKey
     }
 }

@@ -59,8 +59,6 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     var paymentAvatar = itemView?.findViewById<ImageView>(R.id.status_shop_avatar)
     var totalLabel = itemView?.findViewById<TextView>(R.id.total_price_label)
     var total = itemView?.findViewById<TextView>(R.id.total)
-    var leftButton = itemView?.findViewById<TextView>(R.id.left_button)
-    var rightButton = itemView?.findViewById<TextView>(R.id.right_button)
     var parentMetadataLayout = itemView?.findViewById<LinearLayout>(R.id.metadata)
 
     var cornerRadiusValue: Float = 9f

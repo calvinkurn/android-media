@@ -14,10 +14,12 @@ import java.util.concurrent.TimeUnit
  * WebSocketUtil based on okhttp and RxJava
  * Core Feature : WebSocket will be auto reconnection onFailed.
  */
-class RxWebSocketUtil private constructor(interceptors: List<Interceptor>?,
-                                          private val delay: Int,
-                                          private val maxRetries: Int,
-                                          pingInterval: Long) {
+open class RxWebSocketUtil protected constructor(
+        interceptors: List<Interceptor>?,
+        private val delay: Int,
+        private val maxRetries: Int,
+        pingInterval: Long
+) {
 
     private val client: OkHttpClient
 
@@ -35,7 +37,7 @@ class RxWebSocketUtil private constructor(interceptors: List<Interceptor>?,
         client = builder.build()
     }
 
-    fun getWebSocketInfo(url: String, accessToken: String): Observable<WebSocketInfo>? {
+    open fun getWebSocketInfo(url: String, accessToken: String): Observable<WebSocketInfo>? {
         if (observableMap == null) {
             val retryObservable = RetryObservable(maxRetries, delay.toLong())
             observableMap = Observable.create(WebSocketOnSubscribe(client, url, accessToken))
@@ -61,7 +63,7 @@ class RxWebSocketUtil private constructor(interceptors: List<Interceptor>?,
         return observableMap
     }
 
-    fun send(msg: String) {
+    open fun send(msg: String) {
         val webSocket = webSocketMap
         webSocket?.send(msg) ?: throw WebSocketException("websocket not open")
     }

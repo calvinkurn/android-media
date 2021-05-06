@@ -1,9 +1,11 @@
 package com.tokopedia.search.result.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import java.util.*
 
@@ -36,6 +38,15 @@ data class SearchProductModel(
         @Expose
         val searchInspirationWidget: SearchInspirationWidget = SearchInspirationWidget()
 ) {
+
+    private val topAdsImageViewModelList: MutableList<TopAdsImageViewModel> = mutableListOf()
+
+    fun setTopAdsImageViewModelList(topAdsImageViewModelList: List<TopAdsImageViewModel>) {
+        this.topAdsImageViewModelList.clear()
+        this.topAdsImageViewModelList.addAll(topAdsImageViewModelList)
+    }
+
+    fun getTopAdsImageViewModelList(): List<TopAdsImageViewModel> = topAdsImageViewModelList
 
     data class SearchProduct (
             @SerializedName("header")
@@ -101,6 +112,10 @@ data class SearchProductModel(
             @SerializedName("suggestion")
             @Expose
             val suggestion: Suggestion = Suggestion(),
+
+            @SerializedName("banner")
+            @Expose
+            val banner: Banner = Banner(),
 
             @SerializedName("products")
             @Expose
@@ -168,6 +183,7 @@ data class SearchProductModel(
             @Expose
             val name: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: Int = 0,
@@ -259,6 +275,24 @@ data class SearchProductModel(
             val text: String = ""
     )
 
+    data class Banner(
+            @SerializedName("position")
+            @Expose
+            val position: Int = -1,
+
+            @SerializedName("text")
+            @Expose
+            val text: String = "",
+
+            @SerializedName("applink")
+            @Expose
+            val applink: String = "",
+
+            @SerializedName("imageUrl")
+            @Expose
+            val imageUrl: String = "",
+    )
+
     data class Product(
             @SerializedName("id")
             @Expose
@@ -292,6 +326,7 @@ data class SearchProductModel(
             @Expose
             val imageUrl700: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",
@@ -615,6 +650,10 @@ data class SearchProductModel(
             @Expose
             val bannerApplinkUrl: String = "",
 
+            @SerializedName("identifier")
+            @Expose
+            val identifier: String = "",
+
             @SerializedName("product")
             @Expose
             val inspirationCarouselProducts: List<InspirationCarouselProduct> = listOf()
@@ -629,6 +668,7 @@ data class SearchProductModel(
             @Expose
             val name: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: Int = 0,

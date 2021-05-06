@@ -7,7 +7,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
+import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
+import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
 import com.tokopedia.sellerorder.filter.presentation.adapter.FilterItemDecoration
+import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapter.Companion.PAYLOAD_CHIPS_FILTER
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterItemChipsAdapter
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterListener
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
@@ -44,6 +49,16 @@ class SomFilterViewHolder(view: View, private val filterListener: SomFilterListe
             }
         }
         setupChipsAdapter(element)
+    }
+
+    override fun bind(element: SomFilterUiModel?, payloads: MutableList<Any>) {
+        if (element == null || payloads.isNullOrEmpty()) return
+
+        when(payloads[0] as Int) {
+            PAYLOAD_CHIPS_FILTER -> {
+                setupChipsAdapter(element)
+            }
+        }
     }
 
     private fun setupChipsAdapter(data: SomFilterUiModel) {

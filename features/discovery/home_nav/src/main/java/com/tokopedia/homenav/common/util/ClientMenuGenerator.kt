@@ -1,36 +1,47 @@
 package com.tokopedia.homenav.common.util
 
 import android.content.Context
+import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
-import com.tokopedia.homenav.base.viewmodel.HomeNavTickerViewModel
+import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.user.session.UserSessionInterface
 
 class ClientMenuGenerator(val context: Context, val userSession: UserSessionInterface) {
     companion object {
-        val ID_WISHLIST_MENU = 901
-        val ID_FAVORITE_SHOP = 902
-        val ID_RECENT_VIEW = 903
-        val ID_SUBSCRIPTION = 904
-        val ID_COMPLAIN = 905
-        val ID_TOKOPEDIA_CARE = 906
-        val ID_QR_CODE = 907
-        val ID_ALL_TRANSACTION = 908
-        val ID_TICKET = 909
-        val ID_REVIEW = 910
-        val ID_HOME = 911
+        const val ID_WISHLIST_MENU = 901
+        const val ID_FAVORITE_SHOP = 902
+        const val ID_RECENT_VIEW = 903
+        const val ID_SUBSCRIPTION = 904
+        const val ID_COMPLAIN = 905
+        const val ID_TOKOPEDIA_CARE = 906
+        const val ID_QR_CODE = 907
+        const val ID_ALL_TRANSACTION = 908
+        const val ID_TICKET = 909
+        const val ID_REVIEW = 910
+        const val ID_HOME = 911
 
-        val ID_OPEN_SHOP_TICKER = 801
+        const val ID_OPEN_SHOP_TICKER = 801
+        const val PAGE_SOURCE_KEY = "pageSource"
+        const val PAGE_SOURCE = "home side nav"
+
+        const val APPLINK_MY_BILLS = "tokopedia://webview?url=https://www.tokopedia.com/mybills/"
+        const val APPLINK_COMPLAIN = "https://m.tokopedia.com/resolution-center/inbox/buyer/mobile"
+        const val APPLINK_TICKET = "tokopedia-android-internal://order/unified?filter=etiket"
+
+        const val IDENTIFIER_TITLE_MY_ACTIVITY = 100
+        const val IDENTIFIER_TITLE_ALL_CATEGORIES = 101
+        const val IDENTIFIER_TITLE_HELP_CENTER = 102
     }
 
-    val APPLINK_MY_BILLS = "tokopedia://webview?url=https://www.tokopedia.com/mybills/"
-    val APPLINK_COMPLAIN = "https://m.tokopedia.com/resolution-center/inbox/buyer/mobile"
-    val APPLINK_TICKET = "tokopedia-android-internal://order/unified?filter=etiket"
 
-    fun getMenu(menuId: Int, notifCount: String = "", sectionId: Int = 0): HomeNavMenuViewModel {
+    fun getMenu(menuId: Int, notifCount: String = "", sectionId: Int = 0): HomeNavMenuDataModel {
         when(menuId) {
             ID_WISHLIST_MENU -> return getWishlistUserMenu(notifCount, sectionId)
             ID_FAVORITE_SHOP -> return getFavoriteShopMenu(notifCount, sectionId)
@@ -44,18 +55,30 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             ID_REVIEW -> return getReviewMenu(notifCount, sectionId)
             ID_HOME -> return getHomeMenu(notifCount, sectionId)
         }
-        return HomeNavMenuViewModel()
+        return HomeNavMenuDataModel()
     }
 
-    fun getTicker(menuId: Int): HomeNavTickerViewModel {
+    fun getTicker(menuId: Int): HomeNavTickerDataModel {
         when(menuId) {
             ID_OPEN_SHOP_TICKER -> return getOpenShopTicker()
         }
-        return HomeNavTickerViewModel()
+        return HomeNavTickerDataModel()
     }
 
-    private fun getWishlistUserMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    fun getSectionTitle(identifier: Int): HomeNavTitleDataModel {
+        return HomeNavTitleDataModel(
+                identifier = identifier,
+                title = when (identifier) {
+                    IDENTIFIER_TITLE_MY_ACTIVITY -> context.getString(R.string.title_transaction_section)
+                    IDENTIFIER_TITLE_ALL_CATEGORIES -> context.getString(R.string.title_category_section)
+                    IDENTIFIER_TITLE_HELP_CENTER -> context.getString(R.string.title_helpcenter_section)
+                    else -> ""
+                }
+        )
+    }
+
+    private fun getWishlistUserMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 trackerName = context.getString(R.string.menu_user_menu_wishlist_tracker_name),
                 id = ID_WISHLIST_MENU,
                 srcIconId = IconUnify.HEART,
@@ -66,8 +89,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getFavoriteShopMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getFavoriteShopMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 trackerName = context.getString(R.string.menu_user_menu_favorite_shop_tracker_name),
                 id = ID_FAVORITE_SHOP,
                 srcIconId = IconUnify.SHOP_FAVORITE,
@@ -78,8 +101,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getRecentViewMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getRecentViewMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 trackerName = context.getString(R.string.menu_user_menu_recent_view_tracker_name),
                 id = ID_RECENT_VIEW,
                 srcIconId = IconUnify.CLOCK,
@@ -90,8 +113,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getSubscriptionMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getSubscriptionMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 trackerName = context.getString(R.string.menu_user_menu_subscription_tracker_name),
                 id = ID_SUBSCRIPTION,
                 srcIconId = IconUnify.BILL,
@@ -102,8 +125,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getComplainMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getComplainMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 trackerName = context.getString(R.string.menu_user_menu_complain_tracker_name),
                 id = ID_COMPLAIN,
                 srcIconId = IconUnify.COMPLAINT,
@@ -114,8 +137,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getTokopediaCareMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getTokopediaCareMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 trackerName = context.getString(R.string.menu_user_menu_tokopedia_care_tracker_name),
                 id = ID_TOKOPEDIA_CARE,
                 srcIconId = IconUnify.CALL_CENTER,
@@ -126,8 +149,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getQRCodeMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getQRCodeMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 trackerName = context.getString(R.string.menu_user_menu_qr_code_tracker_name),
                 id = ID_QR_CODE,
                 srcIconId = IconUnify.QR_CODE,
@@ -138,8 +161,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getAllTransactionMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getAllTransactionMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 id = ID_ALL_TRANSACTION,
                 srcIconId = IconUnify.LIST_TRANSACTION,
                 itemTitle = context.getString(R.string.menu_transaction_menu_all_transaction),
@@ -149,8 +172,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getTicketMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getTicketMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 id = ID_TICKET,
                 srcIconId = IconUnify.TICKET_ACTIVE,
                 itemTitle = context.getString(R.string.menu_transaction_menu_ticket),
@@ -160,19 +183,19 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getReviewMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getReviewMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 id = ID_REVIEW,
                 srcIconId = IconUnify.STAR,
                 itemTitle = context.getString(R.string.menu_transaction_menu_review),
-                applink = ApplinkConst.REPUTATION.needLoginValidation(),
+                applink = getReputationApplink().needLoginValidation(),
                 notifCount = notifCount,
                 sectionId = sectionId
         )
     }
 
-    private fun getHomeMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
-        return HomeNavMenuViewModel(
+    private fun getHomeMenu(notifCount: String, sectionId: Int): HomeNavMenuDataModel {
+        return HomeNavMenuDataModel(
                 id = ID_HOME,
                 srcIconId = IconUnify.HOME,
                 itemTitle = context.getString(R.string.menu_home_back_to_home),
@@ -182,8 +205,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         )
     }
 
-    private fun getOpenShopTicker(): HomeNavTickerViewModel {
-        return HomeNavTickerViewModel(
+    private fun getOpenShopTicker(): HomeNavTickerDataModel {
+        return HomeNavTickerDataModel(
                 title = context.getString(R.string.menu_user_menu_shop_ticker_title),
                 description = context.getString(R.string.menu_user_menu_shop_ticker_description),
                 tickerType = Ticker.TYPE_ANNOUNCEMENT,
@@ -196,6 +219,21 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
             this
         } else {
             ApplinkConst.LOGIN
+        }
+    }
+
+    private fun getReputationApplink(): String {
+        val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+        ) == AbTestPlatform.VARIANT_NEW_INBOX
+        return if (useNewInbox) {
+            Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
+                appendQueryParameter(ApplinkConst.Inbox.PARAM_PAGE, ApplinkConst.Inbox.VALUE_PAGE_REVIEW)
+                appendQueryParameter(ApplinkConst.Inbox.PARAM_ROLE, ApplinkConst.Inbox.VALUE_ROLE_BUYER)
+                appendQueryParameter(ApplinkConst.Inbox.PARAM_SOURCE, PAGE_SOURCE)
+            }.build().toString()
+        } else {
+            Uri.parse(ApplinkConst.REPUTATION).buildUpon().appendQueryParameter(PAGE_SOURCE_KEY, PAGE_SOURCE).build().toString()
         }
     }
 }

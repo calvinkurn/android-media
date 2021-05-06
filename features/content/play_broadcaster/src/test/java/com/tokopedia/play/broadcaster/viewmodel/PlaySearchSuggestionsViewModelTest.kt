@@ -5,7 +5,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.model.ModelBuilder
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
-import com.tokopedia.play.broadcaster.util.TestCoroutineDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.viewmodel.PlaySearchSuggestionsViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -22,14 +22,12 @@ import org.junit.Test
 
 /**
  * Created by jegul on 25/09/20
- */
 class PlaySearchSuggestionsViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = TestCoroutineDispatcher()
-    private val dispatcherProvider = TestCoroutineDispatcherProvider(testDispatcher)
+    private val dispatcherProvider = CoroutineTestDispatchersProvider
 
     private val playBroadcastMapper = PlayBroadcastUiMapper()
 
@@ -96,3 +94,4 @@ class PlaySearchSuggestionsViewModelTest {
     }
 
 }
+ */

@@ -27,6 +27,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.tkpd.home.adapter.SlidingImageBannerAdapter;
 import com.tokopedia.tkpd.home.analytics.HomeGATracking;
 import com.tokopedia.tkpd.home.model.VideoPushBannerModel;
@@ -130,7 +131,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RECOVERY_DIALOG_REQUEST) {
             // Retry initialization if user performed a recovery action
-            getYouTubePlayerProvider().initialize(getString(R.string.GOOGLE_API_KEY), this);
+            getYouTubePlayerProvider().initialize(Keys.getAUTH_GOOGLE_YOUTUBE_API_KEY(), this);
         }
     }
 
@@ -156,7 +157,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
 
 
         }
-        youTubeView.initialize(getString(R.string.GOOGLE_API_KEY), this);
+        youTubeView.initialize(Keys.getAUTH_GOOGLE_YOUTUBE_API_KEY(), this);
     }
 
     private void setBannerAdapter(String jsonArray) {

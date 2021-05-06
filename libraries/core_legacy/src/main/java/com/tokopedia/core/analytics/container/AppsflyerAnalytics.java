@@ -3,7 +3,6 @@ package com.tokopedia.core.analytics.container;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,9 +10,6 @@ import android.text.TextUtils;
 import com.appsflyer.AFInAppEventType;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.config.GlobalConfig;
@@ -21,8 +17,9 @@ import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.appsflyer.AppsflyerEventValidation;
+import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.keys.Keys;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.track.interfaces.AFAdsIDCallback;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -31,14 +28,9 @@ import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import rx.Observable;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.appsflyer.AFInAppEventParameterName.CUSTOMER_USER_ID;
@@ -120,7 +112,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             Timber.d("Error key Appsflyer");
-            initAppsFlyer(AppsflyerContainer.APPSFLYER_KEY, userID, conversionListener);
+            initAppsFlyer(Keys.getAppsFlyerKey(context), userID, conversionListener);
         }
     }
 
@@ -219,72 +211,10 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         AppsFlyerLib.getInstance().sendDeepLinkData(activity);
     }
 
-    public void getAdsID(final AFAdsIDCallback callback) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE);
-
-        String adsId = sharedPrefs.getString(KEY_ADVERTISINGID, "");
-        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
-            callback.onGetAFAdsID(adsId);
-            return;
-        }
-
-        Observable.fromCallable(() -> {
-            AdvertisingIdClient.Info adInfo;
-            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
-            return adInfo.getId();
-        }).doOnNext(s -> {
-            if (!TextUtils.isEmpty(s)) {
-                sharedPrefs.edit().putString(KEY_ADVERTISINGID, s).apply();
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-                .subscribe(new Observer<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        callback.onErrorAFAdsID();
-                    }
-
-                    @Override
-                    public void onNext(String s) {
-                        if (TextUtils.isEmpty(s)) {
-                            callback.onErrorAFAdsID();
-                        } else {
-                            callback.onGetAFAdsID(s);
-                        }
-                    }
-                });
-    }
-
     @Deprecated
     @Override
     public String getGoogleAdId() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE);
-
-        String adsId = sharedPrefs.getString(KEY_ADVERTISINGID, "");
-        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
-            return adsId;
-        }
-
-        return (Observable.just("").subscribeOn(Schedulers.newThread())
-                .map(string -> {
-                    AdvertisingIdClient.Info adInfo = null;
-                    try {
-                        adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
-                    } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
-                        e.printStackTrace();
-                    }
-                    return adInfo.getId();
-                }).onErrorReturn(throwable -> "")
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(adID -> {
-                    if (!TextUtils.isEmpty(adID)) {
-                        sharedPrefs.edit().putString(KEY_ADVERTISINGID, adID).apply();
-                    }
-                })).toBlocking().single();
+        return DeviceInfo.getAdsId(context);
     }
 
     public String getUniqueId() {

@@ -1,11 +1,13 @@
 package com.tokopedia.checkout.view.viewholder
 
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -13,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel
-import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -71,7 +72,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             llSummaryTransaction.gone()
         } else {
             llSummaryTransaction.visible()
-            if  (hasChildren(llSummaryTransaction)) llSummaryTransaction.removeAllViews()
+            if (hasChildren(llSummaryTransaction)) llSummaryTransaction.removeAllViews()
             generateChildrenView(lastApplyUiModel)
         }
     }
@@ -113,7 +114,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             }
 
             val label: Typography = Typography(itemView.context).apply {
-                setTextColor(resources.getColor(com.tokopedia.purchase_platform.common.R.color.text_black))
+                setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 setWeight(Typography.REGULAR)
                 setType(Typography.BODY_3)
                 text = lastApplyUsageSummary.description
@@ -127,7 +128,8 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             label.layoutParams = labelParams
 
             val value: Typography = Typography(itemView.context).apply {
-                setTextColor(resources.getColor(com.tokopedia.purchase_platform.common.R.color.text_black))
+                id = View.generateViewId()
+                setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 setWeight(Typography.REGULAR)
                 setType(Typography.BODY_3)
                 text = lastApplyUsageSummary.amountStr
@@ -145,6 +147,28 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
 
             if (value.parent != null) (value.parent as ViewGroup).removeView(value)
             relativeLayout.addView(value)
+
+            if (lastApplyUsageSummary.currencyDetailsStr.isNotEmpty()) {
+                val currencyValue: Typography = Typography(itemView.context).apply {
+                    setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    setWeight(Typography.REGULAR)
+                    setType(Typography.SMALL)
+                    gravity = Gravity.END
+                    maxWidth = resources.getDimensionPixelSize(R.dimen.max_cashback_desc_width)
+                    text = lastApplyUsageSummary.currencyDetailsStr
+                }
+
+                val currencyValueParams = RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.WRAP_CONTENT,
+                        RelativeLayout.LayoutParams.WRAP_CONTENT
+                )
+                currencyValueParams.addRule(RelativeLayout.BELOW, value.id)
+                currencyValueParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+                currencyValue.layoutParams = currencyValueParams
+
+                if (currencyValue.parent != null) (currencyValue.parent as ViewGroup).removeView(currencyValue)
+                relativeLayout.addView(currencyValue)
+            }
 
             llSummaryTransaction.addView(relativeLayout)
         }

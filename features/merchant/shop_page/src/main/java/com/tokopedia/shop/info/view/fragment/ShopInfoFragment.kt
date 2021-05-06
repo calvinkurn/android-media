@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -27,6 +29,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.config.ShopPageConfig
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.extension.transformToVisitable
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
@@ -42,6 +45,7 @@ import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Comp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
 import kotlinx.android.synthetic.main.partial_shop_info_delivery.*
 import kotlinx.android.synthetic.main.partial_shop_info_description.*
 import kotlinx.android.synthetic.main.partial_shop_info_note.*
@@ -74,7 +78,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     private var noteAdapter: BaseListAdapter<ShopNoteUiModel, ShopNoteAdapterTypeFactory>? = null
     private var shopInfo: ShopInfoData? = null
     private val isOfficial: Boolean
-
         get() = shopInfo?.isOfficial == 1
     private val isGold: Boolean
         get() = shopInfo?.isGold == 1
@@ -89,7 +92,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         shopInfo = arguments?.getParcelable(EXTRA_SHOP_INFO)
-        shopPageTracking = ShopPageTrackingShopPageInfo(TrackingQueue(context!!))
+        shopPageTracking = ShopPageTrackingShopPageInfo(TrackingQueue(requireContext()))
         remoteConfig = FirebaseRemoteConfigImpl(context)
         shopPageConfig = ShopPageConfig(context)
         initViewModel()
@@ -153,6 +156,20 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     private fun initObservers() {
         observeShopNotes()
         observeShopInfo()
+        observeShopBadgeReputation()
+    }
+
+    private fun observeShopBadgeReputation() {
+        shopViewModel?.shopBadgeReputation?.observe(viewLifecycleOwner,  Observer {
+            if (it is Success) {
+                showShopBadgeReputation(it.data)
+            }
+        })
+    }
+
+    private fun showShopBadgeReputation(shopBadge: ShopBadge) {
+        image_view_shop_reputation_badge?.show()
+        ImageHandler.LoadImage(image_view_shop_reputation_badge, shopBadge.badgeHD)
     }
 
     private fun observeShopNotes() {
@@ -172,8 +189,15 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
                 this@ShopInfoFragment.shopInfo = it
                 customDimensionShopPage.updateCustomDimensionData(getShopId(), isOfficial, isGold)
                 showShopInfo()
+                if (!isOfficial) {
+                    getShopBadgeReputation()
+                }
             }
         }
+    }
+
+    private fun getShopBadgeReputation() {
+        shopViewModel?.getShopReputationBadge(getShopId().orEmpty())
     }
 
     private fun initView() {
@@ -237,7 +261,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
         setupLogisticList(shopInfo)
 
         if (shopViewModel?.isMyShop(shopInfo.shopId) == true) {
-            labelViewLogisticTitle.setContent(getString(R.string.shop_info_label_manage_note))
+            labelViewLogisticTitle.content = getString(R.string.shop_info_label_manage_note)
             labelViewLogisticTitle.setOnClickListener { goToManageLogistic() }
         }
     }
@@ -291,7 +315,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     }
 
     private fun showManageNotesLabel() {
-        noteLabelView.setContent(getString(R.string.shop_info_label_manage_note))
+        noteLabelView.content = getString(R.string.shop_info_label_manage_note)
         noteLabelView.setOnClickListener { onEmptyButtonClicked() }
     }
 

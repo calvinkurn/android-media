@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.filter.presentation.adapter
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,9 +8,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
-import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.item_chips_som_filter.view.*
+
 
 class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener) : RecyclerView.Adapter<SomFilterItemChipsAdapter.ChipsListViewHolder>() {
 
@@ -48,6 +49,19 @@ class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener
         holder.bind(data)
     }
 
+    override fun onBindViewHolder(holder: ChipsListViewHolder, position: Int, payloads: MutableList<Any>) {
+        if(payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+        } else {
+            val o = payloads[0] as Bundle
+            for (key in o.keySet()) {
+                if (key == KEY_IS_SELECTED_CHIPS) {
+                    holder.bind(somFilterChipsUiModel[position])
+                }
+            }
+        }
+    }
+
     inner class ChipsListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(data: SomFilterChipsUiModel) {
             with(itemView) {
@@ -74,5 +88,6 @@ class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener
 
     companion object {
         const val MAX_CHIPS_FILTER = 5
+        const val KEY_IS_SELECTED_CHIPS = "key_is_selected_chips"
     }
 }

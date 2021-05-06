@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_lvl3">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_service_detail_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="• AnterAja" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/pdp_service_detail_cod"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:labelType="general_light_grey"
+        app:layout_constraintStart_toEndOf="@+id/pdp_service_detail_name"
+        app:layout_constraintTop_toTopOf="@+id/pdp_service_detail_name"
+        app:layout_constraintBottom_toBottomOf="@+id/pdp_service_detail_name"
+        app:labelTitle="@string/pdp_shipping_available_cod_label"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_service_detail_estimation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pdp_service_detail_name"
+        app:typographyType="body_3"
+        tools:text="Estimasi tiba Besok" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_service_detail_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Rp39.000" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

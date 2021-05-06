@@ -32,16 +32,26 @@ data class HomeFlag(
 
     @SerializedName("flags")
     @Expose
-    var flags: List<Flags> = listOf()
+    var flags: MutableList<Flags> = mutableListOf()
+
+    fun addFlag(name: String, isActive: Boolean, integerValue: Int = 0) {
+        flags.add(Flags(name, isActive, integerValue))
+    }
 
     fun getFlag(type: TYPE): Boolean{
         return flags.find { it.name == type.toString() }?.isActive ?: false
     }
+    fun getFlagValue(type: TYPE): Int{
+        return flags.find { it.name == type.toString() }?.integerValue ?: 0
+    }
 }
 
+//TODO: add integer value -> BE not ready yet
 data class Flags(
     @SerializedName("name")
     var name: String = "",
     @SerializedName("is_active")
-    var isActive: Boolean
+    var isActive: Boolean,
+    @SerializedName("integer_value")
+    var integerValue: Int = 0
 )

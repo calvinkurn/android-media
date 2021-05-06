@@ -4,20 +4,20 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordEmptyViewModel
+import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordEmptyModel
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 
 /**
  * Created by Pika on 7/6/20.
  */
-class NegKeywordEmptyViewHolder(val view: View, private val addKeywords: (() -> Unit)) : NegKeywordViewHolder<NegKeywordEmptyViewModel>(view) {
+class NegKeywordEmptyViewHolder(val view: View, private val addKeywords: (() -> Unit)) : NegKeywordViewHolder<NegKeywordEmptyModel>(view) {
 
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_dash_group_empty_state
     }
 
-    override fun bind(item: NegKeywordEmptyViewModel, selectMode: Boolean, fromSearch: Boolean, fromHeadline: Boolean) {
+    override fun bind(item: NegKeywordEmptyModel, selectMode: Boolean, fromSearch: Boolean, fromHeadline: Boolean) {
         item.let {
             view.image_empty.setImageDrawable(view.context.getResDrawable(R.drawable.topads_empty_keyword))
 

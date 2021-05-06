@@ -22,12 +22,17 @@ import kotlinx.android.synthetic.main.shc_item_table_column_html.view.*
  * Created By @ilhamsuaib on 01/07/20
  */
 
-class TableColumnHtmlViewHolder(itemView: View?,
-                                private val listener: Listener) : AbstractViewHolder<TableRowsUiModel.RowColumnHtml>(itemView) {
+class TableColumnHtmlViewHolder(
+        itemView: View?,
+        private val listener: Listener
+) : AbstractViewHolder<TableRowsUiModel.RowColumnHtml>(itemView) {
 
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_item_table_column_html
+
+        private const val SCHEME_EXTERNAL = "tokopedia"
+        private const val SCHEME_SELLERAPP = "sellerapp"
     }
 
     private val deeplinkMatcher by lazy {
@@ -35,6 +40,17 @@ class TableColumnHtmlViewHolder(itemView: View?,
     }
 
     override fun bind(element: TableRowsUiModel.RowColumnHtml) {
+        with(itemView) {
+            setOnHtmlTextClicked(element)
+            if (element.isLeftAlign) {
+                tvTableColumnHtml.gravity = Gravity.START
+            } else {
+                tvTableColumnHtml.gravity = Gravity.END
+            }
+        }
+    }
+
+    private fun setOnHtmlTextClicked(element: TableRowsUiModel.RowColumnHtml) {
         with(itemView) {
             tvTableColumnHtml?.setClickableUrlHtml(
                     element.valueStr,
@@ -44,7 +60,15 @@ class TableColumnHtmlViewHolder(itemView: View?,
                     },
                     onUrlClicked = { url ->
                         listener.onHyperlinkClicked(url)
-                        goToPage(context, Uri.parse(url))
+                        Uri.parse(url).let { uri ->
+                            if (isAppLink(uri)) {
+                                RouteManager.route(context, url)
+                            } else {
+                                if (!checkUrlForNativePage(context, uri)) {
+                                    goToDefaultIntent(context, uri)
+                                }
+                            }
+                        }
                     })
             if (element.isLeftAlign) {
                 tvTableColumnHtml.gravity = Gravity.START
@@ -54,11 +78,15 @@ class TableColumnHtmlViewHolder(itemView: View?,
         }
     }
 
+    private fun isAppLink(uri: Uri): Boolean {
+        return uri.scheme == SCHEME_EXTERNAL || uri.scheme == SCHEME_SELLERAPP
+    }
+
     /**
      * Mimicks RouteManager.kt#moveToNativePageFromWebView
      */
-    private fun goToPage(context: Context?, uri: Uri) {
-        when(deeplinkMatcher.match(uri)) {
+    private fun checkUrlForNativePage(context: Context?, uri: Uri): Boolean {
+        return when (deeplinkMatcher.match(uri)) {
             DeepLinkChecker.PRODUCT -> {
                 with(uri.pathSegments) {
                     getOrNull(0)?.let { shopDomain ->
@@ -67,8 +95,9 @@ class TableColumnHtmlViewHolder(itemView: View?,
                         }
                     }
                 }
+                false
             }
-            else -> goToDefaultIntent(context, uri)
+            else -> false
         }
     }
 

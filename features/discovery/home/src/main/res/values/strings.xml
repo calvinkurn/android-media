@@ -113,4 +113,29 @@
 
     <string name="onboarding_coachmark_title">Halo, ini Menu Utama yang baru!</string>
     <string name="onboarding_coachmark_description">Lihat Semua Kategori, Daftar Transaksi, Wishlist, tulis Ulasan Produk, kini semuanya bisa dari sini!</string>
+
+    <string name="onboarding_coachmark_inbox_title">Temukan Inbox &amp; Notifikasi di sini!</string>
+    <string name="onboarding_coachmark_inbox_description">Sekarang kamu bisa cek chat, diskusi &amp; notifikasi dengan lebih mudah di halaman ini.</string>
+
+    <string name="onboarding_coachmark_wallet_title">Kenalan sama TokoPoints, yuk! </string>
+    <string name="onboarding_coachmark_wallet_description">Points ini bisa ditukar buat belanja. Transaksi pakai kupon cashback buat nambah points-mu, ya!</string>
+
+
+    <string name="text_dialog_success_reset_password">Masuk lagi ke Tokopedia dengan kata sandimu yang baru, ya!</string>
+    <string name="cta_dialog_success_reset_password">Masuk</string>
+
+    <string name="error_state_atf_localload_title">Bagian ini gagal ditampilkan</string>
+    <string name="error_state_atf_localload_description">Klik ikon sebelah untuk coba lagi</string>
+
+    <string name="content_desc_image_scan">Scan QR Code</string>
+    <string name="content_desc_tokocash">Tokocash</string>
+    <string name="content_desc_tokopoint">Tokopoint</string>
+    <string name="content_desc_free_ongkir">Bebas Ongkir</string>
+    <string name="content_desc_error_state_icon">Image error</string>
+    <string name="content_desc_error_state_channel">Content error</string>
+    <string name="content_desc_home_background">Home background</string>
+
+    <string name="popular_keyword_error_title">Bagian ini gagal ditampilkan</string>
+    <string name="sprint_card_item">Sprint Card Item</string>
+    <string name="sprint_product_item">Sprint Product Item</string>
 </resources>

@@ -6,6 +6,7 @@ import android.os.Build
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
@@ -116,7 +117,11 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
 
     private fun setUpBackground(section: RechargeHomepageSections.Section) {
         itemView.parallax_image.loadImage(section.mediaUrl)
-        itemView.parallax_background.setBackgroundColor(Color.parseColor(section.label1))
+        try {
+            if (section.label1.isNotEmpty()) itemView.parallax_background.setBackgroundColor(Color.parseColor(section.label1))
+        } catch (e: Throwable) {
+            itemView.parallax_background.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
     }
 
     private fun setUpList(section: RechargeHomepageSections.Section) {

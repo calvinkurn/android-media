@@ -7,4 +7,22 @@
             >
         </fulfillment>
     </action>
+
+    <action intentName="custom.actions.intent.CREATE_LODGING_RESERVATION" queryPatterns="@array/HotelSliceCustomQuery">
+        <parameter name="city1" type="https://schema.org/Text" />
+        <fulfillment
+            fulfillmentMode="actions.fulfillment.SLICE"
+            urlTemplate="content://com.tokopedia.tkpd.travel_slice/book_hotel{?city}" >
+            <parameter-mapping intentParameter="city1" urlParameter="city" />
+        </fulfillment>
+    </action>
+
+    <action intentName="custom.actions.intent.GET_RESERVATION" queryPatterns="@array/TravelOrderListCustomQuery">
+        <parameter name="type1" type="https://schema.org/Text" />
+        <fulfillment
+            fulfillmentMode="actions.fulfillment.SLICE"
+            urlTemplate="content://com.tokopedia.tkpd.travel_slice/my_booking{?traveltype}">
+            <parameter-mapping intentParameter="type1" urlParameter="traveltype" />
+        </fulfillment>
+    </action>
 </actions>

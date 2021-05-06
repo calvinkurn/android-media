@@ -8,8 +8,6 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
-import android.os.Bundle
-import android.os.Parcelable
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
@@ -101,12 +99,12 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private fun initToolbarIcon() {
         wishlistBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_white)
-        notifBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_system_action_notification_pressed_24)
+        notifBitmapWhite = getBitmapDrawableFromVectorDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_notification_pressed_24)
         inboxBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_white)
         searchMagnifierIcon = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_search_bar)
 
         wishlistBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_grey)
-        notifBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_system_action_notification_normal_24)
+        notifBitmapGrey = getBitmapDrawableFromVectorDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_notification_normal_24)
         inboxBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_grey)
 
         wishlistCrossfader = TransitionDrawable(arrayOf<Drawable>(wishlistBitmapGrey, wishlistBitmapWhite))
@@ -147,12 +145,10 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             shadowApplied = false
             val pL = toolbar.paddingLeft
             var pT = 0
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                pT = ViewHelper.getStatusBarHeight(context)
-            }
+            pT = ViewHelper.getStatusBarHeight(context)
             val pR = toolbar.paddingRight
             val pB = 0
-            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.Unify_N0))
+            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             toolbar!!.setPadding(pL, pT, pR, pB)
         }
     }
@@ -162,11 +158,9 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             shadowApplied = true
             val pL = toolbar.paddingLeft
             var pT = 0
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                pT = ViewHelper.getStatusBarHeight(context)
-            }
+            pT = ViewHelper.getStatusBarHeight(context)
             val pR = toolbar.paddingRight
-            val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
+            val pB = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
 
             toolbar!!.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
             toolbar!!.setPadding(pL, pT, pR, pB)
@@ -176,7 +170,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     override fun inflateResource(context: Context) {
 
         val asyncLayoutInflater = AsyncLayoutInflater(context)
-        val inflateFinishCallBack: OnInflateFinishedListener? = OnInflateFinishedListener { view, resid, parent ->
+        val inflateFinishCallBack = OnInflateFinishedListener { view, resid, parent ->
             viewHomeMainToolBar = view
             actionAfterInflation(context, view)
             setViewAttributesAfterInflation()
@@ -231,7 +225,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         val bitmap = Bitmap.createBitmap(drawable!!.intrinsicWidth,
                 drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
         drawable.draw(canvas)
 
         return bitmap
@@ -286,7 +280,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             while (true) {
                 var hint = context.getString(R.string.search_tokopedia)
                 var keyword = ""
-                val slideUpIn = AnimationUtils.loadAnimation(context, R.anim.slide_up_in)
+                val slideUpIn = AnimationUtils.loadAnimation(context, R.anim.search_bar_slide_up_in)
                 slideUpIn.interpolator = EasingInterpolator(Ease.QUART_OUT)
                 val slideOutUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
                 slideOutUp.interpolator = EasingInterpolator(Ease.QUART_IN)

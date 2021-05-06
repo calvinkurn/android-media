@@ -23,15 +23,13 @@ import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert
+import kotlinx.coroutines.Job
 import org.junit.Before
 import org.junit.Test
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.io.File
-import java.lang.Exception
 import java.lang.reflect.Type
 
 /**
@@ -170,5 +168,30 @@ class EventSearchViewModelTest {
         val uri = this.javaClass.classLoader?.getResource(path)
         val file = File(uri?.path)
         return String(file.readBytes())
+    }
+
+    @Test
+    fun job_setJOb(){
+        //given
+        val job = Job()
+
+        //when
+        eventSearchViewModel.job = job
+
+        //then
+        assertEquals(eventSearchViewModel.job, job)
+    }
+
+    @Test
+    fun job_cancelJob(){
+        //given
+        val job = Job()
+
+        //when
+        eventSearchViewModel.job = job
+        eventSearchViewModel.cancelRequest()
+
+        //then
+        assert(job.isCancelled)
     }
 }

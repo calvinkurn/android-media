@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="topads_claim_label">Klaim</string>
     <string name="top_ads_credit_label">Kredit TopAds</string>
     <string name="top_ads_free_claim_label">Kredit TopAds Gratis %1$s</string>
@@ -9,10 +9,11 @@
     <string name="ilustration">Ilustration</string>
     <string name="tambah_kredit_topads">Tambah Kredit TopAds</string>
     <string name="yuk_isi_kredit_sekarang">Yuk, isi kredit sekarang</string>
-    <string name="yay_produkmu_berhasil_diiklankan">Yay, produkmu\nberhasil diiklankan!</string>
+    <string name="yay_produkmu_berhasil_diiklankan">Yay, produkmu berhasil diiklankan!</string>
     <string name="pantau_terus_performa_iklan_produkmu_di_dashboard_topads">Pantau terus performa iklan produkmu di\nDashboard TopAds</string>
     <string name="tambah_kredit_topads_agar_iklanmu_nselalu_tampil_dan_lebih_bersaing">Tambah kredit TopAds agar iklanmu\nselalu tampil dan lebih bersaing</string>
     <string name="tip_memilih_produk">Tip memilih produk</string>
+    <string name="topads_produk_tooltip_text">Tips memilih produk.</string>
     <string name="lanjutkan">Lanjutkan</string>
     <string name="_0_produk">0 produk dipilih</string>
     <string name="add_product">Tambah Produk</string>
@@ -24,18 +25,20 @@
     <string name="error_keyword">Gunakan hanya huruf dan angka</string>
     <string name="error_max_selected_keyword">Batas maksimum 50 kata kunci</string>
     <string name="error_max_length">Maksimum 70 karakter</string>
-    <string name="format_selected_keyword">%d kata kunci dipilih</string>
+    <string name="format_selected_keyword" tools:ignore="PluralsCandidate">%d kata kunci dipilih</string>
     <string name="format_selected_produk">%d produk dipilih</string>
+    <string name="topads_common_selected_product">Produk dipilih (%d)</string>
     <string name="no_promoted_product">Produkmu belum\ndiiklankan</string>
-    <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %d</string>
-    <string name="recommendated_bid_message_new">Rekomendasi &lt;b>Rp%d&lt;/b></string>
-    <string name="min_bid_error">Biaya minimum %d rupiah</string>
-    <string name="max_bid_error">Biaya maximum %d rupiah</string>
-    <string name="topads_common_50_multiply_error">Biaya harus kelipatan Rp %d</string>
+    <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %s</string>
+    <string name="recommendated_bid_message_new">Rekomendasi &lt;b>Rp%s&lt;/b></string>
+    <string name="min_bid_error">Biaya minimum %s rupiah</string>
+    <string name="max_bid_error">Biaya maximum %s rupiah</string>
+    <string name="topads_common_50_multiply_error">Biaya harus kelipatan Rp %s</string>
     <string name="topads_common_cancel_btn">Batalkan</string>
     <string name="topads_common_title_product_ad_edit">Ubah Iklan Produk</string>
     <string name="topads_common_save_butt">Simpan</string>
     <string name="topads_common_batal">Batal</string>
+    <string name="topads_common_ya">Ya</string>
     <string name="topads_common_mulai_beriklan">Mulai Beriklan</string>
     <string name="topads_group_detail">Detail Grup</string>
     <string name="topads_hari_ini">Hari ini</string>
@@ -55,8 +58,8 @@
     <string name="topads_dash_group_item_progress_status"> dari Rp %d</string>
     <string name="topads_common_topads_common_autoads_outofbudget_desc_edit">Anggaran Harian Habis. Naikan anggaran untuk mulai tampil lagi.</string>
     <string name="topads_common_topads_common_autoads_outofbudget_desc">Iklan tidak tampil karena anggaran harian habis.</string>
-    <string name="topads_common_autoads_inprogress_desc">Tunggu ya, proses pembuatan iklanmu membutuhkan waktu.</string>
-    <string name="topads_common_autoads_inprogress_deactivate_desc">Tunggu ya, Iklan Otomatis kamu akan dinonaktifkan sesaat lagi.</string>
+    <string name="topads_common_autoads_inprogress_desc">Tunggu ya, iklanmu sedang dibuat.</string>
+    <string name="topads_common_autoads_inprogress_deactivate_desc">Tunggu ya, iklanmu sedang dimatikan</string>
     <string name="topads_common_autoads_outofstock_desc">Iklan tidak tampil karena stok barang habis.</string>
     <string name="topads_common_autoads_outofcredit_desc">Iklan tidak tampil karena kredit kurang.</string>
     <string name="topads_common_autoads_merchant_closed_desc">Iklan tidak tampil karena toko sedang tutup.</string>
@@ -72,12 +75,15 @@
     <string name="topads_common_keyword_info_sheet_Sedang">kata kunci dengan pengguna sedang, kompetisi berjalan rata dan cukup ketat.</string>
     <string name="topads_common_keyword_info_sheet_Rendah">kata kunci dengan sedikit pengguna, kompetisi rendah iklanmu berpeluang besar berada di halaman awal</string>
     <string name="topads_common_keyword_competition_high">Tinggi</string>
+    <string name="topads_common_keyword_competition_unknown">Baru</string>
     <string name="topads_common_keyword_competition_moderation">Sedang</string>
     <string name="topads_common_keyword_competition_low">Rendah</string>
     <string name="topads_common_keyword_pencarian">Pencarian</string>
     <string name="topads_common_keyword_competition">Kompetisi</string>
     <string name="topads_common_kata_kunci_dipilih">%d kata kunci dipilih</string>
+    <string name="topads_common_kata_kunci_lihat">%d kata kunci dipilih <![CDATA["<font color='#42b549'><b>Lihat </b></font> ]]></string>
     <string name="topads_common_tip_memilih_kata_kunci">Tip memilih kata kunci</string>
+    <string name="topads_empty_tip_memilih_kata_kunci_title">Tips memilih kata kunci</string>
     <string name="topads_common_keyword_empty_title">Belum ada kata kunci dicari</string>
     <string name="topads_common_keyword_empty_desc">Cari kata kunci yang sesuai dengan produkmu</string>
     <string name="topads_common_keyword_edit_bid_sheet_title">Celana Panjang</string>
@@ -93,8 +99,8 @@
     <string name="topads_common_selanjutnya">Selanjutnya</string>
     <string name="topads_common_keyword_jenis">Jenis</string>
     <string name="topads_common_keyword_budget">Biaya</string>
-    <string name="topads_common_non_key_budget">Biaya non kata kunci</string>
-    <string name="topads_common_error_multiple_50">Biaya harus kelipatan %d</string>
+    <string name="topads_common_basic_budget">Biaya Iklan Dasar</string>
+    <string name="topads_common_error_multiple_50">Biaya harus kelipatan %s</string>
     <string name="sesuaikan_kata_kunci_dengan_nama_produk">Sesuaikan kata kunci dengan nama produk</string>
     <string name="lebih_efektif_dengan_kata_kunci_spesifik">Lebih efektif dengan kata kunci spesifik</string>
     <string name="gunakan_kata_kunci_umum_dengan_maksimum_2_kata">Gunakan kata kunci umum dengan maksimum 2 kata</string>
@@ -109,10 +115,12 @@
     <string name="topads_common_search_hint_activity">Cari kata kunci di sini</string>
     <string name="topads_common_new_manual_key">Kata kunci &lt;b>%s&lt;/b> tidak tersedia. </string>
     <string name="topads_common_tambah_button">Tambahkan</string>
-    <string name="topads_common_confirmation_switch_manual_description">Dengan Iklan Otomatis, pasti lebih mudah dan cepat untuk promosikan produkmu di halaman teratas.</string>
-    <string name="topads_common_confirmation_switch_manual">Yakin beralih dari Iklan Otomatis?</string>
-    <string name="topads_common_gunakan_iklan_manual">Mulai Iklan Manual</string>
+    <string name="topads_common_confirmation_switch_manual_description">Iklan Otomatis butuh waktu setidaknya<![CDATA["<font color='#fa31353b'><b> 2 minggu</b></font> ]]> untuk memaksimalkan penjualanmu.</string>
+    <string name="topads_common_confirmation_switch_manual">Yakin matikan Iklan Otomatis?</string>
+    <string name="topads_common_gunakan_iklan_manual">Ya, Matikan</string>
+    <string name="topads_common_confirmation_sheet_cancel">Tetep Gunakan</string>
     <string name="topads_common_anggaran_harian">Anggaran harian</string>
+    <string name="topads_common_total_search">Total Pencarian</string>
     <string name="topads_common_iklan_otomatis">Iklan Otomatis</string>
     <string name="filter">Filter</string>
     <string name="topads_edit_urutkan">Urutkan</string>
@@ -121,7 +129,28 @@
     <string name="topads_common_recom_bid">Rekomendasi Rp%s</string>
     <string name="topads_common_headline_klik">/1000 kali tampil</string>
     <string name="topads_common_maximum_daily_budget">Batas maksimum Rp %s</string>
+    <string name="topads_common_keyword_avg_cost">Biaya rata-rata kompetitor %s</string>
 
+    <string name="topads_common_recommended_budget">Rekomendasi Biaya</string>
+    <string name="topads_common_klik_">/klik</string>
+    <string name="topads_common_hari_">/hari</string>
+    <string name="topads_biaya_iklan">Biaya Iklan</string>
+    <string name="topads_iklankan_button">Iklankan</string>
+    <string name="topads_common_bs_title">Atur Biaya Iklan</string>
+    <string name="topads_common_atur_anngaran">Atur Anggaran</string>
+    <string name="topads_common_nama_group">Nama Grup</string>
+
+    <!-- bottomsheet success/outofcredit -->
+    <string name="topads_common_success_bs_subtitle">Jangan lupa pantau terus performa iklan produkmu di Dashboard TopAds.</string>
+    <string name="topads_common_later">Nanti saja</string>
+    <string name="topads_common_out_of_creadit_btn">Top up sekarang</string>
+    <string name="topads_common_out_of_credit_subtitle">Tinggal 1 langkah lagi! Isi kredit TopAds untuk mengaktifkan iklan produkmu </string>
+
+    <!-- Error messages -->
+    <string name="topads_common_error_too_many_request">Jumlah maks. kata kunci yang bisa dipilih adalah 50. Coba kurangi dulu, ya.</string>
+    <string name="topads_common_error_invalid_item">Oops, ada produk di iklanmu yang sudah dihapus. Coba cek lagi, ya.</string>
+    <string name="topads_common_error_invalid_keyword">Kata kunci hanya bisa diisi dengan huruf dan angka.</string>
+    <string name="topads_common_error_group_name_exist">Nama grup iklan sudah digunakan. Coba tulis nama lain, ya.</string>
 
 
     <string-array name="sort_product_list_array">

@@ -32,8 +32,8 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
-import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.contractor.BrandDetailsContract;
 import com.tokopedia.digital_deals.view.model.Brand;
@@ -101,9 +101,9 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
                 verticalOffset = Math.abs(verticalOffset);
                 int difference = appBarLayout.getTotalScrollRange() - toolbar.getHeight();
                 if (verticalOffset >= difference) {
-                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.digital_deals.R.color.tkpd_dark_gray_toolbar));
+                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N400));
                 } else {
-                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.white));
+                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
                 }
             }
         });
@@ -168,7 +168,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             locationName = location.getName();
         }
         loadBrandImage(ivHeader, brand.getFeaturedImage());
-        ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+        ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
         if (productItems != null && productItems.size() > 0) {
             dealsAdapter.clearList();
             recyclerViewDeals.clearOnScrollListeners();
@@ -212,13 +212,13 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             @Override
             public void onLoadStarted(Drawable placeholder) {
                 super.onLoadStarted(placeholder);
-                imageView.setImageResource(com.tokopedia.design.R.color.grey_1100);
+                imageView.setImageResource(com.tokopedia.unifyprinciples.R.color.Unify_N50);
             }
 
             @Override
             public void onLoadFailed(@Nullable Drawable errorDrawable) {
                 super.onLoadFailed(errorDrawable);
-                imageView.setImageResource(com.tokopedia.design.R.color.grey_1100);
+                imageView.setImageResource(com.tokopedia.unifyprinciples.R.color.Unify_N50);
             }
         });
     }
@@ -303,38 +303,6 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             mPresenter.onRecyclerViewScrolled(layoutManager);
         }
     };
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (getActivity() == null)
-            return;
-        switch (requestCode) {
-            case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
-                if (resultCode == RESULT_OK) {
-                    Location location = Utils.getSingletonInstance().getLocation(getActivity());
-                    if (location != null && !TextUtils.isEmpty(locationName) && !TextUtils.isEmpty(location.getName()) && !locationName.equals(location.getName())) {
-                        mPresenter.getBrandDetails(true);
-                    } else {
-                        mPresenter.getBrandDetails(false);
-                    }
-                }
-                break;
-            case DealsHomeActivity.REQUEST_CODE_LOGIN:
-                if (resultCode == RESULT_OK) {
-                    UserSessionInterface userSession = new UserSession(getActivity());
-                    if (userSession.isLoggedIn()) {
-                        if (adapterPosition != -1) {
-                            if (dealsAdapter != null)
-                                dealsAdapter.setLike(adapterPosition);
-                        }
-                    }
-                }
-                break;
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
 
     @Override

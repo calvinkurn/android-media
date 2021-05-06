@@ -13,7 +13,7 @@ sealed class PartialSettingSuccessInfoType: PartialSettingResponse {
 
     data class PartialShopSettingSuccessInfo(
             val shopStatusType: ShopType,
-            val totalFollowers: Int,
+            val totalFollowers: Long,
             val shopBadgeUrl: String
     ): PartialSettingSuccessInfoType()
 

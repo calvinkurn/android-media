@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
@@ -15,7 +15,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/Unify_N0">
 
             <com.tokopedia.header.HeaderUnify
                 android:id="@+id/add_product_showcase_toolbar"
@@ -106,6 +107,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:elevation="@dimen/dp_16"
+        app:cardBackgroundColor="@color/Unify_N0"
         app:cardCornerRadius="0dp"
         app:cardElevation="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -138,7 +140,7 @@
                 android:layout_marginStart="@dimen/dp_16"
                 app:typographyType="heading_5"
                 android:layout_marginTop="@dimen/dp_13"
-                android:textColor="@color/primary_text_color"
+                android:textColor="@color/Unify_N700_96"
                  />
 
         </RelativeLayout>

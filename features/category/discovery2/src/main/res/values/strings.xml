@@ -53,9 +53,15 @@
     <string name="discovery_default_search_title">Cari di Tokopedia</string>
     <string name="discovery_tokopedia">Tokopedia</string>
     <string name="discovery_page_name">discovery page</string>
+    <string name="discovery_filter_empty_state_title">Oops, barangnya nggak ketemu</string>
+    <string name="discovery_filter_empty_state_description">Coba kurangi filter yang sedang aktif, atau reset filter buat lanjutkan penjelajahanmu!</string>
+    <string name="discovery_filter_reset">Reset Filter</string>
     <string name="discovery_msg_success_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="discovery_msg_success_add_wishlist">Sukses menambah wishlist</string>
     <string name="discovery_msg_error_add_wishlist">Error menambah wishlist</string>
     <string name="discovery_msg_error_remove_wishlist">Error menghapus wishlist</string>
     <string name="discovery_top_to_bottom">Top to bottom</string>
+    <string name="discovery_top_chat_button_description">Top Chat</string>
+    <string name="choose_address_title">Bisa pilih alamat pengirimanmu dulu</string>
+    <string name="choose_address_description">Biar pengalaman belanjamu lebih asyik dan mudah.</string>
 </resources>

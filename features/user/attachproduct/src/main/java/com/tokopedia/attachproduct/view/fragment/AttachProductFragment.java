@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
@@ -277,7 +278,9 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemUiM
     public void updateListByCheck(boolean isChecked, int position) {
         adapter.itemChecked(isChecked, position);
         presenter.updateCheckedList(adapter.getCheckedDataList());
-        trackAction(source, adapter.getData().get(position).getProductId());
+        if (position != RecyclerView.NO_POSITION) {
+            trackAction(source, adapter.getData().get(position).getProductId());
+        }
     }
 
     @Override
@@ -376,7 +379,7 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemUiM
         }
     }
 
-    private void trackAction(String source, int productId) {
+    private void trackAction(String source, String productId) {
 
         if(source.equals(AttachProductActivity.SOURCE_TALK)){
                 TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(

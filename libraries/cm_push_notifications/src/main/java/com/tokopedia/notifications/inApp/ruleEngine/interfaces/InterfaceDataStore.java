@@ -16,7 +16,7 @@ public interface InterfaceDataStore {
     Completable deleteRecord(long id);
     CMInApp getInAppData(long id);
     Completable updateInAppDataFreq(long id);
-    Completable updateInAppDataFreq(long id, long newSt);
     Completable viewDismissed(long id);
     Completable interactedWithView(long id);
+    Completable updateVisibleStateForAlreadyShown();
 }

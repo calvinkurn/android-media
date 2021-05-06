@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
@@ -17,6 +18,7 @@ import com.tokopedia.charts.model.AxisLabel
 import com.tokopedia.charts.model.BarChartConfigModel
 import com.tokopedia.charts.model.BarChartData
 import com.tokopedia.charts.common.utils.RoundedBarChartRenderer
+import com.tokopedia.charts.renderer.EllipsizedXAxisRenderer
 import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.android.synthetic.main.view_bar_chart.view.*
 
@@ -27,7 +29,10 @@ import kotlinx.android.synthetic.main.view_bar_chart.view.*
 class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
     init {
-        View.inflate(context, R.layout.view_bar_chart, this)
+        View.inflate(context, R.layout.view_bar_chart, this).apply {
+            val xAxisRenderer = EllipsizedXAxisRenderer(barChart.viewPortHandler, barChart.xAxis, barChart.getTransformer(YAxis.AxisDependency.LEFT))
+            barChart.setXAxisRenderer(xAxisRenderer)
+        }
     }
 
     var config: BarChartConfigModel = BarChartConfig.getDefaultConfig()

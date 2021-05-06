@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.order.UohData
+import com.tokopedia.homenav.mainnav.data.pojo.order.UohOrders
 import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
@@ -57,20 +58,20 @@ class GetUohOrdersNavUseCase (
 
     override suspend fun executeOnBackground(): List<NavProductOrder> {
         return try {
-            val responseData = Success(graphqlUseCase.executeOnBackground().uohOrders)
+            val responseData = Success(graphqlUseCase.executeOnBackground().uohOrders?:UohOrders())
             val navProductList = mutableListOf<NavProductOrder>()
-            responseData.data.orders.map {
-                if (it.metadata.products.isNotEmpty()) {
+            responseData.data.orders?.map {
+                if (it.metadata?.products?.isNotEmpty() == true) {
                     val product = it.metadata.products[0]
                     val additionalProductCount = it.metadata.products.size-1
                     navProductList.add(NavProductOrder(
-                            statusText = it.metadata.status.label,
-                            statusTextColor = it.metadata.status.textColor,
-                            productNameText = product.title,
+                            statusText = it.metadata.status?.label?:"",
+                            statusTextColor = it.metadata.status?.textColor?:"",
+                            productNameText = product.title?:"",
                             additionalProductCount = additionalProductCount,
-                            imageUrl = product.imageURL,
-                            id = it.orderUUID,
-                            applink = it.metadata.detailURL.appURL
+                            imageUrl = product.imageURL?:"",
+                            id = it.orderUUID?:"",
+                            applink = it.metadata.detailURL?.appURL?:""
                     ))
                 }
             }

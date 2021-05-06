@@ -4,7 +4,9 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.payment.Payment
+import com.tokopedia.homenav.mainnav.data.pojo.payment.PaymentQuery
 import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
+import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 
@@ -28,6 +30,7 @@ class GetPaymentOrdersNavUseCase (
                   tickerMessage: ticker_message
                   gatewayImg: gateway_img
                   applink: app_link
+                  bankImg: bank_img
                 }
               }
             }
@@ -39,18 +42,24 @@ class GetPaymentOrdersNavUseCase (
     }
 
     override suspend fun executeOnBackground(): List<NavPaymentOrder> {
-        val responseData = Success(graphqlUseCase.executeOnBackground().paymentQuery)
-        return responseData.data.paymentList.map {
-            NavPaymentOrder(
-                    statusText = "",
-                    statusTextColor = "",
-                    paymentAmountText = it.paymentAmount.toString(),
-                    descriptionText = it.tickerMessage,
-                    imageUrl = it.gatewayImg,
-                    id = it.transactionID,
-                    applink = it.applink
-            )
+        val responseData = Success(graphqlUseCase.executeOnBackground().paymentQuery?: PaymentQuery())
+        val navPaymentList = mutableListOf<NavPaymentOrder>()
+
+        if (responseData.data.paymentList?.isNotEmpty() == true) {
+            responseData.data.paymentList?.map {
+                navPaymentList.add(NavPaymentOrder(
+                        statusText = "",
+                        statusTextColor = "",
+                        paymentAmountText = it.paymentAmount.toString(),
+                        descriptionText = it.tickerMessage?:"",
+                        imageUrl = if(it.bankImg?.isNotBlank() == true) it.bankImg else it.gatewayImg ?: "",
+                        id = it.transactionID?:"",
+                        applink = it.applink?:""
+                )
+                )
+            }
         }
+        return navPaymentList
     }
 
     companion object{

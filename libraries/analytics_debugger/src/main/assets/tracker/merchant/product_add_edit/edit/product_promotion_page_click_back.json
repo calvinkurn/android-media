@@ -1,0 +1,13 @@
+{
+  "readme": "click back on product promotion page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickEditProduct",
+      "eventCategory" : "edit product page",
+      "eventAction" : "click back on promotion page",
+      "eventLabel" : ".*",
+      "shopId" : ".+"
+    }
+  ]
+}

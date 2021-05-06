@@ -5,9 +5,17 @@
     <color name="product_detail_dms_shadow_color_3">#15CCCCCC</color>
     <color name="product_detail_dms_shadow_color_4">#20CCCCCC</color>
     <color name="product_detail_dms_shadow_color_5">#25CCCCCC</color>
-
-    <color name="product_detail_dms_white">@color/Unify_N0</color>
     <color name="product_detail_dms_page_control">@color/Unify_N700</color>
-    <color name="product_detail_dms_cashback_green">@color/Unify_G200</color>
-    <color name="product_detail_dms_discount_red_background">@color/Unify_R100</color>
+    <color name="product_detail_dms_cashback_green">#D6FFDE</color>
+    <color name="product_detail_dms_discount_red_background">#FFEAEF</color>
+    <color name="product_detail_dms_tradein_blue">#32afff</color>
+    <color name="product_detail_dms_stock_bar_track_color">#80FFFFFF</color>
+    <color name="product_detail_dms_stock_bar_progress_color">#FFFFFF</color>
+    <color name="product_detail_dms_default_red_bg_end_gradient_color">#F56958</color>
+    <color name="product_detail_dms_default_red_bg_start_gradient_color">#D74049</color>
+    <color name="product_detail_dms_default_green_bg_end_gradient_color">#00AA5B</color>
+    <color name="product_detail_dms_default_green_bg_start_gradient_color">#008849</color>
+    <color name="product_detail_dms_default_blue_bg_end_gradient_color">#0EC3EB</color>
+    <color name="product_detail_dms_default_blue_bg_start_gradient_color">#4F347A</color>
+    <color name="product_detail_dms_regulatory_info_overlay">#29000000</color>
 </resources>

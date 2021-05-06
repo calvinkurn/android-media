@@ -15,7 +15,6 @@ import dagger.multibindings.IntoMap
  * ade.hadian@tokopedia.com
  */
 
-@OtpScope
 @Module
 abstract class OtpViewModelModule{
 

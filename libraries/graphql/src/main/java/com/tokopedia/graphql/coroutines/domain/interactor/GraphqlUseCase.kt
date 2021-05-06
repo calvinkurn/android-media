@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.util.LoggingUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import rx.Observable
@@ -19,6 +20,7 @@ open class GraphqlUseCase<T: Any> @Inject constructor(private val graphqlReposit
     private var graphqlQuery: String? = null
     private var requestParams = mapOf<String, Any?>()
     private var tClass: Class<T>? = null
+    private var doQueryHash = false
 
     private var mCacheManager: GraphqlCacheManager? = null
     private var mFingerprintManager: FingerprintManager? = null
@@ -39,12 +41,16 @@ open class GraphqlUseCase<T: Any> @Inject constructor(private val graphqlReposit
         this.requestParams = params
     }
 
+    fun setQueryHashFlag(doQueryHash: Boolean){
+        this.doQueryHash = doQueryHash;
+    }
+
     fun clearCache(){
         try {
             Observable.fromCallable {
                 initCacheManager()
                 if (graphqlQuery != null) {
-                    val request = GraphqlRequest(graphqlQuery, tClass, requestParams)
+                    val request = GraphqlRequest(doQueryHash, graphqlQuery, tClass, requestParams)
                     mCacheManager!!.delete(mFingerprintManager!!.generateFingerPrint(
                             request.toString(),
                             cacheStrategy.isSessionIncluded))
@@ -76,15 +82,18 @@ open class GraphqlUseCase<T: Any> @Inject constructor(private val graphqlReposit
         }
 
         val type = tClass ?: throw RuntimeException("Please set valid class type before call execute()")
-        val request = GraphqlRequest(graphqlQuery, type, requestParams)
-        val response = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val request = GraphqlRequest(doQueryHash, graphqlQuery, type, requestParams)
+        val listOfRequest = listOf(request)
+        val response = graphqlRepository.getReseponse(listOfRequest, cacheStrategy)
 
         val error = response.getError(tClass)
 
         if (error == null || error.isEmpty()){
             return response.getData(tClass)
         } else {
-            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
+            val errorMessage = error.mapNotNull { it.message }.joinToString(separator = ", ")
+            LoggingUtils.logGqlErrorBackend("executeOnBackground", listOfRequest.toString() ,errorMessage)
+            throw MessageErrorException(errorMessage)
         }
     }
 }

@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.common.domain.DealsSearchUseCase
 import com.tokopedia.deals.common.model.response.SearchData
-import com.tokopedia.deals.common.utils.DealsTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.domain.usecase.DealsSearchInitialLoadUseCase
 import com.tokopedia.deals.search.domain.viewmodel.DealsSearchViewModel
@@ -25,7 +25,7 @@ class DealsSearchViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
-    private val dispatcher = DealsTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
 
     private val loadInitialDataUseCase: DealsSearchInitialLoadUseCase = mockk()
     private val searchUseCase: DealsSearchUseCase = mockk()
@@ -160,5 +160,41 @@ class DealsSearchViewModelTest {
 
         // then
         assert((viewModel.dealsSearchResponse.value as Success).data == mockEventSearchData.eventSearch)
+    }
+
+    @Test
+    fun getInitialData_fetchSuccessCoordinateNotNull_initialLoadShouldBeSuccess() {
+        // given
+        coEvery {
+            loadInitialDataUseCase.getDealsInitialLoadResult(
+                    any(), any(), any(), any(), any()
+            )
+        } coAnswers {
+            firstArg<(InitialLoadData) -> Unit>().invoke(mockInitialLoadData)
+        }
+
+        // when
+        viewModel.getInitialData(Location(coordinates = "0,0"), "1")
+
+        // then
+        assert((viewModel.dealsInitialResponse.value as Success).data == mockInitialLoadData)
+    }
+
+    @Test
+    fun getInitialData_fetchSuccessLocationNull_initialLoadShouldBeSuccess() {
+        // given
+        coEvery {
+            loadInitialDataUseCase.getDealsInitialLoadResult(
+                    any(), any(), any(), any(), any()
+            )
+        } coAnswers {
+            firstArg<(InitialLoadData) -> Unit>().invoke(mockInitialLoadData)
+        }
+
+        // when
+        viewModel.getInitialData(null, "1")
+
+        // then
+        assert((viewModel.dealsInitialResponse.value as Success).data == mockInitialLoadData)
     }
 }

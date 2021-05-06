@@ -24,7 +24,7 @@ abstract class ChatMessageViewHolder(
 
     protected open val fxChat: FlexBoxChatLayout? = itemView?.findViewById(R.id.fxChat)
     protected open val msgContainer: ConstraintLayout? = itemView?.findViewById(R.id.cl_msg_container)
-    protected val bottomMarginOpposite: Float = getOppositeMargin(itemView?.context)
+    protected val topMarginOpposite: Float = getOppositeMargin(itemView?.context)
     private val movementMethod = ChatLinkHandlerMovementMethod(listener)
 
     override fun bind(message: MessageViewModel) {
@@ -38,8 +38,8 @@ abstract class ChatMessageViewHolder(
     protected fun bindMargin(message: MessageViewModel) {
         val lp = msgContainer?.layoutParams
         if (lp is RecyclerView.LayoutParams) {
-            if (!adapterListener.isNextItemSender(adapterPosition, message.isSender)) {
-                msgContainer?.setMargin(0, 0, 0, bottomMarginOpposite.toInt())
+            if (adapterListener.isOpposite(adapterPosition, message.isSender)) {
+                msgContainer?.setMargin(0, topMarginOpposite.toInt(), 0, 0)
             } else {
                 msgContainer?.setMargin(0, 0, 0, 0)
             }

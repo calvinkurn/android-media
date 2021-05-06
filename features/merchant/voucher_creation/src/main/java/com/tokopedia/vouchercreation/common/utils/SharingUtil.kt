@@ -14,6 +14,8 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.view.activity.BroadCastChatWebViewActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -33,23 +35,20 @@ annotation class SocmedPackage {
 
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(SocmedClass.INSTAGRAM, SocmedClass.WHATSAPP, SocmedClass.LINE, SocmedClass.TWITTER, SocmedClass.FACEBOOK)
+@StringDef(SocmedClass.WHATSAPP, SocmedClass.FACEBOOK)
 annotation class SocmedClass {
     companion object {
         const val WHATSAPP = "com.whatsapp.ContactPicker"
         const val FACEBOOK = "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias"
-        const val LINE = "jp.naver.line.android.activity.selectchat.SelectChatActivityLaunchActivity"
-        const val TWITTER = "com.twitter.composer.ComposerShareActivity"
-        const val INSTAGRAM = "com.instagram.share.handleractivity.ShareHandlerActivity"
     }
 }
 
 enum class Socmed(@SocmedPackage val packageString: String,
                   @SocmedClass val classString: String) {
-    INSTAGRAM(SocmedPackage.INSTAGRAM, SocmedClass.INSTAGRAM),
+    INSTAGRAM(SocmedPackage.INSTAGRAM, ""),
+    LINE(SocmedPackage.LINE, ""),
+    TWITTER(SocmedPackage.TWITTER, ""),
     WHATSAPP(SocmedPackage.WHATSAPP, SocmedClass.WHATSAPP),
-    LINE(SocmedPackage.LINE, SocmedClass.LINE),
-    TWITTER(SocmedPackage.TWITTER, SocmedClass.TWITTER),
     FACEBOOK(SocmedPackage.FACEBOOK, SocmedClass.FACEBOOK)
 }
 
@@ -78,6 +77,16 @@ object SharingUtil {
         }
     }
 
+    fun shareToBroadCastChat(context: Context, voucherId: Int) {
+        val broadCastChatUrl = "https://m.tokopedia.com/broadcast-chat/create?voucher_id=$voucherId"
+        val broadCastChatIntent = BroadCastChatWebViewActivity.createNewIntent(
+                context = context,
+                url = broadCastChatUrl,
+                title = context.getString(R.string.mvc_broadcast_chat)
+        )
+        context.startActivity(broadCastChatIntent)
+    }
+
     fun shareToSocialMedia(socmed: Socmed,
                            context: Context,
                            urlString: String,
@@ -94,11 +103,11 @@ object SharingUtil {
                         val fileName = String.format(FILE_NAME_FORMAT, System.currentTimeMillis().toString())
                         val internalFile = resource.getSavedImageDirFile(context, fileName)
                         val contentUri = FileProvider.getUriForFile(context, AUTHORITY, internalFile)
-                        when(socmed) {
+                        when (socmed) {
                             Socmed.INSTAGRAM -> {
                                 shareInstagramFeed(context, contentUri)
                             }
-                            Socmed.TWITTER -> {
+                            Socmed.TWITTER, Socmed.LINE -> {
                                 goToSocialMedia(socmed.packageString, context, contentUri, messageString)
                             }
                             else -> {
@@ -197,8 +206,7 @@ object SharingUtil {
                 }
             }
             context.startActivity(shareIntent)
-        }
-        else {
+        } else {
             // This block is reserved to handle unavailability of the socmed app.
             // Generally, this block should send intent to go to desired socmed app Play Store Url, but it isn't needed for now
         }
@@ -221,8 +229,7 @@ object SharingUtil {
                 }
             }
             context.startActivity(shareIntent)
-        }
-        else {
+        } else {
             // This block is reserved to handle unavailability of the socmed app.
             // Generally, this block should send intent to go to desired socmed app Play Store Url, but it isn't needed for now
         }

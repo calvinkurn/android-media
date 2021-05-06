@@ -32,7 +32,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
             null == data -> onLoading()
             data.error.isNotBlank() -> {
                 onError(element)
-                listener.setOnErrorWidget(adapterPosition, element)
+                listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> onSuccessLoadData(element)
         }
@@ -93,7 +93,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
         hideProgressLayout()
         hideShimmeringLayout()
         itemView.tvProgressTitleOnError.text = element.title
-        itemView.imgWidgetOnError.loadImageDrawable(R.drawable.unify_globalerrors_connection)
+        itemView.imgWidgetOnError.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         showErrorLayout()
     }
 

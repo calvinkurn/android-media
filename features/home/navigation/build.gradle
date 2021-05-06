@@ -59,7 +59,6 @@ dependencies {
     implementation project(rootProject.ext.features.cart)
     implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.officialStore)
-    implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.home)
 
     implementation rootProject.ext.unifyDependencies.principles
@@ -81,6 +80,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation project(rootProject.ext.libraries.cmPushNotifications)
+    implementation project(rootProject.ext.libraries.deviceFingerprint)
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
@@ -129,10 +129,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
-
-    debugImplementation (rootProject.ext.testDependencies.fragmentTest, {
-        exclude group: 'androidx.test', module: 'core'
-    })
 }
 
 project.ext {
@@ -143,3 +139,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

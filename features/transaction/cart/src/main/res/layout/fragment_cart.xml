@@ -11,14 +11,14 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <View
             android:id="@+id/status_bar_bg"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_25"
-            android:background="@color/green_600"
+            android:background="@color/Unify_G500"
             android:visibility="invisible"
             app:layout_collapseMode="pin" />
 
@@ -105,7 +105,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/white"
+                    android:background="@color/Unify_N0"
                     android:orientation="vertical"
                     android:visibility="gone"
                     tools:visibility="visible">
@@ -115,8 +115,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_14"
-                        android:background="@color/white"
-                        android:orientation="horizontal">
+                        android:background="@color/Unify_N0"
+                        android:orientation="horizontal"
+                        tools:ignore="DisableBaselineAlignment">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -134,7 +135,7 @@
                                 android:layout_height="wrap_content"
                                 android:lineSpacingExtra="4sp"
                                 android:text="@string/label_price_total"
-                                android:textColor="@color/text_black"
+                                android:textColor="@color/Unify_N700_96"
                                 app:typographyType="body_2" />
 
                             <LinearLayout
@@ -148,7 +149,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:gravity="end"
-                                    android:textColor="@color/Neutral_N700_96"
+                                    android:textColor="@color/Unify_N700_96"
                                     app:typographyType="heading_4"
                                     tools:text="Rp600.000" />
 
@@ -180,7 +181,7 @@
                                 android:contentDescription="@string/content_desc_go_to_courier_page_button"
                                 android:gravity="center_vertical"
                                 app:unifyButtonSize="medium"
-                                app:unifyButtonType="transaction"
+                                app:unifyButtonType="main"
                                 app:unifyButtonVariant="filled"
                                 tools:text="Checkout" />
 
@@ -228,7 +229,7 @@
                 android:id="@+id/layout_global_error"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:gravity="center"
                 android:visibility="gone"
                 tools:visibility="gone" />

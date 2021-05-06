@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
+import com.tokopedia.config.GlobalConfig
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -19,6 +20,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment
@@ -39,6 +42,20 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     lateinit var userSession: UserSession
     private var isSeller: Boolean = false
     private val saldoComponent by lazy(LazyThreadSafetyMode.NONE) { SaldoDetailsComponentInstance.getComponent(this) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setSecureWindowFlag()
+    }
+
+    private fun setSecureWindowFlag() {
+        if(GlobalConfig.APPLICATION_TYPE==GlobalConfig.CONSUMER_APPLICATION||GlobalConfig.APPLICATION_TYPE==GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread {
+                window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+            }
+        }
+    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -103,7 +120,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         } else {
             toolbar.setNavigationIcon(com.tokopedia.design.R.drawable.ic_icon_back_black)
         }
-        toolbar.setPadding(toolbar.paddingLeft, toolbar.paddingTop, resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_12), toolbar.paddingBottom)
+        toolbar.setPadding(toolbar.paddingLeft, toolbar.paddingTop, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_12), toolbar.paddingBottom)
         setSupportActionBar(toolbar)
 
         supportActionBar?.let {
@@ -129,7 +146,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         if(isSeller) {
             val isAutoWithdrawalPageEnable = FirebaseRemoteConfigImpl(this)
                     .getBoolean(FLAG_APP_SALDO_AUTO_WITHDRAWAL, false)
-            if(isAutoWithdrawalPageEnable) {
+            if(isAutoWithdrawalPageEnable && isAutoWithRollenceActive()) {
                 toolbarAutoWithdrawalSetting.visible()
                 toolbarAutoWithdrawalSetting.setOnClickListener {
                     RouteManager.route(this, ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING)
@@ -142,12 +159,17 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         }
     }
 
+    private fun isAutoWithRollenceActive() : Boolean{
+      return (KEY_ROLLENCE_AUTO_WITHDRAWAL == RemoteConfigInstance.getInstance()
+              .abTestPlatform.getString(KEY_ROLLENCE_AUTO_WITHDRAWAL, ""))
+    }
+
     override fun setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val window = window
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.design.R.color.white)
+            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
     }
@@ -158,7 +180,8 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     }
 
     companion object {
-        private const val FLAG_APP_SALDO_AUTO_WITHDRAWAL = "app_flag_saldo_auto_withdrawal"
+        private const val KEY_ROLLENCE_AUTO_WITHDRAWAL = "Auto_Withdrawal_RP"
+        private const val FLAG_APP_SALDO_AUTO_WITHDRAWAL = "app_flag_saldo_auto_withdrawal_v2"
         private val REQUEST_CODE_LOGIN = 1001
         private val TAG = "DEPOSIT_FRAGMENT"
 

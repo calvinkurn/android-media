@@ -25,7 +25,7 @@
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_toStartOf="@id/btn_search"
             android:text="@string/search_title_feed"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:typographyType="heading_3" />
 
         <ImageView

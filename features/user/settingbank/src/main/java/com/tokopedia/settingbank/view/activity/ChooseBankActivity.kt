@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.settingbank.di.DaggerSettingBankComponent
 import com.tokopedia.settingbank.di.SettingBankComponent
 import com.tokopedia.settingbank.di.SettingBankModule
-import com.tokopedia.settingbank.domain.Bank
+import com.tokopedia.settingbank.domain.model.Bank
 import com.tokopedia.settingbank.view.fragment.OnBankSelectedListener
 import com.tokopedia.settingbank.view.fragment.SelectBankFragment
 

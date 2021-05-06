@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerComponentBuilder
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoring
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringType
@@ -32,7 +33,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchComponent>,
+class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchComponent>,
         GlobalSearchView.GlobalSearchViewListener, GlobalSearchView.SearchTextBoxListener,
         HistoryViewUpdateListener, SuggestionViewUpdateListener, GlobalSearchSellerPerformanceMonitoringListener {
 
@@ -82,6 +83,7 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         initView()
         initSearchBarView()
         observeSearchPlaceholder()
+        observeSearchKeyword()
     }
 
     private fun initInjector() {
@@ -94,6 +96,7 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         searchBarView?.setSearchTextBoxListener(this)
         initialStateFragment?.setHistoryViewUpdateListener(this)
         suggestionFragment?.setSuggestionViewUpdateListener(this)
+        setInitialKeyword()
     }
 
     private fun initView() {
@@ -104,16 +107,18 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         initialStateFragment = supportFragmentManager.findFragmentById(R.id.search_initial_state) as? InitialSearchFragment
     }
 
-    override fun onQueryTextChangeListener(keyword: String) {
-        if (keyword.isEmpty()) {
-            initialStateFragment?.historySearch(keyword)
-        } else {
-            if(keyword.length < MIN_CHARACTER_SEARCH) {
-                initialStateFragment?.onMinCharState()
-            } else {
-                suggestionFragment?.suggestionSearch(keyword)
-            }
+    private fun setInitialKeyword() {
+        getKeywordFromIntent().let { keyword ->
+            proceedSearchKeyword(keyword)
+            searchBarView?.setKeyword(keyword)
         }
+    }
+
+    private fun getKeywordFromIntent(): String =
+            intent?.data?.getQueryParameter(GlobalSearchSellerConstant.KEYWORD).orEmpty()
+
+    override fun onQueryTextChangeListener(keyword: String) {
+        viewModel.getTypingSearch(keyword)
     }
 
     override fun onClearTextBoxListener() {
@@ -152,14 +157,6 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         KeyboardHandler.DropKeyboard(this, searchBarView)
     }
 
-    override fun onDestroy() {
-        if (searchBarView?.compositeSubscription != null && searchBarView?.compositeSubscription?.hasSubscriptions() == true) {
-            searchBarView?.compositeSubscription?.unsubscribe()
-        }
-        searchBarView?.mHandler?.removeCallbacksAndMessages(null)
-        super.onDestroy()
-    }
-
     private fun setWhiteStatusBar() {
         window?.decorView?.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -170,13 +167,31 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
 
     private fun observeSearchPlaceholder() {
         observe(viewModel.searchPlaceholder) {
-            val placeholder = when(it) {
+            val placeholder = when (it) {
                 is Success -> it.data
                 is Fail -> getString(R.string.placeholder_search_seller)
             }
             searchBarView?.setPlaceholder(placeholder)
         }
         viewModel.getSearchPlaceholder()
+    }
+
+    private fun observeSearchKeyword() {
+        observe(viewModel.searchKeyword) {
+            proceedSearchKeyword(it)
+        }
+    }
+
+    private fun proceedSearchKeyword(keyword: String) {
+        if (keyword.isEmpty()) {
+            initialStateFragment?.historySearch(keyword)
+        } else {
+            if (keyword.length < MIN_CHARACTER_SEARCH) {
+                initialStateFragment?.onMinCharState()
+            } else {
+                suggestionFragment?.suggestionSearch(keyword)
+            }
+        }
     }
 
     override fun startNetworkPerformanceMonitoring() {

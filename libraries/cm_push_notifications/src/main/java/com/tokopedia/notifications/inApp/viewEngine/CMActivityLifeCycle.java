@@ -7,8 +7,14 @@ import android.util.Log;
 
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
+import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
+import com.tokopedia.notifications.utils.NotificationCancelManager;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,15 +26,16 @@ import timber.log.Timber;
  */
 public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbacks {
 
-    static String TAG = CMActivityLifeCycle.class.getSimpleName();
     public static final String IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen";
     private static final String IRIS_ANALYTICS_EVENT_KEY = "event";
-    private int activityCount;
-    private CmActivityLifecycleHandler lifecycleHandler;
+    private final CmActivityLifecycleHandler lifecycleHandler;
+    private final NotificationCancelManager cancelManager;
 
+    private int activityCount;
 
     public CMActivityLifeCycle(CmActivityLifecycleHandler lifecycleHandler) {
         this.lifecycleHandler = lifecycleHandler;
+        cancelManager = new NotificationCancelManager();
     }
 
     @Override
@@ -36,19 +43,58 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
         try {
             if (activity != null && activityCount == 0) {
                 trackIrisEventForAppOpen(activity);
+                if (RulesManager.getInstance() != null)
+                    RulesManager.getInstance().updateVisibleStateForAlreadyShown();
             }
             activityCount++;
             lifecycleHandler.onActivityCreatedInternalForPush(activity);
         } catch (Exception e) {
-            Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
-                    (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data=''");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "exception");
+            messageMap.put("err", Log.getStackTraceString
+                            (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
         }
     }
 
     @Override
-    public void onActivityStarted(Activity activity) {
+    public void onActivityStarted(@NotNull Activity activity) {
         try {
             lifecycleHandler.onActivityStartedInternal(activity);
+
+            if (cancelManager != null && cancelManager.isCancellable(activity)) {
+                cancelManager.clearNotifications(activity.getApplicationContext());
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
+
+    @Override
+    public void onActivityResumed(Activity activity) { }
+
+    @Override
+    public void onActivityPaused(Activity activity) { }
+
+    @Override
+    public void onActivityStopped(Activity activity) {
+        try {
+            lifecycleHandler.onActivityStopInternal(activity);
+            cancelManager.cancel();
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
+
+    @Override
+    public void onActivitySaveInstanceState(Activity activity, Bundle outState) { }
+
+    @Override
+    public void onActivityDestroyed(Activity activity) {
+        activityCount--;
+        try {
+            lifecycleHandler.onActivityDestroyedInternal(activity);
         } catch (Exception e) {
             Timber.e(e);
         }
@@ -60,41 +106,5 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
         map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_SITE_OPEN);
         instance.saveEvent(map);
     }
-
-    @Override
-    public void onActivityResumed(Activity activity) {
-
-    }
-
-    @Override
-    public void onActivityPaused(Activity activity) {
-    }
-
-    @Override
-    public void onActivityStopped(Activity activity) {
-        try {
-            lifecycleHandler.onActivityStopInternal(activity);
-        } catch (Exception e) {
-            Timber.e(e);
-        }
-    }
-
-    @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
-    }
-
-
-    @Override
-    public void onActivityDestroyed(Activity activity) {
-        activityCount--;
-        try {
-            lifecycleHandler.onActivityDestroyedInternal(activity);
-        } catch (Exception e) {
-            Timber.e(e);
-        }
-
-    }
-
 
 }

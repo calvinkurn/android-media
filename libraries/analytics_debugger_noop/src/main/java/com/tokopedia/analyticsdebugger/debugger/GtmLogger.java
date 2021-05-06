@@ -27,26 +27,6 @@ public class GtmLogger {
                 }
 
                 @Override
-                public void wipe() {
-
-                }
-
-                @Override
-                public void openActivity() {
-
-                }
-
-                @Override
-                public void openErrorActivity() {
-
-                }
-
-                @Override
-                public void navigateToValidator() {
-
-                }
-
-                @Override
                 public void enableNotification(boolean status) {
 
                 }

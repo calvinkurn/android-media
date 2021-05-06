@@ -38,6 +38,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
+import com.tokopedia.vouchergame.common.util.VoucherGameGqlQuery
 import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.view.activity.VoucherGameDetailActivity
@@ -151,10 +152,11 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
 
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             togglePromoBanner(false)
-            voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_menu_detail),
+            voucherGameViewModel.getVoucherGameMenuDetail(com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery.catalogMenuDetail,
                     voucherGameViewModel.createMenuDetailParams(it))
         }
         initView()
+        loadInitialData()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -349,13 +351,16 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
         getComponent(VoucherGameListComponent::class.java).inject(this)
     }
 
-
     override fun loadInitialData() {
-        searchVoucherGame("", true)
+        search_input_view.searchBarTextField.setText("")
     }
 
     override fun loadData(page: Int) {
 
+    }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
     }
 
     override fun onItemClicked(item: Visitable<VoucherGameListAdapterFactory>) {
@@ -416,7 +421,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
 
     private fun searchVoucherGame(query: String, loadFromCloud: Boolean = false) {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
-            voucherGameViewModel.getVoucherGameOperators(GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
+            voucherGameViewModel.getVoucherGameOperators(VoucherGameGqlQuery.voucherGameProductList,
                     voucherGameViewModel.createParams(it), query, loadFromCloud)
         }
     }

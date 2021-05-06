@@ -1,8 +1,10 @@
 package tokopedia.applink.deeplink
 
 import android.content.Context
+import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.tokopedia.applink.DeeplinkMapper
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import com.tokopedia.config.GlobalConfig
 import io.mockk.mockkClass
@@ -20,6 +22,7 @@ open class DeepLinkMapperTestFixture {
     open fun setup() {
         context = ApplicationProvider.getApplicationContext()
         mockkObject(DeeplinkMapperUohOrder)
+        mockkObject(DeeplinkMapperMerchant)
         mockkClass(GlobalConfig::class)
     }
 
@@ -31,5 +34,13 @@ open class DeepLinkMapperTestFixture {
     protected fun assertEqualsDeepLinkMapper(deepLink: String, expectedDeepLink: String) {
         val actualResult = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
         assertEquals(expectedDeepLink, actualResult)
+    }
+
+    protected fun assertEqualsDeeplinkParameters(deeplink: String, vararg extras: Pair<String, String?>) {
+        val actualResult = DeeplinkMapper.getRegisteredNavigation(context, deeplink)
+        val uri = Uri.parse(actualResult)
+        extras.forEach {
+            assertEquals(uri.getQueryParameter(it.first), it.second)
+        }
     }
 }

@@ -2,70 +2,86 @@ package com.tokopedia.settingbank.view.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.settingbank.di.QUERY_GET_USER_BANK_ACCOUNTS
-import com.tokopedia.settingbank.domain.BankAccount
-import com.tokopedia.settingbank.domain.BankAccountListResponse
-import com.tokopedia.settingbank.domain.UserInfo
-import com.tokopedia.settingbank.view.viewState.*
+import com.tokopedia.settingbank.domain.model.Bank
+import com.tokopedia.settingbank.domain.model.BankAccount
+import com.tokopedia.settingbank.domain.model.KYCInfo
+import com.tokopedia.settingbank.domain.model.TemplateData
+import com.tokopedia.settingbank.domain.usecase.DeleteBankAccountUseCase
+import com.tokopedia.settingbank.domain.usecase.GetUserBankAccountUseCase
+import com.tokopedia.settingbank.domain.usecase.KyCInfoUseCase
+import com.tokopedia.settingbank.domain.usecase.TermsAndConditionUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class SettingBankViewModel @Inject constructor(val graphqlRepository: GraphqlRepository,
-                                               private val rawQueries: Map<String, String>,
-                                               dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+class SettingBankViewModel @Inject constructor(
+        private val termsAndConditionUseCase: dagger.Lazy<TermsAndConditionUseCase>,
+        private val getUserBankAccountUseCase: dagger.Lazy<GetUserBankAccountUseCase>,
+        private val deleteBankAccountUseCase: dagger.Lazy<DeleteBankAccountUseCase>,
+        private val kyCInfoUseCase: dagger.Lazy<KyCInfoUseCase>,
+        dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    val getBankListState = MutableLiveData<GetBankAccountListState>()
 
-    val addNewBankAccountState = MutableLiveData<Boolean>()
+    val termsAndConditionLiveData = MutableLiveData<Result<TemplateData>>()
+    val tncNotesLiveData = MutableLiveData<Result<TemplateData>>()
 
-    internal fun loadUserAddedBankList() {
-        launchCatchError(block = {
-            getBankListState.value = OnShowLoading(true)
-            val data = withContext(Dispatchers.IO) {
-                val graphRequest = GraphqlRequest(rawQueries[QUERY_GET_USER_BANK_ACCOUNTS],
-                        BankAccountListResponse::class.java)
-                graphqlRepository.getReseponse(listOf(graphRequest))
-            }
-            getBankListState.value = OnShowLoading(false)
-            processUserBankAccountData(data.getSuccessData())
-        }) {
-            getBankListState.value = BankAccountListLoadingError(it)
-            it.printStackTrace()
-        }
+    val kycInfoLiveData = MutableLiveData<Result<KYCInfo>>()
+    val deleteBankAccountLiveData = MutableLiveData<Result<String>>()
+
+    val bankAccountListLiveData = MutableLiveData<Result<List<BankAccount>>>()
+    val addBankAccountStateLiveData = MutableLiveData<Boolean>()
+
+    fun loadUserAddedBankList() {
+        getUserBankAccountUseCase.get().getUserBankAccountList({ bankAccountList: List<BankAccount>,
+                                                                 status: Boolean ->
+            bankAccountListLiveData.postValue(Success(bankAccountList))
+            addBankAccountStateLiveData.postValue(status)
+        }, {
+            bankAccountListLiveData.postValue(Fail(it))
+        })
+    }
+
+    fun deleteBankAccount(bankAccount: BankAccount) {
+        deleteBankAccountUseCase.get().deleteBankAccount(bankAccount, {
+            deleteBankAccountLiveData.postValue(Success(it))
+        }, {
+            deleteBankAccountLiveData.postValue(Fail(it))
+        })
+    }
+
+    fun loadTermsAndCondition() {
+        termsAndConditionUseCase.get().getTermsAndCondition({
+            termsAndConditionLiveData.postValue(Success(it))
+        }, {
+            termsAndConditionLiveData.postValue(Fail(it))
+        })
+    }
+
+    fun loadTermsAndConditionNotes() {
+        termsAndConditionUseCase.get().getNotes({
+            tncNotesLiveData.postValue(Success(it))
+        }, {
+            tncNotesLiveData.postValue(Fail(it))
+        })
+    }
+
+    fun getKYCInfo() {
+        kyCInfoUseCase.get().getKYCCheckInfo({
+            kycInfoLiveData.postValue(Success(it))
+        }, {
+            kycInfoLiveData.postValue(Fail(it))
+        })
+    }
+
+    override fun onCleared() {
+        termsAndConditionUseCase.get().cancelJobs()
+        getUserBankAccountUseCase.get().cancelJobs()
+        deleteBankAccountUseCase.get().cancelJobs()
+        kyCInfoUseCase.get().cancelJobs()
+        super.onCleared()
     }
 
 
-    private fun processUserBankAccountData(bankAccountListResponse: BankAccountListResponse) {
-        bankAccountListResponse.getBankAccount.data.bankAccount?.let {
-            val toastMessage = bankAccountListResponse.getBankAccount.data.userInfo.message
-            if (it.isNotEmpty()) {
-                getBankListState.value = OnBankAccountListLoaded(it, toastMessage ?: "")
-            } else {
-                getBankListState.value = NoBankAccountAdded(toastMessage ?: "")
-            }
-            updateAddNewBankAccountState(it,bankAccountListResponse.getBankAccount.data.userInfo)
-        }
-    }
-
-    private fun updateAddNewBankAccountState(bankAccountList: List<BankAccount>,userInfo: UserInfo) {
-        if (bankAccountList.isNotEmpty()) {
-            launchCatchError(block = {
-                val isEnable = withContext(Dispatchers.IO) {
-                    return@withContext userInfo.isVerified
-                }
-                addNewBankAccountState.value = isEnable
-            }) {
-                addNewBankAccountState.value = false
-            }
-
-        } else {
-            addNewBankAccountState.value = true
-        }
-    }
 }

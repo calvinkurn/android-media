@@ -61,7 +61,7 @@ class GlobalNavWidget: BaseCustomView {
 
         val gd = GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
-                intArrayOf(Color.WHITE, backgroundGradientColorList[backgroundIndex]))
+                intArrayOf(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0), backgroundGradientColorList[backgroundIndex]))
         gd.cornerRadius = 0f
 
         globalNavContainerLayout?.background = gd
@@ -260,9 +260,9 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun createGlobalNavWidgetCardItemDecoration(): RecyclerView.ItemDecoration {
         return GlobalNavWidgetCardItemDecoration(
-                context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_12),
-                context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
+                context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
+                context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
         )
     }
 

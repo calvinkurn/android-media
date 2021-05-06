@@ -20,9 +20,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
 import com.tokopedia.flight.R
-import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity
 import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationPassengerActivity
 import com.tokopedia.flight.cancellationV2.presentation.fragment.FlightCancellationPassengerFragment
+import com.tokopedia.flight.cancellationdetail.presentation.activity.FlightOrderCancellationListActivity
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailBrowserActivity
 import com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailWebCheckInActivity
@@ -61,6 +61,9 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     private var isCancellation: Boolean = false
     private var isRequestCancel: Boolean = false
     private var isOpenTrackSent: Boolean = false
+
+    private var isTravelInsurance: Boolean = false
+    private var isZeroCancellation: Boolean = false
 
     override fun getScreenName(): String = ""
 
@@ -112,7 +115,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                         title = errorData.title
                         message = errorData.message
                     } catch (t: Throwable) {
-                        message = it.throwable.message ?: ""
+                        message = getString(R.string.flight_error_pick_journey)
                     }
                     renderErrorView(title, message)
                 }
@@ -277,31 +280,43 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         }
 
         /* Render Insurance View */
-        flightOrderDetailInsurance.listener = object : FlightOrderDetailButtonsView.Listener {
-            override fun onTopButtonClicked() {}
+        if(data.insurances.isNotEmpty()) {
+            flightOrderDetailInsurance.visibility = View.VISIBLE
+            flightOrderDetailInsurance.listener = object : FlightOrderDetailButtonsView.Listener {
+                override fun onTopButtonClicked() {}
 
-            override fun onBottomButtonClicked() {}
+                override fun onBottomButtonClicked() {}
 
+            }
+
+            data.insurances.forEach{
+                when(it.id){
+                    CODE_TRAVEL_INSURANCE -> isTravelInsurance = true
+                    CODE_ZERO_CANCELLATION_INSURANCE -> isZeroCancellation = true
+                }
+            }
+
+            flightOrderDetailInsurance.setData(
+                    getString(R.string.flight_order_detail_insurance_title_label),
+                    FlightOrderDetailButtonModel(
+                            MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
+                            getString(R.string.flight_order_detail_insurance_trip_label),
+                            getString(R.string.flight_order_detail_insurance_trip_description),
+                            isTravelInsurance,
+                            false
+                    ),
+                    FlightOrderDetailButtonModel(
+                            MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
+                            getString(R.string.flight_order_detail_insurance_cancel_label),
+                            getString(R.string.flight_order_detail_insurance_trip_description),
+                            isZeroCancellation,
+                            false
+                    )
+            )
+            flightOrderDetailInsurance.buildView()
+        }else{
+            flightOrderDetailInsurance.visibility = View.GONE
         }
-        flightOrderDetailInsurance.setData(
-                getString(R.string.flight_order_detail_insurance_title_label),
-                FlightOrderDetailButtonModel(
-                        MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
-                        getString(R.string.flight_order_detail_insurance_trip_label),
-                        getString(R.string.flight_order_detail_insurance_trip_description),
-                        true,
-                        false
-                ),
-                FlightOrderDetailButtonModel(
-                        MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
-                        getString(R.string.flight_order_detail_insurance_cancel_label),
-                        getString(R.string.flight_order_detail_insurance_trip_description),
-                        true,
-                        false
-                )
-        )
-        flightOrderDetailInsurance.buildView()
-
 
         /* Render Web Check In View */
         val isWebCheckInButtonVisible: Pair<Boolean, String> = flightOrderDetailViewModel.isWebCheckInAvailable(data)
@@ -392,7 +407,9 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun navigateToCancellationDetailPage() {
-        startActivity(FlightCancellationListActivity.createIntent(context, flightOrderDetailViewModel.orderId))
+        context?.let {
+            startActivity(FlightOrderCancellationListActivity.createIntent(it, flightOrderDetailViewModel.orderId))
+        }
     }
 
     private fun navigateToCancellationPage(cancellationItems: List<FlightCancellationJourney>) {
@@ -458,6 +475,9 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
         private const val REQUEST_CODE_SEND_E_TICKET = 1111
         private const val REQUEST_CODE_CANCELLATION = 1112
+
+        private const val CODE_TRAVEL_INSURANCE = "1"
+        private const val CODE_ZERO_CANCELLATION_INSURANCE = "2"
 
         fun createInstance(invoiceId: String,
                            isCancellation: Boolean,

@@ -7,8 +7,7 @@
     android:orientation="vertical"
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingLeft="@dimen/layout_lvl2"
-    android:paddingBottom="@dimen/layout_lvl2"
-    android:id="@+id/item_flight_booking_passenger_layout">
+    android:paddingBottom="@dimen/layout_lvl2">
 
     <View
         android:id="@+id/ps_seperator"
@@ -57,13 +56,14 @@
             app:typographyWeight="bold"
             tools:text="Isi Data" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_edit_passenger"
+        <com.tokopedia.iconunify.IconUnify
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_marginEnd="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
-            app:srcCompat="@drawable/ic_system_action_arrow_right_normal_24" />
+            app:icon_name="CHEVRON_RIGHT"
+            app:icon_color_light_enable="@color/Unify_G500"
+            app:icon_color_night_enable="@color/Unify_G500"/>
 
     </LinearLayout>
 

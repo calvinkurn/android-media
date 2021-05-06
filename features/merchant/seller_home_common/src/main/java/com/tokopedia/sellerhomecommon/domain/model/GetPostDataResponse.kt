@@ -26,9 +26,15 @@ data class PostDataModel(
         @SerializedName("list")
         @Expose
         val list: List<PostItemDataModel>?,
+        @SerializedName("cta")
+        @Expose
+        val cta: PostCtaDataModel? = PostCtaDataModel(),
         @SerializedName("errorMsg")
         @Expose
-        val error: String?
+        val error: String?,
+        @SerializedName("showWidget")
+        @Expose
+        val showWidget: Boolean?
 )
 
 data class PostItemDataModel(
@@ -47,4 +53,13 @@ data class PostItemDataModel(
         @SerializedName("featuredMediaURL")
         @Expose
         val featuredMediaURL: String?
+)
+
+data class PostCtaDataModel(
+        @SerializedName("text")
+        @Expose
+        val text: String? = "",
+        @SerializedName("applink")
+        @Expose
+        val appLink: String? = "",
 )

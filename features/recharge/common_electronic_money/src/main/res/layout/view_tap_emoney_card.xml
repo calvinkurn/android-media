@@ -46,7 +46,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:gravity="center"
         android:text="@string/emoney_tap_card_instruction_message"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton

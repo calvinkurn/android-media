@@ -17,4 +17,5 @@
     <string name="label_report">Lapor</string>
     <string name="fail_to_report">Maaf, laporan gagal dikirim. Mohon coba lagi</string>
     <string name="report_cancel">Batal</string>
+    <string name="save">Simpan</string>
 </resources>

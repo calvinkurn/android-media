@@ -23,7 +23,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.linker)
@@ -33,7 +33,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.vote)
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.wishlistCommon)
@@ -46,7 +45,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.dialog
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -58,7 +56,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.cameraView
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
@@ -71,9 +68,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lottie
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
-    }
-    implementation (rootProject.ext.miscDependencies.ucrop){
-        exclude group: 'com.android.support'
     }
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime

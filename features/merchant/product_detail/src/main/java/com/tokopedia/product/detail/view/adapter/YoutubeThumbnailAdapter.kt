@@ -1,17 +1,17 @@
 package com.tokopedia.product.detail.view.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.util.thumbnailUrl
 import kotlinx.android.synthetic.main.item_youtube_thumbnail.view.*
 
-class YoutubeThumbnailAdapter(private val videos: MutableList<Video>,
-                              private val clickItemListener: ((Video, Int) -> Unit)? = null)
+class YoutubeThumbnailAdapter(private val youtubeVideos: MutableList<YoutubeVideo>,
+                              private val clickItemListener: ((YoutubeVideo, Int) -> Unit)? = null)
     : RecyclerView.Adapter<YoutubeThumbnailAdapter.YoutubeThumbnailViewHolder>() {
 
     lateinit var recyclerView: RecyclerView
@@ -21,14 +21,14 @@ class YoutubeThumbnailAdapter(private val videos: MutableList<Video>,
             .inflate(R.layout.item_youtube_thumbnail, parent, false))
     }
 
-    override fun getItemCount(): Int = videos.size
+    override fun getItemCount(): Int = youtubeVideos.size
 
     override fun onBindViewHolder(holder: YoutubeThumbnailViewHolder, position: Int) {
         with(holder.itemView) {
-            if (videos.isEmpty()) {
+            if (youtubeVideos.isEmpty()) {
                 recyclerView.visibility = View.GONE
             } else {
-                ImageHandler.LoadImage(video_thumbnail, videos[position].thumbnailUrl)
+                video_thumbnail.loadImage(youtubeVideos[position].thumbnailUrl)
                 recyclerView.visibility = View.VISIBLE
             }
         }
@@ -41,7 +41,7 @@ class YoutubeThumbnailAdapter(private val videos: MutableList<Video>,
 
     inner class YoutubeThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         init {
-            itemView.setOnClickListener { clickItemListener?.invoke(videos[adapterPosition], adapterPosition) }
+            itemView.setOnClickListener { clickItemListener?.invoke(youtubeVideos[adapterPosition], adapterPosition) }
         }
     }
 }

@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.loginregister">
+    package="com.tokopedia.logintest">
 
     <uses-permission
         android:name="android.permission.GET_ACCOUNTS"
@@ -11,14 +10,14 @@
     <application>
 
         <activity
-            android:name=".login.view.activity.LoginActivity"
+            android:name=".login.view.activity.LoginTestAppActivity"
             android:label="@string/login"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateHidden">
 
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />

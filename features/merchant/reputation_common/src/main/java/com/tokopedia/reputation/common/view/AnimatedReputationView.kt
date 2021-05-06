@@ -6,9 +6,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.reputation.common.R
 import com.tokopedia.reputation.common.data.source.cloud.model.AnimModel
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.animated_reputation_picker.view.*
 
 /**

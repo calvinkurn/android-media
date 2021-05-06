@@ -4,20 +4,17 @@ import android.app.Application
 import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.StockWording
-import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
-import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.discovery2.usecase.campaignusecase.CampaignNotifyUserCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
-import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
+import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -32,6 +29,7 @@ import kotlin.coroutines.CoroutineContext
 private const val REGISTER = "REGISTER"
 private const val UNREGISTER = "UNREGISTER"
 private const val SOURCE = "discovery"
+private const val DEFAULT_COLOR = "#1e31353b"
 
 class MasterProductCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
@@ -51,7 +49,8 @@ class MasterProductCardItemViewModel(val application: Application, val component
     @Inject
     lateinit var productCardItemUseCase: ProductCardItemUseCase
 
-    init {
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
         componentPosition.value = position
         components.data?.let {
             if (!it.isNullOrEmpty()) {
@@ -85,6 +84,10 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     fun isUserLoggedIn(): Boolean {
         return UserSession(application).isLoggedIn
+    }
+
+    fun getUserID():String? {
+        return UserSession(application).userId
     }
 
     fun getDataItemValue() = dataItem
@@ -139,6 +142,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
                         campaignNotifyResponse.checkCampaignNotifyMeResponse?.let { campaignResponse ->
                             if (campaignResponse.success == true) {
                                 productItemData.notifyMe = !it
+                                dataItem.value = productItemData
                                 notifyMeCurrentStatus.value = productItemData.notifyMe
                                 showNotifyToast.value = Pair(false, campaignResponse.message)
                                 this@MasterProductCardItemViewModel.syncData.value = productCardItemUseCase.notifyProductComponentUpdate(components.parentComponentId, components.pageEndPoint)
@@ -175,17 +179,14 @@ class MasterProductCardItemViewModel(val application: Application, val component
     }
 
     private fun getStockWord(dataItem: DataItem): StockWording {
-        val stockWordData = StockWording()
-        var stockWordTitle = dataItem.stockWording?.title
+        val stockWordData = StockWording(title = "")
+        var stockWordTitleColour = getStockColor(R.color.clr_1e31353b)
+        var stockWordTitle = ""
         var stockAvailableCount: String? = ""
         dataItem.let {
-            if (!stockWordTitle.isNullOrEmpty()) {
-                stockWordData.title = stockWordTitle
-            } else {
                 val campaignSoldCount = it.campaignSoldCount
-                val threshold: Int? = it.threshold.toIntOrZero()
-                val customStock: Int? = it.customStock.toIntOrZero()
-
+                val threshold: Int? = it.threshold?.toIntOrNull()
+                val customStock: Int? = it.customStock?.toIntOrNull()
                 if (campaignSoldCount != null && threshold != null && customStock != null) {
                     if (campaignSoldCount.toIntOrZero() > 0) {
                         when {
@@ -198,6 +199,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
                             customStock <= threshold -> {
                                 stockWordTitle = getStockText(R.string.tersisa)
                                 stockAvailableCount = customStock.toString()
+                                stockWordTitleColour = getStockColor(R.color.clr_ef144a)
                             }
                             else -> {
                                 stockWordTitle = getStockText(R.string.terjual)
@@ -210,9 +212,18 @@ class MasterProductCardItemViewModel(val application: Application, val component
                     }
                 }
                 stockWordData.title = stockWordTitle
-            }
+                stockWordData.color = stockWordTitleColour
         }
         return stockWordData
+    }
+
+    private fun getStockColor(colorID: Int): String {
+        return try {
+            application.resources.getString(colorID)
+        } catch (exception: Resources.NotFoundException) {
+            exception.printStackTrace()
+            return DEFAULT_COLOR
+        }
     }
 
     private fun getStockText(textID: Int): String {

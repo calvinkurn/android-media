@@ -1,5 +1,7 @@
 package com.tokopedia.buyerorder
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -11,31 +13,23 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.PreferenceMatchers.withTitle
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.buyerorder.test.R
-import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
+import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.UohRecommendationItemViewHolder
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.MatcherAssert
-import org.hamcrest.TypeSafeMatcher
+import org.hamcrest.*
 
 
 /**
  * Created by fwidjaja on 08/11/20.
  */
 class UohRobot {
-    fun launchFrom(rule: ActivityTestRule<UohListActivity>) {
-        rule.launchActivity(null)
-        waitForData()
-    }
-
-    fun login(rule: ActivityTestRule<UohListActivity>) {
-        InstrumentationAuthHelper.loginToAnUser(rule.activity.application)
+    fun loading() {
         waitForData()
     }
 
@@ -65,45 +59,70 @@ class UohRobot {
 
     fun doSearch(str: String) {
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield))
-                .perform(ViewActions.typeText(str))
+                .perform(ViewActions.typeText(str)).perform(ViewActions.pressImeActionButton())
+        waitForData()
+    }
+
+    fun doApplyFilter() {
+        onView(withId(com.tokopedia.buyerorder.R.id.btn_apply))
+                .perform(click())
         waitForData()
     }
 
     fun clickFilterStatus() {
         onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),0))
                 .perform(click())
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
+        waitForData()
     }
 
-    fun doApplyFilterStatus() {
-        onView(withId(com.tokopedia.buyerorder.R.id.btn_apply))
-                .perform(click())
+    fun selectFilterStatus() {
+        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
         waitForData()
     }
 
     fun clickFilterCategory() {
         onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),1))
                 .perform(click())
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
+        waitForData()
     }
 
-    fun doApplyFilterCategory() {
-        onView(withId(com.tokopedia.buyerorder.R.id.btn_apply))
-                .perform(click())
+    fun selectFilterCategory() {
+        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
+        waitForData()
     }
 
     fun clickFilterDate() {
         onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),2))
                 .perform(scrollTo(), click())
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
+        waitForData()
     }
 
-    fun doApplyFilterDate() {
-        onView(withId(com.tokopedia.buyerorder.R.id.btn_apply))
-                .perform(click())
+    fun selectFilterDate() {
+        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
+        waitForData()
+    }
+
+    fun scrollToRecommendationList() {
+        onView(withId(R.id.rv_order_list))
+                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(5))
+        waitForData()
+    }
+
+    fun clickAtcRecommendation() {
+        onView(withId(R.id.rv_order_list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(5,
+                        clickOnViewChild(R.id.buttonAddToCart)))
+        waitForData()
+    }
+
+    fun clickRecommendationCard() {
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        onView(withId(R.id.rv_order_list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(5,
+                        clickOnViewChild(com.tokopedia.buyerorder.R.id.uoh_product_item)))
         waitForData()
     }
 
@@ -111,7 +130,7 @@ class UohRobot {
         Thread.sleep(5000)
     }
 
-    private fun nthChildOf(parentMatcher: Matcher<View?>, childPosition: Int): Matcher<View?>? {
+    private fun nthChildOf(parentMatcher: Matcher<View?>, childPosition: Int): Matcher<View?> {
         return object : TypeSafeMatcher<View?>() {
             override fun describeTo(description: Description) {
                 description.appendText("position $childPosition of parent ")

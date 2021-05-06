@@ -13,7 +13,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/label_toko"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_header"
         app:typographyType="body_3"
@@ -27,7 +27,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:ellipsize="end"
         android:lines="1"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toStartOf="@+id/iv_shop"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -63,19 +63,56 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_header" />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iu_image_fulfill"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/dp_12"
+        android:scaleType="fitCenter" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shop_location"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
         android:ellipsize="end"
         android:lines="1"
-        android:textColor="@color/Neutral_N700_44"
-        app:layout_constraintEnd_toEndOf="@+id/tv_shop_name"
-        app:layout_constraintStart_toStartOf="@+id/tv_shop"
-        app:layout_constraintTop_toBottomOf="@+id/tv_shop"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="small"
         app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/separator_free_shipping"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:text="@string/label_separator_line"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="small"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iu_free_shipping"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_8"
+        android:scaleType="fitCenter"
+        tools:ignore="ContentDescription" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_shop_location_and_free_shipping"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:constraint_referenced_ids="iu_image_fulfill,tv_shop_location,separator_free_shipping,iu_free_shipping"
+        app:flow_horizontalBias="0"
+        app:flow_horizontalGap="@dimen/spacing_lvl2"
+        app:flow_horizontalStyle="packed"
+        app:flow_verticalAlign="center"
+        app:flow_verticalGap="@dimen/spacing_lvl2"
+        app:flow_wrapMode="chain"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_shop"
+        app:layout_constraintTop_toBottomOf="@+id/tv_shop" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_product_image"
@@ -83,8 +120,8 @@
         android:layout_height="46dp"
         android:layout_marginTop="@dimen/dp_16"
         android:scaleType="fitCenter"
-        app:layout_constraintStart_toStartOf="@+id/tv_shop_location"
-        app:layout_constraintTop_toBottomOf="@+id/tv_shop_location" />
+        app:layout_constraintStart_toStartOf="@+id/flow_shop_location_and_free_shipping"
+        app:layout_constraintTop_toBottomOf="@+id/flow_shop_location_and_free_shipping" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_name"
@@ -96,7 +133,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_product_image"
         app:layout_constraintTop_toTopOf="@+id/iv_product_image"
@@ -120,7 +157,7 @@
         app:flow_wrapMode="chain"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_product_image"
-        app:layout_constraintTop_toBottomOf="@+id/barrier_product_extra" />
+        app:layout_constraintTop_toBottomOf="@+id/lbl_cashback" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_slash_price"
@@ -128,7 +165,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="#BDBDBD"
+        android:textColor="@color/Unify_N150"
         android:visibility="gone"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />
@@ -139,7 +176,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
@@ -153,30 +190,13 @@
         app:layout_constraintStart_toStartOf="@+id/tv_product_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_product_name" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_free_shipping"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        app:layout_constraintStart_toEndOf="@id/lbl_cashback"
-        app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
-        tools:ignore="ContentDescription" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_product_extra"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="lbl_cashback,iv_free_shipping" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_quantity_stock_available"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toStartOf="@+id/qty_editor_product"
         app:layout_constraintStart_toStartOf="@+id/iv_product_image"
         app:layout_constraintTop_toBottomOf="@+id/flow"
@@ -230,12 +250,16 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_protection_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
         android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toStartOf="@+id/btn_protection_info"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@+id/cb_purchase_protection"
         app:layout_constraintTop_toBottomOf="@+id/space_purchase_protection"
+        app:layout_constraintWidth_default="wrap"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Proteksi di luar cakupan garansi" />
@@ -249,26 +273,25 @@
         android:paddingStart="0dp"
         android:paddingEnd="@dimen/dp_16"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintEnd_toStartOf="@+id/tv_protection_unit"
+        app:layout_constraintEnd_toStartOf="@+id/barrier_product_protection"
         app:layout_constraintStart_toEndOf="@+id/cb_purchase_protection"
         app:layout_constraintTop_toBottomOf="@+id/tv_protection_title"
         app:typographyType="small"
         app:typographyWeight="reguler"
         tools:text="12 bulan proteksi dari pencurian/kerusakan" />
 
-    <com.tokopedia.unifycomponents.UnifyImageButton
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_protection_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleX="0.5"
-        android:scaleY="0.5"
-        android:translationX="-8dp"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:padding="@dimen/spacing_lvl1"
+        app:icon_name="INFORMATION"
         app:layout_constraintBottom_toBottomOf="@+id/tv_protection_title"
+        app:layout_constraintEnd_toStartOf="@+id/barrier_product_protection"
         app:layout_constraintStart_toEndOf="@+id/tv_protection_title"
-        app:layout_constraintTop_toTopOf="@+id/tv_protection_title"
-        app:srcCompat="@drawable/ic_info"
-        app:unifyImageButtonType="main"
-        app:unifyImageButtonVariant="image" />
+        app:layout_constraintTop_toTopOf="@+id/tv_protection_title" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_protection_price"
@@ -294,6 +317,13 @@
         app:typographyType="small"
         app:typographyWeight="reguler"
         tools:text="Per Barang" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_product_protection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="tv_protection_unit,tv_protection_price" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_purchase_protection"

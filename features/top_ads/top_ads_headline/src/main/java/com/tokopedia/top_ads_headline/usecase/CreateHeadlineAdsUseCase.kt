@@ -5,9 +5,9 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.top_ads_headline.Constants.INPUT
 import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.data.TopadsManageHeadlineAdResponse
-import com.tokopedia.topads.common.data.internal.ParamObject
 import javax.inject.Inject
 
 const val TOP_ADS_CREATE_HEADLINE_ADS_QUERY: String = """mutation topadsManageHeadlineAd(${'$'}input:topadsManageHeadlineAdInput!){
@@ -37,7 +37,7 @@ class CreateHeadlineAdsUseCase @Inject constructor(graphqlRepository: GraphqlRep
 
     fun setParams(input: TopAdsManageHeadlineInput) {
         val queryMap = mutableMapOf(
-                ParamObject.INPUT to input
+                INPUT to input
         )
         setRequestParams(queryMap)
     }

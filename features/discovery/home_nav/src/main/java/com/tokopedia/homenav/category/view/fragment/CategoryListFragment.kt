@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.diffutil.HomeNavListener
-import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
+import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.category.analytics.CategoryTracking
 import com.tokopedia.homenav.category.view.adapter.CategoryListAdapter
 import com.tokopedia.homenav.category.view.adapter.typefactory.CategoryListTypeFactory
@@ -31,7 +31,7 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
 
     private val typeFactory: CategoryListTypeFactory = CategoryListTypeFactoryImpl(this)
     private val adapter: CategoryListAdapter = CategoryListAdapter(typeFactory)
-    private lateinit var menuViewModel: HomeNavMenuViewModel
+    private lateinit var menuDataModel: HomeNavMenuDataModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val pageTitle = arguments?.getString("title", "")?:""
@@ -46,9 +46,9 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView(view)
         arguments?.get(BUNDLE_MENU_ITEM)?.let {
-            menuViewModel = it as HomeNavMenuViewModel
-            adapter.submitList(it.submenu)
-            if(it.submenu.isEmpty()){
+            menuDataModel = it as HomeNavMenuDataModel
+            adapter.submitList(it.submenus)
+            if(it.submenus.isEmpty()){
                 showGlobalError(view)
             }
         }
@@ -68,22 +68,27 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
 
     override fun onRefresh() {}
 
-    override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {
+    override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         arguments?.getString(TITLE_ARGS, "")?.let {
             if(!it.contains(OTHER)){
-                CategoryTracking.onClickItem(homeNavMenuViewModel.id.toString(), userSessionInterface.userId)
+                CategoryTracking.onClickItem(homeNavMenuDataModel.id.toString(), userSessionInterface.userId)
             } else {
-                CategoryTracking.onClickLainnyaItem(homeNavMenuViewModel.itemTitle, userSessionInterface.userId)
+                CategoryTracking.onClickLainnyaItem(homeNavMenuDataModel.itemTitle, userSessionInterface.userId)
             }
-            RouteManager.route(context, homeNavMenuViewModel.applink)
+            RouteManager.route(context, homeNavMenuDataModel.applink)
         }
     }
 
-    override fun onMenuImpression(homeNavMenuViewModel: HomeNavMenuViewModel) {
+    override fun onMenuImpression(homeNavMenuDataModel: HomeNavMenuDataModel) {
     }
 
     override fun getUserId(): String {
         return userSessionInterface.userId
+    }
+
+    override fun getReviewCounterAbIsUnify(): Boolean {
+        // default red notif unify
+        return true
     }
 
     private fun initRecyclerView(view: View) {

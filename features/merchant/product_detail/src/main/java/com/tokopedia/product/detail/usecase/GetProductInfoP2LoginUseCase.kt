@@ -2,16 +2,17 @@ package com.tokopedia.product.detail.usecase
 
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.*
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManageResponse
+import com.tokopedia.product.detail.common.data.model.product.WishlistStatus
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.shop.ProductShopFollowResponse
 import com.tokopedia.product.detail.data.model.topads.TopAdsGetShopInfo
+import com.tokopedia.product.detail.data.util.OnErrorLog
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.doActionIfNotNull
 import com.tokopedia.usecase.RequestParams
@@ -47,32 +48,34 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
             }
         """.trimIndent()
 
-        fun createParams(shopId: Int, productId: Int, isShopOwner: Boolean): RequestParams = RequestParams.create().apply {
+        fun createParams(shopId: Int, productId: String, isShopOwner: Boolean): RequestParams = RequestParams.create().apply {
             putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
-            putInt(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
+            putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
             putBoolean(ProductDetailCommonConstant.PARAM_IS_SHOP_OWNER, isShopOwner)
         }
     }
 
     var requestParams = RequestParams.EMPTY
+    private var errorLogListener: OnErrorLog? = null
 
     override suspend fun executeOnBackground(): ProductInfoP2Login {
         val p2Login = ProductInfoP2Login()
-        val productId = requestParams.getInt(ProductDetailCommonConstant.PARAM_PRODUCT_ID, 0)
+        val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
         val shopId = requestParams.getInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, 0)
         val isShopOwner = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_IS_SHOP_OWNER, false)
 
-        val isWishlistedParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString())
+        val isWishlistedParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to (productId
+                ?: ""))
         val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
-                ProductInfo.WishlistStatus::class.java, isWishlistedParams)
+                WishlistStatus::class.java, isWishlistedParams)
 
-        val affilateParams = mapOf(ProductDetailCommonConstant.PRODUCT_ID_PARAM to listOf(productId),
+        val affilateParams = mapOf(ProductDetailCommonConstant.PRODUCT_ID_PARAM to listOf(productId.toLongOrZero()),
                 ProductDetailCommonConstant.SHOP_ID_PARAM to shopId,
                 ProductDetailCommonConstant.INCLUDE_UI_PARAM to true)
         val affiliateRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE],
                 TopAdsPdpAffiliateResponse::class.java, affilateParams)
 
-        val topAdsManageParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId, ProductDetailCommonConstant.PARAM_SHOP_ID to shopId)
+        val topAdsManageParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toLongOrZero(), ProductDetailCommonConstant.PARAM_SHOP_ID to shopId)
         val topAdsManageRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_TOP_ADS_MANAGE_PRODUCT],
                 TopAdsGetProductManageResponse::class.java, topAdsManageParams)
 
@@ -95,11 +98,13 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
 
-            if (gqlResponse.getError(ProductInfo.WishlistStatus::class.java)?.isNotEmpty() != true)
-                p2Login.isWishlisted = gqlResponse.getData<ProductInfo.WishlistStatus>(ProductInfo.WishlistStatus::class.java)
+            if (gqlResponse.getError(WishlistStatus::class.java)?.isNotEmpty() != true) {
+                p2Login.isWishlisted = gqlResponse.getData<WishlistStatus>(WishlistStatus::class.java)
                         .isWishlisted == true
-            else
+            } else {
                 p2Login.isWishlisted = true
+                logError(gqlResponse, WishlistStatus::class.java)
+            }
 
             if (gqlResponse.getError(TopAdsPdpAffiliateResponse::class.java)?.isNotEmpty() != true) {
                 p2Login.pdpAffiliate = gqlResponse
@@ -125,11 +130,23 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
                     p2Login.isFollow = gqlResponse.getData<ProductShopFollowResponse>(ProductShopFollowResponse::class.java).shopInfoByID.result.firstOrNull()?.favoriteData?.alreadyFavorited
                             ?: 0
                 }
+            } else {
+                logError(gqlResponse, ProductShopFollowResponse::class.java)
             }
         } catch (t: Throwable) {
+            errorLogListener?.invoke(t)
             Timber.d(t)
         }
 
         return p2Login
+    }
+
+    fun setErrorLogListener(setErrorLogListener: OnErrorLog) {
+        this.errorLogListener = setErrorLogListener
+    }
+
+    private fun logError(gqlResponse: GraphqlResponse, className: Class<*>) {
+        val error: List<GraphqlError>? = gqlResponse.getError(className)
+        errorLogListener?.invoke(MessageErrorException(error?.mapNotNull { it.message }?.joinToString(separator = ", ")))
     }
 }

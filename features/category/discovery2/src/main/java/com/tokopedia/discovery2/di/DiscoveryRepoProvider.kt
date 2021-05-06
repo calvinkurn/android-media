@@ -3,14 +3,14 @@ package com.tokopedia.discovery2.di
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.common.RepositoryProvider
-import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
-import com.tokopedia.discovery2.repository.childcategory.DiscoveryChildCategoryRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryDataGQLRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.emptystate.DiscoveryEmptyStateRepository
 import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRestRepository
+import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
+import com.tokopedia.discovery2.repository.quickFilter.FilterRestRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterDiscoveryRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
@@ -41,8 +41,8 @@ class DiscoveryRepoProvider : RepositoryProvider {
         return QuickFilterDiscoveryRepository()
     }
 
-    override fun provideChildCategoryRepository(): ChildCategoryRepository {
-        return DiscoveryChildCategoryRepository()
+    override fun provideFilterRepository(): FilterRepository {
+        return FilterRestRepository()
     }
 
     override fun provideTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): TopAdsTrackingUseCase {

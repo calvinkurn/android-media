@@ -2,6 +2,8 @@ package com.tokopedia.network;
 
 import android.app.Activity;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.network.data.model.FingerprintModel;
 
 import okhttp3.Response;
@@ -20,6 +22,8 @@ public interface NetworkRouter {
 
     void sendForceLogoutAnalytics(String url, boolean isInvalidToken,
                                   boolean isRequestDenied);
+
+    void sendRefreshTokenAnalytics(String errorMessage);
 
     void showForceLogoutTokenDialog(String path);
 

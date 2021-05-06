@@ -13,7 +13,7 @@ import java.util.List;
 public interface TokoPointsHomeContract {
 
     interface View extends CustomerView {
-        void onError(String error, boolean hasInternet);
+        void onError(int error, boolean hasInternet);
 
         Context getAppContext();
 

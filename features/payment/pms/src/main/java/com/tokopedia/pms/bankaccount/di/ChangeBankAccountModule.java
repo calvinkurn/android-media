@@ -10,7 +10,6 @@ import dagger.Provides;
  * Created by zulfikarrahman on 6/21/18.
  */
 
-@ChangeBankAccountScope
 @Module
 public class ChangeBankAccountModule {
 

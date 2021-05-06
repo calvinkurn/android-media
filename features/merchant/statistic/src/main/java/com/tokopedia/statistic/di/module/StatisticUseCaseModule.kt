@@ -1,5 +1,6 @@
 package com.tokopedia.statistic.di.module
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhomecommon.domain.mapper.*
 import com.tokopedia.sellerhomecommon.domain.usecase.*
@@ -11,7 +12,6 @@ import dagger.Provides
  * Created By @ilhamsuaib on 10/06/20
  */
 
-@StatisticScope
 @Module
 class StatisticUseCaseModule {
 
@@ -19,85 +19,105 @@ class StatisticUseCaseModule {
     @Provides
     fun provideGetSellerHomeLayoutUseCase(
             gqlRepository: GraphqlRepository,
-            mapper: LayoutMapper
+            mapper: LayoutMapper,
+            dispatchers: CoroutineDispatchers
     ): GetLayoutUseCase {
-        return GetLayoutUseCase(gqlRepository, mapper)
+        return GetLayoutUseCase(gqlRepository, mapper, dispatchers)
     }
 
     @StatisticScope
     @Provides
     fun provideGetCardDataUseCase(
             gqlRepository: GraphqlRepository,
-            mapper: CardMapper
+            mapper: CardMapper,
+            dispatchers: CoroutineDispatchers
     ): GetCardDataUseCase {
-        return GetCardDataUseCase(gqlRepository, mapper)
+        return GetCardDataUseCase(gqlRepository, mapper, dispatchers)
     }
 
     @StatisticScope
     @Provides
     fun provideGetLineGraphDataUseCase(
             gqlRepository: GraphqlRepository,
-            mapper: LineGraphMapper
+            mapper: LineGraphMapper,
+            dispatchers: CoroutineDispatchers
     ): GetLineGraphDataUseCase {
-        return GetLineGraphDataUseCase(gqlRepository, mapper)
+        return GetLineGraphDataUseCase(gqlRepository, mapper, dispatchers)
+    }
+
+    @StatisticScope
+    @Provides
+    fun provideGetMultiLineGraphDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: MultiLineGraphMapper,
+            dispatchers: CoroutineDispatchers
+    ): GetMultiLineGraphUseCase {
+        return GetMultiLineGraphUseCase(gqlRepository, mapper, dispatchers)
     }
 
     @StatisticScope
     @Provides
     fun provideGetProgressDataUseCase(
             gqlRepository: GraphqlRepository,
-            progressMapper: ProgressMapper
-    ): GetProgressDataUseCase = GetProgressDataUseCase(gqlRepository, progressMapper)
+            progressMapper: ProgressMapper,
+            dispatchers: CoroutineDispatchers
+    ): GetProgressDataUseCase = GetProgressDataUseCase(gqlRepository, progressMapper, dispatchers)
 
     @StatisticScope
     @Provides
     fun provideGetPostDataUseCase(
             gqlRepository: GraphqlRepository,
-            mapper: PostMapper
+            mapper: PostMapper,
+            dispatchers: CoroutineDispatchers
     ): GetPostDataUseCase {
-        return GetPostDataUseCase(gqlRepository, mapper)
+        return GetPostDataUseCase(gqlRepository, mapper, dispatchers)
     }
 
     @StatisticScope
     @Provides
     fun provideGetCarouselDataUseCase(
             gqlRepository: GraphqlRepository,
-            mapper: CarouselMapper
+            mapper: CarouselMapper,
+            dispatchers: CoroutineDispatchers
     ): GetCarouselDataUseCase {
-        return GetCarouselDataUseCase(gqlRepository, mapper)
+        return GetCarouselDataUseCase(gqlRepository, mapper, dispatchers)
     }
 
     @StatisticScope
     @Provides
     fun provideGetTableDataUseCase(
             gqlRepository: GraphqlRepository,
-            mapper: TableMapper
+            mapper: TableMapper,
+            dispatchers: CoroutineDispatchers
     ): GetTableDataUseCase {
-        return GetTableDataUseCase(gqlRepository, mapper)
+        return GetTableDataUseCase(gqlRepository, mapper, dispatchers)
     }
 
     @StatisticScope
     @Provides
     fun provideGetPieChartDataUseCase(
             gqlRepository: GraphqlRepository,
-            mapper: PieChartMapper
+            mapper: PieChartMapper,
+            dispatchers: CoroutineDispatchers
     ): GetPieChartDataUseCase {
-        return GetPieChartDataUseCase(gqlRepository, mapper)
+        return GetPieChartDataUseCase(gqlRepository, mapper, dispatchers)
     }
 
     @StatisticScope
     @Provides
     fun provideGetBarChartDataUseCase(
             gqlRepository: GraphqlRepository,
-            mapper: BarChartMapper
+            mapper: BarChartMapper,
+            dispatchers: CoroutineDispatchers
     ): GetBarChartDataUseCase {
-        return GetBarChartDataUseCase(gqlRepository, mapper)
+        return GetBarChartDataUseCase(gqlRepository, mapper, dispatchers)
     }
 
     @StatisticScope
     @Provides
     fun provideGetTickerUseCase(
             gqlRepository: GraphqlRepository,
-            mapper: TickerMapper
-    ): GetTickerUseCase = GetTickerUseCase(gqlRepository, mapper)
+            mapper: TickerMapper,
+            dispatchers: CoroutineDispatchers
+    ): GetTickerUseCase = GetTickerUseCase(gqlRepository, mapper, dispatchers)
 }

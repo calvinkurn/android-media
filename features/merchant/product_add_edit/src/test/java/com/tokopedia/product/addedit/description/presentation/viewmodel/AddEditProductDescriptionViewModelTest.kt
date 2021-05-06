@@ -3,31 +3,32 @@ package com.tokopedia.product.addedit.description.presentation.viewmodel
 import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.description.domain.model.ValidateProductDescriptionResponse
 import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.util.setPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.model.*
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.FlowPreview
 import org.junit.*
 import java.lang.reflect.Type
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 class AddEditProductDescriptionViewModelTest {
     @RelaxedMockK
@@ -40,56 +41,17 @@ class AddEditProductDescriptionViewModelTest {
     lateinit var videoUri: Uri
 
     @RelaxedMockK
-    lateinit var videoYoutubeObserver: Observer<in Pair<Int, Result<YoutubeVideoDetailModel>>>
-
-    @RelaxedMockK
     lateinit var validateProductDescriptionUseCase: ValidateProductDescriptionUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-
-        mockkStatic(Uri::class)
-
-        every {
-            Uri.parse(any())
-        } answers {
-            if (usedYoutubeVideoUrl == youtubeVideoUrlFromApp ||
-                    usedYoutubeVideoUrl == youtubeVideoUrlFromWebsite ||
-                    usedYoutubeVideoUrl == youtubeVideoUrlFromWebsiteWithoutWww ||
-                    usedYoutubeVideoUrl == unknownYoutubeUrl) videoUri
-            else throw NullPointerException()
-        }
-
-        every {
-            videoUri.lastPathSegment
-        } returns videoId
-
-        every {
-            videoUri.host
-        } answers {
-            when (usedYoutubeVideoUrl) {
-                youtubeVideoUrlFromApp -> youtubeAppHost
-                youtubeVideoUrlFromWebsiteWithoutWww -> youtubeWebsiteHostWithoutWww
-                youtubeVideoUrlFromWebsite -> youtubeWebsiteHost
-                unknownYoutubeUrl -> unknownYoutubeHost
-                else -> null
-            }
-        }
-
-        every {
-            videoUri.getQueryParameter(AddEditProductConstants.KEY_YOUTUBE_VIDEO_ID)
-        } returns videoId
-
-        viewModel.videoYoutube.observeForever(videoYoutubeObserver)
-    }
-
-    @After
-    fun cleanup() {
-        viewModel.videoYoutube.removeObserver(videoYoutubeObserver)
     }
 
     private val viewModel: AddEditProductDescriptionViewModel by lazy {
@@ -135,98 +97,170 @@ class AddEditProductDescriptionViewModelTest {
         )
     }
 
+    private fun mockUriParsing() {
+        mockkStatic(Uri::class)
+
+        every {
+            Uri.parse(any())
+        } answers {
+            if (usedYoutubeVideoUrl == youtubeVideoUrlFromApp ||
+                    usedYoutubeVideoUrl == youtubeVideoUrlFromWebsite ||
+                    usedYoutubeVideoUrl == youtubeVideoUrlFromWebsiteWithoutWww ||
+                    usedYoutubeVideoUrl == unknownYoutubeUrl) videoUri
+            else throw NullPointerException()
+        }
+
+        every {
+            videoUri.lastPathSegment
+        } returns videoId
+
+        every {
+            videoUri.host
+        } answers {
+            when (usedYoutubeVideoUrl) {
+                youtubeVideoUrlFromApp -> youtubeAppHost
+                youtubeVideoUrlFromWebsiteWithoutWww -> youtubeWebsiteHostWithoutWww
+                youtubeVideoUrlFromWebsite -> youtubeWebsiteHost
+                unknownYoutubeUrl -> unknownYoutubeHost
+                else -> null
+            }
+        }
+
+        every {
+            videoUri.getQueryParameter(AddEditProductConstants.KEY_YOUTUBE_VIDEO_ID)
+        } returns videoId
+    }
+
     @Test
-    fun `When user insert url from youtube app and usecase is success expect youtube video data`() = runBlocking {
+    fun `When user insert product description and usecase is success expect validate product description response`() = coroutineTestRule.runBlockingTest {
+        mockkObject(ValidateProductDescriptionUseCase)
+        var message = ""
+        val validateProductDescriptionResponse = ValidateProductDescriptionResponse().apply {
+            productValidateV3.data.validationResults = listOf("nice", "info")
+            message = productValidateV3.data.validationResults.joinToString("\n")
+        }
+
+        coEvery {
+            validateProductDescriptionUseCase.executeOnBackground()
+        } returns validateProductDescriptionResponse
+
+        viewModel.validateDescriptionChanged("test")
+
+        val result = viewModel.descriptionValidationMessage.getOrAwaitValue()
+        assert(result == message)
+
+        coVerify {
+            validateProductDescriptionUseCase.executeOnBackground()
+        }
+    }
+
+    @Test
+    fun `When user insert url from youtube app and usecase is success expect youtube video data`() = coroutineTestRule.runBlockingTest {
+        mockUriParsing()
+        mockkObject(GetYoutubeVideoDetailUseCase)
+
         usedYoutubeVideoUrl = youtubeVideoUrlFromApp
 
         coEvery {
             getYoutubeVideoUseCase.executeOnBackground()
         } returns youtubeSuccessRestResponseMap
 
-        viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
+        viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
 
-        coVerify {
-            getYoutubeVideoUseCase.executeOnBackground()
-        }
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        val result = viewModel.videoYoutube.value
-        assert(result != null && result == Pair(0, Success(youtubeSuccessData)))
+        val result = viewModel.videoYoutube.getOrAwaitValue()
+        assert(result == Success(youtubeSuccessData))
     }
 
     @Test
-    fun `When user insert url from youtube web and usecase is success expect youtube video data`() = runBlocking {
+    fun `When user insert url from youtube web and usecase is success expect youtube video data`() = coroutineTestRule.runBlockingTest {
+        mockUriParsing()
+        mockkObject(GetYoutubeVideoDetailUseCase)
+
         usedYoutubeVideoUrl = youtubeVideoUrlFromWebsite
 
         coEvery {
             getYoutubeVideoUseCase.executeOnBackground()
         } returns youtubeSuccessRestResponseMap
 
-        viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
+        viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
 
-        coVerify {
-            getYoutubeVideoUseCase.executeOnBackground()
-        }
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        val result = viewModel.videoYoutube.value
-        assert(result != null && result == Pair(0, Success(youtubeSuccessData)))
+        val result = viewModel.videoYoutube.getOrAwaitValue()
+        assert(result == Success(youtubeSuccessData))
     }
 
     @Test
-    fun `When user insert url from youtube web without www and usecase is success expect youtube video data`() = runBlocking {
+    fun `When user insert url from youtube web without www and usecase is success expect youtube video data`() = coroutineTestRule.runBlockingTest {
+        mockUriParsing()
+        mockkObject(GetYoutubeVideoDetailUseCase)
+
         usedYoutubeVideoUrl = youtubeVideoUrlFromWebsiteWithoutWww
 
         coEvery {
             getYoutubeVideoUseCase.executeOnBackground()
         } returns youtubeSuccessRestResponseMap
 
-        viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
+        viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
 
-        coVerify {
-            getYoutubeVideoUseCase.executeOnBackground()
-        }
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        val result = viewModel.videoYoutube.value
-        assert(result != null && result == Pair(0, Success(youtubeSuccessData)))
+        val result = viewModel.videoYoutube.getOrAwaitValue()
+        assert(result == Success(youtubeSuccessData))
     }
 
     @Test
-    fun `When user insert url with unknown host expect failed get youtube video data`() {
+    fun `When user insert url with unknown host expect failed get youtube video data`() = coroutineTestRule.runBlockingTest {
+        mockUriParsing()
         usedYoutubeVideoUrl = unknownYoutubeUrl
 
-        viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
+        viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
 
-        val result = viewModel.videoYoutube.value
-        assert(result != null && result.second is Fail)
+        val result = viewModel.videoYoutube.getOrAwaitValue()
+        assert(result is Fail)
     }
 
     @Test
-    fun `When the url is null expect failed get youtube video data`() {
+    fun `When the url host is null expect failed get youtube video data`()= coroutineTestRule.runBlockingTest {
+        mockUriParsing()
+        every {
+            videoUri.host
+        } returns null
+
         usedYoutubeVideoUrl = unknownYoutubeUrl
 
-        viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
+        viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
 
-        val result = viewModel.videoYoutube.value
-        assert(result != null && result.second is Fail)
+        val result = viewModel.videoYoutube.getOrAwaitValue()
+        assert(result is Fail)
     }
 
     @Test
-    fun `When get youtube video usecase is throwing an error expect failed get youtube video data`() {
-        val throwable = Throwable("")
+    fun `When the url parsing is failed expect failed get youtube video data`() = coroutineTestRule.runBlockingTest {
+        mockkStatic(Uri::class)
+        every {
+            Uri.parse(any())
+        } throws Throwable("")
+
+        usedYoutubeVideoUrl = unknownYoutubeUrl
+
+        viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
+
+        val result = viewModel.videoYoutube.getOrAwaitValue()
+        assert(result is Fail)
+    }
+
+    @Test
+    fun `When the response is map containing no values expect failed get youtube video data`() = coroutineTestRule.runBlockingTest {
+        mockUriParsing()
+        mockkObject(GetYoutubeVideoDetailUseCase)
+
+        usedYoutubeVideoUrl = youtubeVideoUrlFromWebsiteWithoutWww
 
         coEvery {
             getYoutubeVideoUseCase.executeOnBackground()
-        } throws throwable
+        } returns mapOf()
 
-        viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
+        viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
 
-        val result = viewModel.videoYoutube.value
-        assert(result != null && result.second is Fail)
+        val result = viewModel.videoYoutube.getOrAwaitValue()
+        assert(result is Fail)
     }
 
     @Test
@@ -314,6 +348,16 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
+    fun `When getVariantTypeMessage Expect return empty string`() {
+        viewModel.setPrivateProperty("_productInputModel", MutableLiveData(null))
+        var isValid = viewModel.getVariantTypeMessage(0).isEmpty()
+        assert(isValid)
+
+        isValid = viewModel.getVariantCountMessage(999).isEmpty()
+        assert(isValid)
+    }
+
+    @Test
     fun `When getVariantCountMessage Expect return variant count message`() {
         every { resourceProvider.getVariantCountSuffix() }  returns "suffix"
         val productInput = getTestProductInputModel()
@@ -337,6 +381,19 @@ class AddEditProductDescriptionViewModelTest {
         val isValid = viewModel.getVariantCountMessage(0) ==
                 productInput.variantInputModel.selections[0].options.size.toString() + " "
         assert(isValid)
+    }
+
+    @Test
+    fun `When update productInputModel Expect return expected isHampersProduct`() {
+        viewModel.updateProductInputModel(productInputModel = ProductInputModel(detailInputModel = DetailInputModel(categoryId = "12")))
+
+        viewModel.isHampersProduct.getOrAwaitValue()
+        Assert.assertEquals(false, viewModel.isHampersProduct.value)
+
+        viewModel.updateProductInputModel(productInputModel = ProductInputModel(detailInputModel = DetailInputModel(categoryId = "2916")))
+
+        viewModel.isHampersProduct.getOrAwaitValue()
+        Assert.assertEquals(true, viewModel.isHampersProduct.value)
     }
 
     @Test
@@ -380,28 +437,17 @@ class AddEditProductDescriptionViewModelTest {
         Assert.assertFalse(viewModel.isEditMode)
 
         // test description input & category id
-        Assert.assertTrue(viewModel.descriptionInputModel.productDescription.isEmpty())
-        Assert.assertTrue(viewModel.categoryId.isEmpty())
+        Assert.assertTrue(viewModel.descriptionInputModel?.productDescription?.isEmpty() ?: false)
 
         viewModel.updateProductInputModel(getTestProductInputModel())
-        Assert.assertTrue(viewModel.descriptionInputModel.productDescription.isNotEmpty())
-        Assert.assertTrue(viewModel.categoryId.isNotEmpty())
-
-        // VideoData
-        viewModel.isFetchingVideoData = mutableMapOf(0 to false)
-        viewModel.urlToFetch = mutableMapOf(0 to "url")
-        viewModel.fetchedUrl = mutableMapOf(0 to "url")
-        Assert.assertTrue(viewModel.isFetchingVideoData.isNotEmpty())
-        Assert.assertTrue(viewModel.urlToFetch.isNotEmpty())
-        Assert.assertTrue(viewModel.fetchedUrl.isNotEmpty())
+        Assert.assertTrue(viewModel.descriptionInputModel?.productDescription?.isNotEmpty() ?: false)
     }
 
     @Test
     fun `constant variables should empty when productInputModel is null`() {
         viewModel.setPrivateProperty("_productInputModel", MutableLiveData(null))
-        Assert.assertTrue(viewModel.categoryId.isEmpty())
-        Assert.assertEquals(viewModel.descriptionInputModel, DescriptionInputModel())
-        Assert.assertEquals(viewModel.variantInputModel, VariantInputModel())
+        Assert.assertEquals(viewModel.descriptionInputModel, null)
+        Assert.assertEquals(viewModel.variantInputModel, null)
         Assert.assertFalse(viewModel.hasVariant)
     }
 }

@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorEditCropAdapter;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 
 import java.util.ArrayList;
 
@@ -28,7 +28,7 @@ public class ImageEditCropListWidget extends FrameLayout implements ImageEditorE
     private ImageEditorEditCropAdapter imageEditorEditCropAdapter;
 
     public interface OnImageEditCropWidgetListener{
-        void onEditCropClicked(ImageRatioTypeDef imageRatioTypeDef);
+        void onEditCropClicked(ImageRatioType imageRatioTypeDef);
     }
 
     public ImageEditCropListWidget(@NonNull Context context) {
@@ -61,17 +61,17 @@ public class ImageEditCropListWidget extends FrameLayout implements ImageEditorE
         viewGroupMainContent = findViewById(R.id.vg_editor_crop);
     }
 
-    public void setData(ArrayList<ImageRatioTypeDef> imageRatioTypeDefArrayList, ImageRatioTypeDef selectedImageRatio) {
+    public void setData(ArrayList<ImageRatioType> imageRatioTypeDefArrayList, ImageRatioType selectedImageRatio) {
         imageEditorEditCropAdapter = new ImageEditorEditCropAdapter(viewGroupMainContent, getContext(), imageRatioTypeDefArrayList, selectedImageRatio, this);
         imageEditorEditCropAdapter.renderView();
     }
 
-    public void setRatio(ImageRatioTypeDef selectedImageRatio){
+    public void setRatio(ImageRatioType selectedImageRatio){
         imageEditorEditCropAdapter.setRatio(selectedImageRatio);
 
     }
 
-    public @Nullable ImageRatioTypeDef getSelectedImageRatio(){
+    public @Nullable ImageRatioType getSelectedImageRatio(){
         if (imageEditorEditCropAdapter!= null) {
             return imageEditorEditCropAdapter.getSelectedImageRatio();
         } else {
@@ -80,7 +80,7 @@ public class ImageEditCropListWidget extends FrameLayout implements ImageEditorE
     }
 
     @Override
-    public void onEditCropClicked(ImageRatioTypeDef imageRatioTypeDef) {
+    public void onEditCropClicked(ImageRatioType imageRatioTypeDef) {
         if (onImageEditCropWidgetListener!= null) {
             onImageEditCropWidgetListener.onEditCropClicked(imageRatioTypeDef);
         }

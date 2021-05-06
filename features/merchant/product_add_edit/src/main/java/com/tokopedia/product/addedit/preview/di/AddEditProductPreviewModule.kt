@@ -13,7 +13,6 @@ import dagger.Module
 import dagger.Provides
 
 @Module(includes = [AddEditProductPreviewViewModelModule::class])
-@AddEditProductPreviewScope
 class AddEditProductPreviewModule {
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)

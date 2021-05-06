@@ -18,6 +18,29 @@
     <activity
       android:name="com.tokopedia.navigation.environment.InstrumentationInboxTestActivity"
       android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+    <activity android:name="com.tokopedia.navigation.presentation.activity.MainParentActivity"
+        android:exported="true"
+        android:label="Tokopedia"
+        android:launchMode="singleTask"
+        android:windowSoftInputMode="adjustPan"
+        android:screenOrientation="portrait">
+
+      <meta-data
+          android:name="APPS_HOME"
+          android:value="true"/>
+
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data
+            android:scheme="@string/internal_scheme"
+            android:host="@string/host_home"
+            android:path="@string/path_navigation"/>
+      </intent-filter>
+
+    </activity>
     
   </application>
 </manifest>

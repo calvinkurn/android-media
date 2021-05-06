@@ -1,9 +1,6 @@
 package com.tokopedia.cart.view
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.purchase_platform.common.feature.insurance.request.UpdateInsuranceProductApplicationDetails
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
@@ -33,7 +30,6 @@ interface ICartListPresenter {
     fun processDeleteCartItem(allCartItemData: List<CartItemData>,
                               removedCartItems: List<CartItemData>,
                               addWishList: Boolean,
-                              removeInsurance: Boolean,
                               forceExpandCollapsedUnavailableItems: Boolean = false,
                               isFromGlobalCheckbox: Boolean = false)
 
@@ -45,7 +41,7 @@ interface ICartListPresenter {
 
     fun processUpdateCartCounter()
 
-    fun reCalculateSubTotal(dataList: List<CartShopHolderData>, insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>)
+    fun reCalculateSubTotal(dataList: List<CartShopHolderData>)
 
     fun generateDeleteCartDataAnalytics(cartItemDataList: List<CartItemData>): Map<String, Any>
 
@@ -93,14 +89,6 @@ interface ICartListPresenter {
 
     fun generateAddToCartEnhanceEcommerceDataLayer(cartRecommendationItemHolderData: CartRecommendationItemHolderData, addToCartDataResponseModel: AddToCartDataModel, isCartEmpty: Boolean): Map<String, Any>
 
-    fun getInsuranceTechCart()
-
-    fun processDeleteCartInsurance(insuranceCartShopsArrayList: ArrayList<InsuranceCartDigitalProduct>, showToaster: Boolean)
-
-    fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops, updateInsuranceProductApplicationDetailsArrayList: ArrayList<UpdateInsuranceProductApplicationDetails>)
-
-    fun setAllInsuranceProductsChecked(insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>, isChecked: Boolean)
-
     fun generateCheckoutDataAnalytics(cartItemDataList: List<CartItemData>, step: String): Map<String, Any>
 
     fun redirectToLite(url: String)
@@ -130,4 +118,6 @@ interface ICartListPresenter {
     fun saveCheckboxState(cartItemDataList: List<CartItemHolderData>)
 
     fun followShop(shopId: String)
+
+    fun doClearAllPromo()
 }

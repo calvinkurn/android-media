@@ -132,12 +132,6 @@ class RecentViewModule {
 
     @Provides
     @RecentViewScope
-    fun provideRecentViewDispatcherProvider(): RecentViewDispatcherProvider {
-        return RecentViewProductionDispatcherProvider()
-    }
-
-    @Provides
-    @RecentViewScope
     fun provideRecentViewRecentViewMapper(): RecentViewMapper {
         return RecentViewMapper()
     }

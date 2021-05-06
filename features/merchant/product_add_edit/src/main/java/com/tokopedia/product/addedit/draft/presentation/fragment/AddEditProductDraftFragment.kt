@@ -5,11 +5,16 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -42,6 +47,7 @@ class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListListen
         const val SCREEN_NAME = "/draft product page"
         const val SCREEN_NAME_ADD_PRODUCT = "/add-product"
         const val REQUEST_CODE_ADD_PRODUCT = 9003
+        const val FIRST_INDEX = 0
 
         @JvmStatic
         fun newInstance() = AddEditProductDraftFragment()
@@ -160,8 +166,16 @@ class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListListen
     }
 
     private fun setupToolbarActions() {
+        val color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N500)
         activity?.findViewById<HeaderUnify>(R.id.toolbar_draft)?.apply {
             headerTitle = getString(R.string.label_title_draft_product)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                overflowIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+            }else{
+                overflowIcon?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+            }
+
             setNavigationOnClickListener {
                 activity?.onBackPressed()
             }
@@ -169,6 +183,9 @@ class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListListen
     }
 
     private fun setup() {
+        requireActivity().window.decorView.setBackgroundColor(
+                ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+
         tvEmptyTitle = activity?.findViewById(com.tokopedia.baselist.R.id.text_view_empty_title_text)
         tvEmptyContent = activity?.findViewById(com.tokopedia.baselist.R.id.text_view_empty_content_text)
         btnAddProduct = activity?.findViewById(com.tokopedia.baselist.R.id.button_add_promo)

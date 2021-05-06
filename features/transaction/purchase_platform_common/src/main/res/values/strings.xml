@@ -1,30 +1,16 @@
 <resources>
-    <string name="app_name">purchase_platform_common</string>
     <string name="promo_funnel_label">Makin hemat pakai promo</string>
     <string name="label_note_for_seller">Catatan untuk Penjual (Opsional)</string>
     <string name="label_button_add_note">Tulis catatan untuk barang ini</string>
-    <string name="note_counter_format" formatted="false">%d/%d</string>
-    <string name="product_invenage_remaining_stock">$less_than_count</string>
-    <string name="product_invenage_in_other_cart">$pita_by_user_count</string>
     <string name="promo_checkout_inactive_label">Promo gagal ditampilkan</string>
     <string name="promo_checkout_inactive_desc">Coba refresh beberapa saat lagi</string>
     <string name="text_button_negative">Kembali</string>
-    <string name="text_button_positive">Ya, Hapus Produk</string>
-    <string name="checkout_insurance_default_title">Produk Asuransi</string>
-    <string name="text_btn_validate">Simpan Data</string>
-    <string name="label_po">PO</string>
-    <string name="label_free_return">Free Returns</string>
-    <string name="label_cod">Bayar di Tempat</string>
-    <string name="label_selller_cashback">Potensi Cashback Penjual</string>
+    <string name="label_seller_cashback">Potensi Cashback Penjual</string>
     <string name="label_continue_to_payment">Tetap lanjut ke pembayaran?</string>
     <string name="label_hint_search_address">Cari Alamat</string>
     <string name="label_promo_not_eligible_info">Ada promo yang tidak bisa dipakai untuk transaksi ini</string>
     <string name="label_button_continue">Lanjut Bayar</string>
     <string name="label_button_select_other_promo">Pilih Promo Lain</string>
-    <string name="insurance_cart_label">Produk Asuransi</string>
-    <string name="text_details_change">Ubah</string>
-    <string name="ticker_text">Polis akan dikirim ke email / no. ponsel / TopChat setelah pembayaran berhasil</string>
-    <string name="text_ubah_data_asuransi">Ubah Data Asuransi</string>
     <string name="label_cashback">Cashback</string>
     <string name="label_shipment_fee">Total Ongkos Kirim</string>
     <string name="label_product_discount">Total Diskon Barang</string>
@@ -37,5 +23,14 @@
     <string name="label_choose_payment">Pilih Pembayaran</string>
     <string name="label_toko">Toko: </string>
     <string name="checkout_common_module_title_loading">Loading</string>
+    <string name="checkout_flow_toaster_action_ok">Oke</string>
+    <string name="checkout_flow_error_global_message">Maaf, terjadi sedikit kendala. Coba ulangi beberapa saat lagi ya</string>
+    <string name="label_separator_line">|</string>
 
+    <!--  Common Content Descriptions  -->
+    <string name="pp_cd_image_shop_badge_with_shop_type">image shop badge %1$s</string>
+    <string name="pp_cd_shop_type_official_store">official store</string>
+    <string name="pp_cd_shop_type_power_merchant">power merchant</string>
+    <string name="pp_cd_image_badge_bo">image badge bebas ongkir</string>
+    <string name="pp_cd_image_badge_boe">image badge bebas ongkir extra</string>
 </resources>

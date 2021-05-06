@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -22,7 +23,6 @@ import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.data.FilterTagDataCollection
-import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInput
 import com.tokopedia.topupbills.telco.data.TelcoFilterTagComponent
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
@@ -34,6 +34,7 @@ import com.tokopedia.topupbills.telco.prepaid.model.TelcoFilterData
 import com.tokopedia.topupbills.telco.prepaid.viewmodel.SharedTelcoPrepaidViewModel
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalTelcoProductWidget
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -172,20 +173,21 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                         itemProduct.attributes.desc,
                         MethodChecker.fromHtml(itemProduct.attributes.detail).toString(),
                         itemProduct.attributes.price,
-                        itemProduct.attributes.productPromo?.newPrice)
+                        itemProduct.attributes.productPromo?.newPrice,
+                        object: DigitalProductBottomSheet.ActionListener {
+                            override fun onClickOnProduct() {
+                                activity?.run {
+                                    telcoTelcoProductView.selectProductItem(position)
+                                    sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+                                    sharedModelPrepaid.setProductAutoCheckout(itemProduct)
+                                    topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
+                                }
+                            }
+                        }
+                )
                 seeMoreBottomSheet.setOnDismissListener {
                     topupAnalytics.eventCloseDetailProduct(itemProduct.attributes.categoryId)
                 }
-                seeMoreBottomSheet.setListener(object : DigitalProductBottomSheet.ActionListener {
-                    override fun onClickOnProduct() {
-                        activity?.run {
-                            telcoTelcoProductView.selectProductItem(position)
-                            sharedModelPrepaid.setProductCatalogSelected(itemProduct)
-                            sharedModelPrepaid.setProductAutoCheckout(itemProduct)
-                            topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
-                        }
-                    }
-                })
                 seeMoreBottomSheet.show(it.supportFragmentManager, "bottom_sheet_product_telco")
 
             }
@@ -212,7 +214,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 filterData.add(sortFilterItem)
             }
             sortFilter.addItem(filterData)
-            sortFilter.chipItems.map {
+            sortFilter.chipItems?.map {
                 it.refChipUnify.setChevronClickListener {}
             }
             sortFilter.filterType = SortFilter.TYPE_QUICK

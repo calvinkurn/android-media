@@ -133,16 +133,19 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_buyer_value"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700_96"
         android:textIsSelectable="true"
+        android:gravity="end"
         app:layout_constraintBottom_toBottomOf="@+id/header_buyer_label"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/header_buyer_label"
         app:layout_constraintTop_toTopOf="@id/header_buyer_label"
         app:typographyType="body_3"
-        tools:text="Mesut Ozil" />
+        tools:text="Andika Andaru Ahmaludin Pradipta Kecol Putra" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_date_label"

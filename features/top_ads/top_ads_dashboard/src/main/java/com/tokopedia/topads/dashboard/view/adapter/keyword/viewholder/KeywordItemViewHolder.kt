@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_TIDAK_TAMPIL
-import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemModel
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.topads_dash_item_keyword_card.view.*
 
@@ -19,14 +19,14 @@ import kotlinx.android.synthetic.main.topads_dash_item_keyword_card.view.*
 class KeywordItemViewHolder(val view: View,
                             private var onSwitchAction: (pos: Int, isChecked: Boolean) -> Unit,
                             private var onSelectMode: (select: Boolean) -> Unit,
-                            var headline: Boolean = false) : KeywordViewHolder<KeywordItemViewModel>(view) {
+                            var headline: Boolean = false) : KeywordViewHolder<KeywordItemModel>(view) {
 
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_dash_item_keyword_card
     }
 
-    override fun bind(item: KeywordItemViewModel, selectMode: Boolean, fromSearch: Boolean, fromHeadline: Boolean) {
+    override fun bind(item: KeywordItemModel, selectMode: Boolean, fromSearch: Boolean) {
         item.let {
             if (headline)
                 view.per_click.text = view.context.getString(com.tokopedia.topads.common.R.string.topads_common_headline_klik)

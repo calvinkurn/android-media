@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="CardViewLayoutMatchParent">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">-2dp</item>
-        <item name="android:layout_marginRight">-2dp</item>
-        <item name="cardCornerRadius">0dp</item>
-        <item name="cardElevation">1dp</item>
-        <item name="cardPreventCornerOverlap">false</item>
-    </style>
-
     <style name="Theme.Tokopedia3.PlainGreen" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@color/tkpd_main_green</item>
         <item name="android:windowTranslucentStatus">true</item>
@@ -26,4 +16,21 @@
         <item name="android:padding">@dimen/dp_4</item>
     </style>
 
+    <style name="WebViewToolbarText" parent="MediumText">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
+    <style name="WebViewToolbarSubtitleText"
+        parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_54</item>
+    </style>
+
+    <style name="Theme.Tokopedia3.Sellerapp.Launcher" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/sellerapp_launch_screen</item>
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
 </resources>

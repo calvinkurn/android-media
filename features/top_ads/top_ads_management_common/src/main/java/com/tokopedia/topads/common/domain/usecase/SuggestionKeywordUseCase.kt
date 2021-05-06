@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.KeywordSuggestionResponse
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,7 +45,7 @@ class SuggestionKeywordUseCase @Inject constructor(graphqlRepository: GraphqlRep
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.PRODUCT_IDS] = productIds
         queryMap[ParamObject.GROUP_ID] = groupId
-        queryMap[ParamObject.SHOP_id] = userSession.shopId.toInt()
+        queryMap[ParamObject.SHOP_id] = userSession.shopId.toIntOrZero()
         queryMap[ParamObject.TYPE] = type
         setRequestParams(queryMap)
     }

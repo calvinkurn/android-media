@@ -36,4 +36,10 @@
     <!--multiple variant select dimens-->
     <dimen name="multiple_variant_selection_list_height">300dp</dimen>
 
+    <!--Specification select dimens-->
+    <dimen name="specification_select_list_height">300dp</dimen>
+
+    <!--Product limitation dimens-->
+    <dimen name="product_limitation_action_item_width">220dp</dimen>
+
 </resources>

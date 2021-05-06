@@ -6,22 +6,34 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
+import com.tokopedia.topads.common.data.response.AutoAdsResponse
+import com.tokopedia.topads.common.getSellerMigrationFeatureName
+import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
+import com.tokopedia.topads.common.isFromPdpSellerMigration
+import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationCommonSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
-import com.tokopedia.topads.data.response.AutoAdsResponse
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.AdChooserViewModel
-import com.tokopedia.topads.view.sheet.ManualAdsConfirmationSheet
-import kotlinx.android.synthetic.main.topads_create_ads_chooser_fragment.*
+import kotlinx.android.synthetic.main.topads_create_fragment_onboarding.*
+import kotlinx.android.synthetic.main.topads_create_fragment_onboarding.view.*
 import javax.inject.Inject
+
+private const val CLICK_MULAI_IKLAN = "click-mulai iklan otomatis"
+private const val CLICK_BUAT_IKLAN_MANUAL = "click-buat iklan manual"
 
 class AdCreationChooserFragment : BaseDaggerFragment() {
     @Inject
@@ -31,34 +43,24 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
     lateinit var viewModel: AdChooserViewModel
     private var adStatus = 0
     private var dailyBudget = 0
-    private var current_auto_ads_status = 0
 
     companion object {
 
         private const val TOGGLE_OFF = "toggle_off"
         private const val AUTO_ADS_DISABLED = 111
-        private const val ACTIVE = 500
-        private const val NON_ACTIVE = 600
-        private const val IN_PROGRESS_200 = 200
-        private const val IN_PROGRESS_300 = 300
-        private const val IN_PROGRESS_400 = 400
-        private const val MANAUAL = 3
         private const val AUTO = 4
-        private const val NO_ADS = 2
-        private const val NO_PRODUCT = 1
 
         fun newInstance(): AdCreationChooserFragment {
             val args = Bundle()
             val fragment = AdCreationChooserFragment()
             fragment.arguments = args
             return fragment
-
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(AdChooserViewModel::class.java)
-        return inflater.inflate(resources.getLayout(R.layout.topads_create_ads_chooser_fragment), container, false)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(AdChooserViewModel::class.java)
+        return inflater.inflate(resources.getLayout(R.layout.topads_create_fragment_onboarding), container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -72,28 +74,26 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessAutoAds(data: AutoAdsResponse) {
-        when (data.topAdsGetAutoAds.data.status) {
-            ACTIVE -> setActiveStatus(R.string.ads_active, R.drawable.active_status_green)
-            NON_ACTIVE -> setActiveStatus(R.string.ads_not_delivered, R.drawable.active_status_orange)
-            else -> {
-                tv_shop_status.text = ""
-                tv_shop_status.setBackgroundResource(0)
-            }
-        }
-
         dailyBudget = data.topAdsGetAutoAds.data.dailyBudget
-        current_auto_ads_status = data.topAdsGetAutoAds.data.status
         when (data.topAdsGetAutoAds.data.status) {
-            IN_PROGRESS_200 -> inProgress()
-            IN_PROGRESS_300 -> inProgress()
-            IN_PROGRESS_400 -> inProgress()
-            else -> autoAdsDisableConfirm()
+            STATUS_ACTIVE -> autoAdsEnableConfirm(true)
+            STATUS_INACTIVE -> autoAdsEnableConfirm(true)
+            STATUS_IN_PROGRESS_ACTIVE -> inProgressActivate()
+            STATUS_IN_PROGRESS_INACTIVE -> inProgressDeactivate()
+            else -> autoAdsEnableConfirm(true)
         }
     }
 
-    private fun setActiveStatus(adsActive: Int, bg: Int) {
-        tv_shop_status.setText(adsActive)
-        tv_shop_status.setBackgroundResource(bg)
+    private fun inProgressDeactivate() {
+        autoAdsEnableConfirm(false)
+        ticker_info?.tickerTitle = getString(R.string.topads_create_ticker_title_deactivate)
+        ticker_info?.setHtmlDescription(getString(R.string.topads_create_ticker_desc_deactiivate))
+    }
+
+    private fun inProgressActivate() {
+        autoAdsEnableConfirm(false)
+        ticker_info?.tickerTitle = getString(R.string.topads_create_ticker_title_activate)
+        ticker_info?.setHtmlDescription(getString(R.string.topads_create_ticker_desc_actiivate))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,45 +101,71 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
             viewModel.getAutoAdsStatus(this::onSuccessAutoAds)
 
         })
-        icon1.setImageDrawable(view.context.getResDrawable(R.drawable.topads_create_ic_thumb_up))
-        icon2.setImageDrawable(view.context.getResDrawable(R.drawable.topads_create_ic_gear))
-        auto_ads.setOnClickListener {
-            if (adStatus == AUTO) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
-                startActivityForResult(intent, AUTO_ADS_DISABLED)
-            }
-            if (adStatus == MANAUAL || adStatus == NO_ADS) {
-                RouteManager.route(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
-            }
+        view.imageView7.setImageDrawable(view.context.getResDrawable(R.drawable.ill_header))
+        context?.let {
+            view.top_corner_bg1.setImageDrawable(AppCompatResources.getDrawable(it, R.drawable.topads_create_bg_top_corner))
+            view.top_corner_bg2.setImageDrawable(AppCompatResources.getDrawable(it, R.drawable.topads_create_bg_top_corner))
         }
-        manual_ads.setOnClickListener {
-            if (adStatus == MANAUAL || adStatus == NO_ADS) {
-                startActivity(Intent(activity, StepperActivity::class.java))
-            }
+
+        view.top_corner_icon1.setImageResource(R.drawable.icon_otomatis_onboarding)
+        view.icon2.setImageResource(R.drawable.topads_create_ic_checklist_blue)
+        view.icon3.setImageResource(R.drawable.topads_create_ic_checklist_blue)
+        view.icon4.setImageResource(R.drawable.topads_create_ic_checklist_blue)
+
+        view.top_corner_icon2.setImageResource(R.drawable.icon_manual_onboarding)
+        view.icon6.setImageResource(R.drawable.topads_create_ic_checklist_blue)
+        view.icon7.setImageResource(R.drawable.topads_create_ic_checklist_blue)
+        view.icon8.setImageResource(R.drawable.topads_create_ic_checklist_blue)
+
+
+        btn_start_auto_ads?.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_MULAI_IKLAN, "")
             if (adStatus == AUTO) {
-                val sheet = ManualAdsConfirmationSheet.newInstance()
-                sheet.show(fragmentManager!!, "")
-                sheet.manualClick = {
-                    viewModel.postAutoAds(TOGGLE_OFF, dailyBudget)
+                RouteManager.getIntent(it.context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS).apply {
+                    if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                        putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                        putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+                    }
+                    startActivityForResult(this, AUTO_ADS_DISABLED)
+                }
+            } else {
+                RouteManager.getIntent(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE).apply {
+                    if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                        putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                        putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+                    }
+                    startActivity(this)
                 }
             }
         }
+
+        btn_start_manual_ads?.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN_MANUAL, "")
+             if (adStatus == AUTO) {
+                val sheet = ManualAdsConfirmationCommonSheet.newInstance()
+                sheet.show(childFragmentManager, "")
+                sheet.manualClick = {
+                    viewModel.postAutoAds(TOGGLE_OFF, dailyBudget)
+                }
+            } else {
+                 Intent(activity, StepperActivity::class.java).apply {
+                     if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                         putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                         putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+                     }
+                     startActivity(this)
+                 }
+             }
+        }
     }
 
-    private fun autoAdsDisableConfirm() {
-        ticker_info.visibility = View.GONE
-        auto_ads.isEnabled = true
-        manual_ads.isEnabled = true
-        auto_ads.alpha = 1f
-        manual_ads.alpha = 1f
-    }
-
-    private fun inProgress() {
-        ticker_info.visibility = View.VISIBLE
-        auto_ads.isEnabled = false
-        manual_ads.isEnabled = false
-        auto_ads.alpha = 0.5f
-        manual_ads.alpha = 0.5f
+    private fun autoAdsEnableConfirm(enable: Boolean) {
+        if (enable)
+            ticker_info?.gone()
+        else
+            ticker_info?.visible()
+        btn_start_auto_ads?.isEnabled = enable
+        btn_start_manual_ads?.isEnabled = enable
     }
 
     override fun getScreenName(): String {

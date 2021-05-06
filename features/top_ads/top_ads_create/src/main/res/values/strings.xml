@@ -35,10 +35,12 @@
     <string name="atur_beberapa_iklan_sekaligus_ke_dalam_satu_group_sesuai_kategori_produk">Atur beberapa iklan sekaligus ke dalam satu grup sesuai kategori produk.</string>
     <string name="group_iklan">Grup Iklan</string>
     <string name="oops_produk_ntidak_ditemukan">Oops, produk tidak ditemukan</string>
-    <string name="tip_biaya_iklan">Tip Biaya Iklan</string>
+    <string name="tip_biaya_iklan">Tips Biaya Kata Kunci</string>
     <string name="sudah_diiklankan">Sudah Diiklankan</string>
     <string name="belum_diiklankan">Belum Diiklankan</string>
     <string name="cari_produk">Cari Produk</string>
+    <string name="iklan_otomatis_subtitle">Beriklan lebih praktis</string>
+    <string name="iklan_manual_subtitle">Beriklan dengan kendali penuh</string>
     <string name="pilih_cara_beriklan_yang_sesuai_kebutuhanmu">Pilih cara beriklan yang sesuai kebutuhanmu</string>
     <string name="yuk_iklankan_produkmu">Yuk, iklankan produkmu!</string>
     <string name="beriklan_hanya_dengan_1x_klik">Beriklan hanya dengan 1x klik</string>
@@ -52,9 +54,9 @@
     <string name="create_group">Buat Group Iklan</string>
     <string name="creat_ad">Buat Iklan Produk</string>
     <string name="seputar_biaya_iklan">Seputar biaya iklan</string>
-    <string name="makin_tinggi_biaya_iklan_makin_besar_kemungkinan_produkmu_tampil_di_halaman_pencarian">Makin tinggi biaya iklan, makin besar kemungkinan produkmu tampil di halaman pencarian</string>
-    <string name="gunakan_rekomendasi_biaya_agar_produkmu_lebih_bersaing">Gunakan rekomendasi biaya agar produkmu lebih bersaing</string>
-    <string name="bayar_hanya_jika_iklan_produkmu_di_klik_dari_hasil_pencarian_kata_kunci_pilihan">Bayar hanya jika iklan produkmu di-klik dari hasil pencarian kata kunci pilihan.</string>
+    <string name="makin_tinggi_biaya_iklan_makin_besar_kemungkinan_produkmu_tampil_di_halaman_pencarian">Makin tinggi biaya iklan, makin besar kemungkinan produkmu tampil di halaman pencarian.</string>
+    <string name="gunakan_rekomendasi_biaya_agar_produkmu_lebih_bersaing">Gunakan rekomendasi biaya agar produkmu lebih bersaing.</string>
+    <string name="bayar_hanya_jika_iklan_produkmu_di_klik_dari_hasil_pencarian_kata_kunci_pilihan">Bayar hanya saat iklan produkmu diklik oleh calon pembeli.</string>
     <string name="batas_biaya_tertinggi_saat_iklanmu_di_klik_calon_pembeli_di_tokopedia">Batas biaya tertinggi saat iklanmu di-klik calon pembeli\ndi Tokopedia.</string>
     <string name="iklan_manual">Iklan Manual</string>
     <string name="iklan_otomatis">Iklan Otomatis</string>
@@ -64,12 +66,6 @@
     <string name="ilustration">Ilustration</string>
     <string name="ketik_kata_kunci">Ketik kata kunci</string>
     <string name="tambah">Tambah</string>
-    <string name="coach_mark_title_1">Tambahkan kata kunci</string>
-    <string name="coach_mark_title_2">Rekomendasi kata kunci</string>
-    <string name="coach_mark_title_3">Jumlah pencarian per bulan</string>
-    <string name="coach_mark_desc_1">Gunakan kata kunci spesifik agar produkmu lebih mudah ditemukan pembeli</string>
-    <string name="coach_mark_desc_2">Sistem cerdas TopAds akan memberikan rekomendasi kata kunci yang sesuai dengan kategori produkmu</string>
-    <string name="coach_mark_desc_3">Optimalkan penjualanmu dengan cek kata kunci yang paling sering dicari oleh pembeli untuk produk serupa</string>
     <string name="keyword_empty">Empty Keyword</string>
     <string name="no_keyword_selected_for_bid">Optimalkan iklan produkmu dengan menggunakan kata kunci.</string>
     <string name="add_keywords">Tambah Kata Kunci</string>
@@ -84,7 +80,7 @@
     <string name="more_info">https://seller.tokopedia.com/edu/cara-topads-mendeteksi-klik-tampil-yang-tidak-valid/</string>
     <string name="grup_iklan">Grup iklan</string>
     <string name="tidak_dibatasi">Tidak Dibatasi</string>
-    <string name="info_text_summary">Sistem TopAds akan melindungi iklanmu dari klik\nyang tidak valid. Info Selengkapnya</string>
+    <string name="info_text_summary">Sistem TopAds akan melindungi iklanmu dari klik\nyang tidak valid.</string>
     <string name="anggaran_dibatasi">Anggaran harian Dibatasi</string>
     <string name="ads_active">Aktif</string>
     <string name="ads_deactive">Tidak Aktif</string>
@@ -98,8 +94,10 @@
     <string name="cancel_btn">Batalkan</string>
     <string name="select_ad_creation_option_auto"> Sistem akan memilihkan produk dan biaya per klik yg tepat sehingga iklan lebih efektif</string>
     <string name="select_ad_creation_option_manual">Pilih produk, kata kunci, dan atur biaya iklanmu sendiri secara manual</string>
-    <string name="ticker_title">Iklan Otomatis akan dinonaktifkan</string>
-    <string name="ticker_desc">Proses menonaktifkan Iklan Otomatis butuh waktu. Cek beberapa saat lagi, ya</string>
+    <string name="topads_create_ticker_title_deactivate">Iklan Otomatis akan dinonaktifkan</string>
+    <string name="topads_create_ticker_desc_deactiivate">Proses menonaktifkan Iklan Otomatis butuh waktu. Cek beberapa saat lagi, ya</string>
+    <string name="topads_create_ticker_title_activate">Iklan Otomatis akan diaktifkan</string>
+    <string name="topads_create_ticker_desc_actiivate">Proses mengaktifkan Iklan Otomatis butuh waktu. Cek beberapa saat lagi ya</string>
     <string name="topads_create_onboarding_button1">Lanjut</string>
     <string name="topads_create_onboarding_button2">Yuk, Mulai Beriklan</string>
     <string name="topads_create_onboarding_action_text">Lewati</string>
@@ -110,7 +108,55 @@
     <string name="topads_create_onboarding_screen_desc2">Dengan TopAds, produkmu dapat menjangkau  lebih banyak calon pembeli dan berpotensi meningkatkan penjualan.</string>
     <string name="topads_create_onboarding_screen_title3">Beriklan tanpa ribet</string>
     <string name="topads_create_onboarding_screen_desc3">Cukup bayar sesuai hasil, produkmu akan diiklankan lebih efektif dan tepat sasaran. Lebih mudah beriklan hanya dengan 1x klik.</string>
+    <string name="iklan_otomatis_desc1">Produk dipilihkan secara rutin\n oleh TopAds</string>
+    <string name="iklan_otomatis_desc2">Kata kunci &amp; biaya iklan diatur secara rutin\n oleh TopAds</string>
+    <string name="iklan_otomatis_desc3">Kamu cukup atur anggaran harian saja</string>
 
+    <string name="iklan_manual_desc1">Bebas pilih produk yang ingin diiklankan</string>
+    <string name="iklan_manual_desc2">Bebas pilih kata kunci &amp; atur biaya iklan</string>
+    <string name="iklan_manual_desc3">Bebas atur anggaran harian </string>
+    <string name="autoads_selanjutnya">Selanjutnya</string>
+
+    <!-- Manual Summary Page-->
+    <string name="topads_create_group_name">Nama Grup Iklan</string>
+    <string name="topads_create_group_name_hint">Cth: Kemeja Putih, Iklan Ramadhan</string>
+    <string name="topads_create_group_name_message">Beri nama grup berdasarkan kategori atau musim iklan </string>
+    <string name="topads_create_submit_button">Iklankan Sekarang</string>
+    <string name="topads_create_product">Produk</string>
+    <string name="topads_create_per_hari">per hari</string>
+
+    <!-- Manual Budget Page -->
+    <string name="topads_create_per_click">per klik</string>
+    <string name="topads_create_budget_title">Biaya Iklan dan Kata Kunci</string>
+    <string name="topads_create_key_ticker_text"> <![CDATA["<font color='#F531353B'><b> %d kata kunci </b></font> ]]>ditambahkan secara otomatis</string>
+    <string name="topads_create_selected_keyword">Kata kunci dipilih (%d)</string>
+    <string name="topads_create_keyword_data">Kompetisi  <![CDATA["<font color='#42b549'><b> %s </b></font>  • Pencarian <font color='#F531353B'><b> %s</b></font> ]]></string>
+    <string name="topads_create_bs_title1">Biaya Kata Kunci</string>
+    <string name="topads_create_bs_desc1">Biaya iklan yang dikenakan saat calon pembeli mengklik iklanmu dari halaman pencarian seperti menggunakan kata kunci yang kamu tentukan.</string>
+    <string name="topads_create_bs_title2">Biaya Iklan Dasar</string>
+    <string name="topads_create_bs_desc2">Biaya iklan yang dikenakan saat calon pembeli mengklik iklanmu dari halaman selain halaman hasil pencarian seperti halaman utama, kategori, dan produk rekomendasi.</string>
+    <string name="topads_create_choose_type_bs_desc1">Iklan akan muncul saat kata kunci yang calon pembeli pakai dan kata kunci yang kamu tentukan  <![CDATA["<font color='#F531353B'><b> cocok sebagian.</b></font> ]]> </string>
+    <string name="topads_create_choose_type_bs_desc2">Iklan akan muncul saat kata kunci yang calon pembeli pakai dan kata kunci yang kamu tentukan  <![CDATA["<font color='#F531353B'><b> sama persis.</b></font> ]]></string>
+    <string name="topads_create_choose_type_bs_extra">Masih bingung?<![CDATA["<font color='#42b549'><b> Lihat tabel simulasi </b></font> ]]></string>
+    <string name="topads_create_static_bs_title">Tabel simulasi kata kata kunci</string>
+    <string name="topads_create_del_key_conf_dialog_desc">Kata kunci tersebut akan dihapus dari daftar kata kunci yang digunakan di iklanmu.</string>
+    <string name="topads_create_del_key_conf_dialog_title">Hapus kata kunci %s?</string>
+    <string name="topads_create_ya_hapus">Ya, Hapus</string>
+    <string name="topads_create_group_name_error_wrong">Nama Grup Anda telah digunakan</string>
+    <string name="topads_create_group_name_error">Nama grup iklan sudah digunakan.</string>
+    <string name="topads_create_group_name_empty_error">Nama grup iklan tidak boleh kosong.</string>
+    <string name="topads_create_tip_sheet_title1">1. Kata kunci yang sesuai produk</string>
+    <string name="topads_create_tip_sheet_title2">2. Jumlah pencarian tertinggi </string>
+    <string name="topads_create_tip_sheet_title3">3. Kompetisi terendah</string>
+    <string name="topads_create_tip_sheet_desc1">Pilih kata kunci yang <![CDATA["<font color='#F531353B'><b> berhubungan </b></font> dengan produkmu agar iklanmu dapat tampil ke calon pembeli yang <font color='#F531353B'><b> relevan </b></font>.]]></string>
+    <string name="topads_create_tip_sheet_desc3">Pilih kata kunci dengan kompetisi yang rendah agar iklanmu <![CDATA["<font color='#F531353B'><b> lebih sering tampil. </b></font> Kompetisi menunjukkan seberapa banyak suatu kata kunci <font color='#F531353B'><b> digunakan oleh kompetitormu. </b></font>]]></string>
+    <string name="topads_create_tip_sheet_desc2">Pilih kata kunci dengan jumlah pencarian tertinggi agar iklanmu dapat<![CDATA["<font color='#F531353B'><b>menjangkau lebih banyak calon pembeli.</b></font> Data jumlah pencarian merupakan data dari <font color='#F531353B'><b> 30 hari terakhir. </b></font>.]]></string>
+<string name="topads_create_tip_sheet_desc4">Karena sistem iklan di TopAds bersifat lelang, maka <![CDATA["<font color='#F531353B'><b> kompetisi tinggi </b></font> butuh <font color='#F531353B'><b> biaya iklan lebih tinggi</b></font> untuk tampil dan <font color='#F531353B'><b> kompetisi rendah </b></font> butuh <font color='#F531353B'><b> biaya iklan  </b></font>yang relatif <font color='#F531353B'><b> lebih rendah. </b></font>]]></string>
+
+<!-- Search activity-->
+    <string name="topads_create_empty_view_title">Tidak ada kata kunci ditemukan</string>
+    <string name="topads_create_empty_view_desc">Coba cari kata kunci, ya.</string>
+    <string name="topads_create_search_loading">Mencari kata kunci...</string>
 
 
     <string-array name="sort_product_list_array">

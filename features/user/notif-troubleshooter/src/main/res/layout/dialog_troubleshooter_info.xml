@@ -19,7 +19,7 @@
         android:lineSpacingExtra="@dimen/sp_6"
         android:layout_margin="@dimen/dp_16"
         android:text="@string/notif_bottomsheet_info"
-        android:textColor="@color/charcoal_grey_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/txtTitle"
         app:layout_constraintTop_toBottomOf="@+id/txtTitle" />

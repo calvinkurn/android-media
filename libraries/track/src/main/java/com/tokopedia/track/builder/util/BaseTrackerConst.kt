@@ -15,6 +15,7 @@ abstract class BaseTrackerConst {
         const val CLICK = "click"
         const val IMPRESSION = "impression"
         const val PROMO_VIEW = "promoView"
+        const val OPEN_SCREEN = "openScreen"
         const val PRODUCT_VIEW = "productView"
         const val PRODUCT_VIEW_IRIS = "productViewIris"
         const val PROMO_CLICK = "promoClick"
@@ -106,6 +107,7 @@ abstract class BaseTrackerConst {
             val variant: String,
             val productPosition: String,
             val isFreeOngkir: Boolean,
+            val isFreeOngkirExtra: Boolean = false,
             val channelId: String = "",
             val persoType: String = "",
             val isTopAds: Boolean? = false,
@@ -113,7 +115,7 @@ abstract class BaseTrackerConst {
             val categoryId: String = "",
             val clusterId: Int = -1,
             val quantity: String = "",
-            val headerName: String = "",
+            val headerName: String? = null,
             val isCarousel: Boolean? = null,
             val recommendationType: String = "",
             val shopId:String = "",
@@ -136,6 +138,7 @@ abstract class BaseTrackerConst {
         private const val IDR = "IDR"
         private const val LIST = "list"
         private const val FREE_ONGKIR = "bebas ongkir"
+        private const val FREE_ONGKIR_EXTRA = "bebas ongkir extra"
         private const val NONE = "none / other"
 
 
@@ -192,9 +195,9 @@ abstract class BaseTrackerConst {
                     CURRENCY_CODE, IDR,
                     CLICK, DataLayer.mapOf(
                     ACTION_FIELD, DataLayer.mapOf(
-                    LIST, setNewList(products.firstOrNull(), list)
+                    LIST, if (list.isEmpty()) setNewList(products.firstOrNull(), list) else list
             ),
-                    PRODUCTS, getProductsClick(products, list)
+                    PRODUCTS, getProductsClick(products, if (list.isEmpty()) setNewList(products.firstOrNull(), list) else list)
             )
             )
         }
@@ -262,12 +265,12 @@ abstract class BaseTrackerConst {
             map[KEY_PRICE] = product.productPrice
             map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
             map[KEY_POSITION] = product.productPosition
-            map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
-            map[KEY_DIMENSION_40] = setNewList(product, list)
+            map[KEY_DIMENSION_83] = checkBebasOngkir(product)
+            map[KEY_DIMENSION_40] = if (list.isEmpty()) setNewList(product, list) else list
             if(product.clusterId != -1) map[KEY_DIMENSION_11] = product.clusterId.toString()
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
             if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
-            if (list.isNotEmpty()) map[KEY_LIST] = setNewList(product, list)
+            if (list.isNotEmpty()) map[KEY_LIST] = if (list.isEmpty()) setNewList(product, list) else list
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_45] = product.cartId
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_79] = product.shopId
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_80] = NONE
@@ -277,13 +280,21 @@ abstract class BaseTrackerConst {
             return map
         }
 
+        private fun checkBebasOngkir(product: Product): String{
+            return when {
+                product.isFreeOngkirExtra -> FREE_ONGKIR_EXTRA
+                product.isFreeOngkir -> FREE_ONGKIR
+                else -> NONE
+            }
+        }
+
         private fun setNewList(product: Product?, list: String): String{
             if(product == null) return list
             var newList = list + if(product.isTopAds == true) " - topads" else if(product.isTopAds == false) " - non topads" else ""
             if(product.isCarousel != null) newList += if (product.isCarousel == true) " - carousel" else "- non carousel"
             if(product.recommendationType.isNotEmpty()) newList += " - ${product.recommendationType}"
             if(product.pageName.isNotEmpty()) newList += " - ${product.pageName}"
-            if(product.headerName.isNotEmpty()) newList += " - ${product.headerName}"
+            if(product.headerName != null) newList += " - ${product.headerName}"
             return newList
         }
     }

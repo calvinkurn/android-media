@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="FlightFilterLabelLayout" parent="LabelLayout">
-        <item name="android:paddingTop">12dp</item>
-        <item name="android:paddingLeft">@dimen/spacing_lvl4</item>
-        <item name="android:paddingRight">@dimen/spacing_lvl4</item>
-        <item name="android:paddingBottom">12dp</item>
-    </style>
-
-    <style name="FlightCalendarPicker" parent="android:Widget.CalendarView">
-        <item name="android:focusedMonthDateColor">@color/Unify_G500</item>
-        <item name="android:weekNumberColor">@color/Unify_R500</item>
-        <item name="android:weekDayTextAppearance">@style/FlightCalendarPickerViewWeekDayView</item>
-    </style>
-
-    <style name="FlightCalendarPickerViewWeekDayView">
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/Unify_N700_96</item>
-    </style>
-
     <style name="CardWarningStyle">
         <item name="android:padding">@dimen/spacing_lvl3</item>
         <item name="android:background">@drawable/flight_bg_card_warning</item>
@@ -32,20 +14,9 @@
         <item name="android:paddingRight">@dimen/spacing_lvl2</item>
     </style>
 
-    <style name="FlightChips.Danger">
-        <item name="android:textStyle">bold</item>
-        <item name="android:background">@drawable/flight_bg_flight_chip_danger</item>
-        <item name="android:textColor">@color/flight_chips_danger_text</item>
-    </style>
-
     <style name="FlightChips.Info">
         <item name="android:background">@drawable/flight_bg_flight_chip_info</item>
-        <item name="android:textColor">@color/flight_chips_info_text</item>
-    </style>
-
-    <style name="CardInsuranceDetail">
-        <item name="android:background">@drawable/bg_flight_insurance_card_success</item>
-        <item name="android:textSize">@dimen/fontSize_lvl1</item>
+        <item name="android:textColor">@color/Unify_B500</item>
     </style>
 
     <style name="CardSuccessStatusStyle">
@@ -65,72 +36,12 @@
     <style name="CardProcessStatusStyle">
         <item name="android:background">@drawable/flight_bg_card_process</item>
         <item name="android:textSize">@dimen/fontSize_lvl1</item>
-        <item name="android:textColor">#CA8600</item>
+        <item name="android:textColor">@color/Unify_Y400</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="FlightProgressBar" parent="ThemeOverlay.AppCompat.Light">
         <item name="colorAccent">@color/Unify_G500</item>
-    </style>
-
-    <style name="style_expandable_flight" parent="style_expandable_option_default">
-        <item name="eo_header_style">@style/eo_header_style_flight</item>
-        <item name="eo_text_option_style">@style/eo_text_option_style_flight</item>
-    </style>
-
-    <style name="style_expandable_flight.Bold" parent="style_expandable_option_default">
-        <item name="eo_header_style">@style/eo_header_style_flight</item>
-        <item name="eo_text_option_style">@style/eo_text_option_style_flight.Bold</item>
-    </style>
-
-    <style name="eo_header_style_flight" parent="eo_header_style">
-        <item name="android:paddingBottom">@dimen/flight_dp_20</item>
-        <item name="android:paddingLeft">0dp</item>
-        <item name="android:paddingRight">0dp</item>
-        <item name="android:paddingTop">@dimen/flight_dp_20</item>
-    </style>
-
-    <style name="eo_text_option_style_flight" parent="TextView.TitleBig">
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:textSize">18sp</item>
-    </style>
-
-    <style name="eo_text_option_style_flight.Bold" parent="TextView.TitleBig.Bold">
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:textSize">18sp</item>
-    </style>
-
-    <style name="eo_header_style_flight_detail" parent="eo_header_style">
-        <item name="android:paddingLeft">0dp</item>
-        <item name="android:paddingRight">0dp</item>
-    </style>
-
-    <style name="eo_text_option_style_flight_detail" parent="TextView.TitleBig">
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:textSize">@dimen/fontSize_lvl4</item>
-    </style>
-
-    <style name="style_expandable_flight_detail_order_title" parent="TextView.Title.Bold">
-        <item name="android:paddingRight">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:textSize">@dimen/fontSize_lvl4</item>
-    </style>
-
-    <style name="TextView.Micro.OrangeRed">
-        <item name="android:textColor">@color/Unify_Y500</item>
-    </style>
-
-    <style name="Button.Secondary">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="Button.Secondary.Green">
-        <item name="android:background">@drawable/flight_bg_button_secondary_green</item>
-        <item name="android:foreground">?attr/selectableItemBackground</item>
-        <item name="android:textColor">@color/Unify_G500</item>
     </style>
 
 </resources>

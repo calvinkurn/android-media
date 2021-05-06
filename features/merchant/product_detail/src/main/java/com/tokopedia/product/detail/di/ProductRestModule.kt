@@ -16,7 +16,6 @@ import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 
-@ProductDetailScope
 @Module(includes = [ProductDetailUserModule::class])
 class ProductRestModule {
     @ProductDetailScope

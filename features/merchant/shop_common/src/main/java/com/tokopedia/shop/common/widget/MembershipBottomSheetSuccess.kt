@@ -1,17 +1,20 @@
 package com.tokopedia.shop.common.widget
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 
-class MembershipBottomSheetSuccess : BottomSheets() {
+class MembershipBottomSheetSuccess : BottomSheetUnify() {
 
+    private var contentView: View? = null
     private var titleBsMembership: String = ""
     private var descTitleMembership: String = ""
     private var resultCode: String = ""
@@ -19,7 +22,7 @@ class MembershipBottomSheetSuccess : BottomSheets() {
 
     lateinit var txtTitle: TextView
     lateinit var txtDesc: TextView
-    lateinit var btnClaim: Button
+    lateinit var btnClaim: UnifyButton
     lateinit var imgBsMembership: ImageView
 
     private var listener: MembershipStampAdapter.MembershipStampAdapterListener? = null
@@ -48,6 +51,21 @@ class MembershipBottomSheetSuccess : BottomSheets() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setData()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initChildLayout()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initChildLayout() {
+        contentView = View.inflate(context, R.layout.bottom_sheet_membership_success, null)
+        setChild(contentView)
+    }
+
     private fun initVar() {
         titleBsMembership = arguments?.getString(TITLE_PARAM) ?: ""
         descTitleMembership = arguments?.getString(DESC_PARAM) ?: ""
@@ -55,48 +73,36 @@ class MembershipBottomSheetSuccess : BottomSheets() {
         questId = arguments?.getInt(QUEST_ID_PARAM) ?: 0
     }
 
-    override fun getLayoutResourceId(): Int = R.layout.bottom_sheet_membership_success
+    private fun setData() {
+        initVar()
+        contentView?.apply {
+            txtTitle = findViewById(R.id.title_bs_membership)
+            txtDesc = findViewById(R.id.desc_bs_membership)
+            btnClaim = findViewById(R.id.btn_check_my_coupon)
+            imgBsMembership = findViewById(R.id.img_membership_success)
 
-    override fun getTheme(): Int = R.style.BaseBottomSheetDialogRounded
+            if (resultCode != CODE_SUCCESS) {
+                ImageHandler.LoadImage(findViewById(R.id.img_membership_success), IMG_BS_MEMBERSHIP_FAIL)
+                btnClaim.text = context?.getString(R.string.title_try_again)
+                btnClaim.setOnClickListener {
+                    listener?.onButtonClaimClicked(questId)
+                    dismiss()
+                }
+            } else {
+                //route to voucher
+                ImageHandler.LoadImage(findViewById(R.id.img_membership_success), IMG_BS_MEMBERSHIP_SUCCESS)
+                btnClaim.text = context?.getString(R.string.bs_button_txt)
+                btnClaim.setOnClickListener {
+                    listener?.goToVoucherOrRegister()
+                }
+            }
 
-    override fun getBaseLayoutResourceId(): Int = R.layout.base_bottom_sheets_rounded
-
-    override fun title(): String = ""
-
-    override fun state(): BottomSheetsState {
-        return BottomSheetsState.FLEXIBLE
+            txtTitle.text = titleBsMembership
+            txtDesc.text = descTitleMembership
+        }
     }
 
     fun setListener(listener: MembershipStampAdapter.MembershipStampAdapterListener) {
         this.listener = listener
     }
-
-    override fun initView(view: View) {
-        initVar()
-        txtTitle = view.findViewById(R.id.title_bs_membership)
-        txtDesc = view.findViewById(R.id.desc_bs_membership)
-        btnClaim = view.findViewById(R.id.btn_check_my_coupon)
-        imgBsMembership = view.findViewById(R.id.img_membership_success)
-
-        if (resultCode != CODE_SUCCESS) {
-            ImageHandler.LoadImage(view.findViewById(R.id.img_membership_success), IMG_BS_MEMBERSHIP_FAIL)
-            btnClaim.text = context?.getString(R.string.title_try_again)
-            btnClaim.setOnClickListener {
-                listener?.onButtonClaimClicked(questId)
-                dismiss()
-            }
-        } else {
-            //route to voucher
-            ImageHandler.LoadImage(view.findViewById(R.id.img_membership_success), IMG_BS_MEMBERSHIP_SUCCESS)
-            btnClaim.text = context?.getString(R.string.bs_button_txt)
-            btnClaim.setOnClickListener {
-                listener?.goToVoucherOrRegister()
-            }
-        }
-
-        txtTitle.text = titleBsMembership
-        txtDesc.text = descTitleMembership
-
-    }
-
 }

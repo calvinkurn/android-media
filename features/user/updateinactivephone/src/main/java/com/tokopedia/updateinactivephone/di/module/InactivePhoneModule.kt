@@ -7,6 +7,7 @@ import com.tokopedia.updateinactivephone.di.InactivePhoneContext
 import com.tokopedia.updateinactivephone.di.InactivePhoneScope
 import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApiClient
 import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApi
+import com.tokopedia.updateinactivephone.view.InactivePhoneTracker
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -42,6 +43,12 @@ class InactivePhoneModule(private val context: Context) {
     @Provides
     fun provideApiClient(): InactivePhoneApiClient<InactivePhoneApi> {
         return InactivePhoneApiClient(InactivePhoneApi::class.java)
+    }
+
+    @InactivePhoneScope
+    @Provides
+    fun provideInactivePhoneTracker(): InactivePhoneTracker {
+        return InactivePhoneTracker()
     }
 
 }

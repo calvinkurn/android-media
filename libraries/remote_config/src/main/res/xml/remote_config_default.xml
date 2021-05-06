@@ -248,14 +248,6 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>mainapp_flight_new_search_flow</key>
-        <value>true</value>
-    </entry>
-    <entry>
-        <key>android_customer_flight_booking_new_flow</key>
-        <value>true</value>
-    </entry>
-    <entry>
         <key>app_flag_flight_rapid_test</key>
         <value>true</value>
     </entry>
@@ -269,6 +261,10 @@
     </entry>
     <entry>
         <key>android_customer_hotel_enable_booking_for_today</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_customer_hotel_search_with_map</key>
         <value>true</value>
     </entry>
     <entry>
@@ -362,10 +358,6 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>android_main_app_enabled_cache_pdp</key>
-        <value>true</value>
-    </entry>
-    <entry>
         <key>android_mainapp_enable_event_revamp</key>
         <value>true</value>
     </entry>
@@ -434,6 +426,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_enable_async_abtest</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>android_async_addshortcuts</key>
         <value>true</value>
     </entry>
@@ -456,6 +452,10 @@
     <entry>
         <key>android_async_iris_init</key>
         <value>false</value>
+    </entry>
+    <entry>
+        <key>android_async_gcm_legacy</key>
+        <value>true</value>
     </entry>
     <entry>
         <key>android_async_remoteconfig_mainapp_init</key>
@@ -520,5 +520,49 @@
     <entry>
         <key>seller_home_dashboard_enable_cache</key>
         <value>false</value>
+    </entry>
+    <entry>
+        <key>seller_home_dashboard_enable_new_cache</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>app_enable_video_pdp</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>is_go_to_pdp_for_old_normal_checkout</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>app_iris_gtm_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>app_cm_push_enable_new2</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>app_cm_inapp_enable_new2</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_enable_branch_reinitflow</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_enable_xiaomi_pai_tracking</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>ANDROID_SELLERAPP_POC_NEW_RELIC_DASHBOARD</key>
+        <value>0.0</value>
+    </entry>
+    <entry>
+        <key>app_notif_tray_clear_v2</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>app_enable_branch_utm_only_branch_link</key>
+        <value>true</value>
     </entry>
 </defaultsMap>

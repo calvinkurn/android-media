@@ -8,6 +8,7 @@ import android.view.Menu
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.coachmark.CoachMarkBuilder
@@ -145,7 +146,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     open fun initializeToolbarData() {
         dateString = FlightDateUtil.formatDate(
                 FlightDateUtil.DEFAULT_FORMAT,
-                FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                FlightDateUtil.FORMAT_DATE_SHORT_MONTH,
                 flightSearchPassDataModel.departureDate
         )
         passengerString = buildPassengerTextFormatted(flightSearchPassDataModel.flightPassengerModel)
@@ -213,10 +214,11 @@ open class FlightSearchActivity : BaseFlightActivity(),
         val arrivalCode = if (getArrivalAirport().airportCode != null && getArrivalAirport().airportCode.isNotEmpty())
             getArrivalAirport().airportCode else getArrivalAirport().cityCode
         val title = "${getDepartureAirport().cityName} (${departureCode}) ➝ ${getArrivalAirport().cityName} (${arrivalCode})"
-        val subtitle = "$dateString | $passengerString | $classString"
+        val subtitle = "$dateString | $passengerString"
 
         flight_search_header.title = title
         flight_search_header.subtitle = subtitle
+        flight_search_header.subheaderView?.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
 
         supportActionBar?.elevation = 0f
     }

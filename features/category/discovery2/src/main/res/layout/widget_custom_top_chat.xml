@@ -10,9 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_32"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_20"
         android:visibility="gone"
         app:cardCornerRadius="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="@id/fabButtonParent"
@@ -54,18 +52,17 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/fabButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
-            android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@drawable/ic_plus_add" />
+            android:contentDescription="@string/discovery_top_chat_button_description" />
 
     </androidx.cardview.widget.CardView>
 

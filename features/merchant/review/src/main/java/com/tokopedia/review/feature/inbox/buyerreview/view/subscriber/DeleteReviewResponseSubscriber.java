@@ -1,9 +1,8 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.subscriber;
 
-import com.tokopedia.network.utils.ErrorHandler;
-import com.tokopedia.review.R;
-import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail;
+import com.tokopedia.review.common.util.ReviewErrorHandler;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.DeleteReviewResponseDomain;
+import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail;
 
 import rx.Subscriber;
 
@@ -26,7 +25,7 @@ public class DeleteReviewResponseSubscriber extends Subscriber<DeleteReviewRespo
     @Override
     public void onError(Throwable e) {
         viewListener.finishLoadingDialog();
-        viewListener.onErrorDeleteReviewResponse(ErrorHandler.getErrorMessage(viewListener.getContext().getApplicationContext(), e));
+        viewListener.onErrorDeleteReviewResponse(ReviewErrorHandler.getErrorMessage(viewListener.getContext(), e));
     }
 
     @Override

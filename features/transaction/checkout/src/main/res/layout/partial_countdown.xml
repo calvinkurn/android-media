@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/dp_8"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_count_down"
@@ -21,13 +21,14 @@
         app:typographyType="body_3"
         tools:text="Selesaikan pembayaran dalam" />
 
-    <com.tokopedia.design.countdown.CountDownView
+    <com.tokopedia.unifycomponents.TimerUnify
         android:id="@+id/count_down"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
-        app:coundDownBackgroud="@drawable/background_countdown"
+        app:unify_timer_background_color="@color/Unify_R500"
+        app:unify_timer_colon_color="@color/Unify_R500"
+        app:unify_timer_text_color="@color/Unify_N0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_count_down"
         app:layout_constraintTop_toTopOf="parent" />

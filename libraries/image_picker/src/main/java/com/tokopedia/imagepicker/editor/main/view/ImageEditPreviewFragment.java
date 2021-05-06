@@ -9,21 +9,22 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
@@ -32,6 +33,8 @@ import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
 
 import java.io.File;
+
+import kotlin.Pair;
 
 import static com.tokopedia.imagepicker.editor.main.Constant.BRIGHTNESS_PRECISION;
 import static com.tokopedia.imagepicker.editor.main.Constant.CONTRAST_PRECISION;
@@ -92,7 +95,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
         boolean canRedo(int imageIndex);
 
-        ImageRatioTypeDef getCurrentRatio();
+        ImageRatioType getCurrentRatio();
     }
 
     public static ImageEditPreviewFragment newInstance(int imageIndex,
@@ -278,7 +281,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             return;
         }
         uCropView.getCropImageView().cropAndSaveImage(
-                ImageUtils.isPng(edittedImagePath) ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, new BitmapCropCallback() {
+                ImageProcessingUtil.isPng(edittedImagePath) ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, new BitmapCropCallback() {
                     @Override
                     public void onBitmapCropped(@NonNull Uri resultUri, int offsetX, int offsetY, int imageWidth, int imageHeight) {
                         onImageEditPreviewFragmentListener.onSuccessSaveEditImage(resultUri.getPath());
@@ -300,7 +303,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         if (gestureCropImageView.getCurrentAngle() % 90 == 0) {
             imageEditPreviewPresenter.rotateImage(gestureCropImageView.getViewBitmap(),
                     gestureCropImageView.getCurrentAngle(),
-                    ImageUtils.isPng(edittedImagePath));
+                    ImageProcessingUtil.getCompressFormat(edittedImagePath));
             return;
         }
         cropAndSaveImage();
@@ -312,7 +315,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             return;
         }
         Bitmap bitmap = gestureCropImageView.getViewBitmap();
-        imageEditPreviewPresenter.saveBrightnessImage(bitmap, brightness / BRIGHTNESS_PRECISION, ImageUtils.isPng(edittedImagePath));
+        imageEditPreviewPresenter.saveBrightnessImage(bitmap, brightness / BRIGHTNESS_PRECISION, ImageProcessingUtil.getCompressFormat(edittedImagePath));
     }
 
     public void saveContrastImage() {
@@ -321,7 +324,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             return;
         }
         Bitmap bitmap = gestureCropImageView.getViewBitmap();
-        imageEditPreviewPresenter.saveContrastImage(bitmap, contrast / CONTRAST_PRECISION, ImageUtils.isPng(edittedImagePath));
+        imageEditPreviewPresenter.saveContrastImage(bitmap, contrast / CONTRAST_PRECISION, ImageProcessingUtil.getCompressFormat(edittedImagePath));
     }
 
     @Override
@@ -363,7 +366,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         try {
             Uri inputUri = Uri.fromFile(new File(edittedImagePath));
             gestureCropImageView.setImageUri(inputUri,
-                    Uri.parse(ImageUtils.getTokopediaPhotoPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, edittedImagePath).toString()));
+                    Uri.parse(ImageProcessingUtil.getTokopediaPhotoPath(edittedImagePath).toString()));
         } catch (Exception e) {
 
         }
@@ -379,13 +382,13 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
         // set preview max bitmap, so it will fit the screen can also be zoomed.
         // default: BitmapLoadUtils.calculateMaxBitmapSize(getContext());
-        int maxPreviewWidth = ImageUtils.DEF_WIDTH;
+        int maxPreviewWidth = ImageProcessingUtil.DEF_WIDTH;
         gestureCropImageView.setMaxBitmapSize(maxPreviewWidth);
 
         // set max scale so it cannnot be zoomed under min resolution
         // same logic with the calculateInSampleSize;
-        widthHeight = ImageUtils.getWidthAndHeight(edittedImagePath);
-        int maxWidthHeight = Math.max(widthHeight[0], widthHeight[1]);
+        Pair<Integer, Integer> widthHeight = ImageProcessingUtil.getWidthAndHeight(edittedImagePath);
+        int maxWidthHeight = Math.max(widthHeight.getFirst(), widthHeight.getSecond());
         while (maxWidthHeight > maxPreviewWidth) {
             maxWidthHeight = maxWidthHeight / 2;
         }
@@ -418,14 +421,14 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
         setToInitialRatio();
 
-        int maxSizeX = ImageUtils.DEF_WIDTH;
-        int maxSizeY = ImageUtils.DEF_HEIGHT;
+        int maxSizeX = ImageProcessingUtil.DEF_WIDTH;
+        int maxSizeY = ImageProcessingUtil.DEF_HEIGHT;
         gestureCropImageView.setMaxResultImageSizeX(maxSizeX);
         gestureCropImageView.setMaxResultImageSizeY(maxSizeY);
     }
 
     private void setToInitialRatio(){
-        ImageRatioTypeDef imageRatioTypeDef = onImageEditPreviewFragmentListener.getCurrentRatio();
+        ImageRatioType imageRatioTypeDef = onImageEditPreviewFragmentListener.getCurrentRatio();
         setPreviewCropTo(imageRatioTypeDef);
     }
 
@@ -451,7 +454,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         gestureCropImageView.postRotate(delta / ROTATE_WIDGET_SENSITIVITY);
     }
 
-    public void setPreviewCropTo(ImageRatioTypeDef imageRatioTypeDef){
+    public void setPreviewCropTo(ImageRatioType imageRatioTypeDef){
         int ratioX = imageRatioTypeDef.getRatioX();
         int ratioY = imageRatioTypeDef.getRatioY();
         if (ratioX <= 0 || ratioY <= 0) { // original ratio

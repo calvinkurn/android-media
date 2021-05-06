@@ -1,34 +1,65 @@
 package com.tokopedia.buyerorder.list.view.adapter.viewholder
 
-import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.buyerorder.list.view.adapter.WishListResponseListener
 import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomUiModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
-class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics, val actionListener: ActionListener?) : AbstractViewHolder<OrderListRecomUiModel>(itemView), RecommendationCardView.TrackingListener, WishListResponseListener {
+class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics, private val actionListener: ActionListener?) : AbstractViewHolder<OrderListRecomUiModel>(itemView), WishListResponseListener {
 
     companion object {
         @JvmField
         @LayoutRes
         var LAYOUT = R.layout.bom_item_recomnedation
+        private const val className: String = "com.tokopedia.buyerorder.list.view.adapter.viewholder.OrderListRecomListViewHolder"
     }
-    private var recommendationCardView = itemView?.findViewById<RecommendationCardView>(R.id.bomRecommendationCardView)
+    private var recommendationCardView = itemView?.findViewById<ProductCardGridView>(R.id.bomRecommendationCardView)
     private val wishlist = recommendationCardView?.findViewById<ImageView>(com.tokopedia.productcard.R.id.btn_wishlist)
     private var recomTitle : String = "none/other"
     private var isSelected: Boolean = false
 
     override fun bind(element: OrderListRecomUiModel) {
-        recommendationCardView?.setRecommendationModel(element.recommendationItem, this)
-        recommendationCardView?.showAddToCartButton()
-        recommendationCardView?.setAddToCartClickListener{
+        recommendationCardView?.setProductModel(element.recommendationItem.toProductCardModel(hasAddToCartButton = true))
+        recommendationCardView?.addOnImpressionListener(element.recommendationItem){
+            if(element.recommendationItem.isTopAds){
+                TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                        className,
+                        element.recommendationItem.trackerImageUrl,
+                        element.recommendationItem.productId.toString(),
+                        element.recommendationItem.name,
+                        element.recommendationItem.imageUrl
+                )
+                orderListAnalytics.eventRecommendationProductImpression(element.recommendationItem, element.recommendationItem.position, recomTitle)
+            } else {
+                orderListAnalytics.eventRecommendationProductImpression(element.recommendationItem, element.recommendationItem.position, recomTitle)
+            }
+        }
+
+        recommendationCardView?.setOnClickListener {
+            if(element.recommendationItem.isTopAds){
+                TopAdsUrlHitter(itemView.context).hitClickUrl(
+                        className,
+                        element.recommendationItem.clickUrl,
+                        element.recommendationItem.productId.toString(),
+                        element.recommendationItem.name,
+                        element.recommendationItem.imageUrl
+                )
+                orderListAnalytics.eventEmptyBOMRecommendationProductClick(element.recommendationItem, element.recommendationItem.position, recomTitle)
+            } else {
+                orderListAnalytics.eventEmptyBOMRecommendationProductClick(element.recommendationItem, element.recommendationItem.position, recomTitle)
+            }
+        }
+        recommendationCardView?.setAddToCartOnClickListener {
             actionListener?.onCartClicked(element)
         }
         isSelected = element.recommendationItem.isWishlist
@@ -46,22 +77,6 @@ class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: Orde
         } else {
             wishlist?.setImageDrawable(MethodChecker.getDrawable(itemView.context, com.tokopedia.productcard.R.drawable.product_card_ic_wishlist))
         }
-    }
-
-    override fun onImpressionTopAds(item: RecommendationItem) {
-        orderListAnalytics.eventRecommendationProductImpression(item, item.position, recomTitle)
-    }
-
-    override fun onImpressionOrganic(item: RecommendationItem) {
-        orderListAnalytics.eventRecommendationProductImpression(item, item.position, recomTitle)
-    }
-
-    override fun onClickTopAds(item: RecommendationItem) {
-        orderListAnalytics.eventEmptyBOMRecommendationProductClick(item, item.position, recomTitle)
-    }
-
-    override fun onClickOrganic(item: RecommendationItem) {
-        orderListAnalytics.eventEmptyBOMRecommendationProductClick(item, item.position, recomTitle)
     }
 
     override fun onWhishListSuccessResponse(isSelected: Boolean) {

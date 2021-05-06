@@ -11,7 +11,8 @@
         android:layout_width="@dimen/dp_120"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:tint="@color/cardview_shadow_start_color" />
+        android:contentDescription="@null"
+        android:tint="@color/Unify_N700_20" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_play"

@@ -3,6 +3,7 @@ package com.tokopedia.variant_common.model
 import androidx.collection.ArrayMap
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
  * Created by Yehezkiel on 08/03/20
@@ -22,11 +23,11 @@ data class ProductVariantCommon(
 
         @SerializedName("parentID")
         @Expose
-        var parentId: Int = 0,
+        var parentId: String = "",
 
         @SerializedName("defaultChild")
         @Expose
-        var defaultChild: Int = 0,
+        var defaultChild: String = "",
 
         @SerializedName("sizeChart")
         @Expose
@@ -76,8 +77,8 @@ data class ProductVariantCommon(
         get() = with(variant) { this.isNotEmpty() }
 
     val defaultChildString: String?
-        get() = if (defaultChild != null && defaultChild != 0) {
-            defaultChild.toString()
+        get() = if (defaultChild != null && defaultChild.toLongOrZero() != 0L) {
+            defaultChild
         } else {
             null
         }
@@ -101,7 +102,7 @@ data class ProductVariantCommon(
         }
         if (hasChildren) {
             for (child: VariantChildCommon in children) {
-                if (child.productId.toString().equals(selectedVariantId, false)) {
+                if (child.productId.equals(selectedVariantId, false)) {
                     return child
                 }
             }
@@ -122,7 +123,7 @@ data class ProductVariantCommon(
         val variantId = selectedVariantId ?: defaultChildString
         if (hasChildren) {
             for (child: VariantChildCommon in children) {
-                if (child.productId.toString().equals(variantId, false)) {
+                if (child.productId.equals(variantId, false)) {
                     return child
                 }
             }

@@ -10,19 +10,18 @@ import com.tokopedia.tokopoints.view.util.Resources
 import com.tokopedia.tokopoints.view.util.Success
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
-import org.junit.Test
-
-import org.junit.Assert.*
 import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.ExpectedException
 import kotlin.reflect.KClass
-import kotlin.reflect.typeOf
+
 
 class CouponLisitingStackedViewModelTest {
 
@@ -31,6 +30,9 @@ class CouponLisitingStackedViewModelTest {
     private val mRepository = mockk<StackedCouponRepository>()
     @get:Rule
     var rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    var thrown = ExpectedException.none()
 
     @Before
     fun setUp() {
@@ -139,6 +141,24 @@ class CouponLisitingStackedViewModelTest {
             coVerify(exactly = 1) { observer.onChanged(any()) }
             assert(viewModel.inStackedAdapter.value == data)
 
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `getCouponInStack error case`() {
+        runBlockingTest {
+            val observer = mockk<Observer<TokoPointPromosEntity>> {
+                every { onChanged(any()) } just Runs
+            }
+            coEvery { mRepository.getInStackedCouponList("123") } returns mockk{
+                every {  getData<TokoPointPromosEntity>(TokoPointPromosEntity::class.java) } returns null
+                every { getError(TokoPointPromosEntity::class.java) } returns null
+            }
+            viewModel.inStackedAdapter.observeForever(observer)
+            viewModel.getCouponInStack("123")
+
+            coVerify(exactly = 0) { observer.onChanged(any()) }
         }
     }
 }

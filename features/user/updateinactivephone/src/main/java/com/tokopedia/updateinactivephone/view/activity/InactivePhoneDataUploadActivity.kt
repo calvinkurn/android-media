@@ -9,12 +9,21 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.updateinactivephone.R
+import com.tokopedia.updateinactivephone.view.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.view.fragment.InactivePhoneDataUploadFragment
+import javax.inject.Inject
 
 class InactivePhoneDataUploadActivity : BaseSimpleActivity() {
 
+    lateinit var tracker: InactivePhoneTracker
+
     override fun getNewFragment(): Fragment? {
         return InactivePhoneDataUploadFragment()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        tracker = InactivePhoneTracker()
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -30,6 +39,8 @@ class InactivePhoneDataUploadActivity : BaseSimpleActivity() {
 
     @SuppressLint("DialogUnifyUsage")
     override fun onBackPressed() {
+        tracker.clickOnBackButtonUploadData()
+
         DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(getString(R.string.text_exit_title))
             setDescription(getString(R.string.text_exit_description))
@@ -37,6 +48,7 @@ class InactivePhoneDataUploadActivity : BaseSimpleActivity() {
             setSecondaryCTAText(getString(R.string.text_exit_cta_secondary))
             setPrimaryCTAClickListener {
                 this.dismiss()
+                tracker.clickOnExitButtonPopupUploadData()
                 gotoOnboardingPage()
                 finish()
             }

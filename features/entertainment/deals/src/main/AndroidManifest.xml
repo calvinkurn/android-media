@@ -7,10 +7,10 @@
 
     <activity android:name=".home.ui.activity.DealsHomeActivity"
         android:screenOrientation="portrait"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:theme="@style/Theme.WhiteUnify"
         android:windowSoftInputMode="adjustResize">
-        <intent-filter android:autoVerify="true">
-            <action android:name="android.intent.action.VIEW" />
+        <intent-filter>
+            <action android:name="com.tokopedia.internal.VIEW" />
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
 
@@ -24,9 +24,9 @@
     <activity
         android:name="com.tokopedia.deals.search.ui.activity.DealsSearchActivity"
         android:screenOrientation="portrait"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <intent-filter android:autoVerify="true">
-            <action android:name="android.intent.action.VIEW" />
+        android:theme="@style/Theme.WhiteUnify">
+        <intent-filter>
+            <action android:name="com.tokopedia.internal.VIEW" />
 
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
@@ -41,10 +41,10 @@
 
     <activity android:name=".category.ui.activity.DealsCategoryActivity"
         android:screenOrientation="portrait"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:theme="@style/Theme.WhiteUnify"
         android:windowSoftInputMode="adjustPan">
-        <intent-filter android:autoVerify="true">
-            <action android:name="android.intent.action.VIEW" />
+        <intent-filter>
+            <action android:name="com.tokopedia.internal.VIEW" />
 
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
@@ -58,9 +58,9 @@
     <activity android:name=".brand.ui.activity.DealsBrandActivity"
         android:screenOrientation="portrait"
         android:windowSoftInputMode="adjustPan"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <intent-filter android:autoVerify="true">
-            <action android:name="android.intent.action.VIEW" />
+        android:theme="@style/Theme.WhiteUnify">
+        <intent-filter>
+            <action android:name="com.tokopedia.internal.VIEW" />
 
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />

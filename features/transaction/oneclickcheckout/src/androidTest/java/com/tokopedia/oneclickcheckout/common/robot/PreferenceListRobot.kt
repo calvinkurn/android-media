@@ -1,8 +1,8 @@
 package com.tokopedia.oneclickcheckout.common.robot
 
 import android.view.View
-import android.widget.ImageView
 import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -14,9 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.preference.list.view.NewMainPreferenceListViewHolder
 import com.tokopedia.oneclickcheckout.preference.list.view.NewPreferenceListViewHolder
-import com.tokopedia.oneclickcheckout.preference.list.view.PreferenceListViewHolder
 import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.Matcher
 import org.junit.Assert.assertEquals
@@ -30,19 +28,19 @@ class PreferenceListRobot {
     }
 
     fun clickEditPreference(position: Int) {
-        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(position, object : ViewAction {
+        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<NewPreferenceListViewHolder>(position, object : ViewAction {
             override fun getDescription(): String = "perform click on first profile checkbox"
 
             override fun getConstraints(): Matcher<View>? = null
 
             override fun perform(uiController: UiController?, view: View) {
-                view.findViewById<ImageView>(R.id.iv_edit_preference).callOnClick()
+                view.findViewById<Typography>(R.id.tv_new_edit_preference).callOnClick()
             }
         }))
     }
 
     fun chooseDefaultPreference(position: Int) {
-        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(position, SetDefaultProfileAction()))
+        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<NewPreferenceListViewHolder>(position, SetDefaultProfileAction()))
     }
 
     inner class SetDefaultProfileAction : ViewAction {
@@ -51,12 +49,12 @@ class PreferenceListRobot {
         override fun getConstraints(): Matcher<View>? = null
 
         override fun perform(uiController: UiController?, view: View) {
-            view.findViewById<CheckboxUnify>(R.id.cb_main_preference).callOnClick()
+            view.findViewById<View>(R.id.layout_new_preference_card).callOnClick()
         }
     }
 
     fun assertNotDefaultPreference(position: Int) {
-        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(position, NotDefaultProfileAssertion()))
+        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<NewPreferenceListViewHolder>(position, NotDefaultProfileAssertion()))
     }
 
     inner class NotDefaultProfileAssertion : ViewAction {
@@ -66,13 +64,12 @@ class PreferenceListRobot {
         override fun getConstraints(): Matcher<View>? = null
 
         override fun perform(uiController: UiController?, view: View) {
-            assertEquals(false, view.findViewById<CheckboxUnify>(R.id.cb_main_preference).isChecked)
-            assertEquals(View.GONE, view.findViewById<Label>(R.id.lbl_main_preference).visibility)
+            assertEquals(null, view.findViewById<Label>(R.id.lbl_new_main_preference))
         }
     }
 
     fun assertDefaultPreference(position: Int) {
-        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(position, DefaultProfileAssertion()))
+        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<NewMainPreferenceListViewHolder>(position, DefaultProfileAssertion()))
     }
 
     inner class DefaultProfileAssertion : ViewAction {
@@ -82,8 +79,7 @@ class PreferenceListRobot {
         override fun getConstraints(): Matcher<View>? = null
 
         override fun perform(uiController: UiController?, view: View) {
-            assertEquals(true, view.findViewById<CheckboxUnify>(R.id.cb_main_preference).isChecked)
-            assertEquals(View.VISIBLE, view.findViewById<Label>(R.id.lbl_main_preference).visibility)
+            assertEquals(View.VISIBLE, view.findViewById<Label>(R.id.lbl_new_main_preference).visibility)
         }
     }
 
@@ -105,37 +101,54 @@ class PreferenceListRobot {
 
     fun assertPreferenceView(position: Int,
                              addressName: String,
-                             addressReceiver: String,
                              addressStreet: String,
                              shippingName: String,
                              shippingDuration: String,
                              paymentName: String,
                              paymentDetail: String?,
                              isDefaultPreference: Boolean) {
-        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(position, object : ViewAction {
-            override fun getDescription(): String = "assert preference view"
-
-            override fun getConstraints(): Matcher<View>? = null
-
-            override fun perform(uiController: UiController?, view: View) {
-                assertEquals(addressName, view.findViewById<Typography>(R.id.tv_address_name).text)
-                assertEquals(addressReceiver, view.findViewById<Typography>(R.id.tv_address_receiver).text)
-                assertEquals(addressStreet, view.findViewById<Typography>(R.id.tv_address_detail).text)
-                assertEquals(shippingName, view.findViewById<Typography>(R.id.tv_shipping_name).text)
-                assertEquals(shippingDuration, view.findViewById<Typography>(R.id.tv_shipping_duration).text)
-                assertEquals(paymentName, view.findViewById<Typography>(R.id.tv_payment_name).text)
-                if (paymentDetail != null) {
-                    assertEquals(paymentDetail, view.findViewById<Typography>(R.id.tv_payment_detail).text)
-                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_payment_detail).visibility)
-                } else {
-                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_payment_detail).visibility)
-                }
-            }
-        }))
         if (isDefaultPreference) {
             assertDefaultPreference(position)
+            onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<NewMainPreferenceListViewHolder>(position, object : ViewAction {
+                override fun getDescription(): String = "assert preference view"
+
+                override fun getConstraints(): Matcher<View>? = null
+
+                override fun perform(uiController: UiController?, view: View) {
+                    assertEquals(addressName, view.findViewById<Typography>(R.id.tv_new_address_name).text.toString())
+                    assertEquals(addressStreet, view.findViewById<Typography>(R.id.tv_new_address_detail).text)
+                    assertEquals(shippingName, view.findViewById<Typography>(R.id.tv_new_shipping_name).text)
+                    assertEquals(shippingDuration, view.findViewById<Typography>(R.id.tv_new_shipping_duration).text)
+                    assertEquals(paymentName, view.findViewById<Typography>(R.id.tv_new_payment_name).text)
+                    if (paymentDetail != null) {
+                        assertEquals(paymentDetail, view.findViewById<Typography>(R.id.tv_new_payment_detail).text)
+                        assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_new_payment_detail).visibility)
+                    } else {
+                        assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_new_payment_detail).visibility)
+                    }
+                }
+            }))
         } else {
             assertNotDefaultPreference(position)
+            onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<NewPreferenceListViewHolder>(position, object : ViewAction {
+                override fun getDescription(): String = "assert preference view"
+
+                override fun getConstraints(): Matcher<View>? = null
+
+                override fun perform(uiController: UiController?, view: View) {
+                    assertEquals(addressName, view.findViewById<Typography>(R.id.tv_new_address_name).text.toString())
+                    assertEquals(addressStreet, view.findViewById<Typography>(R.id.tv_new_address_detail).text)
+                    assertEquals(shippingName, view.findViewById<Typography>(R.id.tv_new_shipping_name).text)
+                    assertEquals(shippingDuration, view.findViewById<Typography>(R.id.tv_new_shipping_duration).text)
+                    assertEquals(paymentName, view.findViewById<Typography>(R.id.tv_new_payment_name).text)
+                    if (paymentDetail != null) {
+                        assertEquals(paymentDetail, view.findViewById<Typography>(R.id.tv_new_payment_detail).text)
+                        assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_new_payment_detail).visibility)
+                    } else {
+                        assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_new_payment_detail).visibility)
+                    }
+                }
+            }))
         }
     }
 }
@@ -159,25 +172,25 @@ class PreferenceListBottomSheetRobot {
     }
 
     fun clickEditPreference(position: Int) {
-        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(position, object : ViewAction {
+        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<NewPreferenceListViewHolder>(position, object : ViewAction {
             override fun getDescription(): String = "perform click gear"
 
             override fun getConstraints(): Matcher<View>? = null
 
             override fun perform(uiController: UiController?, view: View) {
-                view.findViewById<ImageView>(R.id.iv_edit_preference).callOnClick()
+                view.findViewById<Typography>(R.id.tv_new_edit_preference).callOnClick()
             }
         }))
     }
 
     fun clickUsePreference(position: Int) {
-        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<PreferenceListViewHolder>(position, object : ViewAction {
+        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<NewPreferenceListViewHolder>(position, object : ViewAction {
             override fun getDescription(): String = "perform click gunakan"
 
             override fun getConstraints(): Matcher<View>? = null
 
             override fun perform(uiController: UiController?, view: View) {
-                view.findViewById<Typography>(R.id.tv_choose_preference).callOnClick()
+                view.findViewById<View>(R.id.layout_new_preference_card).callOnClick()
             }
         }))
     }
@@ -190,6 +203,30 @@ class PreferenceListBottomSheetRobot {
 
             override fun perform(uiController: UiController?, view: View) {
                 view.findViewById<View>(R.id.layout_new_preference_card).callOnClick()
+            }
+        }))
+    }
+
+    fun assertProfile(position: Int, func: (View) -> Unit) {
+        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, object : ViewAction {
+            override fun getDescription(): String = "assert profile"
+
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun perform(uiController: UiController?, view: View) {
+                func(view)
+            }
+        }))
+    }
+
+    fun assertPreferenceRevampEnable(position: Int, isEnable: Boolean) {
+        onView(withId(R.id.rv_preference_list)).perform(actionOnItemAtPosition<NewMainPreferenceListViewHolder>(position, object : ViewAction {
+            override fun getDescription(): String = "perform click gunakan"
+
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun perform(uiController: UiController?, view: View) {
+                assertEquals(if (isEnable) 1.0f else 0.5f, view.alpha)
             }
         }))
     }

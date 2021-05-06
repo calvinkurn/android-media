@@ -37,6 +37,8 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fingerprint.util.FingerprintConstant
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.payment.R
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent
@@ -61,7 +63,6 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -91,7 +92,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     private var scroogeWebView: WebView? = null
     private var progressBar: ProgressBar? = null
     private var btnBack: View? = null
-    private var btnClose: View? = null
     private var tvTitle: TextView? = null
     private var progressDialog: ProgressDialog? = null
 
@@ -102,6 +102,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     private var mJsHciCallbackFuncName: String? = null
 
     private var webChromeWebviewClient: CommonWebViewClient? = null
+
+    // Flag to prevent calling BACK_DIALOG_URL before web view loaded
+    private var hasFinishedFirstLoad: Boolean = false
 
     private val localCacheHandler by lazy { LocalCacheHandler(this, GCM_STORAGE) }
 
@@ -116,13 +119,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setSecureWindowFlag()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window?.statusBarColor = resources.getColor(R.color.tkpd_status_green_payment_module, null)
+                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500, null)
             } else {
-                window?.statusBarColor = resources.getColor(R.color.tkpd_status_green_payment_module)
+                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
             }
         }
         initInjector()
@@ -133,6 +137,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         initVar()
         setViewListener()
         setActionVar()
+    }
+
+    private fun setSecureWindowFlag() {
+        if(GlobalConfig.APPLICATION_TYPE==GlobalConfig.CONSUMER_APPLICATION||GlobalConfig.APPLICATION_TYPE==GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread {
+                window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+            }
+        }
     }
 
     private fun initInjector() {
@@ -153,7 +165,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         setContentView(R.layout.activity_top_pay_payment_module)
         tvTitle = findViewById(R.id.tv_title)
         btnBack = findViewById(R.id.btn_back)
-        btnClose = findViewById(R.id.btn_close)
         scroogeWebView = findViewById(R.id.scrooge_webview)
         progressBar = findViewById(R.id.progressbar)
         progressDialog = ProgressDialog(this)
@@ -186,7 +197,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
         btnBack?.visibility = View.VISIBLE
         btnBack?.setOnClickListener { onBackPressed() }
-        btnClose?.setOnClickListener { callbackPaymentCanceled() }
     }
 
     private fun setActionVar() {
@@ -195,17 +205,21 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         val message = intent.getStringExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE)
         if (!message.isNullOrEmpty()) {
             scroogeWebView?.let {
-                Toaster.make(it, message)
+                Toaster.build(it, message).show()
             }
         }
     }
 
     override fun renderWebViewPostUrl(url: String, postData: ByteArray, isGet: Boolean) {
-        if (isGet) {
+        if (isGet || isInsufficientBookingStockUrl(url)) {
             scroogeWebView?.loadUrl(url)
         } else {
             scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this), postData)
         }
+    }
+
+    private fun isInsufficientBookingStockUrl(url: String): Boolean {
+        return url.startsWith(INSUFFICIENT_STOCK_URL, ignoreCase = true)
     }
 
     override fun showToastMessageWithForceCloseView(message: String) {
@@ -358,7 +372,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     override fun onBackPressed() {
         val url = scroogeWebView?.url
-        if (url != null && url.contains(getBaseUrlDomainPayment())) {
+        if (url != null && url.contains(getBaseUrlDomainPayment()) && isHasFinishedFirstLoad()) {
             scroogeWebView?.loadUrl(BACK_DIALOG_URL)
         } else if (isEndThanksPage(url)) {
             callbackPaymentSucceed()
@@ -367,8 +381,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         }
     }
 
+    private fun isHasFinishedFirstLoad(): Boolean {
+        return hasFinishedFirstLoad
+    }
+
     override fun onDestroy() {
         presenter.detachView()
+        scroogeWebView = null
         super.onDestroy()
     }
 
@@ -407,6 +426,10 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             if (url != null) {
+                val uri = Uri.parse(url)
+                if (uri.isOpaque) {
+                    return super.shouldOverrideUrlLoading(view, url)
+                }
                 // fingerprint
                 if (url.isNotEmpty() && url.contains(PaymentFingerprintConstant.APP_LINK_FINGERPRINT) &&
                         getEnableFingerprintPayment()) {
@@ -517,6 +540,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
+            hasFinishedFirstLoad = true
             presenter.clearTimeoutSubscription()
             hideProgressLoading()
         }
@@ -530,7 +554,11 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         @TargetApi(Build.VERSION_CODES.M)
         override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
             super.onReceivedError(view, request, error)
-            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", request?.url, error?.errorCode, error?.description)
+            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
+                    mapOf("type" to request?.url.toString(),
+                            "error_code" to error?.errorCode.toString(),
+                            "desc" to error?.description?.toString().orEmpty()
+                    ))
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -656,6 +684,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         private const val HCI_CAMERA_SELFIE = "android-js-call://selfie"
         private const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
         private val THANK_PAGE_URL_LIST = arrayOf("thanks", "thank")
+        private const val INSUFFICIENT_STOCK_URL = "https://www.tokopedia.com/cart/insufficient_booking_stock"
 
         private const val BACK_DIALOG_URL = "javascript:handlePopAndroid();"
 

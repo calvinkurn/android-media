@@ -10,13 +10,10 @@ import com.google.gson.annotations.SerializedName
 data class ChatItemPojo(
         @Expose
         @SerializedName("msg_id")
-        var msgId: Int = 0,
+        var msgId: Long = 0L,
         @Expose
         @SerializedName("user_id")
-        var userId: Int = 0,
-        @Expose
-        @SerializedName("reply_id")
-        var replyId: Int = 0,
+        var userId: Long = 0L,
         @Expose
         @SerializedName("sender_id")
         var senderId: String="",
@@ -43,13 +40,13 @@ data class ChatItemPojo(
         var readTime: String="",
         @Expose
         @SerializedName("attachment_id")
-        var attachmentId: Int = 0,
+        var attachmentId: Long = 0L,
         @Expose
         @SerializedName("attachment")
         var attachment: Attachment?,
         @Expose
         @SerializedName("old_msg_id")
-        var oldMsgId: Int = 0,
+        var oldMsgId: Long = 0L,
         @Expose
         @SerializedName("message_is_read")
         var messageIsRead: Boolean = false,
@@ -76,7 +73,7 @@ data class ChatItemPojo(
 
         @Expose
         @SerializedName("blast_id")
-        val blastId: Int = 0,
+        val blastId: Long = 0L,
 
         @Expose
         @SerializedName("source")

@@ -41,7 +41,7 @@ class PowerMerchantItemViewHolder(
 
         textDescription.text = if (clickableText != null) {
             val clickableUrl = item.clickableUrl
-            val clickableTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_G500)
+            val clickableTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             createSpannableString(description, clickableText, clickableTextColor, true, boldTextList) {
                 clickableUrl?.let { url ->
                     goToWebViewPage(url)

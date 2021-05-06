@@ -12,11 +12,11 @@ import com.tokopedia.buyerorder.unifiedhistory.list.domain.*
 import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
@@ -35,7 +35,7 @@ class UohListViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = BuyerTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var uohListViewModel: UohListViewModel
     private var listOrderHistory = listOf<UohListOrder.Data.UohOrders.Order>()
     private var listRecommendation = listOf<RecommendationWidget>()
@@ -109,11 +109,11 @@ class UohListViewModelTest {
     fun getOrderHistoryData_shouldReturnSuccess() {
         //given
         coEvery {
-            uohListUseCase.execute(any(), any())
+            uohListUseCase.executeSuspend(any())
         } returns Success(UohListOrder.Data.UohOrders(listOrderHistory))
 
         //when
-        uohListViewModel.loadOrderList("", UohListParam())
+        uohListViewModel.loadOrderList(UohListParam())
 
         //then
         assert(uohListViewModel.orderHistoryListResult.value is Success)
@@ -124,11 +124,11 @@ class UohListViewModelTest {
     fun getOrderHistoryData_shouldReturnFail() {
         //given
         coEvery {
-            uohListUseCase.execute(any(), any())
+            uohListUseCase.executeSuspend(any())
         } returns Fail(Throwable())
 
         //when
-        uohListViewModel.loadOrderList("", UohListParam())
+        uohListViewModel.loadOrderList(UohListParam())
 
         //then
         assert(uohListViewModel.orderHistoryListResult.value is Fail)
@@ -138,11 +138,11 @@ class UohListViewModelTest {
     fun getOrderHistoryData_shouldNotReturnEmpty() {
         //given
         coEvery {
-            uohListUseCase.execute(any(), any())
+            uohListUseCase.executeSuspend(any())
         } returns Success(UohListOrder.Data.UohOrders(listOrderHistory))
 
         //when
-        uohListViewModel.loadOrderList("", UohListParam())
+        uohListViewModel.loadOrderList(UohListParam())
 
         //then
         assert(uohListViewModel.orderHistoryListResult.value is Success)
@@ -154,11 +154,11 @@ class UohListViewModelTest {
     fun getRecommendation_shouldReturnSuccess() {
         //given
         coEvery {
-            uohListUseCase.execute(any(), any())
+            uohListUseCase.executeSuspend(any())
         } returns Success(UohListOrder.Data.UohOrders(listOrderHistory))
 
         //when
-        uohListViewModel.loadOrderList("", UohListParam())
+        uohListViewModel.loadOrderList(UohListParam())
 
         //then
         assert(uohListViewModel.orderHistoryListResult.value is Success)
@@ -169,11 +169,11 @@ class UohListViewModelTest {
     fun getRecommendation_shouldReturnFail() {
         //given
         coEvery {
-            uohListUseCase.execute(any(), any())
+            uohListUseCase.executeSuspend(any())
         } returns Fail(Throwable())
 
         //when
-        uohListViewModel.loadOrderList("", UohListParam())
+        uohListViewModel.loadOrderList(UohListParam())
 
         //then
         assert(uohListViewModel.orderHistoryListResult.value is Fail)
@@ -183,15 +183,15 @@ class UohListViewModelTest {
     fun getRecommendation_shouldNotReturnEmpty() {
         //given
         coEvery {
-            uohListUseCase.execute(any(), any())
+            uohListUseCase.executeSuspend(any())
         } returns Success(UohListOrder.Data.UohOrders(listOrderHistory))
 
         //when
-        uohListViewModel.loadOrderList("", UohListParam())
+        uohListViewModel.loadOrderList(UohListParam())
 
         //then
         assert(uohListViewModel.orderHistoryListResult.value is Success)
-        assert((uohListViewModel.orderHistoryListResult.value as Success<UohListOrder.Data.UohOrders>).data.orders.size > 0)
+        assert((uohListViewModel.orderHistoryListResult.value as Success<UohListOrder.Data.UohOrders>).data.orders.isNotEmpty())
     }
 
     // finish order result
@@ -199,11 +199,11 @@ class UohListViewModelTest {
     fun finishOrderResult_shouldReturnSuccess() {
         //given
         coEvery {
-            uohFinishOrderUseCase.execute(any(), any())
+            uohFinishOrderUseCase.executeSuspend(any())
         } returns Success(UohFinishOrder.Data.FinishOrderBuyer(1))
 
         //when
-        uohListViewModel.doFinishOrder("", UohFinishOrderParam())
+        uohListViewModel.doFinishOrder(UohFinishOrderParam())
 
         //then
         assert(uohListViewModel.finishOrderResult.value is Success)
@@ -214,11 +214,11 @@ class UohListViewModelTest {
     fun finishOrderResult_shouldReturnFail() {
         //given
         coEvery {
-            uohFinishOrderUseCase.execute(any(), any())
+            uohFinishOrderUseCase.executeSuspend(any())
         } returns Fail(Throwable())
 
         //when
-        uohListViewModel.doFinishOrder("", UohFinishOrderParam())
+        uohListViewModel.doFinishOrder(UohFinishOrderParam())
 
         //then
         assert(uohListViewModel.finishOrderResult.value is Fail)
@@ -228,11 +228,11 @@ class UohListViewModelTest {
     fun finishOrderResult_shouldNotReturnEmptyMessage() {
         //given
         coEvery {
-            uohFinishOrderUseCase.execute(any(), any())
+            uohFinishOrderUseCase.executeSuspend(any())
         } returns Success(UohFinishOrder.Data.FinishOrderBuyer(message = listMsg))
 
         //when
-        uohListViewModel.doFinishOrder("", UohFinishOrderParam())
+        uohListViewModel.doFinishOrder(UohFinishOrderParam())
 
         //then
         assert(uohListViewModel.finishOrderResult.value is Success)
@@ -289,11 +289,11 @@ class UohListViewModelTest {
     fun lsprintFinishOrder_shouldReturnSuccess() {
         //given
         coEvery {
-            lsPrintFinishOrderUseCase.execute(any(), any())
+            lsPrintFinishOrderUseCase.executeSuspend(any())
         } returns Success(LsPrintData.Data(LsPrintData.Data.Oiaction("", 1, LsPrintData.Data.Oiaction.Data())))
 
         //when
-        uohListViewModel.doLsPrintFinishOrder("", "")
+        uohListViewModel.doLsPrintFinishOrder("")
 
         //then
         assert(uohListViewModel.lsPrintFinishOrderResult.value is Success)
@@ -304,11 +304,11 @@ class UohListViewModelTest {
     fun lsprintFinishOrder_shouldReturnFail() {
         //given
         coEvery {
-            lsPrintFinishOrderUseCase.execute(any(), any())
+            lsPrintFinishOrderUseCase.executeSuspend(any())
         } returns Fail(Throwable())
 
         //when
-        uohListViewModel.doLsPrintFinishOrder("", "")
+        uohListViewModel.doLsPrintFinishOrder("")
 
         //then
         assert(uohListViewModel.lsPrintFinishOrderResult.value is Fail)
@@ -318,11 +318,11 @@ class UohListViewModelTest {
     fun lsprintFinishOrder_shouldNotReturnEmptyMessage() {
         //given
         coEvery {
-            lsPrintFinishOrderUseCase.execute(any(), any())
+            lsPrintFinishOrderUseCase.executeSuspend(any())
         } returns Success(LsPrintData.Data(LsPrintData.Data.Oiaction("", 1, LsPrintData.Data.Oiaction.Data(message = "Test"))))
 
         //when
-        uohListViewModel.doLsPrintFinishOrder("", "")
+        uohListViewModel.doLsPrintFinishOrder("")
 
         //then
         assert(uohListViewModel.lsPrintFinishOrderResult.value is Success)
@@ -334,11 +334,11 @@ class UohListViewModelTest {
     fun flightResendEmail_shouldReturnSuccess() {
         //given
         coEvery {
-            flightResendEmailUseCase.execute(any(), any(), any())
+            flightResendEmailUseCase.executeSuspend(any(), any())
         } returns Success(FlightResendEmail.Data(FlightResendEmail.Data.FlightResendEmailV2(FlightResendEmail.Data.FlightResendEmailV2.Meta(status = "Ok"))))
 
         //when
-        uohListViewModel.doFlightResendEmail("", "", "")
+        uohListViewModel.doFlightResendEmail("", "")
 
         //then
         assert(uohListViewModel.flightResendEmailResult.value is Success)
@@ -349,11 +349,11 @@ class UohListViewModelTest {
     fun flightResendEmail_shouldReturnFail() {
         //given
         coEvery {
-            flightResendEmailUseCase.execute(any(), any(), any())
+            flightResendEmailUseCase.executeSuspend(any(), any())
         } returns Fail(Throwable())
 
         //when
-        uohListViewModel.doFlightResendEmail("", "", "")
+        uohListViewModel.doFlightResendEmail("", "")
 
         //then
         assert(uohListViewModel.flightResendEmailResult.value is Fail)
@@ -363,11 +363,11 @@ class UohListViewModelTest {
     fun flightResendEmail_shouldNotReturnEmptyMessage() {
         //given
         coEvery {
-            flightResendEmailUseCase.execute(any(), any(), any())
+            flightResendEmailUseCase.executeSuspend(any(), any())
         } returns Success(FlightResendEmail.Data(FlightResendEmail.Data.FlightResendEmailV2(FlightResendEmail.Data.FlightResendEmailV2.Meta(status = "Ok"))))
 
         //when
-        uohListViewModel.doFlightResendEmail("", "", "")
+        uohListViewModel.doFlightResendEmail("", "")
 
         //then
         assert(uohListViewModel.flightResendEmailResult.value is Success)
@@ -379,11 +379,11 @@ class UohListViewModelTest {
     fun trainResendEmail_shouldReturnSuccess() {
         //given
         coEvery {
-            trainResendEmailUseCase.execute(any(), any())
+            trainResendEmailUseCase.executeSuspend(any())
         } returns Success(TrainResendEmail.Data(TrainResendEmail.Data.TrainResendBookingEmail(success = true)))
 
         //when
-        uohListViewModel.doTrainResendEmail("", TrainResendEmailParam())
+        uohListViewModel.doTrainResendEmail(TrainResendEmailParam())
 
         //then
         assert(uohListViewModel.trainResendEmailResult.value is Success)
@@ -394,11 +394,11 @@ class UohListViewModelTest {
     fun trainResendEmail_shouldReturnFail() {
         //given
         coEvery {
-            trainResendEmailUseCase.execute(any(), any())
+            trainResendEmailUseCase.executeSuspend(any())
         } returns Fail(Throwable())
 
         //when
-        uohListViewModel.doTrainResendEmail("", TrainResendEmailParam())
+        uohListViewModel.doTrainResendEmail(TrainResendEmailParam())
 
         //then
         assert(uohListViewModel.trainResendEmailResult.value is Fail)
@@ -409,11 +409,11 @@ class UohListViewModelTest {
     fun rechargeSetFail_shouldReturnSuccess() {
         //given
         coEvery {
-            rechargeSetFailUseCase.execute(any(), any())
+            rechargeSetFailUseCase.executeSuspend(any())
         } returns Success(RechargeSetFailData.Data(RechargeSetFailData.Data.RechargeSetOrderToFail(RechargeSetFailData.Data.RechargeSetOrderToFail.Attributes(-1, -1, true, ""))))
 
         //when
-        uohListViewModel.doRechargeSetFail("", -1)
+        uohListViewModel.doRechargeSetFail(-1)
 
         //then
         assert(uohListViewModel.rechargeSetFailResult.value is Success)
@@ -424,11 +424,11 @@ class UohListViewModelTest {
     fun rechargeSetFail_shouldReturnFail() {
         //given
         coEvery {
-            rechargeSetFailUseCase.execute(any(), any())
+            rechargeSetFailUseCase.executeSuspend(any())
         } returns Fail(Throwable())
 
         //when
-        uohListViewModel.doRechargeSetFail("", -1)
+        uohListViewModel.doRechargeSetFail(-1)
 
         //then
         assert(uohListViewModel.rechargeSetFailResult.value is Fail)

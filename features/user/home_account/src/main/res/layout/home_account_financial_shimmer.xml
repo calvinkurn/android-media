@@ -7,20 +7,11 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/home_account_expandable_layout_title"
-        android:layout_width="@dimen/home_account_dp_80"
-        android:layout_height="@dimen/home_account_shimmer_text_title_height"
-        app:corners="8"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_account_expandable_layout_title"
+        app:layout_constraintTop_toTopOf="parent"
         android:orientation="horizontal"
-        android:layout_marginTop="@dimen/home_account_dp_14"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

@@ -8,6 +8,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
  */
 
 data class TickerWidgetUiModel(
+        override val id: String = "",
         override val widgetType: String = "",
         override val title: String = "",
         override val subtitle: String = "",
@@ -21,10 +22,19 @@ data class TickerWidgetUiModel(
         override var isLoaded: Boolean = false,
         override var isLoading: Boolean = false,
         override var isFromCache: Boolean = false,
+        override var isNeedToBeRemoved: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel = WidgetEmptyStateUiModel()
 ) : BaseWidgetUiModel<TickerDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun copy(): BaseWidgetUiModel<TickerDataUiModel> {
+        return TickerWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+    }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<TickerDataUiModel>): Boolean {
+        return dataKey != other.dataKey
     }
 }

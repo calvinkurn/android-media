@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_16">
+    android:layout_margin="@dimen/spacing_lvl4">
 
 
     <com.tokopedia.unifyprinciples.Typography
@@ -12,16 +12,19 @@
         app:typographyType="body_3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_6"
-        android:paddingBottom="@dimen/dp_6"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/dp_chatbot_6"
+        android:paddingBottom="@dimen/dp_chatbot_6"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginBottom="@dimen/spacing_lvl5"
         android:gravity="center"
         android:background="@drawable/chat_bot_chat_divider_background"
         tools:text="Kamu bisa tutup halaman ini  cek balasan Tim CS dalam [SLA] lewat Pesan Bantuan di Inbox. [Timestamp]"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

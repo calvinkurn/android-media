@@ -56,29 +56,17 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_new_address_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
-            android:lines="1"
-            android:textColor="@color/Unify_N700_96"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_new_preference_header"
-            app:typographyType="body_3"
-            app:typographyWeight="bold" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_new_address_receiver"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_18"
             android:ellipsize="end"
             android:lines="1"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/tv_new_address_name"
-            app:layout_constraintTop_toTopOf="@+id/tv_new_address_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_new_preference_header"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
@@ -120,7 +108,7 @@
             android:layout_marginTop="@dimen/dp_2"
             android:layout_marginEnd="@dimen/dp_18"
             android:lines="1"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_new_shipping_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_new_shipping_name"
@@ -133,6 +121,7 @@
             android:layout_height="@dimen/dp_30"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_12"
+            android:contentDescription="@string/content_description_img_payment"
             app:layout_constraintBottom_toBottomOf="@+id/tv_new_payment_detail"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_new_shipping_duration" />

@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 
 import android.annotation.SuppressLint
 import android.view.View
+import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
@@ -11,7 +12,6 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.android.synthetic.main.bottom_sheet_order_price_summary.view.*
 
 class OrderPriceSummaryBottomSheet {
 
@@ -36,10 +36,10 @@ class OrderPriceSummaryBottomSheet {
 
     @SuppressLint("SetTextI18n")
     private fun setupView(child: View, orderCost: OrderCost) {
-        child.tv_total_product_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalItemPrice, false).removeDecimalSuffix()
+        child.findViewById<Typography>(R.id.tv_total_product_price_value).text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalItemPrice, false).removeDecimalSuffix()
 
-        val tvPurchaseProtectionPriceLabel = child.tv_purchase_protection_price_label
-        val tvPurchaseProtectionPriceValue = child.tv_purchase_protection_price_value
+        val tvPurchaseProtectionPriceLabel = child.findViewById<Typography>(R.id.tv_purchase_protection_price_label)
+        val tvPurchaseProtectionPriceValue = child.findViewById<Typography>(R.id.tv_purchase_protection_price_value)
         if (orderCost.purchaseProtectionPrice > 0) {
             tvPurchaseProtectionPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.purchaseProtectionPrice, false).removeDecimalSuffix()
             tvPurchaseProtectionPriceLabel.visible()
@@ -49,8 +49,8 @@ class OrderPriceSummaryBottomSheet {
             tvPurchaseProtectionPriceValue.gone()
         }
 
-        val tvTotalProductDiscountValue = child.tv_total_product_discount_value
-        val tvTotalProductDiscountLabel = child.tv_total_product_discount_label
+        val tvTotalProductDiscountValue = child.findViewById<Typography>(R.id.tv_total_product_discount_value)
+        val tvTotalProductDiscountLabel = child.findViewById<Typography>(R.id.tv_total_product_discount_label)
         if (orderCost.productDiscountAmount > 0) {
             tvTotalProductDiscountValue.text = "-${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.productDiscountAmount, false).removeDecimalSuffix()}"
             tvTotalProductDiscountValue.visible()
@@ -60,9 +60,9 @@ class OrderPriceSummaryBottomSheet {
             tvTotalProductDiscountLabel.gone()
         }
 
-        val tvTotalShippingPriceValue = child.tv_total_shipping_price_value
-        val tvTotalShippingDiscountValue = child.tv_total_shipping_discount_value
-        val tvTotalShippingDiscountLabel = child.tv_total_shipping_discount_label
+        val tvTotalShippingPriceValue = child.findViewById<Typography>(R.id.tv_total_shipping_price_value)
+        val tvTotalShippingDiscountValue = child.findViewById<Typography>(R.id.tv_total_shipping_discount_value)
+        val tvTotalShippingDiscountLabel = child.findViewById<Typography>(R.id.tv_total_shipping_discount_label)
         if (orderCost.shippingDiscountAmount > 0 && orderCost.shippingDiscountAmount >= orderCost.shippingFee) {
             tvTotalShippingPriceValue.setText(com.tokopedia.purchase_platform.common.R.string.label_free_shipping)
             tvTotalShippingDiscountValue.gone()
@@ -79,8 +79,8 @@ class OrderPriceSummaryBottomSheet {
             }
         }
 
-        val tvTotalInsurancePriceValue = child.tv_total_insurance_price_value
-        val tvTotalInsurancePriceLabel = child.tv_total_insurance_price_label
+        val tvTotalInsurancePriceValue = child.findViewById<Typography>(R.id.tv_total_insurance_price_value)
+        val tvTotalInsurancePriceLabel = child.findViewById<Typography>(R.id.tv_total_insurance_price_label)
         if (orderCost.insuranceFee > 0.0) {
             tvTotalInsurancePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.insuranceFee, false).removeDecimalSuffix()
             tvTotalInsurancePriceLabel.visible()
@@ -90,8 +90,8 @@ class OrderPriceSummaryBottomSheet {
             tvTotalInsurancePriceValue.gone()
         }
 
-        val tvTotalPaymentFeePriceValue = child.tv_total_payment_fee_price_value
-        val tvTotalPaymentFeePriceLabel = child.tv_total_payment_fee_price_label
+        val tvTotalPaymentFeePriceValue = child.findViewById<Typography>(R.id.tv_total_payment_fee_price_value)
+        val tvTotalPaymentFeePriceLabel = child.findViewById<Typography>(R.id.tv_total_payment_fee_price_label)
         if (orderCost.paymentFee > 0.0) {
             tvTotalPaymentFeePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.paymentFee, false).removeDecimalSuffix()
             tvTotalPaymentFeePriceLabel.visible()
@@ -101,16 +101,17 @@ class OrderPriceSummaryBottomSheet {
             tvTotalPaymentFeePriceValue.gone()
         }
 
-        child.tv_total_payment_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false).removeDecimalSuffix()
+        child.findViewById<Typography>(R.id.tv_total_payment_price_value).text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false).removeDecimalSuffix()
 
-        val llCashback = child.ll_cashback
-        val divider2 = child.divider2
+        val llCashback = child.findViewById<LinearLayout>(R.id.ll_cashback)
+        val divider2 = child.findViewById<View>(R.id.divider2)
         if (orderCost.cashbacks.isNotEmpty()) {
             llCashback.removeAllViews()
             for (cashback in orderCost.cashbacks) {
                 val view = View.inflate(child.context, R.layout.item_cashback_detail, null)
-                view.findViewById<Typography>(R.id.tv_total_cashback_label).text = cashback.first
-                view.findViewById<Typography>(R.id.tv_total_cashback_value).text = cashback.second
+                view.findViewById<Typography>(R.id.tv_total_cashback_label).text = cashback.description
+                view.findViewById<Typography>(R.id.tv_total_cashback_value).text = cashback.amountStr
+                view.findViewById<Typography>(R.id.tv_total_cashback_currency_info).text = cashback.currencyDetailStr
                 llCashback.addView(view)
                 llCashback.visible()
                 divider2.visible()

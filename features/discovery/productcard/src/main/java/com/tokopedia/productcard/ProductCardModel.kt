@@ -3,6 +3,7 @@ package com.tokopedia.productcard
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.utils.*
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.parcel.Parcelize
 
 data class ProductCardModel (
@@ -40,6 +41,7 @@ data class ProductCardModel (
         val hasRemoveFromWishlistButton: Boolean = false,
         val pdpViewCount: String = "",
         val stockBarLabel: String = "",
+        val stockBarLabelColor: String = "",
         val stockBarPercentage: Int = 0,
         val isOutOfStock: Boolean = false,
         val addToCardText: String = "",
@@ -47,7 +49,9 @@ data class ProductCardModel (
         val isShopRatingYellow: Boolean = false,
         val countSoldRating: String = "",
         val hasNotifyMeButton: Boolean = false,
-        val labelGroupVariantList: List<LabelGroupVariant> = listOf()
+        val labelGroupVariantList: List<LabelGroupVariant> = listOf(),
+        val addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
+        val isWideContent: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -129,6 +133,22 @@ data class ProductCardModel (
         return findLabelGroup(LABEL_BEST_SELLER)
     }
 
+    fun getLabelETA(): LabelGroup? {
+        return findLabelGroup(LABEL_ETA)
+    }
+
+    fun getLabelFulfillment(): LabelGroup? {
+        return findLabelGroup(LABEL_FULFILLMENT)
+    }
+
+    fun getLabelCategory(): LabelGroup? {
+        return findLabelGroup(LABEL_CATEGORY)
+    }
+
+    fun getLabelCostPerUnit(): LabelGroup? {
+        return findLabelGroup(LABEL_COST_PER_UNIT)
+    }
+
     fun willShowRatingAndReviewCount(): Boolean {
         return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0 && !willShowRating()
     }
@@ -167,6 +187,20 @@ data class ProductCardModel (
     fun willShowVariant(): Boolean {
         return labelGroupVariantList.isNotEmpty()
     }
+
+    fun willShowFulfillment(): Boolean{
+        val labelFulfillment = getLabelFulfillment()
+
+        return labelFulfillment != null
+                && labelFulfillment.title.isNotEmpty()
+                && labelFulfillment.imageUrl.isNotEmpty()
+    }
+
+    fun isShowLabelCategory() = !willShowVariant() && (getLabelCategory()?.title?.isNotEmpty() == true)
+
+    fun isShowLabelCostPerUnit() = !willShowVariant() && (getLabelCostPerUnit()?.title?.isNotEmpty() == true)
+
+    fun isShowCategoryAndCostPerUnit() = isShowLabelCategory() && isShowLabelCostPerUnit()
 
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()

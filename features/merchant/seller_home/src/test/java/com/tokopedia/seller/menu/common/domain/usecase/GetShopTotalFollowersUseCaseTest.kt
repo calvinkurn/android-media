@@ -44,7 +44,7 @@ class GetShopTotalFollowersUseCaseTest {
     fun `Success get total followers`() = runBlocking {
 
         val successResponse = TestHelper.createSuccessResponse<ShopTotalFollowers>(SUCCESS_RESPONSE)
-        val successTotalFollowers = 0
+        val successTotalFollowers = 0L
 
         coEvery {
             gqlRepository.getReseponse(any(), any())

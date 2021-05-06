@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:background="@color/Neutral_N0">
+    tools:background="@color/Unify_N0">
 
     <FrameLayout
         android:layout_width="@dimen/deals_dp_60"
@@ -28,7 +28,7 @@
         android:id="@+id/txt_deals_category_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="small"
         app:typographyWeight="reguler"
         tools:text="Transportasi"

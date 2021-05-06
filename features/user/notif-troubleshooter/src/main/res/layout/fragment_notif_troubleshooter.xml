@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/Unify_N0">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lstConfig"
@@ -25,14 +25,16 @@
         android:lineSpacingExtra="@dimen/dp_6"
         android:maxLines="2"
         android:padding="@dimen/dp_8"
-        android:background="@android:color/white"
-        android:textColor="@color/charcoal_grey_68"
+        android:background="@color/Unify_N0"
+        android:textColor="@color/Unify_N700_68"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
+        android:visibility="gone"
+        tools:visibility="visible"
         tools:text="Token anda" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

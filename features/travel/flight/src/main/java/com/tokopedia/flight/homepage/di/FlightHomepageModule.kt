@@ -14,7 +14,6 @@ import javax.inject.Named
  * @author by furqan on 27/03/2020
  */
 @Module
-@FlightHomepageScope
 class FlightHomepageModule {
 
     @Provides

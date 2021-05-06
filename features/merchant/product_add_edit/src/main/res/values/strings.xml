@@ -16,8 +16,6 @@
     <string name="label_add_product_shipment">Detail Pengiriman</string>
     <string name="label_add_product_promotion">Promosi</string>
     <string name="label_edit_product_status">Status Produk</string>
-    <string name="label_edit_product_notification_title">Mau atur Spesifikasi produkmu?</string>
-    <string name="label_edit_product_notification_description">Saat ini pengaturan untuk Spesifikasi baru tersedia di Tokopedia versi desktop.</string>
     <string name="label_product_status_description">Jika status aktif, berarti produkmu\ndapat dicari pembeli</string>
     <string name="preview_label_add_product_photo_tips">Tips memilih foto produk yang benar</string>
     <string name="preview_label_add_product_variant_tips">Tips atur stok &amp; harga dengan fitur Varian</string>
@@ -34,7 +32,6 @@
     <string name="action_pick_photo">Pilih Foto</string>
     <string name="action_edit_photo">Ubah Foto</string>
     <string name="error_max_product_photo">Hapus salah satu untuk bisa tambah foto</string>
-    <string name="error_message_invalid_photos">Terdapat foto yang telah dihapus, silakan periksa kembali foto anda</string>
 
     <!-- add edit product name -->
     <string name="add_product_name_header">Isi nama produk yang kamu jual</string>
@@ -72,6 +69,25 @@
     <string name="error_product_price_less_than_min_limit">Harga kurang dari batas min. Rp100</string>
     <string name="error_product_price_exceeding_max_limit">Harga melebihi batas maks. Rp100 juta</string>
 
+    <!-- add edit product price recommendation -->
+    <string name="title_price_recommendation">Rekomendasi Harga Pasar</string>
+    <string name="title_price_recommendation_bottom_sheet">Rekomendasi harga pasar</string>
+    <string name="label_price_recommendation_description">Harga rata-rata %1s - %2s</string>
+    <string name="label_price_recommendation_apply">Terapkan</string>
+    <string name="label_price_recommendation_next">Pelajari Selengkapnya</string>
+    <string-array name="array_price_recommendation_content_titles">
+        <item>Didapat dari analisis sistem Tokopedia pada produk serupa di Tokopedia</item>
+        <item>Harga yang ditampilkan adalah harga paling kompetitif</item>
+        <item>Rekomendasi harga selalu di-update setiap hari</item>
+        <item>Fitur rekomendasi harga ini tidak wajib kamu gunakan pada setiap produkmu</item>
+    </string-array>
+    <string-array name="array_price_recommendation_content_descriptions">
+        <item>Sistem algoritma dirancang untuk bisa memilah produk yang sejenis untuk ditentukan harganya.</item>
+        <item>Rekomendasi harga ini ada supaya dapat memaksimalkan penjualan Seller.</item>
+        <item>Jadi, harga produkmu tidak akan tertinggal oleh produk lain yang serupa.</item>
+        <item>Tenang, kamu akan tetap bisa memasang harga produk yang kamu inginkan, kok.</item>
+    </string-array>
+
     <!-- add edit product price bottomsheet   -->
     <string name="bulk_edit_price_bottomsheet_helper">Kamu bisa atur harga masing-masing di aplikasi Tokopedia Seller atau ubah semua secara sekaligus dengan mengisi harga di bawah</string>
     <string name="action_bulk_edit_price">Ganti</string>
@@ -101,11 +117,11 @@
     <string name="label_available_stock">Stok tersedia</string>
     <string name="label_minimum_order">Minimum pemesanan</string>
     <string name="error_empty_product_stock">Stok tidak boleh kosong</string>
-    <string name="error_minimum_stock_quantity_is_one">Stok minimal 1</string>
+    <string name="error_minimum_stock_quantity">Stok minimal %d</string>
     <string name="error_available_stock_quantity_exceeding_max_limit">Stok melebihi batas maks. 999.999</string>
     <string name="error_empty_minimum_order">Minimum pemesanan tidak boleh kosong</string>
     <string name="error_minimum_order_cant_be_zero">Minimum pemesanan tidak boleh 0</string>
-    <string name="error_maximum_order_exceeding_max_limit">Minimum pemesanan melebihi batas maks. 999.999</string>
+    <string name="error_minimum_order_exceed_max_limit">Min. Beli harus diisi antara 1 &#8211; 10.000.</string>
     <string name="error_minimum_order_cant_exceed_available_stock">Minimum pemesanan tidak boleh melebihi jumlah stok</string>
 
     <!-- activate pre order state -->
@@ -143,6 +159,7 @@
     <string name="action_refresh_showcases">Muat Ulang</string>
 
     <!--Description-->
+    <string name="title_gifting_description_bottom_sheet">Tips deskripsi Paket Lebaran</string>
     <string name="label_add_product_photo_tips">Tips Memilih foto produk yang benar</string>
     <string name="label_product_name">Nama produk</string>
     <string name="label_product_price">Harga</string>
@@ -160,6 +177,15 @@
     <string name="label_video_title">Video</string>
     <string name="label_video_subtitle">Tambah video agar pembeli lebih paham tentang produkmu</string>
     <string name="label_video_url_placeholder">Link Video</string>
+    <string name="label_gifting_description_numbers">Maksimalkan potensi pembelian dengan tulis informasi di deskripsi produkmu seperti ini:</string>
+    <string name="label_gifting_description_first">Deskripsikan produk dan varian apa saja yang ada di dalam Paket Lebaranmu</string>
+    <string name="label_gifting_description_second">Tuliskan juga informasi mengenai ukuran paket dan tanggal kedaluwarsa produk</string>
+    <string name="label_gifting_description_third">Jika paket sudah termasuk dengan kartu ucapan, infokan pembeli untuk menulis pesan kartu ucapan di Catatan Toko, ya.</string>
+    <string name="label_gifting_description_example">Contoh deskripsi produk</string>
+    <string name="label_gifting_description_template">Detail Paket Lebaran\n[Makanan/Sembako/Barang]\n\n1 set Paket terdiri dari:\n- [Jumlah dan Satuan] [Jenis Barang/Makanan/Kue Kering/Sembako]\n- [Jumlah dan Satuan] [Jenis Barang/Makanan/Kue Kering/Sembako]\n- [Jumlah dan Satuan] [Jenis Barang/Makanan/Kue Kering/Sembako]\n- [Jumlah dan Satuan] [Jenis Barang/Makanan/Kue Kering/Sembako]\n- [Jumlah dan Satuan] [Jenis Barang/Makanan/Kue Kering/Sembako]\n- 1 kartu ucapan \n\nTanggal kedaluwarsa produk (jika ada):\n[Tanggal Bulan Tahun]\n\nSetiap Paket berukuran:\n[Ukuran dalam cm] x [Ukuran dalam cm] x [Ukuran dalam cm]\n\nCatatan lain untuk pemesanan Paket Lebaran ini:\n- Jika ada ucapan personal, tuliskan detail ucapan di Catatan Toko pada saat checkout.\n- Chat langsung ke toko kami jika ada yang ditanyakan, ya.</string>
+    <string name="label_gifting_description_copied_message">Template deskripsi produk berhasil disalin.</string>
+    <string name="label_gifting_description_tips">Tips buat deskripsi produk Parcel/Hampers</string>
+    <string name="action_copy_template">Salin Template Deskripsi Produk</string>
     <string name="action_add_video">Tambah video</string>
     <string name="action_next_button">Lanjut</string>
     <string name="error_video_not_valid">Pastikan link Youtube kamu benar</string>
@@ -183,24 +209,26 @@
     <string name="error_cannot_get_variants">Tidak bisa mendapatkan data variant</string>
 
     <!--Shipment-->
+    <string name="title_shipment_required">Wajib</string>
+    <string name="title_shipment_optional">Optional</string>
+    <string name="title_shipment_ticker">Risiko jika pembeli tidak aktifkan asuransi</string>
+    <string name="title_shipment_bottom_sheet">Risiko jika pembeli tidak aktifkan\nAsuransi Pengiriman</string>
     <string name="label_shipment_insurance">Asuransi pengiriman</string>
-    <string name="label_shipment_insurance_description">Gunakan asuransi pengiriman untuk menjamin produk aman sampai ke pembeli</string>
+    <string name="label_shipment_insurance_description">Menanggung pengembalian dana produk &amp; ongkir untuk penjual maupun pembeli jika terjadi kerusakan / kehilangan saat pengiriman.</string>
     <string name="label_shipment_detail">Tentukan detail pengirimanmu</string>
     <string name="label_shipment_description">Pastikan berat produk dan pengiriman sesuai</string>
+    <string name="label_shipment_required">Kamu <b>mewajibkan</b> pembeli untuk mengaktifkan asuransi pengiriman</string>
+    <string name="label_shipment_optional">Kamu <b>memberikan opsi</b> kepada pembeli untuk mengaktifkan asuransi pengiriman</string>
+    <string name="label_shipment_ticker">Penjual tidak mendapat pengembalian penuh untuk produk &amp; ongkir. <![CDATA[<font color=\'#42b549\'>Selengkapnya</font>.]]></string>
+    <string name="label_shipment_weight_ticker">Perhatikan dengan baik berat produk agar tidak terjadi selisih data dengan pihak kurir.</string>
+    <string name="label_shipment_bottom_sheet">Jika terjadi kerusakan / kehilangan saat pengiriman, penjual tidak mendapat pengembalian penuh untuk produk &amp; ongkir, hanya kompensasi senilai <b>maks. 10x ongkir.</b></string>
     <string name="label_unit">Satuan</string>
     <string name="label_weight">Berat</string>
     <string name="label_weight_gram">Gram</string>
     <string name="label_weight_kilogram">Kilogram</string>
     <string name="error_weight_not_valid">Berat harus diisi antara %1$s &#8212; %2$s</string>
     <string name="action_end_button">Selesai</string>
-
-    <!--Notif-->
-    <string name="title_notif_product_upload">Upload produk</string>
-    <string name="message_notif_product_upload">Mengupload produk</string>
-    <string name="message_notif_product_upload_success">Produk berhasil di-upload</string>
-    <string name="message_notif_product_upload_error">Product gagal di-upload. Coba lagi</string>
-    <string name="product_name_is_more_than_seventy_character">Nama Produk lebih dari 70 karakter</string>
-    <string name="product_name_should_be_not_empty">Nama produk tidak boleh kosong</string>
+    <string name="action_shipment_dismiss">Mengerti</string>
 
     <!--Product Add Validation-->
     <string name="error_invalid_category_id">Kategori tidak valid</string>
@@ -307,14 +335,62 @@
     <string name="label_variant_replacement_notice">akan hilang jika kamu ganti ke</string>
     <string name="error_variant_exist">Nama sudah digunakan.</string>
     <string name="error_variant_unit_value_selection_exceed">Jumlah varianmu sudah melebihi batas maksimal.</string>
+    
+    <!-- Admin Revamp -->
+    <string name="ticker_add_product_main_location_title">Tambah produk untuk di lokasi utama</string>
+    <string name="ticker_add_product_main_location_desc">Produk akan ditambahkan ke lokasi utama. Kamu bisa alokasikan produk lewat Ubah Sekaligus di desktop, ya.</string>
+    <string name="ticker_edit_variant_main_location">Hanya mengatur stok varian di lokasi utama. Atur stok varian di lokasi lain lewat desktop, ya.</string>
+    <string name="ticker_variant_only_main_location">Stok akan dilokasikan ke lokasi utamamu. Kamu bisa alokasikan produk lewat Atur Sekaligus di desktop, ya.</string>
+    <string name="message_edit_product_stock_only_main_location">Hanya menampilkan dan mengubah stok di lokasi utama. Alokasikan stok lokasi lain di desktop, ya.</string>
+    <string name="message_add_product_stock_only_main_location">Stok akan dialokasikan ke lokasi utama. Kamu bisa alokasikan produk lewat Ubah Sekaligus di desktop, ya.</string>
 
     <!-- Location Validation -->
     <string name="label_for_toaster_success_set_shop_location">Yay, berhasil menambah lokasi pengiriman.</string>
-    <string name="label_for_toaster_fail_set_shop_location">Terjadi kendala pada server, silahkan coba kembali</string>
     <string name="label_for_action_text_toaster_success_set_shop_location">Oke</string>
     <string name="label_for_dialog_title_that_shop_has_no_location">Mau tambah produk baru?</string>
     <string name="label_for_dialog_desc_that_shop_has_no_location">Eits, lengkapi dulu lokasi pengirimanmu di halaman Pengaturan agar bisa hitung estimasi ongkir.</string>
     <string name="label_for_dialog_primary_cta_that_shop_has_no_location">Oke, Lanjut</string>
+
+    <!-- Spec -->
+    <string name="title_specification_activity">Spesifikasi</string>
+    <string name="title_specification_activity_action">Hapus Semua</string>
+    <string name="title_specification_bottom_sheet">Jenis</string>
+    <string name="label_specification_search">Cari</string>
+    <string name="label_product_specification">Spesifikasi</string>
+    <string name="label_product_specification_tips">Tambah keterangan secara rinci supaya produkmu makin mudah dikenali pembeli.</string>
+    <string name="label_refresh_specification">Data tidak berhasil ditampilkan,\nklik <b>Muat Ulang</b> untuk coba lagi</string>
+    <string name="label_info_specification">Pelajari tentang Spesifikasi <![CDATA[<font color=\'#42b549\'><b>di sini</b></font>.]]></string>
+    <string name="label_specification_subtitle">Spesifikasi yang lengkap dapat bantu pembeli memilih produk sesuai kebutuhannya.</string>
+    <string name="label_specification_info_title_points">Mengapa perlu tambah Spesifikasi?</string>
+    <string name="label_specification_info_point1">Semakin besar kemungkinan produkmu muncul dalam hasil pencarian.</string>
+    <string name="label_specification_info_point2">Produk dengan Spesifikasi yang lengkap akan lebih disukai pembeli.</string>
+    <string name="action_specification_save">Simpan</string>
+    <string name="action_specification_add">Tambah</string>
+    <string name="action_specification_change">Ubah</string>
+    <string name="action_specification_refresh">Muat Ulang</string>
+    <string name="action_specification_counter">, +%1$d lainnya</string>
+
+    <!-- Product Limitation -->
+    <string name="label_product_limitation_start_date">10 Mei 2021</string>
+    <string name="label_product_limitation_ticker">Mulai %1$s, ada perubahan Syarat &amp; Ketentuan jumlah produk. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
+    <string name="action_product_limitation_item">Pelajari</string>
+    <string name="action_product_limitation_item_goto_productlist">Ke Daftar Produk</string>
+    <string name="title_product_limitation_item_upgradepm">Tingkatkan kuota dengan upgrade ke Power Merchant</string>
+    <string name="label_product_limitation_item_upgradepm">Kuota produkmu akan bertambah dan dapatkan juga keuntungan lainnya!</string>
+    <string name="title_product_limitation_item_usevariant">Gunakan fitur Varian untuk produk yang mirip</string>
+    <string name="label_product_limitation_item_usevariant">Tambah produk sebagai varian di dalam produk yang mirip di tokomu.</string>
+    <string name="title_product_limitation_item_delete">Hapus produk yang kurang diminati pembeli</string>
+    <string name="label_product_limitation_item_delete">Tambahkan produk dengan hapus produk yang habis atau kurang diminati pembeli.</string>
+    <string name="title_product_limitation_item_usepromotion">Pasang iklan dan promosi untuk tingkatkan penjualan</string>
+    <string name="label_product_limitation_item_usepromotion">Semakin banyak produk yang terjual, semakin banyak kuota produk untuk tokomu!</string>
+    <string name="title_product_limitation_bottomsheet_ticker">Kamu bisa upload hingga %1$d produk</string>
+    <string name="label_product_limitation_bottomsheet_ticker">Jumlah maks. produk yang dapat ditambahkan didasarkan oleh tipe Seller. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
+    <string name="label_product_limitation_bottomsheet_ticker_exceed">Jumlah produk di tokomu sudah mencapai maks. kuota sebanyak %1$d produk. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
+    <string name="title_product_limitation_bottomsheet_info">Bagaimana cara menambahkan lebih banyak produk?</string>
+    <string name="label_product_limitation_bottomsheet_button">Kembali ke Daftar Produk</string>
+    <string name="label_product_limitation_bottomsheet_button_draft">Simpan Sebagai Draft</string>
+    <string name="title_product_limitation_cant_add_product">Tidak bisa menambahkan produk</string>
+    <string name="title_product_limitation_add_product_rules">Aturan jumlah produk toko</string>
 
     <!--CONTENT DESC-->
     <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>

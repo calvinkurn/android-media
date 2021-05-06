@@ -6,7 +6,7 @@
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingEnd="@dimen/layout_lvl2"
     android:paddingRight="@dimen/layout_lvl2"
-    android:background="@color/transparent"
+    android:background="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     
@@ -26,12 +26,28 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_campaign_stock_variant_name"
         tools:text="Merah | S"/>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/emptyStockInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/product_manage_stock_info_description"
+        android:textColor="@color/Unify_N300"
+        android:lines="2"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_campaign_stock_variant_editor_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible"/>
+
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/label_campaign_stock_inactive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintTop_toTopOf="@id/tv_campaign_stock_variant_editor_name"
         app:layout_constraintBottom_toBottomOf="@id/tv_campaign_stock_variant_editor_name"
@@ -40,6 +56,20 @@
         app:labelType="general_light_grey"
         app:labelTitle="@string/product_manage_inactive"
         tools:visibility="visible"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_campaign_stock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:visibility="gone"
+        app:labelTitle="@string/product_manage_campaign"
+        app:labelType="general_light_red"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintBottom_toBottomOf="@id/tv_campaign_stock_variant_editor_name"
+        app:layout_constraintLeft_toRightOf="@id/label_campaign_stock_inactive"
+        app:layout_constraintTop_toTopOf="@id/tv_campaign_stock_variant_editor_name"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_campaign_stock_variant"
@@ -52,7 +82,7 @@
         android:id="@+id/guideline_campaign_stock_variant_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintGuide_percent="0.35"
+        app:layout_constraintGuide_percent="0.25"
         android:orientation="vertical"/>
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
@@ -63,6 +93,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline_campaign_stock_variant"
         app:layout_constraintEnd_toStartOf="@id/switch_campaign_stock_variant_editor"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textStock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline_campaign_stock_variant"
+        app:layout_constraintEnd_toStartOf="@id/switch_campaign_stock_variant_editor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
         android:id="@+id/switch_campaign_stock_variant_editor"

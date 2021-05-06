@@ -40,9 +40,6 @@ object ApplinkConstInternalMarketplace {
     // ShipmentActivity
     @JvmField
     val CHECKOUT = "$INTERNAL_MARKETPLACE/checkout"
-    // NormalCheckoutActivity
-    @JvmField
-    val NORMAL_CHECKOUT = "$INTERNAL_MARKETPLACE/normal-checkout"
     // CartAddressChoiceActivity
     @JvmField
     val CHECKOUT_ADDRESS_SELECTION = "$INTERNAL_MARKETPLACE/checkout-address-selection"
@@ -63,6 +60,8 @@ object ApplinkConstInternalMarketplace {
     // ProductDetailActivity
     @JvmField
     val PRODUCT_DETAIL = "$INTERNAL_MARKETPLACE/product-detail/{id}/"
+    @JvmField
+    val PRODUCT_DETAIL_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{product_id}/?is_from_explore_affiliate={isAffiliate}"
     @JvmField
     val PRODUCT_DETAIL_WITH_WAREHOUSE_ID = "$INTERNAL_MARKETPLACE/product-detail/{id}/?warehouse_id={whid}"
     @JvmField
@@ -147,6 +146,9 @@ object ApplinkConstInternalMarketplace {
     val SHOP_PAGE_FEED = "$SHOP_PAGE_BASE/{shop_id}/feed"
 
     @JvmField
+    val SHOP_PAGE_NOTE = "$SHOP_PAGE_BASE/{shop_id}/note"
+
+    @JvmField
     val SHOP_PAGE_PRODUCT_LIST = "$SHOP_PAGE_BASE-product-list/{shop_id}/etalase/{etalase_id}/"
 
     // GmSubscribeHomeActivity
@@ -202,10 +204,6 @@ object ApplinkConstInternalMarketplace {
     //GeolocationActivity
     @JvmField
     val GEOLOCATION = "$INTERNAL_MARKETPLACE/geolocation"
-
-    //CodActivity
-    @JvmField
-    val COD = "$INTERNAL_MARKETPLACE/cod"
 
     // OnboardingActivity
     @JvmField
@@ -270,6 +268,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ORDER_HISTORY = "$INTERNAL_MARKETPLACE/user-order-history/{shop_id}/"
 
+    // InboxActivity
+    @JvmField
+    val INBOX = "$INTERNAL_MARKETPLACE/inbox"
+
     // DashboardActivity
     @JvmField
     val SELLER_APP_DASHBOARD = "$INTERNAL_MARKETPLACE/sellerapp-dashboard"
@@ -304,9 +306,18 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val REVIEW_SELLER_REPORT = "$INTERNAL_MARKETPLACE/review-report"
 
+    @JvmField
+    val REVIEW_REMINDER = "$INTERNAL_MARKETPLACE/review-reminder"
+
     //ShopFavouriteListActivity
     @JvmField
     val SHOP_FAVOURITE_LIST = "$INTERNAL_MARKETPLACE/shop-favourites"
+
+    @JvmField
+    val SHOP_FAVOURITE_LIST_WITH_SHOP_ID = "$SHOP_PAGE_BASE/{shop_id}/shop-favourites"
+
+    @JvmField
+    val SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID = "$SHOP_PAGE_BASE/{shop_id}/settings"
 
     @JvmField
     val ARGS_SHOP_ID = "ARGS_SHOP_ID"

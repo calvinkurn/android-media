@@ -54,6 +54,7 @@ import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
+import com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity;
 import com.tokopedia.buyerorder.detail.view.adapter.RechargeWidgetAdapter;
 import com.tokopedia.buyerorder.detail.view.customview.CopyableDetailItemView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
@@ -300,12 +301,28 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setInvoice(final Invoice invoice) {
+        String orderId = (getArguments().getString(KEY_ORDER_ID) != null) ?
+                getArguments().getString(KEY_ORDER_ID) : "";
         invoiceView.setText(invoice.invoiceRefNum());
         if (!BuyerUtils.isValidUrl(invoice.invoiceUrl())) {
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(view -> {
-            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.invoiceUrl());
+            String orderCategory = getArguments().getString(KEY_ORDER_CATEGORY) != null ?
+                    getArguments().getString(KEY_ORDER_CATEGORY) : "";
+            presenter.onLihatInvoiceButtonClick(invoice.invoiceUrl());
+            if (orderCategory != null && orderCategory.equals(OrderCategory.DIGITAL)) {
+                startActivity(SeeInvoiceActivity.newInstance(getContext(),
+                        presenter.getOrderCategoryName(),
+                        presenter.getOrderProductName(),
+                        orderId,
+                        invoice.invoiceUrl(),
+                        invoice.invoiceRefNum(),
+                        getString(R.string.title_invoice),
+                        OrderCategory.DIGITAL));
+            } else {
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.invoiceUrl());
+            }
         });
     }
 
@@ -324,6 +341,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
                 @Override
                 public void onCopyValue() {
                     if (getContext() != null) {
+                        presenter.onCopyButtonClick(detail.value());
                         BuyerUtils.copyTextToClipBoard("voucher code", detail.value(), getContext());
                         BuyerUtils.vibrate(getContext());
                         Toaster.build(itemView, getString(R.string.title_voucher_code_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
@@ -520,7 +538,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW,contactUs.helpUrl());
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, contactUs.helpUrl());
             }
 
             @Override
@@ -557,7 +575,10 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             primaryActionBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
         }
         if (!TextUtils.isEmpty(actionButton.getUri())) {
-            primaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
+            primaryActionBtn.setOnClickListener(v -> {
+                presenter.onActionButtonClick(ActionButton.PRIMARY_BUTTON, actionButton.getLabel());
+                onActionButtonClick(actionButton.getUri());
+            });
         }
     }
 
@@ -578,25 +599,26 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             secondaryActionBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
         }
         if (!TextUtils.isEmpty(actionButton.getUri())) {
-            secondaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
+            secondaryActionBtn.setOnClickListener(v -> {
+                presenter.onActionButtonClick(ActionButton.SECONDARY_BUTTON, actionButton.getLabel());
+                onActionButtonClick(actionButton.getUri());
+            });
         }
     }
 
-    private View.OnClickListener getActionButtonClickListener(final String uri) {
-        return view -> {
-            String newUri = uri;
-            if (uri != null && uri.startsWith("tokopedia")) {
-                Uri url = Uri.parse(newUri);
+    private void onActionButtonClick(final String uri) {
+        String newUri = uri;
+        if (uri != null && uri.startsWith("tokopedia")) {
+            Uri url = Uri.parse(newUri);
 
-                if (newUri.contains("idem_potency_key")) {
-                    newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
-                    newUri = newUri.replace("idem_potency_key=", "");
-                }
-                RouteManager.route(getActivity(), newUri);
-            } else if (uri != null && !uri.equals("")) {
-                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
+            if (newUri.contains("idem_potency_key")) {
+                newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
+                newUri = newUri.replace("idem_potency_key=", "");
             }
-        };
+            RouteManager.route(getActivity(), newUri);
+        } else if (uri != null && !uri.equals("")) {
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
+        }
     }
 
     @Override

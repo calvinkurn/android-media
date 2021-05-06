@@ -115,8 +115,14 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
 
     private fun addCatalogListObserver() = viewModel.listCatalogItem.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it.let {
-            hideLoader()
-            populateCatalog(it)
+            when (it) {
+                is Loading -> showLoader()
+                is ErrorMessage -> showError()
+                is Success -> {
+                    hideLoader()
+                    populateCatalog(it.data)
+                }
+            }
         }
     })
 
@@ -412,13 +418,13 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     private fun decorateDialog(dialog: AlertDialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(activityContext,
-                    com.tokopedia.design.R.color.tkpd_main_green))
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400))
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isAllCaps = false
         }
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).isAllCaps = false
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(activityContext,
-                    com.tokopedia.design.R.color.grey_warm))
+                    com.tokopedia.unifyprinciples.R.color.Unify_N200))
         }
     }
 
@@ -485,9 +491,9 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             }
             mAdapter = CatalogListAdapter(finalCatalogList)
             if (mRecyclerViewCatalog?.itemDecorationCount == 0) {
-                mRecyclerViewCatalog?.addItemDecoration(SpacesItemDecoration(activityContext.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10),
-                        activityContext.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14),
-                        activityContext.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14)))
+                mRecyclerViewCatalog?.addItemDecoration(SpacesItemDecoration(activityContext.resources.getDimensionPixelOffset(R.dimen.dp_10),
+                        activityContext.resources.getDimensionPixelOffset(R.dimen.dp_14),
+                        activityContext.resources.getDimensionPixelOffset(R.dimen.dp_14)))
             }
             mRecyclerViewCatalog?.adapter = mAdapter
             mAdapter?.notifyDataSetChanged()

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/pay_later_payment_cl_margin_dp_14"
+        android:layout_marginEnd="@dimen/pay_later_payment_cl_margin_dp_14"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivPaylaterPartner"
+            android:layout_width="@dimen/unify_space_48"
+            android:layout_height="@dimen/unify_space_48"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:scaleType="centerInside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitlePaymentPartner"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/pay_later_payment_cl_margin_dp_14"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:textSize="@dimen/unify_font_14"
+            app:layout_constraintBottom_toTopOf="@+id/tvSubTitlePaylaterPartner"
+            app:layout_constraintEnd_toStartOf="@+id/tvPaylaterPartnerStatus"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/ivPaylaterPartner"
+            app:layout_constraintTop_toTopOf="@+id/ivPaylaterPartner"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="@string/kredivo" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSubTitlePaylaterPartner"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_2"
+            android:textSize="@dimen/unify_font_14"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/tvTitlePaymentPartner"
+            app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitlePaymentPartner"
+            app:typographyType="body_3"
+            tools:text="Yuk, daftar sekarang!" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/tvPaylaterPartnerStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/unify_font_10"
+            android:visibility="gone"
+            app:labelTitle="Aktif"
+            app:labelType="general_light_blue"
+            app:layout_constraintEnd_toEndOf="@+id/rvPaymentDesciption"
+            app:layout_constraintTop_toTopOf="@+id/tvTitlePaymentPartner"
+            tools:text="Aktif" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierPayLater"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierAllowsGoneWidgets="false"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="ivPaylaterPartner, tvSubTitlePaylaterPartner" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/borderGrey"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pay_later_divider_height_dp_1"
+            android:layout_marginTop="@dimen/unify_space_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/barrierPayLater" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPaymentDesciption"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/unify_space_0"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_8"
+            android:clipToPadding="false"
+            app:layout_constraintBottom_toTopOf="@+id/btnHowToUse"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/borderGrey"
+            tools:listitem="@layout/base_payment_offer_description_item" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnHowToUse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_8"
+            android:text="@string/pay_later_see_how_to_use"
+            android:textSize="@dimen/unify_font_12"
+            app:layout_constraintBottom_toTopOf="@+id/btnSeeMore"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnSeeMore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_16"
+            android:text="@string/pay_later_see_more"
+            android:textSize="@dimen/unify_font_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

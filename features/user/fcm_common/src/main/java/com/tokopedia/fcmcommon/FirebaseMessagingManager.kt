@@ -14,5 +14,7 @@ interface FirebaseMessagingManager {
     companion object {
         const val PARAM_OLD_TOKEN = "oldToken"
         const val PARAM_NEW_TOKEN = "newToken"
+        const val ENABLE_OLD_GCM_UPDATE = "android_enable_old_gcm_update"
+        const val ENABLE_OLD_GCM_UPDATE_SERVICE = "android_enable_old_gcm_update_service"
     }
 }

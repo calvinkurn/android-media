@@ -126,6 +126,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var isLightThemeStatusBar = false
+    private var useNewInbox = false
 
     private lateinit var coachMarkItem: CoachMarkItem
     private lateinit var feedBackgroundCrossfader: TransitionDrawable
@@ -163,56 +164,91 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
             status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
         }
+        initNavRevampAbTest()
+        initInboxAbTest()
         initToolbar()
         initView()
         requestFeedTab()
     }
 
+    private fun initNavRevampAbTest() {
+        showOldToolbar = !RemoteConfigInstance.getInstance()
+                .abTestPlatform
+                .getString(EXP_NAME, VARIANT_OLD)
+                .equals(VARIANT_REVAMP, true)
+    }
+
+    private fun initInboxAbTest() {
+        useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+        ) == AbTestPlatform.VARIANT_NEW_INBOX && !showOldToolbar
+    }
+
+    private fun getInboxIcon(): Int {
+        return if (useNewInbox) {
+            IconList.ID_INBOX
+        } else {
+            IconList.ID_MESSAGE
+        }
+    }
+
     private fun initToolbar() {
-        showOldToolbar = !RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
         status_bar_bg.visibility = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
-            else -> View.GONE
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> View.VISIBLE
+            else -> View.INVISIBLE
         }
         status_bar_bg2.visibility = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.INVISIBLE
-            else -> View.GONE
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> View.INVISIBLE
+            else -> View.INVISIBLE
         }
         toolbarParent.removeAllViews()
-        if (showOldToolbar) {
-            feed_background_frame.show()
-            feedToolbar = context?.let { FeedMainToolbar(it) }
-            setFeedBackgroundCrossfader()
-            feed_appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-                if (verticalOffset + (feedToolbar?.height ?: 0) < 0) {
-                    showNormalTextWhiteToolbar()
-                } else {
-                    showWhiteTextTransparentToolbar()
-                }
-            })
-            (feedToolbar as? FeedMainToolbar)?.setToolBarClickListener(this)
-        } else {
-            feed_background_frame.hide()
-            feedToolbar = context?.let { NavToolbar(it) }
-            (feedToolbar as? NavToolbar)?.let {
-                it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
-                it.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
-                it.switchToLightToolbar()
-                it.setContentInsetsAbsolute(0,0)
-                it.setToolbarPageName(FEED_PAGE)
-                viewLifecycleOwner.lifecycle.addObserver(it)
-                it.setIcon(
-                        IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                                .addIcon(IconList.ID_MESSAGE) { onInboxButtonClick() }
-                                .addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
-                                .addIcon(IconList.ID_CART) {}
-                                .addIcon(IconList.ID_NAV_GLOBAL) {}
-                )
-                it.setupSearchbar(hints = listOf(HintData()), searchbarClickCallback = ::onImageSearchClick)
-            }
-        }
+        initNewToolBar()
         toolbarParent.addView(feedToolbar)
+    }
+
+    private fun initNewToolBar() {
+        feed_background_frame.hide()
+        feedToolbar = context?.let { NavToolbar(it) }
+        (feedToolbar as? NavToolbar)?.let {
+            it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
+            it.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
+            it.switchToLightToolbar()
+            it.setContentInsetsAbsolute(0,0)
+            it.setToolbarPageName(FEED_PAGE)
+            viewLifecycleOwner.lifecycle.addObserver(it)
+            it.setIcon(getToolbarIcons())
+            it.setupSearchbar(hints = listOf(HintData()), searchbarClickCallback = ::onImageSearchClick)
+        }
+    }
+
+    private fun initOldToolBar() {
+        feed_background_frame.show()
+        feedToolbar = context?.let { FeedMainToolbar(it) }
+        setFeedBackgroundCrossfader()
+        feed_appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            if (verticalOffset + (feedToolbar?.height ?: 0) < 0) {
+                showNormalTextWhiteToolbar()
+            } else {
+                showWhiteTextTransparentToolbar()
+            }
+        })
+        (feedToolbar as? FeedMainToolbar)?.setToolBarClickListener(this)
+    }
+
+    private fun getToolbarIcons(): IconBuilder {
+        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                .addIcon(getInboxIcon()) { onInboxButtonClick() }
+
+        if (!useNewInbox) {
+            icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
+        }
+        icons.apply {
+            addIcon(IconList.ID_CART) {}
+        }
+        if(!showOldToolbar){
+            icons.addIcon(IconList.ID_NAV_GLOBAL) {}
+        }
+        return icons
     }
 
     override fun onPause() {
@@ -270,8 +306,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             setInboxNumber(inboxCount)
         }
         (feedToolbar as? NavToolbar)?.run {
-            setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
-            setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+            if (!useNewInbox) {
+                setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+            }
+            setBadgeCounter(getInboxIcon(), inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
         this.badgeNumberNotification = notificationCount
@@ -362,7 +400,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun onErrorGetWhitelist(throwable: Throwable) {
         view?.let {
             Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+                    Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 if (userSession.isLoggedIn) {
                     viewModel.getWhitelist()
                 }
@@ -371,8 +409,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun setFeedBackgroundCrossfader() {
-        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.dp_50)
-        startToTransitionOffset = status_bar_bg.layoutParams.height + resources.getDimensionPixelSize(R.dimen.dp_100)
+        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.searchbar_tansition_range)
+        startToTransitionOffset = status_bar_bg.layoutParams.height + resources.getDimensionPixelSize(R.dimen.searchbar_start_tansition_offsite)
         activity?.let {
             val feedBackgroundGradient = MethodChecker.getDrawable(it, R.drawable.gradient_feed)
             val feedBackgroundWhite = MethodChecker.getDrawable(it, R.drawable.gradient_feed_white)
@@ -388,13 +426,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             feedBackgroundCrossfader.reverseTransition(200)
             toolbarType = TOOLBAR_GRADIENT
             status_bar_bg2.visibility = when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
-                else -> View.GONE
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> View.VISIBLE
+                else -> View.INVISIBLE
             }
             activity?.let {
-                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, R.color.tkpd_main_green))
-                tab_layout.setTabTextColors(MethodChecker.getColor(activity, R.color.font_black_disabled_38), MethodChecker.getColor(activity, R.color.tkpd_main_green))
+                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                tab_layout.setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_32), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
             }
             requestStatusBarDark()
         }
@@ -405,12 +442,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             feedBackgroundCrossfader.reverseTransition(200)
             toolbarType = TOOLBAR_WHITE
             status_bar_bg2.visibility = when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.INVISIBLE
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> View.INVISIBLE
                 else -> View.GONE
             }
             activity?.let {
-                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, R.color.white))
-                tab_layout.setTabTextColors(MethodChecker.getColor(activity, R.color.white), MethodChecker.getColor(activity, R.color.white))
+                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tab_layout.setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }
             requestStatusBarLight()
         }
@@ -443,6 +480,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                             screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
                             appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, createPostAppLink))
                     setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
+                    toolBarAnalytics.sendClickBuatFeedPostEvent()
                 }
             }
             else -> {
@@ -452,6 +490,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                     val author = whitelistDomain.authors.first()
                     fab_feed.setOnClickListener { onGoToLink(author.link) }
                 }
+                toolBarAnalytics.sendClickBuatFeedPostEvent()
             }
         }
     }
@@ -461,7 +500,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             if (isFabExpanded) {
                 hideAllFab(false)
             } else {
-                fab_feed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_forward)
+                fab_feed.animation = AnimationUtils.loadAnimation(activity, com.tokopedia.feedcomponent.R.anim.rotate_forward)
                 layout_grey_popup.visibility = View.VISIBLE
                 for (author in whitelistDomain.authors) {
                     if (author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)) {
@@ -508,7 +547,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (isInitial) {
             fab_feed.hide()
         } else {
-            fab_feed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_backward)
+            fab_feed.animation = AnimationUtils.loadAnimation(activity, com.tokopedia.feedcomponent.R.anim.rotate_backward)
         }
         fab_feed_byme.hide()
         fab_feed_shop.hide()

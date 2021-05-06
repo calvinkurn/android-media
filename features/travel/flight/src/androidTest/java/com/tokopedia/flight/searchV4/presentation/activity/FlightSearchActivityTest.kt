@@ -5,7 +5,9 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
@@ -20,6 +22,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
+import com.tokopedia.flight.promo_chips.presentation.adapter.viewholder.FlightPromoChipsViewHolder
 import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchViewHolder
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.test.application.espresso_component.CommonMatcher
@@ -51,7 +54,7 @@ class FlightSearchActivityTest {
                 FlightSearchActivity.getCallingIntent(
                         context,
                         FlightSearchPassDataModel(
-                                "2020-11-11",
+                                "2021-11-11",
                                 "",
                                 true,
                                 FlightPassengerModel(1, 0, 0),
@@ -62,7 +65,7 @@ class FlightSearchActivityTest {
                                     cityAirports = arrayListOf("CGK", "HLP")
                                     countryName = "Indonesia"
                                     airportName = ""
-                                    airportCode = ""
+                                    airportCode = "CGK"
                                 },
                                 FlightAirportModel().apply {
                                     cityCode = ""
@@ -87,11 +90,11 @@ class FlightSearchActivityTest {
 
     @Test
     fun validateFlightSearchPageP2AndBelowTracking() {
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         quickFilter()
         changeSearch()
 
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_ALL),
                 hasAllSuccess())
     }
@@ -132,16 +135,32 @@ class FlightSearchActivityTest {
     @Test
     fun validateFlightSearchPageP1Tracking() {
         Thread.sleep(3000)
+
+        try {
+            onView(withId(R.id.text_next)).check(matches(isDisplayed())).perform(click())
+        } catch (e: NoMatchingViewException) { }
+
         assert(getJourneyItemCount() > 1)
 
-        Thread.sleep(1000)
         if (getJourneyItemCount() > 0) {
             onView(withId(R.id.recycler_view)).perform(RecyclerViewActions
                     .actionOnItemAtPosition<FlightSearchViewHolder>(0, click()))
         }
 
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_P1),
+                hasAllSuccess())
+    }
+
+    @Test
+    fun promoChipsOnClicked(){
+        Thread.sleep(5000)
+        val viewInteraction = onView(AllOf.allOf(
+                AllOf.allOf(withId(R.id.recycler_view_promo_chips), withParent(withId(R.id.widget_flight_promo_chips)),
+                        isDisplayed()))).check(matches(isDisplayed()))
+        viewInteraction.perform(RecyclerViewActions
+                .actionOnItemAtPosition<FlightPromoChipsViewHolder>(0, click()))
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_PROMO_CHIPS),
                 hasAllSuccess())
     }
 
@@ -153,5 +172,6 @@ class FlightSearchActivityTest {
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_P1 = "tracker/travel/flight/flight_search_p1.json"
         private const val ANALYTIC_VALIDATOR_QUERY_ALL = "tracker/travel/flight/flight_search_all.json"
+        private const val ANALYTIC_VALIDATOR_PROMO_CHIPS = "tracker/travel/flight/flight_srp_promochips.json"
     }
 }

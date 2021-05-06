@@ -2,22 +2,19 @@ package com.tokopedia.design.countdown;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
+
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
-import android.view.animation.TranslateAnimation;
-import android.widget.FrameLayout;
-import android.widget.TextView;
-
 
 import com.tokopedia.design.R;
 
@@ -77,11 +74,11 @@ public class CountDownView extends FrameLayout {
         col2 = rootView.findViewById(R.id.col2);
         TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.CountDownView, 0, 0);
         try {
-            hourView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0)));
-            minuteView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0)));
-            secondView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0)));
-            col1.setTextColor(a.getColor(R.styleable.CountDownView_countDownSparatorColor, ContextCompat.getColor(context, R.color.tkpd_main_orange)));
-            col2.setTextColor(a.getColor(R.styleable.CountDownView_countDownSparatorColor, ContextCompat.getColor(context, R.color.tkpd_main_orange)));
+            hourView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)));
+            minuteView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)));
+            secondView.setTextColor(a.getColor(R.styleable.CountDownView_countDownTxtColor, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)));
+            col1.setTextColor(a.getColor(R.styleable.CountDownView_countDownSparatorColor, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500)));
+            col2.setTextColor(a.getColor(R.styleable.CountDownView_countDownSparatorColor, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500)));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 hourView.setBackground(a.getDrawable(R.styleable.CountDownView_coundDownBackgroud));
                 minuteView.setBackground(a.getDrawable(R.styleable.CountDownView_coundDownBackgroud));
@@ -100,6 +97,12 @@ public class CountDownView extends FrameLayout {
 
     public void setup(final long serverTimeOffset, final Date expiredTime,
                       final CountDownListener listener) {
+        setup(serverTimeOffset, expiredTime, null, listener);
+    }
+
+    public void setup(final long serverTimeOffset, final Date expiredTime,
+                      final DayChangedListener dayChangedListener,
+                      final CountDownListener listener) {
         Date serverTime = new Date(System.currentTimeMillis());
         serverTime.setTime(
                 serverTime.getTime() + serverTimeOffset
@@ -109,9 +112,10 @@ public class CountDownView extends FrameLayout {
             return;
         }
         clearCountDownView();
+
         refreshCounterHandler = new Handler();
         runnableRefreshCounter = new TimerRunnable(
-                serverTime, expiredTime, serverTimeOffset, listener
+                serverTime, expiredTime, serverTimeOffset, listener, dayChangedListener
         );
         startAutoRefreshCounter();
     }
@@ -159,6 +163,7 @@ public class CountDownView extends FrameLayout {
         long diff = endTime.getTime() - startTime.getTime();
         if (diff < 0) diff = 0;
         TimeDiffModel model = new TimeDiffModel();
+        model.setDay((int) (diff / (1000 * 3600 * 24)));
         model.setSecond((int) (diff / 1000 % 60));
         model.setMinute((int) (diff / (60 * 1000) % 60));
         model.setHour((int) (diff / (60 * 60 * 1000) % 24));
@@ -230,6 +235,7 @@ public class CountDownView extends FrameLayout {
     }
 
     private static class TimeDiffModel {
+        private int day;
         private int second;
         private int minute;
         private int hour;
@@ -257,6 +263,10 @@ public class CountDownView extends FrameLayout {
         public void setHour(int hour) {
             this.hour = hour;
         }
+
+        public int getDay() { return day; }
+
+        public void setDay(int day) { this.day = day; }
     }
 
     private class TimerRunnable implements Runnable {
@@ -264,22 +274,30 @@ public class CountDownView extends FrameLayout {
         private final Date expiredTime;
         private final long serverTimeOffset;
         private final CountDownListener listener;
+        private final DayChangedListener dayChangedListener;
         private boolean stop = false;
 
         TimerRunnable(Date serverTime, Date expiredTime, long serverTimeOffset, CountDownListener listener) {
+            this(serverTime, expiredTime, serverTimeOffset, listener, null);
+        }
+
+        TimerRunnable(Date serverTime, Date expiredTime, long serverTimeOffset, CountDownListener listener,
+                      DayChangedListener dayChangedListener) {
             this.serverTime = serverTime;
             this.expiredTime = expiredTime;
             this.serverTimeOffset = serverTimeOffset;
             this.listener = listener;
+            this.dayChangedListener = dayChangedListener;
         }
 
-        public void stop(){
+        public void stop() {
             stop = true;
         }
 
-        public void start(){
+        public void start() {
             stop = false;
         }
+
         @Override
         public void run() {
             if (!isExpired(serverTime, expiredTime) && !stop) {
@@ -290,13 +308,31 @@ public class CountDownView extends FrameLayout {
                 TimeDiffModel timeDiff = getTimeDiff(serverTime, expiredTime);
                 setTime(timeDiff.getHour(), timeDiff.getMinute(), timeDiff.getSecond());
                 refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
+
+                if (dayChangedListener == null) return;
+
+                if (isMoreThanADay(timeDiff)) {
+                    dayChangedListener.onMoreThan24h();
+                } else {
+                    dayChangedListener.onLessThan24h();
+                }
             } else {
                 handleExpiredTime(listener);
             }
         }
     }
 
+    private boolean isMoreThanADay(TimeDiffModel timeDiff) {
+        return timeDiff.getDay() >= 1;
+    }
+
     public interface CountDownListener {
         void onCountDownFinished();
+    }
+
+    public interface DayChangedListener {
+        void onMoreThan24h();
+
+        void onLessThan24h();
     }
 }

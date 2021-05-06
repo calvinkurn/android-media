@@ -2,8 +2,9 @@ package com.tokopedia.chat_common.data.preview
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
-open class ProductPreview(
+open class ProductPreview constructor(
         val id: String = "",
         val imageUrl: String = "",
         val name: String = "",
@@ -42,7 +43,7 @@ open class ProductPreview(
         if (hasColorVariant()) {
             val color = JsonObject()
             val colorOption = JsonObject()
-            colorOption.addProperty("id", colorVariantId.toInt())
+            colorOption.addProperty("id", colorVariantId.toLongOrZero())
             colorOption.addProperty("value", colorVariant)
             colorOption.addProperty("hex", colorHexVariant)
             color.add("option", colorOption)

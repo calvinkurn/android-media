@@ -35,8 +35,8 @@
     <string name="tp_label_applies_to">Berlaku pada:</string>
     <string name="tp_label_prepare_catalog">Kamu tidak memiliki kupon untuk kategori ini</string>
     <string name="tp_label_go_shopping">Ayo klaim kupon gratis di halaman Rewards!</string>
-    <string name="tp_label_try_again">Silakan coba kembali</string>
-    <string name="tp_label_server_error">Terjadi Kendala Pada Server</string>
+    <string name="tp_label_try_again">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+    <string name="tp_label_server_error">Ada gangguan di rumah Toped!</string>
     <string name="tp_label_remaining_exchange">Sisa Tukar</string>
     <string name="tp_label_coupon_expired">Kupon Habis</string>
     <string name="tp_message_tokopoints_on_boarding"><![CDATA[<strong>TokoPoints</strong> adalah program loyalitas konsumen untuk Pengguna yang memungkinkan Pengguna untuk mendapatkan.<br /><strong>Loyalty</strong> dari transaksi yang dilakukan melalui situs/aplikasi.<br /><br />Tingkatkan <strong>Loyalty</strong> untuk mendapatkan keuntungan yang lebih banyak .]]></string>
@@ -112,4 +112,7 @@
     <string name="tp_catalog_empty_button">Lihat Kupon Tersedia</string>
     <string name="tp_webview_format">"%s?url=%s"</string>
     <string name="tp_share">Share</string>
+    <string name="tp_catalog_expire">Berlaku Hingga</string>
+    <string name="tp_catalog_timer_expire">Kupon Expired</string>
+    <string name="tp_coupon_autoapply_msg">Kupon sudah terpasang, transaksi sekarang yuk!</string>
 </resources>

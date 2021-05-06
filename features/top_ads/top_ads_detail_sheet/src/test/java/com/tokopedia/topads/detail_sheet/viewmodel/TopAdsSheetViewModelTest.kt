@@ -5,13 +5,14 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.response.ProductActionResponse
+import com.tokopedia.topads.common.data.response.SingleAdInFo
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
-import com.tokopedia.topads.detail_sheet.data.AdInfo
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import io.mockk.every
 import io.mockk.invoke
 import io.mockk.mockk
@@ -31,7 +32,7 @@ class TopAdsSheetViewModelTest {
 
     private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase = mockk(relaxed = true)
     private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase = mockk(relaxed = true)
-    private val topAdsGetGroupIdUseCase: GraphqlUseCase<AdInfo> = mockk(relaxed = true)
+    private val topAdsGetGroupIdUseCase: TopAdsGetPromoUseCase = mockk(relaxed = true)
     private val topAdsProductActionUseCase: TopAdsProductActionUseCase = mockk(relaxed = true)
     private val topAdsGetAutoAdsStatusUseCase: GraphqlUseCase<TopAdsAutoAds.Response> = mockk(relaxed = true)
     private val testDispatcher = TestCoroutineDispatcher()
@@ -76,20 +77,13 @@ class TopAdsSheetViewModelTest {
         }
     }
 
-
-    @Test
-    fun `test setting queries getGroupProductData`() {
-        viewModel.getGroupProductData(resources, 1) {}
-        verify { topAdsGetGroupProductDataUseCase.setQueryString(any()) }
-    }
-
     @Test
     fun testGetGroupId() {
-        val data = AdInfo()
+        val data = SingleAdInFo()
         every {
             topAdsGetGroupIdUseCase.execute(captureLambda(), any())
         } answers {
-            val onSuccess = lambda<(AdInfo) -> Unit>()
+            val onSuccess = lambda<(SingleAdInFo) -> Unit>()
             onSuccess.invoke(data)
         }
         viewModel.getGroupId("123", "456", ) {}
@@ -116,33 +110,18 @@ class TopAdsSheetViewModelTest {
 
     @Test
     fun testSetProductAction() {
-        val data = ProductActionResponse()
-        every {
-            topAdsProductActionUseCase.executeQuerySafeMode(captureLambda(), any())
-        } answers {
-            val onSuccess = lambda<(ProductActionResponse) -> Unit>()
-            onSuccess.invoke(data)
-        }
         viewModel.setProductAction({}, "123", adIds, resources, "filter")
-
         verify {
-            topAdsProductActionUseCase.executeQuerySafeMode(any(), any())
+            topAdsProductActionUseCase.execute(any(), any())
         }
     }
 
     @Test
     fun `test on error testSetProductAction`() {
-        val exception = Exception("my excep")
-        every {
-            topAdsProductActionUseCase.executeQuerySafeMode(any(), captureLambda())
-        } answers {
-            val onError = lambda<(Exception) -> Unit>()
-            onError.invoke(exception)
-        }
         viewModel.setProductAction({}, "123", adIds, resources, "filter")
 
         verify {
-            topAdsProductActionUseCase.executeQuerySafeMode(any(), any())
+            topAdsProductActionUseCase.execute(any(), any())
         }
     }
 
@@ -205,7 +184,7 @@ class TopAdsSheetViewModelTest {
         verify { topAdsGetGroupProductDataUseCase.unsubscribe() }
         verify { topAdsGetProductStatisticsUseCase.cancelJobs() }
         verify { topAdsGetGroupIdUseCase.cancelJobs() }
-        verify { topAdsProductActionUseCase.cancelJobs() }
+        verify { topAdsProductActionUseCase.unsubscribe() }
         verify { topAdsGetAutoAdsStatusUseCase.cancelJobs() }
     }
 }

@@ -56,7 +56,7 @@ class BarChartViewHolder(
             data == null -> setOnLoading()
             data.error.isNotBlank() -> {
                 setonError(element)
-                listener.setOnErrorWidget(adapterPosition, element)
+                listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> setOnSuccess(element)
         }
@@ -80,7 +80,7 @@ class BarChartViewHolder(
             tvShcBarChartSubValue.gone()
             barChartShc.gone()
 
-            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+            ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         }
     }
 
@@ -122,12 +122,12 @@ class BarChartViewHolder(
     }
 
     private fun getBarChartConfig(element: BarChartWidgetUiModel): BarChartConfigModel {
-        val labelTextColor = itemView.context.getResColor(R.color.Neutral_N700_96)
+        val labelTextColor = itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
         val data = getBarChartData(element.data?.chartData)
         return BarChartConfig.create {
             xAnimationDuration { 200 }
             yAnimationDuration { 200 }
-            barBorderRadius { itemView.context.resources.getDimensionPixelSize(R.dimen.layout_lvl1) }
+            barBorderRadius { itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1) }
 
             xAxis {
                 val xAxisLabels = data.xAxisLabels.map { it.valueFmt }
@@ -155,7 +155,7 @@ class BarChartViewHolder(
     private fun getBarChartTooltip(): ChartTooltip {
         return ChartTooltip(itemView.context, R.layout.shc_partial_chart_tooltip)
                 .setOnDisplayContent { view, data, x, y ->
-                    data?.let {
+                    (data as? BarChartMetricValue)?.let {
                         view.tvShcTooltipTitle.text = it.xLabel
                         view.tvShcTooltipValue.text = it.yLabel
                     }

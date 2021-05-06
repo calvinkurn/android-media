@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -12,6 +13,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.common.view.adapter.viewpager.TopAdsEditPagerAdapter
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.data.response.KeywordDataModel
@@ -25,11 +28,11 @@ import com.tokopedia.topads.edit.utils.Constants.DELETED_PRODUCTS
 import com.tokopedia.topads.edit.utils.Constants.KATA_KUNCI
 import com.tokopedia.topads.edit.utils.Constants.PRODUK_NAME
 import com.tokopedia.topads.edit.utils.Constants.TAB_POSITION
-import com.tokopedia.topads.edit.view.adapter.TopAdsEditPagerAdapter
 import com.tokopedia.topads.edit.view.fragment.edit.BaseEditKeywordFragment
 import com.tokopedia.topads.edit.view.fragment.edit.EditGroupAdFragment
 import com.tokopedia.topads.edit.view.fragment.edit.EditProductFragment
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_base_edit_activity_layout.*
 import java.util.*
 import javax.inject.Inject
@@ -55,12 +58,13 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         setContentView(R.layout.topads_base_edit_activity_layout)
         renderTabAndViewPager()
         setupToolBar()
-        backArrow.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.toolbar_back_black))
+        backArrow.setImageDrawable(AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.toolbar_back_black))
         backArrow.setOnClickListener {
             onBackPressed()
         }
 
         btn_submit.setOnClickListener {
+            btn_submit?.isEnabled = false
             getDataFromChildFragments()
             saveChanges()
         }
@@ -86,7 +90,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
 
     private fun saveChanges() {
         viewModel.topAdsCreated(dataProduct, dataKeyword, dataGroup,
-                ::onSuccessGroupEdited, ::finish)
+                ::onSuccessGroupEdited, ::onErrorEdit)
     }
 
     private fun sendSaveDataEvent(items: ArrayList<KeywordDataModel>?) {
@@ -110,6 +114,17 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         val returnIntent = Intent()
         setResult(Activity.RESULT_OK, returnIntent)
         finish()
+    }
+
+    private fun onErrorEdit(error: String?) {
+        val errorMessage = Utils.getErrorMessage(this, error ?: "")
+        root?.let {
+            Toaster.build(it, errorMessage,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)).show()
+        }
+        btn_submit?.isEnabled = true
     }
 
     private fun setupToolBar() {
@@ -152,7 +167,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         list.add(EditProductFragment.newInstance(bundle))
         list.add(BaseEditKeywordFragment.newInstance(bundle))
         list.add(EditGroupAdFragment.newInstance(bundle))
-        adapter = TopAdsEditPagerAdapter(supportFragmentManager, 0)
+        adapter = TopAdsEditPagerAdapter(arrayOf(PRODUK_NAME, KATA_KUNCI, ATUR_NAME), supportFragmentManager, 0)
         adapter.setData(list)
         return adapter
     }

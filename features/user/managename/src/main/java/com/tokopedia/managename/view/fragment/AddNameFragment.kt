@@ -3,19 +3,27 @@ package com.tokopedia.managename.view.fragment
 import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
+import android.text.SpannableStringBuilder
+import android.text.TextPaint
 import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.managename.R
@@ -62,7 +70,7 @@ class AddNameFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver(){
-        viewModel.updateNameLiveData.observe(this, Observer {
+        viewModel.updateNameLiveData.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> onSuccessAddName()
                 is Fail -> onErrorRegister(it.throwable)
@@ -71,12 +79,7 @@ class AddNameFragment : BaseDaggerFragment() {
     }
 
     private fun initViews(){
-        val joinString = getString(R.string.detail_term_and_privacy) +
-                "<br>" + getString(R.string.link_term_condition) +
-                " serta " + getString(R.string.link_privacy_policy)
-
-        bottom_info?.text = MethodChecker.fromHtml(joinString)
-        bottom_info?.movementMethod = LinkMovementMethod.getInstance()
+        initTermPrivacyView()
         ViewUtil.stripUnderlines(bottom_info)
     }
 
@@ -104,6 +107,58 @@ class AddNameFragment : BaseDaggerFragment() {
             }
             false
         })
+    }
+
+    private fun initTermPrivacyView() {
+        context?.let {
+            val textTermPrivacy1 = "${getString(R.string.text_term_and_privacy_1)} "
+            val textTermPrivacy2 = " ${getString(R.string.text_term_and_privacy_2)} "
+            val textTermCondition = getString(R.string.text_term_condition)
+            val textPrivacyPolicy = getString(R.string.text_privacy_policy)
+            val termPrivacy = SpannableStringBuilder()
+            termPrivacy.append(textTermPrivacy1)
+            termPrivacy.append(textTermCondition)
+            termPrivacy.setSpan(termConditionClickAction(), termPrivacy.length - textTermCondition.length, termPrivacy.length, 0)
+            termPrivacy.append(textTermPrivacy2)
+            termPrivacy.append(textPrivacyPolicy)
+            termPrivacy.setSpan(privacyClickAction(), termPrivacy.length - textPrivacyPolicy.length, termPrivacy.length, 0)
+
+            bottom_info?.run {
+                movementMethod = LinkMovementMethod.getInstance()
+                isSelected = false
+                text = termPrivacy
+            }
+        }
+    }
+
+    private fun termConditionClickAction(): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                context?.let {
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION))
+                }
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400)
+            }
+        }
+    }
+
+    private fun privacyClickAction(): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                context?.let {
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY))
+                }
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400)
+            }
+        }
     }
 
     fun enableNextButton() {

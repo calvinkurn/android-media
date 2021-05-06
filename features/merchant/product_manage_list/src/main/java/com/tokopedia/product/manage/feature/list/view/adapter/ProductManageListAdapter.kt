@@ -4,7 +4,7 @@ import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAdapter
 import com.tokopedia.product.manage.feature.list.extension.findIndex
@@ -14,7 +14,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 
 class ProductManageListAdapter(
     baseListAdapterTypeFactory: ProductManageAdapterFactoryImpl
-) : BaseProductManageAdapter<ProductViewModel, ProductManageAdapterFactoryImpl>(baseListAdapterTypeFactory, ProductListDiffer()) {
+) : BaseProductManageAdapter<ProductUiModel, ProductManageAdapterFactoryImpl>(baseListAdapterTypeFactory, ProductListDiffer()) {
 
     fun updatePrice(productId: String, price: String) {
         submitList(productId) {
@@ -35,8 +35,13 @@ class ProductManageListAdapter(
         }
     }
 
-    fun updateStock(productId: String, stock: Int, status: ProductStatus) {
-        submitList(productId) { it.copy(stock = stock, status = status) }
+    fun updateStock(productId: String, stock: Int?, status: ProductStatus?) {
+        submitList(productId) {
+            var product = it
+            stock?.let { product = product.copy(stock = stock) }
+            status?.let { product = product.copy(status = status) }
+            product
+        }
     }
 
     fun updateCashBack(productId: String, cashback: Int) {
@@ -66,12 +71,12 @@ class ProductManageListAdapter(
         submitList(items)
     }
 
-    fun filterProductList(predicate: (ProductViewModel) -> Boolean) {
+    fun filterProductList(predicate: (ProductUiModel) -> Boolean) {
         val productList = data.filter { predicate.invoke(it) }
         submitList(productList)
     }
 
-    private fun submitList(productId: String, update: (ProductViewModel) -> ProductViewModel) {
+    private fun submitList(productId: String, update: (ProductUiModel) -> ProductUiModel) {
         val items = data.toMutableList()
         val index = items.findIndex(productId)
         index?.let {

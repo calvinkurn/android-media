@@ -6,12 +6,11 @@ import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.offi
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.searchShopModel
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.searchShopModelEmptyList
 import com.tokopedia.search.result.stubExecute
-import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldContain
 import com.tokopedia.search.shouldHaveSize
 import org.junit.Test
 
-internal class SearchShopGetActiveFilterOnEmptySearchTest: SearchShopViewModelTestFixtures() {
+internal class SearchShopGetActiveFilterOnEmptySearchTest: SearchShopDataViewTestFixtures() {
 
     private lateinit var activeFilterOptionList: List<Option>
 

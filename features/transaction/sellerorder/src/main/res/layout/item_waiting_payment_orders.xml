@@ -22,8 +22,8 @@
         android:id="@+id/tvValuePaymentDeadline"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:paddingEnd="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl1"
+        android:paddingEnd="@dimen/layout_lvl2"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvLabelPaymentDeadline"
@@ -48,9 +48,9 @@
         android:id="@+id/tvValueBuyerNameAndPlace"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl1"
         android:layout_marginTop="@dimen/dp_4"
         android:paddingEnd="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/spacing_lvl1"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvLabelBuyerNameAndPlace"
@@ -67,7 +67,7 @@
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:background="@color/Unify_N75"
-        app:layout_constraintTop_toBottomOf="@id/tvLabelBuyerNameAndPlace" />
+        app:layout_constraintTop_toBottomOf="@id/tvValueBuyerNameAndPlace" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvWaitingPaymentOrderProducts"
@@ -100,6 +100,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_3"
+        android:contentDescription="@string/content_description_ic_load_more_product_drop_down_indicator"
         app:layout_constraintBottom_toBottomOf="@id/tvToggleCollapseMoreProducts"
         app:layout_constraintStart_toEndOf="@id/tvToggleCollapseMoreProducts"
         app:layout_constraintTop_toTopOf="@id/tvToggleCollapseMoreProducts"

@@ -23,7 +23,7 @@ data class SomDetailOrder(
         data class GetSomDetail(
                 @SerializedName("order_id")
                 @Expose
-                val orderId: Int = 0,
+                val orderId: String = "0",
 
                 @SerializedName("status")
                 @Expose
@@ -132,11 +132,11 @@ data class SomDetailOrder(
             data class Products(
                     @SerializedName("id")
                     @Expose
-                    val id: Int = 0,
+                    val id: String = "0",
 
                     @SerializedName("order_detail_id")
                     @Expose
-                    val orderDetailId: Int = 0,
+                    val orderDetailId: String = "0",
 
                     @SerializedName("name")
                     @Expose
@@ -181,7 +181,7 @@ data class SomDetailOrder(
             data class Customer(
                     @SerializedName("id")
                     @Expose
-                    val id: Int = 0,
+                    val id: String = "0",
 
                     @SerializedName("name")
                     @Expose
@@ -207,7 +207,7 @@ data class SomDetailOrder(
             data class Shipment(
                     @SerializedName("id")
                     @Expose
-                    val id: Int = 0,
+                    val id: String = "0",
 
                     @SerializedName("name")
                     @Expose
@@ -215,7 +215,7 @@ data class SomDetailOrder(
 
                     @SerializedName("product_id")
                     @Expose
-                    val productId: Int = 0,
+                    val productId: String = "0",
 
                     @SerializedName("product_name")
                     @Expose
@@ -349,7 +349,7 @@ data class SomDetailOrder(
             data class Warehouse(
                     @SerializedName("warehouse_id")
                     @Expose
-                    val warehouseId: Int = 0,
+                    val warehouseId: String = "0",
 
                     @SerializedName("fulfill_by")
                     @Expose
@@ -379,7 +379,11 @@ data class SomDetailOrder(
 
                     @SerializedName("reason")
                     @Expose
-                    val reason: String = "")
+                    val reason: String = "",
+
+                    @SerializedName("status")
+                    @Expose
+                    val status: Int = 0)
 
             data class FlagOrderMeta(
                     @SerializedName("is_free_shipping_campaign")

@@ -1,7 +1,6 @@
 package com.tokopedia.chat_common.domain.mapper
 
 import androidx.annotation.NonNull
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -34,10 +33,19 @@ open class WebsocketMessageMapper @Inject constructor() {
 
     open fun convertToMessageViewModel(pojo: ChatSocketPojo): Visitable<*> {
         return MessageViewModel(
-                pojo.msgId.toString(),
-                pojo.fromUid, pojo.from, pojo.fromRole, "",
-                "", pojo.message.timeStampUnixNano, pojo.startTime, pojo.message.censoredReply,
-                false, false, !pojo.isOpposite, pojo.source
+                messageId = pojo.msgId.toString(),
+                fromUid = pojo.fromUid,
+                from = pojo.from,
+                fromRole = pojo.fromRole,
+                attachmentId = "",
+                attachmentType = "",
+                replyTime = pojo.message.timeStampUnixNano,
+                startTime = pojo.startTime,
+                message = pojo.message.censoredReply,
+                isRead = false,
+                isDummy = false,
+                isSender = !pojo.isOpposite,
+                source = pojo.source
         )
     }
 

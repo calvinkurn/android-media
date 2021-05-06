@@ -10,7 +10,7 @@ class DepositHistoryList : ParcelableViewModel<SaldoDetailTransactionFactory> {
     var note: String? = null
 
     @SerializedName("amount")
-    var amount: Float = 0.toFloat()
+    var amount: Double = 0.0
 
     @SerializedName("image")
     var imageURL: String? = null

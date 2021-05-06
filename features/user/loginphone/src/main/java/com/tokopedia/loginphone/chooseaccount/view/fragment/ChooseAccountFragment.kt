@@ -29,6 +29,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SQ_CHE
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iris.Iris
+import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -49,6 +50,7 @@ import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.track.TrackApp
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
@@ -85,8 +87,8 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     private var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 
     lateinit var mIris: Iris
-    lateinit var viewModel: com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel
 
+    private var viewModel: com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel = com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel()
     private var selectedAccount: UserDetail? = null
     private var selectedPhoneNo: String? = null
 
@@ -127,14 +129,20 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         when {
-            savedInstanceState != null -> viewModel = com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel(
-                    savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, ""),
-                    savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_UUID, ""),
-                    savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, ""))
-            arguments != null -> viewModel = com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel(
-                    arguments?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, ""),
-                    arguments?.getString(ApplinkConstInternalGlobal.PARAM_UUID, ""),
-                    arguments?.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, ""))
+            savedInstanceState != null -> {
+                viewModel.phoneNumber = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                viewModel.accessToken = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                viewModel.loginType = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, "")
+                viewModel.isFromRegister = savedInstanceState.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false)
+                viewModel.isFacebook = savedInstanceState.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FACEBOOK, false)
+            }
+            arguments != null -> {
+                viewModel.phoneNumber = arguments?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                viewModel.accessToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                viewModel.loginType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, "")
+                viewModel.isFromRegister = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false) ?: false
+                viewModel.isFacebook = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FACEBOOK, false) ?: false
+            }
             activity != null -> activity?.finish()
         }
 
@@ -218,6 +226,25 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         chooseAccountViewModel.goToSecurityQuestion.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             onGoToSecurityQuestion()
         })
+        chooseAccountViewModel.showAdminLocationPopUp.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            when(it) {
+                is Success -> showLocationAdminPopUp()
+                is Fail -> showLocationAdminError(it.throwable)
+            }
+        })
+    }
+
+    private fun showLocationAdminPopUp() {
+        LocationAdminDialog(context) {
+            userSessionInterface.logoutSession()
+            activity?.onBackPressed()
+        }.show()
+    }
+
+    private fun showLocationAdminError(error: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, error)
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        dismissLoadingProgress()
     }
 
     override fun onSelectedAccount(account: UserDetail, phone: String) {
@@ -243,19 +270,23 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, OTP_MODE_PIN);
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
         startActivityForResult(intent, REQUEST_CODE_PIN_CHALLENGE)
     }
 
     private fun getAccountList() {
         when (viewModel.loginType) {
             FACEBOOK_LOGIN_TYPE -> {
-                if (viewModel.accessToken.isNotEmpty())
-                    chooseAccountViewModel.getAccountListFacebook(viewModel.accessToken)
+                viewModel.accessToken?.let {
+                    if (it.isNotEmpty())
+                        chooseAccountViewModel.getAccountListFacebook(it)
+                }
             }
             else -> {
-                if (viewModel.accessToken.isNotEmpty() && viewModel.phoneNumber.isNotEmpty())
-                    chooseAccountViewModel.getAccountListPhoneNumber(viewModel.accessToken, viewModel.phoneNumber)
+                LetUtil.ifLet(viewModel.accessToken, viewModel.phoneNumber) { (accessToken, phoneNumber) ->
+                    chooseAccountViewModel.getAccountListPhoneNumber(accessToken, phoneNumber)
+                }
             }
         }
     }
@@ -265,19 +296,25 @@ class ChooseAccountFragment : BaseDaggerFragment(),
             when (viewModel.loginType) {
                 FACEBOOK_LOGIN_TYPE -> {
                     if (phone.isNotEmpty()) {
-                        chooseAccountViewModel.loginTokenFacebook(
-                                viewModel.accountList.key,
-                                it.email,
-                                phone
-                        )
+                        viewModel.accountList?.key?.let { key ->
+                            chooseAccountViewModel.loginTokenFacebook(
+                                    key,
+                                    it.email,
+                                    phone
+                            )
+                        }
                     }
                 }
                 else -> {
-                    chooseAccountViewModel.loginTokenPhone(
-                            viewModel.accountList.key,
-                            it.email,
-                            viewModel.phoneNumber
-                    )
+                    LetUtil.ifLet(viewModel.accountList, viewModel.phoneNumber) { (accountList, phoneNumber) ->
+                        if (accountList is AccountList && phoneNumber is String) {
+                            chooseAccountViewModel.loginTokenPhone(
+                                    accountList.key,
+                                    it.email,
+                                    phoneNumber
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -286,10 +323,17 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     private fun onSuccessLogin(userId: String) {
         activity?.let {
             dismissLoadingProgress()
-            analytics.eventSuccessLoginPhoneNumber()
+            if(!viewModel.isFromRegister) {
+                analytics.eventSuccessLoginPhoneNumber()
+            } else {
+                if (viewModel.isFacebook) {
+                    analytics.eventSuccessFbPhoneNumber()
+                } else {
+                    analytics.eventSuccessLoginPhoneNumberSmartRegister()
+                }
+            }
             setTrackingUserId(userId)
             setFCM()
-
             it.setResult(Activity.RESULT_OK)
             it.finish()
         }
@@ -313,6 +357,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
                 userData.userId = userSessionInterface.userId
                 userData.email = userSessionInterface.email
                 userData.phoneNumber = userSessionInterface.phoneNumber
+                userData.medium = userSessionInterface.loginMethod
 
                 //Identity Event
                 LinkerManager.getInstance().sendEvent(
@@ -321,7 +366,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
                 //Login Event
                 LinkerManager.getInstance().sendEvent(
                         LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
-                loginEventAppsFlyer(userSessionInterface.userId, userSessionInterface.email)
+                loginEventAppsFlyer(userSessionInterface.userId, "")
             }
 
         } catch (e: Exception) {

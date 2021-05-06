@@ -10,22 +10,22 @@ import com.tokopedia.homenav.mainnav.view.adapter.typefactory.OrderListTypeFacto
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.NavOrderSpacingDecoration
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderListAdapter
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.homenav.mainnav.view.viewmodel.TransactionListItemViewModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OrderPaymentModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OrderProductModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OtherTransactionModel
+import com.tokopedia.homenav.mainnav.view.datamodel.TransactionListItemDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import kotlinx.android.synthetic.main.holder_transaction_list.view.*
 
 class TransactionListViewHolder(itemView: View,
                                 val mainNavListener: MainNavListener
-): AbstractViewHolder<TransactionListItemViewModel>(itemView) {
+): AbstractViewHolder<TransactionListItemDataModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_transaction_list
     }
 
-    override fun bind(element: TransactionListItemViewModel) {
+    override fun bind(element: TransactionListItemDataModel) {
         val context = itemView.context
         val adapter = OrderListAdapter(OrderListTypeFactoryImpl(mainNavListener))
 

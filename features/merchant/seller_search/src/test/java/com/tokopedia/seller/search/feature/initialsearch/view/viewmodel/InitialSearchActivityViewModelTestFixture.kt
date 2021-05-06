@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.seller.search.common.domain.GetSellerSearchPlaceholderUseCase
 import com.tokopedia.seller.search.common.domain.model.SellerSearchPlaceholderResponse
 import com.tokopedia.seller.search.common.domain.model.SellerSearchPlaceholderResponse.SellerSearchPlaceholder
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -13,10 +13,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 
+
 open class InitialSearchActivityViewModelTestFixture {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     private lateinit var getSearchPlaceholderUseCase: GetSellerSearchPlaceholderUseCase
     protected lateinit var viewModel: InitialSearchActivityViewModel
@@ -26,8 +30,8 @@ open class InitialSearchActivityViewModelTestFixture {
         getSearchPlaceholderUseCase = mockk()
 
         viewModel = InitialSearchActivityViewModel(
-            getSearchPlaceholderUseCase,
-            CoroutineTestDispatchersProvider
+                getSearchPlaceholderUseCase,
+                coroutineTestRule.dispatchers
         )
     }
 
@@ -48,5 +52,10 @@ open class InitialSearchActivityViewModelTestFixture {
     protected fun verifyGetSearchPlaceholderError(expectedError: Throwable) {
         val actualError = (viewModel.searchPlaceholder.value as? Fail)?.throwable
         assertEquals(expectedError::class.java.name, actualError?.let { it::class.java.name })
+    }
+
+    protected fun verifyGetTypingSearchSuccess(expectedKeyword: String) {
+        val actualKeyword = viewModel.searchKeyword.value
+        assertEquals(expectedKeyword, actualKeyword)
     }
 }

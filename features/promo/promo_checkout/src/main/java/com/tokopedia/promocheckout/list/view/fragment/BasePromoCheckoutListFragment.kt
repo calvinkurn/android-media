@@ -80,11 +80,15 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     }
 
     override fun showProgressLoading() {
-        progressDialog.show()
+        activity?.let {
+            if (!it.isFinishing) progressDialog.show()
+        }
     }
 
     override fun hideProgressLoading() {
-        progressDialog.hide()
+        activity?.let {
+            if (!it.isFinishing) progressDialog.hide()
+        }
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
@@ -122,23 +126,23 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
         val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
-        with(getRecyclerView(view)) {
+        getRecyclerView(view)?.run {
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addItemDecoration(linearDividerItemDecoration)
         }
 
         progressDialog = ProgressDialog(activity)
         progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
-        textInputCoupon.setText(promoCode)
+        textInputCoupon.textFieldInput.setText(promoCode)
 
         populateLastSeen()
         buttonUse.setOnClickListener {
-            onPromoCodeUse(textInputCoupon.text.toString())
+            onPromoCodeUse(textInputCoupon.textFieldInput.text.toString())
         }
         if (isCouponActive) {
-            getRecyclerView(view).visibility = View.VISIBLE
+            getRecyclerView(view)?.visibility = View.VISIBLE
         } else {
-            getRecyclerView(view).visibility = View.GONE
+            getRecyclerView(view)?.visibility = View.GONE
         }
     }
 
@@ -161,14 +165,16 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         }
 
         if (e is CheckPromoCodeException || e is MessageErrorException) {
-            textInputLayoutCoupon.error = e.message
+            textInputCoupon.setError(true)
+            e.message?.let { textInputCoupon.setMessage(it) }
         } else {
             NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
         }
     }
 
     override fun onErrorEmptyPromo() {
-        textInputLayoutCoupon.error = getString(R.string.promostacking_checkout_label_error_empty_voucher_code)
+        textInputCoupon.setError(true)
+        textInputCoupon.setMessage(getString(R.string.promostacking_checkout_label_error_empty_voucher_code))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

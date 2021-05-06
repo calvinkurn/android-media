@@ -92,7 +92,7 @@ class AttachProductPresenterTest {
         presenter.updateCheckedList(listOf(AttachProductItemUiModel(
                 "testUrl",
                 "testName",
-                0,
+                "0",
                 "testImageFull",
                 "testImage",
                 "testPrice",

@@ -21,4 +21,6 @@ interface PageLoadTimePerformanceInterface {
     fun invalidate()
 
     fun getPltPerformanceData(): PltPerformanceData
+
+    fun getAttribution(): HashMap<String, String>
 }

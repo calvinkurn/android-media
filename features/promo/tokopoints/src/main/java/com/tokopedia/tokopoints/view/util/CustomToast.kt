@@ -22,18 +22,18 @@ class CustomToast {
 
         fun show(activityContext: Context,
                  @NonNull text: String,
-                 duration: Int = Toast.LENGTH_LONG,
+                 duration: Int = Toast.LENGTH_SHORT,
                  bg: Int = R.drawable.tp_toast_bg
         ) {
-            val leftPadding = dpToPx(activityContext, 16).toInt()
-            val bottomMargin = dpToPx(activityContext, 48).toInt()
+            val leftPadding = dpToPx(activityContext, 20).toInt()
+            val bottomMargin = dpToPx(activityContext, 100).toInt()
             val topPadding = dpToPx(activityContext, 8).toInt()
             val topPaddingSingleLine = dpToPx(activityContext, 12).toInt()
             val bottomPaddingSingleLine = dpToPx(activityContext, 2).toInt()
             val textView = Typography(activityContext)
             textView.text = text
             textView.setPadding(leftPadding, topPadding, leftPadding, topPadding)
-            textView.setTextColor(ContextCompat.getColor(activityContext, R.color.tp_toast_text_color))
+            textView.setTextColor(ContextCompat.getColor(activityContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             textView.setBackgroundResource(bg)
             textView.fontType = Typography.BODY_3
             val fm = FrameLayout(activityContext)

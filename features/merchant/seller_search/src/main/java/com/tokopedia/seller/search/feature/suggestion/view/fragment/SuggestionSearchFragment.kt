@@ -17,11 +17,15 @@ import com.tokopedia.seller.search.common.util.addWWWPrefix
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchActivity
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.HighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.*
 import com.tokopedia.seller.search.feature.suggestion.view.adapter.SuggestionSearchAdapter
 import com.tokopedia.seller.search.feature.suggestion.view.adapter.SuggestionSearchAdapterTypeFactory
 import com.tokopedia.seller.search.feature.suggestion.view.model.BaseSuggestionSearchSeller
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.*
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.HighlightSuggestionSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemHighlightSuggestionSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemTitleHighlightSuggestionSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.viewmodel.SuggestionSearchViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -30,7 +34,7 @@ import kotlinx.android.synthetic.main.suggestion_search_fragment.*
 import javax.inject.Inject
 
 class SuggestionSearchFragment : BaseDaggerFragment(),
-        ProductSearchListener, OrderSearchListener, NavigationSearchListener, FaqSearchListener {
+        ProductSearchListener, OrderSearchListener, NavigationSearchListener, FaqSearchListener, HighlightSuggestionSearchListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -39,7 +43,7 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val searchSellerAdapterTypeFactory by lazy {
-        SuggestionSearchAdapterTypeFactory(this, this, this, this)
+        SuggestionSearchAdapterTypeFactory(this, this, this, this, this)
     }
 
     private val suggestionSearchAdapter by lazy { SuggestionSearchAdapter(searchSellerAdapterTypeFactory) }
@@ -109,8 +113,13 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
 
     private fun setSuggestionSearch(data: List<BaseSuggestionSearchSeller>) {
         suggestionSearchAdapter.clearAllElements()
-        if (data.isEmpty()) {
+        val highlightsData = data.filterIsInstance<HighlightSuggestionSearchUiModel>()
+        if (highlightsData.isNotEmpty()) {
             suggestionSearchAdapter.addNoResultState()
+            val itemTitleHighlightSearchUiModel = data.filterIsInstance<ItemTitleHighlightSuggestionSearchUiModel>().firstOrNull() ?: ItemTitleHighlightSuggestionSearchUiModel()
+            val itemHighlightSearchUiModel = highlightsData.firstOrNull() ?: HighlightSuggestionSearchUiModel()
+            val highlightSearchVisitable = mutableListOf(itemTitleHighlightSearchUiModel, itemHighlightSearchUiModel)
+            suggestionSearchAdapter.addAll(highlightSearchVisitable)
             SellerSearchTracking.impressionEmptyResultEvent(userId)
         } else {
             suggestionSearchAdapter.addAll(data)
@@ -205,5 +214,11 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
         val appUrl = element.appActionLink.addWWWPrefix
         RouteManager.route(activity, appUrl)
         dropKeyBoard()
+    }
+
+    override fun onHighlightItemClicked(data: ItemHighlightSuggestionSearchUiModel, position: Int) {
+        viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
+        startActivityFromAutoComplete(data.appUrl.orEmpty())
+        SellerSearchTracking.clickOnItemSearchHighlights(userId)
     }
 }

@@ -15,17 +15,16 @@ class AdScheduleAndBudgetViewModel @Inject constructor(private val createHeadlin
                 block = {
                     createHeadlineAdsUseCase.setParams(input)
                     val response = createHeadlineAdsUseCase.executeOnBackground()
-                    if(response.topadsManageHeadlineAd.success.id.isNotEmpty()){
+                    if (response.topadsManageHeadlineAd.success.id.isNotEmpty()) {
                         onSuccess()
-                    }else{
+                    } else {
                         onError(response.topadsManageHeadlineAd.errors.first().detail)
                     }
                 },
                 onError = {
-                    onError(it.message?:"")
+                    onError(it.message ?: "")
                     it.printStackTrace()
                 }
         )
     }
-
 }

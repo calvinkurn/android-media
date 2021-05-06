@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent">
+
+    <RelativeLayout
+        android:id="@+id/shimmerSawOrder1"
+        android:layout_width="158dp"
+        android:layout_height="10dp"
+        android:layout_alignTop="@+id/shimmerSawOrder3"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+
+    <RelativeLayout
+        android:id="@+id/shimmerSawOrder2"
+        android:layout_width="104dp"
+        android:layout_height="10dp"
+        android:layout_below="@+id/shimmerSawOrder1"
+        android:layout_alignStart="@+id/shimmerSawOrder1"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+
+    <RelativeLayout
+        android:id="@+id/shimmerSawOrder3"
+        android:layout_width="@dimen/saw_dimen_46dp"
+        android:layout_height="@dimen/saw_dimen_46dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+
+    <RelativeLayout
+        android:id="@+id/sawOrderItemHorLine"
+        android:layout_width="match_parent"
+        android:layout_height="0.8dp"
+        android:layout_below="@+id/shimmerSawOrder3"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:background="@color/Unify_N75" />
+</RelativeLayout>

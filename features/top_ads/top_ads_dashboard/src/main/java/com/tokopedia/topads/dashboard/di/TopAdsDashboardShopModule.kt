@@ -4,11 +4,9 @@ import android.content.Context
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.shop.common.constant.ShopCommonUrl
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor
-import com.tokopedia.topads.common.data.util.CacheApiTKPDResponseValidator
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -17,13 +15,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 @Module
-@TopAdsDashboardScope
 class TopAdsDashboardShopModule {
-    @ShopQualifier
-    @Provides
-    fun provideApiCacheInterceptor(@ApplicationContext context: Context): CacheApiInterceptor {
-        return CacheApiInterceptor(context, CacheApiTKPDResponseValidator(TkpdV4ResponseError::class.java))
-    }
 
     @ShopQualifier
     @Provides
@@ -48,10 +40,8 @@ class TopAdsDashboardShopModule {
     @Provides
     fun provideOkHttpClient(shopAuthInterceptor: ShopAuthInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
-                            @ShopQualifier errorResponseInterceptor: ErrorResponseInterceptor,
-                            cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
+                            @ShopQualifier errorResponseInterceptor: ErrorResponseInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(shopAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)

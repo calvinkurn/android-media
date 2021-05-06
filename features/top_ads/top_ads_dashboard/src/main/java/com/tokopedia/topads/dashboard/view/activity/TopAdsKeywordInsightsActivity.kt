@@ -3,12 +3,12 @@ package com.tokopedia.topads.dashboard.view.activity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
@@ -18,13 +18,13 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.KEY_
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_FROM_BID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_FROM_NEG
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_FROM_POS
-import com.tokopedia.topads.dashboard.data.model.FinalAdResponse
+import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
 import com.tokopedia.topads.dashboard.data.model.insightkey.MutationData
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashInsightKeyPagerAdapter
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightKeyBidFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightKeyNegFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightKeyPosFragment
@@ -59,7 +59,7 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
     @Inject
     lateinit var topAdsInsightPresenter: TopAdsInsightPresenter
     private var currentGroupId: String = ""
-    lateinit var adapter: TopAdsDashInsightKeyPagerAdapter
+    lateinit var adapter: TopAdsDashboardBasePagerAdapter
     var data: InsightKeyData? = null
     private var keyList: MutableList<String> = mutableListOf()
     private var requestFrom: String = REQUEST_FROM_POS
@@ -74,7 +74,7 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
         initInjector()
         setContentView(R.layout.topads_dash_insight_key_activity_base_layout)
         topAdsInsightPresenter.attachView(this)
-        topAdsInsightPresenter.getInsight(resources)
+        fetchData()
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         tabUnify.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -130,11 +130,11 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
-    private fun getViewPagerAdapter(data: InsightKeyData): TopAdsDashInsightKeyPagerAdapter? {
-        val list: ArrayList<Fragment> = arrayListOf()
+    private fun getViewPagerAdapter(data: InsightKeyData): TopAdsDashboardBasePagerAdapter? {
+        val list: ArrayList<FragmentTabItem> = arrayListOf()
         val bundle = Bundle()
         currentGroupId = if (currentGroupId.isEmpty()) {
-            intent.getStringExtra(KEY_INSIGHT)?:""
+            intent.getStringExtra(KEY_INSIGHT) ?: ""
         } else
             currentGroupId
         currentTabPosition = tabUnify.getUnifyTabLayout().selectedTabPosition
@@ -146,10 +146,10 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
         tabUnify?.addNewTab(getString(R.string.topads_insight_pos_key_ini))
         tabUnify?.addNewTab(getString(R.string.topads_insight_neg_key_ini))
         tabUnify?.addNewTab(getString(R.string.topads_insight_bid_ini))
-        list.add(TopAdsInsightKeyPosFragment.createInstance(bundle))
-        list.add(TopAdsInsightKeyNegFragment.createInstance(bundle))
-        list.add(TopAdsInsightKeyBidFragment.createInstance(bundle))
-        adapter = TopAdsDashInsightKeyPagerAdapter(supportFragmentManager, 0)
+        list.add(FragmentTabItem(getString(R.string.topads_insight_pos_key_ini), TopAdsInsightKeyPosFragment.createInstance(bundle)))
+        list.add(FragmentTabItem(getString(R.string.topads_insight_neg_key_ini), TopAdsInsightKeyNegFragment.createInstance(bundle)))
+        list.add(FragmentTabItem(getString(R.string.topads_insight_bid_ini), TopAdsInsightKeyBidFragment.createInstance(bundle)))
+        adapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)
         adapter.setList(list)
         return adapter
     }
@@ -194,6 +194,7 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
     }
 
     override fun onButtonClicked(mutationData: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean) {
+        fetchData()
         currentGroupId = groupId
         val query = data?.header?.btnAction?.insight ?: ""
         this.countToAdd = countToAdd
@@ -244,5 +245,9 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
     override fun onButtonClickedBid(data: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean) {
         requestFrom = REQUEST_FROM_BID
         onButtonClicked(data, groupId, countToAdd, forAllButton)
+    }
+
+    private fun fetchData() {
+        topAdsInsightPresenter.getInsight(resources)
     }
 }

@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent" >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/action_activate"
@@ -94,7 +93,7 @@
             app:layout_constraintStart_toEndOf="@id/img_delete"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_delete"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_14"

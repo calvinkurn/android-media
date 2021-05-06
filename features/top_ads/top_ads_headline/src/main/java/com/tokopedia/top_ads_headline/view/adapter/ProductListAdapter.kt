@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.Category
-import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -27,14 +27,14 @@ private const val MAX_DEPARTMENT_NAME_LENGTH = 20
 const val MAX_PRODUCT_SELECTION = 10
 const val SINGLE_SELECTION = 1
 
-class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>,
-                         private var selectedProductMap: HashMap<Category, ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>>,
+class ProductListAdapter(var list: ArrayList<TopAdsProductModel>,
+                         private var selectedProductMap: HashMap<Category, ArrayList<TopAdsProductModel>>,
                          private val productListAdapterListener: ProductListAdapterListener? = null) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var showShimmer = true
     private val departmentLengthRange = 0..17
 
-    fun setProductList(list: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>) {
+    fun setProductList(list: ArrayList<TopAdsProductModel>) {
         showShimmer = false
         this.list = list
         notifyDataSetChanged()
@@ -62,7 +62,7 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as? ProductListViewHolder)?.let { viewHolder ->
             val product = list[position]
-            val category = Category(product.departmentId.toString(), product.departmentName)
+            val category = Category(product.departmentID.toString(), product.departmentName)
             viewHolder.productName.text = product.productName
             viewHolder.productPrice.text = product.productPrice
             viewHolder.productImage.loadImage(product.productImage)
@@ -86,7 +86,7 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
         }
     }
 
-    private fun checkIfSingleSelect(category: Category, product: ResponseProductList.Result.TopadsGetListProduct.Data): Boolean {
+    private fun checkIfSingleSelect(category: Category, product: TopAdsProductModel): Boolean {
         selectedProductMap[category]?.let {
             if (it.size == SINGLE_SELECTION && it.contains(product)) {
                 return true
@@ -103,7 +103,7 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
         }
     }
 
-    private fun getDepartmentName(context: Context, product: ResponseProductList.Result.TopadsGetListProduct.Data): CharSequence? {
+    private fun getDepartmentName(context: Context, product: TopAdsProductModel): CharSequence? {
         return if (product.isRecommended) {
             context.getString(R.string.topads_headline_recommendasi)
         } else {
@@ -127,7 +127,7 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
         }
     }
 
-    private fun onItemSelection(isAlreadyChecked: Boolean, category: Category, product: ResponseProductList.Result.TopadsGetListProduct.Data) {
+    private fun onItemSelection(isAlreadyChecked: Boolean, category: Category, product: TopAdsProductModel) {
         if (isAlreadyChecked) {
             selectedProductMap[category]?.remove(product)
         } else {
@@ -141,7 +141,7 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
                 if (selectedProductMap[category] != null) {
                     selectedProductMap[category]?.add(product)
                 } else {
-                    val value = ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>()
+                    val value = ArrayList<TopAdsProductModel>()
                     value.add(product)
                     selectedProductMap[category] = value
                 }
@@ -237,6 +237,6 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
 
     interface ProductListAdapterListener {
         fun onProductOverSelect()
-        fun onProductClick(product: ResponseProductList.Result.TopadsGetListProduct.Data)
+        fun onProductClick(product: TopAdsProductModel)
     }
 }

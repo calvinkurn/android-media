@@ -23,9 +23,6 @@
 -dontwarn com.viewpagerindicator.LinePageIndicator
 -dontwarn sun.misc.Unsafe
 
-#https://github.com/facebook/react-native/issues/25679
--keep class com.facebook.hermes.unicode.** { *; }
-
 -keep class id.co.veritrans.android.api.**{ *;}
 -keepclassmembers class id.co.veritrans.android.api.**{
  @id.co.veritrans.android.api.** *;
@@ -165,7 +162,6 @@
 }
 -dontwarn kotlinx.coroutines.flow.**inlined**
 -dontwarn kotlinx.coroutines.flow.**
--dontwarn kotlinx.coroutines.reactive.**
 
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
@@ -214,6 +210,10 @@
 
 -keep public class com.android.installreferrer.** { *; }
 
+#keep for security purposes. This library has already been obfuscated.
+-keep class com.tkpd.util.Base64.** { *; }
+
+
 # Keep Class com.tokopedia
 -keep public class com.tokopedia.design.component.BottomNavigation { *; }
 #-keep public class com.tokopedia.design.text.SpinnerCounterInputView { *; }
@@ -222,6 +222,9 @@
 -keep class com.tokopedia.discovery2.data.ComponentsItem { *; }
 #agerestriction
 -keep class com.tokopedia.age_restriction.viewmodel.** { *; }
+#topads
+-keep class com.tokopedia.topads.dashboard.view.fragment.** extends androidx.fragment.app.Fragment{}
+
 
 #dontwarn com.tokopedia
 -dontwarn com.tokopedia.topads.dashboard.view.sheet.**
@@ -237,6 +240,24 @@
 
 # To show pop-up via CM engine
 -keepnames class com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
+-keepnames class com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 -keepnames class com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment
 -keepnames class com.tokopedia.home_recom.view.fragment.RecommendationFragment
 -keepnames class com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
+-keepnames class com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment
+-keepnames class com.tokopedia.cart.view.CartFragment
+-keepnames class com.tokopedia.home.account.presentation.fragment.AccountHomeFragment
+
+# Hansel proguard rules
+-dontwarn io.hansel.**
+-keep class io.hansel.**{*;}
+-keep class **.HanselDialog.*{*;}
+-keep class * implements io.hansel.**.* {*;}
+-keep class * extends io.hansel.**.* {*;}
+
+
+# data visor
+-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
+-keepclasseswithmembers class * { native <methods>; }
+-keep class com.datavisor.vangogh.** { *; }
+-keep class com.datavisorobfus.** { *; }

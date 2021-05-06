@@ -21,125 +21,24 @@
         android:paddingRight="@dimen/dp_24"
         android:paddingBottom="@dimen/dp_8"
         android:text="@string/tukar_tambah"
-        android:textColor="@color/product_detail_dms_white"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
         tools:visibility="visible" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/discount_timer_holder"
-        android:layout_width="0dp"
+    <com.tokopedia.product.detail.view.widget.CampaignRibbon
+        android:id="@+id/campaign_ribbon"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tradein_header_container"
-        tools:visibility="visible">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_discount_timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_rounded_right_red"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingEnd="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/text_title_discount_timer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="@dimen/dp_4"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:maxLines="1"
-                android:paddingTop="@dimen/dp_8"
-                android:paddingEnd="@dimen/dp_10"
-                android:paddingRight="@dimen/dp_10"
-                android:paddingBottom="@dimen/dp_8"
-                android:singleLine="true"
-                tools:text="@string/label_flash_sale"
-                android:textColor="@color/product_detail_dms_white"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_2"
-                app:typographyWeight="bold" />
-
-            <com.tokopedia.design.countdown.CountDownView
-                android:id="@+id/count_down"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/bg_countdown_rounded_white"
-                android:paddingStart="@dimen/dp_8"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
-                app:coundDownBackgroud="@android:color/transparent"
-                app:countDownSparatorColor="@color/Unify_R500"
-                app:countDownTxtColor="@color/Unify_R500"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/text_title_discount_timer"
-                app:layout_constraintStart_toEndOf="@+id/text_title_discount_timer"
-                app:layout_constraintTop_toTopOf="@+id/text_title_discount_timer" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <ProgressBar
-            android:id="@+id/stock_bar_sold_product"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="@dimen/dp_120"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_14"
-            android:layout_marginBottom="@dimen/dp_14"
-            android:indeterminate="false"
-            android:max="100"
-            android:minWidth="@dimen/dp_150"
-            android:minHeight="@dimen/dp_6"
-            android:progress="25"
-            android:progressDrawable="@drawable/bg_progress_bar"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_discount_timer"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/sale_text_stock_available"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="@color/Unify_N700_68"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/stock_bar_sold_product"
-            app:layout_constraintLeft_toRightOf="@+id/stock_bar_sold_product"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/stock_bar_sold_product"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:text="Stok tersedia (>100)"
-            tools:visibility="visible" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_main_price"
@@ -147,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_N700_96"
@@ -156,7 +55,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/discount_timer_holder"
+        app:layout_constraintTop_toBottomOf="@+id/campaign_ribbon"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
         tools:text="Rp.500000000000000000000000" />
@@ -168,46 +67,27 @@
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"
-        android:adjustViewBounds="true"
-        android:scaleType="fitStart"
+        android:contentDescription="@null"
         android:visibility="visible"
+        android:adjustViewBounds="true"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@+id/txt_main_price"
-        app:layout_constraintEnd_toStartOf="@+id/barrier_fab_share"
+        app:layout_constraintEnd_toStartOf="@+id/fab_detail_pdp"
         app:layout_constraintStart_toEndOf="@+id/txt_main_price"
         app:layout_constraintTop_toTopOf="@+id/txt_main_price"
         tools:srcCompat="@drawable/ic_af_byme_square" />
 
     <ImageView
         android:id="@+id/fab_detail_pdp"
-        android:contentDescription="@string/content_desc_fab_detail_pdp"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:contentDescription="@string/content_desc_fab_detail_pdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_main_price"
         app:srcCompat="@drawable/ic_pdp_wishlist_unfilled" />
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/share_product_pdp"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        app:layout_goneMarginEnd="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:visibility="gone"
-        app:icon_name="SHARE_MOBILE"
-        app:layout_constraintEnd_toStartOf="@+id/fab_detail_pdp"
-        app:layout_constraintTop_toTopOf="@+id/txt_main_price"
-        tools:visibility="visible" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_fab_share"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="start"
-        app:constraint_referenced_ids="share_product_pdp,fab_detail_pdp"/>
 
     <LinearLayout
         android:id="@+id/discount_container"
@@ -228,7 +108,7 @@
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_4"
-            android:background="@drawable/bg_cashback"
+            android:background="@drawable/bg_product_detail_cashback"
             android:paddingLeft="@dimen/dp_4"
             android:paddingTop="@dimen/dp_3"
             android:paddingRight="@dimen/dp_4"

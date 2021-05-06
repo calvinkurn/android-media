@@ -8,12 +8,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.constant.Constants
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.unifycomponents.SearchBarUnify
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.NumberFormat
 import java.util.*
+import kotlin.jvm.Throws
 
 /**
  * Author errysuprayogi on 26,March,2019
@@ -133,6 +135,27 @@ object Utils {
         } else {
             null
         }
+    }
+
+    fun getErrorMessage(context: Context?, message: String): String {
+        context?.let {
+            return when (message) {
+                TopAdsCommonConstant.ERROR_TOO_MANY_REQUEST -> {
+                    it.getString(R.string.topads_common_error_too_many_request)
+                }
+                TopAdsCommonConstant.ERROR_INVALID_ITEM_ID -> {
+                    it.getString(R.string.topads_common_error_invalid_item)
+                }
+                TopAdsCommonConstant.ERROR_INVALID_KEYWORD -> {
+                    it.getString(R.string.topads_common_error_invalid_keyword)
+                }
+                TopAdsCommonConstant.EROOR_GROUP_NAME_EXIST ->{
+                    it.getString(R.string.topads_common_error_invalid_keyword)
+                }
+                else -> message
+            }
+        }
+        return message
     }
 
 }

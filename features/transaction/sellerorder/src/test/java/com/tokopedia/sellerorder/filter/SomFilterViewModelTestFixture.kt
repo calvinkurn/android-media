@@ -3,18 +3,15 @@ package com.tokopedia.sellerorder.filter
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import com.tokopedia.applink.order.DeeplinkMapperOrder
-import com.tokopedia.sellerorder.SomTestDispatcherProvider
-import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
 import com.tokopedia.sellerorder.filter.domain.usecase.GetSomOrderFilterUseCase
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert
 import junit.framework.TestCase
 import org.junit.Before
 import org.junit.Rule
@@ -25,7 +22,7 @@ abstract class SomFilterViewModelTestFixture {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
-    private val dispatcher = SomTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
 
     @RelaxedMockK
     lateinit var getSomOrderFilterUseCase: GetSomOrderFilterUseCase
@@ -38,7 +35,6 @@ abstract class SomFilterViewModelTestFixture {
     companion object {
         val mockDate = "14 Okt 2020 - 24 Okt 2020"
         val mockIdFilter = "Siap Dikirim"
-        val isResetFilter = false
         val SOM_FILTER_SUCCESS_RESPONSE = "json/som_get_order_filter_success_response.json"
     }
 
@@ -64,12 +60,6 @@ abstract class SomFilterViewModelTestFixture {
                 ))
     }
 
-    protected fun LiveData<*>.verifyCoroutineSuccessEquals(expected: Success<*>) {
-        val expectedResult = expected.data
-        val actualResult = (value as Success<*>).data
-        Assert.assertEquals(expectedResult, actualResult)
-    }
-
     protected fun LiveData<*>.verifyErrorEquals(expected: Fail) {
         val expectedResult = expected.throwable::class.java
         val actualResult = (value as Fail).throwable::class.java
@@ -77,7 +67,7 @@ abstract class SomFilterViewModelTestFixture {
     }
 
     protected fun List<SomFilterUiModel>.getRequestCancelFilter(): SomFilterChipsUiModel? {
-        return find { it.nameFilter == SomConsts.FILTER_TYPE_ORDER }?.somFilterData
+        return find { it.nameFilter == FILTER_TYPE_ORDER }?.somFilterData
                 ?.find { it.id == DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST }
     }
 }

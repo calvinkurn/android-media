@@ -26,7 +26,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/thumbnail"
         app:layout_constraintEnd_toEndOf="@+id/thumbnail"
         app:srcCompat="@drawable/ic_pinned_blue"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:contentDescription="pin"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/message"
@@ -50,6 +51,14 @@
         app:typographyWeight="reguler"
         tools:text="@tools:sample/lorem/random"
         tools:visibility="visible" />
+
+    <include
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_topchat_12"
+        app:layout_constraintStart_toEndOf="@+id/thumbnail"
+        app:layout_constraintTop_toBottomOf="@+id/user_name"
+        layout="@layout/layout_typing"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/user_name"

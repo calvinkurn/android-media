@@ -39,13 +39,12 @@
         app:layout_constraintTop_toBottomOf="@id/tickerFlightOrderJourneyETicket">
 
         <com.tokopedia.common.travel.widget.TicketView
-            android:id="@+id/ticketViewOrderDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="@dimen/spacing_lvl2"
             app:tv_anchor1="@id/ticketTopView"
             app:tv_circleRadius="@dimen/spacing_lvl3"
-            app:tv_dashColor="@color/flight_ticket_dash_color">
+            app:tv_dashColor="@color/Unify_N100">
 
             <LinearLayout
                 android:id="@+id/ticketTopView"
@@ -173,15 +172,15 @@
                         app:typographyWeight="bold"
                         tools:text="ABX1248" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
+                    <com.tokopedia.iconunify.IconUnify
                         android:id="@+id/ivFlightOrderDepartureBookingCodeCopy"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/layout_lvl2"
+                        android:layout_height="@dimen/layout_lvl2"
                         android:layout_marginStart="@dimen/spacing_lvl3"
                         app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderDepartureBookingCode"
                         app:layout_constraintLeft_toRightOf="@id/tgFlightOrderDepartureBookingCode"
                         app:layout_constraintTop_toTopOf="@id/tgFlightOrderDepartureBookingCode"
-                        app:srcCompat="@drawable/ic_flight_copy" />
+                        app:icon_name="COPY" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -304,22 +303,21 @@
                         app:typographyWeight="bold"
                         tools:text="ABX1248" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
+                    <com.tokopedia.iconunify.IconUnify
                         android:id="@+id/ivFlightOrderReturnBookingCodeCopy"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/layout_lvl2"
+                        android:layout_height="@dimen/layout_lvl2"
                         android:layout_marginStart="@dimen/spacing_lvl3"
                         app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderReturnBookingCode"
                         app:layout_constraintLeft_toRightOf="@id/tgFlightOrderReturnBookingCode"
                         app:layout_constraintTop_toTopOf="@id/tgFlightOrderReturnBookingCode"
-                        app:srcCompat="@drawable/ic_flight_copy" />
+                        app:icon_name="COPY" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ticketBottomView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/ticketTopView"

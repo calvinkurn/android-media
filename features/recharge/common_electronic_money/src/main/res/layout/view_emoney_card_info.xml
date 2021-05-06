@@ -49,7 +49,7 @@
                     android:id="@+id/text_card_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
+                    android:textColor="@color/Unify_N700"
                     android:textSize="@dimen/fontSize_lvl3"
                     android:textStyle="bold"
                     app:corners="16"
@@ -58,17 +58,12 @@
 
             </LinearLayout>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@color/grey_300" />
-
         </LinearLayout>
 
         <View
             android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:background="@color/grey_300" />
+            android:layout_height="0.5dp"
+            android:background="@color/Unify_N700" />
 
         <LinearLayout
             android:id="@+id/view_remaining_balance"
@@ -96,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
                 android:gravity="center"
-                android:textColor="@color/green_400"
+                android:textColor="@color/Unify_G500"
                 android:textSize="@dimen/fontSize_lvl8"
                 app:corners="16"
                 app:height_weight="1"

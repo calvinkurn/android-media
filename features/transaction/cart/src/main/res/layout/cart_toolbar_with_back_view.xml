@@ -5,7 +5,7 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="horizontal">
 
     <com.tokopedia.unifycomponents.UnifyImageButton
@@ -14,8 +14,8 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="-8dp"
-        app:srcCompat="@drawable/ic_arrow_back_black"
+        android:layout_marginStart="-8dp"
+        app:srcCompat="@drawable/ic_cart_arrow_back_black"
         app:unifyImageButtonVariant="image" />
 
     <com.tokopedia.unifyprinciples.Typography

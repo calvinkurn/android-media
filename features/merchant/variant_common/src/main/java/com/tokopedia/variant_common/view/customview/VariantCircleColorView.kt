@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.variant_common.R
@@ -47,7 +48,7 @@ class VariantCircleColorView @JvmOverloads constructor(
                 isAntiAlias = true
                 style = Paint.Style.FILL
                 strokeWidth = 5f
-                color = MethodChecker.getColor(context, R.color.Unify_N700_68)
+                color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
             }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -86,7 +87,7 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     private fun drawInnerCircle(canvas: Canvas?) {
-        if (innerCirclePaint.color == Color.parseColor("#ffffff")) {
+        if (innerCirclePaint.color == ContextCompat.getColor(context, R.color.variant_common_white_dms)) {
             canvas?.drawCircle(
                     width.toFloat() / 2,
                     height.toFloat() / 2,
@@ -171,7 +172,7 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     private fun addOverlay() {
-        outerOverlayPaint.color = MethodChecker.getColor(context, R.color.Unify_N700_68)
+        outerOverlayPaint.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
     }
 
     interface CircleDrawInterface {

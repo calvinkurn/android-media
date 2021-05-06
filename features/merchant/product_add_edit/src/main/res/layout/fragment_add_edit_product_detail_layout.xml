@@ -69,6 +69,20 @@
             app:layout_constraintTop_toBottomOf="@id/add_edit_product_category_layout" />
 
         <include
+            android:id="@+id/add_edit_product_specification_layout"
+            layout="@layout/add_edit_product_specification_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_edit_product_catalog_layout" />
+
+        <include
             android:id="@+id/add_edit_product_price_layout"
             layout="@layout/add_edit_product_price_layout"
             android:layout_width="match_parent"
@@ -80,7 +94,24 @@
             android:layout_marginRight="@dimen/spacing_lvl4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/add_edit_product_catalog_layout" />
+            app:layout_constraintTop_toBottomOf="@id/add_edit_product_specification_layout" />
+
+        <com.tokopedia.product.addedit.tooltip.presentation.TooltipCardViewSelectable
+            android:id="@+id/add_edit_product_product_recommendation_layout"
+            app:textTitle="@string/title_price_recommendation"
+            app:textDescription="@string/label_price_recommendation_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_edit_product_price_layout" />
 
         <include
             android:id="@+id/add_edit_product_wholesale_layout"
@@ -94,7 +125,7 @@
             android:layout_marginRight="@dimen/spacing_lvl4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/add_edit_product_price_layout" />
+            app:layout_constraintTop_toBottomOf="@id/add_edit_product_product_recommendation_layout" />
 
         <include
             android:id="@+id/add_edit_product_stock_layout"
@@ -189,7 +220,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/action_continue"
                 android:textAllCaps="false"
-                android:textColor="@color/Unify_N0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

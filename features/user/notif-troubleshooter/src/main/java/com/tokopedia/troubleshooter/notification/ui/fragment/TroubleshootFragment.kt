@@ -10,12 +10,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
-import com.tokopedia.settingnotif.usersetting.util.CacheManager.saveLastCheckedDate
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackClearCacheClicked
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackImpression
@@ -36,6 +37,7 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView.Comp
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
 import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewModel
+import com.tokopedia.troubleshooter.notification.util.CacheManager.saveLastCheckedDate
 import com.tokopedia.troubleshooter.notification.util.ClearCacheUtil.showClearCache
 import com.tokopedia.troubleshooter.notification.util.TroubleshooterDialog.showInformationDialog
 import com.tokopedia.troubleshooter.notification.util.combineFourth
@@ -121,10 +123,8 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
             }
         })
 
-        viewModel.token.observe(viewLifecycleOwner, Observer { newToken ->
-            setUpdateTokenStatus(newToken)
-            TroubleshooterTimber.token(newToken)
-            saveLastCheckedDate(requireContext())
+        viewModel.token.observe(viewLifecycleOwner, Observer {
+            getNewToken(it)
         })
 
         viewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
@@ -160,22 +160,35 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
             val device = it.third
             val ringtone = it.fourth?.second
 
-            if (token.isNotNull() && notification.isNotNull() && device.isNotNull() && ringtone.isNotNull()) {
+            if (viewModel.tickerItems.isNotEmpty()) {
+                adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
+            } else {
+                adapter.removeTickers()
+            }
+
+            if (notification.isNotNull() && device.isNotNull() && ringtone.isNotNull() && token.isNotNull()) {
                 TroubleshooterTimber.combine(token, notification, device)
 
-                if (viewModel.tickerItems.isNotEmpty()) {
-                    adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
-                } else {
-                    adapter.removeTickers()
-                }
-
-                if (notification.isTrue() && device.isTrue() && !isSilent(ringtone)) {
+                if (notification.isTrue() && device.isTrue() && !isSilent(ringtone) && token.isTrue()) {
                     adapter.status(StatusState.Success)
                 } else {
                     adapter.status(StatusState.Warning)
                 }
             }
         })
+    }
+
+    private fun getNewToken(result: Result<String>) {
+        when (result) {
+            is Success -> {
+                setUpdateTokenStatus(result.data)
+                TroubleshooterTimber.token(result.data)
+                saveLastCheckedDate(requireContext())
+            }
+            is Fail -> {
+                setUpdateTokenStatus("")
+            }
+        }
     }
 
     private fun notificationSetting(result: Result<UserSettingUIView>) {
@@ -271,12 +284,22 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     private fun setUpdateTokenStatus(newToken: String) {
         val currentToken = fcmManager.currentToken().prefixToken().trim()
         val newTrimToken = newToken.prefixToken().trim()
+        txtToken?.show()
 
-        txtToken?.text = if (fcmManager.isNewToken(newToken)) {
+        txtToken?.text = when {
+            newToken.isEmpty() -> {
+                getString(R.string.notif_error_update_token)
+            }
+            fcmManager.isNewToken(newToken) -> {
+                tokenUpdateMessage(currentToken, newTrimToken)
+            }
+            else -> {
+                tokenCurrentMessage(currentToken, newTrimToken)
+            }
+        }
+
+        if (newToken.isNotEmpty() && fcmManager.isNewToken(newToken)) {
             viewModel.updateToken(newToken)
-            tokenUpdateMessage(currentToken, newTrimToken)
-        } else {
-            tokenCurrentMessage(currentToken, newTrimToken)
         }
     }
 
@@ -284,7 +307,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         return if (currentToken != newToken) {
             getString(R.string.notif_token_current_different, currentToken, newToken)
         } else {
-            getString(R.string.notif_token_current, newToken)
+            getString(R.string.notif_token_current, currentToken)
         }
     }
 
@@ -346,9 +369,11 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         val fcmComponent = DaggerFcmComponent.builder()
                 .fcmModule(FcmModule(requireContext()))
                 .build()
+        val baseAppComponent = (requireActivity().application as BaseMainApplication).baseAppComponent
 
         DaggerTroubleshootComponent.builder()
                 .fcmComponent(fcmComponent)
+                .baseAppComponent(baseAppComponent)
                 .troubleshootModule(TroubleshootModule(requireContext()))
                 .build()
                 .inject(this)

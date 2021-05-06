@@ -5,9 +5,9 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel
-import com.tokopedia.search.result.presentation.model.InspirationCardViewModel
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
+import com.tokopedia.search.result.presentation.model.InspirationCardDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
 import io.mockk.*
@@ -78,7 +78,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
 
     private fun `Then verify visitable list has correct inspiration card and product sequence on first page`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
-        val inspirationWidget = searchProductModel.searchInspirationWidget.data
+        val inspirationWidget = searchProductModel.searchInspirationWidget.data.filter { it.type != "unknown_random_type" }
 
         // 0 -> product
         // 1 -> product
@@ -96,17 +96,18 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         // 13 -> product
         // 14 -> product
         // 15 -> product
+
         visitableList.size shouldBe 15
 
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
                 8 -> {
-                    visitable.shouldBeInstanceOf<InspirationCardViewModel>(
+                    visitable.shouldBeInstanceOf<InspirationCardDataView>(
                             "visitable list at index $index should be InspirationCardViewModel"
                     )
-                    (visitable as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[0])
+                    (visitable as InspirationCardDataView).assertInspirationCardViewModel(inspirationWidget[0])
                 }
-                else -> visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                else -> visitable.shouldBeInstanceOf<ProductItemDataView>(
                         "visitable list at index $index should be ProductItemViewModel"
                 )
             }
@@ -114,20 +115,20 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
 
     }
 
-    private fun InspirationCardViewModel.assertInspirationCardViewModel(inspirationWidget: SearchProductModel.InspirationCardData) {
+    private fun InspirationCardDataView.assertInspirationCardViewModel(inspirationWidget: SearchProductModel.InspirationCardData) {
         title shouldBe inspirationWidget.title
         type shouldBe inspirationWidget.type
         position shouldBe inspirationWidget.position
-        options.size shouldBe inspirationWidget.inspiratioWidgetOptions.size
+        optionData.size shouldBe inspirationWidget.inspiratioWidgetOptions.size
 
         inspirationWidget.inspiratioWidgetOptions.forEachIndexed { index, inspirationWidgetOption ->
-            options[index].assertInspirationCardOptionViewModel(
+            optionData[index].assertInspirationCardOptionViewModel(
                     inspirationWidgetOption, type
             )
         }
     }
 
-    private fun InspirationCardOptionViewModel.assertInspirationCardOptionViewModel(
+    private fun InspirationCardOptionDataView.assertInspirationCardOptionViewModel(
             inspirationWidgetOption: SearchProductModel.InspirationCardOption,
             type: String
     ) {
@@ -135,7 +136,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         img shouldBe inspirationWidgetOption.img
         url shouldBe inspirationWidgetOption.url
         applink shouldBe inspirationWidgetOption.applink
-        color shouldBe inspirationWidgetOption.color
+        hexColor shouldBe inspirationWidgetOption.color
         inspirationCardType shouldBe type
     }
 
@@ -158,7 +159,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
 
     private fun `Then verify visitable list has correct inspiration card and product sequence after load more`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
-        val inspirationWidget = searchProductModel.searchInspirationWidget.data
+        val inspirationWidget = searchProductModel.searchInspirationWidget.data.filter { it.type != "unknown_random_type" }
 
         // 0 -> product
         // 1 -> product
@@ -176,14 +177,14 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 2 || index == 5 || index == 8) {
-                visitable.shouldBeInstanceOf<InspirationCardViewModel>(
+                visitable.shouldBeInstanceOf<InspirationCardDataView>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
-                (visitable as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[i])
+                (visitable as InspirationCardDataView).assertInspirationCardViewModel(inspirationWidget[i])
                 i++
             }
             else {
-                visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                visitable.shouldBeInstanceOf<ProductItemDataView>(
                         "visitable list at index $index should be ProductItemViewModel"
                 )
             }
@@ -210,23 +211,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
     private fun `Then verify inspiration card is not shown on first page`() {
         val visitableList = visitableListSlot.captured
 
-        // 0 -> product
-        // 1 -> product
-        // 2 -> product
-        // 3 -> product
-        // 4 -> product
-        // 5 -> product
-        // 6 -> product
-        // 7 -> product
-        // 8 -> product
-
-        visitableList.size shouldBe 8
-
-        visitableList.forEachIndexed { index, visitable ->
-            visitable.shouldBeInstanceOf<ProductItemViewModel>(
-                    "visitable list at index $index should be ProductItemViewModel"
-            )
-        }
+        visitableList.any { it is InspirationCardDataView } shouldBe false
     }
 
     private fun `Then verify visitable list has inspiration card after 9th product item`(searchProductModel: SearchProductModel) {
@@ -247,13 +232,13 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 1) {
-                visitable.shouldBeInstanceOf<InspirationCardViewModel>(
+                visitable.shouldBeInstanceOf<InspirationCardDataView>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
-                (visitable as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[0])
+                (visitable as InspirationCardDataView).assertInspirationCardViewModel(inspirationWidget[0])
             }
             else {
-                visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                visitable.shouldBeInstanceOf<ProductItemDataView>(
                         "visitable list at index $index should be ProductItemViewModel"
                 )
             }
@@ -297,14 +282,14 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 4 || index == 9) {
-                visitable.shouldBeInstanceOf<InspirationCardViewModel>(
+                visitable.shouldBeInstanceOf<InspirationCardDataView>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
-                (visitable as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[i])
+                (visitable as InspirationCardDataView).assertInspirationCardViewModel(inspirationWidget[i])
                 i++
             }
             else {
-                visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                visitable.shouldBeInstanceOf<ProductItemDataView>(
                         "visitable list at index $index should be ProductItemViewModel"
                 )
             }
@@ -330,13 +315,13 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
                 6 -> {
-                    visitable.shouldBeInstanceOf<InspirationCardViewModel>(
+                    visitable.shouldBeInstanceOf<InspirationCardDataView>(
                             "visitable list at index $index should be InspirationCardViewModel"
                     )
-                    (visitable as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[2])
+                    (visitable as InspirationCardDataView).assertInspirationCardViewModel(inspirationWidget[2])
                 }
                 else -> {
-                    visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                    visitable.shouldBeInstanceOf<ProductItemDataView>(
                             "visitable list at index $index should be ProductItemViewModel"
                     )
                 }
@@ -390,14 +375,14 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 4 || index == 5 || index == 10 || index == 13) {
-                visitable.shouldBeInstanceOf<InspirationCardViewModel>(
+                visitable.shouldBeInstanceOf<InspirationCardDataView>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
-                (visitable as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[inspirationWidgetIndex[i]])
+                (visitable as InspirationCardDataView).assertInspirationCardViewModel(inspirationWidget[inspirationWidgetIndex[i]])
                 i++
             }
             else {
-                visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                visitable.shouldBeInstanceOf<ProductItemDataView>(
                         "visitable list at index $index should be ProductItemViewModel"
                 )
             }
@@ -425,14 +410,14 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 2 || index == 7) {
-                visitable.shouldBeInstanceOf<InspirationCardViewModel>(
+                visitable.shouldBeInstanceOf<InspirationCardDataView>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
-                (visitable as InspirationCardViewModel).assertInspirationCardViewModel(inspirationWidget[inspirationWidgetIndex[i]])
+                (visitable as InspirationCardDataView).assertInspirationCardViewModel(inspirationWidget[inspirationWidgetIndex[i]])
                 i++
             }
             else {
-                visitable.shouldBeInstanceOf<ProductItemViewModel>(
+                visitable.shouldBeInstanceOf<ProductItemDataView>(
                         "visitable list at index $index should be ProductItemViewModel"
                 )
             }

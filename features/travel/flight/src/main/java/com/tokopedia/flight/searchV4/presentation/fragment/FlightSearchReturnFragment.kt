@@ -36,7 +36,13 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         super.onActivityCreated(savedInstanceState)
 
         flightSearchReturnViewModel.departureJourney.observe(viewLifecycleOwner, Observer {
+            if (!flightSearchViewModel.isFilterModelInitialized()) {
+                flightSearchViewModel.filterModel = buildFilterModel(FlightFilterModel())
+            }
+            flightSearchViewModel.filterModel.departureArrivalTime = it.routeList[it.routeList.size - 1].arrivalTimestamp
+
             renderDepartureJourney(it)
+            flightSearchViewModel.fetchSortAndFilter()
         })
 
         flightSearchReturnViewModel.searchErrorStringId.observe(viewLifecycleOwner, Observer {
@@ -115,13 +121,18 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
 
     override fun renderSearchList(list: List<FlightJourneyModel>) {
         clearAllData()
+
         if (flightSearchReturnViewModel.isBestPairing &&
                 !flightSearchReturnViewModel.isViewOnlyBestPairing &&
                 list.isNotEmpty()) {
-            showSeeBestPairingResultView()
+                    showSeeBestPairingResultView()
         }
 
         super.renderSearchList(list)
+
+        if(flightSearchReturnViewModel.isViewOnlyBestPairing){
+            hidePromoChips()
+        }
 
         if (flightSearchViewModel.isDoneLoadData() && flightSearchReturnViewModel.isViewOnlyBestPairing) {
             showSeeAllResultView()
@@ -208,6 +219,7 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
             clearAllData()
             fetchSortAndFilterData()
             resetDepartureLabelPrice()
+            showPromoChips()
             dialog.dismiss()
         }
         dialog.setSecondaryCTAText(getString(R.string.flight_search_return_dialog_abort))
@@ -239,7 +251,7 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         if (isAdded) {
             val dialog = AlertDialog.Builder(activity)
             dialog.setMessage(R.string.flight_search_return_departure_should_greater_message)
-            dialog.setPositiveButton(activity!!.getString(com.tokopedia.abstraction.R.string.title_ok)
+            dialog.setPositiveButton(requireActivity().getString(com.tokopedia.abstraction.R.string.title_ok)
             ) { dialog, which ->
                 dialog.dismiss()
             }

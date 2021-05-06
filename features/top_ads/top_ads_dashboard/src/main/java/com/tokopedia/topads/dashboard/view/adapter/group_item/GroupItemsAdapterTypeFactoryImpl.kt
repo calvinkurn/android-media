@@ -4,8 +4,8 @@ import android.view.View
 import com.tokopedia.topads.dashboard.view.adapter.group_item.viewholder.GroupItemsEmptyViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.group_item.viewholder.GroupItemsItemViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.group_item.viewholder.GroupItemsViewHolder
-import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemModel
 
 
 /**
@@ -18,8 +18,8 @@ class GroupItemsAdapterTypeFactoryImpl(var selectMode: ((select: Boolean) -> Uni
                                        var editDone: ((groupId: Int) -> Unit),
                                        var onClickItem: ((id: Int, priceSpent: String, groupName: String) -> Unit)) : GroupItemsAdapterTypeFactory {
 
-    override fun type(model: GroupItemsEmptyViewModel): Int = GroupItemsEmptyViewHolder.LAYOUT
-    override fun type(model: GroupItemsItemViewModel): Int = GroupItemsItemViewHolder.LAYOUT
+    override fun type(model: GroupItemsEmptyModel): Int = GroupItemsEmptyViewHolder.LAYOUT
+    override fun type(model: GroupItemsItemModel): Int = GroupItemsItemViewHolder.LAYOUT
 
     override fun holder(type: Int, view: View): GroupItemsViewHolder<*> {
         return when (type) {

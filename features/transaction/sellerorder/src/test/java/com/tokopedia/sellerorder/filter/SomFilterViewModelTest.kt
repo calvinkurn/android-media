@@ -23,8 +23,8 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     fun `when get Som List Order Param should return equal value`() {
         val mockSomListOrderParam = SomListGetOrderListParam(
                 statusList = listOf(450, 500, 501, 520, 530, 540, 550, 600, 601),
-                orderTypeList = listOf(1, 2, 3, 4),
-                shippingList = listOf(17, 8, 9, 14)
+                orderTypeList = mutableSetOf(1, 2, 3, 4),
+                shippingList = mutableSetOf(17, 8, 9, 14)
         )
 
         somFilterViewModel.setSomListGetOrderListParam(mockSomListOrderParam)

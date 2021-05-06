@@ -26,6 +26,7 @@
     <string name="notif_ticker_title">Terima info yang lebih lengkap</string>
 
     <string name="notif_success_update_token">Berhasil perbaharui token</string>
+    <string name="notif_error_update_token">Gagal perbaharui token</string>
     <string name="notif_ticker_resolve">Aktifkan Notifikasi</string>
 
     <string name="notif_ringtone_success">Ringtone berjalan dengan baik</string>

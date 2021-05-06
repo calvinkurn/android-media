@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.PDP_APPLINK
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.StockWording
@@ -13,7 +12,6 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.campaignusecase.CampaignNotifyUserCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
 import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
@@ -86,6 +84,10 @@ class ProductCardItemViewModel(val application: Application, val components: Com
 
     fun isUserLoggedIn(): Boolean {
         return UserSession(application).isLoggedIn
+    }
+
+    fun getUserID():String? {
+        return UserSession(application).userId
     }
 
     fun getDataItemValue() = dataItem

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.buyerorder.detail.domain.ErrorResponse;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
+import com.tokopedia.buyerorder.detail.view.OrderDetailRechargeDownloadWebviewAnalytics;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
@@ -33,15 +34,20 @@ public class OrderListDetailModule {
     }
 
     @Provides
-    SendEventNotificationUseCase providesSendEventNotificationUseCase(@ApplicationContext Context context){
+    SendEventNotificationUseCase providesSendEventNotificationUseCase(@ApplicationContext Context context) {
         List<Interceptor> interceptorList = new ArrayList<>(1);
         interceptorList.add(new TkpdOldAuthInterceptor(context,
                 (NetworkRouter) context, new UserSession(context)));
-        return new SendEventNotificationUseCase(interceptorList,context);
+        return new SendEventNotificationUseCase(interceptorList, context);
     }
 
     @Provides
-    UserSessionInterface providesUserSessionInterface(@ApplicationContext Context context){
+    UserSessionInterface providesUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @Provides
+    OrderDetailRechargeDownloadWebviewAnalytics provideOrderDetailRechargeDownloadWebviewAnalytics() {
+        return new OrderDetailRechargeDownloadWebviewAnalytics();
     }
 }

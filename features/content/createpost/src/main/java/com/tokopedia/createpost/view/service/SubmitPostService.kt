@@ -21,6 +21,7 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.domain.usecase.SubmitPostUseCase
+import com.tokopedia.createpost.view.util.FeedSellerAppReviewHelper
 import com.tokopedia.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -47,6 +48,9 @@ class SubmitPostService : JobIntentService() {
 
     @Inject
     lateinit var twitterManager: TwitterManager
+
+    @Inject
+    lateinit var sellerAppReviewHelper: FeedSellerAppReviewHelper
 
     private var notificationManager: SubmitPostNotificationManager? = null
 
@@ -170,6 +174,7 @@ class SubmitPostService : JobIntentService() {
                 notificationManager?.onSuccessPost()
                 sendBroadcast()
                 postContentToOtherService(submitPostData.feedContentSubmit.meta.content)
+                addFlagOnCreatePostSuccess()
             }
 
             override fun onCompleted() {
@@ -198,5 +203,10 @@ class SubmitPostService : JobIntentService() {
         GlobalScope.launchCatchError(Dispatchers.IO, block = {
             twitterManager.postTweet(content.description)
         }) { Timber.d(it) }
+    }
+
+
+    private fun addFlagOnCreatePostSuccess() {
+        sellerAppReviewHelper.savePostFeedFlag()
     }
 }

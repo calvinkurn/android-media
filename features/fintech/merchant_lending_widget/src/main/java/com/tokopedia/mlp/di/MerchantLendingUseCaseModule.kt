@@ -9,7 +9,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Inject
 
-@MerchantScope
 @Module
 class MerchantLendingUseCaseModule(var context: Context) {
 

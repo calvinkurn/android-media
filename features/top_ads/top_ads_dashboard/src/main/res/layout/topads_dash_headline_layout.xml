@@ -60,21 +60,11 @@
                         android:layout_height="wrap_content"
                         app:layout_scrollFlags="scroll">
 
-                        <com.tokopedia.unifycomponents.ticker.Ticker
-                            android:id="@+id/infoEditTicker"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:closeButtonVisibility="visible"
-                            app:descriptionText="@string/topads_headline_info_ticker"
-                            app:tickerShapeType="loose"
-                            app:tickerType="announcement" />
-
                         <include
                             android:id="@+id/hari_ini"
                             layout="@layout/topads_dash_layout_hari_ini"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:layout_constraintTop_toBottomOf="@id/infoEditTicker" />
+                            android:layout_height="wrap_content" />
 
                         <com.tokopedia.unifycomponents.CardUnify
                             android:id="@+id/statistic_graph"

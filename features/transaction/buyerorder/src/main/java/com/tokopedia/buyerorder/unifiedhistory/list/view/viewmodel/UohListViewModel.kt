@@ -9,7 +9,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils.asSuccess
@@ -24,12 +24,13 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 import rx.Subscriber
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
  * Created by fwidjaja on 03/07/20.
  */
-class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
+class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                            private val uohListUseCase: UohListUseCase,
                                            private val getRecommendationUseCase: GetRecommendationUseCase,
                                            private val uohFinishOrderUseCase: UohFinishOrderUseCase,
@@ -38,7 +39,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
                                            private val flightResendEmailUseCase: FlightResendEmailUseCase,
                                            private val trainResendEmailUseCase: TrainResendEmailUseCase,
                                            private val rechargeSetFailUseCase: RechargeSetFailUseCase,
-                                           private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.ui()) {
+                                           private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
 
     private val _orderHistoryListResult = MutableLiveData<Result<UohListOrder.Data.UohOrders>>()
     val orderHistoryListResult: LiveData<Result<UohListOrder.Data.UohOrders>>
@@ -76,83 +77,104 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     val atcResult: LiveData<Result<AddToCartDataModel>>
         get() = _atcResult
 
-    fun loadOrderList(orderQuery: String, paramOrder: UohListParam) {
+    fun loadOrderList(paramOrder: UohListParam) {
         UohIdlingResource.increment()
         launch {
-            _orderHistoryListResult.postValue(uohListUseCase.execute(paramOrder, orderQuery))
+            _orderHistoryListResult.value = uohListUseCase.executeSuspend(paramOrder)
+            UohIdlingResource.decrement()
         }
     }
 
     fun loadRecommendationList(pageNumber: Int) {
         UohIdlingResource.increment()
         launch {
-            val recommendationData = getRecommendationUseCase.getData(
-                    GetRecommendationRequestParam(
-                            pageNumber = pageNumber,
-                            pageName = UohConsts.PAGE_NAME))
-            _recommendationListResult.postValue(recommendationData.asSuccess())
+            try {
+                val recommendationData = getRecommendationUseCase.getData(
+                        GetRecommendationRequestParam(
+                                pageNumber = pageNumber,
+                                pageName = UohConsts.PAGE_NAME))
+                _recommendationListResult.value = (recommendationData.asSuccess())
+            } catch (e: Exception) {
+                Timber.d(e)
+                _recommendationListResult.value = Fail(e.fillInStackTrace())
+            }
+            UohIdlingResource.decrement()
         }
     }
 
-    fun doFinishOrder(finishOrderQuery: String, paramFinishOrder: UohFinishOrderParam) {
+    fun doFinishOrder(paramFinishOrder: UohFinishOrderParam) {
         UohIdlingResource.increment()
         launch {
-            _finishOrderResult.postValue(uohFinishOrderUseCase.execute(finishOrderQuery, paramFinishOrder))
+            _finishOrderResult.value = (uohFinishOrderUseCase.executeSuspend(paramFinishOrder))
+            UohIdlingResource.decrement()
         }
     }
 
     fun doAtcMulti(userId: String, atcMultiQuery: String, listParam: ArrayList<AddToCartMultiParam>) {
         UohIdlingResource.increment()
         launch {
-            _atcMultiResult.postValue(atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
+            _atcMultiResult.value = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
+            UohIdlingResource.decrement()
         }
     }
 
-    fun doLsPrintFinishOrder(lsPrintQuery: String, verticalId: String) {
+    fun doLsPrintFinishOrder(verticalId: String) {
         UohIdlingResource.increment()
         launch {
-            _lsPrintFinishOrderResult.postValue(lsPrintFinishOrderUseCase.execute(lsPrintQuery, verticalId))
+            _lsPrintFinishOrderResult.value = (lsPrintFinishOrderUseCase.executeSuspend(verticalId))
+            UohIdlingResource.decrement()
         }
     }
 
-    fun doFlightResendEmail(flightResendQuery: String, invoiceId: String, email: String) {
+    fun doFlightResendEmail(invoiceId: String, email: String) {
         UohIdlingResource.increment()
         launch {
-            _flightResendEmailResult.postValue(flightResendEmailUseCase.execute(flightResendQuery, invoiceId, email))
+            _flightResendEmailResult.value = (flightResendEmailUseCase.executeSuspend(invoiceId, email))
+            UohIdlingResource.decrement()
         }
     }
 
-    fun doTrainResendEmail(trainResendQuery: String, param: TrainResendEmailParam) {
+    fun doTrainResendEmail(param: TrainResendEmailParam) {
         UohIdlingResource.increment()
         launch {
-            _trainResendEmailResult.postValue(trainResendEmailUseCase.execute(trainResendQuery, param))
+            _trainResendEmailResult.value = (trainResendEmailUseCase.executeSuspend(param))
+            UohIdlingResource.decrement()
         }
     }
 
-    fun doRechargeSetFail(rechargeSetFailQuery: String, orderId: Int) {
+    fun doRechargeSetFail(orderId: Int) {
         UohIdlingResource.increment()
-
         launch {
-            _rechargeSetFailResult.postValue(rechargeSetFailUseCase.execute(rechargeSetFailQuery, orderId))
+            _rechargeSetFailResult.value = (rechargeSetFailUseCase.executeSuspend(orderId))
+            UohIdlingResource.decrement()
         }
     }
 
 
     fun doAtc(atcParams: AddToCartRequestParams) {
+        UohIdlingResource.increment()
         val requestParams = RequestParams.create()
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, atcParams)
-        atcUseCase.execute(requestParams, object : Subscriber<AddToCartDataModel>() {
-            override fun onNext(addToCartDataModel: AddToCartDataModel?) {
-                addToCartDataModel?.let {
-                    _atcResult.postValue(Success(it))
+        try {
+            atcUseCase.execute(requestParams, object : Subscriber<AddToCartDataModel>() {
+                override fun onNext(addToCartDataModel: AddToCartDataModel?) {
+                    addToCartDataModel?.let {
+                        _atcResult.value = (Success(it))
+                        UohIdlingResource.decrement()
+                    }
                 }
-            }
 
-            override fun onCompleted() {}
+                override fun onCompleted() {}
 
-            override fun onError(e: Throwable?) {
-                _atcResult.postValue(e?.let { Fail(it) })
-            }
-        })
+                override fun onError(e: Throwable?) {
+                    _atcResult.value = (e?.let { Fail(it) })
+                    UohIdlingResource.decrement()
+                }
+            })
+        } catch (e: Exception) {
+            Timber.d(e)
+            _atcResult.value = Fail(e.fillInStackTrace())
+            UohIdlingResource.decrement()
+        }
     }
 }

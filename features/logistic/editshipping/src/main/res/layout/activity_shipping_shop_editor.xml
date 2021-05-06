@@ -40,7 +40,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="end"
             android:cacheColorHint="@android:color/transparent"
-            android:childDivider="@color/white"
+            android:childDivider="@color/Unify_N0"
             android:choiceMode="singleChoice"
             android:clipToPadding="false"
             android:divider="@android:color/transparent"

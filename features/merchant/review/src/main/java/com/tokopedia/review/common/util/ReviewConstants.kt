@@ -6,6 +6,7 @@ package com.tokopedia.review.common.util
 
 object ReviewConstants {
     const val RESULT_INTENT_DETAIL = 772
+    const val RESULT_INTENT_REVIEW_REPLY = 896
 
     const val LAST_WEEK_KEY = "time=7d"
     const val LAST_MONTH_KEY = "time=30d"
@@ -16,7 +17,6 @@ object ReviewConstants {
     const val LAST_MONTH_VALUE = "30 Hari Terakhir"
     const val LAST_YEAR_VALUE = "1 Tahun Terakhir"
     const val ALL_VALUE = "Semua"
-    const val ALL_RATING = "all"
 
     const val MOST_REVIEW_KEY = "review_count desc"
     const val HIGHEST_RATING_KEY = "rating_avg desc"
@@ -82,6 +82,8 @@ object ReviewConstants {
     const val HAS_FILTER_AND_SORT = "hasFilterAndSort"
     const val HAS_OVERALL_RATING_PRODUCT = "hasOverallRatingProduct"
     const val HAS_TICKER_INBOX_REVIEW = "hasTickerInboxReview"
+    const val HAS_TICKER_REVIEW_REMINDER = "hasTickerReviewReminder"
+    const val HAS_COACHMARK_REMINDER_MESSAGE = "hasCoachmarkReminderMessage"
 
     const val ARGS_REPUTATION_ID = "ARGS_REPUTATION_ID"
     const val ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID"

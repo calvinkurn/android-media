@@ -10,41 +10,42 @@
         android:id="@+id/incentiveOvoSubmittedImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl3"
-        android:layout_marginEnd="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/layout_lvl4"
+        android:layout_marginEnd="@dimen/layout_lvl4"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/incentiveOvoSubmittedTitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textAlignment="center"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:typographyType="heading_3"
         app:typographyWeight="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/incentiveOvoSubmittedImage"
         tools:text="Mau dapat OVO Points?"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/incentiveOvoSubmittedSubtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/layout_lvl3"
         android:maxWidth="@dimen/max_width_incentive_ovo_subtitle"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_12"
         android:gravity="center"
         app:typographyType="body_1"
         app:typographyWeight="reguler"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintTop_toBottomOf="@id/incentiveOvoSubmittedTitle"
-        app:layout_constraintStart_toStartOf="@id/incentiveOvoSubmittedTitle"
-        app:layout_constraintEnd_toEndOf="@id/incentiveOvoSubmittedTitle"
         tools:text="Bantu penjual dengan kasih ulasan lengkap dan dapatkan OVO Points!" />
 
     <com.tokopedia.unifycomponents.UnifyButton

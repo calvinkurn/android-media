@@ -4,8 +4,11 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
+import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselProduct
 import com.tokopedia.search.result.presentation.ProductListSectionContract
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.shouldBe
 import io.mockk.CapturingSlot
 import io.mockk.MockKVerificationScope
@@ -36,7 +39,6 @@ fun MockKVerificationScope.verifyProcessingData(
     productListView.removeLoading()
     productListView.setProductList(capture(visitableListSlot))
     productListView.backToTop()
-    productListView.showFreeOngkirShowCase(true)
     productListView.addLoading()
     productListView.stopTracePerformanceMonitoring()
 }
@@ -99,4 +101,41 @@ internal fun WishlistTrackingModel.assert(
     isUserLoggedIn.shouldBe(expectedWishlistTrackingModel.isUserLoggedIn,
             "Wishlist tracking model isUserLoggedIn should be ${expectedWishlistTrackingModel.isUserLoggedIn}")
     keyword shouldBe keyword
+}
+
+internal fun List<InspirationCarouselDataView.Option.Product>.assert(
+        expectedInspirationCarouselProduct: List<InspirationCarouselProduct>,
+        inspirationCarouselType: String,
+        inspirationCarouselLayout: String,
+        optionPosition: Int,
+        optionTitle: String,
+) {
+    var productPosition = 1
+    listShouldBe(expectedInspirationCarouselProduct) { actualProduct, expectedProduct ->
+        actualProduct.id shouldBe expectedProduct.id
+        actualProduct.name shouldBe expectedProduct.name
+        actualProduct.price shouldBe expectedProduct.price
+        actualProduct.priceStr shouldBe expectedProduct.priceStr
+        actualProduct.imgUrl shouldBe expectedProduct.imgUrl
+        actualProduct.rating shouldBe expectedProduct.rating
+        actualProduct.countReview shouldBe expectedProduct.countReview
+        actualProduct.url shouldBe expectedProduct.url
+        actualProduct.applink shouldBe expectedProduct.applink
+        actualProduct.description shouldBe expectedProduct.description
+        actualProduct.inspirationCarouselType shouldBe inspirationCarouselType
+        actualProduct.ratingAverage shouldBe expectedProduct.ratingAverage
+        actualProduct.labelGroupDataList.listShouldBe(expectedProduct.labelGroupList) { actualLabelGroup, expectedLabelGroup ->
+            actualLabelGroup.title shouldBe expectedLabelGroup.title
+            actualLabelGroup.position shouldBe expectedLabelGroup.position
+            actualLabelGroup.type shouldBe expectedLabelGroup.type
+            actualLabelGroup.imageUrl shouldBe expectedLabelGroup.url
+        }
+        actualProduct.layout shouldBe inspirationCarouselLayout
+        actualProduct.originalPrice shouldBe expectedProduct.originalPrice
+        actualProduct.discountPercentage shouldBe expectedProduct.discountPercentage
+        actualProduct.optionPosition shouldBe optionPosition
+        actualProduct.position shouldBe productPosition
+        actualProduct.optionTitle shouldBe optionTitle
+        productPosition++
+    }
 }

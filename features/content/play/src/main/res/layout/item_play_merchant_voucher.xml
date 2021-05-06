@@ -18,9 +18,8 @@
         android:id="@+id/tv_voucher_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:layout_marginStart="@dimen/play_voucher_title_image_margin"
-        android:layout_marginLeft="@dimen/play_voucher_title_image_margin"
         app:layout_constraintBottom_toTopOf="@id/tv_voucher_description"
         app:layout_constraintStart_toEndOf="@id/iv_voucher_image"
         app:layout_constraintTop_toTopOf="parent"
@@ -34,14 +33,47 @@
         android:id="@+id/tv_voucher_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl1"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/tv_voucher_title"
         app:layout_constraintTop_toBottomOf="@id/tv_voucher_title"
         app:typographyType="small"
-        tools:text="min. pembelian 100rb"
+        tools:text="Min. pembelian 100rb"
         />
 
+    <LinearLayout
+        android:id="@+id/ll_voucher_copy"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tv_voucher_description"
+        app:layout_constraintStart_toEndOf="@id/tv_voucher_description"
+        app:layout_constraintTop_toTopOf="@id/tv_voucher_title"
+        tools:visibility="visible"
+        >
+
+        <View
+            android:layout_width="@dimen/play_voucher_copy_divider_width"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:background="@color/Unify_N75"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_voucher_copy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            android:text="@string/play_action_copy"
+            />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

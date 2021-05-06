@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
     android:foreground="?selectableItemBackground"
     android:paddingStart="@dimen/dp_9"
-    android:paddingLeft="@dimen/dp_9"
     android:paddingTop="@dimen/dp_16"
     android:paddingEnd="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16"
-    android:weightSum="2"
-    android:background="@color/white">
+    android:weightSum="2">
 
-    <CheckBox
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/cb_emas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_4"
         android:paddingTop="@dimen/dp_6"
-        android:paddingBottom="@dimen/dp_6"
-        android:paddingRight="@dimen/dp_4"
-        android:button="@drawable/ic_cart_check_box" />
+        android:paddingEnd="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_6" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -37,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="@string/emas_checkout_title"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:text="Bulatkan Tagihan dengan Nabung Emas" />
@@ -53,21 +50,20 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/emas_checkout_desc"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"
                 tools:text="Pembulatan Emas sebesar Rp600" />
 
-            <ImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/img_emas_info"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
                 android:layout_gravity="end|center_vertical"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_weight="0.2"
-                android:padding="@dimen/dp_2"
-                android:src="@drawable/info_icon" />
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:paddingStart="@dimen/spacing_lvl2"
+                android:paddingEnd="@dimen/spacing_lvl2"
+                app:icon_name="INFORMATION" />
         </LinearLayout>
 
     </LinearLayout>

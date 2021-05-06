@@ -20,7 +20,6 @@ yang ditemukan</string>
     <string name="delete_confirmation">Apakah anda yakin menghapus %1$d pesan?</string>
     <string name="delete_choose">"Pilih chat yang dihapus"</string>
     <string name="connected_websocket">"Terhubung!"</string>
-    <string name="is_typing">"sedang mengetik..."</string>
     <string name="just_now">"baru saja"</string>
     <string name="delete_error">"Gagal mengirim pesan."</string>
     <string name="delete_chat">"Hapus chat?"</string>
@@ -106,12 +105,12 @@ yang ditemukan</string>
     <string name="title_official">Official</string>
     <string name="title_template_chat">Template Chat</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_chat_filter">Filter</string>
     <string name="menu_chat_setting">Pengaturan</string>
     <string name="menu_chat_search">Pencarian</string>
     <string name="search_chat_hint">Cari di Chat</string>
+    <string name="filter_chat_smart_reply">Dibalas oleh Smart Reply</string>
 
     <string name="filter_chat_all">Semua</string>
     <string name="filter_chat_unread">Belum Dibaca</string>
@@ -120,7 +119,8 @@ yang ditemukan</string>
 
     <string name="seller_empty_chat_subtitle">Yuk, bikin tokomu ramai pengunjung dengan beriklan dan promosikan produk-produkmu.</string>
     <string name="buyer_empty_chat_subtitle">Coba ngobrol dengan teman penjual, yuk!</string>
-    <string name="empty_chat_read_all_title">Mantap! Semua chat sudah kamu baca</string>
+    <string name="empty_chat_read_all_title">Mantap! Semua chat sudah kamu baca!</string>
+    <string name="empty_chat_read_all_subtitle">Kalau ada chat baru buat kamu, bakal muncul disini.</string>
     <string name="empty_chat_smart_reply">Belum ada chat yang dibalas Smart Reply</string>
 
     <!--Delete Chat Popup-->
@@ -163,8 +163,6 @@ yang ditemukan</string>
     <string name="tittle_load_more">Lihat Lebih</string>
     <string name="tittle_header_smart_reply">Dibalas oleh Smart Reply</string>
     <string name="tittle_header_auto_reply">Dibalas oleh Balasan Otomatis</string>
-    <string name="tittle_info_auto_reply">Pesan ini dibalas oleh sistem</string>
-    <string name="filter_chat_smart_reply">Dibalas oleh Smart Reply</string>
     <string name="title_topchat_tooltip_sticker_onboarding">Kami punya stiker lucu buatmu, lho. Cobain, yuk!</string>
     <string name="title_topchat_tooltip_search_onboarding">Kamu bisa cari pengguna, pesan, atau produk. Coba ketik sesuatu.</string>
     <string name="title_broadcast_handle_not_follow">Kamu menerima chat promosi ini karena pernah melihat produk toko ini</string>
@@ -186,7 +184,6 @@ yang ditemukan</string>
     <string name="title_success_delete_chat">Chat berhasil dihapus</string>
     <string name="title_topchat_chat_banned_seller">Kamu diblokir dari Chat Tokopedia</string>
     <string name="desc_topchat_chat_banned_seller"><![CDATA[Menurut laporan pengguna, kamu mengirimkan chat ofensif ke penjual. Mohon baca kembali <a href="https://www.tokopedia.com/help/article/toko-saya-dimoderasi">Ketentuan Pengguna Tokopedia.</a>]]></string>
-    <string name="title_buy_occ">Beli Langsung</string>
     <string name="title_success_pin_chat">Chat telah ditempel ke atas.</string>
     <string name="title_success_unpin_chat">Chat telah dilepas.</string>
     <string name="title_topchat_as_buyer">Sebagai Pembeli</string>
@@ -201,4 +198,24 @@ yang ditemukan</string>
     <string name="title_topchat_review_waiting">Menunggu Diulas</string>
     <string name="title_topchat_review_other">Ulasan Lain</string>
     <string name="title_topchat_review_success">Terima kasih sudah bantu calon pembeli lain lewat ulasanmu.</string>
+    <string name="title_topchat_see_cart">Lihat Keranjang</string>
+    <string name="title_topchat_update_stock">Ubah Stok</string>
+
+    <string name="topchat_dms_hex_empty_stock_color_bg">#AD31353B</string>
+    <string name="topchat_desc_dual_announcement_first_image">First Banner Announcement</string>
+    <string name="topchat_desc_dual_announcement_second_image">Second Banner Announcement</string>
+    <string name="topchat_desc_close_invoice_preview">Close Invoice Preview</string>
+    <string name="topchat_desc_voucher_type">Voucher Type</string>
+    <string name="title_topchat_srw_load_failed">Oops, konten gagal ditampilkan</string>
+    <string name="desc_topchat_srw_load_failed">Yuk, klik ikon disamping untuk coba lagi!</string>
+    <string name="content_desc_close_voucher_btn">Close Voucher Button</string>
+
+    <string name="title_regular_stock">Stok:</string>
+    <string name="title_campaign_stock">Stok campaign:</string>
+    <string name="title_success_update_stock">Stok produk \"%1$s\" berhasil diubah.</string>
+    <string name="title_success_activate_product_status">Produk \"%1$s\" berhasil diaktifkan.</string>
+    <string name="title_success_deactivate_product_status">Produk \"%1$s\" berhasil dinonaktifkan.</string>
+    <string name="title_topchat_dilayani_tokocabang">Dilayani TokoCabang</string>
+
+    <string name="topchat_desc_empty_text_box">Oops, tulis pesan dulu ya sebelum kirim chat.</string>
 </resources>

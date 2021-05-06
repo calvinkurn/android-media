@@ -27,6 +27,8 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackTyp
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Fill.TOOLBAR_FILLED
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Fill.TOOLBAR_TRANSPARENT
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
@@ -46,6 +48,11 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         object Theme {
             const val TOOLBAR_DARK_TYPE = 0
             const val TOOLBAR_LIGHT_TYPE = 1
+        }
+
+        object Fill {
+            const val TOOLBAR_TRANSPARENT = 0
+            const val TOOLBAR_FILLED = 1
         }
 
         object BackType {
@@ -83,6 +90,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private var toolbarCustomReference: Int? = null
     private var toolbarCustomViewContent: View? = null
     private var toolbarPageName: String = DEFAULT_PAGE_NAME
+    private var toolbarInitialFillColor: Int = TOOLBAR_FILLED
+    private var invertSearchBarColor: Boolean = false
 
     //helper variable
     var shadowApplied: Boolean = false
@@ -110,6 +119,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 toolbarTitle = ta.getString(R.styleable.NavToolbar_toolbarTitle)?:""
                 toolbarDefaultHint = ta.getString(R.styleable.NavToolbar_toolbarDefaultHint)?:""
                 toolbarPageName = ta.getString(R.styleable.NavToolbar_toolbarPageName)?:DEFAULT_PAGE_NAME
+                toolbarInitialFillColor = ta.getInt(R.styleable.NavToolbar_toolbarInitialFillColor, TOOLBAR_FILLED)
+                invertSearchBarColor = ta.getBoolean(R.styleable.NavToolbar_toolbarInvertSearchBarColor, false)
                 toolbarCustomReference = ta.getResourceIdOrThrow(R.styleable.NavToolbar_toolbarCustomContent)
             } catch (e: IllegalArgumentException) {
 
@@ -117,8 +128,9 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 ta.recycle()
             }
         }
-        navToolbar?.background = ColorDrawable(toolbarFillColor)
         userSessionInterface = UserSession(context)
+        configureInvertedSearchBar()
+        configureInitialFillBasedOnAttribute()
         configureThemeBasedOnAttribute()
         configureBackButtonBasedOnAttribute()
         configureShadowBasedOnAttribute()
@@ -135,6 +147,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         navIconAdapter?.setHasStableIds(true)
         val navIconRecyclerView = rv_icon_list
         navIconRecyclerView.adapter = navIconAdapter
+        navIconRecyclerView.itemAnimator = null
         navIconRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         toolbarThemeCondition(
@@ -172,7 +185,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 setBackgroundAlpha(0f)
                 navToolbar?.updatePadding(bottom = 0)
             } else {
-                val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
+                val pB = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
                 navToolbar?.background = ColorDrawable(getLightIconColor())
                 navToolbar?.updatePadding(bottom = pB)
             }
@@ -191,7 +204,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 dividerUnify?.visibility = View.VISIBLE
                 navToolbar?.updatePadding(bottom = 0)
             } else {
-                val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
+                val pB = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
                 navToolbar?.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
                 navToolbar?.updatePadding(bottom = pB)
             }
@@ -221,7 +234,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         if (toolbarThemeType != TOOLBAR_LIGHT_TYPE) {
             navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
             toolbarThemeType = TOOLBAR_LIGHT_TYPE
-            toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_96))
+            toolbar_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             setBackButtonColorBasedOnTheme()
             setTitleTextColorBasedOnTheme()
         }
@@ -260,6 +273,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     fun triggerLottieAnimation(lottieIconId: Int) {
         navIconAdapter?.triggerLottieAnimation(lottieIconId)
+    }
+
+    fun triggerAnimatedVectorDrawableAnimation(animatedIconId: Int) {
+        navIconAdapter?.triggerAnimatedVectorDrawableAnimation(animatedIconId)
     }
 
     fun setOnBackButtonClickListener(disableDefaultGtmTracker: Boolean = false, backButtonClickListener: () -> Unit) {
@@ -349,6 +366,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
+    //this needed to enable coachmark on homepage
+    fun getInboxIconView(): View? {
+        val globalNavPosition = navIconAdapter?.getInboxIconPosition()
+        globalNavPosition?.let {
+            val viewholder = rv_icon_list.findViewHolderForAdapterPosition(it)
+            return viewholder?.itemView
+        }
+        return null
+    }
+
     internal fun setBackgroundAlpha(alpha: Float) {
         navToolbar?.let {
             val drawable = it.background
@@ -414,10 +441,27 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     private fun configureShadowBasedOnAttribute() {
-        if (toolbarAlwaysShowShadow) {
+        if (toolbarAlwaysShowShadow && toolbarInitialFillColor != TOOLBAR_TRANSPARENT) {
             showShadow()
         } else {
             hideShadow()
+        }
+    }
+
+    private fun configureInvertedSearchBar() {
+        if (invertSearchBarColor) {
+            layout_search.background = ContextCompat.getDrawable(context, R.drawable.nav_toolbar_searchbar_bg_corner_inverted)
+        }
+    }
+
+    private fun configureInitialFillBasedOnAttribute() {
+        if (toolbarInitialFillColor == TOOLBAR_TRANSPARENT) {
+            toolbarFillColor = getLightIconColor()
+            dividerUnify?.visibility = View.INVISIBLE
+            navToolbar?.background = ColorDrawable(toolbarFillColor)
+            setBackgroundAlpha(0f)
+        } else {
+            navToolbar?.background = ColorDrawable(toolbarFillColor)
         }
     }
 
@@ -479,14 +523,14 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         showToolbarContent(showCustomContent = true)
     }
 
-    private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.icon_enable_default_color)
+    private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
 
-    private fun getLightIconColor() = ContextCompat.getColor(context, R.color.Unify_N0)
+    private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
 
     private fun setTitleTextColorBasedOnTheme() {
         toolbarThemeCondition(
-                lightCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_96)) },
-                darkCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Unify_N0)) }
+                lightCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)) },
+                darkCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
         )
     }
 

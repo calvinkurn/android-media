@@ -1,7 +1,7 @@
 package com.tokopedia.product.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.info.model.productdetail.response.BottomSheetItem
@@ -13,12 +13,12 @@ import com.tokopedia.product.info.usecase.GetProductDetailBottomSheetUseCase
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.user.session.UserSessionInterface
 import org.junit.*
 
 /**
@@ -28,10 +28,10 @@ import org.junit.*
 class BsProductDetailInfoViewModelTest {
 
     @RelaxedMockK
-    lateinit var userSessionInterface: UserSessionInterface
+    lateinit var getProductDetailBottomSheetUseCase: GetProductDetailBottomSheetUseCase
 
     @RelaxedMockK
-    lateinit var getProductDetailBottomSheetUseCase: GetProductDetailBottomSheetUseCase
+    lateinit var userSessionInterface: UserSessionInterface
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -74,9 +74,9 @@ class BsProductDetailInfoViewModelTest {
 
     private val listOfVideo by lazy {
         listOf(
-                Video("asd", "asd"),
-                Video("asd", "asd"),
-                Video("asd", "asd")
+                YoutubeVideo("asd", "asd"),
+                YoutubeVideo("asd", "asd"),
+                YoutubeVideo("asd", "asd")
         )
     }
 
@@ -129,7 +129,7 @@ class BsProductDetailInfoViewModelTest {
                 dataShopNotes = shopNotes
         )
 
-        viewModel.setParams(ProductInfoParcelData(productId = "123", shopId = "213", productTitle = "123", productImageUrl = "123", variantGuideline = "123123", listOfVideo = listOfVideo, data = bottomSheetHeaderWithDiscussion))
+        viewModel.setParams(ProductInfoParcelData(productId = "123", shopId = "213", productTitle = "123", productImageUrl = "123", variantGuideline = "123123", listOfYoutubeVideo = listOfVideo, data = bottomSheetHeaderWithDiscussion))
 
         Assert.assertTrue(viewModel.bottomSheetDetailData.value is Success)
 
@@ -150,7 +150,7 @@ class BsProductDetailInfoViewModelTest {
         //region discussion
         Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoExpandableDataModel>().isNotEmpty())
         Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoExpandableDataModel>().first().textValue.isNotEmpty())
-        Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoExpandableDataModel>().first().video.isNotEmpty())
+        Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoExpandableDataModel>().first().youtubeVideo.isNotEmpty())
         //endregion
 
         //region image

@@ -7,10 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.UploadImageToRemoteUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.UploadImageToRemoteV2UseCase
 import com.tokopedia.play.broadcaster.error.CoverChangeForbiddenException
 import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
@@ -21,11 +22,12 @@ import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -33,11 +35,10 @@ import javax.inject.Inject
  */
 class PlayCoverSetupViewModel @Inject constructor(
         private val hydraConfigStore: HydraConfigStore,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val setupDataStore: PlayBroadcastSetupDataStore,
-        private val uploadImageUseCase: UploadImageToRemoteUseCase,
+        private val uploadImageUseCase: UploadImageToRemoteV2UseCase,
         private val getOriginalProductImageUseCase: GetOriginalProductImageUseCase,
-        private val userSession: UserSessionInterface,
         private val coverImageUtil: PlayCoverImageUtil,
         private val coverImageTransformer: ImageTransformer
 ) : BaseViewModel(dispatcher.main) {
@@ -200,12 +201,11 @@ class PlayCoverSetupViewModel @Inject constructor(
     }
 
     private suspend fun uploadImageToRemoteStore(imagePath: String): String = withContext(dispatcher.io) {
-        uploadImageUseCase.setImagePath(imagePath)
-        val uploadedImage = uploadImageUseCase.executeOnBackground()
+        uploadImageUseCase.setParams(File(imagePath))
 
-        uploadedImage.data.picSrc.let {
-            if (it.contains(DEFAULT_RESOLUTION)) it.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_700)
-            else it
+        return@withContext when (val uploadedImage = uploadImageUseCase.executeOnBackground()) {
+            is UploadResult.Success -> uploadedImage.uploadId
+            is UploadResult.Error -> error(uploadedImage.message)
         }
     }
 

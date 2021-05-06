@@ -8,24 +8,26 @@ import android.os.Parcelable
 import android.provider.ContactsContract
 import android.text.TextUtils
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking
+import com.tokopedia.topupbills.common.util.DigitalTopupBillsGqlQuery
+import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.common.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
@@ -40,8 +42,10 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.regex.Pattern
 import javax.inject.Inject
+import kotlin.math.abs
 
 /**
  * Created by nabillasabbaha on 23/05/19.
@@ -50,6 +54,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected lateinit var pageContainer: RelativeLayout
     protected lateinit var tickerView: Ticker
+    protected lateinit var appBarLayout: AppBarLayout
+    protected lateinit var bannerImage: ImageView
     private lateinit var viewModel: SharedTelcoViewModel
     protected var listMenu = mutableListOf<TelcoTabItem>()
     protected var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
@@ -64,8 +70,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
-    lateinit var rechargeAnalytics: RechargeAnalytics
+
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
 
@@ -90,6 +95,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setAnimationAppBarLayout()
         subscribeUi()
         val checkoutView = getCheckoutView()
         checkoutView?.run {
@@ -196,7 +202,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     }
                 } else if (requestCode == REQUEST_CODE_LOGIN) {
                     if (userSession.isLoggedIn) {
-                        navigateToCart()
+                        addToCart()
                     }
                 }
             }
@@ -204,14 +210,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     fun getPrefixOperatorData() {
-        viewModel.getPrefixOperator(GraphqlHelper.loadRawString(resources,
-                R.raw.query_prefix_select_telco), getTelcoMenuId())
         viewModel.catalogPrefixSelect.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessCustomData()
                 is Fail -> onErrorCustomData()
             }
         })
+        viewModel.getPrefixOperator(DigitalTopupBillsGqlQuery.prefixSelectTelco, getTelcoMenuId())
     }
 
     private fun onSuccessCustomData() {
@@ -252,13 +257,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     private fun initiateMenuTelco(recom: List<TopupBillsRecommendation>, promo: List<TopupBillsPromo>) {
         listMenu.clear()
         var idTab = 1L
-        if (promo.isNotEmpty()) {
-            viewModel.setPromoTelco(promo)
-            listMenu.add(TelcoTabItem(null, TelcoComponentName.PROMO, idTab++))
-        }
         if (recom.isNotEmpty()) {
             viewModel.setRecommendationTelco(recom)
             listMenu.add(TelcoTabItem(null, TelcoComponentName.RECENTS, idTab++))
+        }
+        if (promo.isNotEmpty()) {
+            viewModel.setPromoTelco(promo)
+            listMenu.add(TelcoTabItem(null, TelcoComponentName.PROMO, idTab++))
         }
 
         viewModel.setTitleMenu(listMenu.size < 2)
@@ -298,14 +303,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onCheckVoucherError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
@@ -324,6 +329,49 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             action = DigitalTopupEventTracking.Action.CLICK_TAB_RECENT
         }
         topupAnalytics.eventClickTabMenuTelco(categoryId, userSession.userId, action)
+    }
+
+    private fun setAnimationAppBarLayout() {
+        val fadeIn = AlphaAnimation(0f, 1.0f)
+        fadeIn.duration = 300
+        fadeIn.fillAfter = true
+
+        val fadeOut = AlphaAnimation(1.0f, 0f)
+        fadeOut.duration = 300
+        fadeOut.fillAfter = true
+
+        //initial appBar state is expanded
+        (activity as? BaseTelcoActivity)?.onExpandAppBar()
+
+        appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+            var lastOffset = -1
+            var lastIsCollapsed = false
+
+            override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
+                if (lastOffset == verticalOffSet) return
+
+                lastOffset = verticalOffSet
+                if (abs(verticalOffSet) >= appBarLayout.totalScrollRange && !lastIsCollapsed) {
+                    //Collapsed
+                    lastIsCollapsed = true
+                    onCollapseAppBar()
+                    if (!fadeOut.hasStarted() || fadeOut.hasEnded()) {
+                        bannerImage.clearAnimation()
+                        bannerImage.startAnimation(fadeOut)
+                    }
+                    (activity as? BaseTelcoActivity)?.onCollapseAppBar()
+                } else if (verticalOffSet == 0 && lastIsCollapsed) {
+                    //Expanded
+                    lastIsCollapsed = false
+                    onExpandAppBar()
+                    if (!fadeIn.hasStarted() || fadeIn.hasEnded()) {
+                        bannerImage.clearAnimation()
+                        bannerImage.startAnimation(fadeIn)
+                    }
+                    (activity as? BaseTelcoActivity)?.onExpandAppBar()
+                }
+            }
+        })
     }
 
     abstract fun onCollapseAppBar()

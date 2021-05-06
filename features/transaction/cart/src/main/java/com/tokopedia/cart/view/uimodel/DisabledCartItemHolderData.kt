@@ -12,7 +12,6 @@ data class DisabledCartItemHolderData(
         var productName: String = "",
         var productPrice: Double = 0.0,
         var isWishlisted: Boolean = false,
-        var tickerMessage: String? = null,
         var showDivider: Boolean = true,
         var data: CartItemData? = CartItemData(),
         var actionsData: List<ActionData> = emptyList(),

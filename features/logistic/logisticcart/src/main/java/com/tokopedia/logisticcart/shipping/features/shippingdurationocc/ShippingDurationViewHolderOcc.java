@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,6 +48,7 @@ public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
     private TextView tvOrderPrioritas;
     private Typography tvShippingInformation;
     private Typography tvMvcError;
+    private ConstraintLayout layoutMvc;
     private Label labelCodAvailable;
 
     private int cartPosition;
@@ -65,6 +67,7 @@ public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
         tvShippingInformation = itemView.findViewById(R.id.tv_shipping_information);
         tvMvcError = itemView.findViewById(R.id.tv_mvc_error);
+        layoutMvc = itemView.findViewById(R.id.layout_mvc);
         labelCodAvailable = itemView.findViewById(R.id.lbl_cod_available);
     }
 
@@ -78,6 +81,7 @@ public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
         }
 
         // OCC has no MVC
+        layoutMvc.setVisibility(View.GONE);
         tvMvcError.setVisibility(View.GONE);
 
         if (shippingDurationAdapterListener.isToogleYearEndPromotionOn() &&
@@ -88,14 +92,14 @@ public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
         }
 
         if (!TextUtils.isEmpty(shippingDurationUiModel.getErrorMessage())) {
-            tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), R.color.font_disabled));
+            tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_20));
             tvPrice.setVisibility(View.GONE);
             tvTextDesc.setVisibility(View.GONE);
             tvOrderPrioritas.setVisibility(View.GONE);
             tvError.setText(shippingDurationUiModel.getErrorMessage());
             tvError.setVisibility(View.VISIBLE);
         } else {
-            tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), R.color.black_70));
+            tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
             tvError.setVisibility(View.GONE);
             tvPrice.setText(shippingDurationUiModel.getServiceData().getTexts().getTextRangePrice());
             tvPrice.setVisibility(View.VISIBLE);
@@ -164,12 +168,12 @@ public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
     private ShowCaseDialog createShowCaseDialog() {
         return new ShowCaseBuilder()
                 .customView(R.layout.show_case_checkout)
-                .titleTextColorRes(R.color.white)
+                .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 .spacingRes(R.dimen.dp_12)
                 .arrowWidth(R.dimen.dp_16)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
+                .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
+                .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
                 .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
                 .textSizeRes(R.dimen.sp_12)
                 .finishStringRes(R.string.label_shipping_show_case_finish)

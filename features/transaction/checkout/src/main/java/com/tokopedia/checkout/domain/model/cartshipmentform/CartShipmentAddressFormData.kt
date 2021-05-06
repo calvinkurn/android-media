@@ -3,7 +3,6 @@ package com.tokopedia.checkout.domain.model.cartshipmentform
 import android.os.Parcelable
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.logisticcart.shipping.model.CodModel
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
@@ -28,7 +27,6 @@ data class CartShipmentAddressFormData(
         var keroUnixTime: Int = 0,
         var donation: Donation? = null,
         var cod: CodModel? = null,
-        var isUseCourierRecommendation: Boolean = false,
         var isHidingCourier: Boolean = false,
         var isBlackbox: Boolean = false,
         var egoldAttributes: EgoldAttributeModel? = null,
@@ -41,7 +39,7 @@ data class CartShipmentAddressFormData(
         var promoCheckoutErrorDefault: PromoCheckoutErrorDefault? = null,
         var isOpenPrerequisiteSite: Boolean = false,
         var isEligibleNewShippingExperience: Boolean = false,
-        var abTestButton: ABTestButton = ABTestButton()
+        var popUpMessage: String = ""
 ) : Parcelable {
 
     val isAvailablePurchaseProtection: Boolean
@@ -59,4 +57,10 @@ data class CartShipmentAddressFormData(
             }
             return false
         }
+
+    companion object {
+        const val NO_ERROR = 0
+        const val ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS = 3
+        const val ERROR_CODE_TO_OPEN_ADDRESS_LIST = 4
+    }
 }

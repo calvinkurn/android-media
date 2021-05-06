@@ -7,7 +7,7 @@
         android:shortcutLongLabel="@string/title_activity_shop_transaction_new"
         android:shortcutDisabledMessage="@string/title_activity_shop_transaction_new">
         <intent
-            android:action="android.intent.action.VIEW"
+            android:action="com.tokopedia.internal.VIEW"
             android:targetPackage="com.tokopedia.sellerapp"
             android:data="tokopedia-android-internal://sellerapp/sellerhome-som-neworder"/>
         <categories android:name="android.shortcut.conversation" />
@@ -20,7 +20,7 @@
         android:shortcutLongLabel="@string/title_activity_manage_product"
         android:shortcutDisabledMessage="@string/title_activity_manage_product">
         <intent
-            android:action="android.intent.action.VIEW"
+            android:action="com.tokopedia.internal.VIEW"
             android:targetPackage="com.tokopedia.sellerapp"
             android:data="tokopedia-android-internal://sellerapp/sellerhome-product-list"/>
         <categories android:name="android.shortcut.conversation" />

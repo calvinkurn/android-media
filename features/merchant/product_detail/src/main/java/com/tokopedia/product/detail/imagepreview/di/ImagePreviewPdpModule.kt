@@ -2,8 +2,6 @@ package com.tokopedia.product.detail.imagepreview.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.detail.imagepreview.data.ImagePreviewTracking
@@ -13,7 +11,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@ImagePreviewPdpScope
 @Module(includes = [
     ImagePreviewPdpViewModelModule::class
 ])
@@ -30,10 +27,6 @@ class ImagePreviewPdpModule {
     @ImagePreviewPdpScope
     @Provides
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
-
-    @ImagePreviewPdpScope
-    @Provides
-    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @ImagePreviewPdpScope
     @Provides

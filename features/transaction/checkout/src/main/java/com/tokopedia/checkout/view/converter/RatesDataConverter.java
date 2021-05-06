@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.converter;
 
-
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
@@ -58,7 +57,7 @@ public class RatesDataConverter {
                                                 ShipmentCartItemModel shipmentCartItemModel, String keroToken, String keroUnixTime) {
         ShipmentCartData shipmentCartData = new ShipmentCartData();
         initializeShipmentCartData(userAddress, groupShop, shipmentCartData, keroToken, keroUnixTime);
-        int orderValue = 0;
+        long orderValue = 0;
         int totalWeight = 0;
         int preOrderDuration = 0;
         if (shipmentCartItemModel.getCartItemModels() != null) {
@@ -82,7 +81,7 @@ public class RatesDataConverter {
         shipmentCartData.setToken(keroToken);
         shipmentCartData.setUt(keroUnixTime);
         shipmentCartData.setDestinationAddress(userAddress.getAddress());
-        shipmentCartData.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
+        shipmentCartData.setDestinationDistrictId(userAddress.getDistrictId());
         shipmentCartData.setDestinationLatitude(!UtilsKt.isNullOrEmpty(userAddress.getLatitude()) ?
                 userAddress.getLatitude() : null);
         shipmentCartData.setDestinationLongitude(!UtilsKt.isNullOrEmpty(userAddress.getLongitude()) ?

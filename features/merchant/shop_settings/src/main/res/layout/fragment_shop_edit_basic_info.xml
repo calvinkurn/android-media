@@ -5,34 +5,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
         android:visibility="gone">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <View
-                android:id="@+id/shadow"
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:background="@drawable/bg_shadow"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <RelativeLayout
                 android:id="@+id/containerProfilePicture"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_header_shop_info"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:background="@drawable/bg_header_shop_info">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardView"
@@ -96,9 +84,6 @@
                 android:paddingRight="@dimen/spacing_lvl3"
                 android:visibility="gone"
                 app:descriptionText="@string/ticker_warning_can_only_change_shopname_once"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/containerProfilePicture"
                 app:tckv_content_text_size="@dimen/dp_12"
                 app:tickerShapeType="loose"
                 app:tickerType="warning"
@@ -111,9 +96,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/shopEditTicker"
+                android:theme="@style/TextDarkMode"
                 app:text_field_counter="60"
                 app:text_field_input_type="text"
                 app:text_field_label="@string/shop_edit_name_input_label" />
@@ -125,9 +108,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/shopNameTextField"
+                android:theme="@style/TextDarkMode"
                 app:text_field_counter="24"
                 app:text_field_input_type="text"
                 app:text_field_label="@string/shop_edit_domain_input_label"
@@ -135,22 +116,20 @@
 
             <com.tokopedia.shop.settings.basicinfo.view.widget.ShopDomainSuggestionView
                 android:id="@+id/shopDomainSuggestions"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"
                 android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/shopDomainTextField"
                 tools:visibility="visible" />
 
-            <com.tokopedia.unifycomponents.DividerUnify
+            <View
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/spacing_lvl4"
+                android:background="@color/Unify_N50"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/shopDomainSuggestions" />
@@ -162,9 +141,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider"
+                android:theme="@style/TextDarkMode"
                 app:text_field_counter="48"
                 app:text_field_input_type="text"
                 app:text_field_label="@string/shop_slogan_label" />
@@ -176,19 +153,18 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/shopTagLineTextField"
+                android:theme="@style/TextDarkMode"
                 app:text_field_counter="140"
                 app:text_field_input_type="text"
                 app:text_field_label="@string/shop_description_label" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+        </LinearLayout>
+    </ScrollView>
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
         android:layout_centerVertical="true"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
 </RelativeLayout>

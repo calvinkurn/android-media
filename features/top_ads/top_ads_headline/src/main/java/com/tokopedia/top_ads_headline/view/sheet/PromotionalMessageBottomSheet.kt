@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiHeaderModel
@@ -25,6 +26,7 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
     init {
         showCloseIcon = false
         showKnob = true
+        overlayClickDismiss = false
     }
 
     companion object {
@@ -70,7 +72,7 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
     }
 
     private fun setUpTextField() {
-        promotionalMessageInputText.textFieldInput.setText(promotionalMessage)
+        promotionalMessageInputText.textFieldInput.setText(MethodChecker.fromHtml(promotionalMessage))
         promotionalMessageInputText.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
@@ -84,20 +86,27 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
                         it.isEmpty() -> {
                             promotionalMessageInputText.setError(true)
                             promotionalMessageInputText.setMessage(getString(R.string.topads_headline_promotional_message_empty_error))
+                            setBtnEnabled(false)
                         }
                         it.length in promoMsgRange -> {
                             promotionalMessageInputText.setError(true)
                             promotionalMessageInputText.setMessage(getString(R.string.topads_headline_promotional_message_length_error))
+                            setBtnEnabled(false)
                         }
                         else -> {
                             promotionalMessageInputText.setError(false)
                             promotionalMessageInputText.setMessage(getString(R.string.topads_headline_promotional_message_success))
+                            setBtnEnabled(true)
                         }
                     }
                 }
             }
 
         })
+    }
+
+    private fun setBtnEnabled(isEnabled: Boolean) {
+        saveBtn.isEnabled = isEnabled
     }
 
     private fun setUpChipsText() {
@@ -129,6 +138,6 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
             add(TipsUiRowModel(R.string.topads_headline_promotional_message_5, R.drawable.topads_create_ic_checklist))
         }
         val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList) }
-        tipsListSheet?.show(parentFragmentManager, "")
+        tipsListSheet?.show(childFragmentManager, "")
     }
 }

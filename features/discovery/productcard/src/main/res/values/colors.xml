@@ -19,4 +19,7 @@
 
     <color name="product_card_button_buy_background_color">@color/Unify_Y500</color>
     <color name="product_card_layout_sold_out_background_color">@color/Unify_N700_68</color>
+
+    <color name="product_card_dms_placeholder_color">#E5E7E9</color>
+    <color name="product_card_dms_card_background">@color/Unify_N0</color>
 </resources>

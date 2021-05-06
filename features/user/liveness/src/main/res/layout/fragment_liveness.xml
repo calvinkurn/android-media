@@ -17,6 +17,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <ai.advance.liveness.lib.LivenessView
             android:id="@+id/liveness_view"
             style="@style/liveness_preview" />
@@ -34,14 +35,15 @@
         android:padding="@dimen/spacing_lvl4"
         android:scaleType="centerInside"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:srcCompat="@drawable/liveness_ic_icon_md_arrow_back" />
+        app:srcCompat="@drawable/liveness_ic_icon_md_arrow_back"
+        android:contentDescription="@string/liveness_cancel"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/liveness_title"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/liveness_dms_toolbar_text_color"
         app:layout_constraintBottom_toBottomOf="@id/back_view_camera_activity"
         app:layout_constraintLeft_toRightOf="@id/back_view_camera_activity"
         app:layout_constraintTop_toTopOf="@id/back_view_camera_activity"
@@ -61,7 +63,7 @@
         app:typographyType="heading_4"
         android:gravity="center"
         android:lineSpacingExtra="4sp"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/liveness_dms_tip_color"
         android:paddingLeft="@dimen/spacing_lvl5"
         android:paddingRight="@dimen/spacing_lvl5"
         app:layout_constraintTop_toBottomOf="@id/guideline"
@@ -81,59 +83,4 @@
         app:lottie_loop="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/loading_layout"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:background="@color/Unify_N0"
-        android:visibility="gone">
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loader"
-        style="@style/liveness_horizontal_center"
-        android:layout_width="@dimen/liveness_48"
-        android:layout_height="@dimen/liveness_48"
-        android:layout_marginBottom="@dimen/spacing_lvl5"
-        app:layout_constraintBottom_toTopOf="@id/upload_loading_title"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/upload_loading_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:typographyType="heading_2"
-        android:textSize="@dimen/fontSize_lvl6"
-        android:textColor="@color/Unify_N700_96"
-        android:lineSpacingExtra="@dimen/liveness_text_spacing_6"
-        android:gravity="center_horizontal"
-        android:text="@string/upload_loading_title"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/upload_loading_subtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/upload_loading_title"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        app:typographyType="body_2"
-        android:textSize="@dimen/fontSize_lvl3"
-        android:textColor="@color/Unify_N700_68"
-        android:lineSpacingExtra="@dimen/liveness_text_spacing_5"
-        android:gravity="center_horizontal"
-        android:text="@string/upload_loading_subtitle"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

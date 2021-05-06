@@ -5,11 +5,16 @@ package com.tokopedia.sellerhomecommon.presentation.model
  */
 
 class PieChartDataUiModel(
-        override val dataKey: String = "",
+        override var dataKey: String = "",
         override var error: String = "",
         val data: PieChartUiModel = PieChartUiModel(),
-        override var isFromCache: Boolean = false
-) : BaseDataUiModel
+        override var isFromCache: Boolean = false,
+        override val showWidget: Boolean = false
+) : BaseDataUiModel {
+    override fun shouldRemove(): Boolean {
+        return data.item.all { it.value == 0 }
+    }
+}
 
 data class PieChartUiModel(
         val item: List<PieChartItemUiModel> = emptyList(),

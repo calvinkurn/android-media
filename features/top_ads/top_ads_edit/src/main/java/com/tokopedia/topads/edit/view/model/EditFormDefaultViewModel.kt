@@ -1,19 +1,27 @@
 package com.tokopedia.topads.edit.view.model
 
 import android.os.Bundle
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
-import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.*
-import com.tokopedia.topads.edit.data.response.*
-import com.tokopedia.topads.edit.data.response.ResponseGroupValidateName
-import com.tokopedia.topads.edit.usecase.*
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
+import com.tokopedia.topads.common.domain.usecase.GetAdKeywordUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
+import com.tokopedia.topads.edit.data.response.GetAdProductResponse
+import com.tokopedia.topads.edit.usecase.EditSingleAdUseCase
+import com.tokopedia.topads.edit.usecase.GetAdsUseCase
+import com.tokopedia.topads.edit.usecase.GroupInfoUseCase
+import com.tokopedia.topads.edit.usecase.TopAdsCreateUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import rx.Subscriber
+import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
 
@@ -22,41 +30,22 @@ import javax.inject.Inject
  */
 
 class EditFormDefaultViewModel @Inject constructor(
-        private val dispatcher: CoroutineDispatcher,
-        private val validGroupUseCase: ValidGroupUseCase,
+        dispatcher: CoroutineDispatcher,
+        private val validGroupUseCase: TopAdsGroupValidateNameUseCase,
         private val bidInfoUseCase: BidInfoUseCase,
         private val getAdsUseCase: GetAdsUseCase,
         private val getAdKeywordUseCase: GetAdKeywordUseCase,
         private val groupInfoUseCase: GroupInfoUseCase,
         private val editSingleAdUseCase: EditSingleAdUseCase,
-        private val singleAdInfoUseCase: GraphqlUseCase<SingleAdInFo>,
+        private val getAdInfoUseCase: TopAdsGetPromoUseCase,
         private val userSession: UserSessionInterface,
         private val topAdsCreateUseCase: TopAdsCreateUseCase) : BaseViewModel(dispatcher) {
 
-    companion object {
-        private const val QUERY_PRODUCT = """query topAdsGetPromo(${'$'}shopID: String!, ${'$'}adID: String!) {
-            topAdsGetPromo(shopID:${'$'}shopID, adID: ${'$'}adID) {
-                data {
-                    adType
-                    itemID
-                    status
-                    priceBid
-                    priceDaily
-                }
-                errors {
-                    code
-                    detail
-                    title
-                }
-            }
-        }"""
-    }
-
     fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit)) {
         validGroupUseCase.setParams(groupName)
-        validGroupUseCase.executeQuerySafeMode(
+        validGroupUseCase.execute(
                 {
-                    onSuccess(it)
+                    onSuccess(it.topAdsGroupValidateName)
                 },
                 { throwable ->
                     throwable.printStackTrace()
@@ -109,7 +98,7 @@ class EditFormDefaultViewModel @Inject constructor(
     }
 
     fun getAdKeyword(groupId: Int, cursor: String, onSuccess: (List<GetKeywordResponse.KeywordsItem>, cursor: String) -> Unit) {
-        getAdKeywordUseCase.setParams(groupId, cursor)
+        getAdKeywordUseCase.setParams(groupId, cursor, userSession.shopId, source = ParamObject.KEYWORD_SOURCE, keywordStatus = listOf(1, 3))
         getAdKeywordUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.topAdsListKeyword.data.keywords, it.topAdsListKeyword.data.pagination.cursor)
@@ -130,36 +119,48 @@ class EditFormDefaultViewModel @Inject constructor(
                 })
     }
 
-    fun topAdsCreated(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>,
-                      dataGroup: HashMap<String, Any?>, onSuccess: (() -> Unit), onError: (() -> Unit)) {
-        topAdsCreateUseCase.setParam(dataProduct, dataKeyword, dataGroup)
-        topAdsCreateUseCase.executeQuerySafeMode(
-                { onSuccess() },
-                { throwable ->
-                    onError()
-                    throwable.printStackTrace()
-                })
+    fun topAdsCreated(dataPro: Bundle, dataKey: HashMap<String, Any?>,
+                      dataGrp: HashMap<String, Any?>, onSuccess: (() -> Unit), onError: ((error: String?) -> Unit)) {
+        val param = topAdsCreateUseCase.setParam(dataPro, dataKey, dataGrp)
+        topAdsCreateUseCase.execute(param, object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<FinalAdResponse?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<FinalAdResponse>
+                val dataGroup = response.data?.topadsManageGroupAds?.groupResponse
+                val dataKeyword = response.data?.topadsManageGroupAds?.keywordResponse
+                if (dataGroup?.errors.isNullOrEmpty() && dataKeyword?.errors.isNullOrEmpty())
+                    onSuccess()
+                else {
+                    var error = ""
+                    if (!dataGroup?.errors.isNullOrEmpty())
+                        error = dataGroup?.errors?.firstOrNull()?.detail ?: ""
+                    else if (!dataKeyword?.errors.isNullOrEmpty())
+                        error = dataKeyword?.errors?.firstOrNull()?.detail ?: ""
+                    onError(error)
+                }
+            }
+
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable?) {
+                onError(e?.message)
+                e?.printStackTrace()
+            }
+        })
     }
 
-    @GqlQuery("CategoryList", QUERY_PRODUCT)
-    fun getSingleAdInfo(adId: Int, onSuccess: ((List<SingleAd>) -> Unit)) {
-        val params = mapOf(ParamObject.SHOP_ID to userSession.shopId,
-                ParamObject.AD_ID to adId.toString())
-        singleAdInfoUseCase.setTypeClass(SingleAdInFo::class.java)
-        singleAdInfoUseCase.setRequestParams(params)
-        singleAdInfoUseCase.setGraphqlQuery(CategoryList.GQL_QUERY)
-        singleAdInfoUseCase.execute(
-                onSuccessGroup(onSuccess),
+
+    fun getSingleAdInfo(adId: String, onSuccess: ((List<SingleAd>) -> Unit)) {
+        getAdInfoUseCase.setParams(adId, userSession.shopId)
+        getAdInfoUseCase.execute(
+                {
+                    onSuccess(it.topAdsGetPromo.data)
+                },
                 {
                     it.printStackTrace()
                 }
         )
-    }
-
-    private fun onSuccessGroup(onSuccess: (List<SingleAd>) -> Unit): (SingleAdInFo) -> Unit {
-        return {
-            onSuccess(it.topAdsGetPromo.data)
-        }
     }
 
     public override fun onCleared() {
@@ -169,9 +170,9 @@ class EditFormDefaultViewModel @Inject constructor(
         getAdsUseCase.cancelJobs()
         getAdKeywordUseCase.cancelJobs()
         groupInfoUseCase.cancelJobs()
-        topAdsCreateUseCase.cancelJobs()
+        topAdsCreateUseCase.unsubscribe()
         editSingleAdUseCase.cancelJobs()
-        singleAdInfoUseCase.cancelJobs()
+        getAdInfoUseCase.cancelJobs()
     }
 }
 

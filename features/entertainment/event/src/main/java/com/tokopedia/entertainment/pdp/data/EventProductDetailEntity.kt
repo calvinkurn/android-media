@@ -6,16 +6,16 @@ import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMP
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
 import java.io.Serializable
 
-data class EventProductDetailEntity (
+data class EventProductDetailEntity(
         @SerializedName("event_product_detail_v3")
         @Expose
-        val eventProductDetail : EventProductDetail = EventProductDetail()
+        val eventProductDetail: EventProductDetail = EventProductDetail()
 )
 
 data class EventProductDetail(
         @SerializedName("productDetailData")
         @Expose
-        val productDetailData : ProductDetailData = ProductDetailData()
+        val productDetailData: ProductDetailData = ProductDetailData()
 )
 
 data class ProductDetailData(
@@ -449,7 +449,7 @@ data class Form(
         var valueList: String = "",
         var isError: Boolean = false,
         var errorType: Int = EMPTY_TYPE
-): Serializable
+) : Serializable
 
 data class Group(
         @SerializedName("created_at")
@@ -814,13 +814,9 @@ data class PackageV3(
         val packageItems: List<PackageItem> = emptyList(),
         @SerializedName("forms_package")
         @Expose
-        val formsPackages: List<Form> = emptyList()
-): EventPDPTicketModel(){
-
-        override fun type(typeFactory: PackageTypeFactory): Int {
-                return typeFactory.type(this)
-        }
-}
+        val formsPackages: List<Form> = emptyList(),
+        var isRecommendationPackage: Boolean = false
+): EventPDPTicketModel()
 
 data class PackageItem(
         @SerializedName("id")

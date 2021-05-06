@@ -1,24 +1,38 @@
 package com.tokopedia.search.result.presentation.view.listener
 
 
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 
 interface InspirationCarouselListener {
 
-    fun onInspirationCarouselListProductClicked(product: InspirationCarouselViewModel.Option.Product)
+    val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
 
-    fun onInspirationCarouselSeeAllClicked(inspirationCarouselViewModelOption: InspirationCarouselViewModel.Option)
+    fun onInspirationCarouselListProductClicked(product: InspirationCarouselDataView.Option.Product)
 
-    fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselViewModel.Option.Product)
+    fun onInspirationCarouselSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option)
 
-    fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselViewModel.Option.Product)
+    fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product)
 
-    fun onImpressedInspirationCarouselListProduct(product: InspirationCarouselViewModel.Option.Product)
+    fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselDataView.Option.Product)
 
-    fun onImpressedInspirationCarouselGridProduct(product: InspirationCarouselViewModel.Option.Product)
+    fun onImpressedInspirationCarouselListProduct(product: InspirationCarouselDataView.Option.Product)
 
-    fun onInspirationCarouselGridProductClicked(product: InspirationCarouselViewModel.Option.Product)
+    fun onImpressedInspirationCarouselGridProduct(product: InspirationCarouselDataView.Option.Product)
 
-    fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselViewModel.Option)
+    fun onInspirationCarouselGridProductClicked(product: InspirationCarouselDataView.Option.Product)
 
+    fun onInspirationCarouselGridBannerClicked(option: InspirationCarouselDataView.Option)
+
+    fun onInspirationCarouselChipsProductClicked(product: InspirationCarouselDataView.Option.Product)
+
+    fun onImpressedInspirationCarouselChipsProduct(product: InspirationCarouselDataView.Option.Product)
+
+    fun onInspirationCarouselChipsSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option)
+
+    fun onInspirationCarouselChipsClicked(
+            inspirationCarouselAdapterPosition: Int,
+            inspirationCarouselViewModel: InspirationCarouselDataView,
+            inspirationCarouselOption: InspirationCarouselDataView.Option,
+    )
 }

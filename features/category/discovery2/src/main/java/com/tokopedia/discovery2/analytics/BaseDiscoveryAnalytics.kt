@@ -9,7 +9,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
-open class BaseDiscoveryAnalytics(val pageType: String = EMPTY_STRING,
+open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                                   val pagePath: String = EMPTY_STRING,
                                   val pageIdentifier: String = EMPTY_STRING,
                                   val campaignCode: String = EMPTY_STRING,
@@ -22,6 +22,13 @@ open class BaseDiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     open fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int) {}
     open fun trackBannerClick(banner: DataItem, bannerPosition: Int) {}
     open fun trackCategoryNavigationImpression(componentsItems: ArrayList<ComponentsItem>) {}
+    open fun trackPlayWidgetImpression(componentsItem : ComponentsItem, userID: String?, channelId: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {}
+    open fun trackPlayWidgetClick(componentsItem : ComponentsItem, userID: String?, channelId: String, destinationURL: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {}
+    open fun trackPlayWidgetBannerClick(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int) {}
+    open fun trackPlayWidgetLihatSemuaClick(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int) {}
+    open fun trackPlayWidgetOverLayClick(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
+    open fun trackPlayWidgetOverLayImpression(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
+    open fun trackPlayWidgetReminderClick(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, channelId: String, isRemindMe: Boolean){}
     open fun trackCategoryNavigationClick(categoryItem: DataItem?, position: Int) {}
     open fun trackClickVideo(videoUrl: String, videoName: String, videoPlayedTime: String) {}
     open fun trackBackClick() {}
@@ -66,7 +73,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     open fun trackClickExpandNavigationAccordion(categoryId: String?) {}
     open fun trackClickCollapseNavigationAccordion(categoryId: String?) {}
     open fun trackClickCategoryOption(categoryId: String?) {}
-    open fun trackNotifyClick(componentsItems: ComponentsItem, isLogin: Boolean) {}
+    open fun trackNotifyClick(componentsItems: ComponentsItem, isLogin: Boolean, userID: String?) {}
     open fun trackCategoryTreeDropDownClick(userLoggedIn: Boolean) {}
     open fun trackCategoryOptionClick(userLoggedIn: Boolean, childCatID: String, applink: String?, catDepth: Int, childCatName: String) {}
     open fun trackCategoryTreeCloseClick(userLoggedIn: Boolean) {}

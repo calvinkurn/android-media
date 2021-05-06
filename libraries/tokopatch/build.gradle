@@ -48,7 +48,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-    implementation 'androidx.core:core-ktx:1.0.2'
+    implementation 'androidx.core:core-ktx:1.3.2'
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.robust
@@ -60,6 +60,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.converterGson
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx
+    implementation project(rootProject.ext.libraries.logger)
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 

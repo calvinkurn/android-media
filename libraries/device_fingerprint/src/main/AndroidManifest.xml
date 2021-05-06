@@ -7,11 +7,4 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
-    <application>
-        <service android:name=".service.SubmitDeviceInfoService"
-            android:enabled="true"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            />
-    </application>
-
 </manifest>

@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 
@@ -41,8 +41,6 @@ interface HomeTypeFactory {
 
     fun type(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel): Int
 
-    fun type(geoLocationPromptDataModel: GeoLocationPromptDataModel): Int
-
     fun type(reviewDataModel: ReviewDataModel): Int
 
     fun type(playCard: PlayCardDataModel): Int
@@ -60,4 +58,24 @@ interface HomeTypeFactory {
     fun type(dynamicChannelRetryModel: DynamicChannelRetryModel): Int
 
     fun type(dataModel: CarouselPlayWidgetDataModel): Int
+
+    fun type(emptyBannerDataModel: EmptyBannerDataModel): Int
+
+    fun type(homeHeaderOvoDataModel: HomeHeaderOvoDataModel): Int
+
+    fun type(homeInitialShimmerDataModel: HomeInitialShimmerDataModel): Int
+
+    fun type(errorStateIconModel: ErrorStateIconModel): Int
+
+    fun type(errorStateChannelOneModel: ErrorStateChannelOneModel): Int
+
+    fun type(errorStateChannelTwoModel: ErrorStateChannelTwoModel): Int
+
+    fun type(errorStateChannelThreeModel: ErrorStateChannelThreeModel): Int
+
+    fun type(shimmeringChannelDataModel: ShimmeringChannelDataModel): Int
+
+    fun type(shimmeringIconDataModel: ShimmeringIconDataModel): Int
+
+    fun type(errorStateAtfModel: ErrorStateAtfModel): Int
 }

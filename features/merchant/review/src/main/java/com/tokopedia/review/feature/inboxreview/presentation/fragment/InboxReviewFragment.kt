@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.inboxreview.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -15,7 +16,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.review.R
@@ -23,13 +28,15 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.ReviewConstants.ALL_RATINGS
 import com.tokopedia.review.common.util.ReviewConstants.ANSWERED_VALUE
+import com.tokopedia.review.common.util.ReviewConstants.RESULT_INTENT_REVIEW_REPLY
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.prefixStatus
 import com.tokopedia.review.common.util.getStatusFilter
 import com.tokopedia.review.common.util.isUnAnswered
+import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity
+import com.tokopedia.review.feature.inbox.common.presentation.listener.OnTabChangeListener
 import com.tokopedia.review.feature.inboxreview.analytics.InboxReviewTracking
 import com.tokopedia.review.feature.inboxreview.di.component.DaggerInboxReviewComponent
-
 import com.tokopedia.review.feature.inboxreview.di.component.InboxReviewComponent
 import com.tokopedia.review.feature.inboxreview.domain.mapper.InboxReviewMapper
 import com.tokopedia.review.feature.inboxreview.presentation.adapter.FeedbackInboxReviewListener
@@ -41,17 +48,14 @@ import com.tokopedia.review.feature.inboxreview.presentation.model.InboxReviewUi
 import com.tokopedia.review.feature.inboxreview.presentation.model.ListItemRatingWrapper
 import com.tokopedia.review.feature.inboxreview.presentation.model.SortFilterInboxItemWrapper
 import com.tokopedia.review.feature.inboxreview.presentation.viewmodel.InboxReviewViewModel
+import com.tokopedia.review.feature.inboxreview.util.InboxReviewPreference
 import com.tokopedia.review.feature.reviewreply.view.activity.SellerReviewReplyActivity
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
-
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.setImage
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_inbox_review.*
@@ -59,7 +63,7 @@ import javax.inject.Inject
 
 class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTypeFactory>(),
         HasComponent<InboxReviewComponent>,
-        FeedbackInboxReviewListener, GlobalErrorStateListener {
+        FeedbackInboxReviewListener, GlobalErrorStateListener, OnTabChangeListener {
 
     companion object {
         fun createInstance(): InboxReviewFragment {
@@ -75,6 +79,9 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var inboxReviewPreference: InboxReviewPreference
 
     private val inboxReviewViewModel: InboxReviewViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(InboxReviewViewModel::class.java)
@@ -106,6 +113,9 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private var prefs: SharedPreferences? = null
 
+    private var coachmark: CoachMark2? = null
+    private var coachmarkItems: ArrayList<CoachMark2Item> = arrayListOf()
+
     override fun getScreenName(): String {
         return getString(R.string.title_inbox_review)
     }
@@ -122,16 +132,22 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeInboxReviewCounter()
         observeInboxReview()
         observeFeedbackInboxReview()
+        observeReviewReminderEstimation()
         initTickerInboxReview()
         initSortFilterInboxReview()
         initRatingFilterList()
         setupMarginSortFilter()
+        setupViewInteraction()
+        initCoachMark()
     }
 
     override fun onResume() {
         super.onResume()
+        inboxReviewViewModel.getInboxReviewCounter()
+        inboxReviewViewModel.fetchReminderCounter()
         InboxReviewTracking.openScreenInboxReview(inboxReviewViewModel.userSession.shopId.orEmpty(),
                 inboxReviewViewModel.userSession.userId.orEmpty())
     }
@@ -225,12 +241,24 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             }
         }
 
-        startActivity(Intent(context, SellerReviewReplyActivity::class.java).apply {
+        startActivityForResult(Intent(context, SellerReviewReplyActivity::class.java).apply {
             putExtra(SellerReviewReplyFragment.CACHE_OBJECT_ID, cacheManager?.id)
             putExtra(SellerReviewReplyFragment.EXTRA_SHOP_ID, inboxReviewViewModel.userSession.shopId.orEmpty())
             putExtra(SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW, isEmptyReply)
-        })
+        }, RESULT_INTENT_REVIEW_REPLY)
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            RESULT_INTENT_REVIEW_REPLY -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    clearAllData()
+                    loadInitialData()
+                }
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun onImageItemClicked(titleProduct: String, imageUrls: List<String>, thumbnailsUrl: List<String>,
@@ -274,11 +302,84 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         loadInitialData()
     }
 
+    override fun showCoachMark(view: View?) {
+        context?.let {
+            if(isFirstTimeSeeKejarUlasan()) {
+                if(coachmarkItems.isEmpty()) {
+                    if(view != null) {
+                        coachmarkItems = createCoachMarkItems(view)
+                    }
+                }
+                if(coachmarkItems.isNotEmpty()) {
+                    coachmark?.showCoachMark(coachmarkItems, null, 0)
+                    coachmark?.setOnDismissListener {
+                        setFirstTimeSeeKejarUlasan()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onTabChange(position: Int) {
+        dismissCoachMark()
+    }
+
+    override fun hideCoachMark() {
+        coachmark?.hideCoachMark()
+    }
+
+    private fun dismissCoachMark() {
+        coachmark?.dismissCoachMark()
+    }
+
     private fun setupMarginSortFilter() {
         if (tickerInboxReview?.isVisible == false) {
             val sortFilterMargin = sortFilterInboxReview?.layoutParams as? LinearLayout.LayoutParams
             sortFilterMargin?.topMargin = 16.toPx()
         }
+    }
+
+    private fun setupViewInteraction(){
+        buttonReviewReminder?.setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_REMINDER)
+        }
+    }
+
+    private fun observeInboxReviewCounter() {
+        observe(inboxReviewViewModel.inboxReviewCounterText) {
+            when (it) {
+                is Success -> {
+                    setInboxReviewTabCounter(it.data)
+                }
+                is Fail -> {
+                    setInboxReviewTabCounter()
+                }
+            }
+        }
+        inboxReviewViewModel.getInboxReviewCounter()
+        inboxReviewViewModel.fetchReminderCounter()
+    }
+
+    private fun setInboxReviewTabCounter(counter: Int = 0) {
+        (activity as? InboxReputationActivity)?.fragmentList?.forEachIndexed { index, fragment ->
+            if (fragment::class.java == this::class.java) {
+                    if (counter.isMoreThanZero()) {
+                        (activity as? InboxReputationActivity)
+                                ?.indicator
+                                ?.tabLayout
+                                ?.getTabAt(index)
+                                ?.setCounter(counter)
+                                ?.setNotification(hasNotification = true)
+                    }
+                return
+            }
+        }
+    }
+
+    private fun setButtonReviewReminder(counter: Int = 0) {
+        buttonReviewReminder?.text = if (counter > 0) {
+            getString(R.string.review_reminder_button_review_reminder_with_counter, counter)
+        } else getString(R.string.review_reminder_button_review_reminder)
     }
 
     private fun observeInboxReview() {
@@ -306,6 +407,12 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                     onErrorGetInboxReviewData()
                 }
             }
+        }
+    }
+
+    private fun observeReviewReminderEstimation() {
+        observe(inboxReviewViewModel.getEstimation()) {
+            setButtonReviewReminder(it.totalBuyer)
         }
     }
 
@@ -458,6 +565,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         fragmentManager?.let {
             bottomSheet?.show(it, TAG_FILTER_RATING)
         }
+        dismissCoachMark()
     }
 
 
@@ -512,6 +620,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
         endlessRecyclerViewScrollListener?.resetState()
         isFilter = hasFiltered()
+        dismissCoachMark()
     }
 
     private fun updatedFilterRatingInboxReview(filterRatingList: List<ListItemRatingWrapper>) {
@@ -578,4 +687,22 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         val ratingFilter = inboxReviewViewModel.getRatingFilterListUpdated().filter { it.isSelected }.count()
         return statusFilter > 0 || ratingFilter > 0
     }
+
+    private fun createCoachMarkItems(kejarUlasanLabel: View): ArrayList<CoachMark2Item> {
+        return arrayListOf(CoachMark2Item(kejarUlasanLabel, context?.getString(R.string.kejar_ulasan_coach_mark_title) ?: "", context?.getString(R.string.kejar_ulasan_coach_mark_subtitle) ?: "", CoachMark2.POSITION_TOP))
+    }
+
+    private fun isFirstTimeSeeKejarUlasan(): Boolean {
+        return inboxReviewPreference.isFirstTimeSeeKejarUlasan(inboxReviewViewModel.userSession.userId)
+
+    }
+
+    private fun setFirstTimeSeeKejarUlasan() {
+        inboxReviewPreference.setFirstTimeSeeKejarUlasan(inboxReviewViewModel.userSession.userId)
+    }
+
+    private fun initCoachMark() {
+        coachmark = context?.let { CoachMark2(it) }
+    }
+
 }

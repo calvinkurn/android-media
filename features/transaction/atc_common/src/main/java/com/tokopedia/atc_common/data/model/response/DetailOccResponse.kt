@@ -38,7 +38,7 @@ data class DetailOccResponse(
 
         @SerializedName("shop_id")
         @Expose
-        val shopId: Int = 0,
+        val shopId: Long = 0,
 
         @SerializedName("shop_type")
         @Expose
@@ -66,11 +66,11 @@ data class DetailOccResponse(
 
         @SerializedName("customer_id")
         @Expose
-        val customerId: Int = 0,
+        val customerId: Long = 0,
 
         @SerializedName("warehouse_id")
         @Expose
-        val warehouseId: Int = 0,
+        val warehouseId: Long = 0,
 
         @SerializedName("is_trade_in")
         @Expose
@@ -87,6 +87,10 @@ data class DetailOccResponse(
         @SerializedName("is_free_ongkir")
         @Expose
         val isFreeOngkir: Boolean = false,
+
+        @SerializedName("is_free_ongkir_extra")
+        @Expose
+        val isFreeOngkirExtra: Boolean = false,
 
         @SerializedName("tracker_attribution")
         @Expose

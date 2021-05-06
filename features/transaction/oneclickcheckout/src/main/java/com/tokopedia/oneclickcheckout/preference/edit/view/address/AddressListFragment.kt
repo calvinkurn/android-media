@@ -2,7 +2,6 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.address
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import androidx.lifecycle.Observer
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +23,10 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
@@ -81,14 +83,28 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
 
         private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
         private const val ARG_IS_EDIT = "is_edit"
+        private const val ARGS_ADDRESS_STATE = "ARGS_ADDRESS_STATE"
 
-        fun newInstance(isEdit: Boolean = false): AddressListFragment {
+        fun newInstance(isEdit: Boolean = false, addressState: Int): AddressListFragment {
             val addressListFragment = AddressListFragment()
             val bundle = Bundle()
             bundle.putBoolean(ARG_IS_EDIT, isEdit)
+            bundle.putInt(ARGS_ADDRESS_STATE, addressState)
             addressListFragment.arguments = bundle
             return addressListFragment
         }
+    }
+
+    private fun getAddressState(): Int {
+        return arguments?.getInt(ARGS_ADDRESS_STATE) ?: 0
+    }
+
+    private fun getLocalCacheAddressId(): String {
+        context?.let {
+            return ChooseAddressUtils.getLocalizingAddressData(it)?.address_id ?: "0"
+        }
+
+        return "0"
     }
 
     override fun getScreenName(): String = ""
@@ -116,7 +132,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
             }
         }
 
-        viewModel.addressList.observe(viewLifecycleOwner, Observer {
+        viewModel.addressList.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.FirstLoad -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -130,7 +146,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
                 }
 
                 is OccState.Success -> {
-                    adapter?.setData(it.data.listAddress, it. data.hasNext ?: false)
+                    adapter?.setData(it.data.listAddress, it.data.hasNext ?: false)
                     endlessScrollListener?.updateStateAfterGetData()
                     endlessScrollListener?.setHasNextPage(it.data.hasNext ?: false)
                     validateButton()
@@ -200,11 +216,15 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         val searchKey = viewModel.savedQuery
         searchAddress?.searchBarTextField?.setText(searchKey)
 
-        viewModel.searchAddress(searchKey)
+        context?.let {
+            viewModel.searchAddress(searchKey, getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+        }
     }
 
     private fun initView() {
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         addressListRv = view?.findViewById(R.id.address_list_rv)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         searchAddress = view?.findViewById(R.id.search_input_view)
@@ -226,7 +246,9 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         addressListRv?.clearOnScrollListeners()
         endlessScrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadMore()
+                context?.let {
+                    viewModel.loadMore(getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+                }
             }
         }
         endlessScrollListener?.let {
@@ -237,10 +259,13 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
     private fun goBack() {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            val selectedId = viewModel.selectedId.toIntOrZero()
+            val selectedId = viewModel.selectedId.toLongOrZero()
             if (selectedId > 0) {
                 preferenceListAnalytics.eventClickSimpanAlamatInPilihAlamatPage()
                 parent.setAddressId(selectedId)
+                viewModel.selectedAddressModel?.let {
+                    parent.setNewlySelectedAddressModel(it)
+                }
                 setShippingParam()
                 parent.goBack()
             }
@@ -291,11 +316,15 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
                 viewModel.destinationLatitude = saveAddressDataModel.latitude
                 viewModel.destinationPostalCode = saveAddressDataModel.postalCode
                 viewModel.destinationDistrict = saveAddressDataModel.districtId.toString()
-                viewModel.searchAddress("")
+                context?.let {
+                    viewModel.searchAddress("", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+                }
                 goToNextStep()
             }
         } else if (requestCode == REQUEST_CREATE) {
-            viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "")
+            context?.let {
+                viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+            }
         }
 
     }
@@ -308,20 +337,24 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         searchAddress?.searchBarTextField?.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchAddress?.clearFocus()
-                viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "")
+                context?.let {
+                    viewModel.searchAddress(searchAddress?.searchBarTextField?.text?.toString() ?: "", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+                }
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
         }
         searchAddress?.clearListener = {
-            viewModel.searchAddress("")
+            context?.let {
+                viewModel.searchAddress("", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+            }
         }
         searchAddress?.searchBarPlaceholder = getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address)
     }
 
-    override fun onSelect(addressId: String) {
+    override fun onSelect(addressModel: RecipientAddressModel) {
         preferenceListAnalytics.eventClickAddressOptionInPilihAlamatPage()
-        viewModel.setSelectedAddress(addressId)
+        viewModel.setSelectedAddress(addressModel)
     }
 
     private fun openSoftKeyboard() {
@@ -341,8 +374,11 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
     private fun goToNextStep() {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            val selectedId = viewModel.selectedId.toIntOrZero()
+            val selectedId = viewModel.selectedId.toLongOrZero()
             if (selectedId > 0) {
+                viewModel.selectedAddressModel?.let {
+                    parent.setNewlySelectedAddressModel(it)
+                }
                 preferenceListAnalytics.eventClickSimpanAlamatInPilihAlamatPage()
                 parent.setAddressId(selectedId)
                 setShippingParam()
@@ -357,7 +393,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
             val shippingParam = parent.getShippingParam()
             if (shippingParam != null) {
                 shippingParam.destinationDistrictId = viewModel.destinationDistrict
-                shippingParam.addressId = viewModel.selectedId.toInt()
+                shippingParam.addressId = viewModel.selectedId
                 shippingParam.destinationLatitude = viewModel.destinationLatitude
                 shippingParam.destinationLongitude = viewModel.destinationLongitude
                 shippingParam.destinationPostalCode = viewModel.destinationPostalCode
@@ -398,7 +434,9 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
         globalErrorLayout?.setType(type)
         globalErrorLayout?.setActionClickListener {
             searchAddress?.searchBarTextField?.setText("")
-            viewModel.searchAddress("")
+            context?.let {
+                viewModel.searchAddress("", getAddressState(), getLocalCacheAddressId(), ChooseAddressUtils.isRollOutUser(it))
+            }
         }
         searchAddress?.gone()
         textSearchError?.gone()

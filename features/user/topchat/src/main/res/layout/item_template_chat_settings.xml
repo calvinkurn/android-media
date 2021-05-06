@@ -24,7 +24,7 @@
         android:paddingTop="@dimen/spacing_lvl5"
         android:paddingBottom="@dimen/spacing_lvl5"
         android:scrollbars="horizontal"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/fontSize_lvl3"
         tools:text="Hai barang ini ready ga?Hai barang ini ready ga?Hai barang ini ready ga?Hai barang ini ready ga?Hai barang ini ready ga?" />
 

@@ -11,5 +11,9 @@
         <activity
             android:name=".presentation.InstrumentTestProductDetailActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <activity
+            android:name=".ProductDetailActivityCommonTest"
+            android:theme="@style/Theme.White"/>
     </application>
 </manifest>

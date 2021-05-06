@@ -2,8 +2,6 @@ package com.tokopedia.buyerorder.unifiedhistory.list.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
-import com.tokopedia.buyerorder.common.BuyerProductionDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSession
@@ -18,7 +16,6 @@ import javax.inject.Named
  * Created by fwidjaja on 10/11/20.
  */
 @Module
-@UohListScope
 class UohListModule (val context: Context) {
     @UohListScope
     @Provides
@@ -31,10 +28,6 @@ class UohListModule (val context: Context) {
     @UohListScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @UohListScope
-    @Provides
-    fun provideUohDispatcherProvider(): BuyerDispatcherProvider = BuyerProductionDispatcherProvider()
 
     @UohListScope
     @Provides

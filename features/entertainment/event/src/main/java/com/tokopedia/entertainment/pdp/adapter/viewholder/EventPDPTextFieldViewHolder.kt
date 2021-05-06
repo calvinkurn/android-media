@@ -164,11 +164,13 @@ class EventPDPTextFieldViewHolder(val view: View,
 
     fun getList(value: String): LinkedHashMap<String, String> {
         val listValue: LinkedHashMap<String, String> = LinkedHashMap()
-        val jsonArray = JSONArray(value)
-        for (i in 0..jsonArray.length() - 1) {
-            val key = (jsonArray.getJSONObject(i) as JSONObject).names()?.get(0)?.toString()
-            key?.let {
-                listValue.put(key, jsonArray.getJSONObject(i).getString(key))
+        if(value.isNotEmpty()) {
+            val jsonArray = JSONArray(value)
+            for (i in 0..jsonArray.length() - 1) {
+                val key = (jsonArray.getJSONObject(i) as JSONObject).names()?.get(0)?.toString()
+                key?.let {
+                    listValue.put(key, jsonArray.getJSONObject(i).getString(key))
+                }
             }
         }
         return listValue

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="recom_app_name">home_recom</string>
     <string name="recom_home_recommendation">Pilihan Tokopedia</string>
     <string name="recom_similar_recommendation">Produk Serupa</string>
@@ -19,8 +19,11 @@
     <string name="home_recom_filter">Filter</string>
     <string name="home_recom_go_to_wishlist">Lihat Wishlist</string>
     <string name="recom_msg_success_remove_wishlist">Sukses menghapus wishlist</string>
+    <string name="recom_msg_empty_next_page">Produk telah berhasil tampil keseluruhan</string>
     <string name="recom_msg_success_add_wishlist">Sukses menambah wishlist</string>
+    <string name="recom_msg_success_add_to_cart">Sukses menambah barang ke kerajang</string>
     <string name="recom_filter_sort_apply">Terapkan</string>
-    <string name="recom_empty_filter_title">Oops, produk nggak ditemukan</string>
-    <string name="recom_empty_filter_desc">Coba kurangi filter yang sedang aktif berikut:</string>
+    <string name="recom_empty_filter_title">Oops, barangnya nggak ketemu</string>
+    <string name="recom_empty_filter_desc">Coba kurangi filter yang sedang aktif, atau reset filter buat lanjutkan penjelajahanmu!</string>
+    <string name="recom_empty_filter_button" tools:ignore="ExtraTranslation">Reset Filter</string>
 </resources>

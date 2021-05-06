@@ -15,6 +15,7 @@
     android:layout_marginRight="@dimen/dp_16"
     android:layout_marginEnd="@dimen/dp_16"
     android:layout_marginBottom="@dimen/dp_16"
+    app:cardBackgroundColor="@color/discovery_common_dms_card_background"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4"
     app:cardUseCompatPadding="true"
@@ -131,6 +132,7 @@
 
             <ImageView
                 android:id="@+id/imageViewRating1"
+                android:contentDescription="@string/content_desc_similar_search_imageRating"
                 android:layout_width="@dimen/dp_12"
                 android:layout_height="@dimen/dp_12"
                 android:adjustViewBounds="true"
@@ -140,6 +142,7 @@
 
             <ImageView
                 android:id="@+id/imageViewRating2"
+                tools:ignore="ContentDescription"
                 android:layout_width="@dimen/dp_12"
                 android:layout_height="@dimen/dp_12"
                 android:adjustViewBounds="true"
@@ -149,6 +152,7 @@
 
             <ImageView
                 android:id="@+id/imageViewRating3"
+                tools:ignore="ContentDescription"
                 android:layout_width="@dimen/dp_12"
                 android:layout_height="@dimen/dp_12"
                 android:adjustViewBounds="true"
@@ -158,6 +162,7 @@
 
             <ImageView
                 android:id="@+id/imageViewRating4"
+                tools:ignore="ContentDescription"
                 android:layout_width="@dimen/dp_12"
                 android:layout_height="@dimen/dp_12"
                 android:adjustViewBounds="true"
@@ -167,6 +172,7 @@
 
             <ImageView
                 android:id="@+id/imageViewRating5"
+                tools:ignore="ContentDescription"
                 android:layout_width="@dimen/dp_12"
                 android:layout_height="@dimen/dp_12"
                 android:adjustViewBounds="true"

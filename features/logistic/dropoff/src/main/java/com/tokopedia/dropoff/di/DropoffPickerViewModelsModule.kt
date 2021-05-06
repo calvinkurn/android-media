@@ -11,7 +11,6 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@DropoffPickerScope
 abstract class DropoffPickerViewModelsModule {
 
     @Binds
@@ -19,11 +18,13 @@ abstract class DropoffPickerViewModelsModule {
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
+    @DropoffPickerScope
     @IntoMap
     @ViewModelKey(DropoffPickerViewModel::class)
     internal abstract fun bindDropoffViewModel(viewModel: DropoffPickerViewModel): ViewModel
 
     @Binds
+    @DropoffPickerScope
     @IntoMap
     @ViewModelKey(AutoCompleteViewModel::class)
     internal abstract fun bindAutoCompleteViewModel(viewModel: AutoCompleteViewModel): ViewModel

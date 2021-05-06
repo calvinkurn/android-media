@@ -21,25 +21,13 @@ data class UserAccountDataModel(
         @Expose
         var profile: ProfileModel = ProfileModel(),
 
-        @SerializedName("tokopoints")
-        @Expose
-        var tokopoints: TokopointsModel = TokopointsModel(),
-
         @SerializedName("openDebitSettings")
         @Expose
         var debitInstant: DebitInstantModel = DebitInstantModel(),
 
-        @SerializedName("vcc_user_status")
-        @Expose
-        var vccUserStatus: VccUserStatus = VccUserStatus(),
-
         @SerializedName("isAffiliate")
         @Expose
         var isAffiliate: Boolean = false,
-
-        @SerializedName("balance")
-        @Expose
-        var saldo: DepositDataModel = DepositDataModel(),
 
         var shortcutResponse: ShortcutResponse = ShortcutResponse()
 )

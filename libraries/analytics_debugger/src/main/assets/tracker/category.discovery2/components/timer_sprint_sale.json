@@ -1,0 +1,13 @@
+{
+  "readme": "Discovery Bottom Navigation impression and click Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "sessionIris": ".*",
+      "eventCategory": ".*",
+      "eventAction": "click reminder notification",
+      "event": "clickDiscovery",
+      "eventLabel": ".*"
+    }
+  ]
+}

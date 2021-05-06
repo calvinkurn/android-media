@@ -1,7 +1,5 @@
 <resources>
-    <string name="som_app_name">Seller Order Management</string>
     <string name="title_som_list">Penjualan</string>
-    <string name="title_som_filter">Filter</string>
     <string name="title_som_detail">Detail Pesanan</string>
     <string name="title_som_confirm_req_pickup">Konfirmasi Request Pick-Up</string>
     <string name="title_som_confirm_shipping">Konfirmasi Pengiriman</string>
@@ -10,50 +8,24 @@
     <string name="title_som_booking_code">Detail Kode Booking</string>
     <string name="title_som_invoice">Invoice</string>
     <string name="title_som_waiting_payment">Menunggu Pembayaran</string>
-    <string name="hint_search_product">Cari nama pembeli, produk, resi, atau invoice</string>
-    <string name="response_due">Batas Respons</string>
-    <string name="seller_info">Seller Info</string>
-    <string name="seller_filter">Filter</string>
+    <string name="som_list_hint_search_product">Cari nama pembeli, produk, resi, atau invoice</string>
     <string name="title_logistic_info">Informasi Terkait Kurir</string>
     <string name="btn_show_order">Tampilkan Pesanan</string>
 
-    <string name="status_new">Pesanan Baru</string>
-    <string name="date">date</string>
     <string name="due_day">1 hari</string>
     <string name="same_day">Same Day</string>
 
     <string name="empty_filter_title">Tidak Ada Pesanan dengan Filter Ini</string>
-    <string name="empty_filter_desc">Ubah filter untuk menemukan pesanan yang sesuai</string>
-    <string name="empty_search_title">Hasil pencarian tidak ditemukan untuk tanggal</string>
-    <string name="empty_search_desc">Gunakan kata kunci yang relevan (Nama Pembeli, No. Invoice, Tanggal belanja)</string>
     <string name="empty_peluang_title">Belum ada pesanan, nih</string>
     <string name="empty_peluang_desc">Cek Peluang dan ambil pesanan yang tidak diproses penjual lain.</string>
-    <string name="error_list_title">Sedang Ada Perbaikan Sistem</string>
-    <string name="error_list_desc">Mohon maaf, kami sedang ada perbaikan sistem, anda dapat mencobanya beberapa saat lagi</string>
     <string name="btn_cek_peluang">Cek Peluang</string>
-    <string name="key_all_order">all_order</string>
 
     <!--Empty state non topads user-->
     <string name="empty_peluang_desc_non_topads_no_filter">Ayo bikin tokomu lebih ramai pembeli dengan beriklan pakai TopAds!</string>
-    <string name="empty_peluang_desc_non_topads_with_filter">Ubah filter untuk menemukan pesanan yang sesuai</string>
     <string name="btn_cek_peluang_non_topads">Mulai Beriklan</string>
 
-    <string name="title_tanggal">Tanggal</string>
-    <string name="title_type">Tipe Pesanan</string>
     <string name="title_courier">Kurir</string>
     <string name="title_see_all">Lihat Semua</string>
-    <string name="title_status">Status</string>
-    <string name="title_filter">Filter</string>
-    <string name="title_sort">Urutkan</string>
-    <string name="title_status_order">Status Pesanan</string>
-    <string name="title_tipe_pesanan">Tipe Pesanan</string>
-    <string name="title_kurir">Kurir</string>
-    <string name="title_label">Label</string>
-    <string name="title_jatuh_tempo">Jatuh Tempo</string>
-    <string name="subtitle_status">Pilih Status</string>
-    <string name="mulai_dari">Mulai Dari</string>
-    <string name="sampai">Sampai</string>
-    <string name="terapkan">Terapkan</string>
     <string name="reset">Reset</string>
     <string name="simpan">Simpan</string>
     <string name="cetak">Cetak</string>
@@ -62,21 +34,19 @@
     <string name="end_date">Tanggal Akhir</string>
 
     <!--DETAIL-->
-    <string name="daftar_produk">Daftar Produk</string>
     <string name="buyer">Nama Pembeli</string>
     <string name="purchasing_date">Tanggal Pembelian</string>
     <string name="nomor_resi">No. Resi</string>
     <string name="som_deadline">Batas Respons</string>
     <string name="som_deadline_done">Selesai Otomatis</string>
-    <string name="lihat_caps">LIHAT</string>
     <string name="see_detail">Lihat Detail</string>
     <string name="detail_product">Detail Produk</string>
     <string name="see_invoice">Lihat Invoice</string>
-    <string name="lihat">Lihat</string>
-    <string name="placeholder_kode_booking">Terima pesanan terlebih dahulu</string>
-    <string name="salin_caps">SALIN</string>
     <string name="awb_label">awb</string>
-    <string name="resi_tersalin">Nomor resi sudah tersalin</string>
+    <string name="readable_awb_label">Nomor resi</string>
+    <string name="booking_code_label">bookingcode</string>
+    <string name="readable_booking_code_label">Kode booking</string>
+    <string name="message_success_copy">%1$s sudah tersalin</string>
     <string name="invoice_label">invoice</string>
     <string name="sudah_dicetak">Sudah dicetak</string>
     <string name="invoice_tersalin">Invoice sudah tersalin</string>
@@ -85,45 +55,21 @@
     <string name="kurir_pengiriman">Kurir</string>
     <string name="alamat_pengiriman">Alamat</string>
     <string name="alamat_pengiriman_tersalin">Alamat Pengiriman sudah tersalin</string>
-    <string name="salin_alamat">Salin Alamat</string>
-    <string name="catatan">Catatan</string>
     <string name="terima_pesanan">Terima Pesanan</string>
     <string name="rincian_pembayaran">Rincian Pembayaran</string>
     <string name="metode_pembayaran">Metode Pembayaran</string>
-    <string name="product_price_label">Total Harga</string>
-    <string name="shipping_price_label">Total Ongkos Kirim</string>
-    <string name="insurance_price_label">Biaya Asuransi</string>
-    <string name="additional_price_label">Biaya Tambahan Penjual</string>
-    <string name="purchase_protection_fee_label">Biaya Proteksi Produk (%1$d Barang)</string>
-    <string name="readiness_insurance_fee_label">Jaminan Ready Stock (%1$d Barang)</string>
-    <string name="cod_fee_label">Biaya Bayar Ditempat</string>
     <string name="total_price_label">Total Pembayaran</string>
-    <string name="show_bottomsheet">Show Bottomsheet</string>
     <string name="tolak_pesanan">Tolak Pesanan</string>
     <string name="placeholder_reject_reason">Contoh: Kurir menolak paket saya</string>
     <string name="additional_invalid_resi"><br><font color="#03ac0e">Unggah Sekarang</font></br></string>
     <string name="sale_from_top_ads">Penjualan dari TopAds</string>
 
     <string name="chat">Chat</string>
-    <string name="harus_sesuai">Harus Sesuai</string>
-    <string name="wajib_dicantumkan">Wajib Dicantumkan</string>
-    <string name="icon_harus_sesuai">Icon Harus Sesuai</string>
-    <string name="icon_wajib_dicantumkan">Icon Wajib Dicantumkan</string>
-    <string name="label_mengerti">Mengerti</string>
-    <string name="title_bottomsheet_immutable_courier">Kurir tidak dapat diubah</string>
-    <string name="desc_bottomsheet_immutable_courier">Kurir dan layanan pengiriman harus sesuai dengan pesanan.</string>
-    <string name="title_bottomsheet_wajib_tulis_kode_booking">Wajib tulis kode booking</string>
-    <string name="desc_bottomsheet_wajib_tulis_kode_booking">Cetak label pengiriman atau tulis kode booking di kemasan paketmu. Kurir akan memastikan kode booking sudah selesai.</string>
-
-    <string name="datepicker_start_title">Mulai Dari</string>
-    <string name="datepicker_end_title">Sampai</string>
 
     <string name="global_error">Terjadi kesalahan. Mohon ulangi kembali</string>
     <string name="image_product">Image Product</string>
     <string name="product_name">Product Name</string>
     <string name="product_price">Rp 10.000.000</string>
-    <string name="extra_note_label">Catatan Penutupan Toko</string>
-    <string name="extra_note_tooltip">Contoh: Toko tutup karena liburan</string>
 
     <string name="empty_stock_extra_note">Beritahu pembeli bahwa stok produk kosong (opsional)</string>
     <string name="empty_stock_extra_placeholder">Contoh: Maaf ya, barangnya habis</string>
@@ -161,33 +107,23 @@
 
     <string name="cancel_order_batal">Batal</string>
     <string name="btn_konfirmasi">Konfirmasi</string>
-    <string name="cancel_order_notes_hint">Keterangan</string>
-    <string name="cancel_order_notes_max">Maksimum 512 Karakter</string>
     <string name="change_courier_label">Ganti Kurir Pengiriman</string>
     <string name="cancel_order_notes_empty_warning">Harap isi Alasan Penolakan</string>
 
     <string name="courier_service_label">Paket Pengiriman</string>
     <string name="courier_choosen_example">JNE</string>
     <string name="courier_service_choosen_example">Reguler</string>
-    <string name="tf_no_resi_label">Nomor Resi</string>
     <string name="tf_no_resi_placeholder">Isi Nomor Resi</string>
     <string name="tf_no_resi_message">Min. 8 karakter dan Maks. 17 karakter</string>
 
     <string name="scan_barcode_msg">Arahkan kamera ponsel Anda pada nomor resi barang.
         Pastikan barcode berada di dalam frame. Nomor resi akan otomatis terpindai.</string>
 
-    <string name="succeed_change_courier">Anda berhasil mengganti kurir.</string>
-
-    <string name="wajib_tulis_kode_booking_title">Wajib tulis kode booking</string>
-    <string name="wajib_tulis_kode_booking_desc">Cetak label pengiriman atau tulis kode booking di kemasan paketmu. Kurir akan memastikan kode booking sudah sesuai.</string>
-
     <string name="change_no_resi_hint">Nomor Resi</string>
     <string name="change_no_resi_notes">Min. 8 karakter dan Maks. 17 karakter</string>
     <string name="change_no_resi_btn_ubah">Ubah</string>
 
-
     <string name="booking_code_copied">Kode booking berhasil disalin</string>
-    <string name="retry_load_list">Coba Lagi</string>
 
     <string name="barcode_image_content_description">Barcode Image</string>
     <string name="barcode_label_one">Kode booking pengiriman</string>
@@ -214,101 +150,15 @@
     <string name="action_terima">Terima</string>
     <string name="action_ubah">Ubah Status</string>
 
-    <string name="title_dialog_cancel_order">Batalkan Pesanan</string>
-
-    <string name="cancel_order_penalty_warning_content">
-        <![CDATA[
-        <html>
-        <body>
-        <p>Pembatalan pengiriman akan mendapatkan penalti reputasi.<br>
-        Mulai hari Kamis, 10 Mei 2018, Tokopedia akan menetapkan sistem penalti reputasi toko untuk penjual yang membatalkan pesanan pada saat konfirmasi pengiriman.
-        <br>Besar penalti yang diberikan kepada penjual adalah sesuai ketentuan berikut :</p>
-        <ul>
-          <li> <b><font color="red">-1</font></b> poin untuk penjual tanpa badge </li>
-          <li> <strong style="color: red;"> -3 </strong> poin untuk penjual dengan badge bronze</li>
-          <li> <strong style="color: red;"> -8 </strong> poin untuk penjual dengan badge silver</li>
-          <li> <strong style="color: red;"> -10 </strong> poin untuk penjual dengan badge gold</li>
-          <li> <strong style="color: red;"> -15 </strong> poin untuk penjual dengan badge diamond</li>
-        </ul>
-        <p><a href="https://www.tokopedia.com/help/article/a-0522"><strong style="color: green;">Pelajari sistem penalti</strong></a></p>
-        </body>
-        </html>
-        ]]>
-    </string>
-
-    <string name="buyer_request_cancel_html">
-        <![CDATA[
-        <html>
-        <body>
-        <p>Pembeli telah mengajukan pembatalan.</p>
-        <p><font color="#ef144a"><b>Lihat Alasan</b></font></a></p>
-        </body>
-        </html>
-        ]]>
-    </string>
-
-    <string name="buyer_request_cancel">Pembeli telah mengajukan pembatalan</string>
-    <string name="ticker_info_selengkapnya">
-        <![CDATA[
-        <html>
-        <body>
-        <a href="https://m.tokopedia.com/myorder/seller/ticker-info"><strong style="color: green;">Info Selengkapnya</strong></a>
-        </body>
-        </html>
-        ]]>
-    </string>
-
-    <string name="som_chat_buyer">Chat Pembeli</string>
     <string name="som_shop_performance_info">Skor performa tokomu tidak akan dikurangi untuk pembatalan pesanan ini.</string>
-    <string name="som_request_buyer_notes_1">telah mengajukan pembatalan pesanan</string>
-    <string name="som_request_buyer_notes_2">dengan alasan : </string>
-
-    <string name="som_request_buyer_notes_html">
-        <![CDATA[
-        <html>
-        <body><b>#custName</b> telah mengajukan pembatalan pesanan <font color="#ef144a">#invoiceNo</font> dengan alasan:
-        </body>
-        </html>
-        ]]>
-    </string>
-    <string name="som_penalty_subtitle">Apakah Anda yakin ingin membatalkan pesanan?</string>
 
     <string name="som_dropshipper_label">Dropshipper</string>
 
-    <!--Coachmark-->
-    <string name="coachmark_search">Temukan pesanan lebih cepat</string>
-    <string name="coachmark_search_info">Cari berdasarkan nama produk atau klik status pesanan yang kamu inginkan.</string>
-    <string name="coachmark_pesanan">Lihat daftar pesanan</string>
-    <string name="coachmark_pesanan_info">Klik di sini untuk menerima pesananmu. Jangan lupa cek batas respons, ya!</string>
-    <string name="coachmark_filter">Pilih filter</string>
-    <string name="coachmark_filter_info">Tampilkan daftar pesanan sesuai jenis kurir, tipe pesanan, dan jatuh tempo.</string>
-    <string name="coachmark_chat">Chat pembeli</string>
-    <string name="coachmark_chat_info">Ada detail pesanan yang kurang jelas? Yuk, tanya langsung ke pembelimu.</string>
-    <string name="coachmark_header">Cek info pesananmu</string>
-    <string name="coachmark_header_info">Temukan info seputar nama pembeli, tanggal transaksi, hingga batas respons di sini.</string>
-    <string name="coachmark_product">Produk yang dipesan</string>
-    <string name="coachmark_product_info">Pastikan barang yang kamu kirim sudah sesuai dengan yang dipesan oleh pembeli.</string>
-    <string name="coachmark_shipping">Detail pengiriman</string>
-    <string name="coachmark_shipping_info">Kirim pesanan ke alamat pembeli dengan menggunakan kurir yang telah ditentukan.</string>
-    <string name="coachmark_edit">Edit kurir atau resi di sini</string>
-    <string name="coachmark_edit_info">Klik ini jika butuh mengganti kurir, edit resi, atau menolak pesanan yang masuk.</string>
-    <string name="coachmark_terima_pesanan">Saatnya proses pesananmu!</string>
-    <string name="coachmark_terima_pesanan_info">Setelah menerima pesanan, kamu bisa langsung mengemas barang untuk segera dikirimkan.</string>
-    <string name="coachmark_booking">Wajib Tulis Kode Booking</string>
-    <string name="coachmark_booking_info">Cetak label pengiriman atau tulis kode booking di paket yang akan di kirim.</string>
     <string name="dialog_receiver_name">Nama Penerima</string>
     <string name="et_empty_error">Tidak Boleh Kosong</string>
     <string name="default_confirm_shipping_success">Terima kasih telah melakukan pengiriman.</string>
-    <string name="dialog_title_cannot_access_page">Kamu tidak memiliki akses ke halaman ini</string>
-    <string name="dialog_description_cannot_access_page">Akses ke halaman penjualan hanya dapat diberikan oleh pemilik toko</string>
-    <string name="button_understand">Ya, saya mengerti</string>
 
     <!--  instant cancel  -->
-    <string name="bottomsheet_buyer_request_cancel">Alasan pembeli mengajukan pembatalan pesanan:</string>
-    <string name="bottomsheet_order_cancellation_response_negative_button_code_220">Terima Pesanan</string>
-    <string name="bottomsheet_order_cancellation_response_positive_button_code_220">Batalkan Pesanan</string>
-    <string name="bottomsheet_order_cancellation_response_negative_button_code_400">Konfirmasi Pengiriman</string>
-    <string name="bottomsheet_order_cancellation_response_positive_button_code_400">Batalkan Pesanan</string>
     <string name="som_error_message_no_internet_connection">Oops, koneksi internetmu terganggu. Silahkan cek koneksi internet dan coba lagi, ya.</string>
     <string name="som_error_message_server_fault">Oops, ada gangguan yang perlu kami bereskan. Silahkan coba lagi, ya.</string>
     <string name="som_buyer_cancellation_confirm_shipping_title">Kirim pesanan ini?</string>
@@ -323,35 +173,16 @@
     <string name="som_buyer_cancellation_cancel_button">Kembali</string>
     <string name="som_header_detail_ticker_cancellation">Dibatalkan karena</string>
 
-
     <!--CONTENT DESC-->
-    <string name="content_desc_label_status_order">text status pesanan</string>
-    <string name="content_desc_label_reject">text menu</string>
     <string name="content_desc_tf_no_resi">input nomor resi</string>
-    <string name="content_desc_label">text kurir pengiriman</string>
-    <string name="content_desc_label_choosen_courier">text kurir terpilih</string>
     <string name="content_desc_switch_change_courier">button ganti kurir</string>
     <string name="content_desc_btn_confirm_shipping">button konirmasi</string>
     <string name="content_desc_tf_cancel_notes">input alasan pembatalan</string>
     <string name="content_desc_btn_cancel_order_canceled">button batal</string>
     <string name="content_desc_btn_cancel_order_confirmed">button ubah</string>
-    <string name="content_desc_btn_primary">button utama</string>
     <string name="content_desc_btn_secondary">button three dots</string>
-    <string name="content_desc_filter_action_button">button filter</string>
-    <string name="content_desc_btn_terapkan">button terapkan</string>
-    <string name="content_desc_label_radio">text status</string>
-    <string name="content_desc_btn_simpan">button simpan</string>
-    <string name="content_desc_rl_status">text filter by status</string>
 
     <!--  waiting payment orders  -->
-    <string name="som_list_coachmark_waiting_payment_order_title">Menunggu pembayaran pembeli</string>
-    <string name="som_list_coachmark_check_and_mange_product_stock_title">Cek dan atur stok produkmu</string>
-    <string name="som_list_coachmark_waiting_payment_order_description">Di sini kamu bisa cek pesanan yang dibayar oleh pembeli. Pesanan gagal bayar atau terbayar saat stok habis tidak akan ditampilkan.</string>
-    <string name="som_list_coachmark_check_and_mange_product_stock_description">Sembari menunggu, kamu bisa atur ketersediaan stok produk untuk memenuhi pesanan yang masuk.</string>
-
-    <string name="som_list_order_waiting_payment_button_text">%1$s (%2$s)</string>
-    <string name="som_list_waiting_payment_order_max_counter">99+</string>
-
     <string name="som_waiting_payment_orders_ticker_description">Atur ketersediaan stok produkmu sembari menunggu pembayaran. Pesanan yang gagal bayar atau terbayar saat stok habis tidak akan ditampilkan. &lt;a href="#"&gt;Pelajari Lebih Lanjut&lt;/a&gt;</string>
 
     <string name="bottomsheet_waiting_payment_order_header">Sembari menunggu pembayaran dari pembeli, kamu bisa cek ketersediaan dan isi kembali stok produkmu. &lt;a href="https://seller.tokopedia.com/edu/articles/"&gt;Selengkapnya&lt;/a&gt;</string>
@@ -382,19 +213,14 @@
     <string name="som_list_response_before_label">Batas Respons</string>
     <string name="som_list_more_products">+%1$s produk lainnya</string>
     <string name="som_list_bulk_accept_order_button">Terima Pesanan Sekaligus</string>
+    <string name="som_list_bulk_confirm_shipping_order_button">Atur Sekaligus</string>
     <string name="som_list_multi_select">Pilih Sekaligus</string>
     <string name="som_list_multi_select_cancel">Batalkan</string>
-    <string name="som_list_order_courier_label">Kurir:</string>
     <string name="som_list_order_counter">%1$d Pesanan</string>
     <string name="som_list_order_counter_multi_select_enabled">%1$d Pesanan dipilih</string>
-    <string name="som_list_filter_chip">Filter</string>
-    <string name="som_list_order_destination_label">Tujuan:</string>
-    <string name="som_list_bulk_accept_order_bottom_sheet_title">Terima pesanan sekaligus</string>
     <string name="som_list_bottom_sheet_bulk_accept_order_description">Pastikan stok produk tersedia, ya. Skor toko akan dikurangi jika kamu membatalkan pesanan ini.</string>
     <string name="som_list_btn_bulk_accept_order">Terima Pesanan Sekaligus</string>
     <string name="som_list_bulk_accept_order_product_amount">%1$s Barang</string>
-    <string name="som_list_bulk_accept_order_success_message">%1$d pesanan baru berhasil diterima.</string>
-    <string name="som_list_bulk_accept_order_failed_message">%1$d pesanan baru gagal diterima.</string>
     <string name="som_list_failed_accept_order">Gagal terima pesanan.</string>
     <string name="som_list_order_cannot_be_selected">Oops, pesanan tidak dapat dipilih</string>
     <string name="som_list_bulk_accept_dialog_title_on_progress">%1$d pesanan sedang diterima</string>
@@ -421,4 +247,22 @@
     <string name="som_list_empty_state_not_found_title">Oops, pesanan yang kamu cari nggak ditemukan.</string>
     <string name="som_list_button_ok">Ok</string>
     <string name="som_list_pre_order_flag">(PO)</string>
+    <string name="som_list_bulk_print_dialog_title">Cetak %1$d label pengiriman</string>
+    <string name="som_list_bulk_print_dialog_description">Pastikan HP kamu sudah terkoneksi ke printer dengan benar, ya.</string>
+    <string name="som_list_bulk_print_dialog_mark_as_printed">Tandai pesanan yang sudah dicetak</string>
+    <string name="som_list_bulk_print_dialog_print_button">Ya, Cetak Label</string>
+    <string name="som_list_bulk_print_dialog_cancel_print_button">Batal</string>
+    <string name="som_list_bulk_print_button">Cetak Label Sekaligus</string>
+    <string name="som_print_awb_error_message">Terjadi kesalahan, silahkan coba lagi.</string>
+
+    <string name="som_detail_som_print_not_available">Fitur ini hanya tersedia di aplikasi Tokopedia Seller</string>
+    <string name="som_detail_other_bottomsheet_title">Lainnya</string>
+
+    <string name="som_detail_ticker_description">%1$s &lt;a href="#"&gt;%2$s&lt;/a&gt;</string>
+    <string name="som_list_failed_refresh_order">Gagal memperbarui informasi pesanan!</string>
+    <string name="content_description_ic_load_more_product_drop_down_indicator">Load More Product Button</string>
+
+    <string name="som_error_dialog_title_order_has_cancellation_request">Pembeli baru saja mengajukan pembatalan pesanan ini</string>
+    <string name="som_error_dialog_subtitle_order_has_cancellation_request">Lanjut memproses pesanan tanpa konfirmasi pembeli dapat berujung dengan pengajuan komplain, lho.</string>
+    <string name="som_error_validate_order">Gagal memeriksa status pesanan, silahkan coba lagi</string>
 </resources>

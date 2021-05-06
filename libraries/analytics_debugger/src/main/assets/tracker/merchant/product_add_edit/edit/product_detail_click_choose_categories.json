@@ -1,0 +1,13 @@
+{
+  "readme": "click choose categories on product detail page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickEditProduct",
+      "eventCategory" : "edit product page",
+      "eventAction" : "click choose other categories",
+      "eventLabel" : ".*",
+      "shopId" : ".+"
+    }
+  ]
+}

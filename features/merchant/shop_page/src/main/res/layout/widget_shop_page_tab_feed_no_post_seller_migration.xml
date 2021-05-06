@@ -8,7 +8,7 @@
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingEnd="@dimen/layout_lvl2">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.shop.home.ShopCarouselBannerImageUnify
         android:id="@+id/ivTabFeedNoPost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

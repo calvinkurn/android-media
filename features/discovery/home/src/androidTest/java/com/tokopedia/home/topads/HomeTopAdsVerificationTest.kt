@@ -1,6 +1,7 @@
 package com.tokopedia.home.topads
 
 import android.Manifest
+import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.platform.app.InstrumentationRegistry
@@ -12,13 +13,16 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelSprintViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
-import com.tokopedia.home.environment.InstrumentationHomeTestActivity
+import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -39,9 +43,10 @@ class HomeTopAdsVerificationTest {
     var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     @get:Rule
-    var activityRule = object: ActivityTestRule<InstrumentationHomeTestActivity>(InstrumentationHomeTestActivity::class.java) {
+    var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            disableCoachMark()
             loginInstrumentationTestTopAdsUser()
             setupTopAdsDetector()
         }
@@ -71,6 +76,14 @@ class HomeTopAdsVerificationTest {
             checkProductOnDynamicChannel(homeRecyclerView, i)
         }
         topAdsAssertion.assert()
+    }
+
+    private fun disableCoachMark(){
+        val sharedPrefs = InstrumentationRegistry
+                .getInstrumentation().context
+                .getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean(
+                NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
     }
 
     private fun calculateTopAdsCount(itemList: List<Visitable<*>>) : Int {
@@ -103,6 +116,11 @@ class HomeTopAdsVerificationTest {
                 for (grid in item.channelModel.channelGrids)
                     if (grid.isTopads) count++
             }
+            is BestSellerDataModel -> {
+                for (recom in item.recommendationItemList){
+                    if(recom.isTopAds) count++
+                }
+            }
         }
         return count
     }
@@ -124,6 +142,10 @@ class HomeTopAdsVerificationTest {
             is HomeRecommendationFeedViewHolder -> {
                 waitForData()
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_feed_fragment_recycler_view, 0)
+            }
+            is BestSellerViewHolder -> {
+                waitForData()
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.best_seller_recommendation_recycler_view, 0)
             }
         }
     }

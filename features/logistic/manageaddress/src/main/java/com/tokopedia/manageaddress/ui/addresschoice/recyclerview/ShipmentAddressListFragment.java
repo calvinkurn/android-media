@@ -1,5 +1,6 @@
 package com.tokopedia.manageaddress.ui.addresschoice.recyclerview;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
 import com.tokopedia.logisticCommon.data.entity.address.Destination;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -87,31 +90,36 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private boolean isChooseAddressTraceStopped;
     private Token token;
     private int originDirectionType;
+    private int prevState;
+    private LocalCacheModel localChosenAddr;
 
-    public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress) {
+    public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress, int prevState) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
         bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
+        bundle.putInt(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, prevState);
         ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
         shipmentAddressListFragment.setArguments(bundle);
         return shipmentAddressListFragment;
     }
 
-    public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress, int requestType) {
+    public static ShipmentAddressListFragment newInstance(RecipientAddressModel currentAddress, int requestType, int prevState) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
         bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
         bundle.putInt(CheckoutConstant.EXTRA_TYPE_REQUEST, requestType);
+        bundle.putInt(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, prevState);
         ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
         shipmentAddressListFragment.setArguments(bundle);
         return shipmentAddressListFragment;
     }
 
     public static ShipmentAddressListFragment newInstanceFromMultipleAddressForm
-            (RecipientAddressModel currentAddress) {
+            (RecipientAddressModel currentAddress, int prevState) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
         bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM);
+        bundle.putInt(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, prevState);
         ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
         shipmentAddressListFragment.setArguments(bundle);
         return shipmentAddressListFragment;
@@ -162,6 +170,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             mCurrentAddress = getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
             requestType = getArguments().getInt(CheckoutConstant.EXTRA_TYPE_REQUEST, 0);
             originDirectionType = getArguments().getInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
+            prevState = getArguments().getInt(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, -1);
+        }
+        if (getContext() != null) {
+            localChosenAddr = ChooseAddressUtils.INSTANCE.getLocalizingAddressData(getContext());
         }
     }
 
@@ -198,8 +210,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     maxItemPosition = lastVisibleItemPosition;
                 }
 
-                if ((maxItemPosition + 1) == totalItemCount && !isLoading && dy > 0) {
-                    mPresenter.loadMore();
+                if ((maxItemPosition + 1) == totalItemCount && !isLoading && dy > 0 && getContext() != null) {
+                    mPresenter.loadMore(prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
                 }
             }
         });
@@ -307,16 +319,20 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void onSearchReset() {
-        mPresenter.getAddress();
+        if (getContext() != null) {
+            mPresenter.getAddress(prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+        }
     }
 
     private void performSearch(String query, boolean resetPage) {
         checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya();
         checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya();
-        if (!query.isEmpty()) {
-            mPresenter.searchAddress(query);
-        } else {
-            mPresenter.getAddress();
+        if (getContext() != null) {
+            if (!query.isEmpty()) {
+                mPresenter.searchAddress(query, prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+            } else {
+                mPresenter.getAddress(prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+            }
         }
     }
 
@@ -371,7 +387,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         address.setPostalCode(intentModel.getPostalCode());
                     }
                     if (requestType == CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
-                        mPresenter.getAddress();
+                        if (getContext() != null) {
+                            mPresenter.getAddress(prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+                        }
                         mCurrentAddress = address;
                     } else
                         mActivityListener.finishAndSendResult(address);
@@ -392,7 +410,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         newAddress.setPostalCode(intentModel.getPostalCode());
                     }
                     if (requestType == CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
-                        mPresenter.getAddress();
+                        if (getContext() != null) {
+                            mPresenter.getAddress(prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+                        }
                         mCurrentAddress = newAddress;
                     } else
                         mActivityListener.finishAndSendResult(newAddress);
@@ -431,12 +451,21 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickRadioButtonFromPilihAlamatLainnya();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initSearchView() {
         mSvAddressSearchBox.getSearchTextView().setOnClickListener(onSearchViewClickListener());
         mSvAddressSearchBox.getSearchTextView().setOnTouchListener(onSearchViewTouchListener());
         mSvAddressSearchBox.setListener(this);
         mSvAddressSearchBox.setResetListener(this);
         mSvAddressSearchBox.setSearchHint(getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address));
+    }
+
+    private int getChosenAddrId() {
+        int addrId = 0;
+        if (!localChosenAddr.getAddress_id().isEmpty()) {
+            addrId = Integer.parseInt(localChosenAddr.getAddress_id());
+        }
+        return addrId;
     }
 
     private View.OnTouchListener onSearchViewTouchListener() {

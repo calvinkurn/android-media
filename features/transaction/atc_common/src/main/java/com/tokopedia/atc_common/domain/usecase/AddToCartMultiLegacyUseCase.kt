@@ -1,6 +1,8 @@
 package com.tokopedia.atc_common.domain.usecase
 
 import com.google.gson.JsonArray
+import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
+import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper.Companion.PARAM_KEY_CHOSEN_ADDRESS
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -11,7 +13,8 @@ import rx.Observable
 import timber.log.Timber
 import javax.inject.Inject
 
-class AddToCartMultiLegacyUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase): UseCase<AtcMultiData>() {
+class AddToCartMultiLegacyUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
+                                                      private val chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper) : UseCase<AtcMultiData>() {
 
     companion object {
         private const val PARAM = "param"
@@ -24,12 +27,14 @@ class AddToCartMultiLegacyUseCase @Inject constructor(private val graphqlUseCase
     }
 
     private var query: String = ""
-    private var params: MutableMap<String, Any> = mutableMapOf()
+    private var params: MutableMap<String, Any?> = mutableMapOf()
     private var userId: String = ""
 
-    fun setup(query: String, params: MutableMap<String, Any>, userId: String) {
-        this.query = query
+    fun setup(query: String, params: MutableMap<String, Any?>, userId: String) {
+        params[PARAM_KEY_CHOSEN_ADDRESS] = chosenAddressAddToCartRequestHelper.getChosenAddress()
         this.params = params
+
+        this.query = query
         this.userId = userId
     }
 
@@ -44,7 +49,7 @@ class AddToCartMultiLegacyUseCase @Inject constructor(private val graphqlUseCase
                     for (jsonElement in jsonArray) {
                         try {
                             val product = jsonElement.asJsonObject
-                            val productId = product[PRODUCT_ID_KEY].asInt
+                            val productId = product[PRODUCT_ID_KEY].asLong
                             val productName = product[PRODUCT_NAME_KEY].asString
                             val quantity = product[QUANTITY_KEY].asInt
                             val productPrice = product[PRODUCT_PRICE_KEY].asString

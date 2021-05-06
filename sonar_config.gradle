@@ -10,20 +10,21 @@ String findAllReports() {
 
     return sonarEnabledProjects
 }
-
-sonarqube {
-    properties {
-        def libraries = project.android.sdkDirectory.getPath() + "/platforms/android-27/android.jar"/* + ", build/intermediates/exploded-aar*//**//*classes.jar"*/
-        property "sonar.verbose", true
-        property "sonar.sources", "src/main/java"
-        property "sonar.binaries", "build/intermediates/classes/debug"
-        property "sonar.libraries", libraries
-        property "sonar.tests", "src/test/java, src/androidTest/java"
-        property "sonar.java.test.binaries", "build/intermediates/javac/debugUnitTest/classes/"
-        property "sonar.java.test.libraries", libraries
-        property "sonar.coverage.jacoco.xmlReportPaths", findAllReports()
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.junit.reportsPath", "build/test-results/testDebugUnitTest"
-        property "sonar.android.lint.report", "build/reports/lint-results.xml"
+if (project.hasProperty("quality")) {
+    sonarqube {
+        properties {
+            def libraries = project.android.sdkDirectory.getPath() + "/platforms/android-27/android.jar"/* + ", build/intermediates/exploded-aar*//**//*classes.jar"*/
+            property "sonar.verbose", true
+            property "sonar.sources", "src/main/java"
+            property "sonar.binaries", "build/intermediates/classes/debug"
+            property "sonar.libraries", libraries
+            property "sonar.tests", "src/test/java, src/androidTest/java"
+            property "sonar.java.test.binaries", "build/intermediates/javac/debugUnitTest/classes/"
+            property "sonar.java.test.libraries", libraries
+            property "sonar.coverage.jacoco.xmlReportPaths", findAllReports()
+            property "sonar.java.coveragePlugin", "jacoco"
+            property "sonar.junit.reportsPath", "build/test-results/testDebugUnitTest"
+            property "sonar.android.lint.report", "build/reports/lint-results.xml"
+        }
     }
 }

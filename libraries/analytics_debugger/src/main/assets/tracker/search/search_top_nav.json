@@ -1,12 +1,13 @@
 {
   "readme": "Search Top Nav Tracking",
+  "mode": "exact",
   "query" : [
     {
       "event": "clickTopNav",
       "eventCategory": "top nav - search result page",
       "eventAction": "click search box",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".*",
+      "sessionIris": ".*"
     }
   ]
 }

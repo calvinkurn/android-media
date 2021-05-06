@@ -1,8 +1,7 @@
 package com.tokopedia.topchat.chatlist.activity
 
-import android.os.Build
 import android.os.Bundle
-import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -20,20 +19,12 @@ open class ChatListActivity : BaseSimpleActivity(), ChatTabListFragment.Listener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(null)
-        useLightNotificationBar()
         initWindowBackground()
         initTopchatToolbar()
     }
 
     override fun getActivityToolbar(): Toolbar {
         return toolbar
-    }
-
-    private fun useLightNotificationBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        }
     }
 
     private fun initWindowBackground() {

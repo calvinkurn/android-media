@@ -5,7 +5,7 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.SearchProductCountViewModel
+import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.shouldBeInstanceOf
 import io.mockk.every
 import io.mockk.runs
@@ -18,6 +18,7 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
 
+    // TODO:: Remove this test class, and combine this test case with SearchProductFirstPageTest
     @Test
     fun `Show ProductCountViewModel in Navigation Revamp`() {
         `Given Search Product API will return SearchProductModel`(searchProductCommonResponseJSON.jsonToObject())
@@ -36,7 +37,7 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
 
     private fun `Given AB Test return navigation revamp`() {
         every {
-            productListView.abTestRemoteConfig.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
+            productListView.abTestRemoteConfig?.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
         }.answers { AbTestPlatform.NAVIGATION_VARIANT_REVAMP }
     }
 
@@ -51,30 +52,6 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
     private fun `Verify SearchProductCountViewModel is at the top of visitableList`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList[0].shouldBeInstanceOf<SearchProductCountViewModel>()
-    }
-
-    @Test
-    fun `Show ProductCountViewModel in Existing Navigation`() {
-        `Given Search Product API will return SearchProductModel`(searchProductCommonResponseJSON.jsonToObject())
-        `Given AB Test return existing navigation`()
-        setUp()
-        `Given visitable list will be captured`()
-        `When Load Data`()
-        `Verify visitableList does not have SearchProductCountViewModel`()
-    }
-
-    private fun `Given AB Test return existing navigation`() {
-        every {
-            productListView.abTestRemoteConfig.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
-        }.answers { AbTestPlatform.NAVIGATION_VARIANT_OLD }
-    }
-
-    private fun `Verify visitableList does not have SearchProductCountViewModel`() {
-        val visitableList = visitableListSlot.captured
-
-        assert(visitableList.find{ it is SearchProductCountViewModel } == null) {
-            "Visitable list should not have SearchProductCountViewModel"
-        }
+        visitableList[0].shouldBeInstanceOf<SearchProductCountDataView>()
     }
 }

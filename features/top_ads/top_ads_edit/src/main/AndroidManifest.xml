@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.topads.edit">
 
     <application>
         <activity
             android:name="com.tokopedia.topads.edit.view.activity.EditFormAdActivity"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -24,34 +23,44 @@
         <activity
             android:name=".view.activity.SelectKeywordActivity"
             android:label="@string/topads_edit_add_keword"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".view.activity.SelectNegKeywordActivity"
             android:label="@string/topads_edit_add_negative_keyword"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_topads"
+                    android:path="@string/path_topads_edit_negative_keyword"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".view.activity.SelectProductActivity"
             android:label="@string/topads_edit_product_select_label"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".view.activity.KeywordSearchActivity"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" />
 
 
         <activity android:name=".view.activity.EditFormWithoutGroupActivity"
             android:label="@string/topads_common_title_product_ad_edit"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" >
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 

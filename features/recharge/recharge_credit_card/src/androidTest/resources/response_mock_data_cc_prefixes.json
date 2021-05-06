@@ -1,0 +1,25 @@
+[
+  {
+    "data": {
+      "rechargeCatalogPrefixSelect": {
+        "componentID": 83,
+        "name": "operator_id",
+        "paramName": "operator",
+        "text": "Nomor Kartu Kredit",
+        "prefixes": [
+          {
+            "key": "856",
+            "value": "411111",
+            "operator": {
+              "id": 856,
+              "attributes": {
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/qnb.png",
+                "default_product_id": 2695
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+]

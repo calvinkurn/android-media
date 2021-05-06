@@ -66,4 +66,14 @@
         app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintVertical_bias="0" />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_shop_page_setting"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

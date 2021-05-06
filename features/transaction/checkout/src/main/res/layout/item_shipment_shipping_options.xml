@@ -11,86 +11,75 @@
         android:id="@+id/ll_prioritas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_4"
-        android:paddingLeft="@dimen/dp_9"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8">
+        android:paddingStart="@dimen/dp_9"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_4">
 
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/cb_prioritas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
             android:paddingTop="@dimen/dp_6"
-            android:paddingBottom="@dimen/dp_6"
-            android:paddingRight="@dimen/dp_4"
-            android:button="@drawable/ic_cart_check_box"
-            android:layout_alignParentStart="true" />
+            android:paddingEnd="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_6" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_label_prioritas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/cb_prioritas"
+            android:layout_toEndOf="@+id/cb_prioritas"
             android:padding="@dimen/dp_4"
-            android:text="@string/label_order_prioritas"
-            android:layout_toEndOf="@+id/cb_prioritas" />
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            android:text="@string/label_order_prioritas" />
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_prioritas_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_alignBottom="@+id/tv_label_prioritas"
-            android:layout_toRightOf="@+id/tv_label_prioritas"
+            android:layout_toEndOf="@+id/tv_label_prioritas"
             android:foregroundGravity="center_vertical"
-            android:padding="@dimen/dp_4"
-            android:src="@drawable/info_icon"
-            android:layout_toEndOf="@+id/tv_label_prioritas" />
+            android:paddingStart="@dimen/spacing_lvl2"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            app:icon_name="INFORMATION" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_order_prioritas_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_label_prioritas"
-            android:layout_toRightOf="@+id/cb_prioritas"
+            android:layout_toEndOf="@+id/cb_prioritas"
             android:padding="@dimen/dp_4"
             android:text="@string/label_hardcoded_order_prioritas_info"
-            android:textSize="@dimen/sp_12"
-            app:textViewTheme="lightSecondary"
-            android:layout_toEndOf="@+id/cb_prioritas" />
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/ll_prioritas_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
         android:background="@drawable/checkout_module_border_rectangle_yellow_checkout"
         android:orientation="horizontal"
+        android:padding="@dimen/dp_10"
         tools:ignore="UselessParent"
         tools:visbility="visible">
 
-        <LinearLayout
-            android:layout_width="0dp"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_prioritas_ticker"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="@dimen/dp_10">
-
-            <TextView
-                android:id="@+id/tv_prioritas_ticker"
-                style="@style/TextSmall"
-                android:lines="2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lineSpacingExtra="7sp"
-                tools:text="@string/label_hardcoded_prioritas_ticker" />
-
-        </LinearLayout>
+            app:typographyType="body_3"
+            android:lines="2"
+            tools:text="@string/label_hardcoded_prioritas_ticker" />
 
     </LinearLayout>
 
@@ -99,33 +88,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
-        android:paddingBottom="@dimen/dp_4"
-        android:paddingLeft="@dimen/dp_9"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8">
+        android:paddingStart="@dimen/dp_9"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_4">
 
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/cb_insurance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
             android:contentDescription="@string/content_desc_cb_insurance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_4"
             android:paddingTop="@dimen/dp_6"
-            android:paddingBottom="@dimen/dp_6"
-            android:paddingRight="@dimen/dp_4"
-            android:button="@drawable/ic_cart_check_box" />
+            android:paddingEnd="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_6" />
 
-        <CheckBox
-            android:id="@+id/cb_insurance_disabled"
-            android:contentDescription="@string/content_desc_cb_insurance_disabled"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:paddingTop="@dimen/dp_6"
-            android:paddingBottom="@dimen/dp_6"
-            android:paddingRight="@dimen/dp_4"
-            android:button="@drawable/ic_cart_check_box"
-            android:enabled="false"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_label_insurance"
@@ -133,16 +110,17 @@
             android:layout_height="wrap_content"
             android:text="@string/label_shipment_insurance"
             app:typographyType="body_2"
-            app:typographyWeight="reguler"/>
+            app:typographyWeight="reguler" />
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_insurance_info"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:contentDescription="@string/content_desc_img_insurance_info"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
             android:foregroundGravity="center_vertical"
-            android:padding="@dimen/dp_4"
-            android:src="@drawable/info_icon" />
+            android:paddingStart="@dimen/spacing_lvl2"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            app:icon_name="INFORMATION" />
 
     </LinearLayout>
 
@@ -151,21 +129,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:foreground="?selectableItemBackground"
-        android:paddingBottom="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_8"
         android:paddingTop="@dimen/dp_4"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_8"
         tools:visibility="visible">
 
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/cb_dropshipper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
             android:paddingTop="@dimen/dp_6"
-            android:paddingBottom="@dimen/dp_6"
-            android:paddingRight="@dimen/dp_4"
-            android:button="@drawable/ic_cart_check_box" />
+            android:paddingEnd="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_6" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_dropshipper"
@@ -173,14 +150,15 @@
             android:layout_height="wrap_content"
             android:text="@string/label_dropshipper_new"
             app:typographyType="body_2"
-            app:typographyWeight="reguler"/>
+            app:typographyWeight="reguler" />
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_dropshipper_info"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="@dimen/dp_4"
-            android:src="@drawable/info_icon" />
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:paddingStart="@dimen/spacing_lvl2"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            app:icon_name="INFORMATION" />
 
     </LinearLayout>
 
@@ -189,8 +167,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_12"
         android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible">
@@ -212,7 +190,7 @@
                 android:inputType="textCapWords"
                 android:textSize="@dimen/sp_14"
                 android:theme="@style/TransactionEditText"
-                app:backgroundTint="@color/grey_300" />
+                app:backgroundTint="@color/Unify_N100" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -232,7 +210,7 @@
                 android:inputType="phone"
                 android:textSize="@dimen/sp_14"
                 android:theme="@style/TransactionEditText"
-                app:backgroundTint="@color/grey_300" />
+                app:backgroundTint="@color/Unify_N100" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <EditText
@@ -249,8 +227,8 @@
         android:layout_height="0.5dp"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
-        android:background="@color/separator_color" />
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@color/Unify_N100" />
 
 </LinearLayout>

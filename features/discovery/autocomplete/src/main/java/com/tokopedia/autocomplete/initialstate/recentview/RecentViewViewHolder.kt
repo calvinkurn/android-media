@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 class RecentViewViewHolder(
         itemView: View,
         listener: InitialStateItemClickListener
-) : AbstractViewHolder<RecentViewViewModel>(itemView) {
+) : AbstractViewHolder<RecentViewDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -42,7 +42,7 @@ class RecentViewViewHolder(
         itemView.recyclerView?.adapter = adapter
     }
 
-    override fun bind(element: RecentViewViewModel) {
+    override fun bind(element: RecentViewDataView) {
         adapter.setData(element.list)
     }
 
@@ -83,7 +83,7 @@ class RecentViewViewHolder(
             private fun ImageView.loadImageCircle(context: Context, url: String){
                 Glide.with(context)
                         .load(url)
-                        .transform(CenterCrop(), RoundedCorners(context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6)))
+                        .transform(CenterCrop(), RoundedCorners(context.resources.getDimensionPixelSize(R.dimen.dp_6)))
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .into(this)
             }

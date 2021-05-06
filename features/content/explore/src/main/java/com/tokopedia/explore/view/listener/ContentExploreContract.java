@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.explore.view.uimodel.ExploreViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 
 import org.jetbrains.annotations.NotNull;

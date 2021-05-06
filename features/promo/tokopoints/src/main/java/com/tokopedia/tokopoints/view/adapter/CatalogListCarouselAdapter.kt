@@ -20,6 +20,7 @@ import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil.sendECommerceEvent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil.sendECommerceEventBanner
+import com.tokopedia.tokopoints.view.util.ColorUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.ImageUtil
 import java.util.*
@@ -105,9 +106,9 @@ class CatalogListCarouselAdapter(var items: List<CatalogsValueEntity>,
             holder.pbQuota.progress = 0
             val upperText = StringBuilder()
             if (item.catalogType == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
-                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.design.R.color.red_150))
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.unifyprinciples.R.color.Unify_Y600))
             } else {
-                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.design.R.color.black_38))
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
             }
             if (!item.upperTextDesc.isNullOrEmpty()) {
                 for (i in item.upperTextDesc!!.indices) {
@@ -118,7 +119,7 @@ class CatalogListCarouselAdapter(var items: List<CatalogsValueEntity>,
                             upperText.append(item.upperTextDesc!![i])
                         } else {
                             //exclusive case for handling font color of second index.
-                            upperText.append("<font color='#ff5722'>" + item.upperTextDesc!![i] + "</font>")
+                            upperText.append("<font color='${ColorUtil.getColorFromResToString(holder.quota.context,com.tokopedia.unifyprinciples.R.color.Unify_Y400)}>" + item?.upperTextDesc?.get(i) + "</font>")
                         }
                     } else {
                         upperText.append(item.upperTextDesc!![i]).append(" ")
@@ -139,15 +140,15 @@ class CatalogListCarouselAdapter(var items: List<CatalogsValueEntity>,
         //disabling the coupons if not eligible for current membership
         if (item.isDisabled) {
             ImageUtil.dimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, R.color.clr_31353b))
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
         } else {
             ImageUtil.unDimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, R.color.clr_31353b))
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
         }
         if (item.isDisabledButton) {
-            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.abstraction.R.color.black_12))
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20))
         } else {
-            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.design.R.color.white))
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
         if (item.pointsSlash <= 0) {
             holder.labelPoint.visibility = View.GONE

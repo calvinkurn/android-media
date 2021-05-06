@@ -5,20 +5,17 @@
     android:id="@+id/container_ticker_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:paddingBottom="@dimen/dp_3"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_3"
+    android:background="@color/Unify_N0"
+    android:paddingBottom="@dimen/spacing_lvl2"
+    android:paddingLeft="@dimen/layout_lvl2"
+    android:paddingRight="@dimen/layout_lvl2"
+    android:paddingTop="@dimen/spacing_lvl2"
     android:visibility="visible"
     tools:visibility="visible">
 
-    <com.tokopedia.design.component.ticker.TickerView
+    <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/ticker_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/dp_10"
-        app:tckv_indicator_off_color="@color/digital_grey"
-        app:tckv_indicator_on_color="@color/tkpd_main_green" />
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

@@ -29,6 +29,9 @@ public class CmInAppBundleConvertor {
             if (map.containsKey(RulesUtil.Constants.Payload.CAMPAIGN_ID))
                 cmInApp.setCampaignId(map.get(RulesUtil.Constants.Payload.CAMPAIGN_ID));
 
+            if (map.containsKey(RulesUtil.Constants.Payload.CAMPAIGN_CODE))
+                cmInApp.setCampaignCode(map.get(RulesUtil.Constants.Payload.CAMPAIGN_CODE));
+
             if (map.containsKey(RulesUtil.Constants.Payload.CAMPAIGN_USER_TOKEN))
                 cmInApp.setCampaignUserToken(map.get(RulesUtil.Constants.Payload.CAMPAIGN_USER_TOKEN));
 

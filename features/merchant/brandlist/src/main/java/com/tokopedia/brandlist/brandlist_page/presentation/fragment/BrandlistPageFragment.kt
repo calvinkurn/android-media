@@ -190,6 +190,11 @@ class BrandlistPageFragment :
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        brandlistTracking?.sendAll()
+    }
+
     override fun getScreenName(): String {
         return ""
     }
@@ -227,7 +232,7 @@ class BrandlistPageFragment :
     }
 
     private fun observeFeaturedBrands() {
-        viewModel.getFeaturedBrandResult.observe(this, Observer {
+        viewModel.getFeaturedBrandResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -242,7 +247,7 @@ class BrandlistPageFragment :
     }
 
     private fun observePopularBrands() {
-        viewModel.getPopularBrandResult.observe(this, Observer {
+        viewModel.getPopularBrandResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -257,7 +262,7 @@ class BrandlistPageFragment :
     }
 
     private fun observeNewBrands() {
-        viewModel.getNewBrandResult.observe(this, Observer {
+        viewModel.getNewBrandResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -272,7 +277,7 @@ class BrandlistPageFragment :
     }
 
     private fun observeAllBrandHeader() {
-        viewModel.getAllBrandHeaderResult.observe(this, Observer {
+        viewModel.getAllBrandHeaderResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -287,7 +292,7 @@ class BrandlistPageFragment :
     }
 
     private fun observeAllBrands() {
-        viewModel.getAllBrandResult.observe(this, Observer {
+        viewModel.getAllBrandResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val totalBrandPerCharacter = it.data.totalBrands

@@ -16,7 +16,6 @@
         tools:text="Harga Terendah" />
 
     <View
-        android:id="@+id/seperator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/flight_dp_1"
         android:layout_marginTop="@dimen/layout_lvl2"

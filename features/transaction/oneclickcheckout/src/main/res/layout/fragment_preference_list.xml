@@ -18,6 +18,7 @@
             android:layout_height="match_parent"
             android:visibility="visible">
 
+            <!-- ImageUnify can only adjust height not width -->
             <ImageView
                 android:id="@+id/iv_empty"
                 android:layout_width="0dp"
@@ -40,7 +41,7 @@
                 android:layout_marginRight="@dimen/dp_40"
                 android:gravity="center_horizontal"
                 android:text="@string/preference_list_empty_header"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +58,7 @@
                 android:layout_marginRight="@dimen/dp_40"
                 android:gravity="center"
                 android:text="@string/preference_list_empty_subtitle"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"

@@ -72,13 +72,13 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
     }
 
     protected fun configView(parentView: View) {
-        val textViewTitle = parentView.findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
+        val textViewTitle = parentView.findViewById<TextView>(R.id.pdp_installment_tv_title)
         textViewTitle.text = title()
 
-        val layoutTitle = parentView.findViewById<View>(com.tokopedia.design.R.id.layout_title)
+        val layoutTitle = parentView.findViewById<View>(R.id.pdp_installment_layout_title)
         layoutTitle.setOnClickListener { v -> onCloseButtonClick() }
 
-        val closeButton = parentView.findViewById<View>(com.tokopedia.design.R.id.btn_close)
+        val closeButton = parentView.findViewById<View>(R.id.pdp_installment_btn_close)
         closeButton.setOnClickListener {
             dismiss()
         }
@@ -144,7 +144,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val bottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         bottomSheetDialog.setOnShowListener { dialog ->
-            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             if (bottomSheet != null) {
                 val behavior = BottomSheetBehavior.from(bottomSheet)
                 behavior.skipCollapsed = true

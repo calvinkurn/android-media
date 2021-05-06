@@ -3,8 +3,8 @@ package com.tokopedia.sellerorder.confirmshipping.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomChangeCourier
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomConfirmShipping
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
@@ -18,10 +18,10 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-11-15.
  */
-class SomConfirmShippingViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
+class SomConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                                       private val somGetConfirmShippingResultUseCase: SomGetConfirmShippingResultUseCase,
                                                       private val somGetCourierListUseCase: SomGetCourierListUseCase,
-                                                      private val somChangeCourierUseCase: SomChangeCourierUseCase) : BaseViewModel(dispatcher.ui()) {
+                                                      private val somChangeCourierUseCase: SomChangeCourierUseCase) : BaseViewModel(dispatcher.io) {
 
     private val _confirmShippingResult = MutableLiveData<Result<SomConfirmShipping.Data.MpLogisticConfirmShipping>>()
     val confirmShippingResult: LiveData<Result<SomConfirmShipping.Data.MpLogisticConfirmShipping>>

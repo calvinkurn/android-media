@@ -20,6 +20,8 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonPojo
+import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonViewModel
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
@@ -33,6 +35,7 @@ import javax.inject.Inject
  */
 const val TYPE_HELPFULL_QUESTION = "22"
 const val TYPE_CSAT_OPTIONS = "23"
+const val TYPE_STICKED_BUTTON_ACTIONS = "25"
 class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapper() {
 
     override fun map(pojo: ChatSocketPojo): Visitable<*> {
@@ -50,8 +53,27 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             TYPE_QUICK_REPLY_SEND -> convertToMessageViewModel(pojo)
             TYPE_HELPFULL_QUESTION -> convertToHelpQuestionViewModel(pojo)
             TYPE_CSAT_OPTIONS -> convertToCsatOptionsViewModel(pojo)
+            TYPE_STICKED_BUTTON_ACTIONS -> convertToStickedButtonActionsViewModel(pojo)
             else -> super.mapAttachmentMessage(pojo, jsonAttributes)
         }
+    }
+
+    private fun convertToStickedButtonActionsViewModel(pojo: ChatSocketPojo): Visitable<*> {
+        val stickyActionButtonPojo = GsonBuilder().create()
+                .fromJson<StickyActionButtonPojo>(pojo.attachment?.attributes,
+                        StickyActionButtonPojo::class.java)
+        return StickyActionButtonViewModel(
+                pojo.msgId.toString(),
+                pojo.fromUid,
+                pojo.from,
+                pojo.fromRole,
+                pojo.attachment?.id ?: "",
+                pojo.attachment?.type ?: "",
+                pojo.message.timeStampUnixNano,
+                pojo.message.censoredReply,
+                stickyActionButtonPojo.stickedButtonActions,
+                pojo.source
+        )
     }
 
     private fun convertToHelpQuestionViewModel(pojo: ChatSocketPojo): Visitable<*> {
@@ -67,7 +89,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.attachment?.type ?: "",
                 pojo.message.timeStampUnixNano,
                 pojo.message.censoredReply,
-                helpFullQuestionPojo.helpfulQuestion
+                helpFullQuestionPojo.helpfulQuestion,
+                pojo.source
         )
     }
 
@@ -84,7 +107,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.attachment?.type ?: "",
                 pojo.message.timeStampUnixNano,
                 pojo.message.censoredReply,
-                csatAttributesPojo.csat
+                csatAttributesPojo.csat,
+                pojo.source
         )
     }
 
@@ -174,7 +198,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             pojo: ChatActionBalloonSelectionAttachmentAttributes): List<ChatActionBubbleViewModel> {
         val result = ArrayList<ChatActionBubbleViewModel>()
         for (item in pojo.chatActions) {
-            result.add(ChatActionBubbleViewModel(item.text, item.value, item.action))
+            result.add(ChatActionBubbleViewModel(item.text, item.value, item.action, hexColor = item.hexColor, iconUrl = item.iconUrl))
         }
         return result
     }
@@ -192,7 +216,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.attachment!!.id,
                 TYPE_QUICK_REPLY,
                 pojo.message.timeStampUnixNano,
-                convertToQuickReplyList(pojoAttribute)
+                convertToQuickReplyList(pojoAttribute),
+                pojo.source
         )
     }
 

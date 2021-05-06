@@ -1,0 +1,24 @@
+{
+  "data": {
+    "chatListMessage": {
+      "list": [
+        {
+          "msgID": 144209147,
+          "messageKey": "user-12299749~user-13270700",
+          "attributes": {
+            "contact": {
+              "name": "Tokopedia Seller"
+            },
+            "lastReplyMessage": "Produk Product 50 telah dipindahkan ke Stok Kosong karena stok habis. Tambahkan stok di sini jika produk sudah tersedia kembali.",
+            "lastReplyTimeStr": "1608530997971"
+          }
+        }
+      ]
+    },
+    "notifications": {
+      "chat": {
+        "unreadsSeller": 1
+      }
+    }
+  }
+}

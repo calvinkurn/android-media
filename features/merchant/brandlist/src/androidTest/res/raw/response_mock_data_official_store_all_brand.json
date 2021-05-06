@@ -1,0 +1,16 @@
+[{
+  "data": {
+    "OfficialStoreAllBrands": {
+      "brands": [{
+        "id": 5264122,
+        "name": "#MARKAMARIE",
+        "appsUrl": "tokopedia://shop/5264122",
+        "defaultUrl": "tokopedia://shop/5264122",
+        "logoUrl": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2019/1/21/48084310/48084310_71672759-755c-4f2b-b470-407b8af1f15b",
+        "isNew": 0,
+        "exclusiveLogoURL": "https://ecs7.tokopedia.net/img/cache/244/attachment/2020/4/26/76758066/76758066_9d7bab85-6a0f-4f52-bc28-ebb179ef8406.png"
+      }],
+      "totalBrands": 6918
+    }
+  }
+}]

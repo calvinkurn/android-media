@@ -135,10 +135,10 @@ class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
         val filterChecked = adapter.totalChecked > 0
         if (filterChecked) {
             bottomSheetAction.setTextColor(resources.getColorFromResources(requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.light_G500))
+                    com.tokopedia.unifyprinciples.R.color.Unify_G500))
         } else {
             bottomSheetAction.setTextColor(resources.getColorFromResources(requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.dark_N75))
+                    com.tokopedia.unifyprinciples.R.color.Unify_N700))
         }
         bottomSheetAction.isEnabled = filterChecked
     }

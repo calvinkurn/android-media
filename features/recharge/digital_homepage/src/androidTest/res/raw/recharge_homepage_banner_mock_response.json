@@ -9,6 +9,7 @@
             "sub_title": "",
             "template": "TOP_BANNER",
             "app_link": "tokopedia://promo/produk-digital/",
+            "text_link": "Lihat Semua",
             "tracking": [
               {
                 "action": "impression",

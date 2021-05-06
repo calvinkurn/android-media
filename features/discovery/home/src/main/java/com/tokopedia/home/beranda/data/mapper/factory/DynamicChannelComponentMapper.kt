@@ -87,14 +87,16 @@ object DynamicChannelComponentMapper {
                             isOutOfStock = it.isOutOfStock,
                             isFreeOngkirActive = it.freeOngkir.isActive,
                             freeOngkirImageUrl = it.freeOngkir.imageUrl,
-                            shop = ChannelShop(
-                                    id = it.shop.shopId
+                            shop =  ChannelShop(
+                                    id = it.shop.shopId,
+                                    shopLocation = it.shop.city
                             ),
                             labelGroup = it.labelGroup.map { label ->
                                 LabelGroup(
                                         title = label.title,
                                         position = label.position,
-                                        type = label.type
+                                        type = label.type,
+                                        url = label.imageUrl
                                 )
                             },
                             hasBuyButton = it.hasBuyButton,
@@ -108,7 +110,14 @@ object DynamicChannelComponentMapper {
                             ),
                             textColor = it.textColor,
                             recommendationType = it.recommendationType,
-                            campaignCode = it.campaignCode
+                            campaignCode = it.campaignCode,
+                            shopId = it.shop.shopId,
+                            badges = it.badges.map { badge ->
+                                ChannelGridBadges(
+                                        title = badge.title,
+                                        imageUrl = badge.imageUrl
+                                )
+                            }
                     )
                 }
         )

@@ -16,11 +16,11 @@ data class SearchResultUiModel(
         @SerializedName("lastMessage")
         val lastMessage: String = "",
         @SerializedName("msgId")
-        val msgId: Int = 0,
+        val msgId: Long = 0L,
         @SerializedName("oppositeId")
-        val oppositeId: Int = 0,
+        val oppositeId: Long = 0L,
         @SerializedName("oppositeType")
-        val oppositeType: Int = 0
+        val oppositeType: Long = 0L
 ) : Visitable<ChatSearchTypeFactory> {
 
     val thumbnailUrl: String get() = contact.attributes.thumbnail

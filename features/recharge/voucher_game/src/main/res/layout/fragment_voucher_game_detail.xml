@@ -225,6 +225,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/unify_space_2"
+        app:cardBackgroundColor="@color/Unify_N0"
         app:cardElevation="@dimen/unify_space_4">
 
         <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget

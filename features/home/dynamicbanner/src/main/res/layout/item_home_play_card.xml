@@ -13,6 +13,7 @@
     android:layout_marginEnd="@dimen/dp_16">
 
     <ImageView
+        android:contentDescription="@string/content_desc_play_widget"
         android:id="@+id/imgBanner"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -21,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@color/grey_200" />
+        android:src="@color/dynamicbanner_dms_image_banner" />
 
     <LinearLayout
         android:layout_width="match_parent"

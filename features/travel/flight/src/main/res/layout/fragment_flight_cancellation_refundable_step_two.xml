@@ -1,12 +1,10 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_N0"
     android:fillViewport="true"
-    android:fitsSystemWindows="true"
-    tools:context="com.tokopedia.flight.cancellation.view.fragment.FlightCancellationReasonAndProofFragment">
+    android:fitsSystemWindows="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -32,8 +30,7 @@
                 android:layout_marginBottom="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 app:text_field_label="@string/flight_cancellation_reason_label"
-                app:text_field_placeholder="@string/flight_cancellation_reason_hint_label"
-                tools:layout_height="@dimen/layout_lvl5"/>
+                app:text_field_placeholder="@string/flight_cancellation_reason_hint_label"/>
 
             <LinearLayout
                 android:id="@+id/attachment_container"
@@ -50,7 +47,6 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     app:typographyType="body_3"
-                    android:id="@+id/attachment_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_lvl4"

@@ -3,8 +3,9 @@ package com.tokopedia.topchat.chatroom.domain.usecase
 import androidx.collection.ArrayMap
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatroom.domain.pojo.GetExistingMessageIdPojo
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
@@ -17,10 +18,10 @@ import kotlin.coroutines.CoroutineContext
 
 class GetExistingMessageIdUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<GetExistingMessageIdPojo>,
-        private var dispatchers: TopchatCoroutineContextProvider
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     fun getMessageId(
             toShopId: String,
@@ -30,7 +31,7 @@ class GetExistingMessageIdUseCase @Inject constructor(
             onError: (Throwable) -> Unit
     ) {
         launchCatchError(
-                dispatchers.IO,
+                dispatchers.io,
                 {
                     val params = generateParam(toShopId, toUserId, source)
                     val response = gqlUseCase.apply {
@@ -38,12 +39,12 @@ class GetExistingMessageIdUseCase @Inject constructor(
                         setRequestParams(params)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onSuccessGetMessageId(response.chatExistingChat.messageId)
                     }
                 },
                 {
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onError(it)
                     }
                 }
@@ -52,8 +53,8 @@ class GetExistingMessageIdUseCase @Inject constructor(
 
     fun generateParam(toShopId: String, toUserId: String, source: String): Map<String, Any> {
         val requestParams = ArrayMap<String, Any>()
-        requestParams[PARAM_TO_SHOP_ID] = if (toShopId.isNotBlank()) toShopId.toInt() else 0
-        requestParams[PARAM_TO_USER_ID] = if (toUserId.isNotBlank()) toUserId.toInt() else 0
+        requestParams[PARAM_TO_SHOP_ID] = if (toShopId.isNotBlank()) toShopId.toLongOrZero() else 0
+        requestParams[PARAM_TO_USER_ID] = if (toUserId.isNotBlank()) toUserId.toLongOrZero() else 0
         requestParams[PARAM_SOURCE] = source
         return requestParams
     }

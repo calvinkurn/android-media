@@ -96,7 +96,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         if (!isApplyFilter) {
-            val cancelWrapper = SomFilterCancelWrapper(orderStatus, statusList, somFilterUiModelListCopy, filterDate)
+            val cancelWrapper = SomFilterCancelWrapper(orderStatus, statusList, somFilterUiModelListCopy, filterDate, somFilterViewModel.isRequestCancelFilterApplied())
             somFilterFinishListener?.onClickOverlayBottomSheet(cancelWrapper)
         }
     }

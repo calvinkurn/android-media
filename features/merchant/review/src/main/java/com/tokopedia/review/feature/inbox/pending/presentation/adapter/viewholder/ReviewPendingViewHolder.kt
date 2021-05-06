@@ -1,23 +1,21 @@
 package com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder
 
 import android.os.Handler
-import android.view.Gravity
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerReviewPendingView
 import com.tokopedia.review.R
+import com.tokopedia.review.feature.inbox.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.item_review_pending.view.*
 
 class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener: ReviewPendingItemListener) : AbstractViewHolder<ReviewPendingUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_review_pending
-        const val UNLOCK_UNIFY_LABEL = true
     }
 
     override fun bind(element: ReviewPendingUiModel) {
@@ -31,7 +29,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
             }
             showDate(timestamp.createTimeFormatted)
             showNew(status.seen)
-            showOvoIncentive(status.isEligible)
+            showIncentive(status.isEligible)
         }
     }
 
@@ -65,7 +63,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         }
     }
 
-    private fun setListener(reputationId: Int, productId: Int, inboxReviewId: Int, seen: Boolean, isEligible: Boolean) {
+    private fun setListener(reputationId: Long, productId: Long, inboxReviewId: Long, seen: Boolean, isEligible: Boolean) {
         itemView.setOnClickListener {
             reviewPendingItemListener.trackCardClicked(reputationId, productId, isEligible)
             itemView.reviewPendingStars.renderInitialReviewWithData(5)
@@ -73,7 +71,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         }
     }
 
-    private fun setupStars(reputationId: Int, productId: Int, inboxReviewId: Int, seen: Boolean, isEligible: Boolean) {
+    private fun setupStars(reputationId: Long, productId: Long, inboxReviewId: Long, seen: Boolean, isEligible: Boolean) {
         itemView.reviewPendingStars.apply {
             resetStars()
             setListener(object : AnimatedRatingPickerReviewPendingView.AnimatedReputationListener {
@@ -91,28 +89,21 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
     }
 
     private fun showNew(seen: Boolean) {
-        itemView.reviewPendingNewIcon.showWithCondition(!seen)
+        itemView.reviewPendingNewIcon.apply {
+            if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+                setNotification("", NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_SECONDARY)
+            } else {
+                setNotification("", NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+            }
+            showWithCondition(!seen)
+        }
     }
 
-    private fun showOvoIncentive(isEligible: Boolean) {
+    private fun showIncentive(isEligible: Boolean) {
         if (isEligible) {
-            itemView.reviewPendingOvoIncentiveLabel.apply {
-                unlockFeature = UNLOCK_UNIFY_LABEL
-                fontColorByPass = getColorString(com.tokopedia.unifyprinciples.R.color.Unify_P600)
-                setLabelType(getColorString(com.tokopedia.unifyprinciples.R.color.Unify_N50))
-                val ovoIncentiveIcon = ContextCompat.getDrawable(context, R.drawable.ic_ovo_incentive_label)
-                ovoIncentiveIcon?.setBounds(0, 0, 16.toPx(), 16.toPx())
-                gravity = Gravity.CENTER_VERTICAL
-                setCompoundDrawables(ovoIncentiveIcon, null, null, null)
-                compoundDrawablePadding = 4.toPx()
-                show()
-            }
+            itemView.reviewPendingOvoIncentiveLabel.show()
             return
         }
         itemView.reviewPendingOvoIncentiveLabel.hide()
-    }
-
-    private fun getColorString(color: Int): String {
-        return "#${Integer.toHexString(ContextCompat.getColor(itemView.context, color))}"
     }
 }

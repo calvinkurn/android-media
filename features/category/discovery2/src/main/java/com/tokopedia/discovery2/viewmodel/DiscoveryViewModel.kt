@@ -11,10 +11,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.analytics.DISCOVERY_DEFAULT_PAGE_TYPE
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
+import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
@@ -31,6 +33,7 @@ import com.tokopedia.discovery2.viewmodel.livestate.DiscoveryLiveState
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -62,7 +65,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     var pageType: String = ""
     var pagePath: String = ""
     var campaignCode: String = ""
-    var bottomTabNavDataComponent : ComponentsItem?  = null
+    var chooseAddressVisibilityLiveData = MutableLiveData<Boolean>()
+    private var bottomTabNavDataComponent : ComponentsItem?  = null
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
@@ -74,18 +78,19 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         get() = Dispatchers.Main + SupervisorJob()
 
 
-    fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>) {
+    fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>, userAddressData: LocalCacheModel?) {
         launchCatchError(
                 block = {
                     pageLoadTimePerformanceInterface?.stopPreparePagePerformanceMonitoring()
                     pageLoadTimePerformanceInterface?.startNetworkRequestPerformanceMonitoring()
-                    val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier, queryParameterMap)
+                    val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier, queryParameterMap, userAddressData)
                     pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
                     pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
                         setDiscoveryLiveState(it.pageInfo)
                         withContext(Dispatchers.Default) {
                             discoveryResponseList.postValue(Success(it.components))
+                            findCustomTopChatComponentsIfAny(it.components)
                             findBottomTabNavDataComponentsIfAny(it.components)
                         }
                         setPageInfo(it)
@@ -107,8 +112,9 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     private fun setPageInfo(discoPageData: DiscoveryPageData?) {
         discoPageData?.pageInfo?.let { pageInfoData ->
-            pageType = pageInfoData.type ?: ""
+            pageType = if(pageInfoData.type.isNullOrEmpty()) DISCOVERY_DEFAULT_PAGE_TYPE else pageInfoData.type
             pagePath = pageInfoData.path ?: ""
+            chooseAddressVisibilityLiveData.value = pageInfoData.showChooseAddress
             pageInfoData.additionalInfo = discoPageData.additionalInfo
             campaignCode = pageInfoData.campaignCode ?: ""
             discoveryPageInfo.value = Success(pageInfoData)
@@ -197,13 +203,26 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun getQueryParameterMapFromBundle(bundle: Bundle?): MutableMap<String, String?> {
         return mutableMapOf(
+                SOURCE to bundle?.getString(SOURCE, ""),
+                COMPONENT_ID to bundle?.getString(COMPONENT_ID, ""),
                 ACTIVE_TAB to bundle?.getString(ACTIVE_TAB, ""),
                 TARGET_COMP_ID to bundle?.getString(TARGET_COMP_ID, ""),
                 PRODUCT_ID to bundle?.getString(PRODUCT_ID, ""),
                 PIN_PRODUCT to bundle?.getString(PIN_PRODUCT, ""),
-                CATEGORY_ID to bundle?.getString(CATEGORY_ID, ""),
+                CATEGORY_ID to getCategoryId(bundle),
                 EMBED_CATEGORY to bundle?.getString(EMBED_CATEGORY, "")
         )
+    }
+
+    private fun getCategoryId(bundle: Bundle?): String? {
+        discoComponentQuery?.let {
+            return if (it[CATEGORY_ID].isNullOrEmpty()) {
+                bundle?.getString(CATEGORY_ID, "") ?: ""
+            } else {
+                it[CATEGORY_ID]
+            }
+        }
+        return bundle?.getString(CATEGORY_ID, "") ?: ""
     }
 
     private fun findBottomTabNavDataComponentsIfAny(components: List<ComponentsItem>?) {
@@ -232,5 +251,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         WishListManager.onWishListUpdated(productCardOptionsModel,this.pageIdentifier)
     }
 
-    fun getWishListLiveData() = wishlistUpdateLiveData
+    fun checkAddressVisibility() = chooseAddressVisibilityLiveData
+    fun getAddressVisibilityValue() = chooseAddressVisibilityLiveData.value ?: false
 }

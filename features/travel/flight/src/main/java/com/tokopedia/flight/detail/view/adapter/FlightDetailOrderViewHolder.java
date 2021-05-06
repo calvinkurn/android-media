@@ -50,7 +50,7 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightDetail
         flightCounter = layoutView.findViewById(com.tokopedia.flight.R.id.counter_flight);
         journeyView = layoutView.findViewById(com.tokopedia.flight.R.id.layout_expendable_flight);
         titleJourney = layoutView.findViewById(com.tokopedia.flight.R.id.title_expendable_passenger);
-        imageJourney = layoutView.findViewById(com.tokopedia.flight.R.id.image_expendable_passenger);
+        imageJourney = layoutView.findViewById(com.tokopedia.flight.R.id.image_expendable_journey);
         recyclerViewFlightJourney = layoutView.findViewById(com.tokopedia.flight.R.id.recycler_view_flight_detail_journey);
         cekSyaratText = layoutView.findViewById(com.tokopedia.flight.R.id.text_view_flight_cek_syarat);
         separatorLine = layoutView.findViewById(com.tokopedia.flight.R.id.flight_detail_order_separator_line);

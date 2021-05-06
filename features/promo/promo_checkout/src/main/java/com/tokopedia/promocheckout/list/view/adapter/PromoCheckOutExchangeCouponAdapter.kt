@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.list.model.listpromocatalog.CatalogListItem
+import com.tokopedia.promocheckout.util.ColorUtil
 import com.tokopedia.promocheckout.widget.ImageUtil
 
 
@@ -114,9 +115,9 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
             val upperText = StringBuilder()
 
             if (item.catalogType == CATALOG_TYPE_FLASH_SALE) {
-                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.design.R.color.red_150))
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
             } else {
-                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.design.R.color.black_38))
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
             }
 
             for (i in 0 until item.upperTextDesc.size) {
@@ -127,7 +128,7 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
                         upperText.append(item.upperTextDesc.get(i))
                     } else {
                         //exclusive case for handling font color of second index.
-                        upperText.append("<font color='#ff5722'>" + item.upperTextDesc.get(i) + "</font>")
+                        upperText.append("<font color='${ColorUtil.getColorFromResToString(holder.quota.context,com.tokopedia.unifyprinciples.R.color.Unify_Y400)}>" + item.upperTextDesc.get(i) + "</font>")
                     }
                 } else {
                     upperText.append(item.upperTextDesc.get(i)).append(" ")
@@ -147,16 +148,16 @@ class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>, list
         //disabling the coupons if not eligible for current membership
         if (item.isDisabled!!) {
             ImageUtil.dimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.design.R.color.black_54))
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         } else {
             ImageUtil.unDimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.design.R.color.orange_red))
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
         }
 
         if (item.isDisabledButton) {
-            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.design.R.color.black_12))
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20))
         } else {
-            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.design.R.color.white))
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
 
         if (item.pointsSlash!! <= 0) {

@@ -19,6 +19,7 @@ import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.Category
 import com.tokopedia.top_ads_headline.data.TopAdsHeadlineTabModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
+import com.tokopedia.top_ads_headline.view.activity.GROUP_NAME
 import com.tokopedia.top_ads_headline.view.activity.IS_EDITED
 import com.tokopedia.top_ads_headline.view.activity.SELECTED_PRODUCT_LIST
 import com.tokopedia.top_ads_headline.view.adapter.CategoryListAdapter
@@ -26,7 +27,8 @@ import com.tokopedia.top_ads_headline.view.adapter.ProductListAdapter
 import com.tokopedia.top_ads_headline.view.adapter.SINGLE_SELECTION
 import com.tokopedia.top_ads_headline.view.viewmodel.DEFAULT_RECOMMENDATION_TAB_ID
 import com.tokopedia.top_ads_headline.view.viewmodel.TopAdsProductListViewModel
-import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.data.util.SpaceItemDecoration
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiHeaderModel
@@ -46,6 +48,9 @@ const val MAX_PRODUCT_SELECTION = 10
 private const val MIN_CATEGORY_SHOWN = 2
 private const val RECOMMENDATION_TAB_POSITION = 0
 private const val ALL_PRODUCTS_TAB_POSITION = 1
+private const val VIEW_PILIH_PRODUK = "view - pilih produk"
+private const val CLICK_TIPS_PILIH_PRODUK = "click - tips on pilih produk page"
+private const val CLICK_SIMPAN_PILIH_PRODUK = "click - simpan on pilih produk page"
 
 class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.ProductListAdapterListener {
 
@@ -65,7 +70,8 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private var isDataEnded = false
     private var linearLayoutManager = LinearLayoutManager(context)
-    private var selectedTopAdsProductMap: HashMap<Category, ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>> = HashMap()
+    private var selectedTopAdsProductMap: HashMap<Category, ArrayList<TopAdsProductModel>> = HashMap()
+    private var selectedProductList = mutableListOf<TopAdsProductModel>()
 
     companion object {
         fun newInstance(): TopAdsProductListFragment = TopAdsProductListFragment()
@@ -104,7 +110,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private fun getDataFromArguments() {
         arguments?.run {
             getSerializable(SELECTED_PRODUCT_LIST)?.let { it ->
-                (it as? HashMap<Category, ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>>?)?.let { map ->
+                (it as? HashMap<Category, ArrayList<TopAdsProductModel>>?)?.let { map ->
                     selectedTopAdsProductMap = map
                 }
             }
@@ -196,7 +202,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
                 productsListAdapter.list.let {
                     var itemsToAdd = 0
                     it.forEach { product ->
-                        val category = Category(product.departmentId.toString(), product.departmentName)
+                        val category = Category(product.departmentID.toString(), product.departmentName)
                         if (selectedTopAdsProductMap[category] == null || selectedTopAdsProductMap[category]?.contains(product) == false) {
                             itemsToAdd++
                         }
@@ -207,9 +213,9 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
                     }
                     if (itemsToAdd + alreadyAdded <= MAX_PRODUCT_SELECTION) {
                         it.forEach { product ->
-                            val category = Category(product.departmentId.toString(), product.departmentName)
+                            val category = Category(product.departmentID.toString(), product.departmentName)
                             if (selectedTopAdsProductMap[category] == null) {
-                                val value = ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>()
+                                val value = ArrayList<TopAdsProductModel>()
                                 value.add(product)
                                 selectedTopAdsProductMap[category] = value
                             } else if (selectedTopAdsProductMap[category]?.contains(product) == false) {
@@ -223,7 +229,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
                 }
             } else {
                 productsListAdapter.list.forEach {
-                    val category = Category(it.departmentId.toString(), it.departmentName)
+                    val category = Category(it.departmentID.toString(), it.departmentName)
                     selectedTopAdsProductMap[category]?.remove(it)
                 }
             }
@@ -290,6 +296,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         }
         tooltipBtn.addItem(tooltipView)
         tooltipBtn.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(CLICK_TIPS_PILIH_PRODUK, "{${userSession.shopId} - {${arguments?.getString(GROUP_NAME)}}", userSession.userId)
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
                 add(TipsUiHeaderModel(R.string.topads_headline_tips_choosing_product))
@@ -321,7 +328,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         selectProductCheckBox.isChecked = false
     }
 
-    private fun setSelectProductCbCheck(data: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>) {
+    private fun setSelectProductCbCheck(data: ArrayList<TopAdsProductModel>) {
         if (data.isEmpty()) {
             selectProductCheckBox.hide()
         } else {
@@ -333,7 +340,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private fun checkIfDeterminate() {
         var totalCount = 0
         productsListAdapter.list.forEach {
-            val category = Category(it.departmentId.toString(), it.departmentName)
+            val category = Category(it.departmentID.toString(), it.departmentName)
             totalCount += selectedTopAdsProductMap[category]?.size ?: 0
         }
         selectProductCheckBox.isChecked = totalCount != 0
@@ -355,22 +362,25 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         fetchTopAdsProducts()
     }
 
-    private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) {
+    private fun onSuccessGetProductList(data: List<TopAdsProductModel>, eof: Boolean) {
         if (data.isNotEmpty()) {
+            selectedProductList.clear()
+            selectedProductList.addAll(data)
             hideEmptyView()
-            productsListAdapter.setProductList(data as ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>)
+            productsListAdapter.setProductList(data as ArrayList<TopAdsProductModel>)
             setTabCount(data.size)
             prepareForNextFetch(eof)
             showCbIfRecommendation(data)
             if (!btnNext.isEnabled) {
                 setTickerAndBtn()
             }
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceViewEvent(VIEW_PILIH_PRODUK, "{${userSession.shopId}} - {${arguments?.getString(GROUP_NAME)}}", data, userSession.userId)
         } else {
             showEmptyView()
         }
     }
 
-    private fun showCbIfRecommendation(data: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>) {
+    private fun showCbIfRecommendation(data: ArrayList<TopAdsProductModel>) {
         if (selectedTabModel?.id == DEFAULT_RECOMMENDATION_TAB_ID) {
             selectProductCheckBox.show()
             setProductSelectCbText()
@@ -406,6 +416,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     private fun setResultAndFinish() {
         setTickerAndBtn()
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceCLickEvent(CLICK_SIMPAN_PILIH_PRODUK, "{${userSession.shopId} - {${arguments?.getString(GROUP_NAME)}}", selectedProductList, userSession.userId)
         if (ticker.isVisible) {
             return
         }
@@ -425,8 +436,8 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         }
     }
 
-    override fun onProductClick(product: ResponseProductList.Result.TopadsGetListProduct.Data) {
-        val category = Category(product.departmentId.toString(), product.departmentName)
+    override fun onProductClick(product: TopAdsProductModel) {
+        val category = Category(product.departmentID.toString(), product.departmentName)
         isProductSelectedListEdited = true
         if (selectedTabModel?.id == DEFAULT_RECOMMENDATION_TAB_ID) {
             checkIfDeterminate()
@@ -438,7 +449,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         }
     }
 
-    private fun changeBackGround(category: Category, product: ResponseProductList.Result.TopadsGetListProduct.Data) {
+    private fun changeBackGround(category: Category, product: TopAdsProductModel) {
         selectedTopAdsProductMap[category]?.let { list ->
             if (list.isNotEmpty()) {
                 list.first().isSingleSelect = list.size == SINGLE_SELECTION

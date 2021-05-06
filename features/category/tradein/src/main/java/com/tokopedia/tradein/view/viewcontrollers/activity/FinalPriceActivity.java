@@ -317,7 +317,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
 
             }
         };
-        int greenColor = getResources().getColor(com.tokopedia.design.R.color.green_nob);
+        int greenColor = getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400);
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
         spannableString.setSpan(clickableSpan, 43, 61, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(foregroundColorSpan, 43, 61, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
@@ -345,7 +345,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
 
             }
         };
-        int greenColor = getResources().getColor(com.tokopedia.design.R.color.green_nob);
+        int greenColor = getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400);
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
         spannableString.setSpan(clickableSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(foregroundColorSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);

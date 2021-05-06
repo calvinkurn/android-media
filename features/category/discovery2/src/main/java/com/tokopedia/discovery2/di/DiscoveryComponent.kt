@@ -2,7 +2,6 @@ package com.tokopedia.discovery2.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModel
@@ -13,6 +12,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.load
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSprintSaleCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModel
@@ -20,7 +20,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quic
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
 import dagger.Component
 
@@ -48,6 +47,7 @@ interface DiscoveryComponent {
     fun inject(loadMoreViewModel: LoadMoreViewModel)
     fun inject(quickCouponViewModel: QuickCouponViewModel)
     fun inject(quickFilterViewModel: QuickFilterViewModel)
+    fun inject(emptyStateViewModel: EmptyStateViewModel)
 
     fun provideSubComponent() : UIWidgetComponent
 }

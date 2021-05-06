@@ -1,21 +1,18 @@
 package com.tokopedia.shop.product.view.viewmodel
 
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherOwner
+import com.tokopedia.mvcwidget.ResultStatus
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
+import com.tokopedia.shop.product.domain.interactor.GetMembershipUseCaseNew
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
-import com.tokopedia.shop.product.view.datamodel.GetShopProductUiModel
-import com.tokopedia.shop.product.view.datamodel.ShopMerchantVoucherUiModel
-import com.tokopedia.shop.product.view.datamodel.ShopProductFeaturedUiModel
-import com.tokopedia.shop.product.view.datamodel.ShopStickySortFilter
+import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -82,7 +79,32 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     anyString(),
                     anyInt(),
                     anyString(),
-                    ShopProductFilterParameter()
+                    ShopProductFilterParameter(),
+                    addressWidgetData
+            )
+
+            verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
+
+            verifyGetShopProductUseCaseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success)
+            Assert.assertNotNull(viewModelShopPageProductListViewModel.productListData.value)
+        }
+    }
+
+    @Test
+    fun `check whether response get product list data success is not null and has next page`() {
+        runBlocking {
+
+            coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
+                    totalData = 20
+            )
+            viewModelShopPageProductListViewModel.getProductListData(
+                    anyString(),
+                    anyInt(),
+                    anyString(),
+                    ShopProductFilterParameter(),
+                    addressWidgetData
             )
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
@@ -98,7 +120,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     fun `check whether response  get product list data error is null`() {
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getProductListData(anyString(), anyInt(), anyString(), ShopProductFilterParameter())
+            viewModelShopPageProductListViewModel.getProductListData(anyString(), anyInt(), anyString(), ShopProductFilterParameter(), addressWidgetData)
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
 
@@ -143,20 +165,50 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         runBlocking {
 
             coEvery {
-                getMerchantVoucherListUseCase.createObservable(any())
-            } returns Observable.just(arrayListOf(MerchantVoucherModel(
-                    voucherId = 10,
-                    voucherName = "voucherName",
-                    voucherCode = "1010002",
-                    validThru = "1020021",
-                    merchantVoucherOwner = MerchantVoucherOwner()
-            )))
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(ResultStatus(code = "200", listOf("success"), null, null), null, true, null, null, null))
 
             viewModelShopPageProductListViewModel.getNewMerchantVoucher("123")
 
             verifyGetMerchantVoucerUseCaseCalled()
 
             Assert.assertTrue(viewModelShopPageProductListViewModel.newMerchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
+        }
+    }
+
+    @Test
+    fun `check getNewMerchantVoucher is null`() {
+        runBlocking {
+
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(ResultStatus(code = "123", listOf("not success"), null, null), null, false, null, null, null))
+
+            viewModelShopPageProductListViewModel.getNewMerchantVoucher("123")
+
+            verifyGetMerchantVoucerUseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.newMerchantVoucherData.value == null)
+
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(null)
+
+            viewModelShopPageProductListViewModel.getNewMerchantVoucher("123")
+
+            verifyGetMerchantVoucerUseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.newMerchantVoucherData.value == null)
+
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } throws Exception()
+
+            viewModelShopPageProductListViewModel.getNewMerchantVoucher("123")
+
+            verifyGetMerchantVoucerUseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.newMerchantVoucherData.value == null)
         }
     }
 
@@ -170,19 +222,99 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
     @Test
     fun `check clearCache for UseCase is called`() {
+
+        runBlocking {
+            // membership use case
+            coEvery {
+                getMembershipUseCase.executeOnBackground()
+            } returns MembershipStampProgress()
+
+            // merchant voucher use case
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+
+
+            // shop featured product use case
+            coEvery {
+                getShopFeaturedProductUseCase.executeOnBackground()
+            } returns listOf(ShopFeaturedProduct())
+
+            // gql get shop product use case
+            coEvery {
+                getShopProductUseCase.executeOnBackground()
+            } returns ShopProduct.GetShopProduct(
+                    data = listOf(ShopProduct())
+            )
+
+            every {
+                getShopHighlightProductUseCase.get()
+            } returns getShopProductUseCase
+
+            viewModelShopPageProductListViewModel.getBuyerViewContentData(
+                    shopId = "123",
+                    etalaseList = listOf(ShopEtalaseItemDataModel(
+                            etalaseId = "sold",
+                            alias = "",
+                            etalaseName = "test",
+                            type = 2,
+                            etalaseBadge = "",
+                            etalaseCount = 10,
+                            highlighted = true,
+                            etalaseRules = listOf()
+                    )),
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
+            )
+
+            verifyGetMemberShipUseCaseCalled()
+            verifyGetMerchantVoucerUseCaseCalled()
+            verifyGetShopFeaturedProductUseCaseCalled()
+            verifyGetShopProductUseCaseCaseCalled()
+        }
+
         viewModelShopPageProductListViewModel.clearCache()
         verify {
             getShopEtalaseByShopUseCase.clearCache()
             getShopFeaturedProductUseCase.clearCache()
             getShopProductUseCase.clearCache()
-            getMerchantVoucherListUseCase.clearCache()
-            deleteShopInfoUseCase.executeSync()
         }
     }
 
     @Test
-    fun `check getShopFilterData is Success`() {
+    fun `check getShopFilterData is Success if isMyShop true`() {
         runBlocking {
+
+            every { userSessionInterface.shopId } returns "123"
+            viewModelShopPageProductListViewModel.isMyShop("123")
+
+            coEvery {
+                getShopEtalaseByShopUseCase.createObservable(any())
+            } returns Observable.just(arrayListOf(ShopEtalaseModel()))
+
+            coEvery {
+                gqlGetShopSortUseCase.executeOnBackground()
+            } returns listOf(ShopProductSort())
+
+            viewModelShopPageProductListViewModel.getShopFilterData("123")
+
+            verifyGetShopEtalaseByShopUseCaseCalled()
+            verifyGetShopSortUseCaseCalled()
+
+            Assert.assertNotNull(viewModelShopPageProductListViewModel.shopSortFilterData.value)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopSortFilterData.value is Success<ShopStickySortFilter>)
+
+        }
+    }
+
+    @Test
+    fun `check getShopFilterData is Success if isMyShop false`() {
+        runBlocking {
+
+            every {
+                userSessionInterface.userId
+            } returns "321"
+            viewModelShopPageProductListViewModel.isMyShop("321")
 
             coEvery {
                 getShopEtalaseByShopUseCase.createObservable(any())
@@ -205,7 +337,9 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
     @Test
     fun `check setInitialProductList is Success`() {
-        viewModelShopPageProductListViewModel.setInitialProductList(GetShopProductUiModel())
+        viewModelShopPageProductListViewModel.setInitialProductList("123", ShopProduct.GetShopProduct(
+                data = listOf(ShopProduct())
+        ))
         Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success<GetShopProductUiModel>)
     }
 
@@ -237,13 +371,420 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             viewModelShopPageProductListViewModel.getFilterResultCount(
                     shopId = "123",
-                    tempShopProductFilterParameter = ShopProductFilterParameter()
+                    tempShopProductFilterParameter = ShopProductFilterParameter(),
+                    widgetUserAddressLocalData = addressWidgetData
             )
 
             verifyGetShopFilterProductCountUseCaseCalled()
 
             Assert.assertNotNull(viewModelShopPageProductListViewModel.shopProductFilterCountLiveData.value)
             Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFilterCountLiveData.value is Success<Int>)
+
+        }
+    }
+
+    @Test
+    fun `check getBuyerViewContentData is Success with sort by SOLD_ETALASE`() {
+        runBlocking {
+
+            // membership use case
+            coEvery {
+                getMembershipUseCase.executeOnBackground()
+            } returns MembershipStampProgress()
+
+            // merchant voucher use case
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+
+            // shop featured product use case
+            coEvery {
+                getShopFeaturedProductUseCase.executeOnBackground()
+            } returns listOf(ShopFeaturedProduct())
+
+            // gql get shop product use case
+            coEvery {
+                getShopProductUseCase.executeOnBackground()
+            } returns ShopProduct.GetShopProduct(
+                    data = listOf(ShopProduct())
+            )
+
+            every {
+                getShopHighlightProductUseCase.get()
+            } returns getShopProductUseCase
+
+            viewModelShopPageProductListViewModel.getBuyerViewContentData(
+                    shopId = "123",
+                    etalaseList = listOf(ShopEtalaseItemDataModel(
+                            etalaseId = "sold",
+                            alias = "",
+                            etalaseName = "test",
+                            type = 2,
+                            etalaseBadge = "",
+                            etalaseCount = 10,
+                            highlighted = true,
+                            etalaseRules = listOf()
+                    )),
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
+            )
+
+            verifyGetMemberShipUseCaseCalled()
+            verifyGetMerchantVoucerUseCaseCalled()
+            verifyGetShopFeaturedProductUseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.membershipData.value is Success<MembershipStampProgressUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.merchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Success<ShopProductFeaturedUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value is Success<ShopProductEtalaseHighlightUiModel>)
+
+        }
+    }
+
+    @Test
+    fun `check getBuyerViewContentData is Success with sort by DISCOUNT_ETALASE`() {
+        runBlocking {
+
+            // membership use case
+            coEvery {
+                getMembershipUseCase.executeOnBackground()
+            } returns MembershipStampProgress()
+
+            // merchant voucher use case
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+
+
+            // shop featured product use case
+            coEvery {
+                getShopFeaturedProductUseCase.executeOnBackground()
+            } returns listOf(ShopFeaturedProduct())
+
+            // gql get shop product use case
+            coEvery {
+                getShopProductUseCase.executeOnBackground()
+            } returns ShopProduct.GetShopProduct(
+                    data = listOf(ShopProduct())
+            )
+
+            every {
+                getShopHighlightProductUseCase.get()
+            } returns getShopProductUseCase
+
+            viewModelShopPageProductListViewModel.getBuyerViewContentData(
+                    shopId = "123",
+                    etalaseList = listOf(ShopEtalaseItemDataModel(
+                            etalaseId = "discount",
+                            alias = "",
+                            etalaseName = "test",
+                            type = 2,
+                            etalaseBadge = "",
+                            etalaseCount = 10,
+                            highlighted = true,
+                            etalaseRules = listOf()
+                    )),
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
+            )
+
+            verifyGetMemberShipUseCaseCalled()
+            verifyGetMerchantVoucerUseCaseCalled()
+            verifyGetShopFeaturedProductUseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.membershipData.value is Success<MembershipStampProgressUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.merchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Success<ShopProductFeaturedUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value is Success<ShopProductEtalaseHighlightUiModel>)
+
+        }
+    }
+
+    @Test
+    fun `check getBuyerViewContentData is Success with no sort`() {
+        runBlocking {
+
+            // membership use case
+            coEvery {
+                getMembershipUseCase.executeOnBackground()
+            } returns MembershipStampProgress()
+
+            // merchant voucher use case
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+
+            // shop featured product use case
+            coEvery {
+                getShopFeaturedProductUseCase.executeOnBackground()
+            } returns listOf(ShopFeaturedProduct())
+
+            // gql get shop product use case
+            coEvery {
+                getShopProductUseCase.executeOnBackground()
+            } returns ShopProduct.GetShopProduct(
+                    data = listOf(ShopProduct())
+            )
+
+            every {
+                getShopHighlightProductUseCase.get()
+            } returns getShopProductUseCase
+
+            viewModelShopPageProductListViewModel.getBuyerViewContentData(
+                    shopId = "123",
+                    etalaseList = listOf(ShopEtalaseItemDataModel(
+                            etalaseId = "123",
+                            alias = "",
+                            etalaseName = "test",
+                            type = 2,
+                            etalaseBadge = "",
+                            etalaseCount = 10,
+                            highlighted = true,
+                            etalaseRules = listOf()
+                    )),
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
+            )
+
+            verifyGetMemberShipUseCaseCalled()
+            verifyGetMerchantVoucerUseCaseCalled()
+            verifyGetShopFeaturedProductUseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.membershipData.value is Success<MembershipStampProgressUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.merchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Success<ShopProductFeaturedUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value is Success<ShopProductEtalaseHighlightUiModel>)
+
+        }
+    }
+
+    @Test
+    fun `check getBuyerViewContentData is Success with no highlighted etalase`() {
+        runBlocking {
+
+            // membership use case
+            coEvery {
+                getMembershipUseCase.executeOnBackground()
+            } returns MembershipStampProgress()
+
+            // merchant voucher use case
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+
+            // shop featured product use case
+            coEvery {
+                getShopFeaturedProductUseCase.executeOnBackground()
+            } returns listOf(ShopFeaturedProduct())
+
+            // gql get shop product use case
+            coEvery {
+                getShopProductUseCase.executeOnBackground()
+            } returns ShopProduct.GetShopProduct()
+
+            every {
+                getShopHighlightProductUseCase.get()
+            } returns getShopProductUseCase
+
+            viewModelShopPageProductListViewModel.getBuyerViewContentData(
+                    shopId = "123",
+                    etalaseList = listOf(ShopEtalaseItemDataModel(
+                            etalaseId = "123",
+                            alias = "",
+                            etalaseName = "test",
+                            type = 2,
+                            etalaseBadge = "",
+                            etalaseCount = 10,
+                            highlighted = false,
+                            etalaseRules = listOf()
+                    )),
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
+            )
+
+            verifyGetMemberShipUseCaseCalled()
+            verifyGetMerchantVoucerUseCaseCalled()
+            verifyGetShopFeaturedProductUseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.membershipData.value is Success<MembershipStampProgressUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.merchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Success<ShopProductFeaturedUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value is Success<ShopProductEtalaseHighlightUiModel>)
+
+        }
+    }
+
+    @Test
+    fun `check getBuyerViewContentData is Success with no product on highlighted etalase`() {
+        runBlocking {
+
+            // membership use case
+            coEvery {
+                getMembershipUseCase.executeOnBackground()
+            } returns MembershipStampProgress()
+
+            // merchant voucher use case
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+
+            // shop featured product use case
+            coEvery {
+                getShopFeaturedProductUseCase.executeOnBackground()
+            } returns listOf(ShopFeaturedProduct())
+
+            // gql get shop product use case
+            coEvery {
+                getShopProductUseCase.executeOnBackground()
+            } returns ShopProduct.GetShopProduct(
+                    listOf()
+            )
+
+            every {
+                getShopHighlightProductUseCase.get()
+            } returns getShopProductUseCase
+
+            viewModelShopPageProductListViewModel.getBuyerViewContentData(
+                    shopId = "123",
+                    etalaseList = listOf(ShopEtalaseItemDataModel(
+                            etalaseId = "123",
+                            alias = "",
+                            etalaseName = "test",
+                            type = 2,
+                            etalaseBadge = "",
+                            etalaseCount = 10,
+                            highlighted = true,
+                            etalaseRules = listOf()
+                    )),
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
+            )
+
+            verifyGetMemberShipUseCaseCalled()
+            verifyGetMerchantVoucerUseCaseCalled()
+            verifyGetShopFeaturedProductUseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.membershipData.value is Success<MembershipStampProgressUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.merchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Success<ShopProductFeaturedUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value is Success<ShopProductEtalaseHighlightUiModel>)
+
+        }
+    }
+
+    @Test
+    fun `check getBuyerViewContentData with getHighlightEtalaseData throw an exception`() {
+        runBlocking {
+
+            // membership use case
+            coEvery {
+                getMembershipUseCase.executeOnBackground()
+            } returns MembershipStampProgress()
+
+            // merchant voucher use case
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+
+
+            // shop featured product use case
+            coEvery {
+                getShopFeaturedProductUseCase.executeOnBackground()
+            } returns listOf(ShopFeaturedProduct())
+
+            // gql get shop product use case
+            coEvery {
+                getShopProductUseCase.executeOnBackground()
+            } returns ShopProduct.GetShopProduct(
+                    data = listOf(ShopProduct())
+            )
+
+            every {
+                getShopHighlightProductUseCase.get()
+            } throws Exception()
+
+            viewModelShopPageProductListViewModel.getBuyerViewContentData(
+                    shopId = "123",
+                    etalaseList = listOf(ShopEtalaseItemDataModel(
+                            etalaseId = "123",
+                            alias = "",
+                            etalaseName = "test",
+                            type = 2,
+                            etalaseBadge = "",
+                            etalaseCount = 10,
+                            highlighted = true,
+                            etalaseRules = listOf()
+                    )),
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
+            )
+
+            verifyGetMemberShipUseCaseCalled()
+            verifyGetMerchantVoucerUseCaseCalled()
+            verifyGetShopFeaturedProductUseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.membershipData.value is Success<MembershipStampProgressUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.merchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Success<ShopProductFeaturedUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value == null)
+
+        }
+    }
+
+    @Test
+    fun `check getBuyerViewContentData with featured product throw an exception`() {
+        runBlocking {
+
+            // membership use case
+            coEvery {
+                getMembershipUseCase.executeOnBackground()
+            } returns MembershipStampProgress()
+
+            // merchant voucher use case
+            coEvery {
+                mvcSummaryUseCase.getResponse(any())
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+
+            // shop featured product use case
+            coEvery {
+                getShopFeaturedProductUseCase.executeOnBackground()
+            } throws Exception()
+
+            // gql get shop product use case
+            coEvery {
+                getShopProductUseCase.executeOnBackground()
+            } returns ShopProduct.GetShopProduct(
+                    data = listOf(ShopProduct())
+            )
+
+            every {
+                getShopHighlightProductUseCase.get()
+            } returns getShopProductUseCase
+
+            viewModelShopPageProductListViewModel.getBuyerViewContentData(
+                    shopId = "123",
+                    etalaseList = listOf(ShopEtalaseItemDataModel(
+                            etalaseId = "sold",
+                            alias = "",
+                            etalaseName = "test",
+                            type = 2,
+                            etalaseBadge = "",
+                            etalaseCount = 10,
+                            highlighted = true,
+                            etalaseRules = listOf()
+                    )),
+                    isShowNewShopHomeTab = false,
+                    widgetUserAddressLocalData = addressWidgetData
+            )
+
+            verifyGetMemberShipUseCaseCalled()
+            verifyGetMerchantVoucerUseCaseCalled()
+            verifyGetShopFeaturedProductUseCaseCalled()
+
+            Assert.assertTrue(viewModelShopPageProductListViewModel.membershipData.value is Success<MembershipStampProgressUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.merchantVoucherData.value is Success<ShopMerchantVoucherUiModel>)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value == null)
+            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductEtalaseHighlightData.value is Success<ShopProductEtalaseHighlightUiModel>)
 
         }
     }
@@ -318,6 +859,33 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         }
     }
 
+    @Test
+    fun `check getSortNameById return empty because list is empty`() {
+        runBlocking {
+
+            coEvery {
+                getShopEtalaseByShopUseCase.createObservable(any())
+            } returns Observable.just(arrayListOf(ShopEtalaseModel()))
+
+            coEvery {
+                gqlGetShopSortUseCase.executeOnBackground()
+            } returns listOf()
+
+            coEvery {
+                shopProductSortMapper.convertSort(any())
+            } returns convertToUiModel(listOf())
+
+            viewModelShopPageProductListViewModel.getShopFilterData("123")
+
+            verifyGetShopEtalaseByShopUseCaseCalled()
+            verifyGetShopSortUseCaseCalled()
+
+            val actualResult : String = viewModelShopPageProductListViewModel.getSortNameById("123")
+            Assert.assertNotNull(actualResult)
+            Assert.assertTrue(actualResult == "")
+        }
+    }
+
     private fun convertToUiModel(list: List<ShopProductSort>): List<ShopProductSortModel> {
         return mutableListOf<ShopProductSortModel>().apply {
             list.forEach {
@@ -333,6 +901,10 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
     private fun verifyGetShopProductUseCaseCaseCalled() {
         coVerify { getShopProductUseCase.executeOnBackground() }
+    }
+
+    private fun verifyGetShopFeaturedProductUseCaseCalled() {
+        coVerify { getShopFeaturedProductUseCase.executeOnBackground() }
     }
 
     private fun verifyGetClaimBenefitMembershipUseCaseCalled() {
@@ -360,17 +932,6 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     }
 
     private fun verifyGetMerchantVoucerUseCaseCalled() {
-        coVerify { getMerchantVoucherListUseCase.createObservable(any()) }
-    }
-
-    private fun List<ShopFeaturedProduct>.toViewModel(): ShopProductFeaturedUiModel {
-        return ShopProductFeaturedUiModel(
-                this.map { shopFeaturedProduct ->
-                    ShopPageProductListMapper.mapShopFeaturedProductToProductViewModel(
-                            shopFeaturedProduct,
-                            anyBoolean()
-                    )
-                }
-        )
+        coVerify { mvcSummaryUseCase.getResponse(any())}
     }
 }

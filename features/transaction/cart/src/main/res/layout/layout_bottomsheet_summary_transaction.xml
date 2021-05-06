@@ -58,7 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/light_N75"
+        android:background="@color/Unify_N75"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_discount_total_title" />
 
@@ -86,37 +86,49 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/light_N75"
+        android:background="@color/Unify_N75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_total_pay_title" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_total_promo_title"
+        android:id="@+id/text_summary_promo_transaction_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/separator_benefit"
-        app:typographyType="body_3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/separator_benefit"
+        app:typographyType="heading_4"
         tools:text="Hemat Pakai Promo" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_total_promo_value"
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_cart_promo_summary"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_summary_promo_transaction_title"
+        tools:itemCount="2"
+        tools:listitem="@layout/item_cart_promo_price_summary" />
+
+    <View
+        android:id="@+id/separator_seller_cashback"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/Unify_N75"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/text_total_promo_title"
-        app:typographyType="heading_6"
-        tools:text="Rp10.000.000" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recycler_view_cart_promo_summary" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_total_cashback_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_total_promo_title"
+        app:layout_constraintTop_toBottomOf="@+id/separator_seller_cashback"
         app:typographyType="body_3"
         tools:text="Cashback Penjual" />
 

@@ -35,6 +35,7 @@
     <string name="path_product_category_picker" translatable="false">/product-category-picker/.*\\/</string>
     <string name="path_product_detail" translatable="false">/product-detail/.*\\/</string>
     <string name="path_product_detail_domain" translatable="false">/product-detail/.*\\/.*\\/</string>
+    <string name="path_product_detail_affiliate" translatable="false">/product-detail/affiliate/.*\\/</string>
     <string name="path_product_manage_list" translatable="false">/product-manage-list</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
     <string name="path_stock_reminder" translatable="false">/stock-reminder/.*\\/.*\\/.*\\/</string>
@@ -53,6 +54,7 @@
     <string name="path_shop_page_review" translatable="false">/shop-page/.*\\/review</string>
     <string name="path_shop_page_product" translatable="false">/shop-page/.*\\/product</string>
     <string name="path_shop_page_feed" translatable="false">/shop-page/.*\\/feed</string>
+    <string name="path_shop_page_note" translatable="false">/shop-page/.*\\/note</string>
     <string name="path_shop_page_product_list_result" translatable="false">/shop-page-product-list/.*\\/etalase/.*\\/</string>
 
     <string name="path_shop_info" translatable="false">/shop-info/.*\\/</string>
@@ -61,11 +63,14 @@
     <string name="path_mitra_toppers_dashboard" translatable="false">/mitra-toppers-dashboard</string>
     <string name="path_seller_info" translatable="false">/seller-info</string>
     <string name="path_shop_favourite_list" translatable="false">/shop-favourites</string>
+    <string name="path_shop_favourite_list_with_shop_id" translatable="false">/shop-page/.*\\/shop-favourites</string>
+    <string name="path_shop_page_setting_customer_app_with_shop_id" translatable="false">/shop-page/.*\\/settings</string>
 
     <string name="path_review_inbox" translatable="false">/review</string>
     <string name="path_review_detail_buyer" translatable="false">/review/detail/.*\\/</string>
     <string name="path_reputation_detail" translatable="false">/reputation/.*\\/</string>
     <string name="path_review_report" translatable="false">/review-report</string>
+    <string name="path_review_reminder" translatable="false">/review-reminder</string>
 
     <string name="path_seller_review_page" translatable="false">/seller-review-page</string>
     <string name="path_seller_review_detail_page" translatable="false">/seller-review-detail</string>
@@ -85,7 +90,6 @@
 
     <string name="path_district_recommendation_shop_settings" translatable="false">/district-recommendation-shop-settings</string>
     <string name="path_geolocation" translatable="false">/geolocation</string>
-    <string name="path_cod" translatable="false">/cod</string>
 
     <string name="path_chat_search">/chat-search</string>
     <string name="path_chat_template_setting">/chat/settings/templatechat</string>
@@ -99,6 +103,8 @@
     <string name="path_user_attach_voucher" translatable="false">/user-attach-voucher</string>
     <string name="path_user_attach_product" translatable="false">/user-attach-product</string>
     <string name="path_user_order_history" translatable="false">/user-order-history/.*\\/</string>
+    <string name="path_user_inbox" translatable="false">/inbox</string>
+    <string name="path_user_inbox_with_query" translatable="false">/inbox?.*</string>
     <string name="title_open_shop">Buka Toko Gratis</string>
     <string name="title_ovop2p">OVO P2P Transfer</string>
     <string name="applink_report_title">Report</string>

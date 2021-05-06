@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/dp_8">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_8">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/keywordName"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5"
+            tools:text="Kemeja Lengan Pendek" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/searchType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textColor="@color/Green_G600"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/keywordName"
+            app:typographyType="body_3"
+            tools:text="Pencarian Luas" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/searchTypeSelection"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
+            android:layout_marginStart="@dimen/dp_2"
+            android:padding="@dimen/dp_2"
+            android:tint="@color/Green_G600"
+            app:layout_constraintBottom_toBottomOf="@id/searchType"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/searchType"
+            app:layout_constraintTop_toTopOf="@id/searchType"
+            tools:src="@drawable/ic_dropdown_arrow" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/deleteKeyword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_22"
+            app:layout_constraintBottom_toBottomOf="@id/searchType"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/keywordName"
+            app:srcCompat="@drawable/topads_ic_delete" />
+
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/advertisingCost"
+            android:layout_width="@dimen/dp_150"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:focusableInTouchMode="true"
+            app:layout_constraintEnd_toStartOf="@id/klik"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchType"
+            app:text_field_input_type="number"
+            app:text_field_label_static="true"
+            app:text_field_prepend_text="Rp"
+            tools:layout_height="@dimen/dp_50"
+            tools:layout_width="@dimen/dp_50" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/klik"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/topads_common_headline_klik"
+            app:layout_constraintBottom_toBottomOf="@id/advertisingCost"
+            app:layout_constraintStart_toEndOf="@id/advertisingCost"
+            app:layout_constraintTop_toTopOf="@id/advertisingCost"
+            app:typographyType="body_3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

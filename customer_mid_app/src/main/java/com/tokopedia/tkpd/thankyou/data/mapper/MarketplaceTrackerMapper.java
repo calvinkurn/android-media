@@ -8,7 +8,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.linker.LinkerConstants;
@@ -74,7 +74,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
             paymentData = response.getPayment();
             String orderId = getOrderId(response);
             if (!TextUtils.isEmpty(orderId)) {
-                new MonthlyNewBuyerSource().executeMonthlyNewBuyerCheck(MainApplication.getAppContext(), getMonthlyNewBuyerSubscriber(),
+                new MonthlyNewBuyerSource().executeMonthlyNewBuyerCheck(CoreNetworkApplication.getAppContext(), getMonthlyNewBuyerSubscriber(),
                         orderId);
             } else {
                 executeSendPaymentTracking(false);
@@ -100,7 +100,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
             int indexOrdersData = 0;
             for (OrderData orderData : paymentData.getOrders()) {
                 PurchaseTracking.marketplace(
-                        MainApplication.getAppContext(),
+                        CoreNetworkApplication.getAppContext(),
                         getTrackingData(
                                 orderData, indexOrdersData, getListCouponCode(paymentData, orderData.getOrderId()
                                 ), getTax(paymentData), paymentType
@@ -111,7 +111,7 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
                 indexOrdersData++;
             }
 
-            PurchaseTracking.appsFlyerPurchaseEvent(MainApplication.getAppContext(), getAppsFlyerTrackingData(paymentData.getOrders()), "MarketPlace");
+            PurchaseTracking.appsFlyerPurchaseEvent(CoreNetworkApplication.getAppContext(), getAppsFlyerTrackingData(paymentData.getOrders()), "MarketPlace");
 
         }
     }

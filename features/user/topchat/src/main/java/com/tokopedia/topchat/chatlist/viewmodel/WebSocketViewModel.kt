@@ -3,27 +3,27 @@ package com.tokopedia.topchat.chatlist.viewmodel
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.chat_common.network.ChatUrl
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.topchat.chatlist.data.ChatListWebSocketConstant.EVENT_TOPCHAT_TYPING
-import com.tokopedia.topchat.chatlist.domain.pojo.reply.WebSocketResponseData
+import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
+import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
+import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket
+import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket.Companion.CODE_NORMAL_CLOSURE
+import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketParser
+import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketStateHandler
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
-import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
-import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
-import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesContactPojo
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.withContext
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -31,98 +31,112 @@ import javax.inject.Inject
  * Created by stevenfredian on 10/19/17.
  */
 
-class WebSocketViewModel
-@Inject constructor(dispatcher: CoroutineDispatcher,
-                    private val userSession: UserSessionInterface,
-                    private val tkpdAuthInterceptor: TkpdAuthInterceptor,
-                    private val fingerprintInterceptor: FingerprintInterceptor) : BaseViewModel(dispatcher), LifecycleObserver {
+open class WebSocketViewModel @Inject constructor(
+        private val chatWebSocket: DefaultTopChatWebSocket,
+        protected val webSocketParser: WebSocketParser,
+        private val webSocketStateHandler: WebSocketStateHandler,
+        protected val dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.io), LifecycleObserver {
 
-    val client = OkHttpClient()
-    private val webSocketUrl: String = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
-            "?os_type=1" +
-            "&device_id=" + userSession.deviceId +
-            "&user_id=" + userSession.userId
-    private var easyWS: EasyWS? = null
-    private var isOnStop = false
-    private val _itemChat = MutableLiveData<Result<BaseIncomingItemWebSocketModel>>()
+    protected val _itemChat = MutableLiveData<Result<BaseIncomingItemWebSocketModel>>()
     val itemChat: LiveData<Result<BaseIncomingItemWebSocketModel>>
         get() = _itemChat
 
+    var isOnStop = false
+
+    protected open fun shouldStopReceiveEventOnStop(): Boolean {
+        return true
+    }
+
     fun connectWebSocket() {
-        launch {
-            client.run {
-                newBuilder().addInterceptor(tkpdAuthInterceptor)
-                        .addInterceptor(fingerprintInterceptor)
+        chatWebSocket.connectWebSocket(object : WebSocketListener() {
+            override fun onOpen(webSocket: WebSocket, response: Response) {
+                Timber.d("$TAG - onOpen")
+                handleOnOpenWebSocket()
             }
-            easyWS = client.easyWebSocket(webSocketUrl, userSession.accessToken)
 
-            Timber.d(" Open: ${easyWS?.response}")
-
-            easyWS?.let {
-                for (response in it.textChannel) {
-                    Timber.d(" Response: $response")
-                    if (isOnStop) continue
-                    when (response.code) {
-                        EVENT_TOPCHAT_REPLY_MESSAGE -> {
-                            val chat = Success(mapToIncomingChat(response))
-                            _itemChat.value = chat
-                        }
-                        EVENT_TOPCHAT_TYPING -> {
-                            val stateTyping = Success(mapToIncomingTypeState(response, true))
-                            _itemChat.value = stateTyping
-                        }
-                        EVENT_TOPCHAT_END_TYPING -> {
-                            val stateEndTyping = Success(mapToIncomingTypeState(response, false))
-                            _itemChat.value = stateEndTyping
-                        }
-                    }
-                }
+            override fun onMessage(webSocket: WebSocket, text: String) {
+                val response = webSocketParser.parseResponse(text)
+                handleOnMessageWebSocket(response)
             }
+
+            override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+                Timber.d("$TAG - onClosing - $code - $reason")
+            }
+
+            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                Timber.d("$TAG - onClosed - $code - $reason")
+                handleOnClosedWebSocket(code)
+            }
+
+            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                Timber.d("$TAG - onFailure - ${t.message}")
+                handleOnFailureWebSocket()
+            }
+        })
+    }
+
+    private fun handleOnOpenWebSocket() {
+        webSocketStateHandler.retrySucceed()
+    }
+
+    private fun handleOnMessageWebSocket(response: WebSocketResponse) {
+        if (shouldStopReceiveEventOnStop() && isOnStop) return
+        when (response.code) {
+            EVENT_TOPCHAT_REPLY_MESSAGE -> onResponseReplyMessage(response)
+            EVENT_TOPCHAT_TYPING -> onResponseTyping(response)
+            EVENT_TOPCHAT_END_TYPING -> onResponseEndTyping(response)
         }
     }
 
-    private fun mapToIncomingChat(response: WebSocketResponse): IncomingChatWebSocketModel {
-        val json = response.jsonObject
-        val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
-        val msgId = responseData.msgId.toString()
-        val message = responseData.message.censoredReply.trim().toEmptyStringIfNull()
-        val time = responseData.message.timeStampUnix.toEmptyStringIfNull()
-
-        val contact = ItemChatAttributesContactPojo(
-                responseData?.fromUid.toString(),
-                responseData?.fromRole.toString(),
-                "",
-                responseData?.from.toString(),
-                0,
-                responseData?.fromRole.toString(),
-                responseData?.imageUri.toString(),
-                responseData.isAutoReply
-        )
-        return IncomingChatWebSocketModel(msgId, message, time, contact)
+    private fun handleOnClosedWebSocket(code: Int) {
+        if (code != CODE_NORMAL_CLOSURE) {
+            retryConnectWebSocket()
+        }
     }
 
-    private fun mapToIncomingTypeState(response: WebSocketResponse, isTyping: Boolean): IncomingTypingWebSocketModel {
-        val json = response.jsonObject
-        val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
-        val msgId = responseData?.msgId.toString()
+    private fun handleOnFailureWebSocket() {
+        retryConnectWebSocket()
+    }
 
-        val contact = ItemChatAttributesContactPojo(
-                responseData?.fromUid.toString(),
-                responseData?.fromRole.toString(),
-                "",
-                responseData?.from.toString(),
-                0,
-                responseData?.fromRole.toString(),
-                ""
+    protected open fun onResponseReplyMessage(response: WebSocketResponse) {
+        val chat = Success(mapToIncomingChat(response))
+        _itemChat.postValue(chat)
+    }
+
+    private fun onResponseTyping(response: WebSocketResponse) {
+        val stateTyping = Success(mapToIncomingTypeState(response, true))
+        _itemChat.postValue(stateTyping)
+    }
+
+    private fun onResponseEndTyping(response: WebSocketResponse) {
+        val stateEndTyping = Success(mapToIncomingTypeState(response, false))
+        _itemChat.postValue(stateEndTyping)
+    }
+
+    private fun retryConnectWebSocket() {
+        launchCatchError(
+                dispatchers.io,
+                {
+                    Timber.d("$TAG - scheduleForRetry")
+                    webSocketStateHandler.scheduleForRetry {
+                        withContext(dispatchers.main) {
+                            Timber.d("$TAG - reconnecting websocket")
+                            connectWebSocket()
+                        }
+                    }
+                },
+                {
+                    Timber.d("$TAG - ${it.message}")
+                }
         )
-
-        return IncomingTypingWebSocketModel(msgId, isTyping, contact)
     }
 
     override fun onCleared() {
         super.onCleared()
-        easyWS?.webSocket?.close(1000, "Bye!")
-        Timber.d(" OnCleared")
+        chatWebSocket.close()
+        cancel()
+        Timber.d("$TAG OnCleared")
     }
 
     fun clearItemChatValue() {

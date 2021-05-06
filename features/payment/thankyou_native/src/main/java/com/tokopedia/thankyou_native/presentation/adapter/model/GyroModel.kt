@@ -17,7 +17,7 @@ open class GyroModel {
 }
 
 data class GyroRecommendationListItem(
-        var id : Int,
+        var id : Long,
         @SerializedName("url")
         val url : String?,
         @SerializedName("url_android")

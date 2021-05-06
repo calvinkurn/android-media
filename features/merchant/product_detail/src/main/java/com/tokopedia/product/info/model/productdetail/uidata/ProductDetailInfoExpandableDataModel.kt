@@ -1,6 +1,6 @@
 package com.tokopedia.product.info.model.productdetail.uidata
 
-import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
 
 /**
@@ -10,7 +10,7 @@ data class ProductDetailInfoExpandableDataModel(
         var componentName: Int = 0,
         var title: String = "",
         var textValue: String = "",
-        var video: List<Video> = listOf(),
+        var youtubeVideo: List<YoutubeVideo> = listOf(),
         var isShowable: Boolean = false
 ) : ProductDetailInfoVisitable {
 

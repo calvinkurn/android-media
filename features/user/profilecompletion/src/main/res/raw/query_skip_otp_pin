@@ -1,5 +1,5 @@
-query otp_skip_validation($otpType: Int!){
-    OTPSkipValidation (otp_type: $otpType){
+query otp_skip_validation($otpType: Int!, $validateToken: String){
+    OTPSkipValidation (otp_type: $otpType, ValidateToken: $validateToken){
         skip_otp
         validate_token
         message

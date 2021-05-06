@@ -17,4 +17,5 @@ object TalkConstants {
     const val PARAM_APPLINK_AVAILABLE_VARIANT = "available variants"
     const val DEFAULT_INITIAL_PAGE = 1
     const val DEFAULT_ITEM_LIMIT = 10
+    const val SMART_REPLY_INFORMATION_PAGE = "https://seller.tokopedia.com/edu/fitur-smart-reply/"
 }

@@ -8,7 +8,6 @@
     android:padding="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgFlightOrderLabelStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/flight_order_detail_status_label"
@@ -33,7 +32,6 @@
         tools:text="Berhasil" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgFlightOrderLabelInvoice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/flight_order_detail_invoice_label"
@@ -56,17 +54,16 @@
         app:typographyWeight="bold"
         tools:text="IVR/20170713/XVII/VII" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ivFlightOrderInvoiceCopy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tgFlightOrderStatus"
-        app:srcCompat="@drawable/ic_flight_copy" />
+        app:icon_name="COPY"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgFlightOrderLabelCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/flight_order_detail_category_label"
@@ -88,7 +85,6 @@
         app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgFlightOrderLabelCreateTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/flight_order_detail_create_time_label"
@@ -110,7 +106,6 @@
         tools:text="11 Nov 2020, 05:00 WIB" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgFlightOrderLabelPaymentMethod"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/flight_order_detail_payment_method_label"
@@ -166,14 +161,16 @@
         app:typographyType="body_3"
         app:typographyWeight="bold" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ivFlightOrderLabelDetailPayment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderLabelDetailPayment"
         app:layout_constraintLeft_toRightOf="@id/tgFlightOrderLabelDetailPayment"
         app:layout_constraintTop_toTopOf="@id/tgFlightOrderLabelDetailPayment"
-        app:srcCompat="@drawable/ic_system_action_arrow_down_normal_24" />
+        app:icon_name="CHEVRON_DOWN"
+        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_color_night_enable="@color/Unify_G500"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

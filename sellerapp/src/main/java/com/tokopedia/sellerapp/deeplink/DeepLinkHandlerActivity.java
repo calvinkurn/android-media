@@ -8,33 +8,29 @@ import android.text.TextUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.AppUtil;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
-import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
-import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
-import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
-import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
-import com.tokopedia.seller.applink.SellerApplinkModule;
-import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.sellerapp.SplashScreenActivity;
-import com.tokopedia.sellerapp.applink.SellerappAplinkModule;
-import com.tokopedia.sellerapp.applink.SellerappAplinkModuleLoader;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.WebViewApplinkModule;
 import com.tokopedia.webview.WebViewApplinkModuleLoader;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
@@ -42,11 +38,7 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
  * @author rizkyfadillah on 26/07/17.
  */
 @DeepLinkHandler({
-        SellerApplinkModule.class,
         TopAdsApplinkModule.class,
-        SellerappAplinkModule.class,
-        ProductDetailApplinkModule.class,
-        LoginRegisterApplinkModule.class,
         WebViewApplinkModule.class,
         HomeCreditAppLinkModule.class
 })
@@ -57,14 +49,13 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
 @Deprecated
 public class DeepLinkHandlerActivity extends AppCompatActivity {
 
+    private static final String TOKOPEDIA_DOMAIN = "tokopedia";
+    private static final String URL_QUERY_PARAM = "url";
+
 
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(
-                new SellerApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),
-                new SellerappAplinkModuleLoader(),
-                new ProductDetailApplinkModuleLoader(),
-                new LoginRegisterApplinkModuleLoader(),
                 new WebViewApplinkModuleLoader(),
                 new HomeCreditAppLinkModuleLoader()
         );
@@ -100,6 +91,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         }
 
         String applinkString = applink.toString();
+        logWebViewApplink(applink);
 
         //map applink to internal if any
         String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
@@ -143,6 +135,44 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
+    }
+
+    private void logWebViewApplink(Uri uri) {
+        if(uri.toString().contains(ApplinkConst.SellerApp.WEBVIEW)) {
+            Uri urlToLoad = getUrlToLoad(uri);
+            if(urlToLoad != null) {
+                String domain = urlToLoad.getHost();
+                if(domain != null) {
+                    if (!getBaseDomain(domain).equalsIgnoreCase(TOKOPEDIA_DOMAIN)) {
+                        Map<String, String> messageMap = new HashMap<>();
+                        messageMap.put("type", "applink");
+                        messageMap.put("domain", domain);
+                        messageMap.put("url", String.valueOf(uri));
+                        ServerLogger.log(Priority.P1, "WEBVIEW_OPENED", messageMap);
+                    }
+                }
+            }
+        }
+    }
+
+    private String getBaseDomain(String host) {
+        if(host == null) {
+            return "";
+        }
+        String[] split = host.split("\\.");
+        if (split.length > 2) {
+            return split[1];
+        } else {
+            return split[0];
+        }
+    }
+
+    private Uri getUrlToLoad(Uri url) {
+        try {
+            return Uri.parse(url.getQueryParameter(URL_QUERY_PARAM));
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

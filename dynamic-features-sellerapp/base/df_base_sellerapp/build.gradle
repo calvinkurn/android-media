@@ -74,6 +74,7 @@ dependencies {
     //Merchant
 //    implementation project(rootProject.ext.features.report)
 //    implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.reviewProduct)
 
@@ -99,6 +100,7 @@ dependencies {
     implementation project(rootProject.ext.features.voucherCreation)
     implementation project(rootProject.ext.features.sellerSearch)
     implementation project(rootProject.ext.features.activation)
+    implementation project(rootProject.ext.features.manageaddress)
     implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.notifTroubleshooter)
@@ -107,4 +109,11 @@ dependencies {
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.statistic)
     implementation project(rootProject.ext.features.sellerMenu)
+    implementation project(rootProject.ext.features.sellerAction)
+    implementation project(rootProject.ext.features.snapshot)
+
+    // Order Management
+    implementation project(rootProject.ext.features.ordermanagementhistory)
+
+    implementation project(rootProject.ext.libraries.imagePicker)
 }

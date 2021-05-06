@@ -18,10 +18,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
+    implementation project(rootProject.ext.libraries.adapterDelegate)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -42,6 +42,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation rootProject.ext.unifyDependencies.datepicker
+    implementation rootProject.ext.unifyDependencies.dialog
 }
 
 project.ext {

@@ -1,7 +1,7 @@
 package com.tokopedia.flight.cancellationV2.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationEstimateRefundUseCase
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationRequestCancelUseCase
 import com.tokopedia.flight.common.util.FlightAnalytics
@@ -12,6 +12,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import org.junit.Before
@@ -25,7 +26,7 @@ class FlightCancellationReviewViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
-    private val testDispatcherProvider = TravelTestDispatcherProvider()
+    private val testDispatcherProvider = CoroutineTestDispatchersProvider
 
     @RelaxedMockK
     private lateinit var flightAnalytics: FlightAnalytics
@@ -189,6 +190,24 @@ class FlightCancellationReviewViewModelTest {
         // then
         assert(viewmodel.requestCancel.value is Success)
         (viewmodel.requestCancel.value as Success).data shouldBe true
+    }
+
+    @Test
+    fun trackOnSubmit() {
+        // given
+        viewmodel.cancellationWrapperModel = DUMMY_CANCELLATION_WRAPPER
+        coEvery { userSession.userId } returns "0987654321"
+
+        // when
+        viewmodel.trackOnSubmit()
+
+        // then
+        coVerify {
+            flightAnalytics.eventClickNextOnCancellationSubmit(
+                    "0 - 1234567890",
+                    "0987654321"
+            )
+        }
     }
 
 }

@@ -21,5 +21,4 @@ class NextFetchCacheManager constructor(val context: Context) {
         private const val KEY_INTERVAL_FETCH = "key_amplification_interval"
     }
 
-
 }

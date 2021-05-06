@@ -44,8 +44,7 @@ import kotlin.math.abs
 
 @SuppressLint("SyntheticAccessor")
 class RechargeBUWidgetMixLeftViewHolder(itemView: View,
-                                        val listener: RechargeBUWidgetListener,
-                                        private val parentRecycledViewPool: RecyclerView.RecycledViewPool?)
+                                        val listener: RechargeBUWidgetListener)
     : AbstractViewHolder<RechargeBUWidgetDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
 
     lateinit var dataModel: RechargeBUWidgetDataModel
@@ -58,7 +57,6 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var image: ImageView
-    private lateinit var loadingBackground: ImageView
     private lateinit var parallaxBackground: View
     private lateinit var parallaxView: View
 
@@ -70,7 +68,6 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_recharge_bu_widget_mix_left
-        private const val FPM_MIX_LEFT = "home_mix_left"
         const val BU_WIDGET_TYPE_LEFT = "mix-left"
     }
 
@@ -102,11 +99,12 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-//        if (!isCacheData) listener.onRechargeBUWidgetImpression(dataModel)
+
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        listener.onRechargeBUWidgetItemClick(dataModel, position)
+        // Decrement position to account for empty product card
+        listener.onRechargeBUWidgetItemClick(dataModel, position - 1)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
@@ -132,19 +130,10 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
                 if (!isCacheData)
                     listener.onRechargeBUWidgetBannerImpression(dataModel)
             }
-            image.loadImage(imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener {
-                override fun successLoad() {
-                    if (gradientColor.isNotEmpty()) {
-                        parallaxBackground.setGradientBackground(arrayListOf(gradientColor))
-                    }
-                }
-
-                override fun failedLoad() {
-                    if (gradientColor.isNotEmpty()) {
-                        parallaxBackground.setGradientBackground(arrayListOf(gradientColor))
-                    }
-                }
-            })
+            ImageHandler.LoadImage(image, imageUrl)
+            if (gradientColor.isNotEmpty()) {
+                parallaxBackground.setGradientBackground(arrayListOf(gradientColor))
+            }
         }
     }
 
@@ -155,6 +144,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
         recyclerView.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
+
         val typeFactoryImpl = RechargeBUWidgetProductCardTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
         listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this, rechargePerso.bannerApplink))
@@ -163,18 +153,6 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
         if (rechargePerso.textlink.isNotEmpty()) {
             listData.add(CarouselSeeMorePdpDataModel(rechargePerso.applink, listener = this))
         }
-
-//        launch {
-//            try {
-//                recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map { it.productModel })
-//                parentRecycledViewPool?.let { recyclerView.setRecycledViewPool(it) }
-//            } catch (throwable: Throwable) {
-//                throwable.printStackTrace()
-//            }
-//        }
-
-//        if (channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty())
-//            listData.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
         adapter = MixLeftAdapter(listData, typeFactoryImpl)
         recyclerView.adapter = adapter
         recyclerView.addOnScrollListener(getParallaxEffect())

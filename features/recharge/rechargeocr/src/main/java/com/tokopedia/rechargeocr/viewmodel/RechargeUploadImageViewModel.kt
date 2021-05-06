@@ -20,9 +20,9 @@ class RechargeUploadImageViewModel @Inject constructor(private val rechargeUploa
     val resultDataOcr = MutableLiveData<String>()
     val errorActionOcr = MutableLiveData<String>()
 
-    fun uploadImageRecharge(pathFile: String, directoryPath: String, rawQuery: String) {
+    fun uploadImageRecharge(pathFile: String, rawQuery: String) {
         launchCatchError(block = {
-            val imageFileCropped = RechargeCameraUtil.trimBitmap(pathFile, directoryPath)
+            val imageFileCropped = RechargeCameraUtil.trimBitmap(pathFile)
 
             val dataUploadImage = withContext(dispatcher) {
                 rechargeUploadImageUseCase.execute(imageFileCropped)

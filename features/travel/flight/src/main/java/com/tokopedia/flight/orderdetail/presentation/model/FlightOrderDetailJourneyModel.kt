@@ -1,6 +1,8 @@
 package com.tokopedia.flight.orderdetail.presentation.model
 
 import android.os.Parcelable
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.flight.cancellationdetail.presentation.adapter.FlightOrderCancellationDetailJourneyTypeFactory
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -30,4 +32,9 @@ data class FlightOrderDetailJourneyModel(
         var airlineName: String = "",
         var refundableInfo: Boolean = false,
         var departureDateAndTime: Pair<String, String> = Pair("", "")
-) : Parcelable
+) : Parcelable, Visitable<FlightOrderCancellationDetailJourneyTypeFactory> {
+
+    override fun type(journeyTypeFactory: FlightOrderCancellationDetailJourneyTypeFactory): Int =
+            journeyTypeFactory.type(this)
+
+}

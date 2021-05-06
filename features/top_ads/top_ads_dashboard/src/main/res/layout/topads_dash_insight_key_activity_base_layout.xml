@@ -90,7 +90,7 @@
                         app:unifyImageButtonType="main"
                         app:unifyImageButtonVariant="image"
                         app:layout_constraintTop_toTopOf="@id/selectGroup"
-                        app:srcCompat="@drawable/topads_arrow_down" />
+                        app:srcCompat="@drawable/ic_dropdown_arrow" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.tokopedia.unifycomponents.CardUnify>

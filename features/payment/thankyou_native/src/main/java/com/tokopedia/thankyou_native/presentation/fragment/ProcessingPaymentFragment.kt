@@ -4,14 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
-import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.PaymentType
 import com.tokopedia.thankyou_native.data.mapper.PaymentTypeMapper
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.views.GyroView
+import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.thank_fragment_processing.*
 
 class ProcessingPaymentFragment : ThankYouBaseFragment() {
@@ -36,6 +38,8 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
 
+    override fun getTopTickerView(): Ticker? = topTicker
+
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
         paymentType = PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)
         inflateWaitingUI()
@@ -46,7 +50,8 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
     private fun inflateWaitingUI() {
         tvPaymentProcessingTimeInfo.text = getString(R.string.thank_payment_in_progress_time, thanksPageData.gatewayName)
-        ImageLoader.LoadImage(ivPaymentGatewayImage, thanksPageData.gatewayImage)
+        ivPaymentGatewayImage.loadImage(thanksPageData.gatewayImage)
+        ivPaymentGatewayImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
         tvPaymentGatewayName.text = thanksPageData.gatewayName
         tvCreditWithTimeLine.text = thanksPageData.additionalInfo.installmentInfo
         tvInterestRate.text = getString(R.string.thank_interest_rate, thanksPageData.additionalInfo.interest)

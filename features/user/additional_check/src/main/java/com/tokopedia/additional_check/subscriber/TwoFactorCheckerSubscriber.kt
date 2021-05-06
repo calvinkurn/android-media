@@ -32,32 +32,40 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     var remoteConfig: FirebaseRemoteConfigImpl? = null
 
     private val exceptionPage = listOf(
-            "ConsumerSplashScreen", "AddPinActivity", "AddPhoneActivity", "TwoFactorActivity",
+            "ConsumerSplashScreen", "AddPinActivity", "AddPinFrom2FAActivity", "AddPhoneActivity", "TwoFactorActivity",
             "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
             "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
-            "RegisterEmailActivity", "AddNameRegisterPhoneActivity", "SmartLockActivity"
+            "RegisterEmailActivity", "AddNameRegisterPhoneActivity", "SmartLockActivity", "OvoRegisterInitialActivity", "OvoFinalPageActivity",
+            "SettingProfileActivity"
     )
 
     private val exceptionPageSeller = listOf(
-            "SplashScreenActivity", "AddPinActivity", "AddPhoneActivity", "TwoFactorActivity",
+            "SplashScreenActivity", "AddPinActivity", "AddPinFrom2FAActivity", "AddPhoneActivity", "TwoFactorActivity",
             "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
             "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
-            "RegisterEmailActivity", "ChooseAccountActivity", "SmartLockActivity" , "ShopOpenRevampActivity" , "PinpointMapActivity"
+            "RegisterEmailActivity", "ChooseAccountActivity", "SmartLockActivity" , "ShopOpenRevampActivity" , "PinpointMapActivity",
+            "SettingProfileActivity"
     )
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-        DaggerAdditionalCheckComponents
-                .builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .additionalCheckModules(AdditionalCheckModules(activity))
-                .additionalCheckUseCaseModules(AdditionalCheckUseCaseModules())
-                .build()
-                .inject(this)
-        remoteConfig = FirebaseRemoteConfigImpl(activity)
-        doChecking(activity)
+        if (activity != null) {
+            if(!exceptionPage.contains(activity.javaClass.simpleName)) {
+                DaggerAdditionalCheckComponents
+                        .builder()
+                        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                        .additionalCheckModules(AdditionalCheckModules())
+                        .additionalCheckUseCaseModules(AdditionalCheckUseCaseModules())
+                        .build()
+                        .inject(this)
+                doChecking(activity)
+            }
+        }
     }
 
-    private fun getTwoFactorRemoteConfig(): Boolean? {
+    private fun getTwoFactorRemoteConfig(activity: Activity?): Boolean? {
+        if(remoteConfig == null) {
+            remoteConfig = FirebaseRemoteConfigImpl(activity)
+        }
         return remoteConfig?.getBoolean(REMOTE_CONFIG_2FA, false)
     }
 
@@ -74,7 +82,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     }
 
     private fun checkMainApp(activity: Activity) {
-        if(!exceptionPage.contains(activity.javaClass.simpleName) && getTwoFactorRemoteConfig() == true) {
+        if(!exceptionPage.contains(activity.javaClass.simpleName) && getTwoFactorRemoteConfig(activity) == true) {
             checking(activity)
         }
     }

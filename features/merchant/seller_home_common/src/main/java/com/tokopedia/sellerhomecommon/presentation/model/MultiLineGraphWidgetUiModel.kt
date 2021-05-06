@@ -8,6 +8,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
  */
 
 data class MultiLineGraphWidgetUiModel(
+        override val id: String,
         override val widgetType: String,
         override val title: String,
         override val subtitle: String,
@@ -21,10 +22,20 @@ data class MultiLineGraphWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
-        override var emptyState: WidgetEmptyStateUiModel
+        override var isNeedToBeRemoved: Boolean = false,
+        override var emptyState: WidgetEmptyStateUiModel,
+        val isComparePeriodeOnly: Boolean
 ) : BaseWidgetUiModel<MultiLineGraphDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun copy(): BaseWidgetUiModel<MultiLineGraphDataUiModel> {
+        return MultiLineGraphWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState, isComparePeriodeOnly)
+    }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<MultiLineGraphDataUiModel>): Boolean {
+        return dataKey != other.dataKey
     }
 }

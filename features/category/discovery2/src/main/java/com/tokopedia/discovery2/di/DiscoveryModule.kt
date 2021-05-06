@@ -8,7 +8,6 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeRepo
-import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponRestRepository
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponGqlRepository
@@ -26,6 +25,8 @@ import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRe
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
 import com.tokopedia.discovery2.repository.quickFilter.FilterRestRepository
+import com.tokopedia.discovery2.repository.quickFilter.IQuickFilterGqlRepository
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterGQLRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponGQLRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponRepository
@@ -34,14 +35,24 @@ import com.tokopedia.discovery2.repository.tabs.TabsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
 import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.play.widget.di.PlayWidgetModule
+import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
+import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
+import com.tokopedia.play.widget.ui.type.PlayWidgetSize
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 
-@Module
+@Module(includes = [PlayWidgetModule::class])
 class DiscoveryModule(val repoProvider: RepositoryProvider) {
 
     @Provides
@@ -96,11 +107,6 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     }
 
     @Provides
-    fun provideChildCategoryRepository(): ChildCategoryRepository {
-        return repoProvider.provideChildCategoryRepository()
-    }
-
-    @Provides
     fun provideProductCardsRestRepository(): ProductCardsRepository {
         return repoProvider.provideProductCardsRepository()
     }
@@ -135,7 +141,7 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
 
     @Provides
     fun provideFilterRestRepository(): FilterRepository {
-        return FilterRestRepository()
+        return repoProvider.provideFilterRepository()
     }
 
     @Provides
@@ -148,10 +154,26 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
         return  repoProvider.provideEmptyStateRepository()
     }
 
+    @Provides
+    fun provideQuickFilterGQLRepository(): IQuickFilterGqlRepository {
+        return QuickFilterGQLRepository()
+    }
+
     @DiscoveryScope
     @Provides
     fun providePageLoadTimePerformanceMonitoring() : PageLoadTimePerformanceInterface {
         return repoProvider.providePageLoadTimePerformanceMonitoring()
+    }
+
+    @Provides
+    fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+
+    @Provides
+    fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
+                          playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
+                          playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
+                          mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>): PlayWidgetTools {
+        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, playWidgetUpdateChannelUseCase, mapperProviders)
     }
 
 }

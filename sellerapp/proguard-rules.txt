@@ -23,9 +23,6 @@
 -dontwarn com.viewpagerindicator.LinePageIndicator
 -dontwarn sun.misc.Unsafe
 
-#https://github.com/facebook/react-native/issues/25679
--keep class com.facebook.hermes.unicode.** { *; }
-
 -keep class id.co.veritrans.android.api.**{ *;}
 -keepclassmembers class id.co.veritrans.android.api.**{
  @id.co.veritrans.android.api.** *;
@@ -214,6 +211,11 @@
 
 -keep public class com.android.installreferrer.** { *; }
 
+#keep for security purposes. This library has already been obfuscated.
+-keep class com.tkpd.util.Base64.** { *; }
+
+
+
 # Keep Class com.tokopedia
 -keep public class com.tokopedia.design.component.BottomNavigation { *; }
 #-keep public class com.tokopedia.design.text.SpinnerCounterInputView { *; }
@@ -222,6 +224,10 @@
 -keep class com.tokopedia.discovery2.data.ComponentsItem { *; }
 #agerestriction
 -keep class com.tokopedia.age_restriction.viewmodel.** { *; }
+
+#topads
+-keep class com.tokopedia.topads.dashboard.view.fragment.** extends androidx.fragment.app.Fragment{}
+
 
 #dontwarn com.tokopedia
 -dontwarn com.tokopedia.topads.dashboard.view.sheet.**
@@ -251,9 +257,14 @@
 -dontwarn com.google.j2objc.annotations.**
 -dontwarn com.google.errorprone.annotations.**
 -dontwarn com.tokopedia.empty_state.**
+-dontwarn com.tokopedia.searchbar.**
 
 -dontwarn io.hansel.**
 -keep class io.hansel.**{*;}
 -keep class **.HanselDialog.*{*;}
 -keep class * implements io.hansel.**.* {*;}
 -keep class * extends io.hansel.**.* {*;}
+
+-keep class com.newrelic.** { *; }
+-dontwarn com.newrelic.**
+-keepattributes Exceptions, Signature, InnerClasses, LineNumberTable, SourceFile, EnclosingMethod

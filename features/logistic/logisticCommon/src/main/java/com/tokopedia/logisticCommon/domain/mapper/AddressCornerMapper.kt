@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.domain.mapper
 
+import com.tokopedia.logisticCommon.data.entity.address.PageInfoDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
@@ -16,12 +17,17 @@ class AddressCornerMapper @Inject constructor() : Func1<GetPeopleAddressResponse
     override fun call(it: GetPeopleAddressResponse): AddressListModel {
         val token = Token()
         token.districtRecommendation = it.keroAddressCorner.token.districtReccomendation
-        token.ut = it.keroAddressCorner.token.ut.toInt()
+        token.ut = it.keroAddressCorner.token.ut
+
+        val pageInfo = PageInfoDataModel()
+        pageInfo.ticker = it.keroAddressCorner.pageInfo.ticker
+        pageInfo.buttonLabel = it.keroAddressCorner.pageInfo.buttonLabel
 
         return AddressListModel().apply {
             this.token = token
             this.listAddress = it.keroAddressCorner.data.map(recipientModelMapper)
             this.hasNext = it.keroAddressCorner.hasNext
+            this.pageInfo = pageInfo
         }
     }
 
@@ -46,6 +52,8 @@ class AddressCornerMapper @Inject constructor() : Func1<GetPeopleAddressResponse
             this.isCornerAddress = it.isCorner
             this.partnerId = it.partnerId
             this.partnerName = it.partnerName
+            this.isStateChosenAddress = it.isStateChosenAddress
+            this.isRadioButtonChecked = it.radioButonChecked
         }
     }
 }

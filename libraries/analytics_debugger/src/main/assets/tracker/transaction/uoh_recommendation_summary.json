@@ -1,0 +1,81 @@
+{
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "order management",
+      "clientId": ".*",
+      "eventCategory": "my purchase list - mp",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/my_purchase_list - rekomendasi untuk anda .*",
+      "event": "view_item_list",
+      "userId": ".*",
+      "eventAction": "impression - product recommendation",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "dimension87": ".*",
+          "dimension88": ".*",
+          "price": ".*",
+          "index": "\\d+",
+          "item_name": ".*",
+          "id": "\\d+",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ],
+      "eventLabel": "Rekomendasi Untuk Anda"
+    },
+    {
+      "businessUnit": "order management",
+      "clientId": ".*",
+      "eventCategory": "my purchase list - mp",
+      "currentSite": "tokopediamarketplace",
+      "event": "add_to_cart",
+      "userId": ".*",
+      "eventAction": "click add to cart on my purchase list page",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "dimension45": ".*",
+          "quantity": "\\d+",
+          "price": ".*",
+          "dimension40": "/my_purchase_list - rekomendasi untuk anda .*",
+          "item_name": ".*",
+          "id": "\\d+",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ],
+      "eventLabel": "Rekomendasi Untuk Anda"
+    },
+    {
+      "businessUnit": "order management",
+      "clientId": ".*",
+      "eventCategory": "my purchase list - mp",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/my_purchase_list - rekomendasi untuk anda .*",
+      "screenName": "order-list",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click - product recommendation",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "dimension87": ".*",
+          "dimension88": ".*",
+          "price": ".*",
+          "index": "\\d+",
+          "item_name": ".*",
+          "id": "\\d+",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ],
+      "eventLabel": "Rekomendasi Untuk Anda"
+    }
+  ],
+  "readme": "UOH Recommendation Summary"
+}

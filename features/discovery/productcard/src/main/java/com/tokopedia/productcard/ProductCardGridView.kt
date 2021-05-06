@@ -34,9 +34,16 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
-        renderLabelCampaign(labelCampaignBackground, textViewLabelCampaign, productCardModel)
+        val isShowCampaign = productCardModel.isShowLabelCampaign()
+        renderLabelCampaign(
+                isShowCampaign,
+                labelCampaignBackground,
+                textViewLabelCampaign,
+                productCardModel
+        )
 
-        renderLabelBestSeller(labelBestSeller, productCardModel)
+        val isShowBestSeller = productCardModel.isShowLabelBestSeller()
+        renderLabelBestSeller(isShowBestSeller, labelBestSeller, productCardModel)
 
         renderOutOfStockView(productCardModel)
 
@@ -44,23 +51,23 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
-        renderProductCardContent(productCardModel)
+        renderProductCardContent(productCardModel, productCardModel.isWideContent)
 
-        renderStockPercentage(productCardModel)
-        renderStockLabel(productCardModel)
+        renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
+        buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
 
         buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             )
         }
     }
@@ -96,21 +103,9 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     override fun recycle() {
-        imageProduct?.glideClear(context)
-        imageFreeOngkirPromo?.glideClear(context)
-        labelCampaignBackground?.glideClear(context)
-    }
-
-    private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
-        progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            progressBarStock.progress = productCardModel.stockBarPercentage
-        }
-    }
-
-    private fun View.renderStockLabel(productCardModel: ProductCardModel) {
-        textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            textViewStockLabel.text = productCardModel.stockBarLabel
-        }
+        imageProduct?.glideClear()
+        imageFreeOngkirPromo?.glideClear()
+        labelCampaignBackground?.glideClear()
     }
 
     private fun renderOutOfStockView(productCardModel: ProductCardModel) {
@@ -126,4 +121,5 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun getThreeDotsButton(): View? = imageThreeDots
 
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
+
 }

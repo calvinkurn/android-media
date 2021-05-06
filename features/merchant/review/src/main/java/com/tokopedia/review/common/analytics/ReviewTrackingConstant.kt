@@ -17,6 +17,7 @@ object ReviewTrackingConstant {
     const val EVENT_LABEL = "eventLabel"
     const val KEY_SCREEN_NAME = "screenName"
     const val KEY_USER_ID = "userId"
+    const val KEY_PAGE_SOURCE = "pageSource"
     const val ACTION_CLICK = "click"
     const val CLICK_SMILEY = "$ACTION_CLICK - smiley"
 }

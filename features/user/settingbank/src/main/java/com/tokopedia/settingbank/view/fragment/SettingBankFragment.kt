@@ -5,37 +5,38 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.di.SettingBankComponent
-import com.tokopedia.settingbank.domain.BankAccount
-import com.tokopedia.settingbank.domain.KYCInfo
-import com.tokopedia.settingbank.domain.SettingBankErrorHandler
-import com.tokopedia.settingbank.domain.TemplateData
+import com.tokopedia.settingbank.domain.model.BankAccount
+import com.tokopedia.settingbank.domain.model.KYCInfo
+import com.tokopedia.settingbank.domain.model.SettingBankErrorHandler
+import com.tokopedia.settingbank.domain.model.TemplateData
+import com.tokopedia.settingbank.util.DeleteBankAccountException
 import com.tokopedia.settingbank.view.activity.SettingBankCallback
 import com.tokopedia.settingbank.view.adapter.BankAccountClickListener
 import com.tokopedia.settingbank.view.adapter.BankAccountListAdapter
-import com.tokopedia.settingbank.view.viewModel.*
-import com.tokopedia.settingbank.view.viewState.*
+import com.tokopedia.settingbank.view.viewModel.SettingBankViewModel
 import com.tokopedia.settingbank.view.widgets.AccountConfirmationBottomSheet
 import com.tokopedia.settingbank.view.widgets.BankTNCBottomSheet
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_setting_bank_new.*
 import javax.inject.Inject
 
 class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
-
-    private var confirmationDialog: AlertDialog? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -45,14 +46,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private var settingBankCallback: SettingBankCallback? = null
 
-    private lateinit var tNCViewModel: SettingBankTNCViewModel
     private lateinit var settingBankViewModel: SettingBankViewModel
-    private lateinit var deleteBankAccountViewModel: DeleteBankAccountViewModel
-    private lateinit var kycViewModel: GetKYCViewModel
-
-    private lateinit var tncBottomSheet: BankTNCBottomSheet
-
-    private lateinit var confirmAccountBottomSheet: AccountConfirmationBottomSheet
 
     @Inject
     lateinit var bankAccountListAdapter: BankAccountListAdapter
@@ -60,7 +54,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     override fun getScreenName(): String? = null
 
     private var deleteBankAccount: BankAccount? = null
-    private var makePrimaryBankAccount: BankAccount? = null
     private var confirmBankAccount: BankAccount? = null
 
     override fun initInjector() {
@@ -73,11 +66,8 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     private fun initViewModels() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        settingBankViewModel = viewModelProvider.get(SettingBankViewModel::class.java)
-        tNCViewModel = viewModelProvider.get(SettingBankTNCViewModel::class.java)
-        deleteBankAccountViewModel = viewModelProvider.get(DeleteBankAccountViewModel::class.java)
-        kycViewModel = viewModelProvider.get(GetKYCViewModel::class.java)
+        settingBankViewModel = ViewModelProvider(this, viewModelFactory)
+                .get(SettingBankViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -87,11 +77,13 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        progress_bar.setOnClickListener { //not required
+        }
         setHasOptionsMenu(true)
         initBankAccountRecyclerView()
         startObservingViewModels()
         loadUserBankAccountList()
-        add_account_button.visible()
+        add_account_button.gone()
         add_account_button.setOnClickListener {
             when (bankAccountListAdapter.getBankAccountListSize()) {
                 0 -> bankSettingAnalytics.eventOnAddBankClick()
@@ -126,161 +118,133 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     fun loadUserBankAccountList() {
+        showLoadingState(true)
         settingBankViewModel.loadUserAddedBankList()
     }
 
     private fun loadTermsAndCondition() {
-        if (::tncBottomSheet.isInitialized) {
-            openTNCBottomSheet(tncBottomSheet.templateData)
-        } else {
-            tNCViewModel.loadTNCPopUpTemplate()
-        }
+        settingBankViewModel.loadTermsAndCondition()
     }
 
     private fun startObservingViewModels() {
-        settingBankViewModel.getBankListState.observe(this, Observer {
+        settingBankViewModel.bankAccountListLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is OnShowLoading -> showLoadingState(it.show)
-                is BankAccountListLoadingError -> {
-                    progress_bar.gone()
-                    showError(it.throwable, null)
+                is Success -> {
+                    if (it.data.isEmpty()) {
+                        showNoBankAccountState()
+                    } else {
+                        populateBankList(it.data)
+                        loadBankNote()
+                    }
                 }
-                is OnBankAccountListLoaded -> {
-                    populateBankList(it.bankList, it.toastMessage)
-                    loadBankNote()
+                is Fail -> {
+                    onBankAccountLoadingFailed(it.throwable)
                 }
-                is NoBankAccountAdded -> showNoBankAccountAddedState(it.toastMessage)
             }
+            progress_bar.gone()
         })
 
-        settingBankViewModel.addNewBankAccountState.observe(this, Observer {
+        settingBankViewModel.addBankAccountStateLiveData.observe(viewLifecycleOwner, Observer {
             updateAddBankAccountBtnState(it)
         })
 
-        tNCViewModel.tncNoteTemplate.observe(this, Observer {
-            populateTNCNoteInAdapter(it)
+        settingBankViewModel.tncNotesLiveData.observe(viewLifecycleOwner, Observer {
+            if (it is Success) populateTNCNoteInAdapter(it.data)
         })
-        tNCViewModel.tncPopUpTemplate.observe(this, Observer {
+
+        settingBankViewModel.termsAndConditionLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is OnTNCSuccess -> openTNCBottomSheet(it.templateData)
-                is OnTNCError -> showError(it.throwable, null)
+                is Success -> openTNCBottomSheet(it.data)
+                is Fail -> showError(it.throwable, null)
             }
         })
 
-        deleteBankAccountViewModel.deleteAccountState.observe(this, Observer {
+        settingBankViewModel.deleteBankAccountLiveData.observe(viewLifecycleOwner, Observer {
             handleDeleteBankAccountState(it)
         })
 
-        kycViewModel.kycInfoState.observe(this, Observer {
-            handleKYCInfoResponse(it)
+        settingBankViewModel.kycInfoLiveData.observe(viewLifecycleOwner, Observer {
+            progress_bar.gone()
+            when (it) {
+                is Success -> openCheckDataBottomSheet(it.data)
+                is Fail -> showError(it.throwable, null)
+            }
         })
+    }
+
+    private fun onBankAccountLoadingFailed(throwable: Throwable) {
+        if (throwable is MessageErrorException) {
+            showGlobalError(GlobalError.SERVER_ERROR, ::loadUserBankAccountList)
+        } else {
+            showGlobalError(GlobalError.NO_CONNECTION, ::loadUserBankAccountList)
+        }
+    }
+
+    private fun showGlobalError(errorType: Int, retryAction: () -> Unit) {
+        globalError.visible()
+        globalError.setType(errorType)
+        globalError.errorAction.visible()
+        globalError.errorAction.setOnClickListener {
+            showLoadingState(true)
+            retryAction.invoke()
+            globalError.gone()
+        }
     }
 
     private fun updateAddBankAccountBtnState(isEnable: Boolean) {
         add_account_button.isEnabled = isEnable
     }
 
-    private fun handleKYCInfoResponse(kycInfoState: KYCInfoState) {
-        when (kycInfoState) {
-            is KYCInfoRequestStarted -> {
-                progress_bar.visible()
-            }
-            is KYCInfoRequestEnded -> {
-                progress_bar.gone()
-            }
-            is OnKYCInfoResponse -> {
-                openCheckDataBottomSheet(kycInfoState.kycInfo)
-            }
-            is KYCInfoError -> {
-                showError(kycInfoState.throwable, null)
-            }
-        }
-    }
-
     private fun openCheckDataBottomSheet(kycInfo: KYCInfo) {
-        if (!::confirmAccountBottomSheet.isInitialized) {
-            activity?.let {
-                confirmAccountBottomSheet = AccountConfirmationBottomSheet(it, kycInfo, bankSettingAnalytics)
-            }
+        confirmBankAccount?.let { bankAccount ->
+            AccountConfirmationBottomSheet.showBottomSheet(bankAccount, kycInfo, activity)
         }
-        if (::confirmAccountBottomSheet.isInitialized)
-            confirmBankAccount?.let {
-                confirmAccountBottomSheet.show(bankAccount = it)
-            }
     }
 
-    private fun handleDeleteBankAccountState(state: DeleteAccountState) {
-        when (state) {
-            is OnDeleteAccountRequestStarted -> {
-                progress_bar.visible()
-            }
-            is OnDeleteAccountRequestEnded -> {
-                progress_bar.gone()
-            }
-            is OnDeleteAccountRequestSuccess -> {
-                showToasterOnUI(state.message)
+    private fun handleDeleteBankAccountState(result: Result<String>) {
+        when (result) {
+            is Success -> {
+                showToasterOnUI(result.data)
                 loadUserBankAccountList()
                 activity?.setResult(Activity.RESULT_OK, Intent())
             }
-            is OnDeleteAccountRequestFailedWithMessage -> {
-                showErrorToasterWithOK(state.message)
-            }
-            is OnDeleteAccountRequestFailed -> {
-                showError(state.throwable) { deleteBankAccount() }
+            is Fail -> {
+                if (result.throwable is DeleteBankAccountException) {
+                    showErrorToaster((result.throwable as DeleteBankAccountException).errorMessage)
+                } else {
+                    showError(result.throwable, null)
+                }
             }
         }
+        progress_bar.gone()
     }
 
-    private fun showErrorToasterWithOK(message: String?) {
+    private fun showErrorToaster(message: String) {
         view?.let {
-            Toaster.make(it, message ?: "", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                    getString(R.string.sbank_oke), View.OnClickListener { })
+            Toaster.build(it, message, Toaster.TYPE_NORMAL).show()
         }
     }
-
 
     private fun openTNCBottomSheet(templateData: TemplateData?) {
         templateData?.let {
-            if (::tncBottomSheet.isInitialized) {
-                tncBottomSheet.templateData = it
-                activity?.let {
-                    tncBottomSheet.show(templateData)
-                }
-            } else {
-                tncBottomSheet = BankTNCBottomSheet(activity!!)
-                tncBottomSheet.show(templateData)
-            }
+            BankTNCBottomSheet.showBankTNCBottomSheet(it, activity)
         }
     }
 
     private fun loadBankNote() {
-        tNCViewModel.loadTNCNoteTemplate()
-    }
-
-    private fun showErrorOnUI(errorMessage: String?, retry: (() -> Unit)?) {
-        errorMessage?.let {
-            view?.let { view ->
-                retry?.let {
-                    Toaster.make(view, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                            getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() })
-                } ?: run {
-                    Toaster.make(view, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-                }
-
-            }
-        }
+        settingBankViewModel.loadTermsAndConditionNotes()
     }
 
     private fun showError(throwable: Throwable, retry: (() -> Unit)?) {
         context?.let { context ->
             view?.let { view ->
                 retry?.let {
-                    Toaster.make(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
+                    Toaster.build(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
                             Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                            getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() })
+                            getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() }).show()
                 } ?: run {
-                    Toaster.make(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
-                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                    Toaster.build(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
+                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
                 }
 
             }
@@ -289,11 +253,11 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     fun showToasterOnUI(message: String?) {
         message?.let {
-            view?.let { Toaster.make(it, message, Toaster.LENGTH_SHORT) }
+            view?.let { Toaster.build(it, message, Toaster.LENGTH_SHORT).show() }
         }
     }
 
-    private fun populateBankList(bankList: List<BankAccount>, toastMessage: String) {
+    private fun populateBankList(bankList: List<BankAccount>) {
         showBankAccountDisplayState()
         if (bankList.isNotEmpty()) {
             add_account_button.text = context?.getString(R.string.sbank_add_bank_account)
@@ -309,16 +273,11 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         }
     }
 
-    private fun showNoBankAccountAddedState(toastMessage: String) {
-        showNoBankAccountState()
-    }
-
     private fun showLoadingState(show: Boolean) {
         if (show) {
-
-            account_list_rv.visible()
-            view_btn_top_shadow.visible()
-            add_account_button.visible()
+            account_list_rv.gone()
+            view_btn_top_shadow.gone()
+            add_account_button.gone()
 
             iv_noBankAccountAdded.gone()
             tv_no_save_account.gone()
@@ -353,7 +312,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item?.itemId) {
+        when (item.itemId) {
             R.id.menu_info -> {
                 bankSettingAnalytics.eventOnToolbarTNCClick()
                 loadTermsAndCondition()
@@ -363,12 +322,11 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater?.let { it.inflate(getMenuRes(), menu) }
+        inflater.inflate(getMenuRes(), menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     private fun getMenuRes(): Int = R.menu.menu_info_add_bank_account
-
 
     override fun deleteBankAccount(bankAccount: BankAccount) {
         bankSettingAnalytics.eventDeleteAccountClick()
@@ -380,40 +338,62 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         getKYCInfoForUser(bankAccount)
     }
 
-
     private fun openDeleteConfirmationPopUp(bankAccount: BankAccount) {
-        deleteBankAccount = bankAccount
-        val dialogBuilder = AlertDialog.Builder(activity!!)
-        val inflater = activity!!.layoutInflater
-        val dialogView = inflater.inflate(R.layout.sbank_confirmation_dialog, null)
-        (dialogView.findViewById(R.id.heading) as TextView).text = context?.getString(R.string.sbank_delete_this_account)
-        (dialogView.findViewById<View>(R.id.continue_btn) as TextView).text = context?.getString(R.string.sbank_delete_account)
-        (dialogView.findViewById<View>(R.id.back_btn) as TextView).text = context?.getString(R.string.sbank_back)
-        (dialogView.findViewById(R.id.description) as TextView).text = context?.getString(R.string.sbank_delete_bank_confirm,
-                bankAccount.bankName, bankAccount.accNumber, bankAccount.accName)
-        dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener {
-            bankSettingAnalytics.eventDialogConfirmDeleteAccountClick()
-            confirmationDialog?.dismiss()
-            deleteBankAccount()
+        context?.let { context ->
+            val description = context.getString(R.string.sbank_delete_bank_confirm,
+                    bankAccount.bankName, bankAccount.accNumber, bankAccount.accName)
+            DialogUnify(context = context, actionType = DialogUnify.HORIZONTAL_ACTION,
+                    imageType = DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.sbank_delete_this_account))
+                setDescription(description)
+                setPrimaryCTAText(getString(R.string.sbank_delete_account))
+                setSecondaryCTAText(getString(R.string.sbank_back))
+                setPrimaryCTAClickListener {
+                    bankSettingAnalytics.eventDialogConfirmDeleteAccountClick()
+                    dismiss()
+                    deleteBankAccount()
+                }
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+                show()
+            }
         }
-        dialogView.findViewById<View>(R.id.back_btn).setOnClickListener {
-            confirmationDialog?.dismiss()
-        }
-        confirmationDialog = dialogBuilder.setView(dialogView).show()
+
+
+        /*activity?.let { activity ->
+            deleteBankAccount = bankAccount
+            val dialogBuilder = AlertDialog.Builder(activity)
+            val inflater = activity.layoutInflater
+            val dialogView = inflater.inflate(R.layout.sbank_confirmation_dialog, null)
+            (dialogView.findViewById(R.id.heading) as TextView).text = context?.getString(R.string.sbank_delete_this_account)
+            (dialogView.findViewById<View>(R.id.continue_btn) as TextView).text = context?.getString(R.string.sbank_delete_account)
+            (dialogView.findViewById<View>(R.id.back_btn) as TextView).text = context?.getString(R.string.sbank_back)
+            (dialogView.findViewById(R.id.description) as TextView).text = context?.getString(R.string.sbank_delete_bank_confirm,
+                    bankAccount.bankName, bankAccount.accNumber, bankAccount.accName)
+            dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener {
+                bankSettingAnalytics.eventDialogConfirmDeleteAccountClick()
+                confirmationDialog?.dismiss()
+                deleteBankAccount()
+            }
+            dialogView.findViewById<View>(R.id.back_btn).setOnClickListener {
+                confirmationDialog?.dismiss()
+            }
+            confirmationDialog = dialogBuilder.setView(dialogView).show()
+        }*/
     }
 
     private fun deleteBankAccount() {
         deleteBankAccount?.let {
-            deleteBankAccountViewModel.deleteAccount(it)
+            progress_bar.visible()
+            settingBankViewModel.deleteBankAccount(it)
         }
     }
 
     private fun getKYCInfoForUser(bankAccount: BankAccount) {
         confirmBankAccount = bankAccount
-        if (::confirmAccountBottomSheet.isInitialized) {
-            confirmAccountBottomSheet.show(bankAccount)
-        } else
-            kycViewModel.getKYCInfo()
+        progress_bar.visible()
+        settingBankViewModel.getKYCInfo()
     }
 
 }

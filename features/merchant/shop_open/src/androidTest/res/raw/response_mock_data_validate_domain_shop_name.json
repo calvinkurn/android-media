@@ -1,0 +1,12 @@
+[
+  {
+    "data": {
+      "validateDomainShopName": {
+        "isValid": true,
+        "error": {
+          "message": ""
+        }
+      }
+    }
+  }
+]

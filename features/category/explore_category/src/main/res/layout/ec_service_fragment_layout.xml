@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:descendantFocusability="blocksDescendants"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

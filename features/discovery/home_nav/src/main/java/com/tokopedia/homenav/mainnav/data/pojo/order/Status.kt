@@ -1,7 +1,16 @@
 package com.tokopedia.homenav.mainnav.data.pojo.order
 
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
 data class Status(
-    val bgColor: String,
-    val label: String,
-    val textColor: String
+        @SerializedName("bgColor")
+        @Expose
+        val bgColor: String? = "",
+        @SerializedName("label")
+        @Expose
+        val label: String? = "",
+        @SerializedName("textColor")
+        @Expose
+        val textColor: String? =""
 )

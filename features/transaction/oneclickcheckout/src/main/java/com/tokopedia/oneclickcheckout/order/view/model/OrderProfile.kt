@@ -6,6 +6,8 @@ data class OrderProfile(
         val onboardingHeaderMessage: String = "",
         val onboardingComponent: OnboardingComponentResponse = OnboardingComponentResponse(),
         val hasPreference: Boolean = false,
+        val profileRevampWording: String = "",
+        val isRecom: Boolean = false,
         val profileId: Int = 0,
         val status: Int = 0,
         val enable: Boolean = true,
@@ -16,21 +18,31 @@ data class OrderProfile(
 )
 
 data class OrderProfileAddress(
-        val addressId: Int = 0,
+        val addressId: Long = 0,
         val receiverName: String = "",
         val addressName: String = "",
         val addressStreet: String = "",
-        val districtId: Int = 0,
+        val districtId: Long = 0,
         val districtName: String = "",
-        val cityId: Int = 0,
+        val cityId: Long = 0,
         val cityName: String = "",
-        val provinceId: Int = 0,
+        val provinceId: Long = 0,
         val provinceName: String = "",
         val phone: String = "",
         val longitude: String = "",
         val latitude: String = "",
-        val postalCode: String = ""
-)
+        val postalCode: String = "",
+        val state: Int = 0,
+        val stateDetail: String = "",
+        val status: Int = 0
+) {
+    internal val isMainAddress: Boolean
+        get() = status == STATUS_MAIN_ADDRESS
+
+    companion object {
+        private const val STATUS_MAIN_ADDRESS = 2
+    }
+}
 
 data class OrderProfileShipment(
         val serviceName: String = "",

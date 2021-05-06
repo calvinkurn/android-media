@@ -16,8 +16,12 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.ResponseEtalase
-import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
+import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseViewModel
+import com.tokopedia.topads.common.view.sheet.ProductFilterSheetList
+import com.tokopedia.topads.common.view.sheet.ProductSortSheetList
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.ALL
@@ -27,10 +31,6 @@ import com.tokopedia.topads.edit.utils.Constants.RESULT_NAME
 import com.tokopedia.topads.edit.utils.Constants.RESULT_PRICE
 import com.tokopedia.topads.edit.utils.Constants.RESULT_PROUCT
 import com.tokopedia.topads.edit.utils.Constants.ROW
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseViewModel
-import com.tokopedia.topads.common.view.sheet.ProductFilterSheetList
-import com.tokopedia.topads.common.view.sheet.ProductSortSheetList
 import com.tokopedia.topads.edit.view.adapter.product.ProductListAdapter
 import com.tokopedia.topads.edit.view.adapter.product.ProductListAdapterTypeFactoryImpl
 import com.tokopedia.topads.edit.view.adapter.product.viewmodel.ProductEmptyViewModel
@@ -49,8 +49,8 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     private lateinit var sortProductList: ProductSortSheetList
     private lateinit var filterSheetProductList: ProductFilterSheetList
     private lateinit var productListAdapter: ProductListAdapter
-    private var selectedPrevPro: List<ResponseProductList.Result.TopadsGetListProduct.Data> = listOf()
-    private var selectedPrevNonPro: List<ResponseProductList.Result.TopadsGetListProduct.Data> = listOf()
+    private var selectedPrevPro: List<TopAdsProductModel> = listOf()
+    private var selectedPrevNonPro: List<TopAdsProductModel> = listOf()
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
@@ -77,16 +77,16 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         productListAdapter = ProductListAdapter(ProductListAdapterTypeFactoryImpl(this::onProductListSelected))
     }
 
-    private fun getSelectedProduct(): MutableList<Int> {
-        var list = mutableListOf<Int>()
+    private fun getSelectedProduct(): MutableList<String> {
+        val list = mutableListOf<String>()
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productID)
         }
         return list
     }
 
-    private fun getSelectedList(): ArrayList<Int> {
-        var list = ArrayList<Int>()
+    private fun getSelectedList(): ArrayList<String> {
+        val list = ArrayList<String>()
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productID)
         }
@@ -103,7 +103,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun getSelectedPrice(): ArrayList<String> {
-        var list = ArrayList<String>()
+        val list = ArrayList<String>()
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productPrice)
         }
@@ -121,7 +121,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun getSelectedName(): ArrayList<String> {
-        var list = ArrayList<String>()
+        val list = ArrayList<String>()
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productName)
         }
@@ -138,7 +138,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun getSelectedImage(): ArrayList<String> {
-        var list = ArrayList<String>()
+        val list = ArrayList<String>()
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productImage)
         }
@@ -246,7 +246,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     private fun getPassingIntent(): Intent {
         val returnIntent = Intent()
         returnIntent.putStringArrayListExtra(RESULT_PRICE, getSelectedPrice())
-        returnIntent.putIntegerArrayListExtra(RESULT_PROUCT, getSelectedList())
+        returnIntent.putStringArrayListExtra(RESULT_PROUCT, getSelectedList())
         returnIntent.putStringArrayListExtra(RESULT_NAME, getSelectedName())
         returnIntent.putStringArrayListExtra(RESULT_IMAGE, getSelectedImage())
         return returnIntent
@@ -312,19 +312,19 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) { refreshProduct() }
     }
 
-    private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) {
+    private fun onSuccessGetProductList(data: List<TopAdsProductModel>, eof: Boolean) {
         if (START == 0)
             clearShimmerList()
         prepareForNextFetch(eof)
         btn_next.isEnabled = false
         data.forEach { result ->
             if (promoted.chipType == ChipsUnify.TYPE_SELECTED) {
-                if (result.adID > 0 && !ifExists(result.productID)) {
+                if (result.adID.toFloat() > 0 && !ifExists(result.productID)) {
                     productListAdapter.items.add(ProductItemViewModel(result))
                 }
 
             } else {
-                if (result.adID == 0 && !ifExists(result.productID)) {
+                if (result.adID == "0" && !ifExists(result.productID)) {
                     productListAdapter.items.add(ProductItemViewModel(result))
                 }
             }
@@ -350,8 +350,8 @@ class ProductAdsListFragment : BaseDaggerFragment() {
             recyclerviewScrollListener.updateStateAfterGetData()
     }
 
-    private fun ifExists(productID: Int): Boolean {
-        val existingIds = arguments?.getIntegerArrayList(EXISTING_IDS)
+    private fun ifExists(productID: String): Boolean {
+        val existingIds = arguments?.getStringArrayList(EXISTING_IDS)
         return existingIds?.find { id -> productID == id } != null
 
     }

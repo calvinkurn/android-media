@@ -27,10 +27,10 @@ data class ComponentData(
         //region Content data
         @SerializedName("campaign")
         val campaign: CampaignModular = CampaignModular(),
+        @SerializedName("thematicCampaign")
+        val thematicCampaign: ThematicCampaign = ThematicCampaign(),
         @SerializedName("isCashback")
         val isCashback: Cashback = Cashback(),
-        @SerializedName("isFreeOngkir")
-        val isFreeOngkir: IsFreeOngkir = IsFreeOngkir(),
         @SerializedName("isOS")
         val isOS: Boolean = false,
         @SerializedName("isPowerMerchant")
@@ -50,11 +50,13 @@ data class ComponentData(
         @SerializedName("variant")
         val variant: Variant = Variant(),
         @SerializedName("videos")
-        val videos: List<Video> = listOf(),
+        val youtubeVideos: List<YoutubeVideo> = listOf(),
         @SerializedName("wholesale")
         val wholesale: List<Wholesale>? = null,
         @SerializedName("preorder")
         val preOrder: PreOrder = PreOrder(),
+        @SerializedName("isCOD")
+        val isCod: Boolean = false,
         //endregion
         //region Variant data
         @SerializedName("parentID")
@@ -69,8 +71,11 @@ data class ComponentData(
         val variants: List<ProductP1Variant> = listOf(),
         @SerializedName("children")
         val children : List<ProductP1VariantChild> = listOf()
-        //endregion
+        //endregioncopy
 )  {
+    companion object{
+        private const val PRODUCT_IMAGE_TYPE = "image"
+    }
 
     val hasWholesale: Boolean
         get() = wholesale != null && wholesale.isNotEmpty()
@@ -79,7 +84,7 @@ data class ComponentData(
         if (media.isEmpty()) return null
 
         val firstImage = media.find {
-            it.type == "image"
+            it.type == PRODUCT_IMAGE_TYPE
         }
 
         return if (firstImage != null) {
@@ -97,21 +102,24 @@ data class ComponentData(
     fun getProductImageUrl(): String? {
         if (media.isEmpty()) return null
         return media.find {
-            it.type == "image"
+            it.type == PRODUCT_IMAGE_TYPE
         }?.uRLThumbnail
     }
 
-    fun getFsProductIsActive(): Boolean {
-        return isFreeOngkir.isActive
-    }
-
-    fun getFsProductImageUrl(): String {
-        return isFreeOngkir.imageURL
+    fun getImagePathExceptVideo(): ArrayList<String>? {
+        val imageData = media.filter { it.type == PRODUCT_IMAGE_TYPE && it.uRLOriginal.isNotEmpty() }.map { it.uRLOriginal }
+        val arrayList = arrayListOf<String>()
+        return if (imageData.isEmpty()) {
+            null
+        } else {
+            arrayList.addAll(imageData)
+            arrayList
+        }
     }
 
     fun getImagePath(): ArrayList<String> {
         return ArrayList(media.map {
-            if (it.type == "image") {
+            if (it.type == PRODUCT_IMAGE_TYPE) {
                 it.uRLOriginal
             } else {
                 it.uRLThumbnail

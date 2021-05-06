@@ -5,11 +5,16 @@ package com.tokopedia.sellerhomecommon.presentation.model
  */
 
 data class LineGraphDataUiModel(
-        override val dataKey: String = "",
+        override var dataKey: String = "",
         val description: String = "",
         override var error: String = "",
         val header: String = "",
         val list: List<XYAxisUiModel> = emptyList(),
         val yLabels: List<XYAxisUiModel> = emptyList(),
-        override var isFromCache: Boolean = false
-) : BaseDataUiModel
+        override var isFromCache: Boolean = false,
+        override val showWidget: Boolean = false
+) : BaseDataUiModel {
+    override fun shouldRemove(): Boolean {
+        return list.all { it.yVal == 0f }
+    }
+}

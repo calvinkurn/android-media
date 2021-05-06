@@ -11,6 +11,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_M
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.view.viewmodel.InvoiceViewModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
  * @author by nisie on 19/12/18.
@@ -46,7 +47,7 @@ object SendWebsocketParam {
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)
         data.addProperty("attachment_type", Integer.parseInt(TYPE_PRODUCT_ATTACHMENT))
-        data.addProperty("product_id", product.productId)
+        data.addProperty("product_id", product.productId.toLongOrZero())
 
         val productProfile = JsonObject()
         productProfile.addProperty("name", product.name)

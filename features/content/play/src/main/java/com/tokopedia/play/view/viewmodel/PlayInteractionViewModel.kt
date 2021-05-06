@@ -2,16 +2,18 @@ package com.tokopedia.play.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.domain.PostFollowPartnerUseCase
 import com.tokopedia.play.domain.PostLikeUseCase
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
-import com.tokopedia.play.view.uimodel.FeedInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayLikeParamInfoUiModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -28,8 +30,8 @@ class PlayInteractionViewModel @Inject constructor(
         private val postLikeUseCase: PostLikeUseCase,
         private val postFollowPartnerUseCase: PostFollowPartnerUseCase,
         private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatcherProvider
-) : PlayBaseViewModel(dispatchers.main) {
+        private val dispatchers: CoroutineDispatchers,
+) : ViewModel() {
 
     private val _observableFollowPartner = MutableLiveData<Result<Boolean>>()
     val observableFollowPartner: LiveData<Result<Boolean>> = _observableFollowPartner
@@ -44,13 +46,13 @@ class PlayInteractionViewModel @Inject constructor(
         )
     }
 
-    fun doLikeUnlike(feedInfoUiModel: FeedInfoUiModel?, shouldLike: Boolean) {
-        scope.launchCatchError(block = {
+    fun doLikeUnlike(likeParamInfo: PlayLikeParamInfoUiModel, shouldLike: Boolean) {
+        viewModelScope.launchCatchError(block = {
             withContext(dispatchers.io) {
                 postLikeUseCase.params = PostLikeUseCase.createParam(
-                        contentId = feedInfoUiModel?.contentId.toIntOrZero(),
-                        contentType = feedInfoUiModel?.contentType.orZero(),
-                        likeType = feedInfoUiModel?.likeType.orZero(),
+                        contentId = likeParamInfo.contentId.toIntOrZero(),
+                        contentType = likeParamInfo.contentType.orZero(),
+                        likeType = likeParamInfo.likeType.orZero(),
                         action = shouldLike
                 )
                 postLikeUseCase.executeOnBackground()
@@ -59,7 +61,7 @@ class PlayInteractionViewModel @Inject constructor(
     }
 
     fun doFollow(shopId: Long, action: PartnerFollowAction) {
-        scope.launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             val response = withContext(dispatchers.io) {
                 postFollowPartnerUseCase.params = PostFollowPartnerUseCase.createParam(shopId.toString(), action)
                 postFollowPartnerUseCase.executeOnBackground()

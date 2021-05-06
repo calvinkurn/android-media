@@ -9,11 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -22,8 +21,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
@@ -59,13 +60,15 @@ class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescript
         super.onViewCreated(view, savedInstanceState)
         youtube_scroll.layoutManager = LinearLayoutManager(context,
                 LinearLayoutManager.HORIZONTAL, false)
-        youtube_scroll.addItemDecoration(SpaceItemDecoration(context?.resources?.getDimensionPixelSize(R.dimen.dp_16)
+        youtube_scroll.addItemDecoration(SpaceItemDecoration(context?.resources?.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
                 ?: 0,
                 LinearLayoutManager.HORIZONTAL))
         arguments?.let {
             val descriptionData: DescriptionData = it.getParcelable(PARAM_DESCRIPTION_DATA)
                     ?: DescriptionData()
-            ImageHandler.loadImageAndCache(product_image, descriptionData.thumbnailPicture)
+            product_image.loadImage(descriptionData.thumbnailPicture) {
+                setCacheStrategy(MediaCacheStrategy.DATA)
+            }
             product_name.text = MethodChecker.fromHtml(descriptionData.basicName)
             product_price.text = descriptionData.basicPrice.getCurrencyFormatted()
             product_shop.text = descriptionData.shopName
@@ -73,18 +76,18 @@ class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescript
             when {
                 descriptionData.isOfficial -> {
                     ic_badge.show()
-                    ic_badge.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_official_store_product))
+                    ic_badge.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_official_store_product))
                 }
                 descriptionData.isGoldMerchant -> {
                     ic_badge.show()
-                    ic_badge.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_power_merchant))
+                    ic_badge.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant))
                 }
                 else -> {
                     ic_badge.hide()
                 }
             }
 
-            val vids = descriptionData.videoUrlList.map { Video(url = it) }
+            val vids = descriptionData.videoUrlList.map { YoutubeVideo(url = it) }
             if (vids.size > 0) {
                 youtube_scroll.adapter = YoutubeThumbnailAdapter(vids.toMutableList()) { _, index ->
                     gotoVideoPlayer(vids, index)
@@ -116,7 +119,7 @@ class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescript
         txt_product_descr.movementMethod = ProductCustomMovementMethod(::onBranchClicked)
     }
 
-    private fun gotoVideoPlayer(vids: List<Video>, index: Int) {
+    private fun gotoVideoPlayer(vids: List<YoutubeVideo>, index: Int) {
         context?.let {
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                     == YouTubeInitializationResult.SUCCESS) {

@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import java.util.*
 import kotlin.random.Random
 
 /**
@@ -76,9 +77,9 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         return FollowerDataUiModel(
                 List(3) {
                     FollowerUiModel.Unknown(when (it) {
-                        0 -> com.tokopedia.unifyprinciples.R.color.Yellow_Y500
-                        1 -> com.tokopedia.unifyprinciples.R.color.Blue_B600
-                        else -> com.tokopedia.unifyprinciples.R.color.Yellow_Y300
+                        0 -> com.tokopedia.unifyprinciples.R.color.Unify_Y500
+                        1 -> com.tokopedia.unifyprinciples.R.color.Unify_B600
+                        else -> com.tokopedia.unifyprinciples.R.color.Unify_Y300
                     })
                 },
                 3
@@ -116,7 +117,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         return List(10) {
             PlayMetricUiModel(
                     iconUrl = "https://img.icons8.com/pastel-glyph/2x/shopping-cart--v2.png",
-                    spannedSentence = MethodChecker.fromHtml("Kamu <font color='#FF0000'><b>membeli</b> produk</font> ini yang keren banget itu loh waw yay astaga ini produk gila abis sih kerennya ampun dah"),
+                    spannedSentence = MethodChecker.fromHtml("Kamu <b>membeli</b> produk ini yang keren banget itu loh waw yay astaga ini produk gila abis sih kerennya ampun dah"),
                     type = "new_participant",
                     interval = 3000
             )
@@ -149,7 +150,12 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 coverConfig = CoverConfigUiModel(
                         maxChars = 38
                 ),
-                countDown = 5
+                countDown = 5,
+                scheduleConfig = BroadcastScheduleConfigUiModel(
+                        minimum = Date(),
+                        maximum = Date(),
+                        default = Date()
+                )
         )
     }
 
@@ -166,6 +172,10 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
 
     override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>): List<ProductData> {
         return emptyList()
+    }
+
+    override fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel {
+        return BroadcastScheduleUiModel.NoSchedule
     }
 
     override fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String, coverTitle: String): PlayCoverUiModel {

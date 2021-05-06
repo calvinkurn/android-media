@@ -23,6 +23,7 @@ class GetRecommendationFilterChips (
             "        name\n" +
             "        templateName\n" +
             "        isActivated\n" +
+            "        value\n" +
             "        options {\n" +
             "          name\n" +
             "          icon\n" +
@@ -62,7 +63,7 @@ class GetRecommendationFilterChips (
     init {
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setTypeClass(RecommendationFilterChipsEntity::class.java)
-        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         params.parameters.clear()
     }
 
@@ -80,7 +81,6 @@ class GetRecommendationFilterChips (
         if (xSource.isNotEmpty()) params.putString(PARAM_X_SOURCE, xSource)
         if (queryParam.isNotEmpty()) params.putString(PARAM_QUERY_PARAM, queryParam)
         if (type.isNotEmpty()) params.putString(PARAM_FILTER_TYPE, type)
-//        params.putString("injectionID", "01EGFJGX3076CT8K1607XESK16")
     }
 
     companion object{

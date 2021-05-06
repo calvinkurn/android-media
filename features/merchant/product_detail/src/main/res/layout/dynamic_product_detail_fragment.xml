@@ -31,9 +31,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:contentDescription="@null"
                 android:layout_marginStart="@dimen/dp_2"
                 android:layout_marginLeft="@dimen/dp_2"
-                app:srcCompat="@drawable/ic_search_bar" />
+                app:srcCompat="@drawable/ic_product_detail_search_bar" />
 
             <TextView
                 android:id="@+id/et_search"
@@ -92,59 +93,18 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_pdp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <LinearLayout
-        android:id="@+id/ticker_occ_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/btn_pdp_container"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-
-        <LinearLayout
-            android:id="@+id/ticker_occ"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingBottom="@dimen/dp_8"
-            android:background="@drawable/bg_rounded_black"
-            android:orientation="horizontal">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/ticker_occ_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:layout_weight="1"
-                tools:text="Baru! Selesaikan transaksimu dalam 1 langkah saja."
-                android:textColor="@color/Unify_N0"
-                app:typographyType="body_3" />
-
-            <ImageView
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:layout_marginEnd="@dimen/dp_8"
-                app:srcCompat="@drawable/ic_close_white"
-                tools:ignore="ContentDescription" />
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/ticker_occ_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:rotation="180"
-            app:srcCompat="@drawable/bg_triangle_black"
-            tools:ignore="ContentDescription" />
-    </LinearLayout>
+    <com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
+        android:id="@+id/stickyTitleComparisonWidget"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_barrier"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/pdp_button_barrier"

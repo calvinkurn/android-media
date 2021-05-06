@@ -1,6 +1,5 @@
 <resources>
     <string name="shop_settings_manage_shop_info">Informasi</string>
-    <string name="shop_settings_manage_address">Lokasi</string>
     <string name="shop_settings_manage_etalase">Etalase</string>
     <string name="shop_settings_manage_notes">Catatan</string>
     <string name="shop_settings_basic_info">Informasi Dasar</string>
@@ -8,7 +7,6 @@
 
     <string name="shop_settings_add_note">Tambah Catatan</string>
     <string name="shop_settings_add_etalase">Tambah Etalase</string>
-    <string name="shop_settings_add_address">Tambah Lokasi</string>
 
     <string name="shop_settings_shop_status">Status Toko</string>
 
@@ -38,47 +36,15 @@
     <string name="shop_close_note">Catatan</string>
     <string name="closed_note_information">Penutupan Toko akan berlaku mulai pukul 00:00 dan berakhir pada pukul 23:59 sesuai tanggal yang telah ditentukan.</string>
     <string name="hint_date">Day, dd/mm/yyyy</string>
-    <string name="shop_address_line_2_placeholder">%1$s, %2$s, %3$s, %4$d</string>
-    <string name="title_action_add_address">Tambah Alamat</string>
-    <string name="shop_address_label_name">Label Lokasi</string>
-    <string name="shop_address_name_placeholder">Nama Toko Fisik</string>
-    <string name="error_max_shop_address">Anda hanya dapat menambahkan sampai 3 alamat</string>
-    <string name="shop_address_label_address">Alamat Toko</string>
-    <string name="shop_address_placeholder">Tulis nama perumahan/komplek/gedung, jalan, blok, dan nomor</string>
-    <string name="shop_address_label_district">Kota atau Kecamatan</string>
-    <string name="shop_address_district_placeholder">Tulis kota/kecamatan toko</string>
-    <string name="shop_address_label_postal_code">Kode Pos</string>
-    <string name="shop_address_postal_code_placeholder">5 digit kode pos</string>
-    <string name="shop_address_label_phone">No. Telepon</string>
-    <string name="shop_address_phone_placeholder">Contoh: 081234567890</string>
-    <string name="shop_address_label_email">Email</string>
-    <string name="shop_address_email_placeholder">Tulis email toko</string>
-    <string name="shop_address_label_fax">Fax</string>
-    <string name="shop_address_fax_placeholder">Tulis fax toko</string>
 
-    <string name="shop_address_name_required">Label Lokasi harus diisi</string>
-    <string name="shop_address_name_max_length_error">Label Lokasi maks 128 kata</string>
-    <string name="shop_address_required">Alamat Toko harus diisi</string>
-    <string name="shop_district_required">Kota/Kecamatan harus diisi</string>
-    <string name="shop_postal_code_required">Tulis Kode Pos</string>
-    <string name="shop_email_invalid">Format Email invalid</string>
-    <string name="header_list_postal_code">Silakan ketik kode pos Anda jika tidak tercantum di sini</string>
-    <string name="title_dialog_delete_shop_address">Hapus Lokasi</string>
-    <string name="desc_dialog_delete_shop_address">Hapus lokasi “%1$s”?</string>
     <string name="title_dialog_delete_shop_note">Hapus Catatan</string>
     <string name="desc_dialog_delete_shop_note">Hapus Catatan “%1$s”?</string>
     <string name="title_dialog_delete_shop_etalase">Hapus Etalase</string>
     <string name="desc_dialog_delete_shop_etalase">Hapus Etalase “%1$s”?</string>
-    <string name="success_delete_shop_address">Lokasi berhasil dihapus</string>
-    <string name="success_add_address">Berhasil menambahkan Lokasi</string>
-    <string name="success_edit_address">Lokasi berhasil diperbaharui</string>
     <string name="success_add_etalase">Berhasil menambahkan Etalase</string>
     <string name="success_edit_etalase">Berhasil memperbarui Etalase</string>
     <string name="success_add_note">Berhasil menambahkan Catatan Toko</string>
     <string name="success_edit_note">Berhasil memperbarui Catatan Toko</string>
-    <string name="title_shop_settings_empty_address">Toko Anda belum memiliki Lokasi</string>
-    <string name="content_shop_settings_empty_address">Tambah Alamat Kontak agar toko lebih terpercaya &amp; mudah dihubungi</string>
-    <string name="button_shop_settings_empty_address">Tambah Lokasi</string>
     <string name="closed_schedule">Jadwal Tutup: %1$s</string>
     <string name="closed_until">Tutup sampai tanggal %1$s</string>
     <string name="open_schedule">Jadwal Buka: %1$s</string>
@@ -105,7 +71,6 @@
     <string name="title_retry">Ulangi</string>
 
     <string name="shop_settings_edit_note">Ubah Catatan</string>
-    <string name="shop_settings_edit_address">Ubah Lokasi</string>
     <string name="shop_etalase_label_name">Nama Etalase</string>
     <string name="shop_etalase_title_required">Nama Etalase harus diisi</string>
     <string name="shop_etalase_title_already_exist">Nama Etalase duplikat</string>
@@ -177,4 +142,14 @@
     <string name="error_validation_shop_name_empty">Oops, nama toko harus kamu isi.</string>
     <string name="error_validation_shop_domain_empty">Oops, domain toko harus kamu isi.</string>
     <string name="shop_settings_basic_info_title">Informasi Toko</string>
+
+    <string name="label_open">Buka</string>
+    <string name="label_cancel">Batal</string>
+    <string name="label_close">Tutup</string>
+    <string name="label_save">Simpan</string>
+    <string name="tokopedia_domain" translatable="false">www.tokopedia.com</string>
+    <string name="label_regular_merchant">Regular Merchant</string>
+    <string name="label_power_merchant">Power Merchant</string>
+    <string name="label_official_store">Official Store</string>
+    <string name="power_merchant">Power Merchant</string>
 </resources>

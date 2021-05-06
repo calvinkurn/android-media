@@ -35,7 +35,9 @@ data class TopAdsManageHeadlineInput(
                 @SerializedName("scheduleStart")
                 var scheduleStart: String = "",
                 @SerializedName("shopID")
-                var shopID: String = ""
+                var shopID: String = "",
+                @SerializedName("status")
+                var status: String = ""
         ) {
             @Parcelize
             data class AdOperation(
@@ -66,8 +68,10 @@ data class TopAdsManageHeadlineInput(
             ) : Parcelable {
                 @Parcelize
                 data class Keyword(
+                        @SerializedName("id")
+                        var id: String = "0",
                         @SerializedName("priceBid")
-                        var priceBid: Int = 0,
+                        var priceBid: Long = 0,
                         @SerializedName("status")
                         var status: String = "",
                         @SerializedName("tag")

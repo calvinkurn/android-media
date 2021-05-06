@@ -1,0 +1,11 @@
+[
+    {
+        "data": {
+            "wishlist_remove": {
+                "id": "39036183",
+                "success": true,
+                "__typename": "WishlistMutation"
+            }
+        }
+    }
+]

@@ -229,7 +229,7 @@ public class CheckoutDealPresenter
             public void onError(Throwable throwable) {
                 throwable.printStackTrace();
                 getView().hideProgressBar();
-                if (throwable.getMessage().equalsIgnoreCase(INVALID_EMAIL))
+                if (throwable.getMessage() != null && throwable.getMessage().equalsIgnoreCase(INVALID_EMAIL))
                     getView().showMessage(getView().getActivity().getString(com.tokopedia.digital_deals.R.string.please_enter_email));
                 else {
                     NetworkErrorHelper.showEmptyState(getView().getActivity(),

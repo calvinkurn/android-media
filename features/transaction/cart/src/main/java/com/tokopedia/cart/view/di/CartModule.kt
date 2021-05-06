@@ -12,9 +12,9 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.R
 import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.cart.domain.usecase.*
-import com.tokopedia.cart.view.decorator.CartItemDecoration
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListPresenter
+import com.tokopedia.cart.view.decorator.CartItemDecoration
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -25,13 +25,11 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
-import com.tokopedia.purchase_platform.common.schedulers.IOSchedulers
+import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
@@ -48,6 +46,7 @@ import javax.inject.Named
  */
 
 @Module(includes = [
+    RecommendationModule::class,
     PromoCheckoutModule::class,
     PurchasePlatformBaseModule::class
 ])
@@ -87,20 +86,6 @@ class CartModule {
     @Provides
     fun providesGraphqlUseCase(): GraphqlUseCase {
         return GraphqlUseCase()
-    }
-
-    @Provides
-    @CartScope
-    @Named("recommendationQuery")
-    fun provideRecommendationRawQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
-    }
-
-    @Provides
-    fun provideGetRecommendationUseCase(@Named("recommendationQuery") recomQuery: String,
-                                        graphqlUseCase: GraphqlUseCase,
-                                        userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
-        return GetRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
     }
 
     @Provides
@@ -146,8 +131,8 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideGetCartListSimplifiedUseCase(cartSimplifiedMapper: CartSimplifiedMapper): GetCartListSimplifiedUseCase =
-            GetCartListSimplifiedUseCase(GraphqlUseCase(), cartSimplifiedMapper, DefaultSchedulers)
+    fun provideGetCartListSimplifiedUseCase(cartSimplifiedMapper: CartSimplifiedMapper, chosenAddressRequestHelper: ChosenAddressRequestHelper): GetCartListSimplifiedUseCase =
+            GetCartListSimplifiedUseCase(GraphqlUseCase(), cartSimplifiedMapper, DefaultSchedulers, chosenAddressRequestHelper)
 
     @Provides
     @CartScope
@@ -172,9 +157,6 @@ class CartModule {
                                   getRecommendationUseCase: GetRecommendationUseCase,
                                   addToCartUseCase: AddToCartUseCase,
                                   addToCartExternalUseCase: AddToCartExternalUseCase,
-                                  getInsuranceCartUseCase: GetInsuranceCartUseCase,
-                                  removeInsuranceProductUsecase: RemoveInsuranceProductUsecase,
-                                  updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase,
                                   seamlessLoginUsecase: SeamlessLoginUsecase,
                                   updateCartCounterUseCase: UpdateCartCounterUseCase,
                                   updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
@@ -187,9 +169,7 @@ class CartModule {
                 addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                 userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                 getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
-                getInsuranceCartUseCase, removeInsuranceProductUsecase,
-                updateInsuranceProductDataUsecase, seamlessLoginUsecase,
-                updateCartCounterUseCase, updateCartAndValidateUseUseCase,
+                seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndValidateUseUseCase,
                 validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase, followShopUseCase, schedulers
         )
     }

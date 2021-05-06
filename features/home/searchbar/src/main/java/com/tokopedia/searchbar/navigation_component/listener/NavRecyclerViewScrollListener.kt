@@ -1,16 +1,20 @@
 package com.tokopedia.searchbar.navigation_component.listener
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 
 class NavRecyclerViewScrollListener(
         val navToolbar: NavToolbar,
         var startTransitionPixel: Int = 0,
         var toolbarTransitionRangePixel: Int = 0,
         val navScrollCallback: NavScrollCallback? = null,
-        val switchThemeOnScroll: Boolean = true
+        val switchThemeOnScroll: Boolean = true,
+        val fixedIconColor: Int? = null
 ): RecyclerView.OnScrollListener() {
     private val statusBarUtil = navToolbar.statusBarUtil
 
@@ -19,6 +23,9 @@ class NavRecyclerViewScrollListener(
         if (startTransitionPixel == 0) startTransitionPixel = navToolbar.resources.getDimensionPixelSize(R.dimen.default_nav_toolbar_start_transition)
         if (toolbarTransitionRangePixel == 0) toolbarTransitionRangePixel = navToolbar.resources.getDimensionPixelSize(R.dimen.default_nav_toolbar_transition_range)
         calculateNavToolbarTransparency(recyclerView.computeVerticalScrollOffset())
+        val offset = recyclerView.computeVerticalScrollOffset();
+        navScrollCallback?.onYposChanged(offset)
+
     }
 
     private fun calculateNavToolbarTransparency(offset: Int) {
@@ -30,24 +37,40 @@ class NavRecyclerViewScrollListener(
         if (offsetAlpha < 0) {
             offsetAlpha = 0f
         }
-        if (offsetAlpha >= 150) {
-            if (switchThemeOnScroll) {
-                navToolbar.switchToLightToolbar()
-                darkModeCondition(
-                        lightCondition = { statusBarUtil?.requestStatusBarLight() },
-                        nightCondition = { statusBarUtil?.requestStatusBarDark() }
-                )
+        if (fixedIconColor != null) {
+            when (fixedIconColor) {
+                TOOLBAR_DARK_TYPE -> navToolbar.switchToDarkToolbar()
+                TOOLBAR_LIGHT_TYPE -> navToolbar.switchToLightToolbar()
             }
-            navScrollCallback?.onSwitchToLightToolbar()
+            darkModeCondition(
+                    lightCondition = { statusBarUtil?.requestStatusBarLight() },
+                    nightCondition = { statusBarUtil?.requestStatusBarDark() }
+            )
+            if (offsetAlpha >= 150) {
+                navScrollCallback?.onSwitchToLightToolbar()
+            } else {
+                navScrollCallback?.onSwitchToDarkToolbar()
+            }
         } else {
-            if (switchThemeOnScroll) {
-                navToolbar.switchToDarkToolbar()
-                darkModeCondition(
-                        lightCondition = { statusBarUtil?.requestStatusBarDark() },
-                        nightCondition = { statusBarUtil?.requestStatusBarLight() }
-                )
+            if (offsetAlpha >= 150) {
+                if (switchThemeOnScroll) {
+                    navToolbar.switchToLightToolbar()
+                    darkModeCondition(
+                            lightCondition = { statusBarUtil?.requestStatusBarLight() },
+                            nightCondition = { statusBarUtil?.requestStatusBarDark() }
+                    )
+                }
+                navScrollCallback?.onSwitchToLightToolbar()
+            } else {
+                if (switchThemeOnScroll) {
+                    navToolbar.switchToDarkToolbar()
+                    darkModeCondition(
+                            lightCondition = { statusBarUtil?.requestStatusBarDark() },
+                            nightCondition = { statusBarUtil?.requestStatusBarLight() }
+                    )
+                }
+                navScrollCallback?.onSwitchToDarkToolbar()
             }
-            navScrollCallback?.onSwitchToDarkToolbar()
         }
         if (offsetAlpha >= 255) {
             offsetAlpha = 255f
@@ -68,5 +91,6 @@ class NavRecyclerViewScrollListener(
         fun onAlphaChanged(offsetAlpha: Float)
         fun onSwitchToDarkToolbar()
         fun onSwitchToLightToolbar()
+        fun onYposChanged(yOffset: Int)
     }
 }

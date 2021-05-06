@@ -77,4 +77,15 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
         assertTrue(isSuccessSubscribe is Success)
     }
 
+    @Test
+    fun `when reset all live data to be null`() {
+        shopSettingsInfoViewModel.resetAllLiveData()
+
+        assertTrue(shopSettingsInfoViewModel.shopBasicData.value == null)
+        assertTrue(shopSettingsInfoViewModel.checkOsMerchantTypeData.value == null)
+        assertTrue(shopSettingsInfoViewModel.shopStatusData.value == null)
+        assertTrue(shopSettingsInfoViewModel.updateScheduleResult.value == null)
+
+    }
+
 }

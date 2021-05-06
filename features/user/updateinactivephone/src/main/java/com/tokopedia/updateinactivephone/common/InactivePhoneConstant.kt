@@ -13,25 +13,21 @@ object InactivePhoneConstant {
     const val REQUEST_CAPTURE_ID_CARD = 100
     const val REQUEST_CAPTURE_SELFIE = 200
 
-    @Deprecated("Deleted soon")
-    const val SAVING_BOOk = "SavingBook"
-
-    @Deprecated("Deleted soon")
-    const val REQUEST_CAPTURE_SAVING_BOOK = 300
-
     const val PARAM_USER_DETAIL_DATA = "userData"
     const val PARAM_FILE_TO_UPLOAD = "fileToUpload"
     const val PARAM_EMAIL = "email"
     const val PARAM_OLD_PHONE = "oldMsisdn"
     const val PARAM_USER_INDEX = "index"
     const val PARAM_PHONE = "phone"
-    const val PARAM_NEW_ADD = "new_add"
 
     const val ERROR_FAILED_UPLOAD_IMAGE = "Gagal mengunggah gambar"
-    const val ERROR_EMPTY_PHONE = "Nomor ponsel harus diisi"
     const val ERROR_INVALID_PHONE_NUMBER = "Nomor ponsel harus berupa angka"
     const val ERROR_PHONE_NUMBER_MIN = "Nomor ponsel terlalu pendek, minimum 9 angka"
     const val ERROR_PHONE_NUMBER_MAX = "Nomor ponsel terlalu panjang, maksimum 15 angka"
+
+    const val STATUS_FAIL = 0
+    const val STATUS_SUCCESS = 1
+    const val STATUS_MULTIPLE_ACCOUNT = 2
 
     fun filePath(context: Context, fileType: Int): String {
         return when (fileType) {

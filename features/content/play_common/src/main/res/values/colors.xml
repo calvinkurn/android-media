@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="play_placeholder_shadow">#1E31353B</color>
-    <color name="play_chat_background">#6631353B</color>
-    <color name="play_background_overlay_82">@color/Unify_N0_68</color>
+    <color name="play_dms_chat_background">#6631353B</color>
+    <color name="play_dms_background_overlay_82">@color/Unify_N0_68</color>
 
-    <color name="play_top_gradient_darker">#80000000</color>
-    <color name="play_top_gradient_neutral">#417D7D7D</color>
-    <color name="play_top_gradient_lighter">#00000000</color>
+    <color name="play_dms_top_gradient_darker">#80000000</color>
+    <color name="play_dms_top_gradient_neutral">#417D7D7D</color>
+    <color name="play_dms_top_gradient_lighter">#00000000</color>
 
-    <color name="play_bottom_gradient_lighter">#00000000</color>
-    <color name="play_bottom_gradient_darker">#B331353B</color>
+    <color name="play_dms_bottom_gradient_lighter">#00000000</color>
+    <color name="play_dms_bottom_gradient_darker">#B331353B</color>
+
+    <color name="play_dms_B600">#0066A9</color>
+    <color name="play_dms_N700_68">#AD31353B</color>
+    <color name="play_dms_R400">#FF5C84</color>
+    <color name="play_dms_R500">#EF144A</color>
+    <color name="play_dms_Y300">#FFC400</color>
+    <color name="play_dms_Y400">#FF8B00</color>
+    <color name="play_dms_Y500">#FA591D</color>
 </resources>

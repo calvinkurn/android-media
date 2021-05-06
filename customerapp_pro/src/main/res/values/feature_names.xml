@@ -31,6 +31,7 @@
     <string name="flight_cancellation_reason_title">Pilih Alasan Pembatalan</string>
     <string name="flight_insurance_webview_toolbar_title">Asuransi Perjalanan</string>
     <string name="flight_order_invoice_toolbar_title">Tokopedia</string>
+    <string name="hotel_pay_at_hotel_promo_header_title">Pakai Promo</string>
 
     <!--User Settings-->
     <string name="title_module_user_settings">Settings</string>
@@ -185,7 +186,10 @@
     <string name="label_manage_address">Daftar Alamat</string>
 
     <string name="title_activity_add_address">Tambah Alamat</string>
-    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
+    <string name="title_activity_search_address">Kota atau kecamatan</string>
+    <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
+
+    <string name="title_shipping_editor">Pengiriman</string>
 
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
@@ -322,6 +326,9 @@
     <string name="cp_title_image_picker">Tambah Foto</string>
     <string name="cp_title_image_video">Tambah Video</string>
     <string name="cp_title_image_editor">Edit</string>
+    <string name="title_detail_feed">Product Lainnya</string>
+    <string name="recommendation_for_you">Rekomendasi Untukmu</string>
+    <string name="title_feed_onboarding">Topik Favorit</string>
 
     <!-- Merchant Login -->
     <string name="title_module_merchant_login">Fitur Toko</string>
@@ -339,7 +346,12 @@
     <!-- Seller Menu -->
     <string name="title_seller_menu">Toko Saya</string>
     <string name="title_seller_settings">Pengaturan Toko</string>
+    <string name="admin_authorize_title">Admin Role Access Authorize</string>
 
     <!--Dynamic feature for profile-->
     <string name="title_profile_df">Profile</string>
+
+    <string name="vidpick_app_name">Video Recorder</string>
+    <string name="album">Album</string>
+    <string name="edit_image">Edit Gambar</string>
 </resources>

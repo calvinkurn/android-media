@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -305,10 +306,11 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     private fun drawCircle(radius: Int) {
         if (radius > 0) {
-            val circleColor = ContextCompat.getColor(this, R.color.polygon_map)
+            val circleColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G600)
+            val alphaCircleColor = ColorUtils.setAlphaComponent(circleColor, 40)
             mMap?.addCircle(CircleOptions().center(mLastLocation)
                     .radius(radius * 1000.0)
-                    .fillColor(circleColor)
+                    .fillColor(alphaCircleColor)
                     .strokeWidth(0.0f))
         }
     }

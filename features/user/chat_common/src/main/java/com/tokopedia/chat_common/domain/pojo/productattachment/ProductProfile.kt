@@ -22,25 +22,25 @@ class ProductProfile {
     val url: String = ""
     @SerializedName("price_int")
     @Expose
-    val priceInt: Int = 0
+    val priceInt: Long = 0
     @SerializedName("category_breadcrumb")
     @Expose
     val category: String = ""
     @SerializedName("category_id")
     @Expose
-    val categoryId: Int = 0
+    val categoryId: Long = 0
     @SerializedName("variant")
     @Expose
     val variant: List<AttachmentVariant>? = listOf()
     @SerializedName("drop_percentage")
     @Expose
-    val dropPercentage: String = ""
+    var dropPercentage: String = ""
     @SerializedName("price_before")
     @Expose
-    val priceBefore: String = ""
+    var priceBefore: String = ""
     @SerializedName("shop_id")
     @Expose
-    val shopId: Int = 0
+    val shopId: Long = 0
     @SerializedName("free_ongkir")
     @Expose
     val freeShipping: FreeShipping = FreeShipping()
@@ -49,10 +49,10 @@ class ProductProfile {
     val playStoreData: PlayStoreData = PlayStoreData()
     @SerializedName("remaining_stock")
     @Expose
-    val remainingStock: Int = 1
+    var remainingStock: Int = 1
     @SerializedName("status")
     @Expose
-    val status: Int = 1
+    var status: Int = 1
     @SerializedName("wishlist")
     @Expose
     val wishList: Boolean = false
@@ -67,5 +67,11 @@ class ProductProfile {
     val isPreOrder: Boolean = false
     @SerializedName("campaign_id")
     @Expose
-    val campaignId: Int = 0
+    var campaignId: Long = 0
+    @SerializedName("is_fulfillment")
+    @Expose
+    var isFulFillment: Boolean = false
+    @SerializedName("icon_tokocabang")
+    @Expose
+    var urlTokocabang: String = ""
 }

@@ -35,7 +35,7 @@ class FetchUserDobUseCaseTest {
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = NullPointerException::class)
     fun `getRestData throws exception`() {
         runBlockingTest {
             coEvery {

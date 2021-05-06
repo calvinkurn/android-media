@@ -1,35 +1,35 @@
 {
-  "readme": "Search Product Inspiration Carousel Tracking",
+  "readme": "Search Product Broad Match Tracking",
   "mode": "exact",
   "query" : [
     {
       "event": "clickSearchResult",
       "eventCategory": "search result",
       "eventAction": "click - broad match lihat semua",
-      "eventLabel": "{{.* - .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".* - .*",
+      "sessionIris": ".*"
     },
     {
       "event": "select_content",
       "eventCategory": "search result",
       "eventAction": "click - broad match",
-      "eventLabel": "{{.* - .*}}",
+      "eventLabel": ".* - .*",
       "item_list": "/search - broad match",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "businessUnit": "search",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "items": [
         {
-          "item_name": "{{.*}}",
-          "item_id": "{{.*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "item_name": ".*",
+          "item_id": ".*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "item_brand": "none / other",
           "item_category": "none / other",
           "item_variant": "none / other",
-          "index": "{{.*}}",
+          "index": ".*",
           "attribution": "none / other",
-          "dimension40": "{{/search - broad match - .*}}"
+          "dimension40": "/search - broad match - .*"
         }
       ]
     },
@@ -37,19 +37,19 @@
       "event": "view_item_list",
       "eventCategory": "search result",
       "eventAction": "impression - broad match",
-      "eventLabel": "{{.* - .*}}",
-      "item_list": "{{/search - broad match - .*}}",
+      "eventLabel": ".* - .*",
+      "item_list": "/search - broad match - .*",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "businessUnit": "search",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "items": [
         {
-          "item_id": "{{.*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-          "dimension40": "{{/search - broad match - .*}}",
-          "index": "{{.*}}",
-          "item_name": "{{.*}}",
+          "item_id": ".*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "dimension40": "/search - broad match - .*",
+          "index": ".*",
+          "item_name": ".*",
           "item_brand": "none / other",
           "item_variant": "none / other",
           "item_category": "none / other"

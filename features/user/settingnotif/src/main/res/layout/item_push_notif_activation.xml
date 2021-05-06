@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/spacing_lvl4">
@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/settingnotif_title_activation"
-        android:textColor="@color/charcoal_grey_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_3"
         app:typographyWeight="reguler"
         app:layout_constraintTop_toTopOf="parent"
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/settingnotif_desc_activation"
-        android:textColor="@color/charcoal_grey_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_1"
         app:typographyWeight="reguler"
         app:layout_constraintTop_toBottomOf="@id/txtTitle"
@@ -54,8 +54,9 @@
         app:layout_constraintLeft_toLeftOf="@id/txtDescription"
         app:typographyType="body_3"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:textColor="@color/grey_400"
+        android:textColor="@color/Unify_N700_44"
         android:visibility="gone"
+        tools:text="Last Checked at 00:00:00"
         tools:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.UnifyButton

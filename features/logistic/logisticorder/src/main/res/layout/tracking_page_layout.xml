@@ -20,7 +20,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:paddingStart="@dimen/dp_20"
                 android:paddingLeft="@dimen/dp_20"
                 android:paddingTop="@dimen/dp_16"
@@ -38,13 +38,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_reference_number"
-                        android:textColor="@color/label_color" />
+                        android:textColor="@color/Unify_N300" />
 
                     <TextView
                         android:id="@+id/reference_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black_70"
+                        android:textColor="@color/Unify_N700_68"
                         android:textSize="@dimen/sp_18"
                         android:textStyle="bold"
                         tools:text="486118" />
@@ -56,13 +56,13 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/white_two" />
+                android:background="@color/Unify_N100" />
 
             <LinearLayout
                 android:id="@+id/description_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:paddingStart="@dimen/dp_20"
                 android:paddingLeft="@dimen/dp_20"
                 android:paddingTop="@dimen/dp_16"
@@ -87,13 +87,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/label_delivery_date"
-                            android:textColor="@color/label_text_color" />
+                            android:textColor="@color/Unify_N200" />
 
                         <TextView
                             android:id="@+id/delivery_date"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black_70"
+                            android:textColor="@color/Unify_N700_68"
                             tools:text="1 February 2017" />
 
                     </LinearLayout>
@@ -108,20 +108,20 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/label_seller_courier_tracking"
-                            android:textColor="@color/label_text_color" />
+                            android:textColor="@color/Unify_N200" />
 
                         <TextView
                             android:id="@+id/store_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black_70"
+                            android:textColor="@color/Unify_N700_68"
                             tools:text="Toko Maju Pantang Mundur" />
 
                         <TextView
                             android:id="@+id/store_address"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black_70"
+                            android:textColor="@color/Unify_N700_68"
                             tools:text="Bandung" />
 
                     </LinearLayout>
@@ -145,13 +145,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/label_service_code"
-                            android:textColor="@color/label_text_color" />
+                            android:textColor="@color/Unify_N200" />
 
                         <TextView
                             android:id="@+id/service_code"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black_70"
+                            android:textColor="@color/Unify_N700_68"
                             tools:text="REG15" />
 
                     </LinearLayout>
@@ -166,20 +166,20 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/label_buyer"
-                            android:textColor="@color/label_text_color" />
+                            android:textColor="@color/Unify_N200" />
 
                         <TextView
                             android:id="@+id/buyer_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black_70"
+                            android:textColor="@color/Unify_N700_68"
                             tools:text="Saiful Jamil" />
 
                         <TextView
                             android:id="@+id/buyer_location"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black_70"
+                            android:textColor="@color/Unify_N700_68"
                             tools:text="Grogol Petamburan Jakarta" />
 
                     </LinearLayout>
@@ -191,12 +191,12 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/white_two" />
+                android:background="@color/Unify_N100" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="vertical"
                 android:paddingStart="@dimen/dp_20"
                 android:paddingLeft="@dimen/dp_20"
@@ -209,13 +209,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/label_tracking_status"
-                    android:textColor="@color/label_color" />
+                    android:textColor="@color/Unify_N300" />
 
                 <TextView
                     android:id="@+id/currenct_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/orange_red"
+                    android:textColor="@color/Unify_Y500"
                     tools:text="On Process" />
 
                 <LinearLayout
@@ -238,7 +238,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/white_two" />
+                    android:background="@color/Unify_N100" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/tracking_history"
@@ -252,7 +252,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/light_grey"
+                    android:background="@color/Unify_N0"
                     android:orientation="vertical"
                     android:padding="@dimen/dp_16"
                     android:visibility="gone">

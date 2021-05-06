@@ -20,6 +20,8 @@
     <string name="topads_headline_product_list_label">Pilih Produk</string>
     <string name="topads_headline_cari_produk">Cari Produk</string>
     <string name="topads_headline_recommendasi">Rekomendasi</string>
+    <string name="topads_headline_recommendasi_price">%s •</string>
+    <string name="topads_headline_recommendasi_price_apply">Terapkan</string>
     <string name="topads_headline_over_product_selection">Kamu telah memilih maksimum 10 produk.</string>
     <string name="topads_headline_tooltip_text">Tips memilih produk.</string>
     <string name="topads_headline_select_all_recommendation">Pilih semua rekomendasi</string>
@@ -65,6 +67,8 @@
     <string name="topads_headline_keyword_page_title">Iklanmu akan tampil saat pembeli mencari produk menggunakan kata kunci yang kamu pilih.</string>
     <string name="topads_headline_enter_keyword_hint">Ketik kata kunci</string>
     <string name="topads_headline_add_button">Tambah</string>
+    <string name="topads_headline_oke_button">Oke</string>
+    <string name="topads_headline_keyword_already_exist">Kata Kunci sudah dipilih, silahkan coba kata kunci lainnya.</string>
     <string name="topads_headline_keyword_desc">%s orang mencari ini /bulan</string>
     <string name="topads_headline_keyword_recommended_keyword">REKOMENDASI KATA KUNCI</string>
     <string name="topads_headline_keyword_bottomsheet_desc1">Kata kunci akan menentukan di halaman pencarian kata kunci mana saja iklan </string>
@@ -110,5 +114,38 @@
     <string name="topads_headline_tips_budget_row1">Semakin tinggi anggaran harian, semakin besar potensi produkmu jangkau lebih banyak pembeli.</string>
     <string name="topads_headline_tips_budget_row2">Anggaran harian hanya akan mengiklankan produk-produkmu yang berpotensi laku.</string>
     <string name="topads_headline_tips_budget_row3">Kamu dapat atur atau hentikan anggaran harian kapan saja!</string>
+
+    <!--topads headline edit-->
+    <string name="topads_headline_edit_form_label">Isi Konten Iklan</string>
+    <string name="topads_headline_edit_ad_cost_header">Biaya Iklan di halaman lainnya</string>
+    <string name="topads_headline_edit_ad_cost_sub_header">Biaya ini akan dikenakan bila iklanmu tampil di halaman kategori, feed, dan toko favorit. </string>
+    <string name="topads_headline_edit_keyword_cost_header">Biaya kata kunci di halaman pencarian</string>
+    <string name="topads_headline_edit_keyword_cost_sub_header">Biaya ini akan dikenakan bila iklanmu diklik di hasil pencarian kata kunci pilihanmu.</string>
+    <string name="topads_headline_edit_kata_kunci">Kata Kunci</string>
+    <string name="topads_headline_edit_kata_kunci_neg">Kata Kunci Negatif</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_header">Belum ada kata kunci dipilih</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_negatif_header">Belum ada kata kunci negatif</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_subheader">Tambahkan kata kunci agar produkmu lebih mudah ditemukan calon pembeli.</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_negatif_subheader">Tambahkan kata kunci negatif agar produkmu tidak tampil di hasil pencarian yang tidak relevan</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_cta">Tambah Kata Kunci</string>
+    <string name="topads_headline_edit_keyword_empty_kata_kunci_negatif_cta">Tambah Kata Kunci Negatif</string>
+    <string name="topads_headline_edit_keyword_delete_kata_kunci_title">Hapus Kata Kunci?</string>
+    <string name="topads_headline_edit_keyword_delete_kata_kunci_description">Apakah kamu yakin untuk menghapus kata kunci %s?</string>
+    <string name="topads_headline_edit_keyword_delete_kata_kunci_negatif_title">Hapus Kata Kunci Negatif?</string>
+    <string name="topads_headline_edit_keyword_delete_kata_kunci_negatif_description">Apakah kamu yakin untuk menghapus kata kunci negatif %s?</string>
+
+    <!--tips for setting a sort type-->
+    <string name="topads_headline_sort_type_title">Tips Pencarian</string>
+    <string name="topads_headline_broad_sort_type_header">Pencarian Luas</string>
+    <string name="topads_headline_broad_sort_type_subheader">Pencarian dengan kata kunci luas dapat meningkatkan frekuensi produkmu tampil.</string>
+    <string name="topads_headline_specific_sort_type_header">Pencarian Spesifik</string>
+    <string name="topads_headline_specific_sort_type_subheader">Gunakan pencarian dengan kata kunci spesifik untuk beriklan lebih efektif dan produkmu lebih mudah ditemukan pembeli.</string>
+
+    <!--tips for managing advertising costs on search pages-->
+    <string name="topads_headline_ad_cost_tip">Tips atur biaya Iklan</string>
+    <string name="topads_headline_ad_cost_title">Tips mengatur biaya iklan di halaman pencarian</string>
+    <string name="topads_headline_ad_cost_row1">Biaya rekomendasi merupakan rata-rata biaya kata kunci dari kompetitormu</string>
+    <string name="topads_headline_ad_cost_row2">Gunakan biaya rekomendasi atau lebih besar agar iklanmu terus tampil.</string>
+    <string name="topads_headline_ad_cost_row3">Biaya ini hanya dikenakan setiap kali iklan headline diklik calon pembeli</string>
 
 </resources>

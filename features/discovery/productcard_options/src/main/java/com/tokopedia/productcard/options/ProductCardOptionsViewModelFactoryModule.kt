@@ -1,14 +1,10 @@
 package com.tokopedia.productcard.options
 
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.productcard.options.di.AddToCartUseCaseModule
-import com.tokopedia.productcard.options.di.ProductCardOptionsScope
-import com.tokopedia.productcard.options.di.TopAdsWishlistUseCaseModule
-import com.tokopedia.productcard.options.di.UserSessionModule
-import com.tokopedia.productcard.options.di.WishlistUseCaseModule
+import com.tokopedia.productcard.options.di.*
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -17,7 +13,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@ProductCardOptionsScope
 @Module(includes = [
     WishlistUseCaseModule::class,
     TopAdsWishlistUseCaseModule::class,
@@ -36,10 +31,11 @@ internal class ProductCardOptionsViewModelFactoryModule(
             removeWishListUseCase: RemoveWishListUseCase,
             topAdsWishlistUseCase: UseCase<Boolean>,
             addToCartUseCase: AddToCartUseCase,
-            userSession: UserSessionInterface
+            userSession: UserSessionInterface,
+            coroutineDispatchers: CoroutineDispatchers
     ): ViewModelProvider.Factory {
         return ProductCardOptionsViewModelFactory(
-                ProductionDispatcherProvider(),
+                coroutineDispatchers,
                 productCardOptionsModel,
                 addWishListUseCase,
                 removeWishListUseCase,

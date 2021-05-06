@@ -83,7 +83,7 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
 
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
-
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation rootProject.ext.testDependencies.junit

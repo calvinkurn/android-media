@@ -9,7 +9,6 @@ import dagger.Provides
 
 
 @Module(includes = [AddEditProductCategoryViewModelModule::class])
-@AddEditProductCategoryScope
 class AddEditProductCategoryModule {
 
     @AddEditProductCategoryScope

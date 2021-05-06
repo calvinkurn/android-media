@@ -31,6 +31,8 @@ import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.bottomsheets.FlightFilterBottomSheet
+import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
+import com.tokopedia.flight.promo_chips.presentation.widget.FlightPromoChips
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.searchV4.di.FlightSearchComponent
@@ -47,6 +49,8 @@ import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache
 import com.tokopedia.flight.searchV4.presentation.util.select
 import com.tokopedia.flight.searchV4.presentation.util.unselect
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -56,7 +60,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.*
-import kotlinx.android.synthetic.main.fragment_flight_search.*
+import kotlinx.android.synthetic.main.fragment_flight_search.flight_search_ticker
+import kotlinx.android.synthetic.main.fragment_flight_search.horizontal_progress_bar
 import kotlinx.android.synthetic.main.include_flight_quick_filter.*
 import javax.inject.Inject
 
@@ -80,6 +85,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     private lateinit var performanceMonitoringP2: PerformanceMonitoring
     private var isTraceStop = false
 
+    private lateinit var promoChipsWidget: FlightPromoChips
+
     private val filterItems = arrayListOf<SortFilterItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,8 +101,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         performanceMonitoringP2 = PerformanceMonitoring.start(FLIGHT_SEARCH_P2_TRACE)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(getLayout(), container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?  {
+        val viewRoot = inflater.inflate(getLayout(), container, false)
+        viewRoot.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        promoChipsWidget = viewRoot.findViewById(R.id.flight_promo_chips_view)
+        return viewRoot
+    }
 
     override fun onResume() {
         super.onResume()
@@ -156,6 +167,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                 }
             }
         })
+
+        initPromoChips()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -199,6 +212,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     override fun renderList(list: List<FlightJourneyModel>) {
         hideLoading()
+        showPromoChips()
 
         // remove all unneeded element (empty/retry/loading/etc)
         if (isLoadingInitialData) {
@@ -294,6 +308,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flightFilterModel?.let {
             flightSearchViewModel.filterModel = it
         }
+        if(flightFilterModel?.isHasFilter == false){
+            promoChipsWidget.resetState()
+        }
         clearAllData()
         flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
         fetchSortAndFilterData()
@@ -317,6 +334,15 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyButtonClicked() {
                     onResetFilterClicked()
+                }
+            }
+        } else if (flightSearchViewModel.filterModel.departureArrivalTime.isNotEmpty()) {
+            emptyResultViewModel.title = getString(R.string.flight_there_is_no_flight_available_for_return_title)
+            emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available_for_return_description
+            emptyResultViewModel.buttonTitleRes = R.string.flight_search_there_is_no_flight_available_for_return_button_label
+            emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
+                override fun onEmptyButtonClicked() {
+                    activity?.finish()
                 }
             }
         } else {
@@ -380,6 +406,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             flightSearchViewModel.generateSearchStatistics()
             flightSearchViewModel.initialize(true, isReturnTrip())
             flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
+            flightSearchViewModel.fetchPromoList(isReturnTrip())
         }
     }
 
@@ -387,6 +414,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             filterModel.also {
                 it.canFilterFreeRapidTest = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_FREE_RAPID_TEST, false)
                 it.canFilterSeatDistancing = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_SEAT_DISTANCING, false)
+                it.departureArrivalTime = ""
             }
 
     open fun getDepartureAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.departureAirport
@@ -457,6 +485,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         showLoading()
         setupQuickFilter()
         fetchSortAndFilterData()
+        promoChipsWidget.resetState()
     }
 
     private fun setupSwipeRefresh() {
@@ -622,37 +651,37 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                 val quickFilterAdditionalOrder =
                         if (it.canFilterFreeRapidTest && it.canFilterSeatDistancing) {
                             if (it.isSeatDistancing) {
-                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].select()
-                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].refChipUnify.select()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.select()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.refChipUnify?.select()
                             } else {
-                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].unselect()
-                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].refChipUnify.unselect()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.unselect()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.refChipUnify?.unselect()
                             }
 
                             if (it.isFreeRapidTest) {
-                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].select()
-                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].refChipUnify.select()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.select()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.refChipUnify?.select()
                             } else {
-                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].unselect()
-                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].refChipUnify.unselect()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.unselect()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.refChipUnify?.unselect()
                             }
 
                             QUICK_FILTER_ADDITIONAL_TWO_ORDER
                         } else if (it.canFilterFreeRapidTest || it.canFilterSeatDistancing) {
                             if (it.canFilterSeatDistancing && it.isSeatDistancing) {
-                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].select()
-                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].refChipUnify.select()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.select()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.refChipUnify?.select()
                             } else {
-                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].unselect()
-                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].refChipUnify.unselect()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.unselect()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_FIRST_ADDITIONAL_ORDER)?.refChipUnify?.unselect()
                             }
 
                             if (it.canFilterFreeRapidTest && it.isFreeRapidTest) {
-                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].select()
-                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].refChipUnify.select()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.select()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.refChipUnify?.select()
                             } else {
-                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].unselect()
-                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].refChipUnify.unselect()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.unselect()
+                                flight_sort_filter.chipItems?.get(QUICK_FILTER_SECOND_ADDITIONAL_ORDER)?.refChipUnify?.unselect()
                             }
 
                             QUICK_FILTER_ADDITIONAL_ONE_ORDER
@@ -661,32 +690,32 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                         }
 
                 if (it.transitTypeList.contains(TransitEnum.DIRECT)) {
-                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder].select()
-                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder].refChipUnify.select()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder)?.select()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.select()
                 } else {
-                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder].unselect()
-                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder].refChipUnify.unselect()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder)?.unselect()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.unselect()
                 }
                 if (it.facilityList.contains(FlightFilterFacilityEnum.BAGGAGE)) {
-                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder].select()
-                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder].refChipUnify.select()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder)?.select()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.select()
                 } else {
-                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder].unselect()
-                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder].refChipUnify.unselect()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder)?.unselect()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.unselect()
                 }
                 if (it.facilityList.contains(FlightFilterFacilityEnum.MEAL)) {
-                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder].select()
-                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder].refChipUnify.select()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder)?.select()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.select()
                 } else {
-                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder].unselect()
-                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder].refChipUnify.unselect()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder)?.unselect()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.unselect()
                 }
                 if (it.transitTypeList.contains(TransitEnum.ONE)) {
-                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder].select()
-                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder].refChipUnify.select()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder)?.select()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.select()
                 } else {
-                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder].unselect()
-                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder].refChipUnify.unselect()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder)?.unselect()
+                    flight_sort_filter.chipItems?.get(QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder)?.refChipUnify?.unselect()
                 }
             }
         }
@@ -730,6 +759,48 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         return emptyResultViewModel
     }
 
+    fun hidePromoChips(){
+        promoChipsWidget.hide()
+    }
+
+    fun showPromoChips() {
+        promoChipsWidget.show()
+    }
+
+    private fun initPromoChips(){
+        flightSearchViewModel.promoData.observe(viewLifecycleOwner, {
+            when(it){
+                is Success ->{
+                    if (!it.data.dataPromoChips.isNullOrEmpty()) {
+                        showPromoChips()
+                        promoChipsWidget.renderPromoList(it.data.dataPromoChips[FLIGHT_PROMO_CHIPS_START_DATE].airlinePrices)
+                    }else{
+                        hidePromoChips()
+                    }
+                }
+                is Fail ->{
+                    hidePromoChips()
+                }
+            }
+        })
+        promoChipsWidget.setListener(promoChipsListener)
+    }
+
+    private val promoChipsListener = object : FlightPromoChips.PromoChipsListener {
+        override fun onClickPromoChips(airlinePrice: AirlinePrice, position: Int) {
+            flightSearchViewModel.onPromotionChipsClicked(position, airlinePrice, isReturnTrip())
+            flightSearchViewModel.filterModel.airlineList = mutableListOf(airlinePrice.airlineID)
+            clearAllData()
+            fetchSortAndFilterData()
+        }
+
+        override fun onUnselectChips() {
+            flightSearchViewModel.filterModel.airlineList = mutableListOf()
+            clearAllData()
+            fetchSortAndFilterData()
+        }
+    }
+
     interface OnFlightSearchFragmentListener {
         fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceModel: FlightPriceModel,
                          isBestPairing: Boolean, isCombineDone: Boolean, requestId: String)
@@ -755,6 +826,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         private const val QUICK_FILTER_ADDITIONAL_TWO_ORDER = 2
         private const val QUICK_FILTER_ADDITIONAL_ONE_ORDER = 1
         private const val QUICK_FILTER_NO_ADDITIONAL = 0
+
+        private const val FLIGHT_PROMO_CHIPS_START_DATE = 0
 
         private const val FLIGHT_QUICK_FILTER = "Filter"
         private const val FLIGHT_QUICK_FILTER_DIRECT = "Langsung"

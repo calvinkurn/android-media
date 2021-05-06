@@ -7,8 +7,12 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.shop.common.constant.AccessId
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_UNREAD
@@ -18,6 +22,8 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_ID
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_IDS
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_BLAST_SELLER_METADATA
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
@@ -32,10 +38,12 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.collections.HashSet
 
 /**
  * Created by stevenfredian on 10/19/17.
@@ -66,8 +74,16 @@ class ChatItemListViewModel @Inject constructor(
         private val pinChatUseCase: MutationPinChatUseCase,
         private val unpinChatUseCase: MutationUnpinChatUseCase,
         private val getChatListUseCase: GetChatListMessageUseCase,
+        private val authorizeAccessUseCase: AuthorizeAccessUseCase,
+        private val userSession: UserSessionInterface,
         private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher), ChatItemListContract {
+
+    var filter: String = PARAM_FILTER_ALL
+        set(value) {
+            field = value
+            cancelAllUseCase()
+        }
 
     private val _mutateChatList = MutableLiveData<Result<ChatListPojo>>()
     val mutateChatList: LiveData<Result<ChatListPojo>>
@@ -89,12 +105,38 @@ class ChatItemListViewModel @Inject constructor(
     val chatBannedSellerStatus: LiveData<Result<Boolean>>
         get() = _chatBannedSellerStatus
 
+    private val _isWhitelistTopBot = MutableLiveData<Boolean>()
+    val isWhitelistTopBot: LiveData<Boolean>
+        get() = _isWhitelistTopBot
+
+    private val _isChatAdminEligible = MutableLiveData<Result<Boolean>>()
+    val isChatAdminEligible: LiveData<Result<Boolean>>
+        get() = _isChatAdminEligible
+
+    private var getChatAdminAccessJob: Job? = null
+
     val chatListHasNext: Boolean get() = getChatListUseCase.hasNext
     val pinnedMsgId: HashSet<String> = HashSet()
     val unpinnedMsgId: HashSet<String> = HashSet()
+    val isAdminHasAccess: Boolean
+        get() = (_isChatAdminEligible.value as? Success)?.data == true
 
     override fun getChatListMessage(page: Int, filterIndex: Int, tab: String) {
-        queryGetChatListMessage(page, arrayFilterParam[filterIndex], tab)
+        whenChatAdminAuthorized(tab) {
+            queryGetChatListMessage(page, arrayFilterParam[filterIndex], tab)
+        }
+    }
+
+    fun getChatListMessage(page: Int, @RoleType role: Int) {
+        val tabRole = when (role) {
+            RoleType.BUYER -> PARAM_TAB_USER
+            RoleType.SELLER -> PARAM_TAB_SELLER
+            else -> PARAM_TAB_USER
+        }
+
+        whenChatAdminAuthorized(tabRole) {
+            queryGetChatListMessage(page, filter, tabRole)
+        }
     }
 
     private fun queryGetChatListMessage(page: Int, filter: String, tab: String) {
@@ -110,6 +152,53 @@ class ChatItemListViewModel @Inject constructor(
                     _mutateChatList.value = Fail(it)
                 }
         )
+    }
+
+    private fun whenChatAdminAuthorized(tab: String, action: () -> Unit) {
+        val isTabUser = tab == PARAM_TAB_USER
+        _isChatAdminEligible.value.let { result ->
+            when {
+                isTabUser -> action()
+                result != null && result is Success -> {
+                    if (result.data) {
+                        action()
+                    } else {
+                        _isChatAdminEligible.value = Success(false)
+                    }
+                }
+                else -> setChatAdminAccessJob()
+            }
+        }
+    }
+
+    private fun setChatAdminAccessJob() {
+        if (getChatAdminAccessJob?.isCompleted != false) {
+            getChatAdminAccessJob =
+                    launchCatchError(
+                            block = {
+                                _isChatAdminEligible.value = withContext(dispatcher) {
+                                    Success(getIsChatAdminAccessAuthorized())
+                                }
+                            },
+                            onError = {
+                                _isChatAdminEligible.value = Fail(it)
+                            }
+                    )
+        }
+    }
+
+    private suspend fun getIsChatAdminAccessAuthorized(): Boolean {
+        return if (userSession.isShopOwner) {
+            true
+        } else {
+            checkChatAdminEligiblity()
+        }
+    }
+
+    private suspend fun checkChatAdminEligiblity(): Boolean {
+        return AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toLongOrZero(), AccessId.CHAT).let { requestParams ->
+            authorizeAccessUseCase.execute(requestParams)
+        }
     }
 
     override fun chatMoveToTrash(messageId: Int) {
@@ -204,19 +293,24 @@ class ChatItemListViewModel @Inject constructor(
                 val request = GraphqlRequest(query, BlastSellerMetaDataResponse::class.java, emptyMap())
                 repository.getReseponse(listOf(request))
             }.getSuccessData<BlastSellerMetaDataResponse>()
-            onSuccessLoadChatBlastSellerMetaData(data.chatBlastSellerMetadata)
+            getChatAdminAccessJob?.join()
+            if (isAdminHasAccess) {
+                onSuccessLoadChatBlastSellerMetaData(data.chatBlastSellerMetadata)
+            } else {
+                onErrorLoadChatBlastSellerMetaData()
+            }
         }) {
             onErrorLoadChatBlastSellerMetaData(it)
         }
     }
 
     private fun onSuccessLoadChatBlastSellerMetaData(metaData: ChatBlastSellerMetadata) {
-        val broadCastUrl = metaData.url
+        val broadCastUrl = metaData.urlBroadcast
         broadCastButtonVisibility(true)
         setBroadcastButtonUrl(broadCastUrl)
     }
 
-    private fun onErrorLoadChatBlastSellerMetaData(throwable: Throwable) {
+    private fun onErrorLoadChatBlastSellerMetaData(throwable: Throwable? = null) {
         broadCastButtonVisibility(false)
     }
 
@@ -239,6 +333,7 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     private fun onSuccessLoadWhiteList(chatWhitelistFeatureResponse: ChatWhitelistFeatureResponse) {
+        _isWhitelistTopBot.value = chatWhitelistFeatureResponse.chatWhitelistFeature.isWhitelist
         if (chatWhitelistFeatureResponse.chatWhitelistFeature.isWhitelist) {
             arrayFilterParam.add(PARAM_FILTER_TOPBOT)
         }
@@ -258,6 +353,19 @@ class ChatItemListViewModel @Inject constructor(
             filters.add(context.getString(R.string.filter_chat_smart_reply))
         }
         return filters
+    }
+
+    fun hasFilter(): Boolean {
+        return filter != PARAM_FILTER_ALL
+    }
+
+    fun reset() {
+        filter = PARAM_FILTER_ALL
+    }
+
+    private fun cancelAllUseCase() {
+        getChatListUseCase.cancelRunningOperation()
+        coroutineContext.cancelChildren()
     }
 
     companion object {

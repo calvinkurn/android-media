@@ -8,8 +8,8 @@
             android:label="@string/label_tracking_activity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-            <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+            <action android:name="com.tokopedia.internal.VIEW" />
 
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
@@ -30,8 +30,8 @@
             android:name="com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipment.ConfirmShippingActivity"
             android:label="@string/title_confirm_shipment_logistic_module"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -45,11 +45,11 @@
 
         <activity
             android:name="com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity"
-            android:label="@string/app_name"
+            android:label="@string/label_tracking_activity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

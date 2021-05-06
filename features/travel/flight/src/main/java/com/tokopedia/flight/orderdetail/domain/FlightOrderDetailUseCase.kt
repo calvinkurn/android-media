@@ -1,9 +1,12 @@
 package com.tokopedia.flight.orderdetail.domain
 
+import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationDetailModel
+import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationDetailPassengerModel
+import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationListModel
+import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.view.enum.FlightPassengerTitle
 import com.tokopedia.flight.common.view.enum.FlightPassengerType
-import com.tokopedia.flight.orderdetail.data.FlightOrderDetailEntity
-import com.tokopedia.flight.orderdetail.data.FlightOrderDetailGqlConst
+import com.tokopedia.flight.orderdetail.data.*
 import com.tokopedia.flight.orderdetail.presentation.model.*
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -35,6 +38,26 @@ class FlightOrderDetailUseCase @Inject constructor(
 
         if (orderDetailEntity.errors.isEmpty()) {
             return transformEntityToModel(orderDetailEntity.data)
+        } else {
+            throw MessageErrorException(orderDetailEntity.errors.joinToString(separator = ";") { it.message })
+        }
+    }
+
+    suspend fun executeGetCancellationList(invoiceId: String): List<FlightOrderCancellationListModel> {
+        useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
+        useCase.clearRequest()
+
+        val params = mapOf(PARAM_DATA to mapOf(PARAM_INVOICE_ID to invoiceId))
+        val graphqlRequest = GraphqlRequest(FlightOrderDetailGqlConst.QUERY_ORDER_DETAIL,
+                FlightOrderDetailEntity.Response::class.java, params)
+        useCase.addRequest(graphqlRequest)
+
+        val graphqlResponse = useCase.executeOnBackground()
+        val orderDetailResponse = graphqlResponse.getSuccessData<FlightOrderDetailEntity.Response>()
+        val orderDetailEntity = orderDetailResponse.flightGetOrderDetail
+
+        if (orderDetailEntity.errors.isEmpty()) {
+            return transformOrderDetailToCancellationList(orderDetailEntity.data)
         } else {
             throw MessageErrorException(orderDetailEntity.errors.joinToString(separator = ";") { it.message })
         }
@@ -98,87 +121,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                             )
                         },
                         journeys = it.flight.journeys.map { journey ->
-                            FlightOrderDetailJourneyModel(
-                                    id = journey.id,
-                                    status = journey.status,
-                                    departureId = journey.departureId,
-                                    departureTime = journey.departureTime,
-                                    departureAirportName = journey.departureAirportName,
-                                    departureCityName = journey.departureCityName,
-                                    arrivalId = journey.arrivalId,
-                                    arrivalTime = journey.arrivalTime,
-                                    arrivalAirportName = journey.arrivalAirportName,
-                                    arrivalCityName = journey.arrivalCityName,
-                                    totalTransit = journey.totalTransit,
-                                    totalStop = journey.totalStop,
-                                    addDayArrival = journey.addDayArrival,
-                                    duration = journey.duration,
-                                    durationMinute = journey.durationMinute,
-                                    fare = FlightOrderDetailFareModel(
-                                            adultNumeric = journey.fare.adultNumeric,
-                                            childNumeric = journey.fare.childNumeric,
-                                            infantNumeric = journey.fare.infantNumeric
-                                    ),
-                                    routes = journey.routes.map { route ->
-                                        FlightOrderDetailRouteModel(
-                                                departureId = route.departureId,
-                                                departureTime = route.departureTime,
-                                                departureAirportName = route.departureAirportName,
-                                                departureCityName = route.departureCityName,
-                                                arrivalId = route.arrivalId,
-                                                arrivalTime = route.arrivalTime,
-                                                arrivalAirportName = route.arrivalAirportName,
-                                                arrivalCityName = route.arrivalCityName,
-                                                pnr = route.pnr,
-                                                airlineId = route.airlineId,
-                                                airlineName = route.airlineName,
-                                                airlineLogo = route.airlineLogo,
-                                                operatorAirlineId = route.operatorAirlineId,
-                                                flightNumber = route.flightNumber,
-                                                duration = route.duration,
-                                                durationMinute = route.durationMinute,
-                                                layover = route.layover,
-                                                layoverMinute = route.layoverMinute,
-                                                refundable = route.refundable,
-                                                departureTerminal = route.departureTerminal,
-                                                arrivalTerminal = route.arrivalTerminal,
-                                                stop = route.stop,
-                                                carrier = route.carrier,
-                                                stopDetails = route.stopDetails,
-                                                ticketNumbers = route.ticketNumbers.map { ticket ->
-                                                    FlightOrderDetailRouteModel.OrderDetailTicketNumberModel(
-                                                            passengerId = ticket.passengerId,
-                                                            ticketNumber = ticket.ticketNumber
-                                                    )
-                                                }.toList(),
-                                                freeAmenities = FlightOrderDetailFreeAmenityModel(
-                                                        cabinBaggage = FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(
-                                                                isUpTo = route.freeAmenities.cabinBaggage.isUpTo,
-                                                                unit = route.freeAmenities.cabinBaggage.unit,
-                                                                value = route.freeAmenities.cabinBaggage.value
-                                                        ),
-                                                        freeBaggage = FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(
-                                                                isUpTo = route.freeAmenities.freeBaggage.isUpTo,
-                                                                unit = route.freeAmenities.freeBaggage.unit,
-                                                                value = route.freeAmenities.freeBaggage.value
-                                                        ),
-                                                        meal = route.freeAmenities.meal,
-                                                        usbPort = route.freeAmenities.usbPort,
-                                                        wifi = route.freeAmenities.wifi,
-                                                        others = route.freeAmenities.others
-                                                )
-                                        )
-                                    }.toList(),
-                                    webCheckIn = FlightOrderDetailWebCheckInModel(
-                                            title = journey.webCheckIn.title,
-                                            subtitle = journey.webCheckIn.subtitle,
-                                            startTime = journey.webCheckIn.startTime,
-                                            endTime = journey.webCheckIn.endTime,
-                                            iconUrl = journey.webCheckIn.iconUrl,
-                                            appUrl = journey.webCheckIn.appUrl,
-                                            webUrl = journey.webCheckIn.webUrl
-                                    )
-                            )
+                            transformOrderDetailJourney(journey)
                         }.toList(),
                         passengers = it.flight.passengers.mapIndexed { index, passenger ->
                             FlightOrderDetailPassengerModel(
@@ -301,6 +244,89 @@ class FlightOrderDetailUseCase @Inject constructor(
                 )
             }
 
+    private fun transformOrderDetailJourney(journey: OrderDetailJourney): FlightOrderDetailJourneyModel =
+            FlightOrderDetailJourneyModel(
+                    id = journey.id,
+                    status = journey.status,
+                    departureId = journey.departureId,
+                    departureTime = journey.departureTime,
+                    departureAirportName = journey.departureAirportName,
+                    departureCityName = journey.departureCityName,
+                    arrivalId = journey.arrivalId,
+                    arrivalTime = journey.arrivalTime,
+                    arrivalAirportName = journey.arrivalAirportName,
+                    arrivalCityName = journey.arrivalCityName,
+                    totalTransit = journey.totalTransit,
+                    totalStop = journey.totalStop,
+                    addDayArrival = journey.addDayArrival,
+                    duration = journey.duration,
+                    durationMinute = journey.durationMinute,
+                    fare = FlightOrderDetailFareModel(
+                            adultNumeric = journey.fare.adultNumeric,
+                            childNumeric = journey.fare.childNumeric,
+                            infantNumeric = journey.fare.infantNumeric
+                    ),
+                    routes = journey.routes.map { route ->
+                        FlightOrderDetailRouteModel(
+                                departureId = route.departureId,
+                                departureTime = route.departureTime,
+                                departureAirportName = route.departureAirportName,
+                                departureCityName = route.departureCityName,
+                                arrivalId = route.arrivalId,
+                                arrivalTime = route.arrivalTime,
+                                arrivalAirportName = route.arrivalAirportName,
+                                arrivalCityName = route.arrivalCityName,
+                                pnr = route.pnr,
+                                airlineId = route.airlineId,
+                                airlineName = route.airlineName,
+                                airlineLogo = route.airlineLogo,
+                                operatorAirlineId = route.operatorAirlineId,
+                                flightNumber = route.flightNumber,
+                                duration = route.duration,
+                                durationMinute = route.durationMinute,
+                                layover = route.layover,
+                                layoverMinute = route.layoverMinute,
+                                refundable = route.refundable,
+                                departureTerminal = route.departureTerminal,
+                                arrivalTerminal = route.arrivalTerminal,
+                                stop = route.stop,
+                                carrier = route.carrier,
+                                stopDetails = route.stopDetails,
+                                ticketNumbers = route.ticketNumbers.map { ticket ->
+                                    FlightOrderDetailRouteModel.OrderDetailTicketNumberModel(
+                                            passengerId = ticket.passengerId,
+                                            ticketNumber = ticket.ticketNumber
+                                    )
+                                }.toList(),
+                                freeAmenities = FlightOrderDetailFreeAmenityModel(
+                                        cabinBaggage = FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(
+                                                isUpTo = route.freeAmenities.cabinBaggage.isUpTo,
+                                                unit = route.freeAmenities.cabinBaggage.unit,
+                                                value = route.freeAmenities.cabinBaggage.value
+                                        ),
+                                        freeBaggage = FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(
+                                                isUpTo = route.freeAmenities.freeBaggage.isUpTo,
+                                                unit = route.freeAmenities.freeBaggage.unit,
+                                                value = route.freeAmenities.freeBaggage.value
+                                        ),
+                                        meal = route.freeAmenities.meal,
+                                        usbPort = route.freeAmenities.usbPort,
+                                        wifi = route.freeAmenities.wifi,
+                                        others = route.freeAmenities.others
+                                )
+                        )
+                    }.toList(),
+                    webCheckIn = FlightOrderDetailWebCheckInModel(
+                            title = journey.webCheckIn.title,
+                            subtitle = journey.webCheckIn.subtitle,
+                            startTime = journey.webCheckIn.startTime,
+                            endTime = journey.webCheckIn.endTime,
+                            iconUrl = journey.webCheckIn.iconUrl,
+                            appUrl = journey.webCheckIn.appUrl,
+                            webUrl = journey.webCheckIn.webUrl
+                    )
+            )
+
     private fun getPassengerTitleString(titleId: Int): String =
             when (titleId) {
                 FlightPassengerTitle.TUAN.id -> FlightPassengerTitle.TUAN.salutation
@@ -317,6 +343,99 @@ class FlightOrderDetailUseCase @Inject constructor(
                 else -> FlightPassengerType.ADULT.type
             }
 
+    private fun transformOrderDetailToCancellationList(data: FlightOrderDetailEntity.OrderDetailData): List<FlightOrderCancellationListModel> =
+            data.let {
+                val cancellationList = arrayListOf<FlightOrderCancellationListModel>()
+                val journeyIdMapToDepartureArrivalId = hashMapOf<Int, Pair<String, String>>()
+
+                data.flight.journeys.map { journey ->
+                    journeyIdMapToDepartureArrivalId.put(journey.id, Pair(journey.departureId, journey.arrivalId))
+                }
+
+                for (item in it.flight.cancellations) {
+                    cancellationList.add(FlightOrderCancellationListModel(
+                            orderId = it.flight.invoiceId,
+                            cancellationDetail = FlightOrderCancellationDetailModel(
+                                    refundId = item.cancelId,
+                                    createTime = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                                            FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT, item.createTime),
+                                    realRefund = item.realRefund,
+                                    status = item.status,
+                                    statusStr = item.statusStr,
+                                    statusType = item.statusType,
+                                    refundInfo = item.refundInfo,
+                                    refundDetail = item.refundDetail,
+                                    journeys = transformJourneyToCancellation(it.flight.journeys, item.cancelDetail),
+                                    passengers = transformPassengerToCancellation(
+                                            journeyIdMapToDepartureArrivalId = journeyIdMapToDepartureArrivalId,
+                                            passengerList = data.flight.passengers,
+                                            cancellationDetailList = item.cancelDetail
+                                    )
+                            )
+                    ))
+                }
+
+                cancellationList
+            }
+
+    private fun transformJourneyToCancellation(journeyList: List<OrderDetailJourney>,
+                                               cancellationDetailList: List<OrderDetailCancellation.OrderDetailCancelDetail>)
+            : List<FlightOrderDetailJourneyModel> {
+
+        val journeyIdList = arrayListOf<Int>()
+        val transformedJourneyList = arrayListOf<FlightOrderDetailJourneyModel>()
+
+        journeyList.map { journey ->
+            cancellationDetailList.map { cancellationDetail ->
+                if (journey.id == cancellationDetail.journeyId && !journeyIdList.contains(journey.id)) {
+                    transformedJourneyList.add(transformOrderDetailJourney(journey))
+                    journeyIdList.add(journey.id)
+                }
+            }
+        }
+
+        return transformedJourneyList
+    }
+
+    private fun transformPassengerToCancellation(journeyIdMapToDepartureArrivalId: Map<Int, Pair<String, String>>,
+                                                 passengerList: List<OrderDetailPassenger>,
+                                                 cancellationDetailList: List<OrderDetailCancellation.OrderDetailCancelDetail>)
+            : List<FlightOrderCancellationDetailPassengerModel> {
+        val transformedData = arrayListOf<FlightOrderCancellationDetailPassengerModel>()
+
+        cancellationDetailList.map { cancellationDetail ->
+            passengerList.map { passenger ->
+                if (cancellationDetail.passengerId == passenger.id) {
+                    transformedData.add(FlightOrderCancellationDetailPassengerModel(
+                            id = passenger.id,
+                            type = passenger.type,
+                            typeString = getPassengerTypeString(passenger.type),
+                            title = passenger.title,
+                            titleString = getPassengerTitleString(passenger.title),
+                            firstName = passenger.firstName,
+                            lastName = passenger.lastName,
+                            departureAirportId = journeyIdMapToDepartureArrivalId[cancellationDetail.journeyId]?.first
+                                    ?: "",
+                            arrivalAirportId = journeyIdMapToDepartureArrivalId[cancellationDetail.journeyId]?.second
+                                    ?: "",
+                            journeyId = cancellationDetail.journeyId,
+                            amenities = passenger.amenities.map { amenity ->
+                                FlightOrderDetailAmenityModel(
+                                        departureId = amenity.departureId,
+                                        arrivalId = amenity.arrivalId,
+                                        type = amenity.type,
+                                        price = amenity.price,
+                                        priceNumeric = amenity.priceNumeric,
+                                        detail = amenity.detail
+                                )
+                            }.toList()
+                    ))
+                }
+            }
+        }
+
+        return transformedData
+    }
 
     companion object {
         private const val PARAM_INVOICE_ID = "invoiceID"

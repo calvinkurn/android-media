@@ -11,9 +11,9 @@
         android:id="@+id/reminder_recommendation_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/home_component_margin_default"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/home_component_margin_default"
         android:ellipsize="end"
         android:lines="1"
         android:text="@string/home_reminder_title"
@@ -28,18 +28,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/home_component_margin_default"
         app:layout_constraintBottom_toBottomOf="@id/reminder_recommendation_title"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/reminder_recommendation_title"
-        app:srcCompat="@drawable/ic_close_white" />
+        app:srcCompat="@drawable/ic_close_white"
+        android:contentDescription="@string/content_desc_reminder" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/home_component_margin_default"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/home_component_margin_default"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         app:cardCornerRadius="@dimen/layout_lvl1"
         app:cardElevation="0dp"
@@ -64,7 +65,8 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/btn_reminder_recommendation"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/bg_reminder_neutral" />
+                app:srcCompat="@drawable/bg_reminder_neutral"
+                android:contentDescription="@string/content_desc_reminder"  />
 
             <ImageView
                 android:id="@+id/ic_reminder_recommendation_product"
@@ -76,7 +78,8 @@
                 android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/content_desc_reminder"  />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/reminder_recommendation_text_main"

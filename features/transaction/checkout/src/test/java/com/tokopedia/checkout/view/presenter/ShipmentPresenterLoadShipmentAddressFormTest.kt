@@ -10,18 +10,16 @@ import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
+import com.tokopedia.logisticCommon.data.entity.address.UserAddress
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
@@ -54,9 +52,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     private lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
 
     @MockK
-    private lateinit var codCheckoutUseCase: CodCheckoutUseCase
-
-    @MockK
     private lateinit var getRatesUseCase: GetRatesUseCase
 
     @MockK
@@ -81,13 +76,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     private lateinit var analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection
 
     @MockK
-    private lateinit var codAnalytics: CodAnalytics
-
-    @MockK
     private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
-
-    @MockK
-    private lateinit var getInsuranceCartUseCase: GetInsuranceCartUseCase
 
     @MockK
     private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
@@ -111,15 +100,13 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        presenter = ShipmentPresenter(compositeSubscription,
-                checkoutUseCase, getShipmentAddressFormGqlUseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase,
-                saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase,
-                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
-                ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
-                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
-                getInsuranceCartUseCase, shipmentDataConverter, releaseBookingUseCase,
+        presenter = ShipmentPresenter(
+                compositeSubscription, checkoutUseCase, getShipmentAddressFormGqlUseCase,
+                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
+                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
+                submitHelpTicketUseCase, ratesStatesConverter, shippingCourierConverter,
+                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
+                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers)
         presenter.attachView(view)
     }
@@ -129,7 +116,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         // Given
         val data = DataProvider.provideShipmentAddressFormResponse()
         val cartShipmentAddressFormData = shipmentMapper.convertToShipmentAddressFormData(data.shipmentAddressFormResponse.data)
-        cartShipmentAddressFormData.abTestButton = ABTestButton(enable = true)
         presenter.shipmentButtonPaymentModel = ShipmentButtonPaymentModel()
 
         every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(cartShipmentAddressFormData)
@@ -143,21 +129,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             view.hideInitialLoading()
             view.renderCheckoutPage(any(), any(), any())
             view.stopTrace()
-        }
-    }
-
-    @Test
-    fun firstLoadCheckoutPageWithNoAddress_ShouldHideInitialLoadingAndRenderNoAddressPage() {
-        // Given
-        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData())
-
-        // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
-
-        // Then
-        verifyOrder {
-            view.hideInitialLoading()
-            view.renderNoRecipientAddressShipmentForm(any())
         }
     }
 
@@ -227,9 +198,253 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
+    fun `WHEN load checkout page and data is null THEN should trigger finish activity`() {
+        // Given
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(null)
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.onShipmentAddressFormEmpty()
+            view.stopTrace()
+        }
+    }
+
+    @Test
+    fun `WHEN load checkout page with no error and address list is empty THEN should trigger finish activity`() {
+        // Given
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(errorCode = 0, groupAddress = emptyList()))
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.onShipmentAddressFormEmpty()
+            view.stopTrace()
+        }
+    }
+
+    @Test
+    fun `WHEN load checkout page with no error and address list is not empty but the user address data is null THEN should trigger finish activity`() {
+        // Given
+        val data = CartShipmentAddressFormData(errorCode = 0, groupAddress = listOf(GroupAddress().apply {
+            userAddress = null
+        }))
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.onShipmentAddressFormEmpty()
+            view.stopTrace()
+        }
+    }
+
+
+    @Test
+    fun `WHEN load checkout page get state address id match THEN should render checkout page`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = UserAddress.STATE_CHOSEN_ADDRESS_MATCH)
+        }
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(groupAddress)))
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.renderCheckoutPage(any(), any(), any())
+            view.stopTrace()
+        }
+    }
+
+    @Test
+    fun `WHEN load checkout page get state address id not match THEN should render checkout page and show toaster`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = UserAddress.STATE_ADDRESS_ID_NOT_MATCH)
+        }
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), popUpMessage = "message"))
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.updateLocalCacheAddressData(any())
+            view.renderCheckoutPage(any(), any(), any())
+            view.showToastNormal(any())
+            view.stopTrace()
+        }
+    }
+
+    @Test
+    fun `WHEN load checkout page get state address id not match but no toaster message THEN should render checkout page and don't show toaster`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = UserAddress.STATE_ADDRESS_ID_NOT_MATCH)
+        }
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), popUpMessage = ""))
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.updateLocalCacheAddressData(any())
+            view.renderCheckoutPage(any(), any(), any())
+            view.stopTrace()
+        }
+
+        verify(inverse = true) {
+            view.showToastNormal(any())
+        }
+    }
+
+    @Test
+    fun `WHEN load checkout page get error code open address list THEN should navigate to address list page`() {
+        // Given
+        val data = CartShipmentAddressFormData().apply {
+            errorCode = CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST
+            groupAddress = listOf(
+                    GroupAddress().apply {
+                        userAddress = UserAddress(state = UserAddress.STATE_DISTRICT_ID_NOT_MATCH)
+                    }
+            )
+        }
+
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.renderCheckoutPageNoMatchedAddress(any(), any())
+            view.stopTrace()
+        }
+    }
+
+    @Test
+    fun `WHEN load checkout page get error code open address list and user address is null THEN should navigate to address list page with default address state`() {
+        // Given
+        val defaultAddressState = 0
+        val data = CartShipmentAddressFormData().apply {
+            errorCode = CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST
+            groupAddress = listOf(
+                    GroupAddress().apply {
+                        userAddress = null
+                    }
+            )
+        }
+
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.renderCheckoutPageNoMatchedAddress(any(), defaultAddressState)
+            view.stopTrace()
+        }
+    }
+
+    @Test
+    fun `WHEN load checkout page get state no address THEN should navigate to add new address page`() {
+        // Given
+        val data = CartShipmentAddressFormData().apply {
+            errorCode = CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS
+            groupAddress = listOf(
+                    GroupAddress().apply {
+                        userAddress = UserAddress(state = UserAddress.STATE_NO_ADDRESS)
+                    }
+            )
+        }
+
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.renderCheckoutPageNoAddress(any())
+            view.stopTrace()
+        }
+    }
+
+    @Test
+    fun `WHEN load checkout page get default value address state THEN should render checkout page`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(groupAddress)))
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.renderCheckoutPage(any(), any(), any())
+            view.stopTrace()
+        }
+    }
+
+    @Test
     fun `WHEN reload checkout page success THEN should render checkout page`() {
         // Given
-        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(GroupAddress())))
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(groupAddress)))
 
         // When
         presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")

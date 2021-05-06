@@ -3,6 +3,7 @@ package com.tokopedia.shop_showcase.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,4 +17,5 @@ interface ShopShowcaseComponent {
     fun getMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase
     fun httpLoggingInterceptor(): HttpLoggingInterceptor
     fun retrofitBuilder(): Retrofit.Builder
+    fun coroutineDispatchers(): CoroutineDispatchers
 }

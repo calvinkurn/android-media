@@ -1,9 +1,7 @@
 package com.tokopedia.smartbills.presentation.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,8 +21,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
@@ -37,12 +35,14 @@ import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.smartbills.di.SmartBillsComponent
+import com.tokopedia.smartbills.presentation.activity.SmartBillsActivity
 import com.tokopedia.smartbills.presentation.activity.SmartBillsOnboardingActivity
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapter
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHolder
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
+import com.tokopedia.smartbills.presentation.widget.SmartBillsToolTipBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
@@ -61,7 +61,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         BaseCheckableViewHolder.CheckableInteractionListener,
         BaseListCheckableAdapter.OnCheckableAdapterListener<RechargeBills>,
         SmartBillsViewHolder.DetailListener,
-        TopupBillsCheckoutWidget.ActionListener {
+        TopupBillsCheckoutWidget.ActionListener,
+        SmartBillsActivity.SbmActivityListener,
+        SmartBillsToolTipBottomSheet.Listener{
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -314,6 +316,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
 
     override fun onSwipeRefresh() {
         toggleAllItems(false)
+        updateCheckAll()
         super.onSwipeRefresh()
     }
 
@@ -376,6 +379,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     override fun updateListByCheck(isChecked: Boolean, position: Int) {
+        if(position>=0)
         adapter.updateListByCheck(isChecked, position)
     }
 
@@ -389,8 +393,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             totalPrice -= item.amount.toInt()
         }
         updateCheckoutView()
-
-        cb_smart_bills_select_all.isChecked = adapter.totalChecked == adapter.dataSize
+        updateCheckAll()
     }
 
     private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {
@@ -402,45 +405,47 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     private fun showOnboarding() {
-        // Render onboarding coach mark if there are bills & if it's the first visit
-        if (adapter.dataSize > 0 && !localCacheHandler.getBoolean(SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK, false)) {
-            localCacheHandler.apply {
-                putBoolean(SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK, true)
-                applyEditor()
-            }
+        context?.run {
+            // Render onboarding coach mark if there are bills & if it's the first visit
+            if (adapter.dataSize > 0 && !localCacheHandler.getBoolean(SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK, false)) {
+                localCacheHandler.apply {
+                    putBoolean(SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK, true)
+                    applyEditor()
+                }
 
-            // Get first viewholder item for coach marks
-            rv_smart_bills_items.post {
-                val billItemView = (rv_smart_bills_items.findViewHolderForAdapterPosition(0) as? SmartBillsViewHolder)?.itemView
-                val coachMarks = ArrayList<CoachMarkItem>()
-                coachMarks.add(
-                        CoachMarkItem(
-                                view_smart_bills_select_all_checkbox_container,
-                                getString(R.string.smart_bills_onboarding_title_1),
-                                getString(R.string.smart_bills_onboarding_description_1)
-                        )
-                )
-                billItemView?.run {
+                // Get first viewholder item for coach marks
+                rv_smart_bills_items.post {
+                    val billItemView = (rv_smart_bills_items.findViewHolderForAdapterPosition(0) as? SmartBillsViewHolder)?.itemView
+                    val coachMarks = ArrayList<CoachMark2Item>()
                     coachMarks.add(
-                            CoachMarkItem(
-                                    this,
-                                    getString(R.string.smart_bills_onboarding_title_2),
-                                    getString(R.string.smart_bills_onboarding_description_2)
+                            CoachMark2Item(
+                                    view_smart_bills_select_all_checkbox_container,
+                                    getString(R.string.smart_bills_onboarding_title_1),
+                                    getString(R.string.smart_bills_onboarding_description_1)
                             )
                     )
-                }
-                coachMarks.add(
-                        CoachMarkItem(
-                                smart_bills_checkout_view.getCheckoutButton(),
-                                getString(R.string.smart_bills_onboarding_title_3),
-                                getString(R.string.smart_bills_onboarding_description_3)
+                    billItemView?.run {
+                        coachMarks.add(
+                                CoachMark2Item(
+                                        this,
+                                        getString(R.string.smart_bills_onboarding_title_2),
+                                        getString(R.string.smart_bills_onboarding_description_2)
+                                )
                         )
-                )
+                    }
+                    coachMarks.add(
+                            CoachMark2Item(
+                                    smart_bills_checkout_view.getCheckoutButton(),
+                                    getString(R.string.smart_bills_onboarding_title_3),
+                                    getString(R.string.smart_bills_onboarding_description_3)
+                            )
+                    )
 
-                val coachMark = CoachMarkBuilder().build()
-                coachMark.enableSkip = true
-                coachMark.setHighlightMargin(SMART_BILLS_COACH_MARK_HIGHLIGHT_MARGIN)
-                coachMark.show(activity, "SmartBillsOnboardingCoachMark", coachMarks)
+                    val coachMark = CoachMark2(this)
+//                    coachMark.enableSkip = true
+//                    coachMark.setHighlightMargin(SMART_BILLS_COACH_MARK_HIGHLIGHT_MARGIN)
+                    coachMark.showCoachMark(coachMarks)
+                }
             }
         }
     }
@@ -499,8 +504,29 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         super.onDestroy()
     }
 
+    override fun clickToolTip() {
+        context?.let {
+            smartBillsAnalytics.clickToolTip()
+            val tooltipBottomSheet = SmartBillsToolTipBottomSheet.newInstance(it, this)
+            fragmentManager?.run {
+                tooltipBottomSheet.show(this)
+            }
+        }
+    }
+
+    override fun onClickMoreLearn() {
+        context?.let {
+            smartBillsAnalytics.clickMoreLearn()
+            RouteManager.route(context, HELP_SBM_URL)
+        }
+    }
+
     private fun getDataErrorException(): Throwable {
         return MessageErrorException(getString(R.string.smart_bills_data_error))
+    }
+
+    private fun updateCheckAll(){
+        cb_smart_bills_select_all.isChecked = adapter.totalChecked == adapter.dataSize
     }
 
     companion object {
@@ -516,6 +542,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         const val REQUEST_CODE_SMART_BILLS_ONBOARDING = 1700
 
         const val LANGGANAN_URL = "https://www.tokopedia.com/langganan"
+        const val HELP_SBM_URL = "https://www.tokopedia.com/help/article/bayar-sekaligus"
 
         fun newInstance(sourceType: String = ""): SmartBillsFragment {
             val fragment = SmartBillsFragment()

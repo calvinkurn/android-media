@@ -9,7 +9,7 @@
     android:layout_marginEnd="@dimen/layout_lvl2"
     android:layout_marginRight="@dimen/layout_lvl2"
     android:layout_marginBottom="@dimen/layout_lvl1"
-    app:cardBackgroundColor="@color/Neutral_N0"
+    app:cardBackgroundColor="@color/Unify_N0"
     app:cardCornerRadius="@dimen/layout_lvl1"
     app:cardElevation="1dp"
     app:cardPreventCornerOverlap="false">

@@ -29,7 +29,7 @@ object ProductDetailInfoMapper {
                     val descriptionValue = parcelData.data.firstOrNull { it.title.toLowerCase() == DESCRIPTION_DETAIL_KEY }?.subtitle
 
                     if (descriptionValue?.isNotEmpty() == true) {
-                        listOfComponent.add(ProductDetailInfoExpandableDataModel(index, it.title, descriptionValue, parcelData.listOfVideo, it.isShowable))
+                        listOfComponent.add(ProductDetailInfoExpandableDataModel(index, it.title, descriptionValue, parcelData.listOfYoutubeVideo, it.isShowable))
                     }
                 }
                 GUIDELINE_DETAIL_KEY -> {

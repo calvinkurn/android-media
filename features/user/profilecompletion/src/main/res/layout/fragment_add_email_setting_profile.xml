@@ -53,7 +53,7 @@
             tools:text="@string/we_will_send_email_verification_code"
             android:textSize="@dimen/fontSize_lvl2"
             android:visibility="gone"
-            android:textColor="@color/Red_R500"/>
+            android:textColor="@color/Unify_R500"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
             app:layout_constraintBottom_toBottomOf="parent"

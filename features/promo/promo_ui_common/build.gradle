@@ -13,6 +13,7 @@ buildscript {
 }
 
 dependencies {
+	implementation rootProject.ext.unifyDependencies.principles
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout

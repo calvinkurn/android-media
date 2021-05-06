@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
@@ -119,7 +120,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                             productDetails = listOf(ProductDetailsItem(helper.product.quantity.orderQuantity, helper.product.productId))))), validateUsePromoRequest)
             assertEquals(PromoRequest(cartType = "occ", state = "checkout",
                     orders = listOf(Order(isChecked = true, shippingId = helper.firstCourierFirstDuration.productData.shipperId, spId = helper.firstCourierFirstDuration.productData.shipperProductId,
-                            product_details = listOf(ProductDetail(helper.product.productId.toLong(), helper.product.quantity.orderQuantity))))), promoRequest)
+                            product_details = listOf(ProductDetail(helper.product.productId, helper.product.quantity.orderQuantity))))), promoRequest)
             assertEquals(0, bboCodes.size)
         }
     }
@@ -146,7 +147,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
             assertEquals(PromoRequest(cartType = "occ", state = "checkout",
                     orders = listOf(Order(isChecked = true, shippingId = helper.logisticPromo.shipperId, spId = helper.logisticPromo.shipperProductId,
                             codes = mutableListOf(helper.logisticPromo.promoCode),
-                            product_details = listOf(ProductDetail(helper.product.productId.toLong(), helper.product.quantity.orderQuantity))))), promoRequest)
+                            product_details = listOf(ProductDetail(helper.product.productId, helper.product.quantity.orderQuantity))))), promoRequest)
             assertEquals(1, bboCodes.size)
         }
     }
@@ -235,6 +236,29 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         // Then
         assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderPromo.value.state)
         assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
+    }
+
+    @Test
+    fun `Validate Use Promo Error Akamai`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        val promoCode = "abc"
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
+        val exception = AkamaiErrorException("")
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.error(exception)
+        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+
+        // When
+        orderSummaryPageViewModel.validateUsePromo()
+
+        // Then
+        assertEquals(OrderPromo(state = OccButtonState.NORMAL), orderSummaryPageViewModel.orderPromo.value)
+        assertEquals(OccButtonState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
+        assertEquals(OccGlobalEvent.Error(exception), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
@@ -462,6 +486,32 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         assertEquals(OccGlobalEvent.PromoClashing(arrayListOf(
                 NotEligiblePromoHolderdata(showShopSection = true, iconType = NotEligiblePromoHolderdata.TYPE_ICON_POWER_MERCHANT)
         )), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Final Validate Use Promo Error Akamai`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(shop = OrderShop(isGold = 1))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        val lastResponse = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(
+                        messageUiModel = MessageUiModel(state = "green")
+                ))))
+        val response = AkamaiErrorException("")
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.error(response)
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
+        orderSummaryPageViewModel.validateUsePromoRevampUiModel = lastResponse
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+
+        // When
+        orderSummaryPageViewModel.finalUpdate({ }, false)
+
+        // Then
+        assertEquals(OccGlobalEvent.TriggerRefresh(throwable = response), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test

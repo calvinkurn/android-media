@@ -4,7 +4,7 @@
         <shape android:shape="rectangle">
             <stroke
                 android:width="@dimen/dp_2"
-                android:color="@color/yellow_tradein_button" />
+                android:color="@color/Unify_Y200" />
             <corners android:radius="@dimen/dp_4" />
         </shape>
     </item>

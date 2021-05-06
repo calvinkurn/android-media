@@ -48,6 +48,8 @@
     <dimen name="use_case_and_dynamic_image_size">48dp</dimen>
     <dimen name="use_case_and_dynamic_icon_size">56dp</dimen>
     <dimen name="home_searchbar_transition_range">50dp</dimen>
+    <dimen name="home_revamp_searchbar_transition_range">16dp</dimen>
+    <dimen name="keyboard_min_height">200dp</dimen>
 
     <!--Banner Play-->
     <dimen name="home_play_banner_play_icon_size">34dp</dimen>
@@ -60,5 +62,14 @@
 
     <dimen name="new_margin_sm">24dp</dimen>
     <dimen name="padding_small">10dp</dimen>
+
+    <dimen name="default_toolbar_height">56dp</dimen>
+    <dimen name="default_status_bar_height">24dp</dimen>
+
+<!--    default toolbar height + default status bar height + 16 margin-->
+    <dimen name="default_toolbar_status_height">96dp</dimen>
+
+    <dimen name="home_background_no_choose_address">130dp</dimen>
+    <dimen name="home_background_with_choose_address">160dp</dimen>
 
 </resources>

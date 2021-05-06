@@ -24,7 +24,7 @@
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
         android:lines="1"
-        android:textColor="@color/light_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4"
         android:visibility="gone"
         android:text="@string/telco_title_filter_result" />

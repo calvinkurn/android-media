@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.datamapper
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
+import com.tokopedia.discovery2.Utils.Companion.getElapsedTime
 import com.tokopedia.discovery2.Utils.Companion.isSaleOver
 import com.tokopedia.discovery2.Utils.Companion.parseFlashSaleDate
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -13,17 +14,20 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 const val DYNAMIC_COMPONENT_IDENTIFIER = "dynamic_"
 var discoComponentQuery: MutableMap<String, String?>? = null
 
-fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryParameterMap: MutableMap<String, String?>): DiscoveryPageData {
+fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
+                                   queryParameterMap: MutableMap<String, String?>,
+                                   userAddressData: LocalCacheModel?): DiscoveryPageData {
     val pageInfo = discoveryResponse.pageInfo
     val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
     discoComponentQuery = queryParameterMap
-    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap)
+    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, userAddressData)
     if (!discoveryResponse.components.isNullOrEmpty()) {
         discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentListWithQueryParam(discoveryResponse.components.filter {
             pageInfo.identifier?.let { identifier ->
@@ -40,7 +44,9 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryPa
     return discoveryPageData
 }
 
-class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryParameterMap: Map<String, String?>) {
+class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
+                              private val queryParameterMap: Map<String, String?>,
+                              private val localCacheModel: LocalCacheModel?) {
     fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
         val targetCompId = queryParameterMap[TARGET_COMP_ID] ?: ""
         val componentList = getDiscoveryComponentList(filterSaleTimer(components))
@@ -49,6 +55,11 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                 if (item.id == targetCompId) {
                     item.rpc_discoQuery = queryParameterMap
                 }
+                item.userAddressData = localCacheModel
+            }
+        }else if(componentList.isNotEmpty()){
+            componentList.forEach { item ->
+                item.userAddressData = localCacheModel
             }
         }
         return componentList
@@ -97,13 +108,25 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                     listComponents.add(component)
                 }
             }
+            ComponentNames.QuickFilter.componentName -> {
+                listComponents.add(component.copy())
+            }
             ComponentNames.SingleBanner.componentName, ComponentNames.DoubleBanner.componentName,
-            ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName -> listComponents.add(DiscoveryDataMapper.mapBannerComponentData(component))
+            ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName ->
+                listComponents.add(DiscoveryDataMapper.mapBannerComponentData(component))
+            ComponentNames.BannerTimer.componentName -> {
+                if (addBannerTimerComp(component)) {
+                    listComponents.add(component)
+                }
+            }
             else -> listComponents.add(component)
         }
         return listComponents
     }
 
+    private fun addBannerTimerComp(component: ComponentsItem): Boolean {
+        return getElapsedTime(component.data?.firstOrNull()?.endDate ?: "") > 0
+    }
 
     private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
@@ -228,6 +251,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                 setComponentsItem(component.getComponentsItem(), component.tabName)
             })
             component.needPagination = true
+            component.userAddressData = localCacheModel
             listComponents.addAll(List(10) { ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName).apply {
                 properties = component.properties
             } })
@@ -275,4 +299,11 @@ fun updateComponentsQueryParams(categoryId : String){
     discoComponentQuery?.let {
         it[CATEGORY_ID] = categoryId
     }
+}
+
+fun getPageInfo(pageName: String) : PageInfo {
+    discoveryPageData[pageName]?.let {
+        return it.pageInfo
+    }
+    return PageInfo()
 }

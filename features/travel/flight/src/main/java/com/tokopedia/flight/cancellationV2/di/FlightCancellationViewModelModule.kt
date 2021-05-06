@@ -15,7 +15,6 @@ import dagger.multibindings.IntoMap
 /**
  * @author by furqan on 06/07/2020
  */
-@FlightCancellationScope
 @Module
 abstract class FlightCancellationViewModelModule {
 

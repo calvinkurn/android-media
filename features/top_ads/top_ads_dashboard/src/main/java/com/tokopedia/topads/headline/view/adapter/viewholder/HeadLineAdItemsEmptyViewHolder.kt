@@ -6,21 +6,21 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.data.response.groupitem.DataItem
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
-import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsEmptyViewModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsEmptyModel
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 
 /**
  * Created by Pika on 16/10/20.
  */
 
-class HeadLineAdItemsEmptyViewHolder(val view: View) : HeadLineAdItemsViewHolder<HeadLineAdItemsEmptyViewModel>(view) {
+class HeadLineAdItemsEmptyViewHolder(val view: View) : HeadLineAdItemsViewHolder<HeadLineAdItemsEmptyModel>(view) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.topads_dash_group_empty_state
     }
 
-    override fun bind(item: HeadLineAdItemsEmptyViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>, selectedText: String) {
+    override fun bind(item: HeadLineAdItemsEmptyModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>, selectedText: String) {
 
         if (fromSearch || selectedText.isEmpty()) {
             view.text_title.text = view.context.getString(R.string.topads_headlin_Search_empty_title)

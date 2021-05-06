@@ -14,6 +14,7 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 28/04/20
  */
+@GqlQuery(GetProductReviewInitialUseCase.GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY_CLASS_NAME, GetProductReviewInitialUseCase.GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY)
 class GetProductReviewInitialUseCase @Inject constructor(
         private val graphQlRepository: GraphqlRepository
 ) : UseCase<ProductReviewInitialDataResponse>() {
@@ -40,6 +41,17 @@ class GetProductReviewInitialUseCase @Inject constructor(
                   ratingCount
               }
               reviewCount
+            }
+        }
+        """
+        const val GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY_CLASS_NAME = "ReviewDetailOverall"
+        const val GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY = """
+        query get_product_review_detail_overall(${'$'}productID: Int!, ${'$'}filterBy: String!) {
+             productrevGetReviewAggregateByProduct(productID: ${'$'}productID, filterBy: ${'$'}filterBy) {
+               productName
+               ratingAverage
+               ratingCount
+               period
             }
         }
         """

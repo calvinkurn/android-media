@@ -2,9 +2,9 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nsvFlightHomepage"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/flightHomepageScrollView">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
             app:layout_constraintTop_toBottomOf="@+id/flightHomepageTicker"
             app:srcCompat="@drawable/ic_flight_dashboard_banner" />
 
-        <androidx.cardview.widget.CardView
+        <com.tokopedia.unifycomponents.CardUnify
             android:id="@+id/flightHomepageSearchFormContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,11 +43,7 @@
             android:layout_marginRight="@dimen/spacing_lvl4"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/ivFlightHomepageBanner"
-            app:cardCornerRadius="@dimen/spacing_lvl3"
-            app:cardElevation="@dimen/spacing_lvl2"
-            app:cardUseCompatPadding="false"
-            >
+            app:layout_constraintTop_toTopOf="@+id/ivFlightHomepageBanner">
 
             <com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
                 android:id="@+id/flightHomepageSearchForm"
@@ -55,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="@dimen/spacing_lvl4"/>
 
-        </androidx.cardview.widget.CardView>
+        </com.tokopedia.unifycomponents.CardUnify>
 
         <!--Banner disini-->
         <LinearLayout
