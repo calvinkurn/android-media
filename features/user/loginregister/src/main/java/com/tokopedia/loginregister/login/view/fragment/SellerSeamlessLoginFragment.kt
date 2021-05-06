@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.*
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +42,6 @@ import kotlinx.android.synthetic.main.fragment_seller_seamless_login.*
 import kotlinx.android.synthetic.main.fragment_seller_seamless_login.view.*
 import kotlinx.android.synthetic.main.item_account_with_shop.*
 import kotlinx.android.synthetic.main.item_account_with_shop.view.*
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -261,16 +261,30 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     private fun connectService() {
         if(GlobalConfig.isSellerApp() && serviceConnection == null) {
-            serviceConnection = RemoteServiceConnection()
-            val i = Intent().apply {
-                component = ComponentName(SeamlessSellerConstant.MAINAPP_PACKAGE, SeamlessSellerConstant.SERVICE_PACKAGE)
-            }
-            val success = activity?.bindService(i, serviceConnection!!, Context.BIND_AUTO_CREATE)
-            if(success == false)  {
+            try {
+                serviceConnection = RemoteServiceConnection()
+                val i = Intent().apply {
+                    component = ComponentName(SeamlessSellerConstant.MAINAPP_PACKAGE, SeamlessSellerConstant.SERVICE_PACKAGE)
+                }
+                val success = activity?.bindService(i, serviceConnection!!, Context.BIND_AUTO_CREATE)
+                if (success == false) {
+                    ServerLogger.log(Priority.P2, "SEAMLESS_SELLER",
+                            mapOf("type" to "ErrorBindingService", "reason" to "Connect Service Failed", "detail" to "Bind Service: $success"))
+                    moveToNormalLogin()
+                }
+            } catch(ex: Exception) {
                 ServerLogger.log(Priority.P2, "SEAMLESS_SELLER",
-                        mapOf("type" to "ErrorBindingService", "reason" to "Connect Service Failed", "detail" to "Bind Service: $success"))
+                        mapOf("type" to "ErrorBindingService", "reason" to "Exception Thrown While Binding", "detail" to "Exception: ${formatThrowable(ex)}."))
                 moveToNormalLogin()
             }
+        }
+    }
+
+    fun formatThrowable(throwable: Throwable): String {
+        return try{
+            Log.getStackTraceString(throwable).take(1000)
+        } catch (e: Exception){
+            e.toString()
         }
     }
 
