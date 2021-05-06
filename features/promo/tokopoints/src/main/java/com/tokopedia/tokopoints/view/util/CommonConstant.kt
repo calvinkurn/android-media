@@ -80,6 +80,8 @@ interface CommonConstant {
             const val BANNER = "banner"
             const val TOPADS = "topads"
             const val TOPHEADER = "topheader"
+            const val RECOMM = "recomm"
+
         }
     }
 

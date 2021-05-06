@@ -26,6 +26,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
@@ -51,6 +52,7 @@ import com.tokopedia.tokopoints.view.tokopointhome.column.SectionVerticalColumnV
 import com.tokopedia.tokopoints.view.tokopointhome.coupon.SectionHorizontalViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionVH
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.recommendation.SectionRecomViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
 import com.tokopedia.tokopoints.view.util.*
@@ -218,7 +220,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                     setOnRecyclerViewLayoutReady()
-                    renderRewardUi(it.data.topSectionResponse, it.data.sectionList)
+                    renderRewardUi(it.data.topSectionResponse, it.data.sectionList,it.data.recomData )
                 }
             }
         }
@@ -294,7 +296,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         adapter?.notifyItemChanged(0)
     }
 
-    override fun renderRewardUi(topSectionData: TopSectionResponse?,sections: List<SectionContent>) {
+    override fun renderRewardUi(topSectionData: TopSectionResponse?,sections: List<SectionContent> , recommList : RewardsRecommendation?) {
 
         if (topSectionData?.tokopediaRewardTopSection?.dynamicActionList.isNullOrEmpty() &&
                 topSectionData?.tokopediaRewardTopSection?.tier != null && sections.isEmpty()) {
@@ -360,6 +362,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         sectionList.add(sectionContent)
 
                     }
+
                     when (sectionContent.layoutBannerAttr.bannerType) {
                         CommonConstant.BannerType.BANNER_2_1 -> {
                             val verticalImagesViewBinder = SectionVerticalBanner21ViewBinder()
@@ -414,7 +417,12 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
             }
 
-
+            val sectionRecomViewBinder = recommList?.let { SectionRecomViewBinder(it) }
+            @Suppress("UNCHECKED_CAST")
+            viewBinders.put(
+                    CommonConstant.SectionLayoutType.RECOMM,
+                    sectionRecomViewBinder as SectionItemBinder)
+            recommList?.let { sectionList.add(sections.size - 1 ,it) }
 
             adapter = SectionAdapter(viewBinders)
             adapter?.addItem(sectionList)

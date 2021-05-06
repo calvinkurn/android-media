@@ -14,7 +14,7 @@ import dagger.Component
 
 
 @TokoPointScope
-@Component(dependencies = [BaseAppComponent::class], modules = [BundleModule::class, ViewModelModule::class, TokopointsQueryModule::class ])
+@Component(dependencies = [BaseAppComponent::class], modules = [BundleModule::class, ViewModelModule::class, TokopointsQueryModule::class , RecomModule::class ])
 interface TokopointBundleComponent {
     fun inject(fragment: CouponDetailFragment)
 

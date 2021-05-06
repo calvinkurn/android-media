@@ -19,14 +19,17 @@ class SectionAdapter(private val viewBinders: Map<String, SectionItemBinder>) : 
     private fun getViewBinder(viewType: Int): SectionItemBinder = viewTypeToBinders.getValue(viewType)
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0) {
-            viewBinders.getValue(CommonConstant.SectionLayoutType.TOPHEADER).getSectionItemType()
-        } else {
-            val item = sectionList[position] as SectionContent
-            if (item.layoutType == CommonConstant.SectionLayoutType.BANNER) {
-                viewBinders.getValue(item.layoutBannerAttr.bannerType).getSectionItemType()
-            } else {
-                viewBinders.getValue(item.layoutType).getSectionItemType()
+        return when (position) {
+            0 -> viewBinders.getValue(CommonConstant.SectionLayoutType.TOPHEADER).getSectionItemType()
+            sectionList.size - 1 -> viewBinders.getValue(CommonConstant.SectionLayoutType.RECOMM).getSectionItemType()
+
+            else -> {
+                val item = sectionList[position] as SectionContent
+                if (item.layoutType == CommonConstant.SectionLayoutType.BANNER) {
+                    viewBinders.getValue(item.layoutBannerAttr.bannerType).getSectionItemType()
+                } else {
+                    viewBinders.getValue(item.layoutType).getSectionItemType()
+                }
             }
         }
     }
