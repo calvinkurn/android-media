@@ -4,6 +4,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.gm.common.constant.NEW_SELLER_DAYS
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
@@ -88,7 +89,8 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
 
     private fun setupTicker(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
-            tickerShopHasPenalty?.showWithCondition(element?.scorePenalty.orZero() < 0)
+            val isNewSeller = element?.shopAge.orZero() < NEW_SELLER_DAYS
+            tickerShopHasPenalty?.showWithCondition(element?.scorePenalty.orZero() < 0 && !isNewSeller)
             tickerShopHasPenalty?.apply {
                 addOnImpressionListener(impressHolderTicker) {
                     shopPerformanceListener.onTickerImpressionToPenaltyPage()
