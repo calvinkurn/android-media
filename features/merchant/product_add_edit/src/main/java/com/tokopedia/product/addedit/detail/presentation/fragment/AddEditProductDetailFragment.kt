@@ -546,6 +546,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     viewModel.isWholeSalePriceActivated.value?.run {
                         if (this) validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount)
                     }
+                    // price recommendation
+                    val suggestedPrice  = viewModel.productPriceRecommendation.value?.suggestedPrice.orZero()
+                    if (it.toDoubleOrZero() == 0.toDouble() || suggestedPrice != it.toDoubleOrZero()) {
+                        productPriceRecommendation?.displaySuggestedPriceDeselected()
+                    } else {
+                        productPriceRecommendation?.displaySuggestedPriceSelected()
+                    }
                 }
             }
         })
@@ -1464,11 +1471,24 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeToAddingPriceRecommendation() {
-        viewModel.productPriceRecommendation.observe(viewLifecycleOwner) {
-            productPriceRecommendation?.show()
-            productPriceRecommendation?.price = it.suggestedPrice.toString()
-            val priceDescriptionText = getString(R.string.label_price_recommendation_price_description, "Sungsang")
-            productPriceRecommendation?.priceDescription = priceDescriptionText
+        viewModel.productPriceRecommendation.observe(viewLifecycleOwner) { priceSuggestion ->
+            val inputPrice = productPriceField.getTextBigIntegerOrZero()
+            val minText = priceSuggestion.suggestedPriceMin.getCurrencyFormatted()
+            val maxText = priceSuggestion.suggestedPriceMax.getCurrencyFormatted()
+            val descriptionText = getString(R.string.label_price_recommendation_description, minText, maxText)
+            val priceDescriptionText = getString(R.string.label_price_recommendation_price_description, priceSuggestion.title)
+
+            productPriceRecommendation?.apply {
+                description = descriptionText
+                priceDescription = priceDescriptionText
+                price = priceSuggestion.suggestedPrice.getCurrencyFormatted()
+                isVisible = (priceSuggestion.suggestedPrice != 0.toDouble())
+                if (inputPrice == priceSuggestion.suggestedPrice.toBigDecimal().toBigInteger()) {
+                    displaySuggestedPriceSelected()
+                } else {
+                    displaySuggestedPriceDeselected()
+                }
+            }
         }
     }
 
@@ -1559,10 +1579,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setupProductPriceRecommendationField() {
-        val checkIcon = getIconUnifyDrawable(requireContext(),
-                IconUnify.CHECK_CIRCLE,
-                ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G600))
-
         productPriceRecommendation?.apply {
             if (viewModel.isAdding) hideIconCheck()
             setPriceDescriptionVisibility(viewModel.isAdding)
@@ -1573,8 +1589,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             setOnSuggestedPriceSelected { suggestedPrice ->
                 productPriceField.setText(suggestedPrice)
                 if (viewModel.isAdding) {
-                    text = context.getString(R.string.title_price_recommendation_applied)
-                    titleIcon?.setImageDrawable(checkIcon)
+                    displaySuggestedPriceSelected()
                 }
             }
         }

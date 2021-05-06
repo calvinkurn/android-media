@@ -18,6 +18,7 @@ import com.tokopedia.unifyprinciples.Typography
 import android.os.Handler
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -84,15 +85,19 @@ class TooltipCardViewSelectable : BaseCustomView {
     }
 
     fun collapse() {
-        iconExpand?.animateRotateCw()
-        layoutTooltipContent?.animateCollapse()
-        rotated = true
+        if (!rotated) {
+            iconExpand?.animateRotateCw()
+            layoutTooltipContent?.animateCollapse()
+            rotated = true
+        }
     }
 
     fun expand() {
-        iconExpand?.animateRotateCcw()
-        layoutTooltipContent?.animateExpand()
-        rotated = false
+        if (rotated) {
+            iconExpand?.animateRotateCcw()
+            layoutTooltipContent?.animateExpand()
+            rotated = false
+        }
     }
 
     fun setSuggestedPriceSelected() {
@@ -108,6 +113,24 @@ class TooltipCardViewSelectable : BaseCustomView {
 
     fun setOnSuggestedPriceSelected(onSelected: (price: String) -> Unit) {
         onSuggestedPriceSelected = onSelected
+    }
+
+    fun displaySuggestedPriceSelected() {
+        val checkIcon = getIconUnifyDrawable(context,
+                IconUnify.CHECK_CIRCLE,
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+        text = context.getString(R.string.title_price_recommendation_applied)
+        titleIcon?.setImageDrawable(checkIcon)
+        tvApply?.hide()
+        collapse()
+    }
+
+    fun displaySuggestedPriceDeselected() {
+        val bulbIcon = MethodChecker.getDrawable(context, R.drawable.product_add_edit_ic_tips_bulb)
+        text = context.getString(R.string.title_price_recommendation)
+        titleIcon?.setImageDrawable(bulbIcon)
+        tvApply?.show()
+        expand()
     }
 
     fun setPriceDescriptionVisibility(isVisible: Boolean) {
