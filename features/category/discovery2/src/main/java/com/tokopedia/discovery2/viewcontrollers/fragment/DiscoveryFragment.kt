@@ -300,6 +300,7 @@ class DiscoveryFragment :
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
                         if (listComponent.isNullOrEmpty()) {
+                            discoveryAdapter.addDataList(ArrayList())
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
                             scrollToPinnedComponent(listComponent)
@@ -335,6 +336,7 @@ class DiscoveryFragment :
                     setToolBarPageInfoOnSuccess(it.data)
                 }
                 is Fail -> {
+                    discoveryAdapter.addDataList(ArrayList())
                     setToolBarPageInfoOnFail()
                     setPageErrorState(it)
                 }
