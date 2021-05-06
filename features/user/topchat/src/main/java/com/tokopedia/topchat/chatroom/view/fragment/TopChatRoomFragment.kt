@@ -496,9 +496,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             adapterPosition: Int,
             parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
     ) {
+        var productId = product.parentId
+        if(productId == "0") {
+            productId = product.productId
+        }
         val intent = RouteManager.getIntent(
                 context, ApplinkConstInternalMarketplace.RESERVED_STOCK,
-                product.productId, product.shopId.toString()
+                productId, product.shopId.toString()
         )
         presenter.addOngoingUpdateProductStock(product, adapterPosition, parentMetaData)
         startActivityForResult(intent, REQUEST_UPDATE_STOCK)
