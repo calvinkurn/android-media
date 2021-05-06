@@ -1,357 +1,315 @@
-package com.tokopedia.topchat.chattemplate.view.fragment;
+package com.tokopedia.topchat.chattemplate.view.fragment
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.widget.SwitchCompat
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.design.bottomsheet.BottomSheetView
+import com.tokopedia.design.bottomsheet.BottomSheetView.BottomSheetField.BottomSheetFieldBuilder
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics
+import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent
+import com.tokopedia.topchat.chattemplate.di.TemplateChatModule
+import com.tokopedia.topchat.chattemplate.view.activity.EditTemplateChatActivity
+import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
+import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingAdapter
+import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingTypeFactoryImpl
+import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder
+import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract
+import com.tokopedia.topchat.chattemplate.view.presenter.TemplateChatSettingPresenter
+import com.tokopedia.topchat.common.InboxMessageConstant
+import com.tokopedia.topchat.common.util.SimpleItemTouchHelperCallback
+import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.unifycomponents.Toaster.build
+import java.util.*
+import javax.inject.Inject
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
+    private var switchTemplate: SwitchCompat? = null
+    private var recyclerView: RecyclerView? = null
+    private var templateContainer: View? = null
+    private var info: View? = null
+    private var loading: View? = null
+    private var content: View? = null
+    private var typeFactory = TemplateChatSettingTypeFactoryImpl(this)
+    private var adapter = TemplateChatSettingAdapter(typeFactory, this)
+    private var layoutManager: LinearLayoutManager? = null
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.network.utils.ErrorHandler;
-import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
-import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
-import com.tokopedia.topchat.chattemplate.di.TemplateChatModule;
-import com.tokopedia.topchat.chattemplate.view.activity.EditTemplateChatActivity;
-import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingAdapter;
-import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingTypeFactoryImpl;
-import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
-import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
-import com.tokopedia.topchat.chattemplate.view.presenter.TemplateChatSettingPresenter;
-import com.tokopedia.topchat.common.InboxMessageConstant;
-import com.tokopedia.topchat.common.util.SimpleItemTouchHelperCallback;
-import com.tokopedia.unifycomponents.Toaster;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import static com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity.PARAM_IS_SELLER;
-
-public class TemplateChatFragment extends BaseDaggerFragment
-        implements TemplateChatContract.View {
-
-
-    public static final int CREATE = 0;
-    public static final int EDIT = 1;
-    public static final int DELETE = -1;
-
-    public static final String LIST_RESULT = "string";
-    public static final String INDEX_RESULT = "index";
-    public static final String MODE_RESULT = "mode";
-
-    private SwitchCompat switchTemplate;
-    private RecyclerView recyclerView;
-    private View templateContainer;
-    private View info;
-    private View loading;
-    private View content;
-    private TemplateChatSettingTypeFactoryImpl typeFactory;
-    private TemplateChatSettingAdapter adapter;
-    private LinearLayoutManager layoutManager;
-
+    @JvmField
     @Inject
-    TemplateChatSettingPresenter presenter;
+    var presenter: TemplateChatSettingPresenter? = null
 
+    @JvmField
     @Inject
-    ChatTemplateAnalytics analytic;
-
-    private ItemTouchHelper mItemTouchHelper;
-    private BottomSheetView bottomSheetView;
-    private Boolean isSeller = false;
-
-    public static TemplateChatFragment createInstance(Bundle extras) {
-        TemplateChatFragment fragment = new TemplateChatFragment();
-        fragment.setArguments(extras);
-        return fragment;
+    var analytic: ChatTemplateAnalytics? = null
+    private var mItemTouchHelper: ItemTouchHelper? = null
+    private var bottomSheetView: BottomSheetView? = null
+    private var isSeller = false
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initArguments()
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initArguments();
-    }
-
-    private void initArguments() {
-        if (getArguments() != null) {
-            isSeller = getArguments().getBoolean(PARAM_IS_SELLER);
+    private fun initArguments() {
+        arguments?.let {
+            isSeller = it.getBoolean(TemplateChatActivity.PARAM_IS_SELLER)
         }
         if (GlobalConfig.isSellerApp()) {
-            isSeller = true;
+            isSeller = true
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_template_chat, container, false);
-        typeFactory = new TemplateChatSettingTypeFactoryImpl(this);
-
-        loading = rootView.findViewById(R.id.loading_search);
-        content = rootView.findViewById(R.id.content);
-        recyclerView = rootView.findViewById(R.id.recycler_view);
-        info = rootView.findViewById(R.id.template_list_info);
-        switchTemplate = rootView.findViewById(R.id.switch_chat_template);
-        templateContainer = rootView.findViewById(R.id.template_container);
-
-        recyclerView.setHasFixedSize(true);
-
-        presenter.attachView(this);
-        presenter.setMode(isSeller);
-        presenter.getTemplate();
-        setBottomSheetDialog();
-        return rootView;
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val rootView = inflater.inflate(R.layout.fragment_template_chat, container, false)
+        loading = rootView.findViewById(R.id.loading_search)
+        content = rootView.findViewById(R.id.content)
+        recyclerView = rootView.findViewById(R.id.recycler_view)
+        info = rootView.findViewById(R.id.template_list_info)
+        switchTemplate = rootView.findViewById(R.id.switch_chat_template)
+        templateContainer = rootView.findViewById(R.id.template_container)
+        recyclerView?.setHasFixedSize(true)
+        presenter?.attachView(this)
+        presenter?.setMode(isSeller)
+        presenter?.getTemplate()
+        setBottomSheetDialog()
+        return rootView
     }
 
-    private void setBottomSheetDialog() {
-        bottomSheetView = new BottomSheetView(getActivity());
-        bottomSheetView.setTitleTextSize(getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl3));
-        bottomSheetView.setBodyTextSize(getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl3));
-        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .setTitle(getActivity().getString(R.string.title_info_list_template))
-                .setBody(getActivity().getString(R.string.body_info_list_template))
-                .setImg(R.drawable.drag_edit)
-                .build());
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        showLoading();
-        adapter = new TemplateChatSettingAdapter(typeFactory, this);
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-
-        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
-        mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(recyclerView);
-
-        switchTemplate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean b = switchTemplate.isChecked();
-                analytic.trackOnCheckedChange(b);
-                presenter.switchTemplateAvailability(b);
-                if (b) {
-                    templateContainer.setVisibility(View.VISIBLE);
-                } else {
-                    templateContainer.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        info.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bottomSheetView.show();
-            }
-        });
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        presenter.detachView();
-    }
-
-    @Override
-    protected String getScreenName() {
-        return null;
-    }
-
-    @Override
-    protected void initInjector() {
-
-        if (getActivity() != null && getActivity().getApplication() != null) {
-            BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication())
-                    .getBaseAppComponent();
-            DaggerTemplateChatComponent daggerTemplateChatComponent =
-                    (DaggerTemplateChatComponent) DaggerTemplateChatComponent.builder()
-                            .baseAppComponent(appComponent)
-                            .templateChatModule(new TemplateChatModule(getContext()))
-                            .build();
-            daggerTemplateChatComponent.inject(this);
+    private fun setBottomSheetDialog() {
+        activity?.let {
+            bottomSheetView = BottomSheetView(it)
+            bottomSheetView?.setTitleTextSize(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl3))
+            bottomSheetView?.setBodyTextSize(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl3))
+            bottomSheetView?.renderBottomSheet(BottomSheetFieldBuilder()
+                    .setTitle(it.getString(R.string.title_info_list_template))
+                    .setBody(it.getString(R.string.body_info_list_template))
+                    .setImg(R.drawable.drag_edit)
+                    .build())
         }
     }
 
-    @Override
-    public void setTemplate(List<Visitable> listTemplate) {
-        adapter.setList(listTemplate);
-        if (listTemplate != null) prepareResult();
-    }
-
-    @Override
-    public void onDrag(ItemTemplateChatViewHolder viewHolder) {
-        mItemTouchHelper.startDrag(viewHolder);
-    }
-
-    @Override
-    public void onEnter(String message, int position) {
-        if (message == null && adapter.getList().size() > 5) {
-            showUnifyToaster(getActivity().getString(R.string.limited_template_chat_warning), Toaster.TYPE_NORMAL);
-        } else {
-            Intent intent = EditTemplateChatActivity.createInstance(getActivity());
-            Bundle bundle = new Bundle();
-            bundle.putString(InboxMessageConstant.PARAM_MESSAGE, message);
-            bundle.putInt(InboxMessageConstant.PARAM_POSITION, position);
-            bundle.putInt(InboxMessageConstant.PARAM_NAV, adapter.getList().size() - 1);
-            bundle.putStringArrayList(InboxMessageConstant.PARAM_ALL, adapter.getListString());
-            if (message == null) {
-                bundle.putInt(InboxMessageConstant.PARAM_MODE, CREATE);
-                analytic.trackAddTemplateChat();
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        showLoading()
+        recyclerView?.adapter = adapter
+        adapter.notifyDataSetChanged()
+        layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerView?.layoutManager = layoutManager
+        val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(adapter)
+        mItemTouchHelper = ItemTouchHelper(callback)
+        mItemTouchHelper?.attachToRecyclerView(recyclerView)
+        switchTemplate?.setOnClickListener {
+            val b = switchTemplate?.isChecked ?: false
+            analytic?.trackOnCheckedChange(b)
+            presenter?.switchTemplateAvailability(b)
+            if (b) {
+                templateContainer?.visibility = View.VISIBLE
             } else {
-                bundle.putInt(InboxMessageConstant.PARAM_MODE, EDIT);
-                analytic.trackEditTemplateChat();
+                templateContainer?.visibility = View.GONE
             }
-            bundle.putBoolean(PARAM_IS_SELLER, isSeller);
-            intent.putExtras(bundle);
-            startActivityForResult(intent, 100);
-            getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
+        }
+        info?.setOnClickListener { bottomSheetView?.show() }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter?.detachView()
+    }
+
+    override fun getScreenName(): String {
+        return "TemplateChat"
+    }
+
+    override fun initInjector() {
+        activity?.let {
+            val appComponent = (it.application as BaseMainApplication)
+                    .baseAppComponent
+            val daggerTemplateChatComponent = DaggerTemplateChatComponent.builder()
+                    .baseAppComponent(appComponent)
+                    .templateChatModule(TemplateChatModule(context))
+                    .build() as DaggerTemplateChatComponent
+            daggerTemplateChatComponent.inject(this)
         }
     }
 
-    @Override
-    public void setChecked(boolean enable) {
-        switchTemplate.setChecked(enable);
+    override fun setTemplate(listTemplate: List<Visitable<*>?>?) {
+        adapter.list = listTemplate
+        if (listTemplate != null) prepareResult()
+    }
+
+    override fun onDrag(viewHolder: ItemTemplateChatViewHolder) {
+        mItemTouchHelper?.startDrag(viewHolder)
+    }
+
+    override fun onEnter(message: String?, position: Int) {
+        if (message == null && adapter.list.size > 5) {
+            showUnifyToaster(
+                    context?.getString(R.string.limited_template_chat_warning) ?: "",
+                    TYPE_NORMAL
+            )
+        } else {
+            val intent = EditTemplateChatActivity.createInstance(activity)
+            val bundle = Bundle()
+            bundle.putString(InboxMessageConstant.PARAM_MESSAGE, message)
+            bundle.putInt(InboxMessageConstant.PARAM_POSITION, position)
+            bundle.putInt(InboxMessageConstant.PARAM_NAV, adapter.list.size - 1)
+            bundle.putStringArrayList(InboxMessageConstant.PARAM_ALL, adapter.listString)
+            if (message == null) {
+                bundle.putInt(InboxMessageConstant.PARAM_MODE, CREATE)
+                analytic?.trackAddTemplateChat()
+            } else {
+                bundle.putInt(InboxMessageConstant.PARAM_MODE, EDIT)
+                analytic?.trackEditTemplateChat()
+            }
+            bundle.putBoolean(TemplateChatActivity.PARAM_IS_SELLER, isSeller)
+            intent.putExtras(bundle)
+            startActivityForResult(intent, 100)
+            activity?.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
+        }
+    }
+
+    override fun setChecked(enable: Boolean) {
+        switchTemplate?.isChecked = enable
         if (enable) {
-            templateContainer.setVisibility(View.VISIBLE);
+            templateContainer?.visibility = View.VISIBLE
         } else {
-            templateContainer.setVisibility(View.GONE);
+            templateContainer?.visibility = View.GONE
         }
     }
 
-    @Override
-    public void reArrange(int from, int to) {
-        presenter.setArrange(switchTemplate.isChecked(), arrangeList(from, to), from, to);
-    }
-
-    @Override
-    public void revertArrange(int from, int to) {
-        adapter.revertArrange(to, from);
-    }
-
-    public ArrayList<Integer> arrangeList(int from, int to) {
-        ArrayList<Integer> arrayList = new ArrayList<>();
-        for (int i = 0; i < adapter.getList().size() - 1; i++) {
-            arrayList.add(i + 1);
+    override fun reArrange(from: Int, to: Int) {
+        switchTemplate?.let {
+            presenter?.setArrange(it.isChecked, arrangeList(from, to), from, to)
         }
-
-        arrayList.remove(Integer.valueOf(from + 1));
-        arrayList.add(to, from + 1);
-        return arrayList;
     }
 
-    @Override
-    public ArrayList<String> getList() {
-        return adapter.getListString();
+    override fun revertArrange(from: Int, to: Int) {
+        adapter.revertArrange(to, from)
     }
 
-    @Override
-    public TemplateChatSettingAdapter getAdapter() {
-        return adapter;
+    private fun arrangeList(from: Int, to: Int): ArrayList<Int> {
+        val arrayList = ArrayList<Int>()
+        for (i in 0 until adapter.list.size - 1) {
+            arrayList.add(i + 1)
+        }
+        arrayList.remove(Integer.valueOf(from + 1))
+        arrayList.add(to, from + 1)
+        return arrayList
     }
 
-    @Override
-    public void successSwitch() {
-        prepareResultSwitch();
+    override fun getList(): ArrayList<String> {
+        return adapter.listString
     }
 
-    @Override
-    public void showLoading() {
-        content.setVisibility(View.GONE);
-        loading.setVisibility(View.VISIBLE);
+    override fun getAdapter(): TemplateChatSettingAdapter {
+        return adapter
     }
 
-    @Override
-    public void finishLoading() {
-        content.setVisibility(View.VISIBLE);
-        loading.setVisibility(View.GONE);
+    override fun successSwitch() {
+        prepareResultSwitch()
     }
 
-    @Override
-    public void showError(Throwable errorMessage) {
-        showUnifyToaster(ErrorHandler.getErrorMessage(getContext(), errorMessage), Toaster.TYPE_ERROR);
+    override fun showLoading() {
+        content?.visibility = View.GONE
+        loading?.visibility = View.VISIBLE
     }
 
-    @Override
-    public void successRearrange() {
-        String text = getActivity().getString(R.string.success_rearrange_template_chat);
-        showUnifyToaster(text, Toaster.TYPE_NORMAL);
-        prepareResult();
+    override fun finishLoading() {
+        content?.visibility = View.VISIBLE
+        loading?.visibility = View.GONE
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case 100:
-                if (resultCode == Activity.RESULT_OK) {
-                    presenter.reloadTemplate();
-                    String string = data.getStringExtra(LIST_RESULT);
-                    int index = data.getIntExtra(INDEX_RESULT, -1);
-                    String text = "";
-                    switch (data.getIntExtra(MODE_RESULT, 0)) {
-                        case CREATE:
-                            adapter.add(string);
-                            text = getActivity().getString(R.string.success_add_template_chat);
-                            break;
-                        case EDIT:
-                            adapter.edit(index, string);
-                            text = getActivity().getString(R.string.success_edit_template_chat);
-                            break;
-                        case DELETE:
-                            adapter.delete(index);
-                            text = getActivity().getString(R.string.success_delete_template_chat);
-                            break;
-                        default:
-                            break;
+    override fun showError(errorMessage: Throwable) {
+        showUnifyToaster(ErrorHandler.getErrorMessage(context, errorMessage), TYPE_ERROR)
+    }
+
+    override fun successRearrange() {
+        val text = context?.getString(R.string.success_rearrange_template_chat) ?: ""
+        showUnifyToaster(text, TYPE_NORMAL)
+        prepareResult()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            100 -> if (resultCode == Activity.RESULT_OK) {
+                presenter?.reloadTemplate()
+                val string = data?.getStringExtra(LIST_RESULT)
+                val index = data?.getIntExtra(INDEX_RESULT, -1) ?: -1
+                var text = ""
+                when (data?.getIntExtra(MODE_RESULT, 0)) {
+                    CREATE -> {
+                        adapter.add(string)
+                        text = activity?.getString(R.string.success_add_template_chat) ?: ""
                     }
-                    prepareResult();
-                    showUnifyToaster(text, Toaster.TYPE_NORMAL);
-                    break;
+                    EDIT -> {
+                        adapter.edit(index, string)
+                        text = context?.getString(R.string.success_edit_template_chat) ?: ""
+                    }
+                    DELETE -> {
+                        adapter.delete(index)
+                        text = context?.getString(R.string.success_delete_template_chat) ?: ""
+                    }
+                    else -> {
+                    }
                 }
-            default:
-                break;
+                prepareResult()
+                showUnifyToaster(text, TYPE_NORMAL)
+            }
+            else -> {
+            }
         }
     }
 
-    private void prepareResultSwitch() {
-        if (switchTemplate.isChecked()) {
-            prepareResult();
+    private fun prepareResultSwitch() {
+        if (switchTemplate?.isChecked == true) {
+            prepareResult()
         } else {
-            Intent intent = new Intent();
-            intent.putStringArrayListExtra(LIST_RESULT, new ArrayList<String>());
-            getActivity().setResult(Activity.RESULT_OK, intent);
+            val intent = Intent()
+            intent.putStringArrayListExtra(LIST_RESULT, ArrayList())
+            activity?.setResult(Activity.RESULT_OK, intent)
         }
     }
 
-    private void prepareResult() {
-        Intent intent = new Intent();
-        intent.putStringArrayListExtra(LIST_RESULT, adapter.getListString());
-        getActivity().setResult(Activity.RESULT_OK, intent);
+    private fun prepareResult() {
+        val intent = Intent()
+        intent.putStringArrayListExtra(LIST_RESULT, adapter.listString)
+        activity?.setResult(Activity.RESULT_OK, intent)
     }
 
-    private void showUnifyToaster(String text, int type) {
-        if(getView() != null) {
-            Toaster.build(getView(), text, Toaster.LENGTH_SHORT, type).show();
+    private fun showUnifyToaster(text: String, type: Int) {
+        view?.let {
+            build(it, text, LENGTH_SHORT, type).show()
+        }
+    }
+
+    companion object {
+        const val CREATE = 0
+        const val EDIT = 1
+        const val DELETE = -1
+        const val LIST_RESULT = "string"
+        const val INDEX_RESULT = "index"
+        const val MODE_RESULT = "mode"
+
+        @JvmStatic
+        fun createInstance(extras: Bundle?): TemplateChatFragment {
+            val fragment = TemplateChatFragment()
+            fragment.arguments = extras
+            return fragment
         }
     }
 }
