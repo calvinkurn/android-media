@@ -158,7 +158,7 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     private fun goToResult(imglink: String, messageTitle: String, messageBody: String, ctaType: String, status: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.QR_LOGIN_RERSULT)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.QR_LOGIN_RESULT)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IMG_LINK, imglink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MESSAGE_TITLE, messageTitle)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY, messageBody)

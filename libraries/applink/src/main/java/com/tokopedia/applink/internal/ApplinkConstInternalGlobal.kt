@@ -288,7 +288,7 @@ object ApplinkConstInternalGlobal {
     // LoginByQrResultActivity
     // tokopedia-android-internal://global/qr-login-result
     @JvmField
-    val QR_LOGIN_RERSULT = "$INTERNAL_GLOBAL/qr-login-result"
+    val QR_LOGIN_RESULT = "$INTERNAL_GLOBAL/qr-login-result"
 
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number

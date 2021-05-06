@@ -21,4 +21,6 @@ object ApplinkConstInternalUserPlatform {
     @JvmField
     val LOGIN_THIRD_PARTY = "${LOGIN}?method={method}&source={source}"
 
+
+    const val TOKOPEDIA_QR_LOGIN_HTTPS = "${DeeplinkConstant.SCHEME_HTTPS}://www.tokopedia.com/qrcode-login"
 }
