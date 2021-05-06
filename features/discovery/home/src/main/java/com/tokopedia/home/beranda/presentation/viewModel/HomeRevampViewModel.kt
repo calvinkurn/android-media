@@ -327,7 +327,6 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getRecommendationWidget(){
         val data = homeVisitableListData
-        HomeNetworkUtil.increment()
         data.withIndex().filter { it.value is BestSellerDataModel }.forEach {
             val bestSellerDataModel = it.value as BestSellerDataModel
             launchCatchError(coroutineContext, block = {
@@ -365,7 +364,6 @@ open class HomeRevampViewModel @Inject constructor(
                 } else {
                     homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(bestSellerDataModel, it.index, this@HomeRevampViewModel))
                 }
-                HomeNetworkUtil.decrement()
             }){
                 homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(bestSellerDataModel, -1, this@HomeRevampViewModel))
             }
