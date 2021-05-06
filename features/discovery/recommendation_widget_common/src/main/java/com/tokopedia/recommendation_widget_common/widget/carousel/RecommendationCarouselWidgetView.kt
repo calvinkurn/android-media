@@ -57,7 +57,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         this.itemContext = view.context
     }
 
-    fun bind(carouselData: RecommendationCarouselData, adapterPosition: Int, widgetListener: RecommendationCarouselWidgetListener?) {
+    fun bind(carouselData: RecommendationCarouselData, adapterPosition: Int = 0, widgetListener: RecommendationCarouselWidgetListener?) {
         this.carouselData = carouselData
         this.widgetListener = widgetListener
         this.adapterPosition = adapterPosition
