@@ -12,14 +12,51 @@ object Keys {
     private val AUTH_GOOGLE_YOUTUBE_API_KEY_PRO = decodeKey(GOOGLE_YOUTUBE_API_KEY_PRO)
     private val AUTH_GOOGLE_YOUTUBE_API_KEY_SA = decodeKey(GOOGLE_YOUTUBE_API_KEY_SA)
 
+    private val AUTH_NEW_RELIC_API_KEY_MA = decodeKey(NEW_RELIC_API_KEY_MA)
+    private val AUTH_NEW_RELIC_API_KEY_PRO = decodeKey(NEW_RELIC_API_KEY_PRO)
+    private val AUTH_NEW_RELIC_API_KEY_SA = decodeKey(NEW_RELIC_API_KEY_SA)
+
+    private val AUTH_NEW_RELIC_USER_ID_MA = decodeKey(NEW_RELIC_USER_ID_MA)
+    private val AUTH_NEW_RELIC_USER_ID_PRO = decodeKey(NEW_RELIC_USER_ID_PRO)
+    private val AUTH_NEW_RELIC_USER_ID_SA = decodeKey(NEW_RELIC_USER_ID_SA)
+
+    @JvmField
+    val NEW_RELIC = decodeKey(NEW_RELIC_APPLICATION_TOKEN_SA)
+
     @JvmField
     val AUTH_TRADE_IN_API_KEY_MA = decodeKey(TRADE_IN_API_KEY_MA)
 
     @JvmStatic
-    val AUTH_NEW_RELIC_API_KEY = decodeKey(NEW_RELIC_API_KEY)
+    val AUTH_NEW_RELIC_API_KEY
+            get() =
+                    when(GlobalConfig.APPLICATION_TYPE) {
+                        GlobalConfig.CONSUMER_APPLICATION -> {
+                            AUTH_NEW_RELIC_API_KEY_MA
+                        }
+                        GlobalConfig.SELLER_APPLICATION -> {
+                            AUTH_NEW_RELIC_API_KEY_SA
+                        }
+                        else -> {
+                            AUTH_NEW_RELIC_API_KEY_PRO
+                        }
+                    }
+
+
 
     @JvmStatic
-    val AUTH_NEW_RELIC_USER_ID = decodeKey(NEW_RELIC_USER_ID)
+    val AUTH_NEW_RELIC_USER_ID
+            get() =
+                when(GlobalConfig.APPLICATION_TYPE) {
+                    GlobalConfig.CONSUMER_APPLICATION -> {
+                        AUTH_NEW_RELIC_USER_ID_MA
+                    }
+                    GlobalConfig.SELLER_APPLICATION -> {
+                        AUTH_NEW_RELIC_USER_ID_SA
+                    }
+                    else -> {
+                        AUTH_NEW_RELIC_USER_ID_PRO
+                    }
+                }
 
     @JvmStatic
     val AUTH_SCALYR_API_KEY

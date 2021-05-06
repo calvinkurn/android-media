@@ -205,7 +205,6 @@ public interface CMConstant {
     }
 
     interface TimberTags {
-        String TAG = "P2#CM_VALIDATION#";
         int MAX_LIMIT = 1000;
     }
 

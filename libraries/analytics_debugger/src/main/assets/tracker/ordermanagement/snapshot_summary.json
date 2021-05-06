@@ -4,24 +4,24 @@
     {
       "businessUnit": "seller order management",
       "eventCategory": "bom - product snapshot page",
-      "productId": "{{.+}}",
+      "productId": ".+",
       "currentSite": "tokopediamarketplace",
       "event": "clickBOM",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "eventAction": "click product page",
-      "sessionIris": "{{.+}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".+",
+      "eventLabel": ".*"
     },
     {
       "businessUnit": "seller order management",
       "eventCategory": "bom - product snapshot page",
       "currentSite": "tokopediamarketplace",
-      "shopId": "{{.+}}",
+      "shopId": ".+",
       "event": "clickBOM",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "eventAction": "click shop page",
-      "sessionIris": "{{.+}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".+",
+      "eventLabel": ".*"
     }
   ],
   "readme": "Snapshot Summary"

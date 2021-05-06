@@ -5,46 +5,46 @@
     {
       "items": [
         {
-          "item_id": "{{.*}}",
-          "item_category": "{{.*}}",
-          "item_brand": "{{.*}}",
+          "item_id": ".*",
+          "item_category": ".*",
+          "item_brand": ".*",
           "price": 2857000.0,
-          "item_name": "{{.*}}",
-          "item_variant": "{{.*}}",
+          "item_name": ".*",
+          "item_variant": ".*",
           "index": 1,
-          "dimension40": "{{.*}}",
-          "dimension140": "{{.*}}"
+          "dimension40": ".*",
+          "dimension140": ".*"
         }
       ],
       "eventAction": "impression - product cpm",
-      "eventCategory": "{{.*}}",
+      "eventCategory": ".*",
       "event": "view_item_list",
-      "campaignCode": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}",
-      "item_list": "{{.*}}"
+      "campaignCode": ".*",
+      "sessionIris": ".*",
+      "eventLabel": ".*",
+      "item_list": ".*"
     },
     {
       "items": [
         {
-          "item_id": "{{.*}}",
-          "item_category": "{{.*}}",
-          "item_brand": "{{.*}}",
+          "item_id": ".*",
+          "item_category": ".*",
+          "item_brand": ".*",
           "price": 2857000.0,
-          "item_name": "{{.*}}",
-          "item_variant": "{{.*}}",
+          "item_name": ".*",
+          "item_variant": ".*",
           "index": 1,
-          "dimension40": "{{.*}}",
-          "dimension140": "{{.*}}"
+          "dimension40": ".*",
+          "dimension140": ".*"
         }
       ],
       "eventAction": "click product list",
-      "eventCategory": "{{.*}}",
+      "eventCategory": ".*",
       "event": "select_content",
-      "campaignCode": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}",
-      "item_list": "{{.*}}"
+      "campaignCode": ".*",
+      "sessionIris": ".*",
+      "eventLabel": ".*",
+      "item_list": ".*"
     }
   ]
 }

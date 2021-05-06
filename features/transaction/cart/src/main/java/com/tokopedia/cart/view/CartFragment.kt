@@ -2823,6 +2823,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         showToastMessageRed(errorMessage)
     }
 
+    override fun showToastMessageRed() {
+        showToastMessageRed("")
+    }
+
     override fun showToastMessageGreen(message: String, actionText: String, onClickListener: View.OnClickListener?) {
         view?.let { v ->
             var tmpCtaClickListener = View.OnClickListener { }

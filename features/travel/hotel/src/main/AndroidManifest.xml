@@ -35,7 +35,19 @@
             android:name=".search.presentation.activity.HotelSearchResultActivity"
             android:label="@string/hotel_app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" />
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_hotel"
+                    android:path="@string/path_hotel_search_result_old_srp"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".search_map.presentation.activity.HotelSearchMapActivity"
             android:label="@string/hotel_app_name"
@@ -49,7 +61,7 @@
 
                 <data
                     android:host="@string/host_hotel"
-                    android:path="@string/path_hotel_search_result"
+                    android:path="@string/path_hotel_search_result_map"
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
@@ -178,6 +190,12 @@
 
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".booking.presentation.activity.HotelPayAtHotelPromoActivity"
+            android:label="@string/hotel_pay_at_hotel_promo_header_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
     </application>
 
 </manifest>

@@ -279,6 +279,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.features.kyc)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.features.productManageCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.features.mediaCommon)

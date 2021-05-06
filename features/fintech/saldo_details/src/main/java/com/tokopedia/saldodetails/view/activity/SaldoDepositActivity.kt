@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
+import com.tokopedia.config.GlobalConfig
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -41,6 +42,20 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     lateinit var userSession: UserSession
     private var isSeller: Boolean = false
     private val saldoComponent by lazy(LazyThreadSafetyMode.NONE) { SaldoDetailsComponentInstance.getComponent(this) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setSecureWindowFlag()
+    }
+
+    private fun setSecureWindowFlag() {
+        if(GlobalConfig.APPLICATION_TYPE==GlobalConfig.CONSUMER_APPLICATION||GlobalConfig.APPLICATION_TYPE==GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread {
+                window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+            }
+        }
+    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

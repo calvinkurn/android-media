@@ -1,8 +1,6 @@
 package com.tokopedia.loginregister.seamlesslogin.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -42,12 +40,5 @@ class SeamlessLoginModule(val context: Context) {
 
     @SeamlessLoginScope
     @Provides
-    fun provideCoroutineDispatchersProvider(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
-    }
-
-    @SeamlessLoginScope
-    @Provides
     fun provideUserSessionInterface(@SeamlessLoginContext context: Context): UserSessionInterface = UserSession(context)
-
 }
