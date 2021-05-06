@@ -48,4 +48,24 @@
 
     </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/delete_key_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        android:background="@color/Red_R500">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remote_config_delete_btn_key"
+            android:textColor="@color/Neutral_N0"
+            android:textSize="@dimen/fontSize_lvl4"
+            android:layout_gravity="center"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
 </LinearLayout>
