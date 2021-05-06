@@ -24,6 +24,9 @@ object TrackingOtpConstant{
         const val SCREEN_PUSH_NOTIF_RECEIVE_FAILED_FROM_OTHER_DEVICE = "OTP Push Notif - Receive failed from other device"
         const val SCREEN_PUSH_NOTIF_RECEIVE_FAILED_EXPIRED = "OTP Push Notif - Receive failed otp expired"
         const val SCREEN_PUSH_NOTIF_SETTING = "OTP Push Notif - Setting page"
+        const val SCREEN_LOGIN_BY_QR_APPROVAL_PAGE = "Approval Page"
+        const val SCREEN_LOGIN_BY_QR_SUCCESS_PAGE = "Success page"
+        const val SCREEN_LOGIN_BY_QR_EXPIRED_PAGE = "Expired page"
     }
 
     object Event{

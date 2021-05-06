@@ -3,6 +3,8 @@ package com.tokopedia.qrscanner;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
+import java.util.Map;
+
 public class QRTracking {
 
     public static void eventQRButtonClick() {
@@ -21,5 +23,18 @@ public class QRTracking {
                 String.format(QREventTracking.Action.EventScanQRCode,status),
                 String.format(QREventTracking.Label.LabelQRCodeScan, campaignId,url)
         ));
+    }
+
+    public static void eventScanQRCode(String userId) {
+        Map<String, Object> map = TrackAppUtils.gtmData(
+                QREventTracking.Event.GenericClickLoginEvent,
+                QREventTracking.Category.EventLoginWithQrCodeCategory,
+                QREventTracking.Action.EventScanningQrCode,
+                ""
+        );
+        map.put(QREventTracking.BusinessUnit.BusinessUnit, QREventTracking.BusinessUnit.UserPlatformUnit);
+        map.put(QREventTracking.CurrentSite.CurrentSite, QREventTracking.CurrentSite.TokopediaMarketplaceSite);
+        map.put(QREventTracking.UserId.UserId, userId);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(map);
     }
 }

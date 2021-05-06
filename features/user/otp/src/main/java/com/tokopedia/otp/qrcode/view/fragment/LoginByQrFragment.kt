@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.SignatureUtil
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.notif.data.SignResult
@@ -46,7 +47,7 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
 
     override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_LOGIN_BY_QR_APPROVAL_PAGE
 
     override fun initInjector() = getComponent(OtpComponent::class.java).inject(this)
 
@@ -60,6 +61,12 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         initView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        analytics.trackScreen(screenName)
+        analytics.trackViewApprovalPage()
     }
 
     override fun onResume() {
@@ -94,8 +101,6 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     private fun initView() {
-        analytics.trackViewApprovalPage()
-
         viewBound.userName?.text = userSession.name ?: ""
 
         viewBound.approveButton?.setOnClickListener {
