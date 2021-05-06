@@ -43,16 +43,16 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
     private val _observableAddedTags = MutableLiveData(setupDataStore.getTags())
     private val _observableRecommendedTags = MutableLiveData<Set<String>>()
     private val _observableRecommendedTagsModel = MediatorLiveData<List<PlayTagUiModel>>().apply {
-        addSource(_observableAddedTags) {
+        addSource(_observableAddedTags) { addedTags ->
             value = _observableRecommendedTags.value.orEmpty().map { tag ->
                 PlayTagUiModel(
                         tag = tag,
-                        isChosen = it.contains(tag)
+                        isChosen = addedTags.contains(tag)
                 )
             }
         }
-        addSource(_observableRecommendedTags) {
-            value = it.map { tag ->
+        addSource(_observableRecommendedTags) { recommendedTags ->
+            value = recommendedTags.map { tag ->
                 PlayTagUiModel(
                         tag = tag,
                         isChosen = addedTags.contains(tag)
@@ -132,7 +132,9 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
      */
     private fun getTags() {
         viewModelScope.launch {
-            _observableRecommendedTags.value = getRecommendedTags().toSet()
+            val recommendedTags = getRecommendedTags().toSet()
+            val addedNotRecommendedTags = withContext(dispatcher.computation) { addedTags - getRecommendedTags() }
+            _observableRecommendedTags.value = addedNotRecommendedTags + recommendedTags
         }
     }
 
