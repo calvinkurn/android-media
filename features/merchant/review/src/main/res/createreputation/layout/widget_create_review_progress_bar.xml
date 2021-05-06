@@ -7,10 +7,11 @@
 
     <com.tokopedia.unifycomponents.ProgressBarUnify
         android:id="@+id/review_form_progress_bar"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:unify_progress_bar_from_color="color_orange"
-        app:unify_progress_bar_to_color="color_green"
+        app:layout_constraintStart_toStartOf="parent"
+        app:unify_progress_bar_from_color="@color/Unify_Y400"
+        app:unify_progress_bar_to_color="@color/Unify_G500"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography

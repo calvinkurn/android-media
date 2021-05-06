@@ -3,9 +3,8 @@ package com.tokopedia.review.feature.createreputation.presentation.activity
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -15,11 +14,12 @@ import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
+import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import timber.log.Timber
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
-class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, ReviewPerformanceMonitoringListener {
+class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, ReviewPerformanceMonitoringListener {
 
     companion object {
         const val PARAM_RATING = "rating"
@@ -36,23 +36,29 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     private var utmSource: String = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
-    override fun getNewFragment(): Fragment? {
-        setToolbar()
-        createReviewFragment = CreateReviewFragment.createInstance(
-                productId,
-                reputationId,
-                rating,
-                isEditMode,
-                feedbackId,
-                utmSource
-        )
-        return createReviewFragment
-    }
+//    override fun getNewFragment(): Fragment? {
+//        if (isNewWriteForm()) return null
+//        setToolbar()
+//        createReviewFragment = CreateReviewFragment.createInstance(
+//                productId,
+//                reputationId,
+//                rating,
+//                isEditMode,
+//                feedbackId,
+//                utmSource
+//        )
+//        return createReviewFragment
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromApplinkOrIntent()
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
+        if(isNewWriteForm()) {
+            handleDimming()
+            showWriteFormBottomSheet()
+            return
+        }
         intent.extras?.run {
             (applicationContext
                     .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
@@ -150,7 +156,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     private fun setToolbar() {
-        this.supportActionBar?.setTitle(getString(R.string.review_create_activity_title))
+        this.supportActionBar?.title = getString(R.string.review_create_activity_title)
     }
 
     private fun handleDimming(){
@@ -162,6 +168,20 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     private fun showWriteFormBottomSheet() {
+        val bottomSheet = CreateReviewBottomSheet.createInstance(productId.toLongOrZero(), reputationId.toLongOrZero())
+        bottomSheet.apply {
+            isDragable = true
+            isHideable = true
+            showKnob = true
+            showCloseIcon = false
+            show(supportFragmentManager, "BottomSheet Tag")
+            setOnDismissListener {
+                finish()
+            }
+        }
+    }
 
+    private fun isNewWriteForm(): Boolean {
+        return true
     }
 }

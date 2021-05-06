@@ -1,11 +1,15 @@
 package com.tokopedia.review.feature.createreputation.presentation.bottomsheet
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.R
+import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
 import com.tokopedia.review.feature.createreputation.model.ProductData
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
@@ -18,8 +22,11 @@ import javax.inject.Inject
 class CreateReviewBottomSheet : BottomSheetUnify() {
 
     companion object {
-        fun create() {
-
+        fun createInstance(productId: Long, reputationId: Long): CreateReviewBottomSheet {
+            return CreateReviewBottomSheet().apply {
+                this.productId = productId
+                this.reputationId = reputationId
+            }
         }
     }
 
@@ -34,17 +41,53 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
     private var anonymousOption: CreateReviewAnonymousOption? = null
     private var progressBar: CreateReviewProgressBar? = null
 
+    private var productId: Long = 0L
+    private var reputationId: Long = 0L
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
+        context?.let {
+            val view = View.inflate(context, R.layout.widget_create_review_text_area_bottom_sheet, null)
+            setChild(view)
+        }
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = View.inflate(context, R.layout.bottomsheet_create_review, null)
+        setChild(view)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews()
+        observeGetForm()
+        observeIncentive()
+        getForm()
     }
+
+    private fun initInjector() {
+        activity?.let {
+            DaggerCreateReviewComponent
+                    .builder()
+                    .reviewComponent(ReviewInstance.getComponent(it.application))
+                    .build()
+                    .inject(this)
+        }
+    }
+
 
     private fun bindViews() {
         productCard = view?.findViewById(R.id.review_form_product_card)
         ratingStars = view?.findViewById(R.id.review_form_rating)
         textArea = view?.findViewById(R.id.review_form_text_area)
         anonymousOption = view?.findViewById(R.id.review_form_anonymous_option)
-        progressBar = view?.findViewById(R.id.review_form_progress_bar)
+        progressBar = view?.findViewById(R.id.review_form_progress_bar_widget)
+    }
+
+    private fun getForm() {
+        createReviewViewModel.getProductReputation(productId, reputationId)
     }
 
     private fun observeGetForm() {
