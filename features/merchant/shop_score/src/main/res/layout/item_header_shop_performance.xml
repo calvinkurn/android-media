@@ -101,15 +101,25 @@
             android:visibility="gone"
             tools:visibility="visible"/>
 
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:layout_constraintEnd_toEndOf="@id/ic_shop_score_performance"
+            app:layout_constraintStart_toStartOf="@id/tvTitleShopPerformance"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleShopPerformance"
+            app:constraint_referenced_ids="progressBarScorePerformance, progressBarNewSeller"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShopScoreValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl5"
             android:textColor="@color/Unify_N0"
-            app:layout_constraintBottom_toBottomOf="@id/progressBarScorePerformance"
-            app:layout_constraintStart_toEndOf="@id/progressBarScorePerformance"
-            app:layout_constraintTop_toTopOf="@id/ic_shop_score_performance"
+            app:layout_constraintBottom_toBottomOf="@id/barrierProgressBar"
+            app:layout_constraintStart_toEndOf="@id/barrierProgressBar"
+            app:layout_constraintTop_toTopOf="@id/tvTitleShopPerformance"
             app:typographyType="heading_1"
             app:typographyWeight="bold"
             tools:text="@string/example_score_performance" />

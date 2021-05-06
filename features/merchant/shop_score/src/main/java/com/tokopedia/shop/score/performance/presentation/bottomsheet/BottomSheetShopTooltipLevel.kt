@@ -89,7 +89,7 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
             if (itemDecorationCount.isZero()) {
                 addItemDecoration(TooltipLevelItemDecoration())
             }
-            layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
+            layoutManager = context?.let { GridLayoutManager(it, 2, GridLayoutManager.VERTICAL, false) }
             adapter = cardTooltipLevelAdapter
         }
     }
