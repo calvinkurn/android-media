@@ -194,6 +194,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             badge
             badge_svg
             title
+            title_fmt
           }
           postal_code
           latitude

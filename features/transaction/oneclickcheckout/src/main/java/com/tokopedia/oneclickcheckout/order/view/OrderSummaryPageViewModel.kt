@@ -741,7 +741,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             setIsFullfilment(orderShop.isFulfillment)
             setShopIdDimension(orderShop.shopId.toString())
             setShopNameDimension(orderShop.shopName)
-            setShopTypeDimension(orderShop.isOfficial, orderShop.isGold)
+            setShopTypeDimension(orderShop.shopType)
             setCategoryId(orderProduct.categoryId)
             if (_orderShipment.getRealShipperProductId() > 0) {
                 setShippingPrice(_orderShipment.getRealShippingPrice().toString())
