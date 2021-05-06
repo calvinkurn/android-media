@@ -20,10 +20,8 @@ import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
-import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.repository.HomeRevampRepository
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
-import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget.businessUnitDataQuery
 import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget.businessWidgetQuery
@@ -83,17 +81,8 @@ class HomeUseCaseModule {
 
     @HomeScope
     @Provides
-    fun homeUseCase(homeRepository: HomeRepository, homeDataMapper: HomeDataMapper) = HomeUseCase(homeRepository, homeDataMapper)
-
-
-    @HomeScope
-    @Provides
     fun homeRevampUseCase(homeRepository: HomeRevampRepository, homeDataMapper: HomeDataMapper) = HomeRevampUseCase(homeRepository, homeDataMapper)
 
-    @Provides
-    fun provideSendGeolocationInfoUseCase(homeRepository: HomeRepository): SendGeolocationInfoUseCase {
-        return SendGeolocationInfoUseCase(homeRepository)
-    }
 
     @Provides
     fun provideGetHomeRecommendationUseCase(
