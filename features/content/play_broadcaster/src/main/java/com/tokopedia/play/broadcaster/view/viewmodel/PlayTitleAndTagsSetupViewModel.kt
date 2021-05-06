@@ -4,13 +4,12 @@ import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.validator.tag.TagSetupValidator
 import com.tokopedia.play.broadcaster.ui.validator.title.TitleSetupValidator
+import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.event.Event
 import kotlinx.coroutines.*
@@ -116,7 +115,7 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
 
     private suspend fun uploadTags() {
         val isSuccess = setupDataStore.uploadTags(hydraConfigStore.getChannelId())
-        if (!isSuccess) error("Set Channel Tag Failed")
+        if (!isSuccess) throw DefaultErrorThrowable("${DefaultErrorThrowable.DEFAULT_MESSAGE}: Error Tag")
     }
 
     private suspend fun uploadTitle() = withContext(dispatcher.io) {

@@ -1,10 +1,14 @@
 package com.tokopedia.play.broadcaster.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.domain.model.GetAddedChannelTagsResponse
-import com.tokopedia.play.broadcaster.domain.model.GetRecommendedChannelTagsResponse
+import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
+import com.tokopedia.play_common.util.extension.defaultErrorMessage
+import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -12,9 +16,9 @@ import javax.inject.Inject
  * Created by jegul on 22/04/21
  */
 class GetAddedChannelTagsUseCase @Inject constructor(
-        graphqlRepository: GraphqlRepository,
+        private val graphqlRepository: GraphqlRepository,
         private val dispatcher: CoroutineDispatchers
-) : GraphqlUseCase<GetAddedChannelTagsResponse>(graphqlRepository) {
+) : UseCase<GetAddedChannelTagsResponse>() {
 
     private val query = """
         query GetAddedChannelTags(${'$'}$PARAM_CHANNEL_ID: String!) {
@@ -24,20 +28,29 @@ class GetAddedChannelTagsUseCase @Inject constructor(
         }
     """
 
-    init {
-        setGraphqlQuery(query)
-        setTypeClass(GetAddedChannelTagsResponse::class.java)
-    }
+    private var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): GetAddedChannelTagsResponse = withContext(dispatcher.io) {
-        return@withContext super.executeOnBackground()
+        val gqlResponse = DefaultUseCaseHandler(
+                gqlRepository = graphqlRepository,
+                query = query,
+                typeOfT = GetAddedChannelTagsResponse::class.java,
+                params = params,
+                gqlCacheStrategy = GraphqlCacheStrategy
+                        .Builder(CacheType.ALWAYS_CLOUD).build()
+        ).executeWithRetry()
+        val response = gqlResponse.getData<GetAddedChannelTagsResponse>(GetAddedChannelTagsResponse::class.java)
+        val errors = gqlResponse.getError(GetAddedChannelTagsResponse::class.java)
+        if (response != null && errors.isNullOrEmpty()) {
+            return@withContext response
+        } else {
+            throw MessageErrorException(errors.defaultErrorMessage)
+        }
     }
 
     fun setChannelId(channelId: String) {
-        setRequestParams(
-                mapOf(
-                        PARAM_CHANNEL_ID to channelId
-                )
+        params = mapOf(
+                PARAM_CHANNEL_ID to channelId
         )
     }
 

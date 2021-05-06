@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.graphql.data.model.GraphqlError
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -259,3 +260,6 @@ inline fun FragmentManager.commit(
         transaction.commit()
     }
 }
+
+val List<GraphqlError>.defaultErrorMessage: String
+    get() = mapNotNull { it.message }.joinToString(separator = ", ")
