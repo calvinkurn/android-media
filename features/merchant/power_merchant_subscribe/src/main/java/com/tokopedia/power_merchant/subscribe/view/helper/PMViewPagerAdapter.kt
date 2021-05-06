@@ -19,6 +19,8 @@ class PMViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIO
 
     override fun getPageTitle(position: Int): CharSequence = titles[position]
 
+    fun getTitles() = titles
+
     fun addFragment(fragment: Fragment, title: String) {
         fragments.add(fragment)
         titles.add(title)

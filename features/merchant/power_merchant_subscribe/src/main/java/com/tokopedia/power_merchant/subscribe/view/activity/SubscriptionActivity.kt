@@ -180,8 +180,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
         viewPagerPmSubscription.adapter = viewPagerAdapter
         tabPmSubscription.tabLayout.removeAllTabs()
-        tabPmSubscription.addNewTab(pmRegistrationPage.first)
-        tabPmSubscription.addNewTab(pmProRegistrationPage.first)
+        viewPagerAdapter.getTitles().forEach {
+            tabPmSubscription.addNewTab(it)
+        }
 
         tabPmSubscription.tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
         tabPmSubscription.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {

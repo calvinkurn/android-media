@@ -526,8 +526,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         if (isAutoExtendEnabled) {
             widgets.add(WidgetPMDeactivateUiModel)
         }
-        adapter.data.clear()
-        renderList(widgets)
+        recyclerView?.visible()
+        adapter.clearAllElements()
+        renderList(widgets, false)
     }
 
     private fun observePmRegistrationPage() {
