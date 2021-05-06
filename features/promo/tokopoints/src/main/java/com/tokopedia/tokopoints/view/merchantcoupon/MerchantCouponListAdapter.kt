@@ -76,7 +76,10 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
                         vh.ivCouponOne.setImageUrl(it, 1f)
                     }
                 }
-                vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
+                if (!item?.products?.get(0)?.benefitLabel.isNullOrEmpty()) {
+                    vh.tvDealsCouponOne.show()
+                    vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
+                }
             }
 
             if (item?.products?.size > 1) {
@@ -86,14 +89,20 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
                         vh.ivCouponTwo.setImageUrl(it, 1f)
                     }
                 }
-                vh.tvDealsCouponTwo.text = item?.products?.get(1)?.benefitLabel
+                if (!item?.products?.get(1)?.benefitLabel.isNullOrEmpty()) {
+                    vh.tvDealsCouponTwo.show()
+                    vh.tvDealsCouponTwo.text = item?.products?.get(1)?.benefitLabel
+                }
                 vh.productParentOne.show()
                 item?.products?.get(0)?.imageURL?.let {
                     if (it.isNotEmpty()) {
                         vh.ivCouponOne.loadImage(it)
                     }
                 }
-                vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
+                if (!item?.products?.get(0)?.benefitLabel.isNullOrEmpty()) {
+                    vh.tvDealsCouponOne.show()
+                    vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
+                }
             }
         }
 
@@ -103,11 +112,11 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
         vh.tvCashBackValue.text = item?.maximumBenefitAmountStr
         vh.tvCouponCount.text = item?.subtitle
 
-        if (isDarkMode(vh.itemView.context)){
-            vh.tvShopName.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-            vh.tvCashBackTitle.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-            vh.tvCashBackValue.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-            vh.tvCouponCount.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+        if (isDarkMode(vh.itemView.context)) {
+            vh.tvShopName.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black))
+            vh.tvCashBackTitle.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            vh.tvCashBackValue.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black))
+            vh.tvCouponCount.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         }
 
         vh.tvShopName.setOnClickListener {
@@ -129,9 +138,9 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
         }
 
         vh.itemView.setOnClickListener {
-            val shopName =  item?.shopInfo?.name
-            val shopApplink =  item?.shopInfo?.appLink
-            val shopId =  item?.shopInfo?.id
+            val shopName = item?.shopInfo?.name
+            val shopApplink = item?.shopInfo?.appLink
+            val shopId = item?.shopInfo?.id
             if (shopName != null && shopApplink != null && shopId != null) {
                 it.context.startActivity(TransParentActivity.getIntent(it.context, shopId, 0, shopApplink, shopName))
             }
@@ -178,18 +187,18 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
     }
 
     private fun sendTopadsClick(context: Context, adInfo: AdInfo?) {
-            TopAdsUrlHitter(context).hitClickUrl(
-                    this::class.java.simpleName,
-                    adInfo?.AdClickUrl,
-                    adInfo?.AdID,
-                    "",
-                    "",
-                    ""
-            )
+        TopAdsUrlHitter(context).hitClickUrl(
+                this::class.java.simpleName,
+                adInfo?.AdClickUrl,
+                adInfo?.AdID,
+                "",
+                "",
+                ""
+        )
     }
 
     private fun sendTopadsImpression(context: Context, adInfo: AdInfo?) {
-        if (!adIdImpression.contains(adInfo?.AdID) && adInfo?.AdViewUrl!!.isNotBlank() && !isEventTriggered(context,adInfo)){
+        if (!adIdImpression.contains(adInfo?.AdID) && adInfo?.AdViewUrl!!.isNotBlank() && !isEventTriggered(context, adInfo)) {
             adInfo?.AdID?.let { adIdImpression?.add(it) }
             TopAdsUrlHitter(SectionMerchantCouponAdapter.packageName).hitImpressionUrl(
                     context,

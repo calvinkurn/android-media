@@ -140,11 +140,8 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                     setOnRecyclerViewLayoutReady()
-                    if (it.data.merchantCouponResponse.productlist?.catalogMVCWithProductsList.isNullOrEmpty()) {
-                        showEmptyView()
-                    } else {
-                        it.data.merchantCouponResponse.productlist?.let { it1 -> mCouponAdapter.onSuccess(it1) }
-                    }
+                    it.data.merchantCouponResponse.productlist?.let { it1 -> mCouponAdapter.onSuccess(it1) }
+
                 }
                 is ErrorMessage -> {
                     mCouponAdapter.onError()
@@ -280,6 +277,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
 
     override fun onEmptyList(rawObject: Any?) {
         hideLoader()
+        showEmptyView()
     }
 
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
