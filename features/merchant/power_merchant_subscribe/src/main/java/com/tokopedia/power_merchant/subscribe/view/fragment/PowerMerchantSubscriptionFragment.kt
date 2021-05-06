@@ -583,17 +583,20 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun getShopGradeWidgetData(data: PMActiveDataUiModel): WidgetShopGradeUiModel {
         val shopGrade = data.currentPMGrade
-        val shopScoreThreshold = pmBasicInfo?.shopInfo?.shopScoreThreshold.orZero()
+        val shopInfo = pmBasicInfo?.shopInfo
+        val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val shopScoreThreshold = if (isPmPro) {
+            shopInfo?.shopScorePmProThreshold.orZero()
+        } else {
+            shopInfo?.shopScoreThreshold.orZero()
+        }
         return WidgetShopGradeUiModel(
-                isNewSeller = pmBasicInfo?.shopInfo?.isNewSeller.orTrue(),
-                shopGrade = shopGrade?.gradeName.orEmpty(),
+                isNewSeller = shopInfo?.isNewSeller.orTrue(),
+                pmTierType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
                 shopScore = shopGrade?.shopScore.orZero(),
-                shopAge = pmBasicInfo?.shopInfo?.shopAge ?: 1,
                 threshold = shopScoreThreshold,
                 gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
                 gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
-                nextPmCalculationDate = getPmNextCalculationDate(),
-                newSellerTenure = getNewSellerTenure(),
                 pmStatus = data.pmStatus
         )
     }

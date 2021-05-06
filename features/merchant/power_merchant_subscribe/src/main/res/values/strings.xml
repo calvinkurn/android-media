@@ -152,8 +152,6 @@
     <string name="pm_grade_benefit_widget_description">Paket keuntungan dapat mengalami kenaikan setiap bulan dan penurunan setiap 3 bulan.</string>
     <string name="pm_pm_transition_period_learnmore">Pelajari Power Merchant Selengkapnya</string>
     <string name="pm_pm_registration_header_ticker_message">Tunggu, ya! Jika verifikasi data berhasil, tokomu akan langsung jadi Power Merchant!</string>
-    <string name="pm_shop_grade_message">Pastikan status Power Merchant-mu aktif \nuntuk tetap nikmati keuntungannya, ya!</string>
-    <string name="pm_shop_grade_message_new_seller">Tokomu akan dapat skor &amp; grade setelah 90 hari \n%1$s.</string>
     <string name="pm_cancel_submission">Batalkan Pengajuan</string>
     <string name="pm_your_shop_grade">Grade tokomu: %1$s</string>
     <string name="pm_bronze">Bronze</string>
@@ -201,7 +199,7 @@
     <string name="pm_shop_performance_sum"><![CDATA[Performa Toko : <font color="%1$s">%2$s</font>]]></string>
     <string name="pm_shop_performance_sum_new_seller"><![CDATA[Proyeksi Performa Toko : <font color="%1$s">%2$s</font>]]></string>
     <string name="pm_shop_score_threshold_description"><![CDATA[Pertahankan skor performa toko <b>min. %1$d poin</b> untuk tetap menjadi Power Merchant setelah %2$s.]]></string>
-    <string name="pm_shop_score_threshold_description_final_period"><![CDATA[Pertahankan skor performa toko <b>min. %1$d poin</b> untuk tetap menjadi Power Merchant.]]></string>
+    <string name="pm_shop_score_threshold_description_final_period"><![CDATA[Pertahankan skor <b>min. %1$d poin</b> agar %2$s-mu tetap aktif, ya.]]></string>
     <string name="pm_next_pm_grade_info"><![CDATA[Capai <b>Level %1$d</b> dan <b>skor min. %2$d</b> untuk naik jadi <b>PM %3$s</b> di periode update selanjutnya dan nikmati:]]></string>
     <string name="pm_next_update_pm_grade_info">Update kenaikan grade dilakukan setiap bulan dan penurunan grade setiap 3 bulan.</string>
     <string name="pm_label_next_three_months_pm_grade_update">Update selanjutnya: %1$s</string>

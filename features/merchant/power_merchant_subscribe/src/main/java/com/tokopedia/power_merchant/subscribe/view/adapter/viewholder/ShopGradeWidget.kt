@@ -3,10 +3,13 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
-import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.utils.PMCommonUtils
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
@@ -36,23 +39,22 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
 
         tvPmShopGradeScore.text = context.getString(labelStringId, getShopScoreTextColor(element), getShopScoreFmt(element.shopScore)).parseAsHtml()
         tvPmShopGradeScoreTotal.text = context.getString(R.string.power_merchant_max_score)
-        val thresholdInfo = if (element.periodType == PeriodType.TRANSITION_PERIOD) {
-            context.getString(R.string.pm_shop_score_threshold_description, element.threshold, element.nextPmCalculationDate)
-        } else {
-            context.getString(R.string.pm_shop_score_threshold_description_final_period, element.threshold)
-        }
+        val thresholdInfo = context.getString(R.string.pm_shop_score_threshold_description_final_period, element.threshold, getPmTireLabel(element.pmTierType))
         tvPmShopGradeThreshold.text = thresholdInfo.parseAsHtml()
 
-        val days60ofTenure = 60
-        val shopScoreTipsVisibility = if (element.shopScore < element.threshold && element.shopAge >= days60ofTenure) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-        tvPmShopScoreTips.visibility = shopScoreTipsVisibility
-        icPmShopScoreTips.visibility = shopScoreTipsVisibility
+        val isPmShopScoreTipsVisible = element.shopScore < element.threshold
+        tvPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
+        icPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
         tvPmShopScoreTips.setOnClickListener {
             RouteManager.route(context, Constant.Url.URL_SHOP_PERFORMANCE_TIPS)
+        }
+    }
+
+    private fun getPmTireLabel(pmTierType: Int): String {
+        return if (pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO) {
+            getString(R.string.pm_power_merchant_pro)
+        } else {
+            getString(R.string.pm_power_merchant)
         }
     }
 
@@ -73,15 +75,15 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
     }
 
     private fun setupShopGrade(element: WidgetShopGradeUiModel) = with(itemView) {
-        tvPmShopGrade.text = context.getString(R.string.pm_your_shop_grade, element.shopGrade.asCamelCase())
+        val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        tvPmShopGrade.text = if (isPmPro) {
+            getString(R.string.pm_power_merchant_pro)
+        } else {
+            getString(R.string.pm_power_merchant)
+        }
         imgPmShopGradeBackground.loadImage(element.gradeBackgroundUrl, R.drawable.bg_pm_registration_header)
         imgPmShopGrade.loadImageWithoutPlaceholder(element.gradeBadgeImgUrl)
         tvPmShopGradeStatus.text = getPMStatusLabel(element.pmStatus)
-        tvPmShopGradeMessage.text = if (element.isNewSeller) {
-            context.getString(R.string.pm_shop_grade_message_new_seller, element.newSellerTenure)
-        } else {
-            context.getString(R.string.pm_shop_grade_message)
-        }
     }
 
     private fun getPMStatusLabel(pmStatus: String): String {
