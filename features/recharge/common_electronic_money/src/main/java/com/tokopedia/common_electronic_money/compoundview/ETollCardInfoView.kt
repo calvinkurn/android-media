@@ -12,6 +12,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.common_electronic_money.R
 import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.jetbrains.annotations.NotNull
@@ -122,44 +124,44 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
     }
 
     private fun viewVisible(){
-        imageIssuerLoader.visibility = View.GONE
-        imageIssuer.visibility = View.VISIBLE
+        imageIssuerLoader.hide()
+        imageIssuer.show()
 
-        textLabelCardNumberLoader.visibility = View.GONE
-        textLabelCardNumber.visibility = View.VISIBLE
+        textLabelCardNumberLoader.hide()
+        textLabelCardNumber.show()
 
-        textCardNumberLoader.visibility = View.GONE
-        textCardNumber.visibility = View.VISIBLE
+        textCardNumberLoader.hide()
+        textCardNumber.show()
 
-        textLabelBalanceLoader.visibility = View.GONE
-        textLabelBalance.visibility = View.VISIBLE
+        textLabelBalanceLoader.hide()
+        textLabelBalance.show()
 
-        textDateLoader.visibility = View.GONE
-        textDate.visibility = View.VISIBLE
+        textDateLoader.hide()
+        textDate.show()
 
-        textRemainingBalanceLoader.visibility = View.GONE
-        textRemainingBalance.visibility = View.VISIBLE
+        textRemainingBalanceLoader.hide()
+        textRemainingBalance.show()
 
     }
 
     private fun viewInvisible(){
-        imageIssuerLoader.visibility = View.VISIBLE
-        imageIssuer.visibility = View.GONE
+        imageIssuerLoader.show()
+        imageIssuer.hide()
 
-        textLabelCardNumberLoader.visibility = View.VISIBLE
-        textLabelCardNumber.visibility = View.GONE
+        textLabelCardNumberLoader.show()
+        textLabelCardNumber.hide()
 
-        textCardNumberLoader.visibility = View.VISIBLE
-        textCardNumber.visibility = View.GONE
+        textCardNumberLoader.show()
+        textCardNumber.hide()
 
-        textLabelBalanceLoader.visibility = View.VISIBLE
-        textLabelBalance.visibility = View.GONE
+        textLabelBalanceLoader.show()
+        textLabelBalance.hide()
 
-        textDateLoader.visibility = View.VISIBLE
-        textDate.visibility = View.GONE
+        textDateLoader.show()
+        textDate.hide()
 
-        textRemainingBalanceLoader.visibility = View.VISIBLE
-        textRemainingBalance.visibility = View.GONE
+        textRemainingBalanceLoader.show()
+        textRemainingBalance.hide()
     }
 
     fun getCardLastBalance(): String {
