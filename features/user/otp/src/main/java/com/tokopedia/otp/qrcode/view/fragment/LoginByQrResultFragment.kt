@@ -74,6 +74,7 @@ class LoginByQrResultFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     private fun initView() {
+        viewBound.containerView?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Neutral_N0)
         (activity as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_cancel_grey_otp)
         viewBound.title?.text = messageTitle
         viewBound.subtitle?.text = messageBody

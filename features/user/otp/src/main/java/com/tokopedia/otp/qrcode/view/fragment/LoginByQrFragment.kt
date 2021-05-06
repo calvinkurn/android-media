@@ -12,6 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.util.LetUtil
+import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.SignatureUtil
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
@@ -101,6 +102,7 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     private fun initView() {
+        viewBound.containerView?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Neutral_N0)
         viewBound.userName?.text = userSession.name ?: ""
 
         viewBound.approveButton?.setOnClickListener {

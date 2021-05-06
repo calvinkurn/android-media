@@ -15,6 +15,7 @@ class LoginByQrResultViewBinding @Inject constructor() : BaseOtpViewBinding() {
 
     override val layoutResId: Int = R.layout.fragment_login_by_qr_result
 
+    var containerView: View? = null
     var mainImage: ImageUnify? = null
     var title: Typography? = null
     var subtitle: Typography? = null
@@ -23,6 +24,7 @@ class LoginByQrResultViewBinding @Inject constructor() : BaseOtpViewBinding() {
 
     override fun inflate(layoutInflater: LayoutInflater, container: ViewGroup?): View =
             layoutInflater.inflate(layoutResId, container, false).apply {
+                containerView = findViewById(R.id.container_login_by_qr)
                 mainImage = findViewById(R.id.main_image)
                 title = findViewById(R.id.text_title)
                 subtitle = findViewById(R.id.text_subtitle)

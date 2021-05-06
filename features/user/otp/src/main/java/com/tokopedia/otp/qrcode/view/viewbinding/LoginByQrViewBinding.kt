@@ -24,7 +24,7 @@ class LoginByQrViewBinding @Inject constructor() : BaseOtpViewBinding() {
 
     override fun inflate(layoutInflater: LayoutInflater, container: ViewGroup?): View =
             layoutInflater.inflate(layoutResId, container, false).apply {
-                containerView = findViewById(R.id.container)
+                containerView = findViewById(R.id.container_login_by_qr)
                 toolbar = findViewById(R.id.toolbar_otp)
                 mainIcon = findViewById(R.id.main_icon)
                 userName = findViewById(R.id.user_name)
