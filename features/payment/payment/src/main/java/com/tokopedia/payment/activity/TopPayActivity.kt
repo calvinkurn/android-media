@@ -119,6 +119,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setSecureWindowFlag()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -136,6 +137,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         initVar()
         setViewListener()
         setActionVar()
+    }
+
+    private fun setSecureWindowFlag() {
+        if(GlobalConfig.APPLICATION_TYPE==GlobalConfig.CONSUMER_APPLICATION||GlobalConfig.APPLICATION_TYPE==GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread {
+                window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+            }
+        }
     }
 
     private fun initInjector() {

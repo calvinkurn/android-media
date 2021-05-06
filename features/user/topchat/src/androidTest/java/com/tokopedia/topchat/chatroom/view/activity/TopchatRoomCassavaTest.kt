@@ -16,13 +16,10 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
-import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.core.AllOf
 import org.junit.Before
 import org.junit.Test
@@ -39,7 +36,6 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
 
     private val gtmLogDbSource = GtmLogDBSource(context)
 
-    @ExperimentalCoroutinesApi
     @Before
     override fun before() {
         super.before()

@@ -6,7 +6,8 @@ import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
 import androidx.collection.ArraySet;
-import com.tokopedia.imagepicker.common.PhotoMetadataUtils;
+
+import com.tokopedia.utils.file.FileUtil;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -140,7 +141,7 @@ public enum MimeType {
             }
             if (!pathParsed) {
                 // we only resolve the path for one time
-                path = PhotoMetadataUtils.getPath(resolver, uri);
+                path = FileUtil.getPath(resolver, uri);
                 if (!TextUtils.isEmpty(path)) {
                     path = path.toLowerCase(Locale.US);
                 }

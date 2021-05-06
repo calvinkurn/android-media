@@ -215,7 +215,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var sendButton: IconUnify? = null
     private var textWatcher: MessageTextWatcher? = null
     private var sendButtontextWatcher: SendButtonTextWatcher? = null
-    private var topchatViewState: TopChatViewStateImpl? = null
+    protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
