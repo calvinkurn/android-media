@@ -55,8 +55,6 @@ abstract class BaseChatViewStateImpl(
     protected lateinit var replyIsTyping: Observable<Boolean>
     var isTyping: Boolean = false
 
-    private val keyboardOffset = 100
-
     override fun initView() {
         rootView = view.findViewById(getRootViewId())
         recyclerView = view.findViewById(getRecyclerViewId())
@@ -279,7 +277,7 @@ abstract class BaseChatViewStateImpl(
 
         val heightDifference = screenHeight - windowHeight - statusBarHeight
 
-        if (heightDifference > keyboardOffset) {
+        if (heightDifference > KEYBOARD_OFFSET) {
             onKeyboardOpened()
         } else {
             onKeyboardClosed()
@@ -347,4 +345,8 @@ abstract class BaseChatViewStateImpl(
     abstract fun getAttachmentMenuId(): Int
     abstract fun getRootViewId(): Int
     abstract fun getAttachmentMenuContainer(): Int
+
+    companion object {
+        const val KEYBOARD_OFFSET = 100
+    }
 }
