@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -118,7 +117,6 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CA
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WEB_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WRONG_FORMAT_EMAIL
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.UohAnalytics
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAdd
@@ -134,7 +132,6 @@ import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.design.utils.StringUtils
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
@@ -695,8 +692,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         uohListViewModel.atcResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    if (it.data.isDataError()) {
-                        it.data.getAtcErrorMessage()?.let { errorMsg -> showToaster(errorMsg, Toaster.TYPE_ERROR) }
+                    if (it.data.isStatusError()) {
+                        val atcErrorMessage = it.data.getAtcErrorMessage()
+                        if (atcErrorMessage != null) {
+                            showToaster(atcErrorMessage, Toaster.TYPE_ERROR)
+                        } else {
+                            context?.getString(R.string.fail_cancellation)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, Toaster.TYPE_ERROR) }
+                        }
                     } else {
                         val successMsg = StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
                         showToasterAtc(successMsg, Toaster.TYPE_NORMAL)
