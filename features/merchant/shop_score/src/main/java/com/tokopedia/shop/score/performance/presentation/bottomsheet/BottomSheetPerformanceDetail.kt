@@ -87,7 +87,9 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
             moreInformation?.let {
                 tvMoreInfoPerformanceDetail?.setTextMakeHyperlink(getString(it, urlLink)) {
                     if (urlLink.isNotBlank()) {
-                        RouteManager.route(requireContext(), ApplinkConstInternalGlobal.WEBVIEW, urlLink)
+                        context?.let { context ->
+                            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, urlLink)
+                        }
                     }
                 }
             }

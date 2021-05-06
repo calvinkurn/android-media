@@ -55,7 +55,9 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         observePenaltyPage()
         observeUpdateSortFilter()
         observeDetailPenaltyNextPage()
@@ -161,11 +163,13 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     }
 
     override fun onItemPenaltyClick(itemPenaltyUiModel: ItemPenaltyUiModel) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
-        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-        cacheManager?.put(ShopPenaltyDetailFragment.KEY_ITEM_PENALTY_DETAIL, itemPenaltyUiModel)
-        intent.putExtra(ShopPenaltyDetailFragment.KEY_CACHE_MANAGE_ID, cacheManager?.id)
-        startActivity(intent)
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
+            val cacheManager = SaveInstanceCacheManager(it, true)
+            cacheManager.put(ShopPenaltyDetailFragment.KEY_ITEM_PENALTY_DETAIL, itemPenaltyUiModel)
+            intent.putExtra(ShopPenaltyDetailFragment.KEY_CACHE_MANAGE_ID, cacheManager.id)
+            startActivity(intent)
+        }
     }
 
     override fun getAdapterTypeFactory(): PenaltyPageAdapterFactory {
@@ -241,7 +245,9 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     }
 
     override fun onMoreInfoHelpPenaltyClicked() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.SYSTEM_PENALTY_HELP_URL)
+        context?.let {
+            RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.SYSTEM_PENALTY_HELP_URL)
+        }
         shopScorePenaltyTracking.clickLearMorePenaltyPage()
     }
 

@@ -64,7 +64,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
     private var isNewSeller = false
 
-    private val shopScoreCoachMarkPrefs by lazy { ShopScoreCoachMarkPrefs(requireContext()) }
+    private val shopScoreCoachMarkPrefs by lazy { context?.let { ShopScoreCoachMarkPrefs(it) } }
 
     private val coachMark: CoachMark2? by lazy {
         context?.let { CoachMark2(it) }
@@ -384,7 +384,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         }
 
         coachMark?.onFinishListener = {
-            shopScoreCoachMarkPrefs.setFinishCoachMark(true)
+            shopScoreCoachMarkPrefs?.setFinishCoachMark(true)
         }
     }
 
@@ -521,17 +521,17 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun goToPenaltyPage() {
-        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.SHOP_PENALTY)
+        context?.let { RouteManager.route(it, ApplinkConstInternalMarketplace.SHOP_PENALTY) }
     }
 
     private fun goToPowerMerchantSubscribe() {
         val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
-        RouteManager.route(requireContext(), appLink)
+        context?.let { RouteManager.route(context, appLink) }
     }
 
     private fun setupAdapter() {
         rvShopPerformance?.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = context?.let { LinearLayoutManager(it) }
             adapter = shopPerformanceAdapter
         }
     }
@@ -563,7 +563,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     this.shopScoreWrapperResponse = it.data.second
                     counterPenalty = it.data.first.filterIsInstance<HeaderShopPerformanceUiModel>().firstOrNull()?.scorePenalty.orZero()
                     showPenaltyBadge()
-                    if (!shopScoreCoachMarkPrefs.getFinishCoachMark() && !isNewSeller) {
+                    if (shopScoreCoachMarkPrefs?.getFinishCoachMark() == false && !isNewSeller) {
                         Handler().postDelayed({
                             scrollToItemParameterDetailCoachMark()
                             showCoachMark()

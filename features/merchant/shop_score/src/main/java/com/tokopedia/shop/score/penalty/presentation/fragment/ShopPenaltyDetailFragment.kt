@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -25,7 +23,6 @@ import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyStatusBo
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyDetailViewModel
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_penalty_detail.*
 import javax.inject.Inject
 
@@ -53,7 +50,9 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         val cacheManager = context?.let { SaveInstanceCacheManager(it, activity?.intent?.getStringExtra(KEY_CACHE_MANAGE_ID)) }
         val itemPenalty = cacheManager?.get(KEY_ITEM_PENALTY_DETAIL, ItemPenaltyUiModel::class.java)
                 ?: ItemPenaltyUiModel()
