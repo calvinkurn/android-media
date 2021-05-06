@@ -14,6 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
@@ -204,6 +205,8 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
                 }
                 is Fail -> {
                     penaltyPageAdapter.setErrorStatePenalty(ItemPenaltyErrorUiModel(it.throwable))
+                    ShopScoreReputationErrorLogger.logToCrashlytic(
+                            ShopScoreReputationErrorLogger.SHOP_PENALTY_ERROR, it.throwable)
                 }
             }
         }
@@ -218,6 +221,8 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
                 }
                 is Fail -> {
                     penaltyPageAdapter.setErrorStatePenalty(ItemPenaltyErrorUiModel(it.throwable))
+                    ShopScoreReputationErrorLogger.logToCrashlytic(
+                            ShopScoreReputationErrorLogger.SHOP_PENALTY_DETAIL_NEXT_ERROR, it.throwable)
                 }
             }
         }

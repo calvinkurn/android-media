@@ -27,6 +27,7 @@ import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.constant.GM_BADGE_TITLE
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
+import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
 import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -251,7 +252,11 @@ class ShopScoreDetailFragment : Fragment() {
                         renderShopScoreState(shopType)
                     }
                 }
-                is Fail -> emptyState()
+                is Fail -> {
+                    emptyState()
+                    ShopScoreReputationErrorLogger.logToCrashlytic(
+                            ShopScoreReputationErrorLogger.OLD_SHOP_SCORE_ERROR, result.throwable)
+                }
             }
         }
         viewModel.getShopScoreDetail()
