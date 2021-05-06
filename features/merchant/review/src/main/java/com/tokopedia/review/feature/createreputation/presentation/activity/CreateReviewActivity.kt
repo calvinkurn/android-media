@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.createreputation.presentation.activity
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
@@ -53,8 +54,11 @@ class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, Rev
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromApplinkOrIntent()
         startPerformanceMonitoring()
-        super.onCreate(savedInstanceState)
         if(isNewWriteForm()) {
+            setTranslucentTheme()
+        }
+        super.onCreate(savedInstanceState)
+        if (isNewWriteForm()) {
             handleDimming()
             showWriteFormBottomSheet()
             return
@@ -81,16 +85,16 @@ class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, Rev
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                if(isEditMode) ReviewConstants.EDIT_REVIEW_PLT_PREPARE_METRICS else ReviewConstants.CREATE_REVIEW_PLT_PREPARE_METRICS,
-                if(isEditMode) ReviewConstants.EDIT_REVIEW_PLT_NETWORK_METRICS else ReviewConstants.CREATE_REVIEW_PLT_NETWORK_METRICS,
-                if(isEditMode) ReviewConstants.EDIT_REVIEW_PLT_RENDER_METRICS else ReviewConstants.CREATE_REVIEW_PLT_RENDER_METRICS,
+                if (isEditMode) ReviewConstants.EDIT_REVIEW_PLT_PREPARE_METRICS else ReviewConstants.CREATE_REVIEW_PLT_PREPARE_METRICS,
+                if (isEditMode) ReviewConstants.EDIT_REVIEW_PLT_NETWORK_METRICS else ReviewConstants.CREATE_REVIEW_PLT_NETWORK_METRICS,
+                if (isEditMode) ReviewConstants.EDIT_REVIEW_PLT_RENDER_METRICS else ReviewConstants.CREATE_REVIEW_PLT_RENDER_METRICS,
                 0,
                 0,
                 0,
                 0,
                 null
         )
-        pageLoadTimePerformanceMonitoring?.startMonitoring(if(isEditMode) ReviewConstants.EDIT_REVIEW_TRACE else ReviewConstants.CREATE_REVIEW_TRACE)
+        pageLoadTimePerformanceMonitoring?.startMonitoring(if (isEditMode) ReviewConstants.EDIT_REVIEW_TRACE else ReviewConstants.CREATE_REVIEW_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
 
@@ -145,13 +149,16 @@ class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, Rev
             productId = uri.lastPathSegment ?: ""
             reputationId = uriSegment[uriSegment.size - 2]
             rating = uri.getQueryParameter(PARAM_RATING)?.toIntOrNull() ?: DEFAULT_PRODUCT_RATING
-            isEditMode = uri.getQueryParameter(ReviewConstants.PARAM_IS_EDIT_MODE)?.toBoolean() ?: false
-            feedbackId = uri.getQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID)?.toLongOrZero() ?: 0
+            isEditMode = uri.getQueryParameter(ReviewConstants.PARAM_IS_EDIT_MODE)?.toBoolean()
+                    ?: false
+            feedbackId = uri.getQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID)?.toLongOrZero()
+                    ?: 0
             utmSource = uri.getQueryParameter(ReviewConstants.PARAM_UTM_SOURCE) ?: ""
         } else {
             productId = bundle?.getString(ReviewConstants.ARGS_PRODUCT_ID) ?: ""
             reputationId = bundle?.getString(ReviewConstants.ARGS_REPUTATION_ID) ?: ""
-            rating = bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, rating) ?: DEFAULT_PRODUCT_RATING
+            rating = bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, rating)
+                    ?: DEFAULT_PRODUCT_RATING
         }
     }
 
@@ -159,12 +166,16 @@ class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, Rev
         this.supportActionBar?.title = getString(R.string.review_create_activity_title)
     }
 
-    private fun handleDimming(){
-        try{
+    private fun handleDimming() {
+        try {
             window.setDimAmount(0f)
-        }catch (th:Throwable){
+        } catch (th: Throwable) {
             Timber.e(th)
         }
+    }
+
+    private fun setTranslucentTheme() {
+        setTheme(R.style.Theme_AppCompat_Translucent)
     }
 
     private fun showWriteFormBottomSheet() {
@@ -175,6 +186,9 @@ class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, Rev
             showKnob = true
             showCloseIcon = false
             show(supportFragmentManager, "BottomSheet Tag")
+            setShowListener {
+                bottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+            }
             setOnDismissListener {
                 finish()
             }

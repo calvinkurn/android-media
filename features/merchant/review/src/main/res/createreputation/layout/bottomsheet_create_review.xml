@@ -11,20 +11,33 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/review_form_rating_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/review_create_rating_prompt"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_form_product_card" />
+
     <com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
         android:id="@+id/review_form_rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/review_form_product_card" />
+        app:layout_constraintTop_toBottomOf="@+id/review_form_rating_prompt" />
 
     <FrameLayout
         android:id="@+id/review_form_incentives_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/review_form_rating">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,18 +49,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_12"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/review_form_incentives_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:labelTitle="@string/review_create_incentives_label"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/review_form_rating_divider"
+                app:labelType="general_light_green"
                 app:layout_constraintBottom_toBottomOf="@id/review_form_rating_divider"
-                app:labelType="general_light_green" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/review_form_rating_divider" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -59,6 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_form_incentives_container"
         app:typographyType="heading_5"
@@ -72,6 +86,7 @@
         android:layout_marginStart="-16dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="-16dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -84,6 +99,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="-16dp"
         android:layout_marginEnd="-16dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/review_form_text_area" />
 
     <com.tokopedia.unifycomponents.DividerUnify
@@ -97,10 +113,11 @@
         android:id="@+id/review_form_progress_bar_widget"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/review_form_submit_button"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_form_progress_bar_divider" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -108,8 +125,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:text="@string/submit_review"
         android:layout_marginEnd="@dimen/layout_lvl2"
+        android:text="@string/submit_review"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_form_progress_bar_divider" />
 

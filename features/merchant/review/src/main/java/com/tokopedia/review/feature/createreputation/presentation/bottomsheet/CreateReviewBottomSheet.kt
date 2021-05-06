@@ -5,16 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
 import com.tokopedia.review.feature.createreputation.model.ProductData
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
+import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -35,11 +41,15 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
     // View Elements
     private var productCard: CreateReviewProductCard? = null
+    private var ratingPrompt: Typography? = null
     private var ratingStars: AnimatedRatingPickerCreateReviewView? = null
+    private var incentivesContainer: View? = null
+    private var textAreaTitle: Typography? = null
     private var textArea: CreateReviewTextArea? = null
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
     private var anonymousOption: CreateReviewAnonymousOption? = null
     private var progressBar: CreateReviewProgressBar? = null
+    private var submitButton: UnifyButton? = null
 
     private var productId: Long = 0L
     private var reputationId: Long = 0L
@@ -65,6 +75,9 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
         observeGetForm()
         observeIncentive()
         getForm()
+        getIncentiveOvoData()
+        setRatingInitialState()
+        setRatingClickListener()
     }
 
     private fun initInjector() {
@@ -77,17 +90,57 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
         }
     }
 
-
     private fun bindViews() {
         productCard = view?.findViewById(R.id.review_form_product_card)
+        ratingPrompt = view?.findViewById(R.id.review_form_rating_prompt)
         ratingStars = view?.findViewById(R.id.review_form_rating)
+        incentivesContainer = view?.findViewById(R.id.review_form_incentives_container)
+        textAreaTitle = view?.findViewById(R.id.review_form_text_area_title)
         textArea = view?.findViewById(R.id.review_form_text_area)
         anonymousOption = view?.findViewById(R.id.review_form_anonymous_option)
         progressBar = view?.findViewById(R.id.review_form_progress_bar_widget)
+        submitButton = view?.findViewById(R.id.review_form_submit_button)
+    }
+
+    private fun setRatingClickListener() {
+        ratingStars?.setListener(object : AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
+            override fun onClick(position: Int) {
+                super.onClick(position)
+                hideRatingPrompt()
+                showAllViews()
+                expandBottomSheet()
+                updateTitleBasedOnSelectedRating(position)
+            }
+        })
+    }
+
+    private fun setRatingInitialState() {
+        ratingStars?.resetStars()
+    }
+
+    private fun showAllViews() {
+        incentivesContainer?.show()
+        textAreaTitle?.show()
+        textArea?.show()
+        anonymousOption?.show()
+        progressBar?.show()
+        submitButton?.show()
+    }
+
+    private fun hideRatingPrompt() {
+        ratingPrompt?.hide()
+    }
+
+    private fun expandBottomSheet() {
+        bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     private fun getForm() {
         createReviewViewModel.getProductReputation(productId, reputationId)
+    }
+
+    private fun getIncentiveOvoData() {
+        createReviewViewModel.getProductIncentiveOvo(productId, reputationId)
     }
 
     private fun observeGetForm() {
@@ -137,5 +190,26 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
     private fun onErrorGetReviewForm(throwable: Throwable) {
 
+    }
+
+    private fun updateTitleBasedOnSelectedRating(position: Int) {
+        when {
+            position < CreateReviewFragment.RATING_3 -> {
+                if (position == CreateReviewFragment.RATING_1) {
+                    textAreaTitle?.text = resources.getString(R.string.review_create_worst_title)
+                } else {
+                    textAreaTitle?.text = resources.getString(R.string.review_create_negative_title)
+                }
+            }
+            position == CreateReviewFragment.RATING_3 -> {
+                textAreaTitle?.text = resources.getString(R.string.review_create_neutral_title)
+            }
+            position == CreateReviewFragment.RATING_4 -> {
+                textAreaTitle?.text = resources.getString(R.string.review_create_positive_title)
+            }
+            else -> {
+                textAreaTitle?.text = resources.getString(R.string.review_create_best_title)
+            }
+        }
     }
 }

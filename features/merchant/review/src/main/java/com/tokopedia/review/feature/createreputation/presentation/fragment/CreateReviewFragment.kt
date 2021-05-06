@@ -94,11 +94,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
         private const val IMAGE_PEDIE_4 = "https://ecs7.tokopedia.net/android/pedie/4star.png"
         private const val IMAGE_PEDIE_5 = "https://ecs7.tokopedia.net/android/pedie/5star.png"
 
-        private const val RATING_1 = 1
-        private const val RATING_2 = 2
-        private const val RATING_3 = 3
-        private const val RATING_4 = 4
-        private const val RATING_5 = 5
+        const val RATING_1 = 1
+        const val RATING_2 = 2
+        const val RATING_3 = 3
+        const val RATING_4 = 4
+        const val RATING_5 = 5
         private const val SAME_ARGS_ERROR = 3
 
         const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40

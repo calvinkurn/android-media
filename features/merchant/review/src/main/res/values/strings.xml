@@ -280,6 +280,7 @@
     <string name="review_create_thank_you_subtitle">Ulasan lengkap akan mendapatkan %d Points yang akan masuk dalam waktu maks. 24 jam.</string>
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
     <string name="review_create_incentives_label">Dapatkan TokoPoints</string>
+    <string name="review_create_rating_prompt">Seberapa puas dengan belanjaanmu?</string>
 
     <!-- Review Reminder -->
     <string name="review_reminder_tab_title_1">Kirim Pesan</string>
