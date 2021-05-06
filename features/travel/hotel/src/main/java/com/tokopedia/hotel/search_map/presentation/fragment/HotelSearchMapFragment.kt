@@ -1421,7 +1421,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         const val BUTTON_RADIUS_SHOW_VALUE: Float = 128f
         const val BUTTON_RADIUS_HIDE_VALUE: Float = -150f
 
-        private const val MAPS_STREET_LEVEL_ZOOM: Float = 15f
+        private const val MAPS_STREET_LEVEL_ZOOM: Float = 18f
         private const val MAPS_ZOOM_IN: Float = 11f
         private const val MAPS_ZOOM_OUT: Float = 9f
 
