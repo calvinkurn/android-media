@@ -8,7 +8,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.tokopedia.play.broadcaster.ui.itemdecoration.TagItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
-import com.tokopedia.play.broadcaster.ui.viewholder.TagRecommendationViewHolder
+import com.tokopedia.play.broadcaster.ui.viewholder.TagViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.TagRecommendationListAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -19,7 +19,7 @@ class TagListViewComponent(
         container: ViewGroup,
         @IdRes idRes: Int,
         private val listener: Listener
-) : ViewComponent(container, idRes), TagRecommendationViewHolder.Listener {
+) : ViewComponent(container, idRes), TagViewHolder.Listener {
 
     private val rvTagsRecommendation: RecyclerView = rootView as RecyclerView
 
