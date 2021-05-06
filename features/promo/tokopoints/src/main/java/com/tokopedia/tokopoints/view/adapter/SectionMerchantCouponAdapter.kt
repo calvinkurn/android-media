@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -17,6 +18,7 @@ import com.tokopedia.tokopoints.view.model.merchantcoupon.AdInfo
 import com.tokopedia.tokopoints.view.model.merchantcoupon.CatalogMVCWithProductsListItem
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.PersistentAdsData
+import com.tokopedia.tokopoints.view.util.isDarkMode
 import com.tokopedia.tokopoints.view.util.isEventTriggered
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.ImageUnify
@@ -100,6 +102,13 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
         vh.tvCashBackTitle.text = item?.title
         vh.tvCashBackValue.text = item?.maximumBenefitAmountStr
         vh.tvCouponCount.text = item?.subtitle
+
+        if (isDarkMode(vh.itemView.context)){
+            vh.tvShopName.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            vh.tvCashBackTitle.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            vh.tvCashBackValue.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            vh.tvCouponCount.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+        }
 
         vh.tvShopName.setOnClickListener {
             shopClickListener(vh, item)
