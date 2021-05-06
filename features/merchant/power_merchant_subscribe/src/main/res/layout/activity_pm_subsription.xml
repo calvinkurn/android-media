@@ -1,18 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarPmSubscription"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        tools:layout_height="?attr/actionBarSize" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_height="60dp" />
 
-    <FrameLayout
-        android:id="@+id/framePmFragmentContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbarPmSubscription" />
-</RelativeLayout>
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgPmHeaderBackdrop"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/gmc_dimen_76dp"
+        android:orientation="horizontal"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarPmSubscription"
+        app:unify_image_corner_radius="0"
+        tools:src="@drawable/bg_pm_pro_registration_header" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgPmHeaderImage"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        app:layout_constraintBottom_toBottomOf="@+id/imgPmHeaderBackdrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imgPmHeaderBackdrop"
+        tools:src="@drawable/ic_pm_badge_pm_pro_filled" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmHeaderDesc"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintBottom_toBottomOf="@+id/imgPmHeaderImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgPmHeaderImage"
+        app:layout_constraintTop_toTopOf="@+id/imgPmHeaderImage"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="@string/pm_registration_header_pm" />
+
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/tabPmSubscription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgPmHeaderBackdrop" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPagerPmSubscription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintBottom_toTopOf="@+id/pmRegistrationFooterView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabPmSubscription" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderPmSubscription"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/globalErrorPmSubscription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.power_merchant.subscribe.view.viewcomponent.RegistrationFooterView
+        android:id="@+id/pmRegistrationFooterView"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_height="@dimen/layout_lvl6"
+        tools:visibility="visible" />
+</androidx.constraintlayout.widget.ConstraintLayout>

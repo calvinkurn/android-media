@@ -37,8 +37,6 @@ class WidgetAdapterFactoryImpl(
 
     override fun type(model: WidgetPMDeactivateUiModel): Int = PMDeactivateWidget.RES_LAYOUT
 
-    override fun type(model: WidgetLoadingStateUiModel): Int = LoadingStateWidget.RES_LAYOUT
-
     override fun type(model: WidgetErrorStateUiModel): Int = ErrorStateWidget.RES_LAYOUT
 
     override fun type(model: WidgetTickerUiModel): Int = TickerWidget.RES_LAYOUT
@@ -51,7 +49,6 @@ class WidgetAdapterFactoryImpl(
             NextShopGradeWidget.RES_LAYOUT -> NextShopGradeWidget(parent)
             GradeBenefitWidget.RES_LAYOUT -> GradeBenefitWidget(parent)
             PMDeactivateWidget.RES_LAYOUT -> PMDeactivateWidget(parent, widgetListener)
-            LoadingStateWidget.RES_LAYOUT -> LoadingStateWidget(parent)
             ErrorStateWidget.RES_LAYOUT -> ErrorStateWidget(parent, widgetListener)
             ExpandableWidget.RES_LAYOUT -> ExpandableWidget(parent)
             ShopGradeWidget.RES_LAYOUT -> ShopGradeWidget(parent)

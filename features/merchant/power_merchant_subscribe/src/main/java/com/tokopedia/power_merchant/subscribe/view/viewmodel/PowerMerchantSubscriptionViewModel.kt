@@ -5,14 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
-import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMGradeBenefitUseCase
-import com.tokopedia.gm.common.domain.interactor.GetPMStatusAndShopInfoUseCase
 import com.tokopedia.gm.common.domain.interactor.PowerMerchantActivateUseCase
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMActiveDataUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.PMActiveDataUiModel
-import com.tokopedia.power_merchant.subscribe.view_old.util.PowerMerchantRemoteConfig
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -28,11 +25,9 @@ import javax.inject.Inject
  */
 
 class PowerMerchantSubscriptionViewModel @Inject constructor(
-        private val getPMStatusAndShopInfo: Lazy<GetPMStatusAndShopInfoUseCase>,
         private val getPMGradeBenefitUseCase: Lazy<GetPMGradeBenefitUseCase>,
         private val getPMActiveDataUseCase: Lazy<GetPMActiveDataUseCase>,
         private val activatePMUseCase: Lazy<PowerMerchantActivateUseCase>,
-        private val remoteConfig: Lazy<PowerMerchantRemoteConfig>,
         private val userSession: Lazy<UserSessionInterface>,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -41,8 +36,6 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         get() = _pmActiveData
     val pmGradeBenefitInfo: LiveData<Result<List<PMGradeWithBenefitsUiModel>>>
         get() = _pmGradeBenefitInfo
-    val powerMerchantBasicInfo: LiveData<Result<PowerMerchantBasicInfoUiModel>>
-        get() = _powerMerchantBasicInfo
     val pmActivationStatus: LiveData<Result<Boolean>>
         get() = _pmActivationStatus
     val pmCancelDeactivationStatus: LiveData<Result<Boolean>>
@@ -50,22 +43,8 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
 
     private val _pmActiveData: MutableLiveData<Result<PMActiveDataUiModel>> = MutableLiveData()
     private val _pmGradeBenefitInfo: MutableLiveData<Result<List<PMGradeWithBenefitsUiModel>>> = MutableLiveData()
-    private val _powerMerchantBasicInfo: MutableLiveData<Result<PowerMerchantBasicInfoUiModel>> = MutableLiveData()
     private val _pmActivationStatus: MutableLiveData<Result<Boolean>> = MutableLiveData()
     private val _pmCancelDeactivationStatus: MutableLiveData<Result<Boolean>> = MutableLiveData()
-
-    fun getPowerMerchantBasicInfo() {
-        launchCatchError(block = {
-            val result = withContext(dispatchers.io) {
-                val isFreeShippingEnabled = remoteConfig.get().isFreeShippingEnabled()
-                val data = getPMStatusAndShopInfo.get().executeOnBackground()
-                return@withContext data.copy(isFreeShippingEnabled = isFreeShippingEnabled)
-            }
-            _powerMerchantBasicInfo.value = Success(result)
-        }, onError = {
-            _powerMerchantBasicInfo.value = Fail(it)
-        })
-    }
 
     fun getPmRegistrationData() {
         launchCatchError(block = {

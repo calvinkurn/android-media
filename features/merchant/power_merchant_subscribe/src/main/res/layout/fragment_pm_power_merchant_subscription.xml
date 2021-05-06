@@ -8,7 +8,6 @@
         android:id="@+id/swipeRefreshPm"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/pmRegistrationFooterView"
         android:layout_alignParentTop="true">
 
         <RelativeLayout
@@ -23,13 +22,4 @@
                 tools:listitem="@layout/widget_pm_registration_header" />
         </RelativeLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <com.tokopedia.power_merchant.subscribe.view.viewcomponent.RegistrationFooterView
-        android:id="@+id/pmRegistrationFooterView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone"
-        tools:layout_height="@dimen/layout_lvl6"
-        tools:visibility="visible" />
 </RelativeLayout>

@@ -6,43 +6,6 @@
     android:layout_height="wrap_content"
     android:background="@color/Neutral_N0">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imgPmHeaderBackdrop"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/gmc_dimen_76dp"
-        android:orientation="horizontal"
-        android:scaleType="fitXY"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:unify_image_corner_radius="0"
-        tools:src="@drawable/bg_pm_pro_registration_header" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imgPmHeaderImage"
-        android:layout_width="@dimen/layout_lvl5"
-        android:layout_height="@dimen/layout_lvl5"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_pm_badge_pm_pro_filled" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvPmHeaderDesc"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:textColor="@color/Unify_N0"
-        app:layout_constraintBottom_toBottomOf="@+id/imgPmHeaderImage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imgPmHeaderImage"
-        app:layout_constraintTop_toTopOf="@+id/imgPmHeaderImage"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:text="@string/pm_registration_header_pm" />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelinePmSectionStart"
         android:layout_width="wrap_content"
@@ -57,22 +20,13 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="@dimen/unify_space_12" />
 
-    <com.tokopedia.unifycomponents.TabsUnify
-        android:id="@+id/tabPmTypeSection"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgPmHeaderBackdrop" />
-
     <com.tokopedia.power_merchant.subscribe.view.viewcomponent.TermHeaderView
         android:id="@+id/tvPmHeaderTerms"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@+id/guidelinePmSectionEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelinePmSectionStart"
-        app:layout_constraintTop_toBottomOf="@+id/tabPmTypeSection"
-        tools:layout_height="40dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPmRegistrationTerm"

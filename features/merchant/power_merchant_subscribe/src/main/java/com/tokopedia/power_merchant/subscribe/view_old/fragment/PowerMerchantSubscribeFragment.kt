@@ -351,7 +351,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     }
 
     private fun showPmRevamp(pmSettingAndShopInfo: PMSettingAndShopInfoUiModel) {
-        (activity as? SubscriptionActivityInterface)?.switchToPmRevampPage(pmSettingAndShopInfo.pmSetting)
+
     }
 
     private fun showMembershipView(powerMerchantStatus: PowerMerchantStatus) {
