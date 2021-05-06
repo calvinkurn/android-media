@@ -10,7 +10,6 @@ import com.tokopedia.campaign.shake.landing.view.presenter.ShakeDetectContract
 import com.tokopedia.campaign.shake.landing.view.presenter.ShakeDetectPresenter
 import com.tokopedia.shakedetect.ShakeDetectManager
 import io.mockk.*
-import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -25,7 +24,7 @@ class ShakeDetectPresenterTest {
     @RelaxedMockK
     private lateinit var getCampaignUseCase: GetCampaignUseCase
 
-    @MockK
+    @RelaxedMockK
     private lateinit var context: Context
 
     @RelaxedMockK
@@ -168,6 +167,10 @@ class ShakeDetectPresenterTest {
 
         every {
             context.getSharedPreferences(any(), any())
+        } returns sharedPreferencesTest
+
+        every {
+            context.applicationContext.getSharedPreferences(any(), any())
         } returns sharedPreferencesTest
 
         every {

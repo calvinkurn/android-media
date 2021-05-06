@@ -10,9 +10,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
-import com.tokopedia.home.viewModel.homepage.givenGetBusinessUnitDataUseCaseReturn
-import com.tokopedia.home.viewModel.homepage.givenGetBusinessUnitDataUseCaseThrowReturn
-import com.tokopedia.home.viewModel.homepage.givenGetBusinessWidgetTabUseCaseReturn
 import io.mockk.coEvery
 import io.mockk.confirmVerified
 import io.mockk.mockk

@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.CHANGE_PAYMENT_METHOD_MESSAGE
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.CHOOSE_OTHER_PAYMENT_METHOD_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.MAXIMUM_AMOUNT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.MINIMUM_AMOUNT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.model.*
@@ -12,8 +11,6 @@ import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
-import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.math.ceil
@@ -25,33 +22,17 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         return (orderShipment.isValid() && orderShipment.serviceErrorMessage.isNullOrEmpty() && orderCart.shop.errors.isEmpty() && !orderCart.product.quantity.isStateError)
     }
 
-    private fun generateMinimumAmountPaymentErrorMessage(gatewayName: String, minimumAmount: Long?, isEnableChooseOtherPaymentMethod: Boolean): String {
-        var message = "$MINIMUM_AMOUNT_ERROR_MESSAGE $gatewayName"
-        if (minimumAmount != null) {
-            message += " (${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false).removeDecimalSuffix()})"
-        }
-        message += "."
-        if (isEnableChooseOtherPaymentMethod) {
-            message += CHOOSE_OTHER_PAYMENT_METHOD_MESSAGE
-        }
-        return message
+    private fun generateMinimumAmountPaymentErrorMessage(gatewayName: String): String {
+        return "$MINIMUM_AMOUNT_ERROR_MESSAGE $gatewayName."
     }
 
-    private fun generateMaximumAmountPaymentErrorMessage(gatewayName: String, maximumAmount: Long?, isEnableChooseOtherPaymentMethod: Boolean): String {
-        var message = "$MAXIMUM_AMOUNT_ERROR_MESSAGE $gatewayName"
-        if (maximumAmount != null) {
-            message += " (${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false).removeDecimalSuffix()})"
-        }
-        message += "."
-        if (isEnableChooseOtherPaymentMethod) {
-            message += CHOOSE_OTHER_PAYMENT_METHOD_MESSAGE
-        }
-        return message
+    private fun generateMaximumAmountPaymentErrorMessage(gatewayName: String): String {
+        return "$MAXIMUM_AMOUNT_ERROR_MESSAGE $gatewayName."
     }
 
     suspend fun calculateTotal(orderCart: OrderCart, _orderPreference: OrderPreference, shipping: OrderShipment,
                                validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, _orderPayment: OrderPayment,
-                               orderTotal: OrderTotal, forceButtonState: OccButtonState?, isNewFlow: Boolean, orderPromo: OrderPromo? = null): Pair<OrderPayment, OrderTotal> {
+                               orderTotal: OrderTotal, forceButtonState: OccButtonState?, orderPromo: OrderPromo? = null): Pair<OrderPayment, OrderTotal> {
         val quantity = orderCart.product.quantity
         var payment = _orderPayment
         if (quantity.orderQuantity <= 0 || !_orderPreference.isValid) {
@@ -81,7 +62,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 currentState = OccButtonState.DISABLE
             }
             payment = payment.copy(ovoErrorData = null, errorData = null)
-            if (isNewFlow && payment.revampErrorMessage.message.isNotEmpty()) {
+            if (payment.revampErrorMessage.message.isNotEmpty()) {
                 // new revamp error
                 if (payment.isDisablePayButton) {
                     return@withContext payment.copy(isCalculationError = false,
@@ -95,33 +76,18 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 return@withContext payment.copy(isCalculationError = false,
                         errorData = OrderPaymentErrorData(payment.revampErrorMessage.message, payment.revampErrorMessage.button.text, payment.revampErrorMessage.button.action)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
-            if (!isNewFlow && payment.errorTickerMessage.isNotEmpty() && !payment.isEnableNextButton) {
-                // scrooge down
-                if (payment.isDisablePayButton) {
-                    return@withContext payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.PAY, buttonState = OccButtonState.DISABLE)
-                }
-                return@withContext payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
-            }
-            if (!isNewFlow && payment.errorMessage.message.isNotEmpty() && payment.errorMessage.button.text.isNotEmpty()) {
-                // cc expired/deleted
-                if (currentState == OccButtonState.NORMAL) {
-                    currentState = OccButtonState.DISABLE
-                }
-                return@withContext payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
-            }
             if (payment.isOvo && payment.ovoData.isPhoneNumberMissing) {
                 if (payment.isOvoOnlyCampaign) {
                     if (currentState == OccButtonState.NORMAL) {
                         currentState = OccButtonState.DISABLE
                     }
                     return@withContext payment.copy(isCalculationError = true, errorData = null,
-                            ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = !isNewFlow, message = payment.ovoData.phoneNumber.errorMessage,
+                            ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = payment.ovoData.phoneNumber.errorMessage,
                                     type = OrderPaymentOvoErrorData.TYPE_MISSING_PHONE)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
                 }
-                val tickerMessage = if (isNewFlow) null else payment.ovoData.phoneNumber.errorTicker
                 return@withContext payment.copy(isCalculationError = true, errorData = null,
                         ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = payment.ovoData.phoneNumber.errorMessage,
-                                type = OrderPaymentOvoErrorData.TYPE_MISSING_PHONE)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = tickerMessage, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+                                type = OrderPaymentOvoErrorData.TYPE_MISSING_PHONE)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
             if (payment.isOvo && payment.ovoData.isActivationRequired) {
                 if (payment.isOvoOnlyCampaign) {
@@ -129,62 +95,30 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                         currentState = OccButtonState.DISABLE
                     }
                     return@withContext payment.copy(isCalculationError = true, errorData = null,
-                            ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = !isNewFlow, message = payment.ovoData.activation.errorMessage, buttonTitle = payment.ovoData.activation.buttonTitle,
+                            ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = payment.ovoData.activation.errorMessage, buttonTitle = payment.ovoData.activation.buttonTitle,
                                     type = OrderPaymentOvoErrorData.TYPE_ACTIVATION, callbackUrl = payment.ovoData.callbackUrl)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
                 }
-                val tickerMessage = if (isNewFlow) null else payment.ovoData.activation.errorTicker
                 return@withContext payment.copy(isCalculationError = true, errorData = null,
                         ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = payment.ovoData.activation.errorMessage, buttonTitle = payment.ovoData.activation.buttonTitle,
-                                type = OrderPaymentOvoErrorData.TYPE_ACTIVATION, callbackUrl = payment.ovoData.callbackUrl)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = tickerMessage, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+                                type = OrderPaymentOvoErrorData.TYPE_ACTIVATION, callbackUrl = payment.ovoData.callbackUrl)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
             if (payment.minimumAmount > subtotal) {
-                if (!isNewFlow && payment.isOvoOnlyCampaign) {
-                    if (currentState == OccButtonState.NORMAL) {
-                        currentState = OccButtonState.DISABLE
-                    }
-                    return@withContext payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
-                            paymentErrorMessage = generateMinimumAmountPaymentErrorMessage(payment.gatewayName, payment.minimumAmount, false),
-                            buttonType = OccButtonType.PAY, buttonState = currentState)
+                var buttonType = OccButtonType.CHOOSE_PAYMENT
+                if (payment.isOvoOnlyCampaign && currentState == OccButtonState.NORMAL) {
+                    currentState = OccButtonState.DISABLE
+                    buttonType = OccButtonType.PAY
                 }
-                if (isNewFlow) {
-                    var buttonType = OccButtonType.CHOOSE_PAYMENT
-                    if (payment.isOvoOnlyCampaign && currentState == OccButtonState.NORMAL) {
-                        currentState = OccButtonState.DISABLE
-                        buttonType = OccButtonType.PAY
-                    }
-                    return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMinimumAmountPaymentErrorMessage(payment.gatewayName, null, false), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
-                            paymentErrorMessage = null, buttonType = buttonType, buttonState = currentState)
-                }
-                return@withContext payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
-                        paymentErrorMessage = generateMinimumAmountPaymentErrorMessage(payment.gatewayName, payment.minimumAmount, true),
-                        buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+                return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMinimumAmountPaymentErrorMessage(payment.gatewayName), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
+                        paymentErrorMessage = null, buttonType = buttonType, buttonState = currentState)
             }
             if (payment.maximumAmount > 0 && payment.maximumAmount < subtotal) {
-                if (!isNewFlow && payment.isOvoOnlyCampaign) {
-                    if (currentState == OccButtonState.NORMAL) {
-                        currentState = OccButtonState.DISABLE
-                    }
-                    return@withContext payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
-                            paymentErrorMessage = generateMaximumAmountPaymentErrorMessage(payment.gatewayName, payment.maximumAmount, false),
-                            buttonType = OccButtonType.PAY, buttonState = currentState)
+                var buttonType = OccButtonType.CHOOSE_PAYMENT
+                if (payment.isOvoOnlyCampaign && currentState == OccButtonState.NORMAL) {
+                    currentState = OccButtonState.DISABLE
+                    buttonType = OccButtonType.PAY
                 }
-                if (isNewFlow) {
-                    var buttonType = OccButtonType.CHOOSE_PAYMENT
-                    if (payment.isOvoOnlyCampaign && currentState == OccButtonState.NORMAL) {
-                        currentState = OccButtonState.DISABLE
-                        buttonType = OccButtonType.PAY
-                    }
-                    return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMaximumAmountPaymentErrorMessage(payment.gatewayName, null, false), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
-                            paymentErrorMessage = null, buttonType = buttonType, buttonState = currentState)
-                }
-                return@withContext payment.copy(isCalculationError = true) to orderTotal.copy(orderCost = orderCost,
-                        paymentErrorMessage = generateMaximumAmountPaymentErrorMessage(payment.gatewayName, payment.maximumAmount, true),
-                        buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
-            }
-            if (!isNewFlow && payment.errorTickerMessage.isNotEmpty() && payment.isEnableNextButton) {
-                // OVO only campaign & OVO is not active for legacy apps
-                // Also for escape route if needed
-                return@withContext payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CONTINUE, buttonState = currentState)
+                return@withContext payment.copy(isCalculationError = true, errorData = OrderPaymentErrorData(generateMaximumAmountPaymentErrorMessage(payment.gatewayName), CHANGE_PAYMENT_METHOD_MESSAGE, OrderPaymentErrorData.ACTION_CHANGE_PAYMENT)) to orderTotal.copy(orderCost = orderCost,
+                        paymentErrorMessage = null, buttonType = buttonType, buttonState = currentState)
             }
             if (payment.isOvo && subtotal > payment.walletAmount) {
                 orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
@@ -196,10 +130,9 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                             type = OrderPaymentOvoErrorData.TYPE_TOP_UP, callbackUrl = payment.ovoData.callbackUrl, isHideDigital = payment.ovoData.topUp.isHideDigital)) to orderTotal.copy(orderCost = orderCost,
                             paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
                 }
-                val tickerMessage = if (isNewFlow) null else payment.ovoData.topUp.errorTicker
-                return@withContext payment.copy(isCalculationError = true, ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = isNewFlow, message = payment.ovoData.topUp.errorMessage, buttonTitle = payment.ovoData.topUp.buttonTitle,
+                return@withContext payment.copy(isCalculationError = true, ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, message = payment.ovoData.topUp.errorMessage, buttonTitle = payment.ovoData.topUp.buttonTitle,
                         type = OrderPaymentOvoErrorData.TYPE_TOP_UP, callbackUrl = payment.ovoData.callbackUrl, isHideDigital = payment.ovoData.topUp.isHideDigital)) to orderTotal.copy(orderCost = orderCost,
-                        paymentErrorMessage = tickerMessage, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+                        paymentErrorMessage = null, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
             if (payment.creditCard.selectedTerm?.isError == true && currentState == OccButtonState.NORMAL) {
                 currentState = OccButtonState.DISABLE

@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -212,6 +211,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> renderSearchBarView(it.data)
                 is Fail -> {
+                    hideLoading()
                     adapter.showGetListError(it.throwable)
                     digital_homepage_toolbar.hide()
                 }
@@ -240,8 +240,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         adapter.showLoading()
         digital_homepage_toolbar.hide()
         viewModel.getRechargeHomepageSectionSkeleton(
-                viewModel.createRechargeHomepageSectionSkeletonParams(platformId, enablePersonalize),
-                swipe_refresh_layout.isRefreshing
+                viewModel.createRechargeHomepageSectionSkeletonParams(platformId, enablePersonalize)
         )
 
         viewModel.getTickerHomepageSection(
@@ -249,11 +248,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun loadRechargeSectionData(sectionID: String, isLoadFromCloud: Boolean) {
+    override fun loadRechargeSectionData(sectionID: String) {
         if (sectionID.isNotEmpty()) {
             viewModel.getRechargeHomepageSections(
-                    viewModel.createRechargeHomepageSectionsParams(platformId, listOf(sectionID.toIntOrZero()), enablePersonalize),
-                    isLoadFromCloud
+                    viewModel.createRechargeHomepageSectionsParams(platformId, listOf(sectionID.toIntOrZero()), enablePersonalize)
             )
         }
     }
@@ -377,9 +375,9 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             (it is RechargeHomepageSectionModel && it.visitableId().equals(sectionID)) ||
                     (it is HomeComponentVisitable && it.visitableId().equals(sectionID))
         }
-        if (index >= 0 && index < adapter.data.size) {
-            recycler_view.post {
-                adapter.apply {
+        recycler_view.post {
+            adapter.apply {
+                if (index >= 0 && index < adapter.data.size) {
                     data.removeAt(index)
                     notifyItemRemoved(index)
                 }

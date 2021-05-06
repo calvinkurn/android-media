@@ -15,7 +15,7 @@ import dagger.Provides;
  * Created by okasurya on 1/4/18.
  */
 
-@Module(includes = {ShopCommonModule.class, GetProductModule.class})
+@Module(includes = {ShopCommonModule.class})
 public class DeeplinkModule {
     @DeeplinkScope
     @Provides

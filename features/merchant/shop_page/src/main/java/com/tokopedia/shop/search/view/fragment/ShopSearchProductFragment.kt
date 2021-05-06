@@ -7,6 +7,7 @@ import android.os.Handler
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -32,8 +33,12 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingShopSearchProduct
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_PRODUCT_SEARCH_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
+import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListViewModel
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
 import com.tokopedia.shop.search.di.component.DaggerShopSearchProductComponent
 import com.tokopedia.shop.search.di.module.ShopSearchProductModule
@@ -133,6 +138,12 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
             viewModel.isMyShop(shopId)
         } else false
 
+    private val userId: String
+        get() = if (::viewModel.isInitialized) {
+            viewModel.userId
+        } else {
+            ""
+        }
     private val remoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
     }
@@ -286,6 +297,19 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
                     populateDynamicSearchResult(it.data)
                 }
                 is Fail -> {
+                    val throwable = it.throwable
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                SHOP_PAGE_PRODUCT_SEARCH_BUYER_FLOW_TAG,
+                                this::observeShopSearchProductResult.name,
+                                ShopSearchProductViewModel::shopSearchProductResult.name,
+                                userId,
+                                shopId,
+                                shopName,
+                                ErrorHandler.getErrorMessage(context, throwable),
+                                Log.getStackTraceString(throwable)
+                        )
+                    }
                     showToasterRequestError(it.throwable, View.OnClickListener {
                         searchProduct()
                     })

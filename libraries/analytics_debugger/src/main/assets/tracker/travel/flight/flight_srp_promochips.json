@@ -5,24 +5,24 @@
     {
       "promotions": [
         {
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{\\d*}}",
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}",
-          "creative_url": "{{.*}}"
+          "creative_name": ".*",
+          "creative_slot": "\\d*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
         }
       ],
       "businessUnit" : "travel & entertainment",
-      "clientId" : "{{.*}}",
+      "clientId" : ".*",
       "eventCategory": "digital - flight",
       "currentSite" : "tokopediadigitalflight",
       "screenName" : "/flight/search",
       "category" : "flight",
       "event": "select_content",
-      "userId" : "{{.*}}",
+      "userId" : ".*",
       "eventAction": "click on departure promo chip",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.* - .* - .* - .*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".* - .* - .* - .*"
     }
   ]
 }
