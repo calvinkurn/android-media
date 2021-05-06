@@ -383,7 +383,11 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         }
         input.shopID = userSession.shopId
         input.group.groupName = stepperModel?.groupName ?: ""
-        input.group.priceBid = stepperModel?.finalBidPerClick?.toDouble() ?: 0.0
+        if(stepperModel?.autoBidState?.isNotEmpty() == true) {
+            input.group.priceBid = stepperModel?.finalBidPerClick?.toDouble() ?: 0.0
+        } else {
+            input.group.priceBid = stepperModel?.minBid?.toDouble() ?: 0.0
+        }
         input.group.suggestedBidValue = stepperModel?.suggestedBidPerClick?.toDouble() ?: 0.0
         keywordsList.clear()
         adsItemsList.clear()
