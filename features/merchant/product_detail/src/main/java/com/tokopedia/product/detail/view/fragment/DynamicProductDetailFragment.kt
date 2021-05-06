@@ -2937,13 +2937,15 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     override fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel) {
-        activity?.let {
-            val shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: return
-            DynamicProductDetailTracking.Click.eventImageShopClicked(viewModel.getDynamicProductInfoP1, shopId, componentTrackDataModel)
-            startActivityForResult(RouteManager.getIntent(it,
-                    ApplinkConst.SHOP, shopId),
-                    ProductDetailConstant.REQUEST_CODE_SHOP_INFO)
-        }
+//        activity?.let {
+//            val shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: return
+//            DynamicProductDetailTracking.Click.eventImageShopClicked(viewModel.getDynamicProductInfoP1, shopId, componentTrackDataModel)
+//            startActivityForResult(RouteManager.getIntent(it,
+//                    ApplinkConst.SHOP, shopId),
+//                    ProductDetailConstant.REQUEST_CODE_SHOP_INFO)
+//        }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, "asd")
+        startActivity(intent)
     }
 
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {

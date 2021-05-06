@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.data.model.ratesestimate
+package com.tokopedia.product.detail.common.data.model.rates
 
 import com.google.gson.annotations.SerializedName
 

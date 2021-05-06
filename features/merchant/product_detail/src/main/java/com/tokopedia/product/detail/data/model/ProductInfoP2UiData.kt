@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model
 
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
+import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
@@ -15,7 +16,6 @@ import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.variant_common.model.WarehouseInfo
 
 /**
  * Created by Yehezkiel on 28/07/20

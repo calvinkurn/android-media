@@ -69,6 +69,7 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/?aff={affiliate_string}"
 
+    // AtcVariantActivity
     @JvmField
     val ATC_VARIANT = "$INTERNAL_MARKETPLACE/atc-variant/{product_id}/?isTokoNow={isTokoNow}"
 

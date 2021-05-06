@@ -143,6 +143,7 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation project(rootProject.ext.libraries.unitTest)
+    implementation project(rootProject.ext.features.atcVariant)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
