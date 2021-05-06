@@ -10,8 +10,8 @@
     <ImageView
         android:id="@+id/img_inactive_nfc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_32" />
+        android:layout_height="@dimen/dp_local_260"
+        android:layout_marginBottom="@dimen/spacing_lvl6" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"

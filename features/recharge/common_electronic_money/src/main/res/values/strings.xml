@@ -22,7 +22,13 @@
     <string name="emoney_nfc_grpc_timeout">grpc timeout</string>
     <string name="emoney_nfc_grpc_label_error">Oops, ada kendala koneksi. Coba lagi, yuk.</string>
     <string name="emoney_nfc_device_not_support">Yaah, HP-mu nggak dukung fitur NFC</string>
+    <string name="emoney_nfc_check_balance_problem_title">Maaf, cek saldo belum berhasil</string>
+    <string name="emoney_nfc_check_balance_problem_label">Coba tempelkan ulang kartu kamu, lalu coba lagi.</string>
+    <string name="emoney_nfc_error_title">Mungkin server kami sibuk atau internet kamu ada masalah. Coba lagi, yuk.</string>
 
     <string name="emoney_nfc_inactive_link">https://images.tokopedia.net/img/emoney_revamp_nfc_inactive_fourx.png</string>
     <string name="emoney_nfc_not_found">https://images.tokopedia.net/img/emoney_revamp_device_not_nfc.png</string>
+    <string name="emoney_nfc_card_is_not_supported">https://images.tokopedia.net/img/emoney_revamp_card_is_not_supported.png</string>
+    <string name="emoney_nfc_failed_read_card">https://images.tokopedia.net/img/emoney_revamp_failed_read_card.png</string>
+    <string name="emoney_nfc_connection_issue">https://images.tokopedia.net/img/emoney_revamp_connection_issue.png</string>
 </resources>

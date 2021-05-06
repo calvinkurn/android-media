@@ -142,15 +142,25 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
             })
 
             brizziBalanceViewModel.errorCardMessage.observe(this, Observer {
-                showError(it)
+                showError(it, resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
+                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card),
+                        true)
             })
 
             brizziBalanceViewModel.cardIsNotBrizzi.observe(this, Observer {
                 emoneyAnalytics.onErrorReadingCard()
-                showError(resources.getString(com.tokopedia.brizzi.R.string.brizzi_card_is_not_supported))
+                showError(resources.getString(com.tokopedia.brizzi.R.string.brizzi_card_is_not_supported),
+                        resources.getString(com.tokopedia.brizzi.R.string.brizzi_device_is_not_supported),
+                        resources.getString(com.tokopedia.brizzi.R.string.emoney_nfc_card_is_not_supported),
+                        false
+                )
             })
         } else {
-            showError(resources.getString(com.tokopedia.brizzi.R.string.brizzi_device_is_not_supported))
+            showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_device_not_support),
+                    resources.getString(com.tokopedia.brizzi.R.string.brizzi_device_is_not_supported),
+                    resources.getString(com.tokopedia.brizzi.R.string.emoney_nfc_not_found),
+                    false
+            )
         }
     }
 

@@ -28,6 +28,7 @@ import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.util.DigitalEmoneyGqlQuery
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
@@ -107,7 +108,10 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                         DigitalEmoneyGqlQuery.rechargeEmoneyInquiryBalance,
                         0)
             } else {
-                showError(NfcCardErrorTypeDef.FAILED_READ_CARD)
+                showError(NfcCardErrorTypeDef.FAILED_READ_CARD,
+                        resources.getString(R.string.emoney_nfc_check_balance_problem_label),
+                        resources.getString(R.string.emoney_nfc_failed_read_card),
+                        true)
             }
         } else {
             processBrizzi(intent)
@@ -124,16 +128,26 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             }
         })
 
-        emoneyBalanceViewModel.errorInquiryBalance.observe(this, Observer {
-            if (it is MessageErrorException) {
-                showError(it.message ?: "")
-            } else {
-                showError(getString(R.string.emoney_update_balance_failed))
+        emoneyBalanceViewModel.errorInquiryBalance.observe(this, Observer {  throwable ->
+            context?.let {
+                val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
+                if(errorMessage.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
+                    showError(resources.getString(R.string.emoney_nfc_grpc_label_error),
+                            resources.getString(R.string.emoney_nfc_error_title),
+                            resources.getString(R.string.emoney_nfc_connection_issue),
+                            true)
+                } else {
+
+                }
             }
+
         })
 
         emoneyBalanceViewModel.errorCardMessage.observe(this, Observer {
-            showError(it)
+            showError(it, resources.getString(R.string.emoney_nfc_check_balance_problem_label),
+                    resources.getString(R.string.emoney_nfc_failed_read_card),
+                    true
+            )
         })
 
         emoneyBalanceViewModel.issuerId.observe(this, Observer {

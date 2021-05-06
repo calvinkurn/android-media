@@ -60,7 +60,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                         getEmoneyInquiryBalance(PARAM_INQUIRY, balanceRawQuery, idCard, mapAttributes)
                     } else {
                         isoDep.close()
-                        errorCardMessage.postValue(NfcCardErrorTypeDef.CARD_NOT_FOUND)
+                        errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
                     }
                 } catch (e: IOException) {
                     isoDep.close()
@@ -116,11 +116,11 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 }
             } catch (e: IOException) {
                 isoDep.close()
-                errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_UPDATE_BALANCE)
+                errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
             }
         } else {
             isoDep.close()
-            errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_UPDATE_BALANCE)
+            errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
         }
     }
 

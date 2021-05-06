@@ -41,7 +41,7 @@
                 app:corners="16" />
 
             <View
-                android:layout_width="@dimen/dp_1"
+                android:layout_width="@dimen/dp_local_1"
                 android:layout_height="match_parent"
                 android:background="@color/Unify_N75" />
 
@@ -81,7 +81,7 @@
                 <com.elyeproj.loaderviewlibrary.LoaderTextView
                     android:layout_marginTop="@dimen/spacing_lvl4"
                     android:id="@+id/text_card_number_loader"
-                    android:layout_width="@dimen/dp_168"
+                    android:layout_width="@dimen/dp_local_168"
                     android:layout_height="@dimen/unify_space_12"
                     android:visibility="gone"
                     app:corners="16" />
@@ -92,7 +92,7 @@
 
         <View
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_1"
+            android:layout_height="@dimen/dp_local_1"
             android:background="@color/Unify_N75" />
 
         <LinearLayout

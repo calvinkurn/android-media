@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.common_electronic_money.R
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -78,13 +78,17 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         }
     }
 
-    fun showErrorState(errorMessage: String) {
-        textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
-        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
-        textLabel.text = errorMessage
+    fun showErrorState(errorMessageTitle: String, errorMessageLabel: String,
+                       imageUrl:String, isButtonShow: Boolean) {
+        textTitle.text = errorMessageTitle
+        textLabel.text = errorMessageLabel
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE
-        buttonTryAgain.visibility = View.VISIBLE
+        buttonTryAgain.visibility = if(isButtonShow) View.VISIBLE else View.GONE
+
+        imageviewError.loadImage(imageUrl){
+            setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
+        }
 
         buttonTryAgain.setOnClickListener {
             showInitialState()
@@ -97,7 +101,9 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         textLabel.text = errorMessage
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE
-        imageviewError.loadImage(resources.getString(R.string.emoney_nfc_not_found), R.drawable.emoney_ic_nfc_inactive_placeholder)
+        imageviewError.loadImage(resources.getString(R.string.emoney_nfc_not_found)){
+            setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
+        }
         buttonTryAgain.visibility = View.GONE
     }
 

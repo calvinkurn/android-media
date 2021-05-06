@@ -171,7 +171,8 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
     protected abstract fun getPassData(operatorId: String, issuerId: Int): DigitalCategoryDetailPassData
 
-    protected fun showError(errorMessage: String) {
+    protected fun showError(errorMessage: String, errorMessageLabel: String = ""
+                            ,imageUrl: String = "", isButtonShow: Boolean = true) {
         statusCloseBtn = FAILED_CLOSE_BTN
         emoneyAnalytics.onShowErrorTracking()
 
@@ -184,7 +185,8 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         } else {
             tapETollCardView.visibility = View.VISIBLE
             tapETollCardView.showInitialState()
-            tapETollCardView.showErrorState(updatedErrorMessage)
+            tapETollCardView.showErrorState(updatedErrorMessage, errorMessageLabel,
+                    imageUrl, isButtonShow)
         }
         emoneyAnalytics.openScreenFailedReadCardNFC(userSession.userId, irisSessionId)
     }
