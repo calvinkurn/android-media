@@ -56,7 +56,7 @@ class SomListOrderViewHolder(
         }
         itemView.setOnClickListener {
             if (listener.isMultiSelectEnabled()) touchCheckBox(element)
-            else listener.onOrderClicked(adapterPosition)
+            else listener.onOrderClicked(element)
         }
     }
 

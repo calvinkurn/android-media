@@ -14,6 +14,7 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippi
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.di.DaggerSomDetailComponent
+import kotlinx.android.synthetic.main.fragment_som_detail.*
 
 class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment(), Toolbar.OnMenuItemClickListener {
 
@@ -48,6 +49,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        btn_primary?.isLoading = false
         if (requestCode == SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 if (data.hasExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP)) {
@@ -121,7 +123,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         }
     }
 
-    override fun setActionRequestPickup() {
+    override fun requestPickUp() {
         parentFragment?.let {
             goToRequestPickupPage(it, orderId)
         }

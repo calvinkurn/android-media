@@ -53,12 +53,11 @@ import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.navigator.SomNavigator
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToChangeCourierPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippingPage
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
-import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
+import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
 import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
@@ -102,7 +101,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RES
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_OTHER
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
-import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 import com.tokopedia.sellerorder.detail.analytic.performance.SomDetailLoadTimeMonitoring
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
@@ -111,12 +109,15 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCo
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.*
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
-import com.tokopedia.sellerorder.detail.presentation.bottomsheet.*
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
@@ -845,7 +846,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         RouteManager.route(context, routingAppLink)
     }
 
-    protected open fun setActionRequestPickup(actionName: String) {
+    private fun setActionRequestPickup(actionName: String) {
         if (!skipOrderValidation()) {
             pendingAction = SomPendingAction(actionName, orderId) {
                 requestPickUp()
@@ -856,12 +857,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun requestPickUp() {
+    protected open fun requestPickUp() {
         btn_primary?.isLoading = true
-        Intent(activity, SomConfirmReqPickupActivity::class.java).apply {
-            putExtra(PARAM_ORDER_ID, orderId)
-            startActivityForResult(this, FLAG_CONFIRM_REQ_PICKUP)
-        }
+        SomNavigator.goToRequestPickupPage(this, orderId)
     }
 
     private fun setActionConfirmShipping(actionName: String) {

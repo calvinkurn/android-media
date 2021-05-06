@@ -52,10 +52,7 @@ import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CHANGE_COURIER
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CONFIRM_SHIPPING
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_DETAIL
+import com.tokopedia.sellerorder.common.navigator.SomNavigator
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToChangeCourierPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippingPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToPrintAwb
@@ -64,7 +61,9 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToSomOrderDetai
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
+import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
+import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_ORDER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
@@ -88,25 +87,12 @@ import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomList
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListBulkProcessOrderTypeFactory
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderEmptyViewHolder
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderViewHolder
+import com.tokopedia.sellerorder.list.presentation.animator.SomFadeRightAnimator
 import com.tokopedia.sellerorder.list.presentation.bottomsheets.SomListBulkProcessOrderBottomSheet
 import com.tokopedia.sellerorder.list.presentation.dialogs.SomListBulkAcceptOrderDialog
 import com.tokopedia.sellerorder.list.presentation.dialogs.SomListBulkPrintDialog
 import com.tokopedia.sellerorder.list.presentation.filtertabs.SomListSortFilterTab
 import com.tokopedia.sellerorder.list.presentation.models.*
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CHANGE_COURIER
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_CONFIRM_SHIPPING
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.REQUEST_DETAIL
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToChangeCourierPage
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippingPage
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToPrintAwb
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToSomOrderDetail
-import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
-import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
-import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
-import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
-import com.tokopedia.sellerorder.list.presentation.animator.SomFadeRightAnimator
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
@@ -386,10 +372,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         getSwipeRefreshLayout(view)?.isRefreshing = viewModel.isRefreshingOrder()
         when (requestCode) {
-            REQUEST_DETAIL -> handleSomDetailActivityResult(resultCode, data)
-            REQUEST_CONFIRM_SHIPPING -> handleSomConfirmShippingActivityResult(resultCode, data)
-            REQUEST_CONFIRM_REQUEST_PICKUP -> handleSomRequestPickUpActivityResult(resultCode, data)
-            REQUEST_CHANGE_COURIER -> handleSomChangeCourierActivityResult(resultCode, data)
+            SomNavigator.REQUEST_DETAIL -> handleSomDetailActivityResult(resultCode, data)
+            SomNavigator.REQUEST_CONFIRM_SHIPPING -> handleSomConfirmShippingActivityResult(resultCode, data)
+            SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP -> handleSomRequestPickUpActivityResult(resultCode, data)
+            SomNavigator.REQUEST_CHANGE_COURIER -> handleSomChangeCourierActivityResult(resultCode, data)
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -438,7 +424,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
-    override fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, fromClickTab: Boolean) {
+    override fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, refreshFilter: Boolean) {
         if (status.key != tabActive && refreshFilter) {
             wasChangingTab = true
         }
@@ -456,13 +442,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 viewModel.setStatusOrderFilter(viewModel.getDataOrderListParams().statusList)
             else
                 viewModel.setStatusOrderFilter(status.id)
-            if (fromClickTab) {
+            if (refreshFilter) {
                 SomAnalytics.eventClickStatusFilter(status.id.map { it.toString() }, status.status)
             }
             status.key
         } else {
             viewModel.setStatusOrderFilter(emptyList())
-            if (fromClickTab) {
+            if (refreshFilter) {
                 SomAnalytics.eventClickStatusFilter(somListSortFilterTab?.getAllStatusCodes().orEmpty(), SomConsts.STATUS_NAME_ALL_ORDER)
             }
             ""
@@ -471,7 +457,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         if (viewModel.isMultiSelectEnabled) {
             somListLayoutManager?.findFirstVisibleItemPosition()?.let {
                 somListLayoutManager?.findViewByPosition(it)?.findViewById<View>(R.id.btnQuickAction)?.addOneTimeGlobalLayoutListener {
-                    refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
+                    refreshOrdersOnTabClicked(shouldScrollToTop, refreshFilter)
                 }
             }
             viewModel.isMultiSelectEnabled = false
@@ -482,7 +468,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             checkBoxBulkAction.setIndeterminate(false)
             checkBoxBulkAction.skipAnimation()
         } else {
-            refreshOrdersOnTabClicked(shouldScrollToTop, fromClickTab)
+            refreshOrdersOnTabClicked(shouldScrollToTop, refreshFilter)
         }
     }
 
@@ -2325,6 +2311,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
+    private fun showBackButton(): Boolean = !GlobalConfig.isSellerApp()
+
     protected fun dismissBottomSheets() {
         childFragmentManager.fragments.forEach {
             if (it is BottomSheetUnify && it !is SomFilterBottomSheet) it.dismiss()
@@ -2351,8 +2339,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     protected open fun onReceiveRefreshOrderRequest(orderId: String, invoice: String) {
         viewModel.refreshSelectedOrder(orderId, invoice)
     }
-
-    protected open fun showBackButton(): Boolean = !GlobalConfig.isSellerApp()
 
     protected open fun shouldShowFilterCoachMark() = scrollViewErrorState?.isVisible == false &&
             shouldShowCoachMark && coachMarkIndexToShow == filterChipCoachMarkItemPosition &&
