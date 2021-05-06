@@ -17,6 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
+import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
 import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -210,6 +211,11 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                     shopAge = it.data.shopAge
                     getAllShopInfo()
                 }
+                is Fail -> {
+                    ShopScoreReputationErrorLogger.logToCrashlytic(
+                            String.format(ShopScoreReputationErrorLogger.SHOP_INFO_PM_SETTING_INFO_ERROR,
+                                    ShopScoreReputationErrorLogger.SHOP_ACCOUNT), it.throwable)
+                }
             }
         }
     }
@@ -218,7 +224,10 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observe(viewModel.settingShopInfoLiveData) {
             when (it) {
                 is Success -> showShopInfo(it.data.shopInfo, it.data.shopScore)
-                is Fail -> showShopInfo(SettingError)
+                is Fail -> {
+                    showShopInfo(SettingError)
+                    ShopScoreReputationErrorLogger.logToCrashlytic(ShopScoreReputationErrorLogger.SHOP_INFO_SETTING_ERROR, it.throwable)
+                }
             }
             swipeRefreshLayout.isRefreshing = false
         }

@@ -14,6 +14,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
@@ -550,6 +551,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     shopPerformanceAdapter.hideLoading()
                     shopPerformanceAdapter.setShopPerformanceError(ItemShopPerformanceErrorUiModel(it.throwable))
                     coachMark?.dismissCoachMark()
+                    ShopScoreReputationErrorLogger.logToCrashlytic(
+                            String.format(ShopScoreReputationErrorLogger.SHOP_INFO_PM_SETTING_INFO_ERROR,
+                                    ShopScoreReputationErrorLogger.SHOP_PERFORMANCE), it.throwable)
                 }
             }
         }
@@ -576,6 +580,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     shopPerformanceAdapter.hideLoading()
                     shopPerformanceAdapter.setShopPerformanceError(ItemShopPerformanceErrorUiModel(it.throwable))
                     coachMark?.dismissCoachMark()
+                    ShopScoreReputationErrorLogger.logToCrashlytic(
+                            ShopScoreReputationErrorLogger.SHOP_PERFORMANCE_ERROR, it.throwable)
                 }
             }
         }
