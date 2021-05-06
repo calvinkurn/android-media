@@ -90,6 +90,7 @@ class HomeScreenshotLoggedInTest {
                 ScreenshotModel(name = "ProductHighlight"),
                 ScreenshotModel(name = "CategoryWidget"),
                 ScreenshotModel(name = "LeftCarousel"),
+                ScreenshotModel(name = "TopCarousel"),
                 ScreenshotModel(name = "DgBills"),
                 ScreenshotModel(name = "HomeWidget2"),
                 ScreenshotModel(name = "PopularKeyword"),
