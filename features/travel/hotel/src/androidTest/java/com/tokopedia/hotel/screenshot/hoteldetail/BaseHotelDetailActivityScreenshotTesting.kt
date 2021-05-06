@@ -5,9 +5,12 @@ import android.app.Instrumentation
 import android.content.Intent
 import android.widget.LinearLayout
 import androidx.core.widget.NestedScrollView
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
@@ -63,11 +66,25 @@ abstract class BaseHotelDetailActivityScreenshotTesting {
 
         CommonActions.findViewAndScreenShot(R.id.container_bottom, filePrefix(), "bottom-widget")
 
+        //SS testing for image preview page
+        Espresso.onView(ViewMatchers.withId(R.id.iv_first_photo_preview)).perform(ViewActions.click())
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "image-preview")
+        }
+        Espresso.onView(ViewMatchers.withId(R.id.btn_arrow_back)).perform(ViewActions.click())
+
         activityRule.runOnUiThread {
             scrollToMiddle()
         }
 
         CommonActions.findViewAndScreenShot(R.id.container_hotel_review, filePrefix(), "review")
+
+        //SS testing for review page
+        Espresso.onView(ViewMatchers.withId(R.id.tv_hotel_detail_all_reviews)).perform(ViewActions.click())
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "review-page")
+        }
+
         CommonActions.findViewAndScreenShot(R.id.container_hotel_address, filePrefix(), "address")
 
         activityRule.runOnUiThread {
@@ -75,9 +92,22 @@ abstract class BaseHotelDetailActivityScreenshotTesting {
         }
 
         CommonActions.findViewAndScreenShot(R.id.container_facilities, filePrefix(), "facilities")
+
+        //SS testing for facilities page
+        Espresso.onView(ViewMatchers.withId(R.id.tv_hotel_detail_all_facilities)).perform(ViewActions.click())
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "facilities-page")
+        }
+
         CommonActions.findViewAndScreenShot(R.id.container_hotel_info, filePrefix(), "info")
         CommonActions.findViewAndScreenShot(R.id.container_important_info, filePrefix(), "important-info")
         CommonActions.findViewAndScreenShot(R.id.container_hotel_description, filePrefix(), "description")
+
+        //SS testing for policies page
+        Espresso.onView(ViewMatchers.withId(R.id.tv_hotel_detail_all_policies)).perform(ViewActions.click())
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "policies-page")
+        }
 
         activityRule.activity.finishAndRemoveTask()
     }
