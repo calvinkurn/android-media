@@ -20,6 +20,10 @@ android {
     defaultConfig {
         multiDexEnabled true
     }
+
+    viewBinding {
+        enabled true
+    }
 }
 
 dependencies {

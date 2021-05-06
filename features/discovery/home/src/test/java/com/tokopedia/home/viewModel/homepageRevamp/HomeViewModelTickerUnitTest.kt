@@ -37,7 +37,6 @@ class HomeViewModelTickerUnitTest {
 
         // home viewModel
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase).apply {
-            setNeedToShowGeolocationComponent(true)
         }
         homeViewModel.homeLiveData.observeForever(observerHome)
 

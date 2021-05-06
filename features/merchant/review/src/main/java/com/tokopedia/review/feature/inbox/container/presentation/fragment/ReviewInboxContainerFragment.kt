@@ -350,6 +350,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     private fun adjustViewBasedOnRole() {
         if(containerListener?.role == RoleType.BUYER) {
+            updateInboxUnifiedBuyerView()
             return
         }
         updateInboxUnifiedSellerView()

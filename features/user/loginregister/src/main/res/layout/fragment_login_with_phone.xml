@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_container"
@@ -7,16 +8,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintBottom_toTopOf="@+id/to_tokopedia_care"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/ll_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -117,21 +119,21 @@
 
         </LinearLayout>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/to_tokopedia_care"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_lvl5"
-            android:gravity="center_horizontal"
-            android:text="@string/need_help_call_tokopedia_care"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:typographyType="body_2"
-            app:typographyWeight="reguler" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+    
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/to_tokopedia_care"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl5"
+        android:gravity="center_horizontal"
+        android:text="@string/need_help_call_tokopedia_care"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler" />
 
     <RelativeLayout
         android:id="@+id/progressBarLoginWithPhone"
