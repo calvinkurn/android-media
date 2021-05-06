@@ -12,7 +12,7 @@ data class ShopScoreLevelParam (
         val source: String = "android",
         @Expose
         @SerializedName("calculateScore")
-        val calculateScore: Boolean = false,
+        val calculateScore: Boolean = true,
         @Expose
         @SerializedName("getNextMinValue")
         val getNextMinValue: Boolean = true
