@@ -3,6 +3,7 @@ package com.tokopedia.rechargegeneral.screenshot
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import android.view.View
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
@@ -35,6 +36,7 @@ import com.tokopedia.test.application.espresso_component.CommonActions.screenSho
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.test.application.espresso_component.CommonActions.takeScreenShotVisibleViewInScreen
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
 import org.junit.Before
@@ -121,9 +123,6 @@ class RechargeGeneralScreenShotTest {
         )
 
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "favorite_number")
-        }
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val frameLayout = mActivityRule.activity.findViewById<FrameLayout>(R.id.parent_view)
             takeScreenShotVisibleViewInScreen(frameLayout, filePrefix(), "favorite_number")
         }
@@ -143,9 +142,18 @@ class RechargeGeneralScreenShotTest {
                 )
         )
         Thread.sleep(2000)
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "recycler_view_product_item")
-        }
+//        screenShotFullRecyclerView(
+//                R.id.vg_input_dropdown_recycler_view,
+//                0,
+//                getRecyclerViewItemCount(R.id.vg_input_dropdown_recycler_view),
+//                "product_select"
+//        )
+//        val haha = mActivityRule.activity.findViewById<View>(R.id.bottom_sheet_wrapper)
+//        takeScreenShotVisibleViewInScreen(
+//                haha,
+//                filePrefix(),
+//                "product_select"
+//        )
 
         onView(withId(R.id.rv_product_select_dropdown)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralProductSelectBottomSheet.DigitalProductSelectDropdownAdapter.DigitalProductSelectDropdownViewHolder>(
@@ -167,6 +175,6 @@ class RechargeGeneralScreenShotTest {
 
     private fun getRecyclerViewItemCount(resId: Int): Int {
         val recyclerView = mActivityRule.activity.findViewById<RecyclerView>(resId)
-        return recyclerView.adapter?.itemCount ?: 0
+        return recyclerView?.adapter?.itemCount ?: 0
     }
 }
