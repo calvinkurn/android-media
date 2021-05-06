@@ -430,8 +430,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
         withContext(dispatcher.io) {
             val result = addToCartUseCase.get().createObservable(requestParams).toBlocking().single()
-            if (result.isDataError()) {
-                val errorMessage = result.errorMessage.firstOrNull() ?: ""
+            if (result.isStatusError()) {
+                val errorMessage = result.getAtcErrorMessage() ?: ""
                 if (errorMessage.isNotBlank()) {
                     ProductDetailLogger.logMessage(errorMessage, ATC_ERROR_TYPE, getDynamicProductInfoP1?.basic?.productID
                             ?: "", deviceId)
@@ -462,7 +462,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private suspend fun getAddToCartOccUseCase(requestParams: RequestParams) {
         withContext(dispatcher.io) {
             val result = addToCartOccUseCase.get().createObservable(requestParams).toBlocking().single()
-            if (result.isDataError()) {
+            if (result.isStatusError()) {
                 val errorMessage = result.getAtcErrorMessage() ?: ""
                 if (errorMessage.isNotBlank()) {
                     ProductDetailLogger.logMessage(errorMessage, ATC_ERROR_TYPE, getDynamicProductInfoP1?.basic?.productID
@@ -569,10 +569,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         launchCatchError(dispatcher.io, block = {
             val requestParams = ToggleFavoriteUseCase.createParams(shopID, if (isNplFollowerType) ToggleFavoriteUseCase.FOLLOW_ACTION else null)
             val favoriteData = toggleFavoriteUseCase.get().executeOnBackground(requestParams).followShop
-            if (favoriteData.isSuccess) {
+            if (favoriteData?.isSuccess == true) {
                 _toggleFavoriteResult.postValue((favoriteData.isSuccess to isNplFollowerType).asSuccess())
             } else {
-                _toggleFavoriteResult.postValue(Throwable(favoriteData.message).asFail())
+                _toggleFavoriteResult.postValue(Throwable(favoriteData?.message.orEmpty()).asFail())
             }
         }) {
             _toggleFavoriteResult.postValue(it.asFail())
