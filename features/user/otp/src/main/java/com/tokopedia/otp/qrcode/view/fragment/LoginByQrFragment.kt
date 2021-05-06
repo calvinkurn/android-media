@@ -25,7 +25,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import java.security.KeyPair
 import javax.inject.Inject
 
 class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
@@ -36,8 +35,6 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var analytics: TrackingOtpUtil
-
-    private lateinit var keyPair: KeyPair
 
     private var uuid: String = ""
 
@@ -121,11 +118,15 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun signDataVerifyQr(uuid: String, status: String): SignResult {
-        val datetime = (System.currentTimeMillis() / 1000).toString()
-        val data = uuid + status
-        return if(SignatureUtil.generateKey(LOGIN_QR_ALIAS) != null) {
-            SignatureUtil.signData(data, datetime, LOGIN_QR_ALIAS)
-        } else {
+        return try {
+            val datetime = (System.currentTimeMillis() / 1000).toString()
+            val data = uuid + status
+            if(SignatureUtil.generateKey(LOGIN_QR_ALIAS) != null) {
+                SignatureUtil.signData(data, datetime, LOGIN_QR_ALIAS)
+            } else {
+                SignResult()
+            }
+        } catch (e: Exception) {
             SignResult()
         }
     }
