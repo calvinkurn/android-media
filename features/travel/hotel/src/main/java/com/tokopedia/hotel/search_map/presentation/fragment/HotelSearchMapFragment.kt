@@ -104,7 +104,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var markerCounter: Int = INIT_MARKER_TAG
     private var cardListPosition: Int = SELECTED_POSITION_INIT
     private var hotelSearchModel: HotelSearchModel = HotelSearchModel()
-    private var hotelProperties: ArrayList<Property> = arrayListOf()
     private var isFirstInitializeFilter = true
     private var quickFilters: List<QuickFilter> = listOf()
     private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
@@ -355,15 +354,18 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 cardListPosition = it.tag as Int
                 rvHorizontalPropertiesHotelSearchMap.scrollToPosition(cardListPosition)
                 changeMarkerState(cardListPosition)
-                with(hotelSearchMapViewModel.searchParam) {
-                    if (cardListPosition >= 0) {
-                        trackingHotelUtil.hotelOnScrollName(
-                                context,
-                                searchDestinationName,
-                                searchDestinationType,
-                                this, hotelProperties[cardListPosition], cardListPosition,
-                                SEARCH_SCREEN_NAME)
-                    }
+                if (cardListPosition != -1 &&
+                        cardListPosition != lastHorizontalTrackingPositionSent &&
+                        adapterCardList.data[cardListPosition] is Property && !adapterCardList.data.isNullOrEmpty()) {
+
+                    lastHorizontalTrackingPositionSent = cardListPosition
+                    trackingHotelUtil.hotelViewHotelListMapImpression(context,
+                            searchDestinationName,
+                            searchDestinationType,
+                            hotelSearchMapViewModel.searchParam,
+                            listOf(adapterCardList.data[cardListPosition]),
+                            cardListPosition,
+                            SEARCH_SCREEN_NAME)
                 }
             }
         }
@@ -681,16 +683,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     cardListPosition = getCurrentItemCardList()
                     changeMarkerState(cardListPosition)
-                    with(hotelSearchMapViewModel.searchParam) {
-                        if (cardListPosition >= 0) {
-                            trackingHotelUtil.hotelOnScrollName(
-                                    context,
-                                    searchDestinationName,
-                                    searchDestinationType,
-                                    this, hotelProperties[cardListPosition], cardListPosition,
-                                    SEARCH_SCREEN_NAME)
-                        }
-                    }
                 }
             }
 
@@ -708,7 +700,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                             searchDestinationType,
                             hotelSearchMapViewModel.searchParam,
                             listOf(adapterCardList.data[currentPosition]),
-                            0,
+                            currentPosition,
                             SEARCH_SCREEN_NAME)
 
                 }
@@ -938,7 +930,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 searchProperties.forEach {
                     addMarker(it.location.latitude.toDouble(), it.location.longitude.toDouble(), it.roomPrice[0].price)
                     searchPropertiesMap.add(LatLng(it.location.latitude.toDouble(), it.location.longitude.toDouble()))
-                    hotelProperties.add(it)
                 }
             } else {
                 hideLoadingCardListMap()
