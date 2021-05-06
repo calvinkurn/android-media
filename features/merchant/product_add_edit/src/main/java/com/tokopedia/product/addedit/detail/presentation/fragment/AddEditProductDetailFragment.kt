@@ -513,6 +513,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
             viewModel.setProductNameInput(editable)
             showProductNameLoadingIndicator()
+            showPriceRecommendationShimmer()
         }
 
         // product price text change listener
@@ -1468,6 +1469,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         } else {
             subscribeToEditingPriceRecommendation()
         }
+        viewModel.productPriceRecommendationError.observe(viewLifecycleOwner) {
+            productPriceRecommendation?.isVisible = false
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+        }
     }
 
     private fun subscribeToAddingPriceRecommendation() {
@@ -1479,6 +1484,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             val priceDescriptionText = getString(R.string.label_price_recommendation_price_description, priceSuggestion.title)
 
             productPriceRecommendation?.apply {
+                setShimmerVisibility(false)
                 description = descriptionText
                 priceDescription = priceDescriptionText
                 price = priceSuggestion.suggestedPrice.getCurrencyFormatted()
@@ -1797,6 +1803,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun showProductNameLoadingIndicator() {
         productNameRecLoader?.visible()
         productNameRecShimmering?.visible()
+    }
+
+    private fun showPriceRecommendationShimmer() {
+        if (viewModel.isAdding) {
+            productPriceRecommendation?.show()
+            productPriceRecommendation?.displaySuggestedPriceDeselected()
+            productPriceRecommendation?.setShimmerVisibility(true)
+        }
     }
 
     private fun hideProductNameLoadingIndicator() {

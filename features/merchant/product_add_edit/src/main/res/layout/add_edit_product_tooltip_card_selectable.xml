@@ -45,4 +45,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_tips_bulb" />
 
+    <include
+        android:id="@+id/layout_tooltip_shimmer"
+        layout="@layout/add_edit_product_tooltip_card_selectable_shimmer"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_tooltip_content" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -57,6 +57,7 @@ class TooltipCardViewSelectable : BaseCustomView {
     private var dividerPriceDescription: DividerUnify? = null
     private var iconExpand: IconUnify? = null
     private var layoutTooltipContent: ViewGroup? = null
+    private var layoutTooltipShimmer: ViewGroup? = null
     private var tvApply: Typography? = null
     private var loaderApply: LoaderUnify? = null
     private var iconCheck: IconUnify? = null
@@ -138,6 +139,12 @@ class TooltipCardViewSelectable : BaseCustomView {
         dividerPriceDescription?.isVisible = isVisible
     }
 
+    fun setShimmerVisibility(isVisible: Boolean) {
+        layoutTooltipContent?.isVisible = !isVisible
+        iconExpand?.isVisible = !isVisible
+        layoutTooltipShimmer?.isVisible = isVisible
+    }
+
     fun hideIconCheck() {
         iconCheck?.hide()
         iconCheck = null
@@ -151,6 +158,7 @@ class TooltipCardViewSelectable : BaseCustomView {
         dividerPriceDescription = view.findViewById(R.id.divider_price_description)
         iconExpand = view.findViewById(R.id.icon_expand)
         layoutTooltipContent = view.findViewById(R.id.layout_tooltip_content)
+        layoutTooltipShimmer = view.findViewById(R.id.layout_tooltip_shimmer)
         tvApply = view.findViewById(R.id.tv_apply)
         loaderApply = view.findViewById(R.id.loader_apply)
         iconCheck = view.findViewById(R.id.icon_check)

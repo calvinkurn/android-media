@@ -201,6 +201,9 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val mProductPriceRecommendation = MutableLiveData<PriceSuggestionSuggestedPriceGet>()
     val productPriceRecommendation: LiveData<PriceSuggestionSuggestedPriceGet>
         get() = mProductPriceRecommendation
+    private val mProductPriceRecommendationError = MutableLiveData<Throwable>()
+    val productPriceRecommendationError: LiveData<Throwable>
+        get() = mProductPriceRecommendationError
 
     private fun isInputValid(): Boolean {
 
@@ -620,8 +623,7 @@ class AddEditProductDetailViewModel @Inject constructor(
             }
             mProductPriceRecommendation.value = response.priceSuggestionSuggestedPriceGet
         }, onError = {
-            // log error
-            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+            mProductPriceRecommendationError.value = it
         })
     }
 
@@ -633,8 +635,7 @@ class AddEditProductDetailViewModel @Inject constructor(
             }
             mProductPriceRecommendation.value = response.priceSuggestionSuggestedPriceGet
         }, onError = {
-            // log error
-            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+            mProductPriceRecommendationError.value = it
         })
     }
 }
