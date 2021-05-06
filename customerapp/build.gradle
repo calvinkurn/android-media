@@ -421,6 +421,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
+
+    implementation rootProject.ext.unifyDependencies.empty_state
 }
 
 apply plugin: 'com.google.gms.google-services'
