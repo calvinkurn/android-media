@@ -410,7 +410,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 position = positionRMEligible
             }
         }
-        return position.takeIf { it != -1 }
+        return position.takeIf { it != RecyclerView.NO_POSITION }
     }
 
     private fun scrollToLastItemCoachMark() {
@@ -507,14 +507,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun getHeaderPerformanceView(): View? {
-        val itemHeaderPosition = shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }.takeIf { it != -1 }
+        val itemHeaderPosition = shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }.takeIf {
+            it != RecyclerView.NO_POSITION }
         val view = itemHeaderPosition?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
         val headerViewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
         return headerViewHolder?.itemView
     }
 
     private fun getPeriodDetailPerformanceView(): View? {
-        val itemPeriodPosition = shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }.takeIf { it != -1 }
+        val itemPeriodPosition = shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }.takeIf {
+            it != RecyclerView.NO_POSITION }
         val view = itemPeriodPosition?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
         val periodViewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
         return periodViewHolder?.itemView
