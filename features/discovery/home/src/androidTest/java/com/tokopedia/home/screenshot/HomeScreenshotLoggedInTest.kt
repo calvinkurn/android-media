@@ -2,6 +2,8 @@ package com.tokopedia.home.screenshot
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.IdlingResource
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -11,6 +13,7 @@ import com.tokopedia.home.component.name
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home.screenshot.HomeScreenshotTestHelper.turnOffAnimation
+import com.tokopedia.home_component.util.HomeNetworkUtil
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.CHOOSE_ADDRESS_ROLLENCE_KEY
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -35,6 +38,7 @@ class HomeScreenshotLoggedInTest {
     private val TAG = "HomeScreenshotTest"
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
+    private var homeNetworkIdlingResource: IdlingResource? = HomeNetworkUtil.homeNetworkIdlingResource
 
     @get:Rule
     var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
@@ -47,6 +51,7 @@ class HomeScreenshotLoggedInTest {
             setupAbTestRemoteConfig()
             disableCoachMark(context)
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
+            setupIdlingResource()
         }
     }
 
@@ -123,6 +128,10 @@ class HomeScreenshotLoggedInTest {
                     fileNamePostFix = fileNamePostFix
             )
         }
+    }
+
+    private fun setupIdlingResource() {
+        IdlingRegistry.getInstance().register(homeNetworkIdlingResource)
     }
 
     private fun fileName(suffix: String? = null): String {
