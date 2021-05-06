@@ -7,6 +7,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
@@ -22,7 +23,8 @@ object TopChatWebSocketParam {
             messageText: String,
             startTime: String,
             attachments: List<SendablePreview>,
-            intention: String? = null
+            intention: String? = null,
+            userLocationInfo: LocalCacheModel? = null
     ): String {
         val json = JsonObject().apply {
             addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
@@ -33,7 +35,10 @@ object TopChatWebSocketParam {
             addProperty("source", "inbox")
             addProperty("start_time", startTime)
             if (attachments.isNotEmpty()) {
-                add("extras", createProductExtrasAttachments(attachments, intention))
+                val extras = createProductExtrasAttachments(
+                        attachments, intention, userLocationInfo
+                )
+                add("extras", extras)
             }
         }
         json.add("data", data)
@@ -42,9 +47,12 @@ object TopChatWebSocketParam {
 
     private fun createProductExtrasAttachments(
             attachments: List<SendablePreview>,
-            intention: String?
+            intention: String?,
+            userLocationInfo: LocalCacheModel?
     ): JsonElement {
+        val jsonObject = JsonObject()
         val extrasProducts = JsonArray()
+        val locationStock = JsonObject()
         attachments.forEach { attachment ->
             if (attachment is SendableProductPreview) {
                 val product = JsonObject().apply {
@@ -54,12 +62,21 @@ object TopChatWebSocketParam {
                 extrasProducts.add(product)
             }
         }
-        return JsonObject().apply {
-            add("extras_product", extrasProducts)
-            intention?.let {
-                addProperty("intent", it)
-            }
+        jsonObject.add("extras_product", extrasProducts)
+        intention?.let {
+            jsonObject.addProperty("intent", it)
         }
+        userLocationInfo?.let {
+            locationStock.apply {
+                val latlon = "${userLocationInfo.lat},${userLocationInfo.long}"
+                addProperty("address_id", userLocationInfo.address_id.toLongOrZero())
+                addProperty("district_id", userLocationInfo.district_id.toLongOrZero())
+                addProperty("postal_code", userLocationInfo.postal_code)
+                addProperty("latlon", latlon)
+            }
+            jsonObject.add("location_stock", locationStock)
+        }
+        return jsonObject
     }
 
 
