@@ -563,13 +563,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun goToPrintingPage() {
-        // TODO: Change URL to correct subdomain
-        val url =
-                if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-                    "https://156-staging-feature.tokopedia.com/jasa/print/kemasan-produk"
-                } else {
-                    "${TokopediaUrl.getInstance().WEB}jasa/print/kemasan-produk"
-                }
+        val url = "${TokopediaUrl.getInstance().WEB}${SellerBaseUrl.PRINTING}"
         val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, url)
         RouteManager.getIntent(context, applink)?.let {
             context?.startActivity(it)
