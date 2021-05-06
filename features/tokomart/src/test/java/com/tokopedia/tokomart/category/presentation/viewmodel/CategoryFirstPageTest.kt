@@ -1,0 +1,85 @@
+package com.tokopedia.tokomart.category.presentation.viewmodel
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
+import com.tokopedia.tokomart.category.domain.model.CategoryModel
+import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
+import com.tokopedia.tokomart.searchcategory.assertBannerDataView
+import com.tokopedia.tokomart.searchcategory.assertChooseAddressDataView
+import com.tokopedia.tokomart.searchcategory.assertProductCountDataView
+import com.tokopedia.tokomart.searchcategory.assertQuickFilterDataView
+import com.tokopedia.tokomart.searchcategory.assertTitleDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
+import io.mockk.coEvery
+import org.hamcrest.CoreMatchers.instanceOf
+import org.junit.Assert.assertThat
+import org.junit.Test
+
+class CategoryFirstPageTest: CategoryTestFixtures() {
+
+    @Test
+    fun `test first page is last page`() {
+        val categoryModel = CategoryModel(totalData = 3)
+        `Given get category first page use case will be successful`(categoryModel)
+
+        `When view created`()
+
+        val visitableList = categoryViewModel.visitableListLiveData.value!!
+
+        `Then assert visitable list header`(visitableList, categoryModel)
+        `Then assert visitable list contents`(visitableList)
+        `Then assert visitable list footer`(visitableList)
+    }
+
+    private fun `Given get category first page use case will be successful`(categoryModel: CategoryModel) {
+        coEvery {
+            getCategoryFirstPageUseCase.execute(any(), any(), any())
+        } coAnswers {
+            firstArg<(CategoryModel) -> Unit>().invoke(categoryModel)
+        }
+    }
+
+    private fun `When view created`() {
+        categoryViewModel.onViewCreated()
+    }
+
+    private fun `Then assert visitable list header`(
+            visitableList: List<Visitable<*>>,
+            categoryModel: CategoryModel,
+    ) {
+        visitableList[0].assertChooseAddressDataView()
+        visitableList[1].assertBannerDataView()
+        visitableList[2].assertTitleDataView(title = "Category_Title", hasSeeAllCategoryButton = true)
+        visitableList[3].assertQuickFilterDataView()
+        visitableList[4].assertProductCountDataView(categoryModel.totalData)
+    }
+
+    private fun `Then assert visitable list contents`(visitableList: List<Visitable<*>>) {
+        // Need to verify based on BE data
+        assertThat(visitableList[5], instanceOf(ProductItemDataView::class.java))
+        assertThat(visitableList[6], instanceOf(ProductItemDataView::class.java))
+        assertThat(visitableList[7], instanceOf(ProductItemDataView::class.java))
+    }
+
+    private fun `Then assert visitable list footer`(visitableList: List<Visitable<*>>) {
+        assertThat(visitableList.last(), instanceOf(CategoryIsleDataView::class.java))
+    }
+
+    @Test
+    fun `test first page has next page`() {
+        val categoryModel = CategoryModel(totalData = 8)
+        `Given get category first page use case will be successful`(categoryModel)
+
+        `When view created`()
+
+        val visitableList = categoryViewModel.visitableListLiveData.value!!
+
+        `Then assert visitable list header`(visitableList, categoryModel)
+        `Then assert visitable list contents`(visitableList)
+        `Then assert visitable list end with loading more model`(visitableList)
+    }
+
+    private fun `Then assert visitable list end with loading more model`(visitableList: List<Visitable<*>>) {
+        assertThat(visitableList.last(), instanceOf(LoadingMoreModel::class.java))
+    }
+}
