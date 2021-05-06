@@ -456,7 +456,7 @@ class DiscoveryFragment :
                                 .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
                                 .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
                 )
-                navToolbar.applyNotification()
+                navToolbar.updateNotification()
             }
         } else {
             if (showOldToolbar) {
@@ -519,7 +519,7 @@ class DiscoveryFragment :
                         .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
                         .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
         )
-        navToolbar.applyNotification()
+        navToolbar.updateNotification()
     }
 
     private fun setupSearchBar(data: PageInfo?) {
