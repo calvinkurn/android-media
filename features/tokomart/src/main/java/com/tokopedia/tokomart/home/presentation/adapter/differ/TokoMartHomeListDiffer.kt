@@ -1,7 +1,7 @@
 package com.tokopedia.tokomart.home.presentation.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokomart.base.adapter.BaseTokoMartDiffer
+import com.tokopedia.tokomart.common.base.adapter.BaseTokoMartDiffer
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeSectionUiModel
 
 class TokoMartHomeListDiffer: BaseTokoMartDiffer() {
