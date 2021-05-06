@@ -5,6 +5,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.navigation.com.tokopedia.navigation.helper.NavigationInstrumentationHelper.disableCoachMark
 import com.tokopedia.navigation.com.tokopedia.navigation.mock.MainHomeMockResponseConfig
+import com.tokopedia.navigation.com.tokopedia.navigation.screenshot.MainParentScreenshotTestHelper
+import com.tokopedia.navigation.com.tokopedia.navigation.screenshot.MainParentScreenshotTestHelper.turnOffAnimation
 import com.tokopedia.navigation.presentation.activity.MainParentActivity
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -59,6 +61,7 @@ class MainParentScreenshotLoggedInTest {
     @Test
     fun screenShotVisibleViewLoggedIn() {
         Thread.sleep(10000)
+        turnOffAnimation(activityRule.activity)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             takeScreenShotVisibleViewInScreen(
                     activityRule.activity.window.decorView,

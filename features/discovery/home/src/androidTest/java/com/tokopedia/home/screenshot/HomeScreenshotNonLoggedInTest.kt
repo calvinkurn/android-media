@@ -4,12 +4,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.home.R
 import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.component.name
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
-import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
+import com.tokopedia.home.screenshot.HomeScreenshotTestHelper.turnOffAnimation
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.CHOOSE_ADDRESS_ROLLENCE_KEY
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.BALANCE_EXP
@@ -50,7 +49,7 @@ class HomeScreenshotNonLoggedInTest {
     @Test
     fun screenShotVisibleViewNonLoggedIn() {
         Thread.sleep(4000)
-        turnOffAnimation()
+        turnOffAnimation(activityRule.activity)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             takeScreenShotVisibleViewInScreen(
                     activityRule.activity.window.decorView,
@@ -59,13 +58,6 @@ class HomeScreenshotNonLoggedInTest {
             )
         }
         activityRule.activity.finishAndRemoveTask()
-    }
-
-    private fun turnOffAnimation() {
-        val homeRv = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
-
-        //turn off slider banner
-        (homeRv.findViewHolderForAdapterPosition(3) as? BannerComponentViewHolder)?.coroutineContext?.cancelChildren()
     }
 
     private fun fileName(suffix: String? = null): String {

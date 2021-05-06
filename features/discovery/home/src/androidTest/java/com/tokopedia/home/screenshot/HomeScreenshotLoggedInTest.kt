@@ -10,6 +10,7 @@ import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.component.name
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
+import com.tokopedia.home.screenshot.HomeScreenshotTestHelper.turnOffAnimation
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.CHOOSE_ADDRESS_ROLLENCE_KEY
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -24,7 +25,6 @@ import com.tokopedia.test.application.espresso_component.CommonActions.takeScree
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import kotlinx.coroutines.cancelChildren
 import org.junit.Rule
 import org.junit.Test
 
@@ -53,7 +53,7 @@ class HomeScreenshotLoggedInTest {
     @Test
     fun screenShotVisibleViewLoggedIn() {
         Thread.sleep(10000)
-        turnOffAnimation()
+        turnOffAnimation(activityRule.activity)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             takeScreenShotVisibleViewInScreen(
                     activityRule.activity.window.decorView,
@@ -67,24 +67,9 @@ class HomeScreenshotLoggedInTest {
     @Test
     fun screenShotEachViewholders() {
         Thread.sleep(10000)
-        turnOffAnimation()
+        turnOffAnimation(activityRule.activity)
         doScreenshotForEachViewholder()
         activityRule.activity.finishAndRemoveTask()
-    }
-
-    private fun turnOffAnimation() {
-        val homeRv = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
-
-        //turn off slider banner
-        resetBanner((homeRv.findViewHolderForAdapterPosition(3) as? BannerComponentViewHolder)!!)
-    }
-
-    private fun resetBanner(bannerComponentViewholder: BannerComponentViewHolder) {
-        //turn off slider banner
-        bannerComponentViewholder.coroutineContext.cancelChildren()
-        bannerComponentViewholder.scrollTo(0)
-
-        Thread.sleep(5000)
     }
 
     private fun doScreenshotForEachViewholder() {
@@ -128,7 +113,7 @@ class HomeScreenshotLoggedInTest {
         val recyclerViewId = R.id.home_fragment_recycler_view
         doActivityTest(position) {
             if (it is BannerComponentViewHolder) {
-                resetBanner(it)
+                turnOffAnimation(activityRule.activity)
             }
             findViewHolderAndScreenshot(
                     recyclerViewId = recyclerViewId,
