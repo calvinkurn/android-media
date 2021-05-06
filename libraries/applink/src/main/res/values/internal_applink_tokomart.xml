@@ -11,4 +11,5 @@
 
     <!--path-->
     <string name="path_tokomart_home" translatable="false">/home</string>
+    <string name="path_tokomart_category_list" translatable="false">/category-list</string>
 </resources>
