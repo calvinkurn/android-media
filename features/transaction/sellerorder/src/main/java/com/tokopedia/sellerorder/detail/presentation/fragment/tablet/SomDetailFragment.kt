@@ -67,6 +67,11 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         }
     }
 
+    override fun onGoToOrderDetailButtonClicked() {
+        shouldRefreshOrderList = true
+        super.onGoToOrderDetailButtonClicked()
+    }
+
     override fun loadDetail() {
         showLoading()
         if (connectionMonitor?.isConnected == true) {

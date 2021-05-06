@@ -882,21 +882,24 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun confirmShipping() {
-        btn_primary?.isLoading = true
-        if (detailResponse?.onlineBooking?.isRemoveInputAwb == true) {
-            val btSheet = BottomSheetUnify()
-            val infoLayout = View.inflate(context, R.layout.partial_info_layout, null)
-            infoLayout.tv_confirm_info?.text = detailResponse?.onlineBooking?.infoText
-            infoLayout.button_understand?.setOnClickListener { btSheet.dismiss() }
-
-            fragmentManager?.let {
-                btSheet.setTitle(context?.getString(R.string.automatic_shipping) ?: "")
-                btSheet.setChild(infoLayout)
-                btSheet.setCloseClickListener { btSheet.dismiss() }
-                btSheet.show(it, TAG_BOTTOMSHEET)
+        context?.let { context ->
+            val view = view
+            if (view is ViewGroup) {
+                btn_primary?.isLoading = true
+                if (detailResponse?.onlineBooking?.isRemoveInputAwb == true) {
+                    val btSheet = SomConfirmShippingBottomSheet(context)
+                    childFragmentManager.let {
+                        btSheet.init(view)
+                        btSheet.setInfoText(detailResponse?.onlineBooking?.infoText.orEmpty())
+                        btSheet.setOnDismiss {
+                            btn_primary?.isLoading = false
+                        }
+                        btSheet.show()
+                    }
+                } else {
+                    createIntentConfirmShipping(false)
+                }
             }
-        } else {
-            createIntentConfirmShipping(false)
         }
     }
 
@@ -1656,13 +1659,15 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 this.somOrderHasCancellationRequestDialog = somOrderHasCancellationRequestDialog
                 somOrderHasCancellationRequestDialog.apply {
                     setupActionButton(pendingAction.actionName, pendingAction.action)
-                    setupGoToOrderDetailButton {
-                        loadDetail()
-                    }
+                    setupGoToOrderDetailButton(::onGoToOrderDetailButtonClicked)
                     show()
                 }
             }
         }
+    }
+
+    protected open fun onGoToOrderDetailButtonClicked() {
+        loadDetail()
     }
 
     protected open fun onSuccessAcceptOrder() {
