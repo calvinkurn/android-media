@@ -102,9 +102,11 @@ class RechargeGeneralScreenShotTest {
         onView(withId(R.id.operator_select)).perform(ViewActions.click())
 
         Thread.sleep(2000)
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "recycler_view_operator_select")
-        }
+        findViewAndScreenShot(
+                R.id.container_digital_search_number,
+                filePrefix(),
+                "recycler_view_operator_select"
+        )
 
         // Choose "Token Listrik"
         Thread.sleep(2000)
@@ -142,18 +144,12 @@ class RechargeGeneralScreenShotTest {
                 )
         )
         Thread.sleep(2000)
-//        screenShotFullRecyclerView(
-//                R.id.vg_input_dropdown_recycler_view,
-//                0,
-//                getRecyclerViewItemCount(R.id.vg_input_dropdown_recycler_view),
-//                "product_select"
-//        )
-//        val haha = mActivityRule.activity.findViewById<View>(R.id.bottom_sheet_wrapper)
-//        takeScreenShotVisibleViewInScreen(
-//                haha,
-//                filePrefix(),
-//                "product_select"
-//        )
+
+        findViewAndScreenShot(
+                R.id.view_container,
+                filePrefix(),
+                "product_select"
+        )
 
         onView(withId(R.id.rv_product_select_dropdown)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralProductSelectBottomSheet.DigitalProductSelectDropdownAdapter.DigitalProductSelectDropdownViewHolder>(
