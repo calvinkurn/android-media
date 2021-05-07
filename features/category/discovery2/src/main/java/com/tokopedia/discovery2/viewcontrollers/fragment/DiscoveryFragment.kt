@@ -306,11 +306,13 @@ class DiscoveryFragment :
                             scrollToPinnedComponent(listComponent)
                         }
                     }
+                    hideGlobalError()
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
                 }
                 is Fail -> {
                     mProgressBar.hide()
+                    setPageErrorState(it)
                 }
             }
             mSwipeRefreshLayout.isRefreshing = false
@@ -586,6 +588,10 @@ class DiscoveryFragment :
             globalError.hide()
             showLoadingWithRefresh()
         }
+    }
+
+    private fun hideGlobalError(){
+        globalError.hide()
     }
 
     private fun fetchDiscoveryPageData() {
