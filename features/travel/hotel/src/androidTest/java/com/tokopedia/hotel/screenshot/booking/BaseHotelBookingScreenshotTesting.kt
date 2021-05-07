@@ -62,7 +62,6 @@ abstract class BaseHotelBookingScreenshotTesting {
         Espresso.onView(ViewMatchers.withId(R.id.add_request_container)).perform(ViewActions.click())
         CommonActions.findViewAndScreenShot(R.id.room_request_form_container, filePrefix(), "special-request-container")
 
-        Thread.sleep(3000)
         CommonActions.findViewAndScreenShot(R.id.hotel_detail_container, filePrefix(), "detail-container")
         CommonActions.findViewAndScreenShot(R.id.booking_room_duration_info, filePrefix(), "duration-info")
         CommonActions.findViewAndScreenShot(R.id.room_request_container, filePrefix(), "room-request-container")
