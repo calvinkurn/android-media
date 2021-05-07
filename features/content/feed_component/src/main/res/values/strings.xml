@@ -4,6 +4,7 @@
     <string name="kol_action_like">Like</string>
     <string name="kol_action_comment">Comment</string>
     <string name="kol_action_follow">Follow</string>
+    <string name="kol_Action_following">"following"</string>
 
     <!--Post Time-->
     <string name="post_time_just_now">Baru saja</string>
@@ -109,6 +110,8 @@
     <string name="feed_component_follow">Follow</string>
     <string name="feed_component_unfollow">Unfollow</string>
     <string name="feed_component_not_interested">Tidak Tertarik</string>
+    <string name="feed_common_terjual">Terjual</string>
+
 
     <!--REPORT BOTTOM SHEETS ASSETS-->
     <string name="feed_component_report_Header">Kenapa kamu ingin laporkan postingan ini?</string>

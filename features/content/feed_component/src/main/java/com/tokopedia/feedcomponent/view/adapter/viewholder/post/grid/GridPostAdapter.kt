@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
@@ -168,8 +167,11 @@ class GridPostAdapter(private val contentPosition: Int,
                         contentPosition,
                         adapterPosition,
                         if (!TextUtils.isEmpty(actionLink)) actionLink
-                        else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString())
-                )
+                        else {
+                            //empty applink from BE //TODO
+                            val link = "tokopedia://feedcommunicationdetail/{extra_detail_id}"
+                            link.replace(EXTRA_DETAIL_ID, postId.toString())
+                        })
             }
         }
 

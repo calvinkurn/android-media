@@ -85,7 +85,6 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         }
         hashtagAppLinkFmt
         hashtagWebLinkFmt
-        reportable
         like {
           label
           count
@@ -187,8 +186,6 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         title
         subTitle
         text
-        appLink
-        webLink
         products {
           id
           name
@@ -261,7 +258,6 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         mods
       }
     }
-    mods
     pagination {
       totalData
       cursor

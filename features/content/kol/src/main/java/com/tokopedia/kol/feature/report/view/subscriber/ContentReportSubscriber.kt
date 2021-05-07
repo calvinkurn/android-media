@@ -2,8 +2,8 @@ package com.tokopedia.kol.feature.report.view.subscriber
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.kol.R
 import com.tokopedia.feedcomponent.domain.model.report.entity.SendReportResponse
+import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.report.domain.usecase.SendReportUseCase
 import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
 import rx.Subscriber

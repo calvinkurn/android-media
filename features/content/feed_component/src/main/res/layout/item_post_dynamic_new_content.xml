@@ -84,6 +84,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/shop_name" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/gridList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dp_3"
+        android:paddingTop="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_3"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/shop_image"
+        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        tools:listitem="@layout/item_grid"
+        tools:spanCount="@integer/int_3" />
+
     <com.tokopedia.carousel.CarouselUnify
         android:id="@+id/feed_carousel"
         android:layout_width="match_parent"
@@ -91,7 +105,7 @@
         android:layout_marginTop="@dimen/unify_space_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shop_image" />
+        app:layout_constraintTop_toBottomOf="@id/gridList" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/like_button"
@@ -127,9 +141,10 @@
         android:id="@+id/share_button"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/dp_16"
         app:icon_name="SHARE_MOBILE"
         app:layout_constraintBottom_toBottomOf="@id/like_button"
-        app:layout_constraintEnd_toEndOf="@id/menu_button"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/like_button" />
 
     <com.tokopedia.unifyprinciples.Typography

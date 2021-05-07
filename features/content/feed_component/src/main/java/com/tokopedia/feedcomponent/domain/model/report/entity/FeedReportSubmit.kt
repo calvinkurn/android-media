@@ -1,7 +1,8 @@
-package com.tokopedia.kol.feature.report.data.entity
+package com.tokopedia.feedcomponent.domain.model.report.entity
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.feedcomponent.domain.model.report.entity.FeedReportData
 
 data class FeedReportSubmit(
         @SerializedName("data")

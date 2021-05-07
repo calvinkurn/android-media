@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.view.presenter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
@@ -12,6 +13,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
+import com.tokopedia.feedcomponent.domain.usecase.SendReportUseCase
 import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_INTEREST
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
@@ -20,7 +22,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopView
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.data.DataItem
@@ -71,7 +72,8 @@ class FeedViewModel @Inject constructor(
         private val sendTopAdsUseCase: SendTopAdsUseCase,
         private val playWidgetTools: PlayWidgetTools,
         private val getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
-        private val getWhitelistNewUseCase: GetWhitelistNewUseCase
+        private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
+        private val sendReportUseCase: SendReportUseCase
 ) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
@@ -94,6 +96,8 @@ class FeedViewModel @Inject constructor(
     val atcResp = MutableLiveData<Result<AtcViewModel>>()
     val toggleFavoriteShopResp = MutableLiveData<Result<FavoriteShopViewModel>>()
     val trackAffiliateResp = MutableLiveData<Result<TrackAffiliateViewModel>>()
+    val reportResponse = MutableLiveData<Result<DeletePostViewModel>>()
+
 
     private val _playWidgetModel = MutableLiveData<Result<CarouselPlayCardViewModel>>()
     val playWidgetModel: LiveData<Result<CarouselPlayCardViewModel>>
@@ -111,6 +115,24 @@ class FeedViewModel @Inject constructor(
         }, {
             onboardingResp.value = Fail(it)
         })
+    }
+
+    fun sendReport(positionInFeed: Int, contentId: Int, reasonType: String, reasonMessage: String, contentType: String) {
+        sendReportUseCase.createRequestParams(contentId, reasonType, reasonMessage, contentType)
+        sendReportUseCase.execute(
+                {
+                    val deleteModel = DeletePostViewModel(contentId, positionInFeed, it.feedReportSubmit.errorMessage, true)
+                    if (it.feedReportSubmit.errorMessage.isEmpty()) {
+                        reportResponse.value = Success(deleteModel)
+                    } else {
+                        reportResponse.value = Fail(Exception(it.feedReportSubmit.errorMessage))
+                    }
+                },
+                {
+                    reportResponse.value = Fail(it)
+                }
+        )
+
     }
 
     fun submitInterestPickData(dataList: List<InterestPickDataViewModel>, source: String, requestInt: Int) {
@@ -351,7 +373,7 @@ class FeedViewModel @Inject constructor(
     private suspend fun getFeedFirstDataResult(): DynamicFeedFirstPageDomainModel {
         return try {
             val feedResponseModel = getFeedDataResult()
-            if(userSession.isLoggedIn){
+            if (userSession.isLoggedIn) {
                 val whiteListModel = getWhitelistNewUseCase.execute(type = WHITELIST_INTEREST)
                 DynamicFeedFirstPageDomainModel(feedResponseModel,
                         (whiteListModel.whitelist.error.isEmpty() && whiteListModel.whitelist.isWhitelist))

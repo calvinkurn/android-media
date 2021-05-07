@@ -23,10 +23,9 @@ import com.tokopedia.feedplus.view.viewmodel.RetryModel
 class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadListener: OnLoadListener) : RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
 
     private var list: MutableList<Visitable<*>> = mutableListOf()
-    private val emptyModel: EmptyModel
-    private val emptyFeedBeforeLoginModel: EmptyFeedBeforeLoginModel
-    private val loadingMoreModel: LoadingMoreModel
-    private val retryModel: RetryModel
+    private val emptyModel: EmptyModel = EmptyModel()
+    private val loadingMoreModel: LoadingMoreModel = LoadingMoreModel()
+    private val retryModel: RetryModel = RetryModel()
     private var unsetListener: Boolean = false
     private var recyclerView: RecyclerView? = null
     var itemTreshold = 5
@@ -43,19 +42,12 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
 
         override fun onScroll(lastVisiblePosition: Int) {
             if (loadListener is OnScrollListener)
-                (loadListener as OnScrollListener).onScroll(lastVisiblePosition)
+                loadListener.onScroll(lastVisiblePosition)
         }
     }
 
     val isLoading: Boolean
         get() = this.list.contains(loadingMoreModel)
-
-    init {
-        this.emptyModel = EmptyModel()
-        this.loadingMoreModel = LoadingMoreModel()
-        this.retryModel = RetryModel()
-        this.emptyFeedBeforeLoginModel = EmptyFeedBeforeLoginModel()
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<*>>  {
         val context = parent.context

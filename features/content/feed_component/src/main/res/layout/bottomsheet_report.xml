@@ -8,7 +8,7 @@
         android:id="@+id/layout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -167,6 +167,6 @@
     <include
         android:id="@+id/layout3"
         layout="@layout/bottomsheet_spam_report"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

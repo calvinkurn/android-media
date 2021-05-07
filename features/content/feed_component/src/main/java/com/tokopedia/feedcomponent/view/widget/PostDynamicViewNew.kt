@@ -1,7 +1,6 @@
 package com.tokopedia.feedcomponent.view.widget
 
 import android.content.Context
-import android.os.Handler
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
@@ -10,9 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
@@ -24,6 +25,9 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
@@ -31,6 +35,12 @@ import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.URLEncoder
+
+
+private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
+private const val SPAN_SIZE_FULL = 6
+private const val SPAN_SIZE_HALF = 3
+private const val SPAN_SIZE_SINGLE = 2
 
 class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : ConstraintLayout(context, attrs, defStyleAttr) {
@@ -59,7 +69,11 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
     private var userImage: ImageUnify
     private var addCommentHint: Typography
 
+    //private var gridView: ConstraintLayout
+    private var gridList: RecyclerView
+
     private var listener: DynamicPostViewHolder.DynamicPostListener? = null
+    private lateinit var gridPostListener: GridPostAdapter.GridItemListener
     private var positionInFeed: Int = 0
 
     init {
@@ -88,15 +102,18 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
             likeButton2 = findViewById(R.id.like_button2)
             userImage = findViewById(R.id.user_image)
             addCommentHint = findViewById(R.id.comment_hint)
+            //  gridView = findViewById(R.id.gridView)
+            gridList = findViewById(R.id.gridList)
         }
     }
 
-    fun bindData(dynamicPostListener: DynamicPostViewHolder.DynamicPostListener, adapterPosition: Int,
-                 userSession: UserSessionInterface, feedXCard: FeedXCard) {
+    fun bindData(dynamicPostListener: DynamicPostViewHolder.DynamicPostListener, gridItemListener: GridPostAdapter.GridItemListener,
+                 adapterPosition: Int, userSession: UserSessionInterface, feedXCard: FeedXCard) {
         this.listener = dynamicPostListener
+        this.gridPostListener = gridItemListener
         this.positionInFeed = adapterPosition
         bindHeader(feedXCard.id.toIntOrZero(), feedXCard.author, feedXCard.followers.isFollowed)
-        bindItems(feedXCard.id.toIntOrZero(), feedXCard.media, feedXCard.tags)
+        bindItems(feedXCard.typename, feedXCard.id.toIntOrZero(), feedXCard.media, feedXCard)
         bindCaption(feedXCard)
         bindPublishedAt(feedXCard.publishedAt, feedXCard.subTitle)
         bindLike(feedXCard.like, feedXCard.id.toIntOrZero())
@@ -116,7 +133,7 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
         //as activityName is unclear since in new gql we aint getting responses on the basis of activity like kolpost or others
         val activityName = ""
         val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
-        val followCta = FollowCta(authorID = author.id, authorType, isFollowed)
+        val followCta = FollowCta(authorID = author.id, authorType = authorType, isFollow = isFollowed)
         shopImage.setOnClickListener {
             listener?.onAvatarClick(positionInFeed, author.appLink, activityId, activityName, followCta)
         }
@@ -124,13 +141,14 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
             listener?.onAvatarClick(positionInFeed, author.appLink, activityId, activityName, followCta)
         }
         followText.setOnClickListener {
+            followText.text = context.getString(R.string.kol_Action_following)
+            followText.setTextColor(MethodChecker.getColor(context, R.color.Unify_N75))
             listener?.onHeaderActionClick(positionInFeed, author.id,
                     authorType, isFollowed)
         }
         shopMenuIcon.setOnClickListener {
             listener?.onMenuClick(positionInFeed, activityId, true, true, true)
         }
-        //handle 3 dots click listener here
     }
 
     private fun bindLike(like: FeedXLike, id: Int) {
@@ -138,8 +156,8 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
             val colorGreen = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             likeButton.setImage(IconUnify.THUMB_FILLED, colorGreen, colorGreen)
         } else {
-           // val colorWhite = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-            likeButton.setImage(IconUnify.THUMB)
+            // val colorWhite = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+            likeButton.setImage(IconUnify.THUMB, null, null)
         }
         if (like.likedBy.isNotEmpty() || like.count != 0) {
             likedText.show()
@@ -191,9 +209,9 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
 //                    if (caption.appLink.isNotEmpty()) {
 //                        listener?.onCaptionClick(positionInFeed, caption.appLink)
 //                    } else {
-                        captionText.text = tagConverter.convertToLinkifyHashtag(SpannableString(caption.text),
-                                colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag) }
-                  //  }
+                    captionText.text = tagConverter.convertToLinkifyHashtag(SpannableString(caption.text),
+                            colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag) }
+                    //  }
                 }
                 captionText.movementMethod = LinkMovementMethod.getInstance()
             } else {
@@ -264,53 +282,126 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
         }
     }
 
-    private fun bindItems(postId: Int, media: List<FeedXMedia>, products: List<FeedXProduct>) {
-        carouselView.apply {
-            stage.removeAllViews()
-            indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
-            if (media.size > 1) {
-                pageControl.show()
-                pageControl.setIndicator(media.size)
-            } else {
-                pageControl.hide()
-            }
-            media.forEach {
-                if (it.type == TYPE_IMAGE) {
-                    val imageItem = View.inflate(context, R.layout.item_post_image_new, null)
-                    val param = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                    imageItem.layoutParams = param
-                    imageItem.run {
-                        findViewById<ImageUnify>(R.id.post_image).setImageUrl(it.mediaUrl)
-                        findViewById<IconUnify>(R.id.collapsed).showWithCondition(products.isNotEmpty())
-                        val productTag = findViewById<IconUnify>(R.id.collapsed)
-                        val productTagText = findViewById<ImageView>(R.id.expanded)
-                        Handler().postDelayed({
-                            productTag.gone()
-                            productTagText.visible()
-                        }, 1000)
-                        //feedxProduct
-                        productTag?.setOnClickListener {
-                            listener?.onTagClicked(postId, products, listener!!)
+    private fun bindItems(typeName: String, postId: Int, media: List<FeedXMedia>, feedXCard: FeedXCard) {
+        if (typeName != TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
+            val products = feedXCard.tags
+            gridList.gone()
+            carouselView.visible()
+            commentButton.visible()
+            shopMenuIcon.visible()
+            carouselView.apply {
+                stage.removeAllViews()
+                indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
+                if (media.size > 1) {
+                    pageControl.show()
+                    pageControl.setIndicator(media.size)
+                } else {
+                    pageControl.hide()
+                }
+                media.forEach {
+                    if (it.type == TYPE_IMAGE) {
+                        val imageItem = View.inflate(context, R.layout.item_post_image_new, null)
+                        val param = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                        imageItem.layoutParams = param
+                        imageItem.run {
+                            findViewById<ImageUnify>(R.id.post_image).setImageUrl(it.mediaUrl)
+                            findViewById<IconUnify>(R.id.collapsed).showWithCondition(products.isNotEmpty())
+                            val productTag = findViewById<IconUnify>(R.id.collapsed)
+                            val productTagText = findViewById<ImageView>(R.id.expanded)
+                            productTagText.gone()
+                            productTagText.postDelayed({
+                                if (products.isNotEmpty()) {
+                                    productTag.gone()
+                                    productTagText.visible()
+                                }
+                            }, 2000)
+                            //feedxProduct
+                            productTag?.setOnClickListener {
+                                listener?.let { listener ->
+                                    listener.onTagClicked(postId, products, listener)
+                                }
+                            }
+                            productTagText?.setOnClickListener {
+                                listener?.let { listener ->
+                                    listener.onTagClicked(postId, products, listener)
+                                }
+                            }
+                            imageItem?.setOnClickListener {
+                                productTag.gone()
+                                productTagText.visible()
+                            }
+                            //set on click listener for the image item
                         }
-                        productTagText?.setOnClickListener {
-                            listener?.onTagClicked(postId, products, listener!!)
-                        }
-                        imageItem?.setOnClickListener {
-                            productTag.gone()
-                            productTagText.visible()
-                        }
-                        //set on click listener for the image item
+                        addItem(imageItem)
                     }
-                    addItem(imageItem)
+                    //write else part for the video type
                 }
-                //write else part for the video type
-            }
-            onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
-                override fun onActiveIndexChanged(prev: Int, current: Int) {
-                    pageControl.setCurrentIndicator(current)
+                onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
+                    override fun onActiveIndexChanged(prev: Int, current: Int) {
+                        pageControl.setCurrentIndicator(current)
+                    }
                 }
             }
+        } else {
+            gridList.visible()
+            carouselView.gone()
+            commentButton.gone()
+            shopMenuIcon.gone()
+            val layoutManager = GridLayoutManager(
+                    gridList.context,
+                    SPAN_SIZE_FULL,
+                    LinearLayoutManager.VERTICAL,
+                    false
+            )
+            layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return when (feedXCard.products.size) {
+                        1 -> SPAN_SIZE_FULL
+                        2 -> SPAN_SIZE_HALF
+                        else -> SPAN_SIZE_SINGLE
+                    }
+                }
+            }
+            gridList.layoutManager = layoutManager
+            val adapter = GridPostAdapter(0, getGridPostModel(feedXCard, feedXCard.products), gridPostListener)
+            gridList.adapter = adapter
+            setGridListPadding(feedXCard.products.size)
         }
+    }
+
+
+    private fun setGridListPadding(listSize: Int) {
+        if (listSize == 1) {
+            gridList.setPadding(0, 0, 0, 0)
+        } else {
+            gridList.setPadding(
+                    gridList.getDimens(R.dimen.dp_3),
+                    0,
+                    gridList.getDimens(R.dimen.dp_3),
+                    0
+            )
+        }
+    }
+
+    private fun getGridPostModel(feedXCard: FeedXCard, products: List<FeedXProduct>): GridPostViewModel {
+        return GridPostViewModel(
+                getGridItemViewModel(products),
+                "actionText",
+                feedXCard.actionButtonOperationApp,
+                products.size,
+                true,
+                mutableListOf(),
+                feedXCard.id.toInt(),
+                positionInFeed
+        )
+    }
+
+    private fun getGridItemViewModel(products: List<FeedXProduct>): MutableList<GridItemViewModel> {
+        val itemList: MutableList<GridItemViewModel> = ArrayList()
+        products.forEach {
+            itemList.add(GridItemViewModel(it.id, it.name, it.priceFmt, it.priceOriginalFmt, it.appLink, it.coverURL, mutableListOf(), mutableListOf()))
+        }
+        return itemList
     }
 
     private fun bindPublishedAt(publishedAt: String, subTitle: String) {

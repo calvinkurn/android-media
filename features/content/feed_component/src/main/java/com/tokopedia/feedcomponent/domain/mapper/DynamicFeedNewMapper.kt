@@ -12,7 +12,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
@@ -97,52 +96,45 @@ object DynamicFeedNewMapper {
     }
 
     private fun mapCardHighlight(posts: MutableList<Visitable<*>>, feed: FeedXCard) {
-        val contentList: MutableList<HighlightCardViewModel> = mapHighlightContent(feed)
-        //todo
-        if (contentList.isNotEmpty()) {
+        if (feed.products.isNotEmpty()) {
             val dynamicPostUiModel = DynamicPostUiModel(feed.copyPostData())
             posts.add(dynamicPostUiModel)
-//            posts.add(HighlightViewModel(
-//                    feed.id,
-//                    Title(text = feed.title),
-//                    contentList
-//            ))
         }
     }
-
-    private fun mapHighlightContent(cardHighlight: FeedXCard): MutableList<HighlightCardViewModel> {
-        val list: MutableList<HighlightCardViewModel> = ArrayList()
-        for (item in cardHighlight.products) {
-            list.add(HighlightCardViewModel(
-                        item.id.toIntOrZero(),
-                        0,
-                        item.coverURL,
-                        item.appLink,
-                        "",
-                        header = getHeader(cardHighlight),
-                        footer = getFooter(cardHighlight)
-                ))
-            }
-        return list
-    }
-
-    private fun getFooter(feedXCard: FeedXCard): Footer {
-        return Footer(like = Like(fmt = feedXCard.like.label, value = feedXCard.like.count, isChecked = feedXCard.like.isLiked),
-                comment = Comment(feedXCard.comments.label, feedXCard.comments.count),
-                share = Share(description = feedXCard.share.label, url = feedXCard.share.operation))
-        //need to confirm for share and button cta
-    }
-
-    private fun getHeader(feedXCard: FeedXCard): Header {
-        return Header(avatar = feedXCard.author.logoURL, avatarApplink = feedXCard.author.appLink,
-                avatarBadgeImage = feedXCard.author.badgeURL, avatarTitle = feedXCard.author.name,
-                avatarDescription = feedXCard.author.description, avatarWeblink = feedXCard.author.webLink,
-                followCta = FollowCta(authorID = feedXCard.author.id, isFollow = feedXCard.followers.isFollowed,
-                        authorType = if (feedXCard.author.type == 1) {
-                            FollowCta.AUTHOR_USER
-                        } else {
-                            FollowCta.AUTHOR_SHOP
-                        }))
-    }
-
 }
+
+private fun mapHighlightContent(cardHighlight: FeedXCard): MutableList<HighlightCardViewModel> {
+    val list: MutableList<HighlightCardViewModel> = ArrayList()
+    for (item in cardHighlight.products) {
+        list.add(HighlightCardViewModel(
+                item.id.toIntOrZero(),
+                0,
+                item.coverURL,
+                item.appLink,
+                "",
+                header = getHeader(cardHighlight),
+                footer = getFooter(cardHighlight)
+        ))
+    }
+    return list
+}
+
+private fun getFooter(feedXCard: FeedXCard): Footer {
+    return Footer(like = Like(fmt = feedXCard.like.label, value = feedXCard.like.count, isChecked = feedXCard.like.isLiked),
+            comment = Comment(feedXCard.comments.label, feedXCard.comments.count),
+            share = Share(description = feedXCard.share.label, url = feedXCard.share.operation))
+    //need to confirm for share and button cta
+}
+
+private fun getHeader(feedXCard: FeedXCard): Header {
+    return Header(avatar = feedXCard.author.logoURL, avatarApplink = feedXCard.author.appLink,
+            avatarBadgeImage = feedXCard.author.badgeURL, avatarTitle = feedXCard.author.name,
+            avatarDescription = feedXCard.author.description, avatarWeblink = feedXCard.author.webLink,
+            followCta = FollowCta(authorID = feedXCard.author.id, isFollow = feedXCard.followers.isFollowed,
+                    authorType = if (feedXCard.author.type == 1) {
+                        FollowCta.AUTHOR_USER
+                    } else {
+                        FollowCta.AUTHOR_SHOP
+                    }))
+}
+

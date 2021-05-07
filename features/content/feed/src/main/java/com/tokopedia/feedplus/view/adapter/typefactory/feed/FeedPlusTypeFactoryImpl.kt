@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.view.adapter.typefactory.feed
 
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -133,7 +134,7 @@ class FeedPlusTypeFactoryImpl(
     }
 
     override fun type(highlightViewModel: HighlightViewModel): Int {
-        return DynamicPostNewViewHolder.LAYOUT
+        return HighlightViewHolder.LAYOUT
     }
 
     override fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int {
@@ -160,50 +161,61 @@ class FeedPlusTypeFactoryImpl(
 
         val viewHolder: AbstractViewHolder<*>
 
-        if (type == EmptyFeedViewHolder.LAYOUT)
-            viewHolder = EmptyFeedViewHolder(view, emptyFeedViewHolderListener)
-        else if (type == RetryViewHolder.LAYOUT)
-            viewHolder = RetryViewHolder(view, retryViewHolderListener)
-        else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)
-            viewHolder = EmptyFeedBeforeLoginViewHolder(view, emptyFeedBeforeLoginListener)
-        else if (type == DynamicPostViewHolder.LAYOUT) {
-            viewHolder = DynamicPostViewHolder(
-                    view,
-                    dynamicPostListener,
-                    cardTitleListener,
-                    imagePostListener,
-                    youtubePostListener,
-                    pollOptionListener,
-                    gridItemListener,
-                    videoViewListener,
-                    feedMultipleImageViewListener,
-                    userSession
-            )
-        } else if (type == FeedRecommendationViewHolder.LAYOUT) {
-            viewHolder = FeedRecommendationViewHolder(view, recommendationCardListener, cardTitleListener)
-        } else if (type == BannerViewHolder.LAYOUT) {
-            viewHolder = BannerViewHolder(view, bannerListener, cardTitleListener)
-        } else if (type == TopadsShopViewHolder.LAYOUT) {
-            viewHolder = TopadsShopViewHolder(view, topadsShopListener, cardTitleListener)
-        } else if (type == TopAdsHeadlineViewHolder.LAYOUT) {
-            viewHolder = TopAdsHeadlineViewHolder(view, userSession, topAdsHeadlineListener)
-        } else if (type == OnboardingViewHolder.LAYOUT) {
-            viewHolder = OnboardingViewHolder(view, userSession, interestPickItemListener)
-        } else if (type == TopAdsBannerViewHolder.LAYOUT) {
-            viewHolder = TopAdsBannerViewHolder(view, topAdsBannerListener, cardTitleListener)
-        } else if (type == CarouselPlayCardViewHolder.LAYOUT) {
-            viewHolder = CarouselPlayCardViewHolder(
-                    PlayWidgetViewHolder(
-                            itemView = view,
-                            coordinator = playWidgetCoordinator
-                    )
-            )
-        } else if (type == ShimmerViewHolder.LAYOUT) {
-            viewHolder = ShimmerViewHolder(view)
-        } else if (type == DynamicPostNewViewHolder.LAYOUT || type == HighlightViewHolder.LAYOUT) {
-            viewHolder = DynamicPostNewViewHolder(view, userSession, dynamicPostListener)
-        } else
-            viewHolder = super.createViewHolder(view, type)
+        when (type) {
+            EmptyFeedViewHolder.LAYOUT -> viewHolder = EmptyFeedViewHolder(view, emptyFeedViewHolderListener)
+            RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, retryViewHolderListener)
+            EmptyFeedBeforeLoginViewHolder.LAYOUT -> viewHolder = EmptyFeedBeforeLoginViewHolder(view, emptyFeedBeforeLoginListener)
+            DynamicPostViewHolder.LAYOUT -> {
+                viewHolder = DynamicPostViewHolder(
+                        view,
+                        dynamicPostListener,
+                        cardTitleListener,
+                        imagePostListener,
+                        youtubePostListener,
+                        pollOptionListener,
+                        gridItemListener,
+                        videoViewListener,
+                        feedMultipleImageViewListener,
+                        userSession
+                )
+            }
+            FeedRecommendationViewHolder.LAYOUT -> {
+                viewHolder = FeedRecommendationViewHolder(view, recommendationCardListener, cardTitleListener)
+            }
+            BannerViewHolder.LAYOUT -> {
+                viewHolder = BannerViewHolder(view, bannerListener, cardTitleListener)
+            }
+            TopadsShopViewHolder.LAYOUT -> {
+                viewHolder = TopadsShopViewHolder(view, topadsShopListener, cardTitleListener)
+            }
+            TopAdsHeadlineViewHolder.LAYOUT -> {
+                viewHolder = TopAdsHeadlineViewHolder(view, userSession, topAdsHeadlineListener)
+            }
+            OnboardingViewHolder.LAYOUT -> {
+                viewHolder = OnboardingViewHolder(view, userSession, interestPickItemListener)
+            }
+            TopAdsBannerViewHolder.LAYOUT -> {
+                viewHolder = TopAdsBannerViewHolder(view, topAdsBannerListener, cardTitleListener)
+            }
+            CarouselPlayCardViewHolder.LAYOUT -> {
+                viewHolder = CarouselPlayCardViewHolder(
+                        PlayWidgetViewHolder(
+                                itemView = view,
+                                coordinator = playWidgetCoordinator
+                        )
+                )
+            }
+            ShimmerViewHolder.LAYOUT -> {
+                viewHolder = ShimmerViewHolder(view)
+            }
+            DynamicPostNewViewHolder.LAYOUT -> {
+                viewHolder = DynamicPostNewViewHolder(view, userSession, dynamicPostListener,gridItemListener)
+            }
+            HighlightViewHolder.LAYOUT -> {
+                viewHolder = HighlightViewHolder(view, highlightListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
+            }
+            else -> viewHolder = super.createViewHolder(view, type)
+        }
         return viewHolder
     }
 }

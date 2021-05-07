@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RestrictTo
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -382,7 +383,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     is Fail -> {
                         val message = it.throwable.localizedMessage
                         view?.run {
-                            Toaster.make(this, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                            Toaster.build(this, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
                         }
                     }
                 }
@@ -517,6 +518,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     is Success -> {
                         if (!it.data.isAutoRefresh) playWidgetImpressionValidator.invalidate()
                         adapter.updatePlayWidget(it.data)
+                    }
+                }
+            })
+
+            reportResponse.observe(lifecycleOwner, Observer {
+                when(it){
+                    is Fail -> {
+                        val message = it.throwable.localizedMessage
+                        view?.run {
+                            Toaster.build(this, message
+                                    ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                        }
+                    }
+                    is Success -> {
+                        onSuccessDeletePost(it.data.rowNumber)
                     }
                 }
             })
@@ -694,7 +710,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 val serverErrorMsg = data.getStringExtra(COMMENT_ARGS_SERVER_ERROR_MSG)
                 if (!TextUtils.isEmpty(serverErrorMsg)) {
                     view?.let {
-                        Toaster.make(it, serverErrorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.cta_refresh_feed), View.OnClickListener { onRefresh() })
+                        Toaster.build(it, serverErrorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.cta_refresh_feed), View.OnClickListener { onRefresh() })
                     }
                 } else {
                     onSuccessAddDeleteKolComment(
@@ -1047,13 +1063,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onSuccessReportContent() {
         view?.let {
-            Toaster.make(it, getString(R.string.feed_content_reported), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.label_close))
+            Toaster.build(it, getString(R.string.feed_content_reported), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.label_close))
         }
     }
 
     private fun onErrorReportContent(errorMsg: String) {
         view?.let {
-            Toaster.make(it, errorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.label_close))
+            Toaster.build(it, errorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.label_close))
         }
     }
 
@@ -1247,42 +1263,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (context != null) {
             feedAnalytics.evenClickMenu(postId.toString())
             val sheet = MenuOptionsBottomSheet.newInstance("Follow", false)
-            sheet.show(childFragmentManager,"")
-            sheet.onReport ={
+            sheet.show((context as FragmentActivity).supportFragmentManager, "")
+            sheet.onReport = {
                 if (userSession.isLoggedIn) {
                     context?.let {
-                        ReportBottomSheet.newInstance(postId,context = object : ReportBottomSheet.OnReportOptionsClick {
+                        ReportBottomSheet.newInstance(postId, context = object : ReportBottomSheet.OnReportOptionsClick {
                             override fun onOption1(reasonType: String, reasonDesc: String) {
+                                feedViewModel.sendReport(positionInFeed ,postId,reasonType,reasonDesc,"post")
                             }
-                        })
-                        goToContentReport(postId)
+                        }).show((context as FragmentActivity).supportFragmentManager, "")
                     }
-                } else {
-                    onGoToLogin()
-                }
             }
-            sheet.onDeleteorFollow  ={
+            sheet.onDeleteorFollow = {
                 onFollowKolClicked(positionInFeed,postId)
+            } }
 
-            }
-//            val menus = createBottomMenu(requireContext(), deletable, reportable, false, object : PostMenuListener {
-//                override fun onDeleteClicked() {
-//                    createDeleteDialog(positionInFeed, postId).show()
-//                }
-//
-//                override fun onReportClick() {
-//                    if (userSession.isLoggedIn) {
-//                        goToContentReport(postId)
-//                    } else {
-//                        onGoToLogin()
-//                    }
-//                }
-//
-//                override fun onEditClick() {
-//
-//                }
-//            })
-//            menus.show()
         }
     }
 
@@ -1592,7 +1587,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onErrorSubmitInterestPickData(throwable: Throwable) {
         view?.let {
-            Toaster.make(it,
+            Toaster.build(it,
                     ErrorHandler.getErrorMessage(activity, throwable),
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
@@ -1694,7 +1689,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onErrorFollowUnfollowKol(data: FollowKolViewModel) {
         view?.let {
-            Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+            Toaster.build(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 if (data.status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
                     feedViewModel.doUnfollowKol(data.id, data.rowNumber)
                 else
@@ -1759,7 +1754,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onErrorLikeDislikeKolPost(errorMessage: String) {
         view?.let {
-            Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
@@ -1776,7 +1771,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         newList.removeAt(rowNumber)
         adapter.updateList(newList)
         view?.let {
-            Toaster.make(it, getString(R.string.feed_post_deleted), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.affiliatecommon.R.string.af_title_ok), View.OnClickListener {
+            Toaster.build(it, getString(R.string.feed_post_deleted), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.affiliatecommon.R.string.af_title_ok), View.OnClickListener {
                 Toaster.snackBar.dismiss()
             })
         }
@@ -1788,7 +1783,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onErrorDeletePost(data: DeletePostViewModel) {
         view?.let {
-            Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+            Toaster.build(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 feedViewModel.doDeletePost(data.id, data.rowNumber)
             })
         }
@@ -1834,7 +1829,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onErrorToggleFavoriteShop(data: FavoriteShopViewModel) {
         adapter.notifyItemChanged(data.rowNumber, data.adapterPosition)
         view?.let {
-            Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+            Toaster.build(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 feedViewModel.doToggleFavoriteShop(data.rowNumber, data.adapterPosition, data.shopId)
             })
         }
@@ -1965,24 +1960,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
         return (adapter.getlist().isNotEmpty() && adapter.getlist().size > 1 && adapter.getlist()[0] !is EmptyModel)
     }
 
-
-    private fun goToContentReport(contentId: Int) {
-        if (context != null) {
-            val intent = RouteManager.getIntent(
-                    requireContext(),
-                    ApplinkConstInternalContent.CONTENT_REPORT,
-                    contentId.toString()
-            )
-            startActivityForResult(intent, OPEN_CONTENT_REPORT)
-        }
-    }
-
     private fun goToProductDetail(productId: String) {
         if (activity != null) {
             requireActivity().startActivity(getProductIntent(productId))
         }
     }
-
 
     private fun getProductIntent(productId: String): Intent? {
         return if (context != null) {

@@ -43,7 +43,7 @@ class ProductPostTagViewHolderNew(val mainView: View,
     private lateinit var rating: Typography
     private lateinit var label: Label
     private lateinit var soldInfo: Typography
-    private lateinit var freeShipping:ImageUnify
+    private lateinit var freeShipping: ImageUnify
 
     override fun bind(item: ProductPostTagViewModelNew) {
         productLayout = itemView.findViewById(R.id.productLayout)
@@ -61,7 +61,7 @@ class ProductPostTagViewHolderNew(val mainView: View,
         productLayout.setOnClickListener(
                 getItemClickNavigationListener(listener, item.positionInFeed, item.product, adapterPosition)
         )
-        if(item.isDiscount) {
+        if (item.isDiscount) {
             label.visible()
             productTag.visible()
             productTag.apply {
@@ -69,14 +69,14 @@ class ProductPostTagViewHolderNew(val mainView: View,
                 text = item.originalPriceFmt
             }
             label.text = item.discountFmt
-        }else{
+        } else {
             label.gone()
             productTag.gone()
         }
-        if(item.isFreeShipping){
+        if (item.isFreeShipping) {
             freeShipping.visible()
             freeShipping.loadImage(item.freeShippingURL)
-        }else{
+        } else {
             freeShipping.gone()
         }
         productImage.loadImage(item.imgUrl)
@@ -84,8 +84,8 @@ class ProductPostTagViewHolderNew(val mainView: View,
         productNameSection.setOnClickListener(
                 getItemClickNavigationListener(listener, item.positionInFeed, item.product, adapterPosition))
         rating.text = item.rating.toString()
-        soldInfo.text = item.totalSold.toString()
-
+        val soldInfoText = getString(R.string.feed_common_terjual) + item.totalSold.toString()
+        soldInfo.text = soldInfoText
     }
 
     private fun renderTag(textView: TextView, tag: TagsItem) {

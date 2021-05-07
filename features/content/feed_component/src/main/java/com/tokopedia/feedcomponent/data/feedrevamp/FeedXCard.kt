@@ -66,7 +66,7 @@ data class FeedXCard(
         var hashtagWebLinkFmt: String = "",
 ) {
     fun copyPostData(): FeedXCard {
-        return FeedXCard(id = id, author = author, title = title, subTitle = subTitle, text = text,
+        return FeedXCard(typename = typename, id = id, author = author, title = title, products = products, subTitle = subTitle, text = text,
                 appLink = appLink, webLink = webLink, actionButtonLabel = actionButtonLabel,
                 actionButtonOperationApp = actionButtonOperationApp, actionButtonOperationWeb = actionButtonOperationWeb,
                 media = media, tags = tags, hashtagAppLinkFmt = hashtagAppLinkFmt, hashtagWebLinkFmt = hashtagWebLinkFmt,
