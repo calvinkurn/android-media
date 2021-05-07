@@ -5,17 +5,38 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.pms.common.Constant;
 import com.tokopedia.pms.payment.view.fragment.PaymentListFragment;
+import com.tokopedia.config.GlobalConfig;
 
 public class PaymentListActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
         return PaymentListFragment.createInstance();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setSecureWindowFlag();
+    }
+
+    private void setSecureWindowFlag() {
+        if(GlobalConfig.APPLICATION_TYPE==GlobalConfig.CONSUMER_APPLICATION||GlobalConfig.APPLICATION_TYPE==GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread(() -> {
+                Window window = getWindow();
+                if (window != null) {
+                    window.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+                }
+            });
+        }
     }
 
     public static Intent createIntent(Activity context) {

@@ -103,6 +103,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?  {
         val viewRoot = inflater.inflate(getLayout(), container, false)
+        viewRoot.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
         promoChipsWidget = viewRoot.findViewById(R.id.flight_promo_chips_view)
         return viewRoot
     }
@@ -771,6 +772,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             when(it){
                 is Success ->{
                     if (!it.data.dataPromoChips.isNullOrEmpty()) {
+                        showPromoChips()
                         promoChipsWidget.renderPromoList(it.data.dataPromoChips[FLIGHT_PROMO_CHIPS_START_DATE].airlinePrices)
                     }else{
                         hidePromoChips()
