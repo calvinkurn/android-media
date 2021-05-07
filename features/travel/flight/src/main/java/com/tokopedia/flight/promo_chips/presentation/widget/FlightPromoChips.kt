@@ -31,7 +31,7 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
         setBackground()
     }
 
-    private fun setBackground(){
+    fun setBackground(){
         recyclerView.setBackgroundResource(R.drawable.bg_flight_promo_chips_container)
     }
 
