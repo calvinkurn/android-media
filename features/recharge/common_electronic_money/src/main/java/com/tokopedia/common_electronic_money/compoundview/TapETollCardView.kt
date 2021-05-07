@@ -64,6 +64,9 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
     }
 
     fun showInitialState() {
+        globalError.hide()
+        textTitle.show()
+        textLabel.show()
         textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
         textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textLabel.text = resources.getString(R.string.emoney_tap_card_instruction_message)
@@ -91,9 +94,14 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         imageviewError.visibility = View.VISIBLE
         buttonTryAgain.visibility = if(isButtonShow) View.VISIBLE else View.GONE
 
-        imageviewError.loadImage(imageUrl){
-            setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
+        if(!imageUrl.isNullOrEmpty()){
+            imageviewError.loadImage(imageUrl){
+                setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
+            }
+        } else {
+            imageviewError.loadImage(resources.getDrawable(R.drawable.emoney_revamp_connection_issue))
         }
+
 
         buttonTryAgain.setOnClickListener {
             showInitialState()
@@ -123,9 +131,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         globalError.apply {
             errorTitle.text = errorMessageTitle
             errorDescription.text = errorMessageLabel
-            errorIllustration.loadImage(imageUrl){
-                setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
-            }
+            errorIllustration.loadImage(resources.getDrawable(R.drawable.emoney_revamp_connection_issue))
 
             setActionClickListener {
                 showInitialState()

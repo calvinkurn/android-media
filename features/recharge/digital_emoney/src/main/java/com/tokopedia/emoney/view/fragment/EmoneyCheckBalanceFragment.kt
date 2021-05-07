@@ -109,8 +109,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                         0)
             } else {
                 showError(NfcCardErrorTypeDef.FAILED_READ_CARD,
-                        resources.getString(R.string.emoney_nfc_check_balance_problem_label),
-                        resources.getString(R.string.emoney_nfc_failed_read_card),
+                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
+                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card),
                         true)
             }
         } else {
@@ -132,14 +132,14 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             context?.let {
                 val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
                 if(errorMessage.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
-                    showError(resources.getString(R.string.emoney_nfc_grpc_label_error),
-                            resources.getString(R.string.emoney_nfc_error_title),
-                            resources.getString(R.string.emoney_nfc_connection_issue),
+                    showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error),
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
+                            "",
                             true)
                 } else {
                     showError(errorMessage,
                             resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
-                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_connection_issue),
+                            "",
                             true, true)
                 }
             }
@@ -147,8 +147,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         })
 
         emoneyBalanceViewModel.errorCardMessage.observe(this, Observer {
-            showError(it, resources.getString(R.string.emoney_nfc_check_balance_problem_label),
-                    resources.getString(R.string.emoney_nfc_failed_read_card),
+            showError(it, resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
+                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card),
                     true
             )
         })

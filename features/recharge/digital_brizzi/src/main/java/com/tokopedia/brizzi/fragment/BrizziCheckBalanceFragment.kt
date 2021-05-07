@@ -25,6 +25,7 @@ import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDet
 import com.tokopedia.common_electronic_money.di.NfcCheckBalanceInstance
 import com.tokopedia.common_electronic_money.fragment.NfcCheckBalanceFragment
 import com.tokopedia.common_electronic_money.util.CardUtils
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import id.co.bri.sdk.Brizzi
 import javax.inject.Inject
@@ -146,6 +147,23 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
                         resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card),
                         true)
             })
+
+            brizziBalanceViewModel.errorCommonBrizzi.observeForever { throwable ->
+                context?.let {
+                    val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
+                    if(errorMessage.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
+                        showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error),
+                                resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
+                                "",
+                                true)
+                    } else {
+                        showError(errorMessage,
+                                resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
+                                "",
+                                true, true)
+                    }
+                }
+            }
 
             brizziBalanceViewModel.cardIsNotBrizzi.observe(this, Observer {
                 emoneyAnalytics.onErrorReadingCard()

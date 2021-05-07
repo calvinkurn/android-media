@@ -40,6 +40,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
     val tokenNeedRefresh = com.tokopedia.common_electronic_money.util.SingleLiveEvent<Boolean>()
     val cardIsNotBrizzi = com.tokopedia.common_electronic_money.util.SingleLiveEvent<Boolean>()
     val errorCardMessage = com.tokopedia.common_electronic_money.util.SingleLiveEvent<String>()
+    val errorCommonBrizzi = com.tokopedia.common_electronic_money.util.SingleLiveEvent<Throwable>()
 
     fun processBrizziTagIntent(intent: Intent, brizziInstance: Brizzi,
                                rawTokenQuery: String, rawLogBrizzi: String, refreshToken: Boolean) {
@@ -92,7 +93,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
             })
         }) {
             ServerLogger.log(Priority.P2, BRIZZI_TAG, mapOf("err" to "ERROR_FAILED_REFRESH_TOKEN"))
-            errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_REFRESH_TOKEN)
+            errorCommonBrizzi.postValue(it)
         }
     }
 
