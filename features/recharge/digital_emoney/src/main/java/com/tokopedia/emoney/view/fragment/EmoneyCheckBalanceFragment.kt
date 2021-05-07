@@ -137,7 +137,10 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                             resources.getString(R.string.emoney_nfc_connection_issue),
                             true)
                 } else {
-                    //todo add global error
+                    showError(errorMessage,
+                            resources.getString(R.string.emoney_nfc_error_title),
+                            resources.getString(R.string.emoney_nfc_connection_issue),
+                            true, true)
                 }
             }
 

@@ -57,8 +57,14 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:text="@string/emoney_nfc_tap_card_button_label_error"
         android:visibility="gone"
-        app:unifyButtonSize="large"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/emoney_global_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
 
 </LinearLayout>

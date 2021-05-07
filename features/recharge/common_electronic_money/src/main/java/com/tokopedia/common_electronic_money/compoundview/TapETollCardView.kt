@@ -6,6 +6,9 @@ import android.view.View
 import android.widget.ImageView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.common_electronic_money.R
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
@@ -24,6 +27,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
     private val lottieAnimationView: LottieAnimationView
     private val buttonTryAgain: UnifyButton
     private val imageviewError: ImageView
+    private val globalError: GlobalError
     private var issuerId: Int = 0
 
     private lateinit var listener: OnTapEtoll
@@ -44,6 +48,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         lottieAnimationView = view.findViewById(R.id.lottie_animation_view)
         buttonTryAgain = view.findViewById(R.id.button_try_again)
         imageviewError = view.findViewById(R.id.imageview_error)
+        globalError = view.findViewById(R.id.emoney_global_error)
     }
 
     fun showLoading() {
@@ -105,6 +110,23 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
             setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
         }
         buttonTryAgain.visibility = View.GONE
+    }
+
+    fun showGlobalError(errorMessageTitle: String, errorMessageLabel: String,
+                        imageUrl:String){
+        textTitle.hide()
+        textLabel.hide()
+        lottieAnimationView.hide()
+        imageviewError.hide()
+        buttonTryAgain.hide()
+        globalError.show()
+        globalError.apply {
+            errorTitle.text = errorMessageTitle
+            errorDescription.text = errorMessageLabel
+            errorIllustration.loadImage(imageUrl){
+                setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
+            }
+        }
     }
 
     interface OnTapEtoll {
