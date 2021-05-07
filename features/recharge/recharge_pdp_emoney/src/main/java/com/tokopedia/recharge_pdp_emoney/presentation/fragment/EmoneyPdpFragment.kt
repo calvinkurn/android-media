@@ -49,6 +49,7 @@ import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewMod
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpBottomCheckoutWidget
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpHeaderViewWidget
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpInputCardNumberWidget
+import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpAnalyticsUtils
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpMapper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -265,6 +266,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         emoneyPdpTab.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.select()
+                trackSelectedTab(tab.position)
                 emoneyPdpViewPager.currentItem = tab.position
             }
 
@@ -278,6 +280,13 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                 tab?.select()
             }
         })
+    }
+
+    private fun trackSelectedTab(tabPosition: Int) {
+        when (tabPosition) {
+            0 -> EmoneyPdpAnalyticsUtils.clickRecentTransactionTab(userSession.userId)
+            1 -> EmoneyPdpAnalyticsUtils.clickPromoTab(userSession.userId)
+        }
     }
 
     private fun renderTicker(tickers: List<TickerData>) {
@@ -380,12 +389,14 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     override fun onClickCheckBalance() {
+        EmoneyPdpAnalyticsUtils.clickCheckSaldoButton(userSession.userId)
         val intent = RouteManager.getIntent(activity,
                 ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC_FROM_PDP, "false")
         startActivityForResult(intent, REQUEST_CODE_EMONEY_PDP_CHECK_SALDO)
     }
 
     override fun onClickCameraIcon() {
+        EmoneyPdpAnalyticsUtils.clickCameraIcon(userSession.userId)
         val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CAMERA_OCR)
         startActivityForResult(intent, REQUEST_CODE_EMONEY_PDP_CAMERA_OCR)
     }
@@ -397,11 +408,13 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     override fun onRemoveNumberIconClick() {
+        EmoneyPdpAnalyticsUtils.clickClearCardNumber(userSession.userId)
         showRecentNumberAndPromo()
     }
 
     override fun onInputNumberChanged(inputNumber: String) {
         // call be to get operator name
+        EmoneyPdpAnalyticsUtils.clickChangeCardNumber(inputNumber, userSession.userId)
         emoneyPdpViewModel.getSelectedOperator(inputNumber, getString(R.string.recharge_pdp_emoney_error_not_found))
     }
 
@@ -473,6 +486,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     override fun onClickSeeDetailProduct(product: CatalogProduct) {
+        EmoneyPdpAnalyticsUtils.clickSeeProductDetail(product.attributes.pricePlain, userSession.userId)
         val bottomSheet = EmoneyProductDetailBottomSheet(product)
         bottomSheet.show(childFragmentManager, "")
     }

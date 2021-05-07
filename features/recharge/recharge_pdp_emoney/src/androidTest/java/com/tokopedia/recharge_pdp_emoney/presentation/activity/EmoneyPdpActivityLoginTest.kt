@@ -9,7 +9,6 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
@@ -21,6 +20,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyPdpProductViewHolder
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpResponseConfig
@@ -57,6 +58,8 @@ class EmoneyPdpActivityLoginTest {
         validateTicker()
         clickRecentNumber()
         clickPromoTabAndSalinPromo()
+        clickScanNfcCard()
+        clickCameraIconOnInputView()
         clickOnFavNumberOnInputView()
         clickProductAndSeeProductDetail()
 
@@ -94,6 +97,29 @@ class EmoneyPdpActivityLoginTest {
         Thread.sleep(2000)
     }
 
+    private fun clickScanNfcCard() {
+        Intents.intending(IntentMatchers.anyIntent())
+                .respondWith(createScanNfcCardPageResponse())
+        Espresso.onView(withId(R.id.emoneyHeaderViewCtaButton)).perform(click())
+        Thread.sleep(2000)
+
+        Espresso.onView(AllOf.allOf(withText("8768567891012344"), withId(R.id.emoneyHeaderViewCardNumber))).check(matches(isDisplayed()))
+        Espresso.onView(AllOf.allOf(withText("Rp 65.000"), withId(R.id.emoneyHeaderViewCardBalance))).check(matches(isDisplayed()))
+        Espresso.onView(withText("8768 5678 9101 2344")).check(matches(isDisplayed()))
+    }
+
+    private fun clickCameraIconOnInputView() {
+        Intents.intending(IntentMatchers.anyIntent())
+                .respondWith(createCameraOcrPageResponse())
+        Espresso.onView(withId(R.id.emoneyPdpCardCameraIcon)).perform(click())
+        Thread.sleep(2000)
+
+        Espresso.onView(withText("1234 5678")).check(matches(isDisplayed()))
+        Espresso.onView(withId(R.id.text_field_icon_2)).check(matches(isDisplayed()))
+        Espresso.onView(withId(R.id.text_field_icon_2)).perform(click())
+        Thread.sleep(1000)
+    }
+
     private fun clickPromoTabAndSalinPromo() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK,
                 null))
@@ -121,21 +147,23 @@ class EmoneyPdpActivityLoginTest {
                 )
         )
         Thread.sleep(2000)
+
+        Espresso.onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
+        Thread.sleep(1000)
     }
 
     private fun clickOnFavNumberOnInputView() {
-        Intents.intending(IntentMatchers.hasComponent(
-                ComponentNameMatchers.hasShortClassName("com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity")))
+        Intents.intending(IntentMatchers.anyIntent())
                 .respondWith(createOrderNumberTypeManual())
         Espresso.onView(withId(R.id.text_field_input)).perform(click())
         Thread.sleep(2000)
 
-        Espresso.onView(withText("12345678910")).check(matches(isDisplayed()))
+        Espresso.onView(withText("8768 5678 9101 2345")).check(matches(isDisplayed()))
         Espresso.onView(withId(R.id.text_field_icon_2)).check(matches(isDisplayed()))
         Espresso.onView(withId(R.id.text_field_icon_2)).perform(click())
         Thread.sleep(1000)
 
-        Espresso.onView(withId(R.id.emoneyPdpPromoListWidget)).check(matches(isDisplayed()))
+        Espresso.onView(withId(R.id.emoneyRecentNumberList)).check(matches(isDisplayed()))
         Thread.sleep(1000)
 
         Espresso.onView(withId(R.id.text_field_input)).perform(click())
@@ -143,13 +171,34 @@ class EmoneyPdpActivityLoginTest {
     }
 
     private fun createOrderNumberTypeManual(): Instrumentation.ActivityResult {
-        val orderClientNumber = TopupBillsFavNumberItem(clientNumber = "12345678910")
+        val orderClientNumber = TopupBillsFavNumberItem(clientNumber = "8768567891012345")
         val resultData = Intent()
         resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
         resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
                 TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE)
         return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
     }
+
+    private fun createCameraOcrPageResponse(): Instrumentation.ActivityResult {
+        val cardNumber = "12345678"
+        val resultData = Intent()
+        resultData.putExtra(DigitalExtraParam.EXTRA_NUMBER_FROM_CAMERA_OCR, cardNumber)
+        return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
+    }
+
+    private fun createScanNfcCardPageResponse(): Instrumentation.ActivityResult {
+        val cardDetail = DigitalCategoryDetailPassData.Builder()
+                .clientNumber("8768567891012344")
+                .productId("11")
+                .operatorId("100")
+                .categoryId("12")
+                .additionalETollLastBalance("Rp 65.000").build()
+
+        val resultData = Intent()
+        resultData.putExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, cardDetail)
+        return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
+    }
+
 
     private fun clickProductAndSeeProductDetail() {
         Espresso.onView(withId(R.id.emoneyBuyWidget)).check(matches(not(isDisplayed())))
@@ -163,8 +212,8 @@ class EmoneyPdpActivityLoginTest {
         )
         Thread.sleep(1000)
         Espresso.onView(withId(R.id.emoneyBuyWidget)).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.txt_recharge_checkout_price)).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.txt_recharge_checkout_price)).check(matches(withText("Rp10.000")))
+        Espresso.onView(withId(R.id.emoneyPdpCheckoutViewTotalPayment)).check(matches(isDisplayed()))
+        Espresso.onView(withId(R.id.emoneyPdpCheckoutViewTotalPayment)).check(matches(withText("Rp10.000")))
 
         Espresso.onView(withId(R.id.emoneyProductListRecyclerView)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<EmoneyPdpProductViewHolder>(0,
