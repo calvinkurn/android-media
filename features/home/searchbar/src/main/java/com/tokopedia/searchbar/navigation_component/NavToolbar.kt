@@ -18,6 +18,8 @@ import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -103,32 +105,40 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: NavigationViewModel? by lazy {
-        //TODO : REMOTE CONFIG HERE
         context?.let {
-            val component = DaggerNavigationComponent.builder()
-                    .navigationModule(NavigationModule(it.applicationContext))
-                    .build()
-            component.inject(this)
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            val enableNotif = remoteConfig.getBoolean(RemoteConfigKey.NAVIGATION_ENABLE_NOTIF, true)
+            if (enableNotif) {
+                initializeViewModel(it)
+            } else {
+                null
+            }
+        }
+    }
 
-            when (it) {
-                is AppCompatActivity -> {
-                    val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-                    viewModelProvider[NavigationViewModel::class.java]
-                }
-                is ContextThemeWrapper -> {
-                    val activity = it.getActivityFromContext()
-                    activity?.let {
-                        if (activity is AppCompatActivity) {
-                            val viewModelProvider = ViewModelProviders.of(activity, viewModelFactory)
-                            viewModelProvider[NavigationViewModel::class.java]
-                        } else {
-                            null
-                        }
+    private fun initializeViewModel(it: Context): Nothing? {
+        val component = DaggerNavigationComponent.builder()
+                .navigationModule(NavigationModule(it.applicationContext))
+                .build()
+        component.inject(this)
+        return when (it) {
+            is AppCompatActivity -> {
+                val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+                viewModelProvider[NavigationViewModel::class.java]
+            }
+            is ContextThemeWrapper -> {
+                val activity = it.getActivityFromContext()
+                activity?.let {
+                    if (activity is AppCompatActivity) {
+                        val viewModelProvider = ViewModelProviders.of(activity, viewModelFactory)
+                        viewModelProvider[NavigationViewModel::class.java]
+                    } else {
+                        null
                     }
                 }
-                else -> {
-                    null
-                }
+            }
+            else -> {
+                null
             }
         }
     }
