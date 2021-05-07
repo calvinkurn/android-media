@@ -459,9 +459,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     private fun applyStatusBarPadding() {
         var pT = 0
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            pT = ViewHelper.getStatusBarHeight(context)
-        }
+        pT = ViewHelper.getStatusBarHeight(context)
         navToolbar?.updatePadding(top = pT)
     }
 
