@@ -1289,13 +1289,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun showDialogConfirmToAbortUpload() {
-        context?.run {
-            topChatRoomDialog.createAbortUploadImage(
-                    this, alertDialog,
-                    View.OnClickListener {
-                        finishActivity()
-                    }
-            ).show()
+        context?.let {
+            topChatRoomDialog.createAbortUploadImage(it) {
+                finishActivity()
+            }.show()
         }
     }
 
