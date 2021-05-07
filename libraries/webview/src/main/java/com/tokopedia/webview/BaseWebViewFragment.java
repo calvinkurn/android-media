@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
@@ -667,6 +668,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     protected boolean shouldOverrideUrlLoading(@Nullable WebView webview, @NonNull String url) {
         if (getActivity() == null) {
+            return false;
+        }
+        if ("".equals(url)) {
             return false;
         }
         Uri uri = Uri.parse(url);

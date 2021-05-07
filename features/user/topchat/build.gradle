@@ -82,6 +82,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.maps
@@ -109,9 +110,6 @@ dependencies {
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
-    androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
-    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
-    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib

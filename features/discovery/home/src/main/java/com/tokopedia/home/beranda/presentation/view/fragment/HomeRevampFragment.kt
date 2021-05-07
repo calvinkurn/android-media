@@ -82,10 +82,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderOvoViewHolder
@@ -97,14 +97,13 @@ import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerVie
 import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
-import com.tokopedia.home.util.createProductCardOptionsModel
 import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
+import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
@@ -140,6 +139,12 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_EXP
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_OLD
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_VARIANT
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_LEGO4BANNER_EXP
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_LEGO4BANNER_OLD
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_LEGO4BANNER_VARIANT
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION
@@ -173,7 +178,6 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
-import kotlinx.android.synthetic.main.fragment_home_revamp.*
 import kotlinx.android.synthetic.main.home_header_ovo.view.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
 import rx.Observable
@@ -344,7 +348,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun isNavRevamp(): Boolean {
         return try {
-            getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_REVAMP
+            return (context as? MainParentStateListener)?.isNavigationRevamp?:false
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -414,8 +418,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     fun callSubordinateTasks() {
         injectCouponTimeBased()
-        setGeolocationPermission()
-        needToShowGeolocationComponent()
     }
 
 
@@ -537,6 +539,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView?.setHasFixedSize(true)
         homeRecyclerView?.itemAnimator?.moveDuration = 150
         initInboxAbTest()
+        HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         navAbTestCondition(
                 ifNavOld = {
                     oldToolbar?.setAfterInflationCallable(afterInflationCallable)
@@ -1207,10 +1210,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else {
                 val dataMap = data as Map<*, *>
                 sendEETracking(RecommendationListTracking.getAddToCartOnDynamicListCarousel(
-                        (dataMap[HomeViewModel.CHANNEL] as DynamicHomeChannel.Channels?)!!,
-                        (dataMap[HomeViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
-                        dataMap[HomeViewModel.POSITION] as Int,
-                        (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        (dataMap[HomeRevampViewModel.CHANNEL] as DynamicHomeChannel.Channels?)!!,
+                        (dataMap[HomeRevampViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
+                        dataMap[HomeRevampViewModel.POSITION] as Int,
+                        (dataMap[HomeRevampViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
                         "0",
                         viewModel.get().getUserId()
                 ) as HashMap<String, Any>)
@@ -1225,10 +1228,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else {
                 val dataMap = data as Map<*, *>
                 sendEETracking(RecommendationListTracking.getAddToCartOnDynamicListCarouselHomeComponent(
-                        (dataMap[HomeViewModel.CHANNEL] as ChannelModel),
-                        (dataMap[HomeViewModel.GRID] as ChannelGrid),
-                        dataMap[HomeViewModel.POSITION] as Int,
-                        (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        (dataMap[HomeRevampViewModel.CHANNEL] as ChannelModel),
+                        (dataMap[HomeRevampViewModel.GRID] as ChannelGrid),
+                        dataMap[HomeRevampViewModel.POSITION] as Int,
+                        (dataMap[HomeRevampViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
                         "0",
                         getHomeViewModel().getUserId()
                 ) as HashMap<String, Any>)
@@ -1822,63 +1825,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_NEW_BALANCE_WIDGET, true)
     }
 
-    private fun needToShowGeolocationComponent() {
-        val firebaseShowGeolocationComponent = getRemoteConfig().getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT, true)
-        if (!firebaseShowGeolocationComponent) {
-            getHomeViewModel().setNeedToShowGeolocationComponent(false)
-            return
-        }
-        var needToShowGeolocationComponent = true
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity?.let {
-                val userHasDeniedPermissionBefore = ActivityCompat
-                        .shouldShowRequestPermissionRationale(it,
-                                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)
-                if (userHasDeniedPermissionBefore) {
-                    getHomeViewModel().setNeedToShowGeolocationComponent(false)
-                    return
-                }
-            }
-        }
-        if (activity != null) {
-            if (getHomeViewModel().hasGeolocationPermission()) {
-                needToShowGeolocationComponent = false
-            }
-        }
-        if (needToShowGeolocationComponent && HIDE_GEO) {
-            getHomeViewModel().setNeedToShowGeolocationComponent(false)
-            return
-        }
-        getHomeViewModel().setNeedToShowGeolocationComponent(needToShowGeolocationComponent)
-    }
-
-    private fun setGeolocationPermission() {
-        if (activity == null) getHomeViewModel().setGeolocationPermission(false)
-        else getHomeViewModel().setGeolocationPermission(permissionCheckerHelper.get().hasPermission(
-                requireActivity(),
-                arrayOf(PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)))
-    }
-
-    private fun promptGeolocationPermission() {
-        permissionCheckerHelper.get().checkPermission(this,
-                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
-                object : PermissionCheckerHelper.PermissionCheckListener {
-                    override fun onPermissionDenied(permissionText: String) {
-                        HomePageTracking.eventClickNotAllowGeolocation()
-                        getHomeViewModel().onCloseGeolocation()
-                        showNotAllowedGeolocationSnackbar()
-                    }
-
-                    override fun onNeverAskAgain(permissionText: String) {}
-                    override fun onPermissionGranted() {
-                        HomePageTracking.eventClickAllowGeolocation()
-                        detectAndSendLocation()
-                        getHomeViewModel().onCloseGeolocation()
-                        showAllowedGeolocationSnackbar()
-                    }
-                }, "")
-    }
-
     private fun detectAndSendLocation() {
         activity?.let {
             Observable.just(true).map { aBoolean: Boolean? ->
@@ -1897,7 +1843,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun onGetLocation(): Function1<DeviceLocation, Unit> {
         return { (latitude, longitude) ->
             saveLocation(activity, latitude, longitude)
-            getHomeViewModel().sendGeolocationData()
         }
     }
 
@@ -2285,16 +2230,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels) {
         getHomeViewModel().getPopularKeywordData()
-        PopularKeywordTracking.sendPopularKeywordClickReload(channel)
+        PopularKeywordTracking.sendPopularKeywordClickReload(channel, getUserSession().userId)
     }
 
-    override fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) {
-        getTrackingQueueObj()?.putEETracking(PopularKeywordTracking.getPopularKeywordImpressionItem(channel, position, keyword, positionInWidget) as HashMap<String, Any>)
+    override fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, popularKeywordDataModel: PopularKeywordDataModel, positionInWidget: Int) {
+        getTrackingQueueObj()?.putEETracking(PopularKeywordTracking.getPopularKeywordImpressionItem(channel, position, popularKeywordDataModel, positionInWidget, getUserSession().userId) as HashMap<String, Any>)
     }
 
-    override fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) {
+    override fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, popularKeywordDataModel: PopularKeywordDataModel, positionInWidget: Int) {
         RouteManager.route(context, applink)
-        PopularKeywordTracking.sendPopularKeywordClickItem(channel, position, keyword, positionInWidget)
+        PopularKeywordTracking.sendPopularKeywordClickItem(channel, position, popularKeywordDataModel, positionInWidget, getUserSession().userId)
     }
 
     override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
@@ -2493,15 +2438,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         })
     }
 
-    override fun launchPermissionChecker() {
-        promptGeolocationPermission()
-    }
-
-    override fun onCloseGeolocationView() {
-        HIDE_GEO = true
-        getHomeViewModel().onCloseGeolocation()
-    }
-
     private fun getSnackBar(text: String, duration: Int): Snackbar {
         if (homeSnackbar != null) {
             homeSnackbar?.dismiss()
@@ -2672,12 +2608,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
                     HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(RecommendationListTracking.getRecommendationListImpression(channel, true, viewModel.get().getUserId(), position) as HashMap<String, Any>)
-            DynamicChannelViewHolder.TYPE_CATEGORY_WIDGET -> putEEToIris(CategoryWidgetTracking.getCategoryWidgetBannerImpression(
-                    channel.grids.toList(),
-                    getHomeViewModel().getUserId(),
-                    true,
-                    channel
-            ) as HashMap<String, Any>)
         }
     }
 
@@ -2842,5 +2772,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 saveStateReset(false)
             }
         }).show()
+    }
+
+    private fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {
+        val productCardOptionsModel = ProductCardOptionsModel()
+        productCardOptionsModel.hasWishlist = true
+        productCardOptionsModel.isWishlisted = isWishlist
+        productCardOptionsModel.productId = productId.toString()
+        productCardOptionsModel.isTopAds = isTopAds
+        productCardOptionsModel.topAdsWishlistUrl = wishlistUrl
+        productCardOptionsModel.productPosition = position
+        productCardOptionsModel.screenName = header
+        return productCardOptionsModel
     }
 }
