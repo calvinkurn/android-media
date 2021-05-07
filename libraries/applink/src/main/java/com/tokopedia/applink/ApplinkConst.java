@@ -20,6 +20,7 @@ public interface ApplinkConst {
     String FEED_HASHTAG = "tokopedia://feed/hashtag/{hashtag}";
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail";
     String HOME_CATEGORY = "tokopedia://home/category";
+    String HOME_HOT_HOST = "hot";
     String HOME_HOTLIST = "tokopedia://hot";
     String HOST_CATEGORY_P = "p";
     String MESSAGE = "tokopedia://message";
@@ -183,6 +184,7 @@ public interface ApplinkConst {
     String INSURANCE_ORDER = "tokopedia://insurance/order";
     String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
     String HOTEL_ORDER = "tokopedia://hotel/order";
+    String HOTEL_HOST = "hotel";
     String HOTEL = "tokopedia://hotel";
     String HOTEL_SRP = "tokopedia://hotel/result";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
@@ -289,7 +291,8 @@ public interface ApplinkConst {
     String CONTENT_DRAFT_POST = "tokopedia://content/draft/{draft_id}";
     String INTEREST_PICK = "tokopedia://interestpick";
     String KOL_COMMENT = "tokopedia://kolcomment/{id}";
-    String KOL_YOUTUBE = "tokopedia://kolyoutube/{youtube_url}";
+    String KOL_YOUTUBE_HOST_BASE = "kolyoutube";
+    String KOL_YOUTUBE = "tokopedia://" + KOL_YOUTUBE_HOST_BASE+ "/{youtube_url}";
 
     String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
     String AFFILIATE_DRAFT_POST = "tokopedia://affiliate/draft/{draft_id}";
@@ -327,6 +330,7 @@ public interface ApplinkConst {
     String HOME_CREDIT_SELFIE_WITHOUT_TYPE = "tokopedia://fintech/home-credit/selfie";
     String HOME_CREDIT_SELFIE_WITH_TYPE = "tokopedia://fintech/home-credit/selfie/{type}";
     String PAYLATER = "tokopedia://fintech/paylater";
+    String INBOX_HOST = "inbox";
     String INBOX = "tokopedia://inbox";
 
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
