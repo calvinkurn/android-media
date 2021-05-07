@@ -1,19 +1,24 @@
 package com.tokopedia.imagepreview
 
+import android.Manifest
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.request.target.CustomTarget
@@ -77,7 +82,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
 
         findViewById<View>(R.id.ivClose).setOnClickListener { finish() }
         findViewById<View>(R.id.ivDownload).setOnClickListener {
-            actionDownloadAndSavePicture()
+            downloadImageCheckPermission()
         }
 
         adapter?.SetonImageStateChangeListener(object : TouchImageAdapter.OnImageStateChange {
@@ -92,6 +97,27 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
         })
         viewPager.adapter = adapter
         viewPager.currentItem = position
+    }
+
+    private fun downloadImageCheckPermission(){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            ActivityCompat.requestPermissions(this,
+                    permissions, REQUEST_PERMISSIONS)
+        } else {
+            actionDownloadAndSavePicture()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.size == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(this@ImagePreviewActivity, getString(R.string.storage_permission_enabled_needed), Toast.LENGTH_LONG).show()
+            } else {
+                actionDownloadAndSavePicture()
+            }
+        }
     }
 
     private fun openImageDownloaded(uri: Uri) {
