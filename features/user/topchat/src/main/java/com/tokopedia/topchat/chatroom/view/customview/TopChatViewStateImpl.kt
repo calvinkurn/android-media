@@ -20,7 +20,6 @@ import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
-import com.tokopedia.design.component.Menus
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
@@ -41,6 +40,7 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -363,8 +363,8 @@ open class TopChatViewStateImpl constructor(
     }
 
 
-    private fun createRoomMenu(userChatRoom: ChatroomViewModel): MutableList<Menus.ItemMenus> {
-        val listMenu = ArrayList<Menus.ItemMenus>()
+    private fun createRoomMenu(userChatRoom: ChatroomViewModel): MutableList<TopchatItemMenu> {
+        val listMenu = ArrayList<TopchatItemMenu>()
 
         if (userChatRoom.isChattingWithSeller()) {
             val followStatusMenu = createFollowMenu()
@@ -374,12 +374,12 @@ open class TopChatViewStateImpl constructor(
         }
         val blockChatMenu = createBlockChatMenu()
         listMenu.add(blockChatMenu)
-        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_report_user), R.drawable.ic_topchat_report_bold_grey))
-        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.delete_conversation), R.drawable.ic_trash_filled_grey))
+        listMenu.add(TopchatItemMenu(view.context.getString(R.string.chat_report_user), R.drawable.ic_topchat_report_bold_grey))
+        listMenu.add(TopchatItemMenu(view.context.getString(R.string.delete_conversation), R.drawable.ic_trash_filled_grey))
         return listMenu
     }
 
-    private fun createBlockChatMenu(): Menus.ItemMenus {
+    private fun createBlockChatMenu(): TopchatItemMenu {
         val blockChatStatusTitle: String
         @DrawableRes val blockChatStatusDrawable: Int
         if (blockStatus.isBlocked) {
@@ -389,10 +389,10 @@ open class TopChatViewStateImpl constructor(
             blockChatStatusTitle = view.context.getString(R.string.title_block_user_chat)
             blockChatStatusDrawable = R.drawable.ic_topchat_block_user_chat
         }
-        return Menus.ItemMenus(blockChatStatusTitle, blockChatStatusDrawable)
+        return TopchatItemMenu(blockChatStatusTitle, blockChatStatusDrawable)
     }
 
-    private fun createFollowMenu(): Menus.ItemMenus {
+    private fun createFollowMenu(): TopchatItemMenu {
         val followStatusTitle: String
         @DrawableRes val followStatusDrawable: Int
         if (isShopFollowed) {
@@ -402,10 +402,10 @@ open class TopChatViewStateImpl constructor(
             followStatusTitle = view.context.getString(R.string.follow_store)
             followStatusDrawable = R.drawable.ic_topchat_add_bold_grey
         }
-        return Menus.ItemMenus(followStatusTitle, followStatusDrawable)
+        return TopchatItemMenu(followStatusTitle, followStatusDrawable)
     }
 
-    private fun createPromoMenu(): Menus.ItemMenus {
+    private fun createPromoMenu(): TopchatItemMenu {
         val promoStatusTitle: String
         @DrawableRes val promoStatusDrawable: Int
         if (blockStatus.isPromoBlocked) {
@@ -415,11 +415,11 @@ open class TopChatViewStateImpl constructor(
             promoStatusTitle = view.context.getString(R.string.title_block_promo)
             promoStatusDrawable = R.drawable.ic_topchat_block_promo
         }
-        return Menus.ItemMenus(promoStatusTitle, promoStatusDrawable)
+        return TopchatItemMenu(promoStatusTitle, promoStatusDrawable)
     }
 
     private fun handleRoomMenuClick(
-            itemMenus: Menus.ItemMenus,
+            itemMenus: TopchatItemMenu,
             chatroomViewModel: ChatroomViewModel,
             headerMenuListener: HeaderMenuListener
     ) {
