@@ -6,6 +6,7 @@ import android.content.Intent
 import android.view.View
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
@@ -84,6 +85,8 @@ class RechargeGeneralScreenShotTest {
             takeScreenShotVisibleViewInScreen(operatorView, filePrefix(), "operator_select")
         }
 
+        Thread.sleep(3000)
+
         // ss recyclerview product
         screenShotFullRecyclerView(
                 R.id.rv_digital_product,
@@ -123,6 +126,9 @@ class RechargeGeneralScreenShotTest {
                         0, ViewActions.click()
                 )
         )
+        Thread.sleep(2000)
+        closeSoftKeyboard()
+        Thread.sleep(2000)
 
         findViewAndScreenShot(
                 R.id.container_digital_search_number,
