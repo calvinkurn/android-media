@@ -374,10 +374,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Activity activity = getActivity();
-        if (activity != null) {
-            activity.getWindow().getDecorView().setBackgroundColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N50));
-        }
+        setBackground();
         if (savedInstanceState == null || savedShipmentCartItemModelList == null) {
             shipmentPresenter.processInitialLoadCheckoutPage(
                     false, isOneClickShipment(), isTradeIn(), true,
@@ -396,6 +393,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setLastApplyData(savedLastApplyData);
             renderCheckoutPage(true, false, isOneClickShipment());
             swipeToRefresh.setEnabled(false);
+        }
+    }
+
+    private void setBackground() {
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.getWindow().getDecorView().setBackgroundColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N50));
         }
     }
 

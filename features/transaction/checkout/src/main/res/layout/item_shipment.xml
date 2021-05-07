@@ -16,6 +16,7 @@
         layout="@layout/item_shipment_seller_info"
         tools:visibility="visible" />
 
+    <!-- Need to wrap with frame layout since need a feature that only available on frame layout for API below 23 -->
     <FrameLayout
         android:id="@+id/fl_disable_container"
         android:layout_width="match_parent"
@@ -24,7 +25,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            tools:ignore="UselessParent">
 
             <include
                 layout="@layout/item_cart_product"
