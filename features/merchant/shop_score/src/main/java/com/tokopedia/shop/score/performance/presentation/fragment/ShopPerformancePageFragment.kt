@@ -1,5 +1,6 @@
 package com.tokopedia.shop.score.performance.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -224,26 +225,26 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onItemClickedRecommendationFeature(appLink: String, identifier: String) {
         shopScorePenaltyTracking.clickMerchantToolsRecommendation(identifier)
-        if (GlobalConfig.isSellerApp()) {
-            RouteManager.route(context, appLink)
-        } else {
-            if (appLink.startsWith(ApplinkConst.SellerApp.CREATE_VOUCHER)) {
-                val appLinks = ArrayList<String>().apply {
-                    add(ApplinkConstInternalSellerapp.SELLER_HOME)
-                    add(ApplinkConstInternalSellerapp.CREATE_VOUCHER)
-                }
-                goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER, appLinks)
-            } else {
+        context?.let { context ->
+            if (GlobalConfig.isSellerApp()) {
                 RouteManager.route(context, appLink)
+            } else {
+                if (appLink.startsWith(ApplinkConst.SellerApp.CREATE_VOUCHER)) {
+                    val appLinks = ArrayList<String>().apply {
+                        add(ApplinkConstInternalSellerapp.SELLER_HOME)
+                        add(ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+                    }
+                    goToSellerMigrationPage(context = context, appLinks)
+                } else {
+                    RouteManager.route(context, appLink)
+                }
             }
         }
     }
 
-    private fun goToSellerMigrationPage(@SellerMigrationFeatureName featureName: String, appLinks: ArrayList<String>) {
-        context?.run {
-            val intent = SellerMigrationActivity.createIntent(this, featureName, SCREEN_NAME, appLinks)
-            startActivity(intent)
-        }
+    private fun goToSellerMigrationPage(context: Context, appLinks: ArrayList<String>) {
+        val intent = SellerMigrationActivity.createIntent(context, SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER, SCREEN_NAME, appLinks)
+        startActivity(intent)
     }
 
     override fun onItemImpressRecommendationFeature() {
@@ -542,7 +543,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun getHeaderPerformanceView(): View? {
         val itemHeaderPosition = shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }.takeIf {
-            it != RecyclerView.NO_POSITION }
+            it != RecyclerView.NO_POSITION
+        }
         val view = itemHeaderPosition?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
         val headerViewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
         return headerViewHolder?.itemView
@@ -550,7 +552,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun getPeriodDetailPerformanceView(): View? {
         val itemPeriodPosition = shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }.takeIf {
-            it != RecyclerView.NO_POSITION }
+            it != RecyclerView.NO_POSITION
+        }
         val view = itemPeriodPosition?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
         val periodViewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
         return periodViewHolder?.itemView
