@@ -360,6 +360,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 cardListPosition = it.tag as Int
                 rvHorizontalPropertiesHotelSearchMap.smoothScrollToPosition(cardListPosition)
                 changeMarkerState(cardListPosition)
+                putPriceMarkerOnTop(cardListPosition)
                 with(hotelSearchMapViewModel.searchParam) {
                     if (cardListPosition >= 0) {
                         trackingHotelUtil.hotelOnScrollName(
@@ -701,6 +702,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     cardListPosition = getCurrentItemCardList()
                     changeMarkerState(cardListPosition)
+                    putPriceMarkerOnTop(cardListPosition)
                     with(hotelSearchMapViewModel.searchParam) {
                         if (cardListPosition >= 0) {
                             trackingHotelUtil.hotelOnScrollName(
@@ -1387,6 +1389,20 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private fun isHotelListShowingError(): Boolean =
             adapter.list.size > 0 && adapter.list[0] is ErrorNetworkModel
 
+    private fun putPriceMarkerOnTop(position: Int){
+        resetStackPriceMarker()
+        if(!allMarker.isNullOrEmpty() && position != -1){
+            allMarker[position].zIndex = 1.0f
+        }
+    }
+    private fun resetStackPriceMarker(){
+        if(!allMarker.isNullOrEmpty()) {
+            allMarker.forEach {
+                it.zIndex = 0.0f
+            }
+        }
+    }
+
     companion object {
         private const val COACHMARK_MAP_STEP_POSITION = 0
         private const val COACHMARK_LIST_STEP_POSITION = 1
@@ -1421,7 +1437,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         const val BUTTON_RADIUS_SHOW_VALUE: Float = 128f
         const val BUTTON_RADIUS_HIDE_VALUE: Float = -150f
 
-        private const val MAPS_STREET_LEVEL_ZOOM: Float = 18f
+        private const val MAPS_STREET_LEVEL_ZOOM: Float = 15f
         private const val MAPS_ZOOM_IN: Float = 11f
         private const val MAPS_ZOOM_OUT: Float = 9f
 
