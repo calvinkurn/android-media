@@ -26,7 +26,8 @@ object RechargeSmartBillsMapper {
 
 
     fun getAccordionSection(listSection: List<Section>): List<Section> {
-        return listSection.filterNot { it.type == MAIN_TYPE || it.bills.isNullOrEmpty() }.sortedBy{ it.type }
+        return listSection.filter { it.type == ACTION_TYPE || it.type == PAID_TYPE
+                || !it.bills.isNullOrEmpty() }.sortedBy{ it.type }
                 .mapIndexed { index, it ->
                     Section(title = it.title, type = it.type,
                             text = it.text, bills = it.bills, positionAccordion = index)
