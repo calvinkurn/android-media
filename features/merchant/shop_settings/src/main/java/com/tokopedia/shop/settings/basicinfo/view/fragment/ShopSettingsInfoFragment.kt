@@ -24,6 +24,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
@@ -71,6 +72,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     private var shopId: String = "0"     // 67726 for testing
 
     private var progressDialog: ProgressDialog? = null
+    private var shopBadge: String = ""
 
     override fun getScreenName(): String? {
         return null
@@ -192,10 +194,19 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
         onFragmentResult()
 
+        observeShopBadgeData()
         observeShopBasicData()
         observeShopStatus()
         observeOsMerchantData()
         observeUpdateScheduleData()
+    }
+
+    private fun observeShopBadgeData() {
+        shopSettingsInfoViewModel.shopBadgeData.observe(viewLifecycleOwner, Observer {
+            if(it is Success){
+                shopBadge = it.data
+            }
+        })
     }
 
     override fun onPause() {
@@ -440,7 +451,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         container_regular_merchant.visibility = View.GONE
         container_official_store.visibility = View.GONE
         iv_logo_power_merchant.visibility = View.VISIBLE
-        iv_logo_power_merchant.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
+        iv_logo_power_merchant.loadImage(shopBadge)
         tv_power_merchant_type.text = getString(R.string.label_power_merchant)
     }
 
@@ -449,7 +460,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         container_regular_merchant.visibility = View.GONE
         container_power_merchant.visibility = View.GONE
         iv_logo_official_store.visibility = View.VISIBLE
-        iv_logo_official_store.setImageResource(R.drawable.ic_shop_setting_official_store)
+        iv_logo_official_store.loadImage(shopBadge)
         tv_official_store.text = getString(R.string.label_official_store)
         tv_official_store_expiration.text = "Berlaku hingga $expirationDate"
     }
