@@ -112,7 +112,7 @@ data class ProductCardModel (
     }
 
     fun hasVariantWithQuantity(): Boolean {
-        return variant != null && variant.quantity > 0
+        return variant?.quantity ?: 0 > 0
     }
 
     data class NonVariant(
@@ -122,11 +122,11 @@ data class ProductCardModel (
     )
 
     fun shouldShowAddToCartNonVariantQuantity(): Boolean {
-        return nonVariant != null && nonVariant.quantity == 0
+        return nonVariant?.quantity == 0
     }
 
     fun shouldShowQuantityEditor(): Boolean {
-        return nonVariant != null && nonVariant.quantity > 0
+        return nonVariant?.quantity ?: 0 > 0
     }
 
     fun getLabelProductStatus(): LabelGroup? {

@@ -15,6 +15,8 @@ import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 
 class ProductCardGridView: BaseCustomView, IProductCardView {
 
+    private val atcNonVariantListener: ATCNonVariantListener? = null
+
     constructor(context: Context): super(context) {
         init()
     }
@@ -88,18 +90,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         buttonAddVariant?.setOnClickListener(addVariantClickListener)
     }
 
-    fun setQuantityEditorNonVariantValueChangedListener(addValueChangedListener: (newValue: Int, oldValue: Int, isOver: Int?) -> Unit) {
-        quantityEditorNonVariant?.setValueChangedListener(addValueChangedListener)
-    }
-
-    fun setQuantityEditorNonVariantAddClickListener(addClickListener: () -> Unit) {
-        quantityEditorNonVariant?.setAddClickListener(addClickListener)
-    }
-
-    fun setQuantityEditorNonVariantSubtractListener(subtractListener: () -> Unit) {
-        quantityEditorNonVariant?.setSubstractListener(subtractListener)
-    }
-
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
 
     override fun getCardRadius() = cardViewProductCard?.radius ?: 0f
@@ -147,8 +137,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     private fun renderVariant(productCardModel: ProductCardModel) {
-        setButtonAddVariantMargin(productCardModel)
-
         buttonAddVariant?.shouldShowWithAction(productCardModel.hasVariant()) {
             renderButtonAddVariant(productCardModel)
         }
@@ -158,28 +146,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         }
 
         dividerVariantQuantity?.showWithCondition(productCardModel.hasVariantWithQuantity())
-    }
-
-    private fun setButtonAddVariantMargin(productCardModel: ProductCardModel) {
-        val resources = context.resources
-        var startMargin = 0
-        var topMargin = 0
-
-        if (productCardModel.hasVariantWithQuantity()) {
-            startMargin = resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_with_quantity_margin_start)
-            topMargin = resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_with_quantity_margin_top)
-        }
-        else {
-            startMargin = resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_start)
-            topMargin = resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_top)
-        }
-
-        buttonAddVariant?.setMargin(
-                startMargin,
-                topMargin,
-                resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_end),
-                resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_bottom)
-        )
     }
 
     private fun renderButtonAddVariant(productCardModel: ProductCardModel) {
