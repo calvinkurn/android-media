@@ -26,10 +26,14 @@ class CategoryViewModel @Inject constructor (
         val headerDataView = HeaderDataView(
                 title = "Category_Title",
                 hasSeeAllCategoryButton = true,
-                totalData = categoryModel.totalData,
+                totalData = categoryModel.searchProduct.header.totalData,
         )
 
-        onGetFirstPageSuccess(headerDataView)
+        val contentDataView = ContentDataView(
+                productList = categoryModel.searchProduct.data.productList,
+        )
+
+        onGetFirstPageSuccess(headerDataView, contentDataView)
     }
 
     private fun onGetCategoryFirstPageError(throwable: Throwable) {

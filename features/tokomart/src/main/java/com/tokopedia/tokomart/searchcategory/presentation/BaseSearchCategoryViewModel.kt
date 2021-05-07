@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductCountDataView
@@ -28,19 +29,25 @@ abstract class BaseSearchCategoryViewModel(
 
     abstract fun onViewCreated()
 
-    protected fun onGetFirstPageSuccess(headerDataView: HeaderDataView) {
+    protected fun onGetFirstPageSuccess(
+            headerDataView: HeaderDataView,
+            contentDataView: ContentDataView,
+    ) {
         totalData = headerDataView.totalData
-        totalFetchedData = 3
+        totalFetchedData += contentDataView.productList.size
 
-        createVisitableListFirstPage(headerDataView)
+        createVisitableListFirstPage(headerDataView, contentDataView)
         updateVisitableListLiveData()
     }
 
-    private fun createVisitableListFirstPage(headerDataView: HeaderDataView) {
+    private fun createVisitableListFirstPage(
+            headerDataView: HeaderDataView,
+            contentDataView: ContentDataView,
+    ) {
         visitableList.clear()
 
         visitableList.addAll(createHeaderVisitableList(headerDataView))
-        visitableList.addAll(createContentVisitableList())
+        visitableList.addAll(createContentVisitableList(contentDataView))
         visitableList.addFooter()
     }
 
@@ -52,11 +59,16 @@ abstract class BaseSearchCategoryViewModel(
             ProductCountDataView(headerDataView.totalData),
     )
 
-    protected open fun createContentVisitableList() = listOf(
-            ProductItemDataView(),
-            ProductItemDataView(),
-            ProductItemDataView(),
-    )
+    protected open fun createContentVisitableList(contentDataView: ContentDataView) =
+            contentDataView.productList.map { product ->
+                ProductItemDataView(
+                        id = product.id,
+                        imageUrl300 = product.imageUrl300,
+                        name = product.name,
+                        price = product.price,
+                        priceInt = product.priceInt,
+                )
+            }
 
     private fun MutableList<Visitable<*>>.addFooter() {
         if (isLastPage())
@@ -81,5 +93,9 @@ abstract class BaseSearchCategoryViewModel(
             val title: String = "",
             val hasSeeAllCategoryButton: Boolean = false,
             val totalData: Int = 0
+    )
+
+    protected data class ContentDataView(
+            val productList: List<Product> = listOf(),
     )
 }

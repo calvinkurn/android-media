@@ -25,10 +25,14 @@ class SearchViewModel @Inject constructor (
         val headerDataView = HeaderDataView(
                 title = "",
                 hasSeeAllCategoryButton = false,
-                totalData = searchModel.totalData
+                totalData = searchModel.searchProduct.header.totalData
         )
 
-        onGetFirstPageSuccess(headerDataView)
+        val contentDataView = ContentDataView(
+                productList = searchModel.searchProduct.data.productList,
+        )
+
+        onGetFirstPageSuccess(headerDataView, contentDataView)
     }
 
     private fun onGetSearchFirstPageError(throwable: Throwable) {

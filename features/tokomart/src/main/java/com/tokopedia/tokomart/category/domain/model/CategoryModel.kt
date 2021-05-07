@@ -2,10 +2,10 @@ package com.tokopedia.tokomart.category.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 
 data class CategoryModel(
-        @SerializedName("total_data")
+        @SerializedName("ace_search_product_v4")
         @Expose
-        val totalData: Int = 0,
-) {
-}
+        val searchProduct: SearchProduct = SearchProduct(),
+)

@@ -8,7 +8,9 @@ import com.tokopedia.tokomart.searchcategory.assertChooseAddressDataView
 import com.tokopedia.tokomart.searchcategory.assertProductCountDataView
 import com.tokopedia.tokomart.searchcategory.assertQuickFilterDataView
 import com.tokopedia.tokomart.searchcategory.assertTitleDataView
+import com.tokopedia.tokomart.searchcategory.jsonToObject
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokomart.searchcategory.verifyProductItemDataViewList
 import io.mockk.coEvery
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.not
@@ -19,7 +21,7 @@ class SearchFirstPageTest: SearchTestFixtures() {
 
     @Test
     fun `test first page is last page`() {
-        val searchModel = SearchModel(totalData = 3)
+        val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
         `Given get search first page use case will be successful`(searchModel)
 
         `When view created`()
@@ -27,7 +29,7 @@ class SearchFirstPageTest: SearchTestFixtures() {
         val visitableList = searchViewModel.visitableListLiveData.value!!
 
         `Then assert visitable list header`(visitableList, searchModel)
-        `Then assert visitable list contents`(visitableList)
+        `Then assert visitable list contents`(visitableList, searchModel)
         `Then assert visitable list does not end with loading more model`(visitableList)
     }
 
@@ -51,14 +53,17 @@ class SearchFirstPageTest: SearchTestFixtures() {
         visitableList[1].assertBannerDataView()
         visitableList[2].assertTitleDataView(title = "", hasSeeAllCategoryButton = false)
         visitableList[3].assertQuickFilterDataView()
-        visitableList[4].assertProductCountDataView(searchModel.totalData)
+        visitableList[4].assertProductCountDataView(searchModel.searchProduct.header.totalData)
     }
 
-    private fun `Then assert visitable list contents`(visitableList: List<Visitable<*>>) {
-        // Need to verify based on BE data
-        assertThat(visitableList[5], instanceOf(ProductItemDataView::class.java))
-        assertThat(visitableList[6], instanceOf(ProductItemDataView::class.java))
-        assertThat(visitableList[7], instanceOf(ProductItemDataView::class.java))
+    private fun `Then assert visitable list contents`(
+            visitableList: List<Visitable<*>>,
+            searchModel: SearchModel,
+    ) {
+        val expectedProductList = searchModel.searchProduct.data.productList
+        val actualProductItemDataViewList = visitableList.filterIsInstance<ProductItemDataView>()
+
+        verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList)
     }
 
     private fun `Then assert visitable list does not end with loading more model`(
@@ -69,7 +74,7 @@ class SearchFirstPageTest: SearchTestFixtures() {
 
     @Test
     fun `test first page has next page`() {
-        val searchModel = SearchModel(totalData = 8)
+        val searchModel = "search/first-page-16-products.json".jsonToObject<SearchModel>()
         `Given get search first page use case will be successful`(searchModel)
 
         `When view created`()
@@ -77,7 +82,7 @@ class SearchFirstPageTest: SearchTestFixtures() {
         val visitableList = searchViewModel.visitableListLiveData.value!!
 
         `Then assert visitable list header`(visitableList, searchModel)
-        `Then assert visitable list contents`(visitableList)
+        `Then assert visitable list contents`(visitableList, searchModel)
         `Then assert visitable list end with loading more model`(visitableList)
     }
 
