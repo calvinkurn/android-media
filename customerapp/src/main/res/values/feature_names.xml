@@ -162,6 +162,7 @@
     <string name="survey_layanan">Survey Layanan</string>
     <string name="detail_kendala">Detail Kendala</string>
     <string name="contact_us_inbox">Pesan Bantuan</string>
+    <string name="contact_us_title_clear_cache">Bersihkan Cache</string>
 
     <string name="instant_loan_app_name">Dana Instan</string>
 
