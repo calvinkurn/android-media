@@ -10,7 +10,6 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
@@ -22,7 +21,7 @@ import com.tokopedia.unifyprinciples.Typography
 class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
 
     companion object {
-        fun createNewInstance(textAreaListener: TextAreaListener, text: String, incentiveHelper: String, isUserEligible: Boolean): CreateReviewTextAreaBottomSheet {
+        fun createNewInstance(textAreaListener: TextAreaListener, text: String, incentiveHelper: String = "", isUserEligible: Boolean = false): CreateReviewTextAreaBottomSheet {
             return CreateReviewTextAreaBottomSheet().apply {
                 this.text = text
                 this.textAreaListener = textAreaListener

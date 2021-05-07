@@ -115,6 +115,7 @@
     <string name="review_form_progress_bar_bad_need_photo">Lengkapi juga dengan foto 📸</string>
     <string name="review_form_progress_bar_bad_need_text">Ceritain dulu alasanmu 🙏</string>
     <string name="review_form_progress_bar_bad_complete">Oke, udah siap kirim! 👉</string>
+    <string name="review_form_add_photo">Kasih liat foto barang</string>
 
     <string name="review_date">• %s</string>
     <string name="review_refresh">Refresh</string>

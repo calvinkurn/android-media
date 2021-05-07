@@ -76,7 +76,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         IncentiveOvoListener {
 
     companion object {
-        private const val REQUEST_CODE_IMAGE = 111
+        const val REQUEST_CODE_IMAGE = 111
         private const val PRODUCT_ID_REVIEW = "PRODUCT_ID"
         private const val REPUTATION_ID = "REPUTATION_ID"
         const val REVIEW_CLICK_AT = "REVIEW_CLICK_AT"
@@ -998,8 +998,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     fun getOrderId(): String {
-        return (createReviewViewModel.getReputationDataForm.value as? CoroutineSuccess<ProductRevGetForm>)?.data?.productrevGetForm?.orderID
-                ?: ""
+        return (createReviewViewModel.getReputationDataForm.value as? CoroutineSuccess<ProductRevGetForm>)?.data?.productrevGetForm?.orderID ?: ""
     }
 
     fun showCancelDialog() {

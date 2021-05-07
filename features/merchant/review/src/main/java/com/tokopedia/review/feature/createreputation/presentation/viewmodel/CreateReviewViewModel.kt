@@ -63,6 +63,10 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val editReviewResult: LiveData<ReviewViewState<Boolean>>
         get() = _editReviewResult
 
+    private val _reviewTemplates = MutableLiveData<Result<List<String>>>()
+    val reviewTemplates: LiveData<Result<List<String>>>
+        get() = _reviewTemplates
+
     fun submitReview(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
                      reviewText: String, isAnonymous: Boolean, utmSource: String) {
         _submitReviewResult.postValue(LoadingView())
@@ -192,6 +196,18 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
 
         }) {
             _incentiveOvo.postValue(CoroutineFail(it))
+        }
+    }
+
+    fun getReviewTemplates(productId: Long) {
+        launchCatchError(block = {
+            val data = withContext(coroutineDispatcherProvider.io) {
+                getReviewTemplatesUseCase.setParams(productId.toString(), 0)
+                getReviewTemplatesUseCase.executeOnBackground()
+            }
+            _reviewTemplates.postValue(CoroutineSuccess(data.productrevGetPersonalizedReviewTemplate.templates))
+        }) {
+            _reviewTemplates.postValue(CoroutineFail(it))
         }
     }
 

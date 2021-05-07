@@ -54,9 +54,6 @@ class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, Rev
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromApplinkOrIntent()
         startPerformanceMonitoring()
-        if(isNewWriteForm()) {
-            setTranslucentTheme()
-        }
         super.onCreate(savedInstanceState)
         if (isNewWriteForm()) {
             handleDimming()
@@ -179,7 +176,7 @@ class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, Rev
     }
 
     private fun showWriteFormBottomSheet() {
-        val bottomSheet = CreateReviewBottomSheet.createInstance(productId.toLongOrZero(), reputationId.toLongOrZero())
+        val bottomSheet = CreateReviewBottomSheet.createInstance(productId.toLongOrZero(), reputationId.toLongOrZero(), feedbackId)
         bottomSheet.apply {
             isDragable = true
             isHideable = true
