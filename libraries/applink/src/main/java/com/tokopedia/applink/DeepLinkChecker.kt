@@ -8,7 +8,6 @@ import android.text.TextUtils
 import android.webkit.URLUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 object DeepLinkChecker {
 
@@ -64,7 +63,7 @@ object DeepLinkChecker {
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
     private fun isExcludedHostUrl(context: Context, uriData: Uri): Boolean {
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+        val firebaseRemoteConfig = FirebaseRemoteConfigInstance.get(context)
         val excludedHost = firebaseRemoteConfig.getString(APP_EXCLUDED_HOST_V2)
         if (excludedHost.isNullOrEmpty()) {
             return false
@@ -86,7 +85,7 @@ object DeepLinkChecker {
     }
 
     private fun isExcludedUrl(context: Context, uriData: Uri): Boolean {
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+        val firebaseRemoteConfig = FirebaseRemoteConfigInstance.get(context)
         val excludedUrl = firebaseRemoteConfig.getString(APP_EXCLUDED_URL)
         if (excludedUrl.isNullOrEmpty()) {
             return false
@@ -164,7 +163,7 @@ object DeepLinkChecker {
     }
 
     private fun isExcludedAmpPath(context: Context, path: String): Boolean {
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+        val firebaseRemoteConfig = FirebaseRemoteConfigInstance.get(context)
         val excludedPath = firebaseRemoteConfig.getString(EXCLUDED_AMP, defaultExcludedAmpValue())
         val excludedPathList = excludedPath.split(",".toRegex())
             .filter { it.isNotEmpty() }

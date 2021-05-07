@@ -47,6 +47,7 @@ public interface ApplinkConst {
     String SHOP_SETTINGS_INFO = "tokopedia://setting/shop/info";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
+    String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
     String PRODUCT_ADD = "tokopedia://product/add";
     String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi/";
     String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}/?ref={ref}";
@@ -111,6 +112,7 @@ public interface ApplinkConst {
     String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String ORDER_HISTORY = "tokopedia://product-order-history";
+    String ORDER_HISTORY_SHOP = "tokopedia://product-order-history/{shop_id}";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
     String TOP_CHAT = "tokopedia://topchat";
     String TOPCHAT_IDLESS = "tokopedia://topchat";

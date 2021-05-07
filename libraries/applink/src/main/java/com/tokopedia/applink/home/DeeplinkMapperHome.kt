@@ -6,7 +6,9 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
@@ -23,6 +25,9 @@ object DeeplinkMapperHome {
     const val TAB_POSITION_RECOM = 5
 
     fun getRegisteredNavigationHome(deeplink: String): String {
+        if (GlobalConfig.isSellerApp()) {
+            return ApplinkConstInternalSellerapp.SELLER_HOME
+        }
         val uri = Uri.parse(deeplink)
 
         // tokopedia://home
@@ -43,9 +48,6 @@ object DeeplinkMapperHome {
         else if (deeplink.startsWith(ApplinkConst.HOME_RECOMMENDATION) && uri.pathSegments.size == 1)
             return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION,
                     mapOf(EXTRA_TAB_POSITION to TAB_POSITION_RECOM, EXTRA_RECOMMEND_LIST to true))
-
-
-
         return deeplink
     }
 
@@ -60,9 +62,9 @@ object DeeplinkMapperHome {
         else if (deeplink.startsWithPattern(ApplinkConst.OFFICIAL_STORE_CATEGORY) && uri.pathSegments.size == 1)
         {
             val params = UriUtil.destructureUriToMap(ApplinkConst.OFFICIAL_STORE_CATEGORY, Uri.parse(deeplink), true)
-            params.put(EXTRA_TAB_POSITION, TAB_POSITION_OS)
+            params[EXTRA_TAB_POSITION] = TAB_POSITION_OS
 
-            return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params)
+            return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params.toMap())
         }
 
         return deeplink
@@ -74,9 +76,9 @@ object DeeplinkMapperHome {
 
     fun getRegisteredNavigationHomeContentExplore(deeplink: String): String {
         val params = UriUtil.destructureUriToMap(ApplinkConst.CONTENT_EXPLORE, Uri.parse(deeplink), true)
-        params.put(EXTRA_TAB_POSITION, TAB_POSITION_FEED)
+        params[EXTRA_TAB_POSITION] = TAB_POSITION_FEED
 
-        return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params)
+        return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params.toMap())
     }
 
     fun getRegisteredExplore(deeplink: String): String{

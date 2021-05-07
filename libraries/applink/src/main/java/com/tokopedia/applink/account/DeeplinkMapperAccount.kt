@@ -2,8 +2,8 @@ package com.tokopedia.applink.account
 
 import android.content.Context
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object DeeplinkMapperAccount {
@@ -17,7 +17,7 @@ object DeeplinkMapperAccount {
     }
 
     private fun usingOldAccount(context: Context): Boolean{
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val remoteConfig = FirebaseRemoteConfigInstance.get(context)
         return (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_USING_OLD_ACCOUNT))
     }
 }
