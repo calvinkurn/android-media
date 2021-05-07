@@ -96,8 +96,7 @@ class HomeScreenshotLoggedInTest {
                 ScreenshotModel(name = "LeftCarousel"),
                 ScreenshotModel(name = "TopCarousel"),
                 ScreenshotModel(name = "PopularKeyword"),
-                ScreenshotModel(name = "HomeWidget"),
-                ScreenshotModel(name = "HomeRecommendationSection")
+                ScreenshotModel(name = "HomeWidget")
         )
         screenShotList(screenshotModelList)
     }
