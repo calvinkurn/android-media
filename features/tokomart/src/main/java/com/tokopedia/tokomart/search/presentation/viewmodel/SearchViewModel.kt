@@ -45,18 +45,14 @@ class SearchViewModel @Inject constructor (
 
     }
 
-    override fun onLoadMore() {
-        if (hasLoadedAllData()) return
-
+    override fun executeLoadMore() {
         getSearchLoadMorePageUseCase.cancelJobs()
         getSearchLoadMorePageUseCase.execute(
                 this::onGetSearchLoadMorePageSuccess,
                 this::onGetSearchLoadMorePageError,
-                RequestParams.create()
+                RequestParams.create(),
         )
     }
-
-    private fun hasLoadedAllData() = totalData == totalFetchedData
 
     private fun onGetSearchLoadMorePageSuccess(searchModel: SearchModel) {
         val contentDataView = ContentDataView(productList = searchModel.searchProduct.data.productList)

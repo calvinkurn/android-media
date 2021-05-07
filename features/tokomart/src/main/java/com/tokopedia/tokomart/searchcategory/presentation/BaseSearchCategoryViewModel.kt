@@ -86,8 +86,14 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onLoadMore() {
+        if (hasLoadedAllData()) return
 
+        executeLoadMore()
     }
+
+    private fun hasLoadedAllData() = totalData <= totalFetchedData
+
+    abstract fun executeLoadMore()
 
     protected open fun onGetLoadMorePageSuccess(contentDataView: ContentDataView) {
         totalFetchedData += contentDataView.productList.size
