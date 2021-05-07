@@ -103,7 +103,7 @@ class RechargeGeneralScreenShotTest {
 
         Thread.sleep(2000)
         findViewAndScreenShot(
-                R.id.container_digital_search_number,
+                R.id.view_container,
                 filePrefix(),
                 "recycler_view_operator_select"
         )
@@ -124,10 +124,11 @@ class RechargeGeneralScreenShotTest {
                 )
         )
 
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            val frameLayout = mActivityRule.activity.findViewById<FrameLayout>(com.tokopedia.common.topupbills.R.id.parent_view)
-            takeScreenShotVisibleViewInScreen(frameLayout, filePrefix(), "favorite_number_new")
-        }
+        findViewAndScreenShot(
+                R.id.container_digital_search_number,
+                filePrefix(),
+                "favorite_number"
+        )
 
         Thread.sleep(1000)
         onView(ViewMatchers.withText("08121111111"))
@@ -146,7 +147,7 @@ class RechargeGeneralScreenShotTest {
         Thread.sleep(2000)
 
         findViewAndScreenShot(
-                R.id.view_container,
+                R.id.rv_product_select_dropdown,
                 filePrefix(),
                 "product_select"
         )
