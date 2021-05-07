@@ -28,6 +28,10 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
     init {
         val view = View.inflate(context, R.layout.include_flight_promo_chips, this)
         recyclerView = view.findViewById(R.id.recycler_view_promo_chips)
+        setBackground()
+    }
+
+    fun setBackground(){
         recyclerView.setBackgroundResource(R.drawable.bg_flight_promo_chips_container)
     }
 
