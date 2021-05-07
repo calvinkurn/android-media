@@ -137,7 +137,6 @@ import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
 import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping_som.view.*
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
-import kotlinx.android.synthetic.main.partial_info_layout.view.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -450,15 +449,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         somDetailViewModel.setDelivered.observe(viewLifecycleOwner, Observer {
             setLoadingIndicator(false)
             when (it) {
-                is Success -> {
-                    view?.let { v ->
-                        val message = it.data.setDelivered.message.joinToString()
-                        activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                            putExtra(RESULT_SET_DELIVERED, message)
-                        })
-                        activity?.finish()
-                    }
-                }
+                is Success -> onSuccessSetDelivered(it.data.setDelivered)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_WHEN_SET_DELIVERED)
                     it.throwable.showErrorToaster()
@@ -517,7 +508,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         containerBtnDetail?.hide()
         rv_detail?.hide()
         somDetailAdminPermissionView?.setUserNotAllowedToViewSom {
-            activity?.finish()
+            doOnUserNotAllowedToViewSOM()
         }
     }
 
@@ -525,6 +516,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
         somDetailAdminPermissionView?.gone()
         somDetailLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
         loadDetail()
+    }
+
+    protected open fun doOnUserNotAllowedToViewSOM() {
+        activity?.finish()
     }
 
     protected open fun renderDetail() {
@@ -1384,32 +1379,13 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun observingRejectOrder() {
         somDetailViewModel.rejectOrderResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> {
-                    rejectOrderResponse = it.data.rejectOrder
-                    if (rejectOrderResponse.success == 1) {
-                        // if success = 1 : finishActivity, then show toaster
-                        activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                            putExtra(RESULT_REJECT_ORDER, rejectOrderResponse)
-                        })
-                        activity?.finish()
-
-                    } else {
-                        showToasterError(rejectOrderResponse.message.first(), view)
-                    }
-                }
+                is Success -> onSuccessRejectOrder(it.data.rejectOrder)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_REJECT_ORDER)
                     it.throwable.showErrorToaster()
                 }
             }
         })
-    }
-
-    private fun showToasterError(message: String, view: View?) {
-        val toasterError = Toaster
-        view?.let { v ->
-            toasterError.make(v, message, LENGTH_SHORT, TYPE_ERROR, ACTION_OK)
-        }
     }
 
     private fun showCommonToaster(message: String) {
@@ -1686,6 +1662,28 @@ open class SomDetailFragment : BaseDaggerFragment(),
         loadDetail()
     }
 
+    protected open fun onSuccessRejectOrder(rejectOrderData: SomRejectOrderResponse.Data.RejectOrder) {
+        if (rejectOrderData.success == 1) {
+            // if success = 1 : finishActivity, then show toaster
+            activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(RESULT_REJECT_ORDER, rejectOrderData)
+            })
+            activity?.finish()
+        } else {
+            showToasterError(rejectOrderData.message.first(), view)
+        }
+    }
+
+    protected open fun onSuccessSetDelivered(deliveredData: SetDelivered) {
+        val message = deliveredData.message.joinToString().takeIf { it.isNotBlank() } ?: getString(R.string.global_error)
+        activity?.setResult(Activity.RESULT_OK, Intent().apply {
+            putExtra(RESULT_SET_DELIVERED, message)
+        })
+        activity?.finish()
+    }
+
+    protected open fun showBackButton(): Boolean = true
+
     protected fun dismissBottomSheets() {
         (fragmentManager?.findFragmentByTag(TAG_BOTTOMSHEET) as? BottomSheetUnify)?.let {
             if (it.isVisible) it.dismiss()
@@ -1694,5 +1692,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
         orderRequestCancelBottomSheet?.dismiss()
     }
 
-    protected open fun showBackButton(): Boolean = true
+    protected fun showToasterError(message: String, view: View?) {
+        val toasterError = Toaster
+        view?.let { v ->
+            toasterError.make(v, message, LENGTH_SHORT, TYPE_ERROR, ACTION_OK)
+        }
+    }
 }

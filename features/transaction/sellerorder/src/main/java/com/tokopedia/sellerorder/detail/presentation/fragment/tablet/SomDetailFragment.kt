@@ -5,14 +5,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
+import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
 import com.tokopedia.sellerorder.common.navigator.SomNavigator
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToChangeCourierPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippingPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.detail.data.model.SetDelivered
 import com.tokopedia.sellerorder.detail.di.DaggerSomDetailComponent
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 
@@ -90,6 +96,14 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         }
     }
 
+    override fun doOnUserNotAllowedToViewSOM() {
+        if (GlobalConfig.isSellerApp()) {
+            RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+        } else {
+            activity?.finish()
+        }
+    }
+
     override fun renderDetail() {
         if (shouldPassInvoice) {
             shouldPassInvoice = false
@@ -116,6 +130,19 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
     override fun onRefresh(view: View?) {
         shouldRefreshOrderList = true
         super.onRefresh(view)
+    }
+
+    override fun onSuccessRejectOrder(rejectOrderData: SomRejectOrderResponse.Data.RejectOrder) {
+        if (rejectOrderData.success == 1) {
+            showToasterError(rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error), view)
+        } else {
+            showToasterError(rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error), view)
+        }
+    }
+
+    override fun onSuccessSetDelivered(deliveredData: SetDelivered) {
+        val message = deliveredData.message.joinToString().takeIf { it.isNotBlank() } ?: getString(R.string.global_error)
+        showToasterError(message, view)
     }
 
     override fun createIntentConfirmShipping(isChangeShipping: Boolean) {
