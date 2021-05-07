@@ -141,7 +141,7 @@ class DisabledCartItemViewHolder(private val binding: HolderItemCartErrorBinding
                     }
                 }
             }
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_G500))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             show()
         }
     }
