@@ -1,0 +1,38 @@
+[
+  {
+    "data": {
+      "merchantPromotionGetMVDataByID": {
+        "header": {
+          "process_time": 28062714,
+          "message": [],
+          "reason": "",
+          "error_code": ""
+        },
+        "data": {
+          "voucher_id": 3214548,
+          "voucher_name": "isi nama voucher",
+          "voucher_type": 3,
+          "voucher_image": "https://ecs7.tokopedia.net/img/attachment/2021/5/3/128068031/128068031_8f0fe408-0cfc-49b2-a391-65df05f203b9.jpg",
+          "voucher_image_square": "https://ecs7.tokopedia.net/img/attachment/2021/5/3/128068031/128068031_b800db25-4a1b-4088-a1ce-d08eacf4233c.jpg",
+          "voucher_status": 4,
+          "voucher_discount_type": 1,
+          "voucher_discount_amt": 20000,
+          "voucher_discount_amt_max": 20000,
+          "voucher_minimum_amt": 287500,
+          "voucher_quota": 15,
+          "voucher_start_time": "2021-05-03T17:30:00Z",
+          "voucher_finish_time": "2021-05-10T14:30:00Z",
+          "voucher_code": "YDPS6HLBGX",
+          "create_time": "2021-05-03T14:28:06Z",
+          "update_time": "2021-05-04T15:26:02Z",
+          "is_public": 1,
+          "voucher_type_formatted": "Cashback",
+          "voucher_discount_type_formatted": "idr",
+          "voucher_discount_amt_formatted": "20rb",
+          "confirmed_global_quota": 0,
+          "booked_global_quota": 0
+        }
+      }
+    }
+  }
+]

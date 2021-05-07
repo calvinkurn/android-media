@@ -7,7 +7,7 @@
       "screenName" : "/vouchercreation - period",
       "isLoggedInStatus" : "{{.+}}",
       "currentSite" : "tokopediaseller",
-      "userId" : "{{{.+}}",
+      "userId" : "{{.+}}",
       "businessUnit" : "physical goods"
     }
   ]

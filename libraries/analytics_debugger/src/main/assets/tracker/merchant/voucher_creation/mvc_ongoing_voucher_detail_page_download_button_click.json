@@ -10,7 +10,7 @@
       "screenName" : "/voucherdetailpage - berlangsung",
       "currentSite" : "tokopediaseller",
       "userId" : "{{.+}}",
-      "businessUnit ": "physical goods"
+      "businessUnit": "physical goods"
     }
   ]
 }

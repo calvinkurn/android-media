@@ -7,8 +7,8 @@
       "screenName" : "/voucherlisthistory",
       "isLoggedInStatus" : "{{.+}}",
       "currentSite" : "tokopediaseller",
-      "userId" : "{{{.+}}",
-      "businessUnit" : "physical goods",
+      "userId" : "{{.+}}",
+      "businessUnit" : "physical goods"
     }
   ]
 }

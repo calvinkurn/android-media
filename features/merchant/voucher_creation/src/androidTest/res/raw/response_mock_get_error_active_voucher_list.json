@@ -1,0 +1,16 @@
+[
+  {
+    "data": {
+      "MerchantPromotionGetMVList": {
+        "header": {
+          "process_time": 0.080589148,
+          "message": [
+            "Terjadi Kesalahan Sistem, silahkan coba lagi"
+          ],
+          "reason": "TBD",
+          "error_code": "err.internal_server_error"
+        }
+      }
+    }
+  }
+]

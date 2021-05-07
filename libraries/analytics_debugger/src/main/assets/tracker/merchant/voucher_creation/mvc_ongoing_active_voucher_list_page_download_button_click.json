@@ -1,0 +1,16 @@
+{
+  "readme": "click download button on active voucher list page (bottom sheet)",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "clickVoucherList",
+      "eventCategory": "voucher list active",
+      "eventAction": "click download voucher",
+      "eventLabel": "{{.*}}",
+      "screenName": "/voucherlistactive",
+      "currentSite": "tokopediaseller",
+      "userId": "{{.+}}",
+      "businessUnit": "physical goods"
+    }
+  ]
+}

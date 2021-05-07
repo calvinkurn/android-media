@@ -7,7 +7,7 @@
       "screenName" : "/vouchercreation - review",
       "isLoggedInStatus" : "{{.+}}",
       "currentSite" : "tokopediaseller",
-      "userId" : "{{{.+}}",
+      "userId" : "{{.+}}",
       "businessUnit" : "physical goods"
     }
   ]
