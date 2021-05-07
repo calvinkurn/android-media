@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/status_bar_latest_event_content"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:tag="bigPicture">
 
     <include layout="@layout/cm_layout_collapsed"/>
@@ -20,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
+            android:layout_marginBottom="2dp"
             android:orientation="horizontal">
 
             <ImageView
@@ -27,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginEnd="2dp"
                 android:scaleType="centerCrop" />
 
             <ImageView
@@ -34,6 +36,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="2dp"
                 android:scaleType="centerCrop" />
 
             <ImageView
@@ -41,6 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginStart="2dp"
                 android:scaleType="centerCrop" />
 
         </LinearLayout>
@@ -50,6 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
+            android:layout_marginTop="2dp"
             android:orientation="horizontal">
 
             <ImageView
@@ -57,6 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginEnd="2dp"
                 android:scaleType="centerCrop" />
 
             <ImageView
@@ -64,6 +71,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="2dp"
                 android:scaleType="centerCrop" />
 
             <ImageView
@@ -71,6 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginStart="2dp"
                 android:scaleType="centerCrop" />
 
         </LinearLayout>
