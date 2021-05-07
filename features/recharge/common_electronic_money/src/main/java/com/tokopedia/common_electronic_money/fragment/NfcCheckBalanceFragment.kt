@@ -190,8 +190,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         tapETollCardView.visibility = View.VISIBLE
 
         if(isGlobalErrorShow){
-            tapETollCardView.showGlobalError(updatedErrorMessage, errorMessageLabel,
-                    imageUrl)
+            tapETollCardView.showGlobalError(updatedErrorMessage, errorMessageLabel)
         } else {
             tapETollCardView.showInitialState()
             tapETollCardView.showErrorState(updatedErrorMessage, errorMessageLabel,

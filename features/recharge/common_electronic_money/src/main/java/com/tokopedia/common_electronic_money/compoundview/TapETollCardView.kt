@@ -52,6 +52,9 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
     }
 
     fun showLoading() {
+        globalError.hide()
+        textTitle.show()
+        textLabel.show()
         textTitle.text = resources.getString(R.string.emoney_reading_card_label_title)
         textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textLabel.text = resources.getString(R.string.emoney_reading_card_label_message)
@@ -120,8 +123,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         buttonTryAgain.visibility = View.GONE
     }
 
-    fun showGlobalError(errorMessageTitle: String, errorMessageLabel: String,
-                        imageUrl:String){
+    fun showGlobalError(errorMessageTitle: String, errorMessageLabel: String){
         textTitle.hide()
         textLabel.hide()
         lottieAnimationView.hide()
