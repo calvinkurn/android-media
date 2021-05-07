@@ -52,7 +52,7 @@ class HomeScreenshotNonLoggedInTest {
             takeScreenShotVisibleViewInScreen(
                     activityRule.activity.window.decorView,
                     fileName(),
-                    "dc".name(false)
+                    "dc".name(false, darkMode = true)
             )
         }
         activityRule.activity.finishAndRemoveTask()

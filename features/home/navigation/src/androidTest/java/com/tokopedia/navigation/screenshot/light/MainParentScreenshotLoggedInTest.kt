@@ -1,11 +1,10 @@
-package com.tokopedia.navigation.screenshot
+package com.tokopedia.navigation.com.tokopedia.navigation.screenshot.light
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.navigation.com.tokopedia.navigation.helper.NavigationInstrumentationHelper.disableCoachMark
 import com.tokopedia.navigation.com.tokopedia.navigation.mock.MainHomeMockResponseConfig
-import com.tokopedia.navigation.com.tokopedia.navigation.screenshot.MainParentScreenshotTestHelper
 import com.tokopedia.navigation.com.tokopedia.navigation.screenshot.MainParentScreenshotTestHelper.turnOffAnimation
 import com.tokopedia.navigation.presentation.activity.MainParentActivity
 import com.tokopedia.remoteconfig.RemoteConfigInstance

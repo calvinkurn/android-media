@@ -1,11 +1,10 @@
-package com.tokopedia.navigation.screenshot
+package com.tokopedia.navigation.com.tokopedia.navigation.screenshot.dark
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.navigation.com.tokopedia.navigation.helper.NavigationInstrumentationHelper.disableCoachMark
 import com.tokopedia.navigation.com.tokopedia.navigation.mock.MainHomeMockResponseConfig
-import com.tokopedia.navigation.com.tokopedia.navigation.screenshot.MainParentScreenshotTestHelper
 import com.tokopedia.navigation.com.tokopedia.navigation.screenshot.MainParentScreenshotTestHelper.turnOffAnimation
 import com.tokopedia.navigation.presentation.activity.MainParentActivity
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -22,7 +21,7 @@ import org.junit.Test
 /**
  * Created by devarafikry on 12/04/21.
  */
-class MainParentScreenshotNonLoggedInTest {
+class MainParentScreenshotLoggedInTest {
     val TAG = "MainParentScreenshotTest"
     val KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION"
     val KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING"
@@ -33,11 +32,12 @@ class MainParentScreenshotNonLoggedInTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(MainHomeMockResponseConfig())
-            setupDarkModeTest(false)
+            setupDarkModeTest(true)
             setupHomeEnvironment()
             setupAbTestRemoteConfig()
             disableCoachMark(context)
             InstrumentationAuthHelper.clearUserSession()
+            InstrumentationAuthHelper.loginInstrumentationTestUser1()
         }
     }
 
@@ -58,17 +58,14 @@ class MainParentScreenshotNonLoggedInTest {
     }
 
     @Test
-    fun screenShotVisibleViewNonLoggedIn() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            activityRule.activity.recreate()
-        }
+    fun screenShotVisibleViewLoggedIn() {
         Thread.sleep(10000)
         turnOffAnimation(activityRule.activity)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             takeScreenShotVisibleViewInScreen(
                     activityRule.activity.window.decorView,
                     fileName(),
-                    "home".name(false)
+                    "home".name(true, darkMode = true)
             )
         }
         activityRule.activity.finishAndRemoveTask()
@@ -97,5 +94,5 @@ class MainParentScreenshotNonLoggedInTest {
         return prefix
     }
 
-    private fun String.name(loggedIn: Boolean) = this + (if (loggedIn) "-login" else "-nonlogin")
+    fun String.name(loggedIn: Boolean, darkMode: Boolean = false) = this + (if (loggedIn) "-login" else "-nonlogin") + (if (darkMode) "-dark" else "-light")
 }

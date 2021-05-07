@@ -121,7 +121,7 @@ class HomeScreenshotLoggedInTest {
                     recyclerViewId = recyclerViewId,
                     position = position,
                     fileName = fileName(),
-                    fileNamePostFix = fileNamePostFix
+                    fileNamePostFix = "$fileNamePostFix-light"
             )
         }
     }
