@@ -4,6 +4,8 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.home.DeeplinkMapperHome
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import io.mockk.every
@@ -18,6 +20,30 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check home appLink then should return tokopedia internal home navigation in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation"
         assertEqualsDeepLinkMapper(ApplinkConst.HOME, expectedDeepLink)
+    }
+
+    @Test
+    fun `check inbox appLink and new navigation then should return tokopedia internal home navigation in customerapp`() {
+        every {
+            DeeplinkMapperHome.useNewInbox()
+        } returns true
+        val expectedDeepLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/inbox?a=2"
+        assertEqualsDeepLinkMapper(ApplinkConst.INBOX + "?a=2", expectedDeepLink)
+    }
+
+    @Test
+    fun `check inbox appLink and old navigation then should return tokopedia internal home navigation in customerapp`() {
+        every {
+            DeeplinkMapperHome.useNewInbox()
+        } returns false
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/inbox"
+        assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
+    }
+
+    @Test
+    fun `check qrscan appLink then should return tokopedia internal marketplace`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/qr-scanner/{need_result}/"
+        assertEqualsDeepLinkMapper(ApplinkConst.QRSCAN, expectedDeepLink)
     }
 
     @Test
@@ -1524,7 +1550,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check snapshot order appLink then should return tokopedia internal snapshot order in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://snapshot/order?order_id=1234&order_detail_id=7890"
-        val appLink = UriUtil.buildUri(ApplinkConst.SNAPSHOT_ORDER+"/1234/7890")
+        val appLink = UriUtil.buildUri(ApplinkConst.SNAPSHOT_ORDER + "/1234/7890")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
