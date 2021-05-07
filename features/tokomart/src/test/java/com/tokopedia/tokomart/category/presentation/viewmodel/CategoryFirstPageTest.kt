@@ -12,7 +12,7 @@ import com.tokopedia.tokomart.searchcategory.assertTitleDataView
 import com.tokopedia.tokomart.searchcategory.jsonToObject
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.verifyProductItemDataViewList
-import io.mockk.coEvery
+import io.mockk.every
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -34,9 +34,9 @@ class CategoryFirstPageTest: CategoryTestFixtures() {
     }
 
     private fun `Given get category first page use case will be successful`(categoryModel: CategoryModel) {
-        coEvery {
+        every {
             getCategoryFirstPageUseCase.execute(any(), any(), any())
-        } coAnswers {
+        } answers {
             firstArg<(CategoryModel) -> Unit>().invoke(categoryModel)
         }
     }

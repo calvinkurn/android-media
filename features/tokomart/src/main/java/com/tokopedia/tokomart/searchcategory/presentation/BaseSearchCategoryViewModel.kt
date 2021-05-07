@@ -85,8 +85,18 @@ abstract class BaseSearchCategoryViewModel(
         visitableListMutableLiveData.value = visitableList
     }
 
-    fun onLoadMore() {
+    open fun onLoadMore() {
 
+    }
+
+    protected open fun onGetLoadMorePageSuccess(contentDataView: ContentDataView) {
+        totalFetchedData += contentDataView.productList.size
+
+        visitableList.remove(loadingMoreModel)
+        visitableList.addAll(createContentVisitableList(contentDataView))
+        visitableList.addFooter()
+
+        updateVisitableListLiveData()
     }
 
     protected data class HeaderDataView(
