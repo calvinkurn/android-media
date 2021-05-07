@@ -29,7 +29,7 @@
     <string name="title_detail_performa">Periode Performa: %s</string>
     <string name="title_detail_performance_new_seller">Detail Performa</string>
     <string name="title_update_date">Update selanjutnya: %s</string>
-    <string name="title_update_date_new_seller">Sedang dikumpulkan dari %1s (%2s hari)&lt;br /&gt;&lt;br /&gt;Update selanjutnya: %3s</string>
+    <string name="title_update_date_new_seller">Sedang dikumpulkan dari %1s (%2s hari)&lt;br /&gt;Update selanjutnya: %3s</string>
 
     <string name="maximum_score_performance">/100</string>
     <string name="title_pm_value">Power Merchant</string>
