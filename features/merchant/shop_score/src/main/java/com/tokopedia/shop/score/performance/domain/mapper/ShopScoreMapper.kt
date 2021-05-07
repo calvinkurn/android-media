@@ -438,7 +438,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                         targetDetailPerformance = targetDetailPerformanceText,
                         isDividerHide = index + 1 == shopScoreLevelSize,
                         identifierDetailPerformance = shopScoreDetail.identifier,
-                        parameterValueDetailPerformance = parameterItemDetailPerformance
+                        parameterValueDetailPerformance = parameterItemDetailPerformance,
+                        shopAge = shopAge
                 ))
             }
         }

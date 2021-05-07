@@ -4,10 +4,12 @@ import android.graphics.Color
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_SYMBOL
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_TEXT
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_AGE_SIXTY
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
 import com.tokopedia.unifycomponents.toPx
@@ -37,16 +39,24 @@ class ItemDetailPerformanceViewHolder(view: View,
                 }
             }
             setOnClickListener {
-                itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
-                        titleBottomSheet,
-                        element?.identifierDetailPerformance.orEmpty()
-                )
+                if (element?.shopAge.orZero() < SHOP_AGE_SIXTY) {
+                    itemShopPerformanceListener.onItemClickedToFaqClicked()
+                } else {
+                    itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
+                            titleBottomSheet,
+                            element?.identifierDetailPerformance.orEmpty()
+                    )
+                }
             }
             ic_item_performance_right?.setOnClickListener {
-                itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
-                        titleBottomSheet,
-                        element?.identifierDetailPerformance.orEmpty()
-                )
+                if (element?.shopAge.orZero() < SHOP_AGE_SIXTY) {
+                    itemShopPerformanceListener.onItemClickedToFaqClicked()
+                } else {
+                    itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
+                            titleBottomSheet,
+                            element?.identifierDetailPerformance.orEmpty()
+                    )
+                }
             }
         }
     }
