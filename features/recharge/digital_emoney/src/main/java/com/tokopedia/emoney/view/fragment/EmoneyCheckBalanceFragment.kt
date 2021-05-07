@@ -138,8 +138,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                             true)
                 } else {
                     showError(errorMessage,
-                            resources.getString(R.string.emoney_nfc_error_title),
-                            resources.getString(R.string.emoney_nfc_connection_issue),
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_connection_issue),
                             true, true)
                 }
             }

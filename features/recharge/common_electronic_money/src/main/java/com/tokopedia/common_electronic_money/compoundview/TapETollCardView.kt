@@ -126,6 +126,11 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
             errorIllustration.loadImage(imageUrl){
                 setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
             }
+
+            setActionClickListener {
+                showInitialState()
+                listener.tryAgainTopup(issuerId)
+            }
         }
     }
 
