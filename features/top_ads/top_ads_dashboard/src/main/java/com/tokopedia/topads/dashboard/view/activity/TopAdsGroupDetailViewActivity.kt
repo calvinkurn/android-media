@@ -134,6 +134,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
                 putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
                 putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
+                putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, autoBidStatus)
             }
             startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
         }

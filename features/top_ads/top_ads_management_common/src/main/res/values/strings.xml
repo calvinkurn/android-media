@@ -185,6 +185,10 @@
     <string name="topads_common_choose_type_bs_desc2">Iklan akan muncul saat kata kunci yang calon pembeli pakai dan kata kunci yang kamu tentukan  <![CDATA["<font color='#F531353B'><b> sama persis.</b></font> ]]></string>
     <string name="topads_common_choose_type_bs_extra">Masih bingung?<![CDATA["<font color='#42b549'><b> Lihat tabel simulasi </b></font> ]]></string>
 
+    <string name="topads_create_bs_title2">Biaya Iklan Dasar</string>
+    <string name="topads_create_bs_title1">Biaya Kata Kunci</string>
+    <string name="topads_create_bs_desc2">Biaya iklan yang dikenakan saat calon pembeli mengklik iklanmu dari halaman selain halaman hasil pencarian seperti halaman utama, kategori, dan produk rekomendasi.</string>
+    <string name="topads_create_bs_desc1">Biaya iklan yang dikenakan saat calon pembeli mengklik iklanmu dari halaman pencarian seperti menggunakan kata kunci yang kamu tentukan.</string>
 
 
     <string-array name="sort_product_list_array">

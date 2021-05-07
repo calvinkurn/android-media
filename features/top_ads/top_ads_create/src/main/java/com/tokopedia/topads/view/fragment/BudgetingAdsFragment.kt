@@ -38,7 +38,7 @@ import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoEmptyViewModel
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
 import com.tokopedia.topads.view.model.BudgetingAdsViewModel
 import com.tokopedia.topads.common.view.sheet.ChooseKeyBottomSheet
-import com.tokopedia.topads.view.sheet.InfoBottomSheet
+import com.tokopedia.topads.common.view.sheet.InfoBottomSheet
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.ticker.Ticker

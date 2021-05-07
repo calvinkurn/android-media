@@ -14,13 +14,13 @@ class TipsRowItem @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
     val LAYOUT = R.layout.tip_row_item
-    lateinit var image: ImageUnify
-    lateinit var tvTitle: Typography
+    var image: ImageUnify
+    var tvTitle: Typography
 
 
     init {
         View.inflate(context, LAYOUT, this)
-        orientation = LinearLayout.HORIZONTAL
+        orientation = HORIZONTAL
         image = findViewById(R.id.rowImg)
         tvTitle = findViewById(R.id.rowTxt)
     }
