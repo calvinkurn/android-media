@@ -152,7 +152,7 @@ class SellerMenuViewModel @Inject constructor(
             val shopInfoResponse = getShopInfo.await()
             val shopScoreResponse = getShopScore.await()
 
-            val data = ShopInfoUiModel(shopInfoResponse, shopScoreResponse, shopAge)
+            val data = ShopInfoUiModel(shopInfoResponse, shopScore = shopScoreResponse, shopAge = shopAge)
 
             _settingShopInfoLiveData.value = Success(data)
         }, onError = {

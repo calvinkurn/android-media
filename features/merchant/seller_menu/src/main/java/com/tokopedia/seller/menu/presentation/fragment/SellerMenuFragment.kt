@@ -227,7 +227,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun observeShopInfo() {
         observe(viewModel.settingShopInfoLiveData) {
             when (it) {
-                is Success -> showShopInfo(it.data.shopInfo, it.data.shopScore)
+                is Success -> showShopInfo(it.data.shopInfo, it.data.shopScore, it.data.shopAge)
                 is Fail -> {
                     showShopInfo(SettingError)
                     ShopScoreReputationErrorLogger.logToCrashlytic(ShopScoreReputationErrorLogger.SHOP_INFO_SETTING_ERROR, it.throwable)
@@ -274,7 +274,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         }
     }
 
-    private fun showShopInfo(settingResponseState: SettingResponseState, shopScore: Int = 0) {
+    private fun showShopInfo(settingResponseState: SettingResponseState, shopScore: Int = 0, shopAge: Int = 0) {
         when (settingResponseState) {
             is SettingSuccess -> {
                 if (periodType == COMMUNICATION_PERIOD) {
@@ -288,7 +288,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                     adapter.hideShopScoreTicker()
                 }
                 if (settingResponseState is SettingShopInfoUiModel) {
-                    adapter.showShopInfo(settingResponseState, shopScore)
+                    adapter.showShopInfo(settingResponseState, shopScore, shopAge)
                     sellerMenuTracker.sendEventViewShopAccount(settingResponseState)
                 }
             }
