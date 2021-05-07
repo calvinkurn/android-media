@@ -68,11 +68,21 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         productCarouselHeaderData.value = lihatSemuaComponentData
     }
 
-    private fun fetchProductCarouselData() {
+    fun fetchProductCarouselData() {
         launchCatchError(block = {
+//            if (reload) {
+//                productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
+//                setProductsList()
+//            } else {
+//                throw Exception("Error message")
+//            }
+//            throw Exception("Error message")
+
             productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
             setProductsList()
         }, onError = {
+            components.noOfPagesLoaded = 0
+            components.pageLoadedCounter = 1
             productLoadError.value = true
             it.printStackTrace()
         })
