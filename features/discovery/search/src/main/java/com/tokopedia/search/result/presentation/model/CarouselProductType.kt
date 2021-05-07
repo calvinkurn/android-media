@@ -9,5 +9,5 @@ class BroadMatchProduct(val isOrganicAds: Boolean): CarouselProductType(true) {
 }
 
 class DynamicCarouselProduct(val type: String): CarouselProductType(false) {
-    override val dataLayerList = "/search - carousel"
+    override val dataLayerList = "/search - carousel dynamic"
 }
