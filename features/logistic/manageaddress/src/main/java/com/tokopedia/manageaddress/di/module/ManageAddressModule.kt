@@ -1,7 +1,8 @@
-package com.tokopedia.manageaddress.di.manageaddress
+package com.tokopedia.manageaddress.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -16,30 +17,25 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class ManageAddressModule  {
+object ManageAddressModule  {
 
     @Provides
-    @ManageAddressScope
-    fun provideGraphQlRepository(): GraphqlRepository =
-            GraphqlInteractor.getInstance().graphqlRepository
-
-    @Provides
-    @ManageAddressScope
+    @ActivityScope
     fun provideGetAddressCornerUseCase(@ApplicationContext context: Context, graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase, mapper: AddressCornerMapper): GetAddressCornerUseCase {
         return GetAddressCornerUseCase(context, graphqlUseCase, mapper)
     }
 
     @Provides
-    @ManageAddressScope
-    fun provideDeletePeopleAddressUseCase(repository: GraphqlRepository): DeletePeopleAddressUseCase =
+    @ActivityScope
+    fun provideDeletePeopleAddressUseCase(@ApplicationContext repository: GraphqlRepository): DeletePeopleAddressUseCase =
             DeletePeopleAddressUseCase(GraphqlUseCase(repository))
 
     @Provides
-    @ManageAddressScope
-    fun provideSetDefaultPeopleAddressUseCase(repository: GraphqlRepository): SetDefaultPeopleAddressUseCase =
+    @ActivityScope
+    fun provideSetDefaultPeopleAddressUseCase(@ApplicationContext repository: GraphqlRepository): SetDefaultPeopleAddressUseCase =
             SetDefaultPeopleAddressUseCase(GraphqlUseCase(repository))
 
     @Provides
-    @ManageAddressScope
+    @ActivityScope
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 }
