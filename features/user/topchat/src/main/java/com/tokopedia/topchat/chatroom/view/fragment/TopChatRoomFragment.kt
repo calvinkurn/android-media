@@ -57,7 +57,6 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
@@ -173,7 +172,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     lateinit var sellerReviewHelper: TopChatSellerReviewHelper
 
     private lateinit var fpm: PerformanceMonitoring
-    private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
     private lateinit var adapter: TopChatRoomAdapter
     private var indexFromInbox = -1
@@ -353,7 +351,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         setupPresenter(savedInstanceState)
         setupArguments(savedInstanceState)
         setupAttachmentsPreview(savedInstanceState)
-        setupAlertDialog()
+        hideLoading()
         setupAnalytic()
         setupBeforeReplyTime()
         loadInitialData()
@@ -538,13 +536,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         presenter.initAttachmentPreview()
     }
 
-    private fun setupAlertDialog() {
-        if (!::alertDialog.isInitialized) {
-            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        }
-        hideLoading()
-    }
-
     private fun onSuccessGetMessageId(): (String) -> Unit {
         return {
             this.messageId = it
@@ -586,7 +577,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         checkCanAttachVoucher()
         orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(
-                chatRoom, onToolbarClicked(), this, alertDialog
+                chatRoom, onToolbarClicked(), this
         )
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(chatRoom.isSeller())
