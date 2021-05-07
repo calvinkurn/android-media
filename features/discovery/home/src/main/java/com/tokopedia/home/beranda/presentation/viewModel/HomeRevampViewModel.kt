@@ -1276,12 +1276,10 @@ open class HomeRevampViewModel @Inject constructor(
     fun getRechargeRecommendation() {
         if(getRechargeRecommendationJob?.isActive == true) return
         if(!isReminderWidgetAvailable()) return
-        HomeNetworkUtil.increment()
         getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
             getRechargeRecommendationUseCase.get().setParams()
             val data = getRechargeRecommendationUseCase.get().executeOnBackground()
             _rechargeRecommendationLiveData.postValue(Event(data))
-            HomeNetworkUtil.decrement()
         }) {
             removeRechargeRecommendation()
         }
@@ -1291,11 +1289,9 @@ open class HomeRevampViewModel @Inject constructor(
     fun getSalamWidget(){
         if(getSalamWidgetJob?.isActive == true) return
         if(!isReminderWidgetAvailable()) return
-        HomeNetworkUtil.increment()
         getSalamWidgetJob = launchCatchError(coroutineContext,  block = {
             val data = getSalamWidgetUseCase.get().executeOnBackground()
             _salamWidgetLiveData.postValue(Event(data))
-            HomeNetworkUtil.decrement()
         }){
             removeSalamWidget()
         }
@@ -1442,7 +1438,6 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getPopularKeywordData() {
         if(getPopularKeywordJob?.isActive == true) return
-        HomeNetworkUtil.increment()
         getPopularKeywordJob = launchCatchError(coroutineContext, {
             popularKeywordUseCase.get().setParams()
             val results = popularKeywordUseCase.get().executeOnBackground()
@@ -1455,7 +1450,6 @@ open class HomeRevampViewModel @Inject constructor(
                     }
                 }
             }
-            HomeNetworkUtil.decrement()
         }){ throwable ->
             homeVisitableListData.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
                 val oldData = indexedData.value

@@ -5,7 +5,7 @@ import com.tokopedia.home.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 
-class HomeMockResponseConfig: MockModelConfig() {
+internal open class HomeMockResponseConfig: MockModelConfig() {
     companion object {
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL = "homeData"
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_1 = "channel_ids=65312"

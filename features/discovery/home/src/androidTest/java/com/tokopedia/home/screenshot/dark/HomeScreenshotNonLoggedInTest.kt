@@ -1,13 +1,12 @@
-package com.tokopedia.home.screenshot
+package com.tokopedia.home.screenshot.dark
 
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.component.name
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
-import com.tokopedia.home.mock.HomeMockResponseConfig
+import com.tokopedia.home.mock.HomeScreenshotMockResponseConfig
 import com.tokopedia.home.screenshot.HomeScreenshotTestHelper.turnOffAnimation
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.CHOOSE_ADDRESS_ROLLENCE_KEY
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -21,7 +20,6 @@ import com.tokopedia.test.application.espresso_component.CommonActions.takeScree
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import kotlinx.coroutines.cancelChildren
 import org.junit.Rule
 import org.junit.Test
 
@@ -39,8 +37,8 @@ class HomeScreenshotNonLoggedInTest {
             InstrumentationAuthHelper.clearUserSession()
             gtmLogDBSource.deleteAll().subscribe()
             super.beforeActivityLaunched()
-            setupGraphqlMockResponse(HomeMockResponseConfig())
-            setupDarkModeTest(false)
+            setupGraphqlMockResponse(HomeScreenshotMockResponseConfig())
+            setupDarkModeTest(true)
             setupAbTestRemoteConfig()
             disableCoachMark(context)
         }

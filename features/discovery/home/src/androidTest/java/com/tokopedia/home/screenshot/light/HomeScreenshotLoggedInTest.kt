@@ -1,4 +1,4 @@
-package com.tokopedia.home.screenshot
+package com.tokopedia.home.screenshot.light
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +11,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.component.name
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
-import com.tokopedia.home.mock.HomeMockResponseConfig
+import com.tokopedia.home.mock.HomeScreenshotMockResponseConfig
 import com.tokopedia.home.screenshot.HomeScreenshotTestHelper.turnOffAnimation
 import com.tokopedia.home_component.util.HomeNetworkUtil
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
@@ -46,12 +46,11 @@ class HomeScreenshotLoggedInTest {
             InstrumentationAuthHelper.clearUserSession()
             gtmLogDBSource.deleteAll().subscribe()
             super.beforeActivityLaunched()
-            setupGraphqlMockResponse(HomeMockResponseConfig())
+            setupGraphqlMockResponse(HomeScreenshotMockResponseConfig())
             setupDarkModeTest(false)
             setupAbTestRemoteConfig()
             disableCoachMark(context)
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
-            setupIdlingResource()
         }
     }
 
@@ -96,10 +95,7 @@ class HomeScreenshotLoggedInTest {
                 ScreenshotModel(name = "CategoryWidget"),
                 ScreenshotModel(name = "LeftCarousel"),
                 ScreenshotModel(name = "TopCarousel"),
-                ScreenshotModel(name = "DgBills"),
-                ScreenshotModel(name = "HomeWidget2"),
                 ScreenshotModel(name = "PopularKeyword"),
-                ScreenshotModel(name = "SalamTodo"),
                 ScreenshotModel(name = "HomeWidget"),
                 ScreenshotModel(name = "HomeRecommendationSection")
         )
