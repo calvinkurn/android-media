@@ -24,6 +24,20 @@ object GoldMerchantUtil {
         }
     }
 
+    fun totalRangeDays(startDate: String, enDate: String): Int {
+        return try {
+            val simpleDateFormat = SimpleDateFormat(PATTERN_RANGE_DATE_TEXT, DateFormatUtils.DEFAULT_LOCALE)
+            val startDateParse = simpleDateFormat.parse(startDate)
+            val endDateParse = simpleDateFormat.parse(enDate)
+            val diffInMs: Long = abs(startDateParse?.time.orZero() - endDateParse?.time.orZero())
+            val diff = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
+            return diff.toInt()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            0
+        }
+    }
+
     fun isTenureNewSeller(dateString: String): Boolean {
         return (totalDays(dateString) in START_TENURE_EIGHTY_THREE until NEW_SELLER_DAYS)
     }
