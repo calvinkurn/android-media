@@ -14,8 +14,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.bottomsheet.BottomSheetView
-import com.tokopedia.design.bottomsheet.BottomSheetView.BottomSheetField.BottomSheetFieldBuilder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics
@@ -26,6 +24,7 @@ import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder
+import com.tokopedia.topchat.chattemplate.view.dialog.TemplateInfoBottomSheet
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract
 import com.tokopedia.topchat.chattemplate.view.presenter.TemplateChatSettingPresenter
 import com.tokopedia.topchat.common.InboxMessageConstant
@@ -56,7 +55,7 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
     @Inject
     var analytic: ChatTemplateAnalytics? = null
     private var mItemTouchHelper: ItemTouchHelper? = null
-    private var bottomSheetView: BottomSheetView? = null
+    private var templateInfo = TemplateInfoBottomSheet()
     private var isSeller = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,21 +84,7 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
         presenter?.attachView(this)
         presenter?.setMode(isSeller)
         presenter?.getTemplate()
-        setBottomSheetDialog()
         return rootView
-    }
-
-    private fun setBottomSheetDialog() {
-        activity?.let {
-            bottomSheetView = BottomSheetView(it)
-            bottomSheetView?.setTitleTextSize(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl3))
-            bottomSheetView?.setBodyTextSize(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl3))
-            bottomSheetView?.renderBottomSheet(BottomSheetFieldBuilder()
-                    .setTitle(it.getString(R.string.title_info_list_template))
-                    .setBody(it.getString(R.string.body_info_list_template))
-                    .setImg(R.drawable.drag_edit)
-                    .build())
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -122,7 +107,9 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
                 templateContainer?.visibility = View.GONE
             }
         }
-        info?.setOnClickListener { bottomSheetView?.show() }
+        info?.setOnClickListener {
+            templateInfo.show(childFragmentManager, TemplateInfoBottomSheet::class.simpleName)
+        }
     }
 
     override fun onDestroyView() {
