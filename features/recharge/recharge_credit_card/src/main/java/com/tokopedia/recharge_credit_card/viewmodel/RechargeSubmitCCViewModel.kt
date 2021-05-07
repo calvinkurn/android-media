@@ -110,6 +110,7 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
         const val PARAM_ACTION = "action"
         const val VALUE_ACTION = "init_data"
         const val PARAM_PCIDSS = "pcidss_signature"
+        const val PARAM_TOKEN = "token"
 
         const val ERROR_DEFAULT = "Terjadi kesalahan, silakan ulangi beberapa saat lagi"
 

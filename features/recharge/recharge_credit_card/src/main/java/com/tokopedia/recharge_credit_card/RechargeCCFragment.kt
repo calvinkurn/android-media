@@ -22,6 +22,10 @@ import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_IDENTIFIER
+import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_OPERATOR_ID
+import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_PRODUCT_ID
+import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_SIGNATURE
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.bottomsheet.CCBankListBottomSheet
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
@@ -132,8 +136,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
             categoryId = it.getString(CATEGORY_ID, "")
             menuId = it.getString(MENU_ID, "")
             val signature = it.getString(PARAM_SIGNATURE) ?: ""
-            val token = it.getString(PARAM_TOKEN) ?: ""
-            if (signature.isNotEmpty() && token.isNotEmpty()) {
+            val identifier = it.getString(PARAM_IDENTIFIER) ?: ""
+            if (signature.isNotEmpty() && identifier.isNotEmpty()) {
                 instantCheckout()
             }
         }
@@ -270,10 +274,12 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 val signature = it.getString(PARAM_SIGNATURE) ?: ""
                 val operatorId = it.getString(PARAM_OPERATOR_ID) ?: ""
                 val productId = it.getString(PARAM_PRODUCT_ID) ?: ""
+                val identifier = it.getString(PARAM_IDENTIFIER) ?: ""
 
                 val mapParam = rechargeSubmitCCViewModel.createMapParam("",
                         operatorId, productId, userSession.userId)
                 mapParam[RechargeSubmitCCViewModel.PARAM_PCIDSS] = signature
+                mapParam[RechargeSubmitCCViewModel.PARAM_TOKEN] = identifier
 
                 rechargeSubmitCCViewModel.submitCreditCard(mapParam)
             }
@@ -369,10 +375,6 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
         private const val CATEGORY_ID = "category_id"
         private const val MENU_ID = "menu_id"
-        private const val PARAM_SIGNATURE = "signature"
-        private const val PARAM_TOKEN = "token"
-        private const val PARAM_OPERATOR_ID = "operator_id"
-        private const val PARAM_PRODUCT_ID = "product_id"
 
         const val RECHARGE_CC_PAGE_PERFORMANCE = "dg_tagihan_cc_pdp"
 
@@ -381,7 +383,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_LOGIN_INSTANT_CHECKOUT = 1020
 
         fun newInstance(categoryId: String, menuId: String, operatorId: String, productId: String,
-                        signature: String, token: String): Fragment {
+                        signature: String, identifier: String): Fragment {
             val fragment = RechargeCCFragment()
             val bundle = Bundle()
             bundle.putString(CATEGORY_ID, categoryId)
@@ -389,7 +391,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
             bundle.putString(PARAM_OPERATOR_ID, operatorId)
             bundle.putString(PARAM_PRODUCT_ID, productId)
             bundle.putString(PARAM_SIGNATURE, signature)
-            bundle.putString(PARAM_TOKEN, token)
+            bundle.putString(PARAM_IDENTIFIER, identifier)
             fragment.arguments = bundle
             return fragment
         }
