@@ -81,7 +81,7 @@ class SellerReviewListViewModel @Inject constructor(
         return getProductRatingOverallUseCase.executeOnBackground()
     }
 
-    private suspend fun getProductReviewList(sortBy: String, filterBy: String, page: Int = 1): Pair<Boolean, List<ProductReviewUiModel>> {
+    private suspend fun getProductReviewList(sortBy: String, filterBy: String, page: Int): Pair<Boolean, List<ProductReviewUiModel>> {
         getReviewProductListUseCase.params = GetReviewProductListUseCase.createParams(
                 sortBy,
                 filterBy,

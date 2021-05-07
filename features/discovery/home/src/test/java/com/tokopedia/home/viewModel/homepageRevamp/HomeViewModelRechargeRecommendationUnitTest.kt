@@ -10,9 +10,6 @@ import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
-import com.tokopedia.home.viewModel.homepage.givenDeclineRechargeRecommendationUseCase
-import com.tokopedia.home.viewModel.homepage.givenGetRechargeRecommendationThrowReturn
-import com.tokopedia.home.viewModel.homepage.givenGetRechargeRecommendationUseCase
 import com.tokopedia.home_component.model.ReminderData
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.model.ReminderWidget

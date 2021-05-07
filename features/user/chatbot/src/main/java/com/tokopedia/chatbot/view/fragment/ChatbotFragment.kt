@@ -417,7 +417,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return {
 
             val list = it.listChat.filter {
-                !(it is FallbackAttachmentViewModel && it.message.isEmpty())
+                !((it is FallbackAttachmentViewModel && it.message.isEmpty()) ||
+                        (it is MessageViewModel && it.message.isEmpty()))
             }
 
             updateViewData(it)
@@ -431,7 +432,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
         return {
             val list = it.listChat.filter {
-                !(it is FallbackAttachmentViewModel && it.message.isEmpty())
+                !((it is FallbackAttachmentViewModel && it.message.isEmpty()) ||
+                        (it is MessageViewModel && it.message.isEmpty()))
             }
             renderList(list, it.canLoadMore)
             checkShowLoading(it.canLoadMore)
@@ -463,15 +465,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
         sendEventForWelcomeMessage(visitable)
         manageActionBubble(visitable)
-        manageInvoiceList(visitable)
+        managePreviousStateOfBubble(visitable)
         mapMessageToList(visitable)
         getViewState().hideEmptyMessage(visitable)
         getViewState().onCheckToHideQuickReply(visitable)
     }
 
-    private fun manageInvoiceList(visitable: Visitable<*>) {
+    private fun managePreviousStateOfBubble(visitable: Visitable<*>) {
         if(visitable is MessageViewModel && visitable.isSender){
             getViewState().hideInvoiceList()
+            getViewState().hideHelpfullOptions()
         }
     }
 
