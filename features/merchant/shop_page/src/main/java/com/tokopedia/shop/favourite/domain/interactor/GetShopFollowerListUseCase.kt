@@ -15,20 +15,35 @@ import javax.inject.Named
  */
 
 class GetShopFollowerListUseCase @Inject constructor(
-        @Named(QUERY_SHOP_FOLLOWER_LIST) private val query: String,
         private val graphqlUseCase: MultiRequestGraphqlUseCase,
         private val dispatchers: CoroutineDispatchers
 ) : UseCase<GetShopFollowerListData>() {
 
     companion object {
 
-        const val QUERY_SHOP_FOLLOWER_LIST = "query_shop_follower_list"
-
         private const val PARAM_SHOP_ID = "shopId"
         private const val PARAM_PAGE = "page"
         private const val PARAM_PER_PAGE = "perPage"
-
         private const val PER_PAGE = 20
+        private val shopId = "\$shopId"
+        private val page = "\$page"
+        private val perPage = "\$perPage"
+        private val query: String = """
+            query GetShopFollowerList($shopId: String!, $page: Int, $perPage: Int) {
+              shopFollowerList(shopID: $shopId, page: $page, perPage: $perPage) {
+                data {
+                  followerID
+                  followerName
+                  profileURL
+                  photo
+                }
+                haveNext
+                error {
+                  message
+                }
+              }
+            }
+        """.trimIndent()
     }
 
     override suspend fun executeOnBackground(): GetShopFollowerListData = withContext(dispatchers.io) {

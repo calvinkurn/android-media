@@ -12,4 +12,7 @@
     <string name="shopwidget_shop_voucher_cashback_rb">%srb</string>
     <string name="shopwidget_shop_see_shop_button">Lihat Toko</string>
 
+    <string name="content_desc_shopWidgetImageViewShopAvatar">shop widget shop avatar</string>
+    <string name="content_desc_shopWidgetImageViewShopBadge">shop widget shop badge</string>
+    <string name="content_desc_shopWidgetImageViewShopReputation">shop widget shop reputation</string>
 </resources>

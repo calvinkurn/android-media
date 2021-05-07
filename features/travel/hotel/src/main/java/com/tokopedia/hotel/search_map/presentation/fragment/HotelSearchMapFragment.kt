@@ -21,7 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -114,7 +114,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
-    private val snapHelper: SnapHelper = LinearSnapHelper()
+    private val snapHelper: SnapHelper = PagerSnapHelper()
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -144,6 +144,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             val selectedParam = it.getParcelable(ARG_FILTER_PARAM) ?: ParamFilterV2()
             if (selectedParam.name.isNotEmpty()) {
                 hotelSearchMapViewModel.addFilter(listOf(selectedParam), false)
+            }
+
+            val selectedSort = it.getString(ARG_SORT_PARAM) ?: ""
+            if (selectedSort.isNotEmpty()) {
+                hotelSearchMapViewModel.selectedSort = Sort(selectedSort)
             }
 
             hotelSearchModel = it.getParcelable(ARG_HOTEL_SEARCH_MODEL) ?: HotelSearchModel()
@@ -305,8 +310,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         super.loadInitialData()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_hotel_search_map, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val viewRoot = inflater.inflate(R.layout.fragment_hotel_search_map, container, false)
+        viewRoot.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        return viewRoot
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -346,6 +354,19 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 cardListPosition = it.tag as Int
                 rvHorizontalPropertiesHotelSearchMap.scrollToPosition(cardListPosition)
                 changeMarkerState(cardListPosition)
+                if (cardListPosition != -1 &&
+                        cardListPosition != lastHorizontalTrackingPositionSent &&
+                        adapterCardList.data[cardListPosition] is Property && !adapterCardList.data.isNullOrEmpty()) {
+
+                    lastHorizontalTrackingPositionSent = cardListPosition
+                    trackingHotelUtil.hotelViewHotelListMapImpression(context,
+                            searchDestinationName,
+                            searchDestinationType,
+                            hotelSearchMapViewModel.searchParam,
+                            listOf(adapterCardList.data[cardListPosition]),
+                            cardListPosition,
+                            SEARCH_SCREEN_NAME)
+                }
             }
         }
         return true
@@ -679,7 +700,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                             searchDestinationType,
                             hotelSearchMapViewModel.searchParam,
                             listOf(adapterCardList.data[currentPosition]),
-                            0,
+                            currentPosition,
                             SEARCH_SCREEN_NAME)
 
                 }
@@ -741,7 +762,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             val textView = Typography(it)
             textView.apply {
                 setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
-                setTextColor(ContextCompat.getColor(context, R.color.hotel_color_active_price_marker))
+                setTextColor(ContextCompat.getColor(context, R.color.hotel_dms_active_price_marker_color))
                 text = getString(R.string.hotel_search_map_around_here)
             }
             wrapper.addView(textView)
@@ -1269,7 +1290,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             val textView = Typography(it)
             textView.apply {
                 setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
-                setTextColor(ContextCompat.getColor(context, R.color.hotel_color_active_price_marker))
+                setTextColor(ContextCompat.getColor(context, R.color.hotel_dms_active_price_marker_color))
                 text = getString(R.string.hotel_search_map_search_with_map)
             }
             wrapper.addView(textView)
@@ -1365,6 +1386,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         const val ARG_HOTEL_SEARCH_MODEL = "arg_hotel_search_model"
         private const val ARG_FILTER_PARAM = "arg_hotel_filter_param"
+        private const val ARG_SORT_PARAM = "arg_hotel_sort_param"
 
         const val SELECTED_POSITION_INIT = 0
         const val DELAY_BUTTON_RADIUS: Long = 1000L
@@ -1378,11 +1400,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val PREFERENCES_NAME = "hotel_search_map_preferences"
         private const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
 
-        fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchMapFragment =
+        fun createInstance(hotelSearchModel: HotelSearchModel,
+                           selectedParam: ParamFilterV2,
+                           selectedSort: String): HotelSearchMapFragment =
                 HotelSearchMapFragment().also {
                     it.arguments = Bundle().apply {
                         putParcelable(ARG_HOTEL_SEARCH_MODEL, hotelSearchModel)
                         putParcelable(ARG_FILTER_PARAM, selectedParam)
+                        putString(ARG_SORT_PARAM, selectedSort)
                     }
                 }
     }
