@@ -2118,7 +2118,7 @@ private fun testAddToCartButtonNonVariantWithQuantity(): ProductCardModelMatcher
     val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
 
     val productCardModel = ProductCardModel(
-            productName = "Add to Cart Button from Non Variant",
+            productName = "Add to Cart Button from Non Variant with Quantity",
             productImageUrl = productImageUrl,
             formattedPrice = "Rp7.999.000",
             shopBadgeList = mutableListOf<ShopBadge>().also { badges ->

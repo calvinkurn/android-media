@@ -92,6 +92,14 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         quantityEditorNonVariant?.setValueChangedListener(addValueChangedListener)
     }
 
+    fun setQuantityEditorNonVariantAddClickListener(addClickListener: () -> Unit) {
+        quantityEditorNonVariant?.setAddClickListener(addClickListener)
+    }
+
+    fun setQuantityEditorNonVariantSubtractListener(subtractListener: () -> Unit) {
+        quantityEditorNonVariant?.setSubstractListener(subtractListener)
+    }
+
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
 
     override fun getCardRadius() = cardViewProductCard?.radius ?: 0f
@@ -130,7 +138,11 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     private fun renderQuantityEditorNonVariant(productCardModel: ProductCardModel) {
         quantityEditorNonVariant?.shouldShowWithAction(productCardModel.shouldShowQuantityEditor()) {
-            productCardModel.nonVariant?.let { quantityEditorNonVariant?.setValue(it.quantity) }
+            productCardModel.nonVariant?.let {
+                quantityEditorNonVariant?.setValue(it.quantity)
+                quantityEditorNonVariant?.maxValue = it.maxQuantity
+                quantityEditorNonVariant?.minValue = it.minQuantity
+            }
         }
     }
 
