@@ -30,7 +30,7 @@
     <color name="tp_nonlogin_container_color">#03ac0e</color>
     <color name="tp_bg_progress_timer">#ffeaef</color>
     <color name="tp_new_coupon_background_color">#d6ffde</color>
-    <color name="tp_textcolor_dynamic_action">#AD31353B</color>
+    <color name="tp_textcolor_dynamic_action">@color/Unify_N700_68</color>
     <color name="tp_catalog_code_error_textclr">#A8A9AC</color>
     <color name="tp_section_category_sub_color">#B9BABC</color>
     <color name="tp_green_token">#afd564</color>

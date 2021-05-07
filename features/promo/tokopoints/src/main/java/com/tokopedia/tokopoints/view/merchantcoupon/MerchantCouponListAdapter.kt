@@ -1,6 +1,10 @@
 package com.tokopedia.tokopoints.view.merchantcoupon
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +12,9 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
@@ -40,6 +46,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
         var ivCouponTwo: ImageUnify = view.findViewById(R.id.iv_coupon2)
         var productParentOne: ConstraintLayout = view.findViewById(R.id.container_coupon1)
         var productParentTwo: ConstraintLayout = view.findViewById(R.id.container_coupon2)
+        var parentContainer: ConstraintLayout = view.findViewById(R.id.parent_container)
         var tvShopName = view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_shop_name)
         var tvCashBackTitle = view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_cashback_title)
         var tvCashBackValue = view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_cashback_value)
@@ -79,6 +86,11 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
                 if (!item?.products?.get(0)?.benefitLabel.isNullOrEmpty()) {
                     vh.tvDealsCouponOne.show()
                     vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
+                    if (isDarkMode(vh.tvDealsCouponOne.context)) {
+                        setStrokeColor(vh.ivCouponOne)
+                    }
+                } else {
+                    vh.tvDealsCouponOne.hide()
                 }
             }
 
@@ -92,6 +104,11 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
                 if (!item?.products?.get(1)?.benefitLabel.isNullOrEmpty()) {
                     vh.tvDealsCouponTwo.show()
                     vh.tvDealsCouponTwo.text = item?.products?.get(1)?.benefitLabel
+                    if (isDarkMode(vh.tvDealsCouponTwo.context)) {
+                        setStrokeColor(vh.tvDealsCouponTwo)
+                    }
+                } else {
+                    vh.tvDealsCouponTwo.hide()
                 }
                 vh.productParentOne.show()
                 item?.products?.get(0)?.imageURL?.let {
@@ -102,6 +119,11 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
                 if (!item?.products?.get(0)?.benefitLabel.isNullOrEmpty()) {
                     vh.tvDealsCouponOne.show()
                     vh.tvDealsCouponOne.text = item?.products?.get(0)?.benefitLabel
+                    if (isDarkMode(vh.tvDealsCouponOne.context)) {
+                        setStrokeColor(vh.tvDealsCouponOne)
+                    }
+                } else {
+                    vh.tvDealsCouponOne.hide()
                 }
             }
         }
@@ -113,10 +135,8 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
         vh.tvCouponCount.text = item?.subtitle
 
         if (isDarkMode(vh.itemView.context)) {
-            vh.tvShopName.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black))
-            vh.tvCashBackTitle.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            vh.tvCashBackValue.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black))
-            vh.tvCouponCount.setTextColor(ContextCompat.getColor(vh.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            vh.parentContainer.background.colorFilter = PorterDuffColorFilter(MethodChecker.getColor(vh.parentContainer.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), PorterDuff.Mode.SRC_IN)
         }
 
         vh.tvShopName.setOnClickListener {
@@ -161,6 +181,12 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
 
     fun onError() {
         loadCompletedWithError()
+    }
+
+    fun setStrokeColor(view: View) {
+        val drawable = view.getBackground() as GradientDrawable
+        drawable.setStroke(view.context.resources.getDimensionPixelSize(R.dimen.tp_padding_xxsmall), ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+        (view as com.tokopedia.unifyprinciples.Typography).setTextColor(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
     }
 
     fun shopClickListener(vh: CouponListViewHolder, item: CatalogMVCWithProductsListItem?) {
