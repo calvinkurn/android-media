@@ -50,8 +50,11 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
-        buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
-        buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
+        renderButtonAddToCart(productCardModel)
+
+        renderQuantityEditorNonVariant(productCardModel)
+
+        renderVariant(productCardModel)
 
         buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
@@ -79,6 +82,14 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
         buttonNotify?.setOnClickListener(notifyMeClickListener)
+    }
+
+    fun setButtonAddVariantClickListener(addVariantClickListener: (View) -> Unit) {
+        buttonAddVariant?.setOnClickListener(addVariantClickListener)
+    }
+
+    fun setQuantityEditorNonVariantValueChangedListener(addValueChangedListener: (newValue: Int, oldValue: Int, isOver: Int?) -> Unit) {
+        quantityEditorNonVariant?.setValueChangedListener(addValueChangedListener)
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
@@ -109,6 +120,64 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         } else {
             outOfStockOverlay?.gone()
         }
+    }
+
+    private fun renderButtonAddToCart(productCardModel: ProductCardModel) {
+        buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton || productCardModel.shouldShowAddToCartNonVariantQuantity())
+        if (productCardModel.shouldShowAddToCartNonVariantQuantity()) buttonAddToCart?.buttonType = UnifyButton.Type.MAIN
+        else buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
+    }
+
+    private fun renderQuantityEditorNonVariant(productCardModel: ProductCardModel) {
+        quantityEditorNonVariant?.shouldShowWithAction(productCardModel.shouldShowQuantityEditor()) {
+            productCardModel.nonVariant?.let { quantityEditorNonVariant?.setValue(it.quantity) }
+        }
+    }
+
+    private fun renderVariant(productCardModel: ProductCardModel) {
+        setButtonAddVariantMargin(productCardModel)
+
+        buttonAddVariant?.shouldShowWithAction(productCardModel.hasVariant()) {
+            renderButtonAddVariant(productCardModel)
+        }
+
+        textVariantQuantity?.shouldShowWithAction(productCardModel.hasVariantWithQuantity()) {
+            productCardModel.variant?.let { renderTextVariantQuantity(it.quantity) }
+        }
+
+        dividerVariantQuantity?.showWithCondition(productCardModel.hasVariantWithQuantity())
+    }
+
+    private fun setButtonAddVariantMargin(productCardModel: ProductCardModel) {
+        val resources = context.resources
+        var startMargin = 0
+        var topMargin = 0
+
+        if (productCardModel.hasVariantWithQuantity()) {
+            startMargin = resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_with_quantity_margin_start)
+            topMargin = resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_with_quantity_margin_top)
+        }
+        else {
+            startMargin = resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_start)
+            topMargin = resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_top)
+        }
+
+        buttonAddVariant?.setMargin(
+                startMargin,
+                topMargin,
+                resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_end),
+                resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_bottom)
+        )
+    }
+
+    private fun renderButtonAddVariant(productCardModel: ProductCardModel) {
+        if (productCardModel.hasVariantWithQuantity()) buttonAddVariant?.text = context.getString(R.string.product_card_text_add_other_variant_grid)
+        else buttonAddVariant?.text = context.getString(R.string.product_card_text_add_variant_grid)
+    }
+
+    private fun renderTextVariantQuantity(quantity: Int) {
+        if (quantity > 99) textVariantQuantity?.text = context.getString(R.string.product_card_text_variant_quantity_grid)
+        else textVariantQuantity?.text = "$quantity pcs"
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots

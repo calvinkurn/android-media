@@ -52,6 +52,8 @@ data class ProductCardModel (
         val labelGroupVariantList: List<LabelGroupVariant> = listOf(),
         val addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
         val isWideContent: Boolean = false,
+        val variant: Variant? = null,
+        val nonVariant: NonVariant? = null,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -99,6 +101,32 @@ data class ProductCardModel (
         fun isColor() = typeVariant == TYPE_VARIANT_COLOR
         fun isSize() = typeVariant == TYPE_VARIANT_SIZE
         fun isCustom() = typeVariant == TYPE_VARIANT_CUSTOM
+    }
+
+    data class Variant(
+            val quantity: Int = 0,
+    )
+
+    fun hasVariant(): Boolean {
+        return variant != null
+    }
+
+    fun hasVariantWithQuantity(): Boolean {
+        return variant != null && variant.quantity > 0
+    }
+
+    data class NonVariant(
+            val quantity: Int = 0,
+            val minQuantity: Int = 0,
+            val maxQuantity: Int = 0,
+    )
+
+    fun shouldShowAddToCartNonVariantQuantity(): Boolean {
+        return nonVariant != null && nonVariant.quantity == 0
+    }
+
+    fun shouldShowQuantityEditor(): Boolean {
+        return nonVariant != null && nonVariant.quantity > 0
     }
 
     fun getLabelProductStatus(): LabelGroup? {
