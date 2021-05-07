@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.createreputation.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -21,14 +22,15 @@ class CreateReviewProgressBar : BaseCustomView {
     private var progressBar: ProgressBarUnify? = null
     private var progressBarText: Typography? = null
 
-    constructor(context: Context): super(context) {
-        init()
-    }
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs) {
+    constructor(context: Context) : super(context) {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+        init()
+    }
+
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init()
     }
 
@@ -43,7 +45,7 @@ class CreateReviewProgressBar : BaseCustomView {
         when {
             progress.isComplete() -> {
                 setCompleteProgress()
-                if(progress.isGoodRating) {
+                if (progress.isGoodRating) {
                     setGoodRatingCompleteText()
                     return
                 }
@@ -51,7 +53,7 @@ class CreateReviewProgressBar : BaseCustomView {
             }
             progress.isNeedPhoto() -> {
                 setPartiallyCompleteProgress()
-                if(progress.isGoodRating) {
+                if (progress.isGoodRating) {
                     setGoodRatingNeedPhotoText()
                     return
                 }
@@ -59,7 +61,7 @@ class CreateReviewProgressBar : BaseCustomView {
             }
             progress.isNeedReview() -> {
                 setPartiallyCompleteProgress()
-                if(progress.isGoodRating) {
+                if (progress.isGoodRating) {
                     setGoodRatingNeedReviewText()
                     return
                 }
@@ -67,7 +69,7 @@ class CreateReviewProgressBar : BaseCustomView {
             }
             else -> {
                 setEmptyProgress()
-                if(progress.isGoodRating) {
+                if (progress.isGoodRating) {
                     setGoodRatingEmptyText()
                     return
                 }
@@ -77,15 +79,24 @@ class CreateReviewProgressBar : BaseCustomView {
     }
 
     private fun setEmptyProgress() {
-        progressBar?.setValue(EMPTY_PROGRESS)
+        progressBar?.apply {
+            setValue(EMPTY_PROGRESS)
+            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y400), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y400))
+        }
     }
 
     private fun setPartiallyCompleteProgress() {
-        progressBar?.setValue(PARTIALLY_COMPLETE_PROGRESS)
+        progressBar?.apply {
+            setValue(PARTIALLY_COMPLETE_PROGRESS)
+            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300))
+        }
     }
 
     private fun setCompleteProgress() {
-        progressBar?.setValue(COMPLETE_PROGRESS)
+        progressBar?.apply {
+            setValue(COMPLETE_PROGRESS)
+            progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400))
+        }
     }
 
     private fun setGoodRatingCompleteText() {
@@ -105,18 +116,18 @@ class CreateReviewProgressBar : BaseCustomView {
     }
 
     private fun setBadRatingCompleteText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_good_complete)
+        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_complete)
     }
 
     private fun setBadRatingNeedPhotoText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_good_need_photo)
+        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_photo)
     }
 
     private fun setBadRatingNeedReviewText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_good_need_text)
+        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_text)
     }
 
     private fun setBadRatingEmptyText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_good_complete)
+        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_empty)
     }
 }

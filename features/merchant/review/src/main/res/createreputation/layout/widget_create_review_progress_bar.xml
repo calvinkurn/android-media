@@ -2,6 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingStart="@dimen/layout_lvl2"
+    android:paddingEnd="@dimen/layout_lvl2"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -17,14 +19,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:layout_constraintStart_toStartOf="parent"
-        app:unify_progress_bar_from_color="@color/Unify_Y400"
-        app:unify_progress_bar_to_color="@color/Unify_G500"
         app:layout_constraintTop_toBottomOf="@id/review_form_progress_bar_divider"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/review_form_progress_bar_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
         app:layout_constraintTop_toBottomOf="@id/review_form_progress_bar"
         tools:text="Makin lengkap, makin mantap 👍"/>
 

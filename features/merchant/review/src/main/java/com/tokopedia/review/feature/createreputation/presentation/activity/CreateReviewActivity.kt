@@ -176,7 +176,7 @@ class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, Rev
     }
 
     private fun showWriteFormBottomSheet() {
-        val bottomSheet = CreateReviewBottomSheet.createInstance(productId.toLongOrZero(), reputationId.toLongOrZero(), feedbackId)
+        val bottomSheet = CreateReviewBottomSheet.createInstance(rating, productId.toLongOrZero(), reputationId.toLongOrZero(), feedbackId, utmSource, isEditMode)
         bottomSheet.apply {
             isDragable = true
             isHideable = true
@@ -185,9 +185,6 @@ class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, Rev
             show(supportFragmentManager, "BottomSheet Tag")
             setShowListener {
                 bottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
-            }
-            setOnDismissListener {
-                finish()
             }
         }
     }

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -39,19 +38,24 @@ import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListen
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_create_review.*
 import javax.inject.Inject
 
 class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAreaListener, ImageClickListener {
 
     companion object {
-        fun createInstance(productId: Long, reputationId: Long, feedbackId: Long): CreateReviewBottomSheet {
+        fun createInstance(rating: Int, productId: Long, reputationId: Long, feedbackId: Long, utmSource: String, isEditMode: Boolean): CreateReviewBottomSheet {
             return CreateReviewBottomSheet().apply {
+                this.rating = rating
                 this.productId = productId
                 this.reputationId = reputationId
                 this.feedbackId = feedbackId
+                this.utmSource = utmSource
+                this.isEditMode = isEditMode
             }
         }
     }
@@ -61,7 +65,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     // View Elements
     private var productCard: CreateReviewProductCard? = null
-    private var ratingPrompt: Typography? = null
     private var ratingStars: AnimatedRatingPickerCreateReviewView? = null
     private var incentivesContainer: View? = null
     private var incentivesLabel: Label? = null
@@ -75,12 +78,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var submitButton: UnifyButton? = null
     private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
 
+    private var rating: Int = 0
     private var productId: Long = 0L
     private var reputationId: Long = 0L
     private var feedbackId: Long = 0L
     private var isEditMode: Boolean = false
-
-    private var isFirstTimeClickRating: Boolean = true
+    private var utmSource: String = ""
 
     private val imageAdapter: ImageReviewAdapter by lazy {
         ImageReviewAdapter(this)
@@ -102,11 +105,17 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         bindViews()
         observeGetForm()
         observeIncentive()
+        observeButtonState()
+        observeProgressBarState()
         getForm()
         getIncentiveOvoData()
-        setRatingInitialState()
         setRatingClickListener()
         setAddPhotoOnClickListener()
+        setSubmitButtonOnClickListener()
+        setTextAreaListener()
+        setDismissBehavior()
+        setPaddings()
+        setRatingInitialState()
     }
 
     override fun onUrlClicked(url: String): Boolean {
@@ -150,7 +159,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     override fun onTextChanged(textLength: Int) {
-        // No Op
+        val isNotEmpty = textLength != 0
+        createReviewViewModel.updateButtonState(isNotEmpty)
+        createReviewViewModel.updateProgressBarFromTextArea(isNotEmpty)
     }
 
     override fun hideText() {
@@ -182,7 +193,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun bindViews() {
         productCard = view?.findViewById(R.id.review_form_product_card)
-        ratingPrompt = view?.findViewById(R.id.review_form_rating_prompt)
         ratingStars = view?.findViewById(R.id.review_form_rating)
         incentivesContainer = view?.findViewById(R.id.review_form_incentives_container)
         incentivesLabel = view?.findViewById(R.id.review_form_incentives_label)
@@ -199,38 +209,20 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         ratingStars?.setListener(object : AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
             override fun onClick(position: Int) {
                 super.onClick(position)
-                if(isFirstTimeClickRating) {
-                    hideRatingPrompt()
-                    showAllViews()
-                    expandBottomSheet()
-                    updateTitleBasedOnSelectedRating(position)
-
-                    isFirstTimeClickRating = false
-                }
+                updateTitleBasedOnSelectedRating(position)
+                val isGoodRating = isGoodRating()
+                createReviewViewModel.updateButtonState(isGoodRating)
+                createReviewViewModel.updateProgressBarFromRating(isGoodRating)
             }
         })
     }
 
     private fun setRatingInitialState() {
-        ratingStars?.resetStars()
-    }
-
-    private fun showAllViews() {
-        incentivesContainer?.show()
-        textAreaTitle?.show()
-        textArea?.show()
-        addPhoto?.show()
-        anonymousOption?.show()
-        progressBar?.show()
-        submitButton?.show()
-    }
-
-    private fun hideRatingPrompt() {
-        ratingPrompt?.hide()
-    }
-
-    private fun expandBottomSheet() {
-        bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        ratingStars?.apply {
+            resetStars()
+            renderInitialReviewWithData(rating)
+        }
+        updateTitleBasedOnSelectedRating(rating)
     }
 
     private fun getForm() {
@@ -260,6 +252,18 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 is Success -> onSuccessGetOvoIncentive(it.data)
                 is Fail -> onFailGetOvoIncentive(it.throwable)
             }
+        })
+    }
+
+    private fun observeButtonState() {
+        createReviewViewModel.submitButtonState.observe(viewLifecycleOwner, Observer {
+            submitButton?.isEnabled = it
+        })
+    }
+
+    private fun observeProgressBarState() {
+        createReviewViewModel.progressBarState.observe(viewLifecycleOwner, Observer {
+            progressBar?.setProgressBarValue(it)
         })
     }
 
@@ -313,6 +317,16 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         addPhoto?.setOnClickListener {
             goToImagePicker()
         }
+    }
+
+    private fun setSubmitButtonOnClickListener() {
+        submitButton?.setOnClickListener {
+            submitNewReview()
+        }
+    }
+
+    private fun setTextAreaListener() {
+        textArea?.setListener(this)
     }
 
     private fun goToPdp() {
@@ -376,5 +390,25 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         textArea?.clearFocus()
         val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    private fun submitNewReview() {
+        val reviewMessage = createReviewExpandableTextArea.getText()
+        createReviewViewModel.submitReview(ratingStars?.getReviewClickAt()
+                ?: 0, reviewMessage, anonymousOption?.isChecked() ?: false, utmSource)
+    }
+
+    private fun isGoodRating(): Boolean {
+        return ratingStars?.clickAt ?: 0 > 3
+    }
+
+    private fun setDismissBehavior() {
+        setOnDismissListener {
+            activity?.finish()
+        }
+    }
+
+    private fun setPaddings() {
+        bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
     }
 }

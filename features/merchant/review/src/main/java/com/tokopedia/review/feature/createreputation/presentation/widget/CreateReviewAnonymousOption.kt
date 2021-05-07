@@ -27,4 +27,8 @@ class CreateReviewAnonymousOption : BaseCustomView {
         View.inflate(context, R.layout.widget_create_review_anonymous_option, this)
         checkbox = findViewById(R.id.review_form_anonymous_checkbox)
     }
+
+    fun isChecked(): Boolean {
+        return checkbox?.isChecked ?: false
+    }
 }

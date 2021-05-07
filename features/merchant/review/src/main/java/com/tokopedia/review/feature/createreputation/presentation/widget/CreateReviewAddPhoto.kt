@@ -5,12 +5,9 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.review.R
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
 
 class CreateReviewAddPhoto : BaseCustomView {
-
-    private var checkbox: CheckboxUnify? = null
 
     constructor(context: Context): super(context) {
         init()

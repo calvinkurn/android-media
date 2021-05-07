@@ -15,6 +15,7 @@ import com.tokopedia.review.feature.createreputation.model.DefaultImageReviewUiM
 import com.tokopedia.review.feature.createreputation.model.ImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.presentation.mapper.CreateReviewImageMapper
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -67,6 +68,14 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val reviewTemplates: LiveData<Result<List<String>>>
         get() = _reviewTemplates
 
+    private val _submitButtonState = MutableLiveData<Boolean>(false)
+    val submitButtonState: LiveData<Boolean>
+        get() = _submitButtonState
+
+    private val _progressBarState = MutableLiveData<CreateReviewProgressBarState>(CreateReviewProgressBarState())
+    val progressBarState: LiveData<CreateReviewProgressBarState>
+        get() =  _progressBarState
+
     fun submitReview(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
                      reviewText: String, isAnonymous: Boolean, utmSource: String) {
         _submitReviewResult.postValue(LoadingView())
@@ -74,6 +83,17 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             sendReviewWithoutImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, utmSource)
         } else {
             sendReviewWithImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, getSelectedImagesUrl(), utmSource)
+        }
+    }
+
+    fun submitReview(rating: Int, reviewText: String, isAnonymous: Boolean, utmSource: String) {
+        (reputationDataForm.value as? CoroutineSuccess)?.data?.productrevGetForm?.let {
+            _submitReviewResult.postValue(LoadingView())
+            if (imageData.isEmpty()) {
+                sendReviewWithoutImage(reputationId = it.reputationID, productId = it.productData.productID, shopId = it.shopData.shopID, rating = rating, reviewText = reviewText, isAnonymous = isAnonymous, utmSource = utmSource)
+            } else {
+                sendReviewWithImage(reputationId = it.reputationID, productId = it.productData.productID, shopId = it.shopData.shopID, rating = rating, reviewText = reviewText, isAnonymous = isAnonymous, listOfImages = getSelectedImagesUrl(), utmSource = utmSource)
+            }
         }
     }
 
@@ -211,6 +231,22 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
+    fun updateButtonState(isEnabled: Boolean) {
+        _submitButtonState.value = _submitButtonState.value ?: false && isEnabled
+    }
+
+    fun updateProgressBarFromRating(isGoodRating: Boolean) {
+        _progressBarState.value = _progressBarState.value?.copy(isGoodRating = isGoodRating)
+    }
+
+    fun updateProgressBarFromPhotos() {
+        _progressBarState.value = _progressBarState.value?.copy(isPhotosFilled = isImageNotEmpty())
+    }
+
+    fun updateProgressBarFromTextArea(isNotEmpty: Boolean) {
+        _progressBarState.value = _progressBarState.value?.copy(isTextAreaFilled = isNotEmpty)
+    }
+
     fun getUserName(): String {
         return userSessionInterface.name
     }
@@ -219,7 +255,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         return (incentiveOvo.value as? com.tokopedia.usecase.coroutines.Success)?.data?.productrevIncentiveOvo != null
     }
 
-    private fun sendReviewWithoutImage(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
+    private fun sendReviewWithoutImage(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int = 0, rating: Int,
                                        reviewText: String, isAnonymous: Boolean, utmSource: String) {
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
@@ -239,7 +275,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    private fun sendReviewWithImage(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
+    private fun sendReviewWithImage(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int = 0, rating: Int,
                                     reviewText: String, isAnonymous: Boolean, listOfImages: List<String>, utmSource: String) {
         val uploadIdList: ArrayList<String> = ArrayList()
         launchCatchError(block = {
