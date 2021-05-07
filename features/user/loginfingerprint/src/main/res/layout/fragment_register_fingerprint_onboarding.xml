@@ -12,8 +12,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/loginfingerprint_225"
+        android:layout_height="@dimen/loginfingerprint_180"
         android:layout_marginTop="@dimen/spacing_lvl5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
