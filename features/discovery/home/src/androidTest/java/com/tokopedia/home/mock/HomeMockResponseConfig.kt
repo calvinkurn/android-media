@@ -65,7 +65,7 @@ internal open class HomeMockResponseConfig: MockModelConfig() {
 
         addMockResponse(
                 KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,
-                getRawString(context, R.raw.response_mock_data_dynamic_home_channel_only),
+                getRawString(context, R.raw.response_mock_data_dynamic_home_channel_screenshot),
                 FIND_BY_CONTAINS)
 
         addMockResponse(

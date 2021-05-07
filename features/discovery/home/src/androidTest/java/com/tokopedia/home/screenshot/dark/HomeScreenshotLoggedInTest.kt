@@ -11,7 +11,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.component.name
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
-import com.tokopedia.home.mock.HomeScreenshotMockResponseConfig
+import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home.screenshot.HomeScreenshotTestHelper.turnOffAnimation
 import com.tokopedia.home_component.util.HomeNetworkUtil
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
@@ -46,7 +46,7 @@ class HomeScreenshotLoggedInTest {
             InstrumentationAuthHelper.clearUserSession()
             gtmLogDBSource.deleteAll().subscribe()
             super.beforeActivityLaunched()
-            setupGraphqlMockResponse(HomeScreenshotMockResponseConfig())
+            setupGraphqlMockResponse(HomeMockResponseConfig())
             setupDarkModeTest(true)
             setupAbTestRemoteConfig()
             disableCoachMark(context)

@@ -6,7 +6,7 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.component.name
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
-import com.tokopedia.home.mock.HomeScreenshotMockResponseConfig
+import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home.screenshot.HomeScreenshotTestHelper.turnOffAnimation
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.CHOOSE_ADDRESS_ROLLENCE_KEY
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -37,7 +37,7 @@ class HomeScreenshotNonLoggedInTest {
             InstrumentationAuthHelper.clearUserSession()
             gtmLogDBSource.deleteAll().subscribe()
             super.beforeActivityLaunched()
-            setupGraphqlMockResponse(HomeScreenshotMockResponseConfig())
+            setupGraphqlMockResponse(HomeMockResponseConfig())
             setupDarkModeTest(true)
             setupAbTestRemoteConfig()
             disableCoachMark(context)
