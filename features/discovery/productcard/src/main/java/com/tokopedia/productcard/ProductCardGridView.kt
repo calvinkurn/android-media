@@ -15,7 +15,8 @@ import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 
 class ProductCardGridView: BaseCustomView, IProductCardView {
 
-    private val atcNonVariantListener: ATCNonVariantListener? = null
+    private var addToCartClickListener: ((View) -> Unit)? = null
+    private var addToCartNonVariantClickListener: ATCNonVariantListener? = null
 
     constructor(context: Context): super(context) {
         init()
@@ -55,6 +56,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         renderButtonAddToCart(productCardModel)
 
         renderQuantityEditorNonVariant(productCardModel)
+        setQuantityEditorNonVariantValueChangedListener()
 
         renderVariant(productCardModel)
 
@@ -79,7 +81,11 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
-        buttonAddToCart?.setOnClickListener(addToCartClickListener)
+        this.addToCartClickListener = addToCartClickListener
+    }
+
+    fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
+        this.addToCartNonVariantClickListener = addToCartNonVariantClickListener
     }
 
     fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
@@ -121,18 +127,39 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     private fun renderButtonAddToCart(productCardModel: ProductCardModel) {
-        buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton || productCardModel.shouldShowAddToCartNonVariantQuantity())
+        buttonAddToCart?.shouldShowWithAction(productCardModel.hasAddToCartButton || productCardModel.shouldShowAddToCartNonVariantQuantity()) {
+            buttonAddToCart?.setOnClickListener {
+                if (productCardModel.shouldShowAddToCartNonVariantQuantity()) {
+                    productCardModel.nonVariant?.let { nonVariant ->
+                        val newValue = nonVariant.minQuantity
+                        addToCartNonVariantClickListener?.onQuantityChanged(newValue)
+                        quantityEditorNonVariant?.setValue(newValue)
+                        quantityEditorNonVariant?.show()
+                        buttonAddToCart?.gone()
+                    }
+                }
+                else {
+                    addToCartClickListener?.invoke(it)
+                }
+            }
+        }
+
         if (productCardModel.shouldShowAddToCartNonVariantQuantity()) buttonAddToCart?.buttonType = UnifyButton.Type.MAIN
         else buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
     }
 
     private fun renderQuantityEditorNonVariant(productCardModel: ProductCardModel) {
-        quantityEditorNonVariant?.shouldShowWithAction(productCardModel.shouldShowQuantityEditor()) {
-            productCardModel.nonVariant?.let {
-                quantityEditorNonVariant?.setValue(it.quantity)
-                quantityEditorNonVariant?.maxValue = it.maxQuantity
-                quantityEditorNonVariant?.minValue = it.minQuantity
-            }
+        productCardModel.nonVariant?.let {
+            quantityEditorNonVariant?.setValue(it.quantity)
+            quantityEditorNonVariant?.maxValue = it.maxQuantity
+            quantityEditorNonVariant?.minValue = it.minQuantity
+        }
+        quantityEditorNonVariant?.showWithCondition(productCardModel.shouldShowQuantityEditor())
+    }
+
+    private fun setQuantityEditorNonVariantValueChangedListener() {
+        quantityEditorNonVariant?.setValueChangedListener { newValue, _, _ ->
+            addToCartNonVariantClickListener?.onQuantityChanged(quantity = newValue)
         }
     }
 
@@ -161,5 +188,9 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun getThreeDotsButton(): View? = imageThreeDots
 
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
+
+    interface ATCNonVariantListener {
+        fun onQuantityChanged(quantity: Int)
+    }
 
 }
