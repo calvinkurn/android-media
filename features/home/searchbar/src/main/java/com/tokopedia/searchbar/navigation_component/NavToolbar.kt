@@ -116,7 +116,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         }
     }
 
-    private fun initializeViewModel(it: Context): Nothing? {
+    private fun initializeViewModel(it: Context): NavigationViewModel? {
         val component = DaggerNavigationComponent.builder()
                 .navigationModule(NavigationModule(it.applicationContext))
                 .build()
