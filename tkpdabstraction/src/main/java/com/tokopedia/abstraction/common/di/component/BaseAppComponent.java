@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.cachemanager.CacheManager;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 
 import dagger.Component;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -40,4 +41,7 @@ public interface BaseAppComponent {
     CacheManager getCacheManager();
 
     CoroutineDispatchers coroutineDispatchers();
+
+    @ApplicationContext
+    GraphqlRepository graphqlRepository();
 }
