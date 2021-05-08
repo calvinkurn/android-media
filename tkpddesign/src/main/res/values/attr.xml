@@ -64,19 +64,6 @@
         <attr name="counter_enabled" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="TickerView">
-        <attr name="tckv_text_color" format="color" />
-        <attr name="tckv_highlight_color" format="color" />
-        <attr name="tckv_background_color" format="color" />
-        <attr name="tckv_indicator_on_color" format="color" />
-        <attr name="tckv_indicator_off_color" format="color" />
-        <attr name="tckv_link_color" format="color" />
-        <attr name="tckv_show_close_button" format="boolean"/>
-        <attr name="tckv_show_link_underline" format="boolean"/>
-        <attr name="tckv_content_text_size" format="dimension" />
-        <attr name="tckv_content_height" format="dimension" />
-    </declare-styleable>
-
     <declare-styleable name="DecimalRangeInputView">
         <attr name="driv_label_min" format="string" />
         <attr name="driv_label_max" format="string" />
@@ -169,13 +156,6 @@
         <attr name="layout" format="reference" />
     </declare-styleable>
 
-    <declare-styleable name="NumberPickerWithCounterView">
-        <attr name="npc_min_value" format="integer" />
-        <attr name="npc_max_value" format="integer" />
-        <attr name="npc_value" format="integer" />
-        <attr name="npc_enabled" format="boolean" />
-    </declare-styleable>
-
     <declare-styleable name="CardWithActionView">
         <attr name="cmv_title" format="string" />
         <attr name="cmv_content" format="string" />
@@ -187,10 +167,5 @@
     <declare-styleable name="TouchViewPager">
         <attr name="can_swipe" format="boolean" />
         <attr name="default_measure" format="boolean" />
-    </declare-styleable>
-    <declare-styleable name="RectangleOverlayView">
-        <attr name="fg_color" format="reference"/>
-        <attr name="inset_distance" format="dimension"/>
-        <attr name="outline_img" format="reference"/>
     </declare-styleable>
 </resources>

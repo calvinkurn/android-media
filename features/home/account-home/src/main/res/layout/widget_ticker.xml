@@ -1,28 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:id="@+id/parent_view"-->
-<!--app:contentPaddingTop="@dimen/dp_3"-->
-<!--app:contentPaddingBottom="@dimen/dp_3"-->
-<!--app:contentPaddingLeft="@dimen/dp_10"-->
-<!--app:contentPaddingRight="@dimen/dp_3"-->
-<!--app:cardCornerRadius="2dp">-->
-
-<!--<RelativeLayout-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="match_parent">-->
-
-<!--<androidx.viewpager.widget.ViewPager-->
-<!--android:id="@+id/view_pager_ticker"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--/>-->
-
-<!--</RelativeLayout>-->
-
-<!--</androidx.cardview.widget.CardView>-->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"

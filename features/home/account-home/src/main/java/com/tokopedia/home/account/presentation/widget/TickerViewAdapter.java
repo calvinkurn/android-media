@@ -1,4 +1,4 @@
-package com.tokopedia.design.component.ticker;
+package com.tokopedia.home.account.presentation.widget;
 
 import android.app.Activity;
 import androidx.annotation.NonNull;
@@ -18,10 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.design.R;
+import com.tokopedia.home.account.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by hangnadi on 8/16/17.

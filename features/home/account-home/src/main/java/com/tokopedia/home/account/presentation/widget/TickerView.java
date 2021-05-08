@@ -1,4 +1,4 @@
-package com.tokopedia.design.component.ticker;
+package com.tokopedia.home.account.presentation.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -17,9 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.design.component.ticker.TouchViewPager;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.home.account.R;
 
 import java.util.ArrayList;
 import java.util.List;

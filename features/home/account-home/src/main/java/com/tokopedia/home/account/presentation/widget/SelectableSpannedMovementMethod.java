@@ -1,4 +1,4 @@
-package com.tokopedia.design.component.ticker;
+package com.tokopedia.home.account.presentation.widget;
 
 import android.text.Layout;
 import android.text.Selection;
