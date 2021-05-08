@@ -1,4 +1,4 @@
-package com.tokopedia.design.text;
+package com.tokopedia.pms.common;
 
 import android.content.Context;
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;

@@ -1,4 +1,4 @@
-package com.tokopedia.design.image;
+package com.tokopedia.notifcenter.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;

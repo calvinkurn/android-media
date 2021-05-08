@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="CountDownView">
-        <attr name="countDownTxtColor" format="color" />
-        <attr name="countDownSparatorColor" format="color" />
-        <attr name="coundDownBackgroud" format="reference" />
-    </declare-styleable>
     <declare-styleable name="LabelView">
         <attr name="lv_image" format="reference" />
         <attr name="lv_image_width" format="dimension" />
@@ -46,22 +41,6 @@
         <attr name="siv_search_text" format="string" />
         <attr name="siv_search_hint" format="string" />
         <attr name="isEditable" format="boolean" />
-    </declare-styleable>
-
-    <declare-styleable name="DecimalInputView">
-        <attr name="decimal_max_length" format="integer" />
-        <attr name="decimal_input_hint" format="string" />
-        <attr name="decimal_input_text" format="string" />
-        <attr name="decimal_input_enabled" format="boolean" />
-    </declare-styleable>
-
-    <declare-styleable name="CounterInputView">
-        <attr name="counter_max_length" format="integer" />
-        <attr name="counter_hint" format="string" />
-        <attr name="counter_text" format="string" />
-        <attr name="counter_min" format="integer" />
-        <attr name="counter_show_counter_button" format="boolean" />
-        <attr name="counter_enabled" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="DecimalRangeInputView">

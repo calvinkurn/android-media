@@ -1,4 +1,4 @@
-package com.tokopedia.design.countdown;
+package com.tokopedia.officialstore.official.presentation.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-import com.tokopedia.design.R;
+import com.tokopedia.officialstore.R;
 
 import java.util.Date;
 import java.util.Locale;

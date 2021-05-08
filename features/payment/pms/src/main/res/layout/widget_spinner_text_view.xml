@@ -9,7 +9,7 @@
         style="@style/TextInputLayout"
         app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.VerySmall">
 
-        <com.tokopedia.design.text.SpinnerAutoComplete
+        <com.tokopedia.pms.common.SpinnerAutoComplete
             android:id="@+id/edit_text_spinner"
             style="@style/EditText.GreenHighlight"
             android:layout_width="match_parent"

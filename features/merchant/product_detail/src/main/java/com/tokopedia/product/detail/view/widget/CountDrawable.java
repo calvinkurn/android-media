@@ -1,4 +1,4 @@
-package com.tokopedia.design.drawable;
+package com.tokopedia.product.detail.view.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
