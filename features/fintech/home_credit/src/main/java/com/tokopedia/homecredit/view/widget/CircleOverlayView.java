@@ -1,4 +1,4 @@
-package com.tokopedia.design.component;
+package com.tokopedia.homecredit.view.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -13,7 +13,8 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
-import com.tokopedia.design.R;
+import com.tokopedia.homecredit.R;
+
 
 public class CircleOverlayView extends LinearLayout {
 

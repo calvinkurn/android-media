@@ -1,4 +1,4 @@
-package com.tokopedia.design.utils;
+package com.tokopedia.pms.common;
 
 import java.util.ArrayList;
 import java.util.List;

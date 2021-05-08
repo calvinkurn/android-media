@@ -1,4 +1,4 @@
-package com.tokopedia.date.util;
+package com.tokopedia.saldodetails.utils;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;

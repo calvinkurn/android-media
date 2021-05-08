@@ -1,8 +1,8 @@
-package com.tokopedia.design.utils;
+package com.tokopedia.datepicker.range.view.util;
 
 import android.content.Context;
 
-import com.tokopedia.design.R;
+import com.tokopedia.datepicker.range.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

@@ -1,4 +1,4 @@
-package com.tokopedia.design.text;
+package com.tokopedia.pms.common;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -14,9 +14,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.design.utils.ConverterUtils;
+import com.tokopedia.pms.R;
 
 /**
  * Created by nathan on 04/05/17.

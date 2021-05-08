@@ -64,55 +64,6 @@
         <attr name="counter_enabled" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="SpinnerTextView">
-        <attr name="spinner_hint" format="string" />
-        <attr name="spinner_selection_index" format="integer" />
-        <attr name="spinner_entries" format="reference" />
-        <attr name="spinner_values" format="reference" />
-        <attr name="spinner_enabled" format="boolean" />
-        <attr name="spinner_text_size" format="dimension" />
-        <attr name="spinner_hint_text_color" format="color" />
-        <attr name="spinner_hint_appearence" format="integer" />
-    </declare-styleable>
-
-    <declare-styleable name="DefaultValueSpinnerTextView">
-        <attr name="default_value" format="string" />
-    </declare-styleable>
-
-    <declare-styleable name="SpinnerCounterInputView">
-        <attr name="spinner_counter_max_length" format="integer" />
-        <attr name="spinner_decimal_max_length" format="integer" />
-        <attr name="spinner_decimal_entries" format="reference" />
-        <attr name="spinner_decimal_values" format="reference" />
-        <attr name="spinner_decimal_selection_index" format="integer" />
-        <attr name="spinner_decimal_spinner_hint" format="string" />
-        <attr name="spinner_decimal_hint" format="string" />
-        <attr name="spinner_decimal_min" format="integer" />
-        <attr name="spinner_decimal_show_counter_button" format="boolean" />
-        <attr name="spinner_decimal_enabled" format="boolean" />
-        <attr name="spinner_decimal_spinner_width" format="dimension" />
-    </declare-styleable>
-
-    <declare-styleable name="TkpdTextInputLayout">
-        <attr name="ttil_successFocusColor" format="color" />
-        <attr name="ttil_successLeaveColor" format="color" />
-        <attr name="ttil_successTextAppearance" format="reference" />
-        <attr name="ttil_prefixString" format="string|reference" />
-    </declare-styleable>
-
-    <declare-styleable name="TitleGroupView">
-        <attr name="tgv_title" format="string" />
-        <attr name="tgv_icon" format="reference" />
-    </declare-styleable>
-
-    <declare-styleable name="LoadingStateView">
-        <attr name="lsv_loading_layout" format="reference" />
-        <attr name="lsv_empty_layout" format="reference" />
-        <attr name="lsv_error_layout" format="reference" />
-        <attr name="lsv_state" format="integer" />
-        <attr name="lsv_full_screen" format="boolean" />
-    </declare-styleable>
-
     <declare-styleable name="TickerView">
         <attr name="tckv_text_color" format="color" />
         <attr name="tckv_highlight_color" format="color" />
@@ -143,26 +94,6 @@
     <attr name="bottomSheetBuilderBackgroundColor" format="color" />
     <attr name="bottomSheetBuilderItemTextColor" format="color" />
     <attr name="bottomSheetBuilderTitleTextColor" format="color" />
-
-    <declare-styleable name="FloatingButton">
-        <attr name="text" format="string" />
-        <attr name="buttonTextAllCaps" format="boolean" />
-        <attr name="floatButtonType" format="enum">
-            <enum name="primary" value="1" />
-            <enum name="secondary" value="2" />
-            <enum name="disable" value="3" />
-        </attr>
-        <attr name="floatButtonSize" format="enum">
-            <enum name="big" value="4" />
-            <enum name="medium" value="5" />
-            <enum name="small" value="6" />
-        </attr>
-        <attr name="shadow" format="boolean" />
-        <attr name="shadowLeft" format="boolean" />
-        <attr name="shadowTop" format="boolean" />
-        <attr name="shadowRight" format="boolean" />
-        <attr name="shadowBottom" format="boolean" />
-    </declare-styleable>
 
     <declare-styleable name="Tabs">
         <attr name="tabType" format="enum">
