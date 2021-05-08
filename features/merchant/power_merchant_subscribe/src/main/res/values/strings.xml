@@ -195,7 +195,6 @@
     <string name="pm_verify_data_clickable">Verifikasi Data</string>
     <string name="pm_verify_again_clickable">Verifikasi Ulang</string>
     <string name="pm_tnc_agreement_error_message">Kamu belum menyetujui S&amp;K yang berlaku.</string>
-    <string name="pm_benefit_shop_grade">Keuntungan PM %1$s</string>
     <string name="pm_shop_performance_sum"><![CDATA[Performa Toko : <font color="%1$s">%2$s</font>]]></string>
     <string name="pm_shop_performance_sum_new_seller"><![CDATA[Proyeksi Performa Toko : <font color="%1$s">%2$s</font>]]></string>
     <string name="pm_shop_score_threshold_description"><![CDATA[Pertahankan skor performa toko <b>min. %1$d poin</b> untuk tetap menjadi Power Merchant setelah %2$s.]]></string>
@@ -246,4 +245,11 @@
     <string name="pm_learn_ad_and_promotion">Pelajari Iklan &amp; Promosi</string>
     <string name="pm_not_eligible_niv_term_title">Tingkatkan pendapatan \nTokomu dulu, yuk!</string>
     <string name="pm_not_eligible_niv_term_description">Tokomu harus mendapatkan pendapatan <b>%1$s</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan pendapatanmu, ya!</string>
+    <string name="pm_seller_current_grade_label">Berdasarkan levelmu,</string>
+    <string name="pm_seller_package_benefit_label">Kamu mendapatkan paket keuntungan</string>
+    <string name="pm_benefits_that_you_can_get">Keuntungan yang bisa kamu dapatkan</string>
+    <string name="pm_update_info_pm_pro_description_text">Yay! Tidak ada kemungkinan downgrade pada update berikutnya. Lebih Lanjut</string>
+    <string name="pm_update_info_pm_pro_transition_period_description_text">Karena masih masa transisi, tidak ada downgrade hingga 29 Agustus 2021. Lebih Lanjut</string>
+    <string name="pm_update_info_description_clickable_text">Lebih Lanjut</string>
+    <string name="pm_update_info_bottom_sheet_message">Update kenaikan paket keuntungan dilakukan setiap bulan dan penurunan setiap 3 bulan. Di update berikutnya <b>tidak akan ada penurunan paket benefit</b></string>
 </resources>

@@ -42,7 +42,7 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
         val thresholdInfo = context.getString(R.string.pm_shop_score_threshold_description_final_period, element.threshold, getPmTireLabel(element.pmTierType))
         tvPmShopGradeThreshold.text = thresholdInfo.parseAsHtml()
 
-        val isPmShopScoreTipsVisible = element.shopScore < element.threshold
+        val isPmShopScoreTipsVisible = element.pmStatus == PMStatusConst.IDLE
         tvPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
         icPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
         tvPmShopScoreTips.setOnClickListener {

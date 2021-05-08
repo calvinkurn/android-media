@@ -33,6 +33,7 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.PMWidgetLi
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.DeactivationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PMNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PowerMerchantCancelBottomSheet
+import com.tokopedia.power_merchant.subscribe.view.bottomsheet.UpdateInfoBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
 import com.tokopedia.power_merchant.subscribe.view.model.*
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSharedViewModel
@@ -148,6 +149,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         recyclerView?.post {
             adapter.notifyItemRemoved(position)
         }
+    }
+
+    override fun showUpdateInfoBottomSheet() {
+        val fragment = UpdateInfoBottomSheet.createInstance()
+        if (childFragmentManager.isStateSaved || fragment.isAdded) return
+        fragment.show(childFragmentManager)
     }
 
     fun setOnFooterCtaClickedListener(term: RegistrationTermUiModel?, isEligiblePm: Boolean, tncAgreed: Boolean) {
@@ -576,7 +583,11 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             }
         }
         return WidgetExpandableUiModel(
-                title = getString(R.string.pm_benefit_shop_grade, grade?.gradeName.orEmpty()),
+                grade = grade,
+                nextMonthlyCalDate = data.nextMonthlyRefreshDate,
+                nextQuarterlyCalibrationCalDate = data.nextQuarterlyCalibrationRefreshDate,
+                pmStatus = data.pmStatus,
+                pmTierType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
                 items = benefits
         )
     }

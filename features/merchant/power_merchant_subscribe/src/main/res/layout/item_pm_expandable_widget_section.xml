@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/unify_space_12"
-    android:paddingBottom="@dimen/unify_space_12">
+    android:paddingTop="@dimen/layout_lvl2"
+    android:paddingBottom="@dimen/layout_lvl1">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmExpandableSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAllCaps="true"
-        app:typographyType="heading_5"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         tools:text="Pengaturan Produk" />
 </RelativeLayout>
