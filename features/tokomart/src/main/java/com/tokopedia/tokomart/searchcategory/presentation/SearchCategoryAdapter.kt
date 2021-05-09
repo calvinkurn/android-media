@@ -22,4 +22,11 @@ open class SearchCategoryAdapter(
         @Suppress("UNCHECKED_CAST")
         (holder as AbstractViewHolder<Visitable<*>>).bind(getItem(position))
     }
+
+    override fun getItemViewType(position: Int): Int {
+        @Suppress("UNCHECKED_CAST")
+        val item = getItem(position) as Visitable<BaseSearchCategoryTypeFactory>
+
+        return item.type(typeFactory)
+    }
 }

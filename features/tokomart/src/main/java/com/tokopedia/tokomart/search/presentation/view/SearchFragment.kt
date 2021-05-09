@@ -2,6 +2,7 @@ package com.tokopedia.tokomart.search.presentation.view
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.tokomart.search.di.SearchComponent
 import com.tokopedia.tokomart.search.presentation.typefactory.SearchTypeFactoryImpl
 import com.tokopedia.tokomart.search.presentation.viewmodel.SearchViewModel
@@ -35,6 +36,10 @@ class SearchFragment: BaseSearchCategoryFragment() {
             searchViewModel = ViewModelProvider(it, viewModelFactory).get(SearchViewModel::class.java)
         }
     }
+
+    override fun createNavToolbarIconBuilder() = IconBuilder()
+            .addCart()
+            .addGlobalNav()
 
     override fun getScreenName() = ""
 

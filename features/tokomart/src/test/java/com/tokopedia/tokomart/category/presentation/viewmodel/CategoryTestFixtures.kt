@@ -13,9 +13,11 @@ open class CategoryTestFixtures {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     protected val getCategoryFirstPageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
+    protected val getCategoryLoadMorePageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
 
     protected val categoryViewModel = CategoryViewModel(
             CoroutineTestDispatchersProvider,
-            getCategoryFirstPageUseCase
+            getCategoryFirstPageUseCase,
+            getCategoryLoadMorePageUseCase,
     )
 }

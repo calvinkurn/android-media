@@ -63,9 +63,15 @@ abstract class BaseSearchCategoryFragment: BaseDaggerFragment() {
         navToolbar.setIcon(createNavToolbarIconBuilder())
     }
 
-    protected open fun createNavToolbarIconBuilder() = IconBuilder()
+    protected abstract fun createNavToolbarIconBuilder(): IconBuilder
+
+    protected fun IconBuilder.addShare(): IconBuilder = this
             .addIcon(ID_SHARE, disableRouteManager = false, disableDefaultGtmTracker = false) { }
+
+    protected fun IconBuilder.addCart(): IconBuilder = this
             .addIcon(ID_CART, disableRouteManager = false, disableDefaultGtmTracker = false) { }
+
+    protected fun IconBuilder.addGlobalNav(): IconBuilder = this
             .addIcon(ID_NAV_GLOBAL, disableRouteManager = false, disableDefaultGtmTracker = false) { }
 
     protected open fun configureRecyclerView() {

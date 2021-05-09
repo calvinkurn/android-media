@@ -13,10 +13,12 @@ open class SearchTestFixtures {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     protected val getSearchFirstPageUseCase = mockk<UseCase<SearchModel>>(relaxed = true)
+    protected val getSearchLoadMorePageUseCase = mockk<UseCase<SearchModel>>(relaxed = true)
 
     protected val searchViewModel = SearchViewModel(
             CoroutineTestDispatchersProvider,
             getSearchFirstPageUseCase,
+            getSearchLoadMorePageUseCase,
     )
 
 }

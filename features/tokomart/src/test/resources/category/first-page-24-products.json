@@ -1,0 +1,493 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "responseCode": 0,
+      "keywordProcess": "2",
+      "totalData": 24,
+      "totalDataText": "24",
+      "additionalParams": "",
+      "errorMessage": "",
+      "defaultView": 1
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?q=samsung",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": ""
+      },
+      "suggestion": {
+        "currentKeyword": "",
+        "suggestion": "",
+        "suggestionCount": 0,
+        "instead": "",
+        "insteadCount": 0,
+        "text": "",
+        "query": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "otherRelated": []
+      },
+      "products": [
+        {
+          "id": 574261655,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            },
+            {
+              "title": "TokoCabang",
+              "position": "fulfillment",
+              "type": "textDarkGrey",
+              "url": "https://images.tokopedia.net/img/jbZAUJ/2021/2/18/6d2cc121-91b9-49bc-99c3-d57437ad64b7.png"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574261652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 576261652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574211652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574262652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574262352,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574262659,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 674262652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        }
+      ]
+    }
+  }
+}
