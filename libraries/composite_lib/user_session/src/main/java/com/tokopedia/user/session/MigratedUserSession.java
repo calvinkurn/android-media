@@ -2,6 +2,7 @@ package com.tokopedia.user.session;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.util.Pair;
 
 import com.tokopedia.user.session.util.EncoderDecoder;
@@ -121,34 +122,58 @@ public class MigratedUserSession {
     protected String getAndTrimOldString(String prefName, String keyName, String defValue) {
         String newPrefName = String.format("%s%s", prefName, suffix);
         String newKeyName = String.format("%s%s", keyName, suffix);
+        String debug = "";
+        Log.d("NORMAN", "prefName > "+prefName);
+        Log.d("NORMAN", "keyName > "+keyName);
+        Log.d("NORMAN", "newPrefName > "+newPrefName);
+        Log.d("NORMAN", "newKeyName > "+newKeyName);
+        boolean isGettingFromMap = false;
+
 
         Pair<String, String> key = new Pair<>(newPrefName, newKeyName);
         if (UserSessionMap.map.containsKey(key)) {
             try {
                 Object value = UserSessionMap.map.get(key);
                 if (value == null) {
+                    isGettingFromMap = true;
                     return defValue;
                 } else {
+                    isGettingFromMap = true;
                     return (String) value;
                 }
             } catch (Exception ignored) {
             }
         }
+        Log.d("NORMAN", "isGettingFromMap > "+isGettingFromMap);
 
         String oldValue = internalGetString(prefName, keyName, defValue);
 
         if (oldValue != null && !oldValue.equals(defValue)) {
+            Log.d("NORMAN", "oldValue > "+oldValue);
+            Log.d("NORMAN", "execute migration > ");
             internalCleanKey(prefName, keyName);
-            internalSetString(newPrefName, newKeyName, oldValue);
+            internalSetString(newPrefName, newKeyName, EncoderDecoder.Encrypt(oldValue, UserSession.KEY_IV));
             UserSessionMap.map.put(key, oldValue);
             return oldValue;
         }
 
         SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
         String value = sharedPrefs.getString(newKeyName, defValue);
-        value = EncoderDecoder.Decrypt(value, UserSession.KEY_IV);// decrypt here
-        UserSessionMap.map.put(key, value);
-        return value;
+
+        if (value != null) {
+            if(value.equals(defValue)) {// if value same with def value
+                Log.d("NORMAN", "same with def value");
+                return value;
+            }else{
+                value = EncoderDecoder.Decrypt(value, UserSession.KEY_IV);// decrypt here
+                UserSessionMap.map.put(key, value);
+                Log.d("NORMAN", "decrypt with value "+value);
+                return value;
+            }
+        }else{
+            Log.d("NORMAN", "immediate return");
+            return value;
+        }
     }
 
     private boolean internalGetBoolean(String prefName, String keyName, boolean defValue) {
