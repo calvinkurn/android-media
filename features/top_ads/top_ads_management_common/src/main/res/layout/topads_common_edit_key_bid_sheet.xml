@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
         android:layout_marginBottom="@dimen/dp_16"
-        android:text="@string/topads_common_save_butt"
+        android:text="@string/lanjutkan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/budget"
         app:unifyButtonSize="medium"

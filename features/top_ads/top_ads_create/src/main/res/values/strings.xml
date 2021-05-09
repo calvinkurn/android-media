@@ -49,7 +49,7 @@
     <string name="biaya_per_klik">Biaya per klik</string>
     <string name="ringkasan_iklan">Ringkasan Iklan</string>
     <string name="anggaran_harian">Anggaran harian</string>
-    <string name="optimalkan_penjualan_dengan_atur_anggaran_harian_iklan">Optimalkan penjualan dengan atur anggaran harian iklan</string>
+    <string name="optimalkan_penjualan_dengan_atur_anggaran_harian_iklan">Batasi pengeluaran harianmu dengan atur anggaran harian.</string>
     <string name="type_iklan">Tipe iklan</string>
     <string name="lihat_performa_iklan">Lihat performa iklan</string>
     <string name="create_group">Buat Group Iklan</string>
@@ -121,7 +121,7 @@
     <!-- Manual Summary Page-->
     <string name="topads_create_group_name">Nama Grup Iklan</string>
     <string name="topads_create_group_name_hint">Cth: Kemeja Putih, Iklan Ramadhan</string>
-    <string name="topads_create_group_name_message">Beri nama grup berdasarkan kategori atau musim iklan </string>
+    <string name="topads_create_group_name_message">Tulis nama grup berdasarkan kategori atau tema iklanmu. </string>
     <string name="topads_create_submit_button">Iklankan Sekarang</string>
     <string name="topads_create_product">Produk</string>
     <string name="topads_create_per_hari">per hari</string>

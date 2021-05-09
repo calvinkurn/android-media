@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -34,6 +35,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.EditNegKeywordLis
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordEmptyViewModel
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordItemViewModel
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_edit_negative_keyword_layout.*
 import javax.inject.Inject
 
@@ -174,7 +176,16 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
         }
         adapter.notifyDataSetChanged()
         updateItemCount()
+        view?.let {
+            Toaster.build(it, getString(com.tokopedia.topads.common.R.string.topads_neg_keyword_common_del_toaster),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL).show()
+        }
     }
+
+//    fun sendAutoBidValue(autoBidValue: String) {
+//        sharedViewModel.setAutoBidStatus(autoBidValue)
+//    }
 
     private fun onAddKeyword() {
         val intent = Intent(context, SelectNegKeywordActivity::class.java)

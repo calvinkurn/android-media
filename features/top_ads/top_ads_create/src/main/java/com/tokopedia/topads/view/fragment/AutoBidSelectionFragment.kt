@@ -78,7 +78,6 @@ class AutoBidSelectionFragment: BaseStepperFragment<CreateManualAdsStepperModel>
         if (stepperModel?.redirectionToSummary == true) {
             nextBtn?.text = getString(R.string.topads_common_save_butt)
         }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

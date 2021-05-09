@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
@@ -135,6 +136,11 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         bidInfoAdapter.notifyItemRemoved(position)
         updateString()
         setCount()
+        view?.let {
+            Toaster.build(it, getString(com.tokopedia.topads.common.R.string.topads_keyword_common_del_toaster),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL).show()
+        }
     }
 
     private fun prepareView() {
@@ -288,7 +294,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun setCount() {
-        if(bidInfoAdapter.items.count() == 1 && bidInfoAdapter.items[0] is BidInfoEmptyViewModel) {
+        if (bidInfoAdapter.items.count() == 1 && bidInfoAdapter.items[0] is BidInfoEmptyViewModel) {
             selectedkeyword.text = String.format(getString(R.string.topads_common_selected_keyword), 0)
         } else {
             selectedkeyword.text = String.format(getString(R.string.topads_common_selected_keyword), bidInfoAdapter.items.count())
@@ -440,7 +446,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun resetView() {
-        if(bidInfoAdapter.items.size == 0) {
+        if (bidInfoAdapter.items.size == 0) {
             onEmptySuggestion()
         } else {
             bidInfoAdapter.items.clear()

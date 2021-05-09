@@ -166,6 +166,7 @@
     <string name="topads_dash_group_item_progress_text">Anggaran harian terpakai hari ini</string>
     <string name="topads_dashboard_empty_product_title">Pastikan produkmu selalu tampil teratas</string>
     <string name="topads_dashboard_empty_product_desc">Beriklan dengan TopAds bikin produkmu menjangkau banyak pembeli. Yuk, mulai beriklan!</string>
+    <string name="topads_dashboard_empty_ads_desc">Dengan TopAds produkmu akan selalu tampil \nteratas dengan biaya yang dapat kamu sesuaikan. \nYuk, mulai beriklan!</string>
     <string name="topads_dash_empty_keyword_title">Belum ada kata kunci</string>
     <string name="topads_dash_empty_keyword_desc">Gunakan kata kunci spesifik agar produkmu lebih mudah ditemukan pembeli</string>
     <string name="topads_dash_empty_neg_keyword_title">Belum ada kata kunci negatif</string>

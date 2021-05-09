@@ -200,8 +200,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 actionEnable()
             }
         }
-        if (toggle?.isChecked == true)
-            daily_budget.textFieldInput.addTextChangedListener(watcher())
+        daily_budget.textFieldInput.addTextChangedListener(watcher())
         setLink()
     }
 
@@ -219,10 +218,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             autobid_layout.visible()
             divider3.gone()
             divider4.gone()
-
-            goToAutobid.setOnClickListener {
-                stepperListener?.getToFragment(2, stepperModel)
-            }
         }
     }
 
@@ -238,7 +233,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         else
             AUTOBID_DEFUALT_BUDGET
         daily_budget.textFieldInput.setText(dailyBudget.toString())
-        groupInput.textFieldInput.setText(stepperModel?.groupName)
     }
 
     private fun setGroupName() {
@@ -299,6 +293,10 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         goToBudget?.setOnClickListener {
             stepperModel?.redirectionToSummary = true
             stepperListener?.getToFragment(3, stepperModel)
+        }
+        goToAutobid.setOnClickListener {
+            stepperModel?.redirectionToSummary = true
+            stepperListener?.getToFragment(2, stepperModel)
         }
     }
 
