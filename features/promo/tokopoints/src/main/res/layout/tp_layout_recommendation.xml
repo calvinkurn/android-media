@@ -6,13 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_N0"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_20"
     tools:ignore="MissingDefaultResource">
 
     <TextView
         android:id="@+id/text_title_recomm"
-        android:layout_width="@dimen/dp_160"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:ellipsize="end"
@@ -21,7 +20,7 @@
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -38,11 +37,11 @@
         android:layout_marginTop="@dimen/dp_4"
         android:textColor="@color/Unify_G400"
         app:typographyType="heading_6"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_title_recomm"
-        tools:text="Lihat Semua"
+        android:text="Lihat Semua"
         tools:visibility="visible" />
 
     <TextView
@@ -53,6 +52,7 @@
         android:lineSpacingExtra="6sp"
         android:textColor="@color/Unify_N700_68"
         android:textSize="12sp"
+        android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="@+id/text_title_recomm"
         app:layout_constraintStart_toStartOf="@+id/text_title_recomm"
         app:layout_constraintTop_toBottomOf="@+id/text_title_recomm"

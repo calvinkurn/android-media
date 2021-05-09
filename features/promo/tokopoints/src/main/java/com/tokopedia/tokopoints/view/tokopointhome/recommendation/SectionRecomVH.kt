@@ -10,8 +10,10 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.adapter.CarouselItemDecoration
+import com.tokopedia.tokopoints.view.adapter.CarouselItemDecorationNew
 import com.tokopedia.tokopoints.view.adapter.CouponListAdapter
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.recommwidget.RewardsRecommAdapter
@@ -45,10 +47,11 @@ class SectionRecomVH(val view: View) : RecyclerView.ViewHolder(view) {
             view.findViewById<View>(R.id.text_title_recomm).visibility = View.VISIBLE
             (view.findViewById<View>(R.id.text_title_recomm) as TextView).text = content.sectionTitle
         }
-        if (!TextUtils.isEmpty(content.sectionSubTitle)) {
-            view.findViewById<View>(R.id.text_sub_title_recomm).visibility = View.VISIBLE
-            (view.findViewById<View>(R.id.text_sub_title_recomm) as TextView).text = content.sectionSubTitle
-        }*/
+        */
+        (view.findViewById<View>(R.id.text_title_recomm) as TextView).text = "Produk incaranmu lagi promo"
+
+            (view.findViewById<View>(R.id.text_sub_title_recomm) as TextView).text = "Nggak perlu mikir 2x, cus beli produknya!"
+
 
         val rvCarousel: RecyclerView = view.findViewById(R.id.rv_recomm)
         rvCarousel?.isDrawingCacheEnabled = true
@@ -56,7 +59,7 @@ class SectionRecomVH(val view: View) : RecyclerView.ViewHolder(view) {
         rvCarousel?.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
         rvCarousel.layoutManager = layoutManager
         if (rvCarousel.itemDecorationCount == 0) {
-            rvCarousel.addItemDecoration(CarouselItemDecoration(convertDpToPixel(8, rvCarousel.context)))
+            rvCarousel?.addItemDecoration(CarouselItemDecorationNew(convertDpToPixel(dpToPx(2).toInt(), rvCarousel.context),convertDpToPixel(16, rvCarousel.context)))
         }
         rvCarousel.adapter = RewardsRecommAdapter(data.recomData as ArrayList<ProductCardModel>)
 

@@ -17,30 +17,31 @@ class DataMapper {
 
     fun getProductModel(element: RecommendationItem): ProductCardModel {
         return ProductCardModel(
-                slashedPrice = element.slashedPrice,
-                productName = element.name,
-                formattedPrice = element.price,
-                productImageUrl = element.imageUrl,
-                isTopAds = element.isTopAds,
-                discountPercentage = element.discountPercentage.toString(),
-                reviewCount = element.countReview,
-                ratingCount = element.rating,
-                shopLocation = element.location,
-                shopBadgeList = element.badgesUrl.map {
-                    ProductCardModel.ShopBadge(imageUrl = it
-                            ?: "")
-                },
-                freeOngkir = ProductCardModel.FreeOngkir(
-                        isActive = element.isFreeOngkirActive,
-                        imageUrl = element.freeOngkirImageUrl
-                ),
-                labelGroupList = element.labelGroupList.map { recommendationLabel ->
-                    ProductCardModel.LabelGroup(
-                            position = recommendationLabel.position,
-                            title = recommendationLabel.title,
-                            type = recommendationLabel.type
-                    )
-                }
+            productName = element.name,
+            formattedPrice = element.price,
+            productImageUrl = element.imageUrl,
+            isTopAds = element.isTopAds,
+            ratingCount = element.rating,
+            hasThreeDots = true,
+            shopRating = element.ratingAverage,
+            isShopRatingYellow = true,
+            shopLocation = element.location,
+            shopBadgeList = element.badgesUrl.map {
+                ProductCardModel.ShopBadge(
+                    imageUrl = it
+                        ?: ""
+                )
+            },
+            freeOngkir = ProductCardModel.FreeOngkir(
+                isActive = element.isFreeOngkirActive,
+                imageUrl = element.freeOngkirImageUrl
+            )/*
+            labelGroupList = element.labelGroupList.map { recommendationLabel ->
+                ProductCardModel.LabelGroup(
+                    position = recommendationLabel.position,
+                    title = recommendationLabel.title,
+                    type = recommendationLabel.type
+                )*/
         )
     }
 }

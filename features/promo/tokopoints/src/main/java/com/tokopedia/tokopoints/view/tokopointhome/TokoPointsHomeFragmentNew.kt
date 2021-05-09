@@ -422,7 +422,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             viewBinders.put(
                     CommonConstant.SectionLayoutType.RECOMM,
                     sectionRecomViewBinder as SectionItemBinder)
-            recommList?.let { sectionList.add(sections.size - 1 ,it) }
+            recommList?.let { sectionList.add(it) }
 
             adapter = SectionAdapter(viewBinders)
             adapter?.addItem(sectionList)
