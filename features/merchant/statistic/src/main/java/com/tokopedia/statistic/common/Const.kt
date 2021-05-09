@@ -39,7 +39,6 @@ object Const {
         const val BUYER_LEARN_MORE = "https://www.tokopedia.com/help/article/apa-itu-wawasan-pembeli?source=sapp-wawasan-pembeli"
         const val BUYER_GIVE_SUGGESTIONS = "https://docs.google.com/forms/d/1g16aH6t8n6k-jMqOZpDK4QVgaxIXNodclNpwhS9KdkU/edit"
         const val PRODUCT_LEARN_MORE = "https://www.tokopedia.com/help/article/apa-itu-wawasan-produk?source=sapp-wawasan-produk"
-        // TODO: Change the url to correct one
-        const val PRODUCT_GIVE_SUGGESTIONS = "https://docs.google.com/forms/d/1g16aH6t8n6k-jMqOZpDK4QVgaxIXNodclNpwhS9KdkU/edit"
+        const val PRODUCT_GIVE_SUGGESTIONS = "https://docs.google.com/forms/d/1CTCW5iOwIxQcmq4osZS284_E1IsPGPYcwe44yrEK_Cc/edit"
     }
 }
