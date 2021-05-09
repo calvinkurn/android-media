@@ -22,6 +22,7 @@ dependencies {
     implementation project(rootProject.ext.features.localizationchooseaddress)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.searchbar)
+    implementation project(rootProject.ext.features.homeComponent)
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
