@@ -1,6 +1,7 @@
 package com.tokopedia.applink.internal
 
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.url.TokopediaUrl
 
 object ApplinkConstInternalUserPlatform {
 
@@ -20,7 +21,4 @@ object ApplinkConstInternalUserPlatform {
     val LOGIN_PHONE = "${LOGIN}?method=$METHOD_LOGIN_PHONE&p={phone}&source={source}"
     @JvmField
     val LOGIN_THIRD_PARTY = "${LOGIN}?method={method}&source={source}"
-
-
-    const val TOKOPEDIA_QR_LOGIN_HTTPS = "${DeeplinkConstant.SCHEME_HTTPS}://www.tokopedia.com/qrcode-login"
 }

@@ -278,8 +278,8 @@ object DeeplinkMapper {
             return applinkDigital
         }
 
-        if(deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.TOKOPEDIA_QR_LOGIN_HTTPS)){
-            return "${ApplinkConstInternalGlobal.QR_LOGIN}?${uri.query}"
+        if(deeplink.startsWithPattern(DeeplinkMapperAccount.getLoginByQrNavigationFromHttp())){
+            return DeeplinkMapperAccount.getLoginByQr(uri)
         }
 
         return ""
