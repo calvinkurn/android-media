@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
@@ -13,6 +14,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.ProductCountData
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.util.ModelGenerator
 
 abstract class BaseSearchCategoryViewModel(
         baseDispatcher: CoroutineDispatchers
@@ -53,7 +55,7 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun createHeaderVisitableList(headerDataView: HeaderDataView) = listOf(
             ChooseAddressDataView(),
-            BannerDataView(),
+            BannerDataModel(ModelGenerator.createChannelModel()),
             TitleDataView(headerDataView.title, headerDataView.hasSeeAllCategoryButton),
             QuickFilterDataView(),
             ProductCountDataView(headerDataView.totalData),
