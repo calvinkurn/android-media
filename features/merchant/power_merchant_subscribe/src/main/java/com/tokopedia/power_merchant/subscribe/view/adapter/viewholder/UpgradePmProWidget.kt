@@ -72,7 +72,9 @@ class UpgradePmProWidget(itemView: View?) : AbstractViewHolder<WidgetUpgradePmPr
             btnPmProUpgrade.visible()
             setExpandedChanged(false)
         } else {
-            tvPmUpgradeBenefitDescription.text = getString(R.string.pm_pro_upgrade_not_eligible_description, element.shopInfo.shopScorePmProThreshold.toString()).parseAsHtml()
+            val threshold = element.shopInfo.shopScorePmProThreshold
+            val charging = "1,5%."
+            tvPmUpgradeBenefitDescription.text = context.resources.getString(R.string.pm_pro_upgrade_not_eligible_description, threshold, charging).parseAsHtml()
             tvPmProTncDescription.gone()
             btnPmProUpgrade.gone()
             setExpandedChanged(true)

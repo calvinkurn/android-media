@@ -25,7 +25,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.SubscriptionActivityInterface
@@ -509,6 +508,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun renderPmActiveState(data: PMActiveDataUiModel) {
         val isAutoExtendEnabled = getAutoExtendEnabled()
+        val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val widgets = mutableListOf<BaseWidgetUiModel>()
         /*if (!pmSettingInfo?.tickers.isNullOrEmpty() && isAutoExtendEnabled) {
             widgets.add(WidgetTickerUiModel(pmSettingInfo?.tickers.orEmpty()))
@@ -528,16 +528,13 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             }
         }
         val shouldShowNextGradeWidget = data.nextPMGrade != null && isAutoExtendEnabled
-                && data.currentPMGrade?.gradeName != PMShopGrade.DIAMOND
-                && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue()
+                && data.currentPMGrade?.gradeName != PMShopGrade.ULTIMATE && isPmPro
         if (shouldShowNextGradeWidget) {
             widgets.add(getNextShopGradeWidgetData(data))
             widgets.add(WidgetDividerUiModel)
-        }
-        if (isAutoExtendEnabled && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue()) {
             widgets.add(WidgetNextUpdateUiModel(data.nextQuarterlyCalibrationRefreshDate))
         }
-        widgets.add(WidgetSingleCtaUiModel(getString(R.string.pm_pm_transition_period_learnmore), Constant.Url.POWER_MERCHANT_EDU))
+        widgets.add(WidgetDividerUiModel)
         if (isAutoExtendEnabled) {
             widgets.add(WidgetPMDeactivateUiModel)
         }
