@@ -1,6 +1,7 @@
 package com.tokopedia.tokomart.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.assertBannerDataView
 import com.tokopedia.tokomart.searchcategory.assertChooseAddressDataView
@@ -17,12 +18,13 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
     @Test
     fun `test first page is last page`() {
         val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
-        `Given get search first page use case will be successful`(searchModel)
+        `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
 
         `When view created`()
 
         val visitableList = searchViewModel.visitableListLiveData.value!!
 
+        `Then assert request params map`(createFirstPageMandatoryParams(1))
         `Then assert visitable list header`(visitableList, searchModel)
         `Then assert visitable list contents`(visitableList, searchModel)
         `Then assert visitable list does not end with loading more model`(visitableList)
@@ -56,12 +58,13 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
     @Test
     fun `test first page has next page`() {
         val searchModel = "search/first-page-16-products.json".jsonToObject<SearchModel>()
-        `Given get search first page use case will be successful`(searchModel)
+        `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
 
         `When view created`()
 
         val visitableList = searchViewModel.visitableListLiveData.value!!
 
+        `Then assert request params map`(createFirstPageMandatoryParams(1))
         `Then assert visitable list header`(visitableList, searchModel)
         `Then assert visitable list contents`(visitableList, searchModel)
         `Then assert visitable list end with loading more model`(visitableList)

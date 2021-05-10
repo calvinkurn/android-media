@@ -26,6 +26,7 @@ abstract class BaseSearchCategoryViewModel(
 
     protected var totalData = 0
     protected var totalFetchedData = 0
+    protected var nextPage = 1
 
     abstract fun onViewCreated()
 
@@ -38,6 +39,8 @@ abstract class BaseSearchCategoryViewModel(
 
         createVisitableListFirstPage(headerDataView, contentDataView)
         updateVisitableListLiveData()
+
+        nextPage++
     }
 
     private fun createVisitableListFirstPage(
@@ -98,11 +101,16 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun onGetLoadMorePageSuccess(contentDataView: ContentDataView) {
         totalFetchedData += contentDataView.productList.size
 
+        updateVisitableListForNextPage(contentDataView)
+        updateVisitableListLiveData()
+
+        nextPage++
+    }
+
+    private fun updateVisitableListForNextPage(contentDataView: ContentDataView) {
         visitableList.remove(loadingMoreModel)
         visitableList.addAll(createContentVisitableList(contentDataView))
         visitableList.addFooter()
-
-        updateVisitableListLiveData()
     }
 
     protected data class HeaderDataView(
