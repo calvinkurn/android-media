@@ -823,6 +823,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             binding?.navToolbar?.apply {
+                viewLifecycleOwner.lifecycle.addObserver(this)
                 setOnBackButtonClickListener(
                         disableDefaultGtmTracker = true,
                         backButtonClickListener = ::onBackPressed

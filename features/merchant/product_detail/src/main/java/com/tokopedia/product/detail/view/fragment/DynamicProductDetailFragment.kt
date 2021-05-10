@@ -2561,6 +2561,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         search_pdp_toolbar?.hide()
         navToolbar = view?.findViewById(R.id.pdp_navtoolbar)
         navToolbar?.apply {
+            viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
                     IconBuilder()
                             .addIcon(IconList.ID_SHARE) {
