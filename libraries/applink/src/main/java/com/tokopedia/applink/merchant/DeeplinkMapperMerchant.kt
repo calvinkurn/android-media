@@ -73,17 +73,9 @@ object DeeplinkMapperMerchant {
         return deeplink
     }
 
-    fun getRegisteredNavigationSellerReviewDetail(deeplink: String): String {
-        if (deeplink.startsWith(ApplinkConst.SELLER_REVIEW)) {
-            val productId = Uri.parse(deeplink).getQueryParameter(PARAM_PRODUCT_ID)
-            return Uri.parse(ApplinkConstInternalMarketplace.SELLER_REVIEW_DETAIL).buildUpon().appendQueryParameter(PARAM_PRODUCT_ID, productId).build().toString()
-        }
-        return deeplink
-    }
-
     fun getRegisteredNavigationReviewReminder(deeplink: String): String {
         if (deeplink.startsWith(ApplinkConst.REVIEW_REMINDER)) {
-            return Uri.parse(ApplinkConstInternalMarketplace.REVIEW_REMINDER).toString()
+            return ApplinkConstInternalMarketplace.REVIEW_REMINDER
         }
         return deeplink
     }
@@ -113,24 +105,20 @@ object DeeplinkMapperMerchant {
         return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, shopId)
     }
 
-    fun getRegisteredNavigationProductReview(deeplink: String): String {
-        if (deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW)) {
-            val parsedUri = Uri.parse(deeplink)
-            val segments = parsedUri.pathSegments
-            val rating = parsedUri.getQueryParameter(PARAM_RATING) ?: "5"
-            val utmSource = parsedUri.getQueryParameter(PARAM_UTM_SOURCE) ?: ""
+    fun getRegisteredNavigationProductReview(uri: Uri): String {
+        val segments = uri.pathSegments
+        val rating = uri.getQueryParameter(PARAM_RATING) ?: "5"
+        val utmSource = uri.getQueryParameter(PARAM_UTM_SOURCE) ?: ""
 
-            val reputationId = segments[segments.size - 2]
-            val productId = segments.last()
-            val newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId)
-            return Uri.parse(newUri)
-                    .buildUpon()
-                    .appendQueryParameter(PARAM_RATING, rating)
-                    .appendQueryParameter(PARAM_UTM_SOURCE, utmSource)
-                    .build()
-                    .toString()
-        }
-        return deeplink
+        val reputationId = segments[segments.size - 2]
+        val productId = segments.last()
+        val newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId)
+        return Uri.parse(newUri)
+                .buildUpon()
+                .appendQueryParameter(PARAM_RATING, rating)
+                .appendQueryParameter(PARAM_UTM_SOURCE, utmSource)
+                .build()
+                .toString()
     }
 
     fun getRegisteredNavigationProductDetailReview(uri: Uri): String {
@@ -366,7 +354,7 @@ object DeeplinkMapperMerchant {
     }
 
     fun goToInboxUnified(): Boolean {
-        if(GlobalConfig.isSellerApp()) return false
+        if (GlobalConfig.isSellerApp()) return false
         return try {
             val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                     AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX

@@ -54,6 +54,7 @@ public interface ApplinkConst {
     String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}/?ref={ref}";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
     String ADD_CREDIT_CARD = "tokopedia://payment/credit-card/add";
+    String CART_HOST = "cart";
     String CART = "tokopedia://cart";
     String ATC_EXTERNAL = "tokopedia://cart?product_id={product_id}";
     String CHECKOUT = "tokopedia://checkout";
@@ -68,6 +69,7 @@ public interface ApplinkConst {
     String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String SELLER_REVIEW = "tokopedia://seller-review-detail";
+    String REVIEW_REMINDER_HOST = "review-reminder";
     String REVIEW_REMINDER = "tokopedia://review-reminder";
     String WEBVIEW = "tokopedia://webview";
     String WEBVIEW_DOWNLOAD = "tokopedia://webviewdownload";
@@ -376,6 +378,7 @@ public interface ApplinkConst {
 
     String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
 
+    String ACCOUNT_HOST = "account";
     String ACCOUNT = "tokopedia://account";
 
     interface Discovery {

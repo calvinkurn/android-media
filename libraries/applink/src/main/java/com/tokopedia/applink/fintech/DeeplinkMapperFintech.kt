@@ -7,12 +7,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 
 object DeeplinkMapperFintech {
-    fun getRegisteredNavigationForFintech(deeplink: String): String {
-        val uri = Uri.parse(deeplink)
-        if (deeplink.startsWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK)) {
-            return "$OQR_PIN_URL_ENTRY${uri.pathSegments[0]}/"
-        }
-        return deeplink
+    fun getRegisteredNavigationForFintech(uri: Uri): String {
+        return "$OQR_PIN_URL_ENTRY${uri.pathSegments[0]}/"
     }
 
     fun getRegisteredNavigationForLayanan(deeplink: String): String {
@@ -22,13 +18,5 @@ object DeeplinkMapperFintech {
             }
             return it
         }
-    }
-
-    fun getRegisteredNavigationForPayLater(deeplink: String): String {
-        val query = Uri.parse(deeplink).query
-        val path = Uri.parse(deeplink).path
-        return if (query?.isNotEmpty() == true || path?.isNotEmpty() == true) {
-            "${ApplinkConstInternalFintech.PAYLATER}?$query"
-        } else ApplinkConstInternalFintech.PAYLATER
     }
 }

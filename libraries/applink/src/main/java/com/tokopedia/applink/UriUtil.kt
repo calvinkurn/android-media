@@ -257,7 +257,7 @@ object UriUtil {
             }
             strResultList.joinToString("&")
         } catch (e: Exception) {
-            ""
+            query
         }
     }
 }

@@ -16,7 +16,7 @@ object DeeplinkMapperAccount {
         }
     }
 
-    private fun usingOldAccount(context: Context): Boolean{
+    fun usingOldAccount(context: Context): Boolean{
         val remoteConfig = FirebaseRemoteConfigInstance.get(context)
         return (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_USING_OLD_ACCOUNT))
     }
