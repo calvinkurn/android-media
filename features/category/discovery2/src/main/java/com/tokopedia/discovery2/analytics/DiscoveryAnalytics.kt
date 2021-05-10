@@ -100,6 +100,36 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
+    override fun trackBrandRecommendationImpression(items: List<ComponentsItem>, componentPosition: Int) {
+        if (items.isNotEmpty()) {
+            items.forEach { brandItem ->
+                if(!brandItem.data.isNullOrEmpty()){
+                    brandItem.data?.firstOrNull()?.let {
+                        val componentName = it.parentComponentName ?: EMPTY_STRING
+                        val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
+                                eventAction = IMPRESSION_DYNAMIC_BANNER, eventLabel = "${componentName}${if (it.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}")
+                        map[PAGE_TYPE] = pageType
+                        map[PAGE_PATH] = removedDashPageIdentifier
+                        val list = ArrayList<Map<String, Any>>()
+                        val hashMap = HashMap<String, Any>()
+                        it.let {
+                            hashMap[KEY_ID] = it.id ?: 0
+                            hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${it.positionForParentItem + 1} - - ${componentName}${if (it.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}"
+                            hashMap[KEY_CREATIVE] = it.name ?: EMPTY_STRING
+                            hashMap[KEY_POSITION] = componentPosition + 1
+                        }
+                        list.add(hashMap)
+                        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                                EVENT_PROMO_VIEW to mapOf(
+                                        KEY_PROMOTIONS to list))
+                        map[KEY_E_COMMERCE] = eCommerce
+                        trackingQueue.putEETracking(map as HashMap<String, Any>)
+                    }
+                }
+            }
+        }
+    }
+
     override fun trackCategoryNavigationImpression(componentsItems: ArrayList<ComponentsItem>) {
         if (componentsItems.isNotEmpty()) {
             val list = ArrayList<Map<String, Any>>()

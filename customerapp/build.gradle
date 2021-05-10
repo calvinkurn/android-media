@@ -271,6 +271,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.promoGamificationCommon)
+    implementation project(rootProject.ext.features.promoMvcWidget)
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.linker)

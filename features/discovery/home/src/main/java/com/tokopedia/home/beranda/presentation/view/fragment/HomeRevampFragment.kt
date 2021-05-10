@@ -1812,7 +1812,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         navAbTestCondition(ifNavRevamp = {
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
-        getHomeViewModel().showTicker()
+//        getHomeViewModel().showTicker()
         observeHomeNotif()
         pageLoadTimeCallback?.invalidate()
     }
