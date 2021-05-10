@@ -478,22 +478,23 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun updateTitleBasedOnSelectedRating(position: Int) {
-        when {
-            position < CreateReviewFragment.RATING_3 -> {
-                if (position == CreateReviewFragment.RATING_1) {
-                    textAreaTitle?.text = resources.getString(R.string.review_create_worst_title)
-                } else {
-                    textAreaTitle?.text = resources.getString(R.string.review_create_negative_title)
-                }
+        when (position) {
+            CreateReviewFragment.RATING_1 -> {
+                textAreaTitle?.text = resources.getString(R.string.review_create_worst_title)
+                textArea?.setPlaceHolder(resources.getString(R.string.review_form_worst_helper))
             }
-            position == CreateReviewFragment.RATING_3 -> {
-                textAreaTitle?.text = resources.getString(R.string.review_create_neutral_title)
+            CreateReviewFragment.RATING_2 -> {
+                textAreaTitle?.text = resources.getString(R.string.review_form_bad_title)
+
+                textArea?.setPlaceHolder(resources.getString(R.string.review_form_bad_helper))
             }
-            position == CreateReviewFragment.RATING_4 -> {
-                textAreaTitle?.text = resources.getString(R.string.review_create_positive_title)
+            CreateReviewFragment.RATING_3 -> {
+                textAreaTitle?.text = resources.getString(R.string.review_form_neutral_title)
+                textArea?.setPlaceHolder(resources.getString(R.string.review_form_neutral_helper))
             }
             else -> {
                 textAreaTitle?.text = resources.getString(R.string.review_create_best_title)
+                textArea?.setPlaceHolder(resources.getString(R.string.review_form_good_helper))
             }
         }
     }

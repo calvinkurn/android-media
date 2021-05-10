@@ -92,4 +92,8 @@ class CreateReviewTextArea : BaseCustomView {
     fun append(text: String) {
         createReviewEditText.append(text)
     }
+
+    fun setPlaceHolder(text: String) {
+        createReviewEditText.hint = text
+    }
 }
