@@ -222,7 +222,7 @@
     <string name="pm_system_error_message">Terjadi kesalahan pada sistem</string>
     <string name="pm_network_error_message">Koneksi internetmu terganggu</string>
     <string name="pm_try_again">Coba lagi</string>
-    <string name="pm_terms_eligible">Syarat terpenuhi</string>
+    <string name="pm_terms_eligible">Memenuhi Syarat</string>
     <string name="pm_cancel_pm_deactivation_success">Penonaktifan Power Merchant-mu dibatalkan.</string>
     <string name="pm_rate_1_star">Sangat Kurang</string>
     <string name="pm_rate_2_star">Kurang</string>
@@ -252,4 +252,15 @@
     <string name="pm_update_info_pm_pro_transition_period_description_text">Karena masih masa transisi, tidak ada downgrade hingga 29 Agustus 2021. Lebih Lanjut</string>
     <string name="pm_update_info_description_clickable_text">Lebih Lanjut</string>
     <string name="pm_update_info_bottom_sheet_message">Update kenaikan paket keuntungan dilakukan setiap bulan dan penurunan setiap 3 bulan. Di update berikutnya <b>tidak akan ada penurunan paket benefit</b></string>
+    <string name="pm_get_exclusive_benefit_of_being_pm_pro">Dapatkan berbagai keuntungan eksklusif dengan gabung Power Merchant PRO!</string>
+    <string name="pm_pro_upgrade_not_eligible_description"><![CDATA[Tingkatkan performa hingga min. %1$s untuk daftar PM PRO dengan biaya layanan <b>1,5%.</b>]]></string>
+    <string name="pm_pro_upgrade_eligible_description"><![CDATA[Dengan <b>biaya layanan 1,5%</b> saja, kamu bisa daftar jadi Power Merchant PRO dan mendapat berbagai keuntungan eksklusif!]]></string>
+    <string name="pm_pro_upgrade_tnc_description"><![CDATA[Dengan mendaftar, saya setuju dengan S&K yang berlaku.]]></string>
+    <string name="pm_upgrade_to_pm_pro">Upgrade ke PM PRO</string>
+    <string name="pm_pro_general_benefit_1"><![CDATA[Biaya Bebas Ongkir lebih murah, hanya <b>1,5%</b>]]></string>
+    <string name="pm_pro_general_benefit_2">Peringkat pencarian produk tokomu akan lebih tinggi di pencarian produk</string>
+    <string name="pm_pro_general_benefit_3">Ongkir Spesial untuk Same Day &amp; Instan menggunakan GoSend</string>
+    <string name="pm_pro_general_benefit_4">Badge khusus Power Merchant PRO ditampilkan pada calon pembeli</string>
+    <string name="pm_pro_general_benefit_5">Nikmati layanan prioritas Tokopedia Care</string>
+    <string name="pm_pro_general_benefit_6">Semakin banyak keuntungan jika level-mu semakin tinggi! </string>
 </resources>

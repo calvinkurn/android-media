@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.view_pm_current_benefit_section.view.*
  */
 
 class PmCurrentBenefitSectionView : ConstraintLayout {
+
     constructor (context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)

@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.*
+import com.tokopedia.gm.common.data.source.local.model.PMGradeBenefitUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
@@ -519,6 +520,13 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         widgets.add(WidgetDividerUiModel)
         widgets.add(getCurrentShopGradeBenefit(data))
         widgets.add(WidgetDividerUiModel)
+        if (pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT) {
+            val upgradePmProWidget = getUpgradePmProWidget()
+            upgradePmProWidget?.let {
+                widgets.add(it)
+                widgets.add(WidgetDividerUiModel)
+            }
+        }
         val shouldShowNextGradeWidget = data.nextPMGrade != null && isAutoExtendEnabled
                 && data.currentPMGrade?.gradeName != PMShopGrade.DIAMOND
                 && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue()
@@ -664,5 +672,42 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun hideSwipeRefreshLoading() {
         view?.swipeRefreshPm?.isRefreshing = false
+    }
+
+    private fun getUpgradePmProWidget(): WidgetUpgradePmProUiModel? {
+        pmBasicInfo?.shopInfo?.let {
+            val benefitList = listOf(
+                    PMGradeBenefitUiModel(
+                            benefitName = getString(R.string.pm_pro_general_benefit_1),
+                            drawableResIcon = R.drawable.ic_pm_free_shipping_rounded
+                    ),
+                    PMGradeBenefitUiModel(
+                            benefitName = getString(R.string.pm_pro_general_benefit_2),
+                            drawableResIcon = R.drawable.ic_pm_search_rounded
+                    ),
+                    PMGradeBenefitUiModel(
+                            benefitName = getString(R.string.pm_pro_general_benefit_3),
+                            drawableResIcon = R.drawable.ic_pm_gosend_rounded
+                    ),
+                    PMGradeBenefitUiModel(
+                            benefitName = getString(R.string.pm_pro_general_benefit_4),
+                            drawableResIcon = R.drawable.ic_pm_pro_bange_rounded
+                    ),
+                    PMGradeBenefitUiModel(
+                            benefitName = getString(R.string.pm_pro_general_benefit_5),
+                            drawableResIcon = R.drawable.ic_pm_tokopedia_care_rounded
+                    ),
+                    PMGradeBenefitUiModel(
+                            benefitName = getString(R.string.pm_pro_general_benefit_6),
+                            drawableResIcon = R.drawable.ic_pm_star_rounded
+                    )
+            )
+            return WidgetUpgradePmProUiModel(
+                    shopInfo = it,
+                    registrationTerms = PMRegistrationTermHelper.getPmProRegistrationTerms(requireContext(), it),
+                    generalBenefits = benefitList
+            )
+        }
+        return null
     }
 }

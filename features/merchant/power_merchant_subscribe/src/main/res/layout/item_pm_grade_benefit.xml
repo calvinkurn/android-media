@@ -7,9 +7,7 @@
     android:background="@color/Unify_N0"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingStart="@dimen/layout_lvl2"
     android:paddingTop="@dimen/layout_lvl1"
-    android:paddingEnd="@dimen/layout_lvl2"
     android:paddingBottom="@dimen/layout_lvl1">
 
     <com.tokopedia.unifycomponents.ImageUnify
