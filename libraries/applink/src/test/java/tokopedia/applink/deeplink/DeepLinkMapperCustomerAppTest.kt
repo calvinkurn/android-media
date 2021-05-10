@@ -9,6 +9,7 @@ import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder
+import com.tokopedia.config.GlobalConfig
 import io.mockk.every
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,6 +17,11 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
+
+    override fun setup() {
+        super.setup()
+        GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
+    }
 
     @Test
     fun `check home appLink then should return tokopedia internal home navigation in customerapp`() {
@@ -846,6 +852,15 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
             DeeplinkMapperUohOrder.useUoh(context)
         } returns true
         assertEqualsDeepLinkMapper(ApplinkConst.FLIGHT_ORDER, expectedDeepLink)
+    }
+
+    @Test
+    fun `check train order appLink then should return tokopedia internal train order in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://order/unified?filter=kereta"
+        every {
+            DeeplinkMapperUohOrder.useUoh(context)
+        } returns true
+        assertEqualsDeepLinkMapper(ApplinkConst.TRAIN_ORDER, expectedDeepLink)
     }
 
     @Test

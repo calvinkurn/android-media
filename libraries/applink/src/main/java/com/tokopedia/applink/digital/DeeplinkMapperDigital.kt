@@ -12,6 +12,7 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_VOUC
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_POSTPAID_TELCO
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_PREPAID_TELCO
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.applink.order.DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder
 
 
 object DeeplinkMapperDigital {
@@ -58,6 +59,9 @@ object DeeplinkMapperDigital {
             deeplink.startsWith(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME)
                     && !uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty() -> {
                 ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
+            }
+            deeplink.startsWith(ApplinkConst.DIGITAL_ORDER) -> {
+                getRegisteredNavigationUohOrder(context, deeplink)
             }
             else -> deeplink
         }

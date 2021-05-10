@@ -2,11 +2,9 @@ package com.tokopedia.applink.home
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -59,14 +57,23 @@ object DeeplinkMapperHome {
             return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
         else if (deeplink.startsWith(ApplinkConst.OFFICIAL_STORES) && uri.pathSegments.isEmpty())
             return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
-        else if (deeplink.startsWithPattern(ApplinkConst.OFFICIAL_STORE_CATEGORY) && uri.pathSegments.size == 1) {
+        else if (deeplink.startsWith(ApplinkConst.BRAND_LIST)) {
+            return getBrandlistInternal(deeplink)
+        } else if (deeplink.startsWithPattern(ApplinkConst.OFFICIAL_STORE_CATEGORY) && uri.pathSegments.size == 1) {
             val params = UriUtil.destructureUriToMap(ApplinkConst.OFFICIAL_STORE_CATEGORY, Uri.parse(deeplink), true)
             params[EXTRA_TAB_POSITION] = TAB_POSITION_OS
-
             return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params.toMap())
         }
-
         return deeplink
+    }
+
+    private fun getBrandlistInternal(deeplink: String): String {
+        val parsedUri = Uri.parse(deeplink)
+        val segments = parsedUri.pathSegments
+
+        val categoryId = if (segments.size > 1) segments.last() else "0"
+        val completedURI = UriUtil.buildUri(ApplinkConstInternalMechant.BRANDLIST, categoryId)
+        return completedURI
     }
 
     fun getRegisteredNavigationHomeFeed(): String {

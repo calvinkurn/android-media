@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
+import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -18,6 +19,9 @@ object DeeplinkMapperTravel {
         return when {
             deeplink.startsWith(ApplinkConst.HOTEL_SRP, true) -> {
                 getHotelSrp(context)
+            }
+            deeplink.startsWith(ApplinkConst.HOTEL_ORDER, true) -> {
+                DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(context, deeplink)
             }
             else -> deeplink
         }

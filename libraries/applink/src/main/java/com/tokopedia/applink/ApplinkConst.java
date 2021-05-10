@@ -49,6 +49,7 @@ public interface ApplinkConst {
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
+    String ADD_PATH = "add";
     String PRODUCT_ADD = "tokopedia://product/add";
     String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi/";
     String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}/?ref={ref}";
@@ -63,6 +64,7 @@ public interface ApplinkConst {
     String SELLER_STATUS = "tokopedia://seller/status";
     String SELLER_HISTORY = "tokopedia://seller/history";
     String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
+    String REVIEW_HOST = "review";
     String REPUTATION = "tokopedia://review";
     String REPUTATION_DETAIL = "tokopedia://review/{reputation_id}";
     String REVIEW_DETAIL = "tokopedia://review/detail/{feedback_id}";
@@ -120,6 +122,7 @@ public interface ApplinkConst {
     String TOPCHAT = "tokopedia://topchat/{message_id}";
     String TOP_CHAT = "tokopedia://topchat";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
+    String TOPCHAT_OLD_HOST = "topchatold";
     String TOPCHAT_OLD = "tokopedia://topchatold";
     /**
      * Go to chat room and chat with seller use one of the pattern below:
@@ -344,6 +347,7 @@ public interface ApplinkConst {
 
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
 
+    String CATEGORY_HOST = "category";
     String CATEGORY = "tokopedia://category";
     String TRADEIN = "tokopedia://category/tradein";
     String QRSCAN = "tokopedia://scanqr";
@@ -363,7 +367,8 @@ public interface ApplinkConst {
     String SALAM_UMRAH_PACKET = "tokopedia://s/umroh/paket/{category_id}";
     String SALAM_UMRAH_PDP = "tokopedia://s/umroh/produk/{slug}";
     String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
-    String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
+    String SALAM_UMRAH_SHOP_ID = "7298319";
+    String SALAM_UMRAH_SHOP = "tokopedia://shop/" + SALAM_UMRAH_SHOP_ID;
     String THANK_YOU_PAGE_NATIVE = "tokopedia://payment/thankyou";
     String THANKYOU_PAGE_NATIVE = "tokopedia://payment/thankyou?payment_id={payment_id}&merchant={merchant_code}";
 
@@ -393,6 +398,7 @@ public interface ApplinkConst {
     }
 
     interface Digital {
+        String CATEGORY_EXPLORE_HOST = "category-explore";
         String DIGITAL_BROWSE = "tokopedia://category-explore";
         String DIGITAL_PRODUCT = "tokopedia://digital/form";
         String DIGITAL = "tokopedia://digital";

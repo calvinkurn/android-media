@@ -46,4 +46,12 @@ object DeeplinkMapperCategory {
     fun getRegisteredTradeinNavigation(deeplink: String): String {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
+
+    fun getRegisteredCategoryNavigation(deeplink: String, uri: Uri): String {
+        return if (deeplink.startsWith(ApplinkConst.TRADEIN)) {
+            getRegisteredTradeinNavigation(deeplink)
+        } else {
+            getRegisteredCategoryNavigation(uri)
+        }
+    }
 }
