@@ -6,6 +6,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.tokomart.category.di.CategoryComponent
 import com.tokopedia.tokomart.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokomart.category.presentation.viewmodel.CategoryViewModel
+import com.tokopedia.tokomart.common.base.listener.BannerComponentCallback
 import com.tokopedia.tokomart.searchcategory.presentation.BaseSearchCategoryFragment
 import javax.inject.Inject
 
@@ -48,7 +49,7 @@ class CategoryFragment: BaseSearchCategoryFragment() {
         getComponent(CategoryComponent::class.java).inject(this)
     }
 
-    override fun createTypeFactory() = CategoryTypeFactoryImpl()
+    override fun createTypeFactory() = CategoryTypeFactoryImpl(BannerComponentCallback(context))
 
     override fun getViewModel() = categoryViewModel
 }

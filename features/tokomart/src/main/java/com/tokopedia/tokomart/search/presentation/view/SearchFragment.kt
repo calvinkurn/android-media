@@ -2,7 +2,11 @@ package com.tokopedia.tokomart.search.presentation.view
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.home_component.listener.BannerComponentListener
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.tokomart.common.base.listener.BannerComponentCallback
 import com.tokopedia.tokomart.search.di.SearchComponent
 import com.tokopedia.tokomart.search.presentation.typefactory.SearchTypeFactoryImpl
 import com.tokopedia.tokomart.search.presentation.viewmodel.SearchViewModel
@@ -47,7 +51,7 @@ class SearchFragment: BaseSearchCategoryFragment() {
         getComponent(SearchComponent::class.java).inject(this)
     }
 
-    override fun createTypeFactory() = SearchTypeFactoryImpl()
+    override fun createTypeFactory() = SearchTypeFactoryImpl(BannerComponentCallback(context))
 
     override fun getViewModel() = searchViewModel
 }

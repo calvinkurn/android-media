@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
@@ -32,7 +33,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.viewholder.QuickFilter
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.TitleViewHolder
 
 abstract class BaseSearchCategoryTypeFactoryImpl(
-
+    private val bannerListener: BannerComponentListener
 ): BaseAdapterTypeFactory(), BaseSearchCategoryTypeFactory, HomeComponentTypeFactory {
 
     override fun type(chooseAddressDataView: ChooseAddressDataView) = ChooseAddressViewHolder.LAYOUT
@@ -81,7 +82,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             TitleViewHolder.LAYOUT -> TitleViewHolder(view)
             QuickFilterViewHolder.LAYOUT -> QuickFilterViewHolder(view)
             ProductCountViewHolder.LAYOUT -> ProductCountViewHolder(view)
-            BannerComponentViewHolder.LAYOUT -> BannerComponentViewHolder(view, null, null)
+            BannerComponentViewHolder.LAYOUT -> BannerComponentViewHolder(view, bannerListener, null)
             else -> super.createViewHolder(view, type)
         }
     }
