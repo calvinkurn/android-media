@@ -3,6 +3,7 @@ package com.tokopedia.tokopoints.view.tokopointhome
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity
 import com.tokopedia.tokopoints.view.model.TokenDetailOuter
@@ -35,8 +36,10 @@ class TokoPointsHomeViewModelTest {
     val repository = mockk<TokopointsHomeUsecase>()
     val recomUsecase = mockk<RewardsRecommUsecase>()
     val requestParams: RequestParams = mockk()
+    val productCardModel = mockk<ProductCardModel>()
+    val productItem = mockk<RecommendationItem>()
     val recommendationWidgetList: List<RecommendationWidget> = arrayListOf(RecommendationWidget())
-    val recommendationList: List<ProductCardModel> = arrayListOf(ProductCardModel())
+    val recommendationList: List<RecommendationWrapper> = arrayListOf(RecommendationWrapper(productItem,productCardModel))
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -85,7 +88,7 @@ class TokoPointsHomeViewModelTest {
         val result = viewModel.tokopointDetailLiveData.value as Success
         assert(result.data.sectionList == dataSection)
         assert(result.data.topSectionResponse.tokopediaRewardTopSection == tokopediaRewardTopsectionData)
-        assert(result.data.recomData?.recomData == recommendationList)
+        assert(result.data.recomData?.recommendationWrapper == recommendationList)
     }
 
     @Test
@@ -130,7 +133,7 @@ class TokoPointsHomeViewModelTest {
         assert(result.data.sectionList == dataSection)
         assert(result.data.topSectionResponse.tokopediaRewardTopSection == tokopediaRewardTopsectionData)
         assert(result.data.topSectionResponse.userSavingResponse == dataUserSavingResponse)
-        assert(result.data.recomData?.recomData == recommendationList)
+        assert(result.data.recomData?.recommendationWrapper == recommendationList)
     }
 
     @Test

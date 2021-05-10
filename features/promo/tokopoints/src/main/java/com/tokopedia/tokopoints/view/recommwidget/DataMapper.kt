@@ -3,14 +3,20 @@ package com.tokopedia.tokopoints.view.recommwidget
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.tokopoints.view.tokopointhome.RecommendationWrapper
 import java.util.*
 
 class DataMapper {
 
-    suspend fun recommWidgetToListOfVisitables(recommendationWidget: RecommendationWidget): List<ProductCardModel> {
-        val recommendationList = ArrayList<ProductCardModel>()
+    suspend fun recommWidgetToListOfVisitables(recommendationWidget: RecommendationWidget): List<RecommendationWrapper> {
+        val recommendationList = ArrayList<RecommendationWrapper>()
         for (i in 0..5) {
-            recommendationList.add(getProductModel(recommendationWidget.recommendationItemList[i]))
+            recommendationList.add(
+                RecommendationWrapper(
+                    recommendationWidget.recommendationItemList[i],
+                    getProductModel(recommendationWidget.recommendationItemList[i])
+                )
+            )
         }
         return recommendationList
     }
@@ -35,13 +41,7 @@ class DataMapper {
             freeOngkir = ProductCardModel.FreeOngkir(
                 isActive = element.isFreeOngkirActive,
                 imageUrl = element.freeOngkirImageUrl
-            )/*
-            labelGroupList = element.labelGroupList.map { recommendationLabel ->
-                ProductCardModel.LabelGroup(
-                    position = recommendationLabel.position,
-                    title = recommendationLabel.title,
-                    type = recommendationLabel.type
-                )*/
+            )
         )
     }
 }

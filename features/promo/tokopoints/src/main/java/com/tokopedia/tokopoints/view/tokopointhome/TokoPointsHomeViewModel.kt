@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
@@ -68,8 +69,11 @@ class TokoPointsHomeViewModel @Inject constructor(private val tokopointsHomeUsec
 
     private suspend fun getRecommendationData(): RewardsRecommendation {
         val response = recommUsecase.getData(recommUsecase.getRequestParams(1, "", ""))
-        val list = recommUsecase.mapper.recommWidgetToListOfVisitables(response.first())
-        return RewardsRecommendation(list)
+        val recomWidget = response.first()
+        val title = recomWidget.title
+        val appLink = recomWidget.seeMoreAppLink
+        val list = recommUsecase.mapper.recommWidgetToListOfVisitables(recomWidget)
+        return RewardsRecommendation(list,title,appLink)
     }
 
     private suspend fun getUserSavingData(): UserSavingResponse {
@@ -80,4 +84,5 @@ class TokoPointsHomeViewModel @Inject constructor(private val tokopointsHomeUsec
 
 data class TokopointSuccess(val topSectionResponse: TopSectionResponse, val sectionList: MutableList<SectionContent>, val recomData: RewardsRecommendation?)
 data class TopSectionResponse(val tokopediaRewardTopSection: TokopediaRewardTopSection, val userSavingResponse: TokopointsUserSaving?)
-data class RewardsRecommendation(val recomData: List<ProductCardModel>?)
+data class RewardsRecommendation(val recommendationWrapper: List<RecommendationWrapper> , val title:String , val appLink:String)
+data class RecommendationWrapper( val recomendationItem : RecommendationItem,val recomData: ProductCardModel)
