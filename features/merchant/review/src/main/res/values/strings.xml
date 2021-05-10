@@ -116,6 +116,14 @@
     <string name="review_form_progress_bar_bad_need_text">Ceritain dulu alasanmu 🙏</string>
     <string name="review_form_progress_bar_bad_complete">Oke, udah siap kirim! 👉</string>
     <string name="review_form_add_photo">Kasih liat foto barang</string>
+    <string name="review_form_send_rating_only_dialog_title">Mau kirim Rating aja?</string>
+    <string name="review_form_send_rating_only_body">Selama 30 hari ke depan, kamu masih bisa ubah dan lengkapi ulasan ini di halaman Riwayat.</string>
+    <string name="review_form_send_rating_only_exit">Keluar Halaman</string>
+    <string name="review_form_send_rating_only">Kirim Rating</string>
+    <string name="review_form_dismiss_form_dialog_title">Ulasanmu nanti hilang, lho! 😢</string>
+    <string name="review_form_dismiss_form_dialog_body">Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini. Yakin tetap mau keluar?</string>
+    <string name="review_form_dismiss_form_dialog_stay">Tetap di Sini</string>
+    <string name="review_form_templates_formatting">%s, </string>
 
     <string name="review_date">• %s</string>
     <string name="review_refresh">Refresh</string>

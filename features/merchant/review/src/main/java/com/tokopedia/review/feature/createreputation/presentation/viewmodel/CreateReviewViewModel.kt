@@ -222,7 +222,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     fun getReviewTemplates(productId: Long) {
         launchCatchError(block = {
             val data = withContext(coroutineDispatcherProvider.io) {
-                getReviewTemplatesUseCase.setParams(productId.toString(), 0)
+                getReviewTemplatesUseCase.setParams(productId.toString(), 1)
                 getReviewTemplatesUseCase.executeOnBackground()
             }
             _reviewTemplates.postValue(CoroutineSuccess(data.productrevGetPersonalizedReviewTemplate.templates))

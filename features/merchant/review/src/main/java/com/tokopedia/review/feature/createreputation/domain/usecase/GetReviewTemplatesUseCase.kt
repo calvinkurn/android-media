@@ -17,8 +17,8 @@ class GetReviewTemplatesUseCase @Inject constructor(graphqlRepository: GraphqlRe
         const val PARAM_PAGE = "page"
         const val REVIEW_TEMPLATES_QUERY_CLASS_NAME = "ReviewTemplates"
         const val REVIEW_TEMPLATES_QUERY = """
-            query productrevGetPersonalizedReviewTemplate(${'$'}productID: String, ${'$'}page: Int) {
-              productrevGetPersonalizedReviewTemplate(productID: ${'$'}productID, page: ${'$'}page, limit: 10) {
+            query productrevGetPersonalizedReviewTemplate(${'$'}productID: String!, ${'$'}page: Int!) {
+              productrevGetListPersonalizedReviewTemplate(productID: ${'$'}productID, page: ${'$'}page, limit: 20) {
                 templates
                 hasNext
               }

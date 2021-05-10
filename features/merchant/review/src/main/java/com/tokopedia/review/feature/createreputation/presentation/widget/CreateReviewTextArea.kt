@@ -88,4 +88,8 @@ class CreateReviewTextArea : BaseCustomView {
     fun getText(): String {
         return createReviewEditText.text.toString()
     }
+
+    fun append(text: String) {
+        createReviewEditText.append(text)
+    }
 }

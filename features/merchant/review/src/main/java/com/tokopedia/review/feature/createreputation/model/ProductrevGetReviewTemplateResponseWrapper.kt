@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductrevGetReviewTemplateResponseWrapper(
-        @SerializedName("productrevGetPersonalizedReviewTemplate")
+        @SerializedName("productrevGetListPersonalizedReviewTemplate")
         @Expose
         val productrevGetPersonalizedReviewTemplate: ProductrevGetReviewTemplate = ProductrevGetReviewTemplate()
 )
