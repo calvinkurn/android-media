@@ -3,6 +3,5 @@
     android:id="@+id/productCardView"
     android:layout_width="@dimen/dp_140"
     android:layout_height="@dimen/dp_280"
-    android:background="@color/white"
     android:clickable="true"
     xmlns:android="http://schemas.android.com/apk/res/android" />

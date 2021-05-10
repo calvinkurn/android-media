@@ -18,11 +18,11 @@ class RewardsRecommUsecase @Inject constructor(context: Context,
 
     suspend fun getRequestParams(pageNumber: Int, shopId: String, pageName: String): RequestParams {
         val rp = RequestParams()
-        rp.putString(PAGE_NAME, "cart_recent_view")
+        rp.putString(PAGE_NAME, "rewards_page")
         rp.putInt(PAGE_NUMBER, pageNumber)
         rp.putBoolean(OFFICIAL_STORE, false)
         rp.putString(SHOP_ID, if (useEmptyShopId) "" else shopId)
-        rp.putString(X_SOURCE, "recentview")
+        rp.putString(X_SOURCE, "rewards")
         if (userSession.isLoggedIn) {
             rp.putInt(USER_ID, userSession.userId.toInt())
         } else {
