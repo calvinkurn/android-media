@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.fragment
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -12,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -185,14 +187,14 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onItemClickedGotoPMPro() {
-        goToPowerMerchantSubscribe()
+        goToPowerMerchantSubscribe(PARAM_PM_PRO)
     }
 
     /**
      * ItemStatusPowerMerchantListener
      */
     override fun onItemClickedGoToPMActivation() {
-        goToPowerMerchantSubscribe()
+        goToPowerMerchantSubscribe(PARAM_PM)
         shopScorePenaltyTracking.clickPowerMerchantSection()
     }
 
@@ -204,7 +206,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      * ItemPotentialRegularMerchantListener
      */
     override fun onItemClickedBenefitPotentialRM() {
-        goToPowerMerchantSubscribe()
+        goToPowerMerchantSubscribe(PARAM_PM)
         shopScorePenaltyTracking.clickSeeAllBenefitInRM(isNewSeller)
     }
 
@@ -213,7 +215,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onGotoPMProPage() {
-        goToPowerMerchantSubscribe()
+        goToPowerMerchantSubscribe(PARAM_PM_PRO)
     }
 
     override fun onImpressHeaderTicker() {
@@ -563,9 +565,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         context?.let { RouteManager.route(it, ApplinkConstInternalMarketplace.SHOP_PENALTY) }
     }
 
-    private fun goToPowerMerchantSubscribe() {
+    private fun goToPowerMerchantSubscribe(tab: String) {
         val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
-        context?.let { RouteManager.route(context, appLink) }
+        val appLinkPMTab = Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab).build().toString()
+        context?.let { RouteManager.route(context, appLinkPMTab) }
     }
 
     private fun setupAdapter() {
@@ -658,6 +661,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         private const val COACHMARK_HEADER_POSITION = 0
         private const val COACHMARK_ITEM_DETAIL_POSITION = 1
         private const val SCREEN_NAME = "MA - Shop Performance"
+        private const val TAB_PM_PARAM = "tab"
+        private const val PARAM_PM = "pm"
+        private const val PARAM_PM_PRO = "pm_pro"
 
         @JvmStatic
         fun newInstance(): ShopPerformancePageFragment {
