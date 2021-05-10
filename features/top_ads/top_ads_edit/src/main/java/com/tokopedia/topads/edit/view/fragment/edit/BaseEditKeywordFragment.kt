@@ -6,14 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.view.adapter.viewpager.KeywordEditPagerAdapter
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.KeySharedModel
+import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.data.response.KeywordDataModel
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
+import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.GROUP_STRATEGY
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_ADDED
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_DELETED
@@ -40,6 +43,9 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     private var autoBidSelectionSheet: AutoBidSelectionSheet? = null
     var positivekeywordsAll: ArrayList<KeySharedModel>? = arrayListOf()
     var negativekeywordsAll: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
+    private val sharedViewModel by lazy {
+        ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+    }
 
     companion object {
         fun newInstance(bundle: Bundle?): BaseEditKeywordFragment {
@@ -78,10 +84,13 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             }
         }
         arguments?.getString(GROUP_STRATEGY, "")?.let { handleAutoBidState(it) }
+
     }
 
     private fun handleAutoBidState(autoBidState: String) {
+        sharedViewModel.setAutoBidStatus(autoBidState)
         if (autoBidState.isNotEmpty()) {
+            buttonDisable(true)
             autobid_selection.text = "Otomatis"
             keyword_grp.visibility = View.GONE
             autobid_ticker.visibility = View.VISIBLE
@@ -145,7 +154,8 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         var deletedKeywordsPos: ArrayList<KeySharedModel>? = arrayListOf()
         var addedKeywordsPos: ArrayList<KeySharedModel>? = arrayListOf()
         var editedKeywordsPos: ArrayList<KeySharedModel>? = arrayListOf()
-        var strategies: ArrayList<String>? = arrayListOf()
+        val strategies: ArrayList<String> = arrayListOf()
+        var bidGroup =0
 
         if (fragments?.get(0) is EditKeywordsFragment) {
             val bundle: Bundle = (fragments[0] as EditKeywordsFragment).sendData()
@@ -153,6 +163,8 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             deletedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_DELETE)
             editedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_EDIT)
             positivekeywordsAll = bundle.getParcelableArrayList(POSITIVE_KEYWORD_ALL)
+            bidGroup = bundle.getInt(Constants.PRICE_BID)
+
         }
         if (fragments?.get(1) is EditNegativeKeywordsFragment) {
             val bundle: Bundle = (fragments[1] as EditNegativeKeywordsFragment).sendData()
@@ -161,9 +173,9 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             negativekeywordsAll = bundle.getParcelableArrayList(NEGATIVE_KEYWORD_ALL)
 
         }
-        strategies?.clear()
+        strategies.clear()
         if(autobid_selection.text == "Otomatis") {
-            strategies?.add("auto_bid")
+            strategies.add("auto_bid")
         }
         dataMap[POSITIVE_CREATE] = addedKeywordsPos
         dataMap[POSITIVE_DELETE] = deletedKeywordsPos
@@ -171,12 +183,14 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         dataMap[NEGATIVE_KEYWORDS_ADDED] = dataNegativeAdded
         dataMap[NEGATIVE_KEYWORDS_DELETED] = dataNegativeDeleted
         dataMap[STRATEGIES] = strategies
+        dataMap[Constants.PRICE_BID] = bidGroup
+
         return dataMap
     }
 
     fun getKeywordNameItems(): MutableList<Map<String, Any>> {
         val fragments = (view_pager?.adapter as KeywordEditPagerAdapter?)?.list
-        var items:MutableList<Map<String,Any>> = mutableListOf()
+        val items:MutableList<Map<String,Any>> = mutableListOf()
         if (fragments?.get(0) is EditKeywordsFragment) {
             positivekeywordsAll?.forEachIndexed {index , it->
                 val map = mapOf("name" to it.name

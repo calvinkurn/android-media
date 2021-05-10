@@ -62,10 +62,9 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
     }
 
     private fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>): TopadsManageGroupAdsInput {
-//
         val strategy = dataKeyword[STRATEGIES] as ArrayList<String>?
         val groupName = dataGroup[GROUP_NAME] as? String
-        val priceBidGroup = dataGroup[Constants.PRICE_BID] as? Int
+        val priceBidGroup = dataKeyword[Constants.PRICE_BID] as? Int
         val dailyBudgetGroup = dataGroup[Constants.DAILY_BUDGET] as? Int
         val groupId = dataGroup[Constants.GROUP_ID] as? Int
         val isNameEdited = dataGroup[NAME_EDIT] as? Boolean
@@ -100,7 +99,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         group?.scheduleStart = ""
         group?.scheduleEnd = ""
         group?.strategies = strategy
-        if (isBudgetLimited == true) {
+        if (isBudgetLimited == false) {
             group?.dailyBudget = 0.0
         } else
             group?.dailyBudget = dailyBudgetGroup?.toDouble()

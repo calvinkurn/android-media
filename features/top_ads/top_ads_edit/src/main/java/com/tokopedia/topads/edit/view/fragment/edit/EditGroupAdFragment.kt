@@ -38,6 +38,7 @@ import java.util.*
 import javax.inject.Inject
 
 private const val AUTOBID_DEFUALT_BUDGET = 16000
+
 class EditGroupAdFragment : BaseDaggerFragment() {
 
     private var btnState: Boolean = true
@@ -52,6 +53,8 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private var groupId: Int? = 0
     private var priceDaily = 0
     private var groupName: String = ""
+    private var currentAutoBidState = ""
+    private var initialToggleState = false
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
     }
@@ -62,7 +65,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
     }
     private var initialDailyBudget = 0
-
 
     companion object {
 
@@ -81,8 +83,16 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         getComponent(TopAdsEditComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(resources.getLayout(R.layout.topads_edit_activity_edit_form_ad), container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(
+            resources.getLayout(R.layout.topads_edit_activity_edit_form_ad),
+            container,
+            false
+        )
     }
 
 
@@ -97,7 +107,10 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             daily_budget?.textFieldInput?.setText(data.priceDaily.toString())
         } else {
             daily_budget?.gone()
-            setCurrentDailyBudget((MULTIPLIER * data.priceBid).toString())
+            if (currentAutoBidState.isEmpty())
+                setCurrentDailyBudget((MULTIPLIER * data.priceBid).toString())
+            else
+                setCurrentDailyBudget(AUTOBID_DEFUALT_BUDGET.toString())
         }
         progressbar?.visibility = View.GONE
         saveInitialChoices()
@@ -139,9 +152,12 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedViewModel.getDailyBudget().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        sharedViewModel.getDailyBudget().observe(viewLifecycleOwner, {
             setCurrentDailyBudget(it.toString())
             currentBudget = it
+        })
+        sharedViewModel.getAutoBidStatus().observe(viewLifecycleOwner, {
+            currentAutoBidState = it
         })
         if (arguments?.getString(GROUP_ID)?.isNotEmpty()!!) {
             groupId = arguments?.getString(GROUP_ID)?.toInt()
@@ -177,20 +193,41 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             }
         })
 
-        daily_budget?.textFieldInput?.addTextChangedListener(object : NumberTextWatcher(daily_budget.textFieldInput, "0") {
+        daily_budget?.textFieldInput?.addTextChangedListener(object :
+            NumberTextWatcher(daily_budget.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 when {
-                    number < currentBudget -> {
+                    number < AUTOBID_DEFUALT_BUDGET && currentAutoBidState.isNotEmpty() -> {
                         daily_budget?.setError(true)
-                        daily_budget?.setMessage(String.format(getString(R.string.min_bid_error), currentBudget))
+                        daily_budget?.setMessage(
+                            String.format(
+                                getString(R.string.min_bid_error),
+                                AUTOBID_DEFUALT_BUDGET.toString()
+                            )
+                        )
                         validation3 = false
                         actionEnable()
-
+                    }
+                    number < currentBudget -> {
+                        daily_budget?.setError(true)
+                        daily_budget?.setMessage(
+                            String.format(
+                                getString(R.string.min_bid_error),
+                                currentBudget
+                            )
+                        )
+                        validation3 = false
+                        actionEnable()
                     }
                     number > MAXIMUM_LIMIT.removeCommaRawString().toDouble() -> {
                         daily_budget?.setError(true)
-                        daily_budget?.setMessage(String.format(getString(R.string.topads_common_maximum_daily_budget), MAXIMUM_LIMIT))
+                        daily_budget?.setMessage(
+                            String.format(
+                                getString(R.string.topads_common_maximum_daily_budget),
+                                MAXIMUM_LIMIT
+                            )
+                        )
                         validation3 = false
                         actionEnable()
                     }
@@ -207,6 +244,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     private fun saveInitialChoices() {
         initialDailyBudget = getCurrentDailyBudget()
+        initialToggleState = toggle?.isChecked ?: false
     }
 
     private fun actionEnable() {
@@ -245,7 +283,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun checkDataChanged(): Boolean {
-        return initialDailyBudget != getCurrentDailyBudget() || groupName != getCurrentTitle()
+        return initialDailyBudget != getCurrentDailyBudget() || groupName != getCurrentTitle() || initialToggleState != toggle?.isChecked
     }
 
     override fun onDetach() {

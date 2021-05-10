@@ -142,11 +142,26 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = EditKeywordListAdapter(EditKeywordListAdapterTypeFactoryImpl(this::onAddKeyword, ::onDeleteItem, this::onEditBudget, ::onEditType))
+        adapter = EditKeywordListAdapter(
+            EditKeywordListAdapterTypeFactoryImpl(
+                this::onAddKeyword,
+                ::onDeleteItem,
+                this::onEditBudget,
+                ::onEditType
+            )
+        )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(resources.getLayout(R.layout.topads_create_fragment_budget_list), container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(
+            resources.getLayout(R.layout.topads_create_fragment_budget_list),
+            container,
+            false
+        )
         recyclerView = view.findViewById(com.tokopedia.topads.common.R.id.bid_list)
         addKeyword = view.findViewById(com.tokopedia.topads.common.R.id.addKeyword)
         ticker = view.findViewById(com.tokopedia.topads.common.R.id.ticker)
@@ -241,11 +256,19 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             }
             result % (Constants.MULTIPLY_CONST.toInt()) != 0 -> {
                 actionEnable(false)
-                setMessageErrorField(getString(R.string.topads_common_50_multiply_error), Constants.MULTIPLY_CONST, true)
+                setMessageErrorField(
+                    getString(R.string.topads_common_50_multiply_error),
+                    Constants.MULTIPLY_CONST,
+                    true
+                )
             }
             else -> {
                 actionEnable(true)
-                setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick, false)
+                setMessageErrorField(
+                    getString(R.string.recommendated_bid_message),
+                    suggestBidPerClick,
+                    false
+                )
             }
         }
     }
@@ -325,33 +348,37 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun setCount() {
-        selectedKeyword.text = String.format(getString(R.string.topads_common_selected_keyword), adapter.items.count())
+        selectedKeyword.text =
+            String.format(getString(R.string.topads_common_selected_keyword), adapter.items.count())
     }
 
     private fun mapToModelManual(selected: GetKeywordResponse.KeywordsItem): KeySharedModel {
         return KeySharedModel(
-                selected.tag,
-                "baru",
-                "baru",
-                selected.priceBid,
-                minSuggestKeyword,
-                selected.source,
-                selected.type,
-                selected.keywordId,
+            selected.tag,
+            "baru",
+            "baru",
+            selected.priceBid,
+            minSuggestKeyword,
+            selected.source,
+            selected.type,
+            selected.keywordId,
         )
 
     }
 
-    private fun mapToModel(selected: GetKeywordResponse.KeywordsItem, recommend: KeywordDataItem): KeySharedModel {
+    private fun mapToModel(
+        selected: GetKeywordResponse.KeywordsItem,
+        recommend: KeywordDataItem
+    ): KeySharedModel {
         return KeySharedModel(
-                selected.tag,
-                recommend.totalSearch,
-                recommend.competition,
-                selected.priceBid,
-                minSuggestKeyword,
-                selected.source,
-                selected.type,
-                selected.keywordId,
+            selected.tag,
+            recommend.totalSearch,
+            recommend.competition,
+            selected.priceBid,
+            minSuggestKeyword,
+            selected.source,
+            selected.type,
+            selected.keywordId,
         )
     }
 
@@ -361,7 +388,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid = minSuggestKeyword
         bundle.putString(MAX_BID, maxSuggestKeyword)
         bundle.putString(MIN_BID, minSuggestKeyword)
-        bundle.putString(SUGGESTION_BID, (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid)
+        bundle.putString(
+            SUGGESTION_BID,
+            (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid
+        )
         bundle.putInt(ITEM_POSITION, pos)
         bundle.putString(KEYWORD_NAME, (adapter.items[pos] as EditKeywordItemViewModel).data.name)
         bundle.putInt(FROM_EDIT, 1)
@@ -383,9 +413,22 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private fun showConfirmationDialog(position: Int) {
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(MethodChecker.fromHtml(String.format(getString(R.string.topads_edit_delete_keyword_conf_dialog_title), (adapter.items[position] as EditKeywordItemViewModel).data.name)))
-            dialog.setDescription(MethodChecker.fromHtml(String.format(getString(R.string.topads_edit_delete_keyword_conf_dialog_desc),
-                    (adapter.items[position] as EditKeywordItemViewModel).data.name)))
+            dialog.setTitle(
+                MethodChecker.fromHtml(
+                    String.format(
+                        getString(R.string.topads_edit_delete_keyword_conf_dialog_title),
+                        (adapter.items[position] as EditKeywordItemViewModel).data.name
+                    )
+                )
+            )
+            dialog.setDescription(
+                MethodChecker.fromHtml(
+                    String.format(
+                        getString(R.string.topads_edit_delete_keyword_conf_dialog_desc),
+                        (adapter.items[position] as EditKeywordItemViewModel).data.name
+                    )
+                )
+            )
             dialog.setPrimaryCTAText(getString(R.string.topads_edit_batal))
             dialog.setSecondaryCTAText(getString(R.string.topads_edit_ya))
             dialog.setPrimaryCTAClickListener {
@@ -454,15 +497,15 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         ticker.gone()
         updateString()
         view?.let {
-            Toaster.build(it, getString(com.tokopedia.topads.common.R.string.topads_keyword_common_del_toaster),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL).show()
+            Toaster.build(
+                it,
+                getString(com.tokopedia.topads.common.R.string.topads_keyword_common_del_toaster),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL
+            ).show()
         }
     }
 
-//    fun sendAutoBidValue(autoBidValue: String) {
-//        sharedViewModel.setAutoBidStatus(autoBidValue)
-//    }
     private fun isExistsOriginal(position: Int): Boolean {
         return (originalKeyList.find { (adapter.items[position] as EditKeywordItemViewModel).data.name == it } != null)
     }
@@ -490,10 +533,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
         })
         addKeyword.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_TAMBAH_KATA_KUNCI, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
+                CLICK_TAMBAH_KATA_KUNCI,
+                ""
+            )
             onAddKeyword()
         }
-        budgetInput.textFieldInput.addTextChangedListener(object : NumberTextWatcher(budgetInput.textFieldInput, "0") {
+        budgetInput.textFieldInput.addTextChangedListener(object :
+            NumberTextWatcher(budgetInput.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()
@@ -519,10 +566,16 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             if (existingKeyword?.isEmpty() == true) {
                 setEmptyView()
             } else {
-                ticker.setTextDescription(MethodChecker.fromHtml(
-                        String.format(getString(
-                                com.tokopedia.topads.common.R.string.topads_common_added_key_ticker_text),
-                                existingKeyword?.count() ?: 0)))
+                ticker.setTextDescription(
+                    MethodChecker.fromHtml(
+                        String.format(
+                            getString(
+                                com.tokopedia.topads.common.R.string.topads_common_added_key_ticker_text
+                            ),
+                            existingKeyword?.count() ?: 0
+                        )
+                    )
+                )
                 checkForCommonData()
                 setCount()
                 setVisibilityOperation(View.VISIBLE)
@@ -541,7 +594,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun setVisibilityOperation(visibility: Int) {
-//        recyclerView.visibility = visibility
         addKeyword.visibility = visibility
         ticker.visibility = visibility
         keywordTitle.visibility = visibility
@@ -572,8 +624,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 if (it.bidSuggest == "0")
                     it.bidSuggest = minSuggestKeyword
                 adapter.items.add(EditKeywordItemViewModel(mapToSharedModel(it)))
-//                adapter.items.add(EditKeywordItemViewModel(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_PHRASE, KEYWORD_EXISTS,
-//                        "0", it.bidSuggest, false, it.keyword, it.source)))
                 initialBudget.add(it.bidSuggest)
                 isnewlyAddded.add(true)
                 if (!isExistsOriginal(it.keyword)) {
@@ -587,14 +637,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun mapToSharedModel(it: KeywordDataItem): KeySharedModel {
         return KeySharedModel(
-                it.keyword,
-                it.totalSearch,
-                it.competition,
-                it.bidSuggest,
-                minSuggestKeyword,
-                it.source,
-                BROAD_POSITIVE,
-                "0",
+            it.keyword,
+            it.totalSearch,
+            it.competition,
+            it.bidSuggest,
+            minSuggestKeyword,
+            it.source,
+            BROAD_POSITIVE,
+            "0",
         )
 
     }
@@ -612,7 +662,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     fun sendData(): Bundle {
         val bundle = Bundle()
         val list: ArrayList<KeySharedModel> = arrayListOf()
-            list.addAll(adapter.getCurrentItems())
+        list.addAll(adapter.getCurrentItems())
 
         if (adapter.items.isNotEmpty() && adapter.items[0] !is EditKeywordEmptyViewModel) {
             adapter.items.forEachIndexed { index, item ->
@@ -622,6 +672,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 }
             }
         }
+        bundle.putInt(Constants.PRICE_BID, getCurrentBid())
         bundle.putParcelableArrayList(POSITIVE_CREATE, addedKeywords)
         bundle.putParcelableArrayList(POSITIVE_DELETE, deletedKeywords)
         bundle.putParcelableArrayList(POSITIVE_EDIT, editedKeywords)
