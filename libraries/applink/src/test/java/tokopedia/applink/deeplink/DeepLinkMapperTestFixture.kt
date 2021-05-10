@@ -39,6 +39,17 @@ open class DeepLinkMapperTestFixture {
         assertEquals(expectedDeepLink, actualResult)
     }
 
+    protected fun assertEqualsDeepLinkMapperApp(appType: AppType, deepLink: String, expectedDeepLink: String) {
+        GlobalConfig.APPLICATION_TYPE = if (appType == AppType.MAIN_APP) {
+            GlobalConfig.CONSUMER_APPLICATION
+        } else {
+            GlobalConfig.SELLER_APPLICATION
+        }
+        val actualResult = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
+        GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
+        assertEquals(expectedDeepLink, actualResult)
+    }
+
     protected fun assertEqualsDeeplinkParameters(deeplink: String, vararg extras: Pair<String, String?>) {
         val actualResult = DeeplinkMapper.getRegisteredNavigation(context, deeplink)
         val uri = Uri.parse(actualResult)
@@ -46,4 +57,9 @@ open class DeepLinkMapperTestFixture {
             assertEquals(uri.getQueryParameter(it.first), it.second)
         }
     }
+}
+
+enum class AppType(val isMainApp: Boolean) {
+    MAIN_APP(true),
+    SELLER_APP(false)
 }

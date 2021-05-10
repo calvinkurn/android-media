@@ -137,7 +137,8 @@ object AppLinkMapperSellerHome {
     }
 
     fun getSellerHomeAppLink(deepLink: String): String {
-        val query = Uri.parse(deepLink).query
+        val uri = Uri.parse(deepLink)
+        val query = uri.query
         return DeeplinkMapper.createAppendDeeplinkWithQuery(ApplinkConstInternalSellerapp.SELLER_HOME, query)
     }
 }

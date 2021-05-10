@@ -119,4 +119,25 @@ class UriUtilTest {
         val uri = Uri.parse("tokopedia://s2/umroh/agen/1/2")
         Assert.assertEquals(null, UriUtil.matchWithPattern(pattern, uri))
     }
+
+    @Test
+    fun `getDiffQuery same`() {
+        val query = "a=123&b=234"
+        val uri = Uri.parse("tokopedia://home?a=123&b=234")
+        Assert.assertEquals("", UriUtil.getDiffQuery(query, uri))
+    }
+
+    @Test
+    fun `getDiffQuery 2`() {
+        val query = "a=123&b=234"
+        val uri = Uri.parse("tokopedia://home")
+        Assert.assertEquals("a=123&b=234", UriUtil.getDiffQuery(query, uri))
+    }
+
+    @Test
+    fun `getDiffQuery 3`() {
+        val query = "a=123&b=234&c=ajf"
+        val uri = Uri.parse("tokopedia://home?b=23")
+        Assert.assertEquals("a=123&c=ajf", UriUtil.getDiffQuery(query, uri))
+    }
 }

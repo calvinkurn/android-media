@@ -147,29 +147,38 @@ object DeeplinkMapper {
         return deepLinkInternal
     }
 
-    private fun isChatBotTrue(deeplink: String): Boolean {
-        return Uri.parse(deeplink).getQueryParameter("is_chat_bot")?.equals("true") == true
+    private fun isChatBotTrue(uri: Uri): Boolean {
+        return uri.getQueryParameter("is_chat_bot")?.equals("true") == true
     }
 
     fun createAppendDeeplinkWithQuery(deeplink: String, query: String?): String {
+        val uri = Uri.parse(deeplink)
         return if (query?.isNotEmpty() == true && deeplink.isNotEmpty()) {
-            val questionMarkIndex = deeplink.indexOf("?")
-            deeplink + if (questionMarkIndex == -1) {
-                "?$query"
-            } else {
-                "&$query"
-            }
+            val diffQuery = UriUtil.getDiffQuery(query, uri)
+            appendDeeplinkWithQuery(deeplink, diffQuery)
         } else {
             deeplink
         }
     }
 
-    private fun getRegisteredNavigationTopChat(deeplink: String): String {
-        val query = Uri.parse(deeplink).query
-        val path = Uri.parse(deeplink).path
+    private fun appendDeeplinkWithQuery(deeplink: String, query: String): String {
+        if (query.isEmpty()) {
+            return deeplink
+        }
+        val questionMarkIndex = deeplink.indexOf("?")
+        return deeplink + if (questionMarkIndex == -1) {
+            "?$query"
+        } else {
+            "&$query"
+        }
+    }
+
+    private fun getRegisteredNavigationTopChat(uri: Uri): String {
+        val query = uri.query
+        val path = uri.path
         var deepLinkInternal = ApplinkConstInternalGlobal.TOPCHAT
         if (query?.isNotEmpty() == true || path?.isNotEmpty() == true) {
-            deepLinkInternal = "$deepLinkInternal$path?$query"
+            deepLinkInternal = "$deepLinkInternal$path"
             return deepLinkInternal
         } else {
             return if (GlobalConfig.isSellerApp()) {
@@ -221,9 +230,9 @@ object DeeplinkMapper {
             DLP.host(ApplinkConst.INBOX_HOST) { _, _, deeplink, _ -> DeeplinkMapperHome.getRegisteredInboxNavigation(deeplink) },
             DLP.startWith(ApplinkConst.QRSCAN, ApplinkConstInternalMarketplace.QR_SCANNEER),
             DLP.startWith(ApplinkConst.SALAM_UMRAH_SHOP) { ctx, _, deeplink, _ -> getRegisteredNavigationSalamUmrahShop(deeplink, ctx) },
-            DLP(StartsWith(ApplinkConst.TOPCHAT) + { _, _, deeplink -> isChatBotTrue(deeplink) },
+            DLP(Host(ApplinkConst.TOPCHAT_HOST) + { _, uri, _ -> isChatBotTrue(uri) },
                     targetDeeplink = { _, _, deeplink, _ -> getChatbotDeeplink(deeplink) }),
-            DLP(StartsWith(ApplinkConst.TOPCHAT) + { _, uri, _ -> AppLinkMapperSellerHome.shouldRedirectToSellerApp(uri) },
+            DLP(Host(ApplinkConst.TOPCHAT_HOST) + { _, uri, _ -> AppLinkMapperSellerHome.shouldRedirectToSellerApp(uri) },
                     targetDeeplink = { _, uri, _, _ -> AppLinkMapperSellerHome.getTopChatAppLink(uri) }),
             DLP.matchPattern(ApplinkConst.PRODUCT_REVIEW, targetDeeplink = { _, _, _, idList -> UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW, idList?.getOrNull(0)) }),
             DLP.startWith(ApplinkConst.ACCOUNT) { ctx, _, deeplink, _ -> DeeplinkMapperAccount.getAccountInternalApplink(ctx, deeplink) },
@@ -263,7 +272,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.TOKOPEDIA_REWARD) { ctx, _, deeplink, _ -> getRegisteredNavigationTokopoints(ctx, deeplink) },
             DLP.startWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) { _, _, deeplink, _ -> getRegisteredNavigationRecommendation(deeplink) },
             DLP.startWith(ApplinkConst.HOME_EXPLORE) { _, _, deeplink, _ -> getRegisteredExplore(deeplink) },
-            DLP.startWith(ApplinkConst.CHAT_BOT) { _, _, deeplink, _ -> getChatbotDeeplink(deeplink) },
+            DLP.host(ApplinkConst.CHATBOT_HOST) { _, _, deeplink, _ -> getChatbotDeeplink(deeplink) },
             DLP.startWith(ApplinkConst.DISCOVERY_CATALOG) { _, _, deeplink, _ -> getRegisteredNavigationCatalog(deeplink) },
             DLP.startWith(ApplinkConst.MONEYIN) { _, _, deeplink, _ -> getRegisteredNavigationMoneyIn(deeplink) },
             DLP.startWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) { _, _, deeplink, _ -> getRegisteredNavigationForFintech(deeplink) },
@@ -278,7 +287,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.SELLER_ORDER_DETAIL) { _, _, deeplink, _ -> getRegisteredNavigationOrder(deeplink) },
             DLP.matchPattern(ApplinkConst.SHOP_REVIEW,
                     targetDeeplink = { _, _, _, idList -> getRegisteredNavigationShopReview(idList?.getOrNull(0)) }),
-            DLP.startWith(ApplinkConst.TOPCHAT_IDLESS) { _, _, deeplink, _ -> getRegisteredNavigationTopChat(deeplink) },
+            DLP.startWith(ApplinkConst.TOPCHAT_IDLESS) { _, uri, _, _ -> getRegisteredNavigationTopChat(uri) },
             DLP.startWith(ApplinkConst.TALK) { _, _, deeplink, _ -> getRegisteredNavigationTalk(deeplink) },
             DLP.startWith(ApplinkConst.EVENTS) { ctx, _, deeplink, _ -> getRegisteredNavigationEvents(deeplink, ctx) },
             DLP.matchPattern(ApplinkConst.PRODUCT_TALK,

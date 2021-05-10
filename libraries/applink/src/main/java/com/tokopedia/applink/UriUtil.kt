@@ -236,4 +236,28 @@ object UriUtil {
             deeplinkWithoutQuery
         }
     }
+
+    /**
+     * @param query "a=123&b=234
+     * @param uri: tokopedia://home?a=12
+     * @return b=234
+     */
+    fun getDiffQuery(query: String, uri: Uri): String {
+        return try {
+            val queryList = query.split("&")
+            val strResultList:MutableList<String> = mutableListOf()
+            for (q in queryList) {
+                val keyValueSplit = q.split("=")
+                val key = keyValueSplit[0]
+                val value = keyValueSplit[1]
+                val valueOriginalUri = uri.getQueryParameter(key)
+                if (valueOriginalUri == null) {
+                    strResultList.add (keyValueSplit[0] + "=" + value)
+                }
+            }
+            strResultList.joinToString("&")
+        } catch (e: Exception) {
+            ""
+        }
+    }
 }
