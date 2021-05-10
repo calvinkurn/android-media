@@ -1,4 +1,4 @@
-package com.tokopedia.variant_common.model
+package com.tokopedia.product.detail.common.data.model.variant.uimodel
 
 /**
  * Created by Yehezkiel on 08/03/20

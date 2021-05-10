@@ -1,4 +1,4 @@
-package com.tokopedia.variant_common.view.customview
+package com.tokopedia.product.detail.common.data.views
 
 import android.content.Context
 import android.graphics.Canvas
@@ -7,7 +7,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.kotlin.extensions.view.toPx
-import com.tokopedia.variant_common.R
+import com.tokopedia.product.detail.common.R
 
 /**
  * Created by Yehezkiel on 08/03/20

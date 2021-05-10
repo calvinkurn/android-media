@@ -1,17 +1,17 @@
 package com.tokopedia.variant_common.view.holder
 
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.product.detail.common.VariantConstant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.variant_common.R
-import com.tokopedia.variant_common.constant.VariantConstant
-import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.view.ProductVariantListener
 import kotlinx.android.synthetic.main.item_variant_chip_view_holder.view.*
-import android.view.ViewGroup
 
 /**
  * Created by Yehezkiel on 08/03/20

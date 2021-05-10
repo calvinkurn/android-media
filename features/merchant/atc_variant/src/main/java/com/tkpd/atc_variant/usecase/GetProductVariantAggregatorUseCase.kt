@@ -21,8 +21,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
 
     companion object {
         val QUERY = """
-        query pdpVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}whid : String, ${'$'}sessionid : String , ${'$'}userLocation: UserLocation) {
-            pdpVariantComponent(productID ${'$'}productID, source:${'$'}source, whid:${'$'}whid, sessionid :${'$'}sessionid, userLocation: ${'$'}userLocation) {
+        query pdpVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}whid : String, ${'$'}pdpSession : String , ${'$'}userLocation: UserLocation) {
+            pdpVariantComponent(productID: ${'$'}productID, source: ${'$'}source, whid: ${'$'}whid, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation) {
                     variantData { 
                           errorCode
                           parentID
@@ -89,6 +89,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                           sizeChart
                     }
                     cartRedirection {
+                      product_id
                       status
                       error_message
                       data {
@@ -124,7 +125,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
         }
         """.trimIndent()
 
-        fun createRequestParams(productId: String, source: String,
+        fun createRequestParams(productId: String,
+                                source: String,
                                 warehouseId: String? = null,
                                 pdpSession: String? = null,
                                 userLocation: UserLocationRequest): Map<String, Any?> = mapOf(
@@ -138,9 +140,9 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
 
     private var requestParams: Map<String, Any?> = mapOf()
 
-    fun executeOnBackground(requestParams: Map<String, Any?>): ProductVariantAggregator {
+    suspend fun executeOnBackground(requestParams: Map<String, Any?>): ProductVariantAggregator {
         this.requestParams = requestParams
-        return executeOnBackground(requestParams)
+        return executeOnBackground()
     }
 
     override suspend fun executeOnBackground(): ProductVariantAggregator {

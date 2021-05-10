@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.variant_common.constant.VariantConstant
-import com.tokopedia.variant_common.model.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.VariantConstant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.variant_common.view.ProductVariantListener
 import com.tokopedia.variant_common.view.holder.BaseVariantViewHolder
 import com.tokopedia.variant_common.view.holder.VariantChipViewHolder

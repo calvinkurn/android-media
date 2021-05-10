@@ -2,4 +2,12 @@
 <resources>
     <string name="title_activity_atc_variant">Varian</string>
     <string name="title_bottomsheet_atc_variant">Varian barang</string>
+
+    <string name="atc_variant_empty">Habis</string>
+    <string name="atc_variant_option_builder_1">Pilih %1$s: </string>
+    <string name="atc_variant_option_builder_2">%1$d varian</string>
+    <string name="atc_variant_guideline">Lihat Panduan</string>
+    <string name="atc_variant_promo">PROMO</string>
+
+    <string name="atc_content_desc_txtChipVariant">text varian %1s</string>
 </resources>

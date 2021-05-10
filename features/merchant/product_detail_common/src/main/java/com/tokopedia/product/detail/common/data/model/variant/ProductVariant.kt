@@ -1,18 +1,11 @@
 package com.tokopedia.product.detail.common.data.model.variant
 
 import androidx.collection.ArrayMap
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
  * Created by Yehezkiel on 04/05/21
  */
-
-data class ProductVariantData(
-        @SerializedName("variantData")
-        @Expose
-        val variantData: ProductVariant = ProductVariant()
-)
 
 data class ProductVariant(
         @SerializedName("parentID")

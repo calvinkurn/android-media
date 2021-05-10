@@ -1,7 +1,7 @@
 package com.tokopedia.variant_common.view
 
 import android.view.View
-import com.tokopedia.variant_common.model.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 
 /**
  * Created by Yehezkiel on 08/03/20

@@ -1,4 +1,4 @@
-package com.tokopedia.variant_common.util
+package com.tokopedia.product.detail.common.data.views
 
 import android.graphics.Canvas
 import android.graphics.Rect

@@ -1,5 +1,6 @@
 package com.tkpd.atc_variant.views.adapter
 
+import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 /**
@@ -9,4 +10,5 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 interface AtcVariantVisitable : Visitable<AtcVariantTypeFactory> {
     fun uniqueId(): Long
     fun isEqual(newData: AtcVariantVisitable): Boolean
+    fun getChangePayload(newData: AtcVariantVisitable) : Bundle?
 }

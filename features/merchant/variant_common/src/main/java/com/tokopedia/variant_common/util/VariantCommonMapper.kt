@@ -3,9 +3,9 @@ package com.tokopedia.variant_common.util
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
-import com.tokopedia.variant_common.constant.VariantConstant
-import com.tokopedia.variant_common.model.VariantCategory
-import com.tokopedia.variant_common.model.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.VariantConstant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 
 /**
  * Created by Yehezkiel on 08/03/20

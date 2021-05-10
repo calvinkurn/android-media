@@ -8,7 +8,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.variant_common.constant.VariantConstant
+import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.variant_common.model.GetProductVariantResponse
 import javax.inject.Inject
 import javax.inject.Named

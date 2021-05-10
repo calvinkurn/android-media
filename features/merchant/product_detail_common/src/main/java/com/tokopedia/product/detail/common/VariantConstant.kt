@@ -1,4 +1,4 @@
-package com.tokopedia.variant_common.constant
+package com.tokopedia.product.detail.common
 
 /**
  * Created by Yehezkiel on 08/03/20
