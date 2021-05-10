@@ -26,7 +26,6 @@ import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewTracking
-import com.tokopedia.review.common.data.ProductrevGetReviewDetail
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
@@ -160,8 +159,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                     if (!selectedImage.isNullOrEmpty()) {
                         val imageListData = createReviewViewModel.getAfterEditImageList(selectedImage, imagesFedIntoPicker)
                         imageAdapter.setImageReviewData(imageListData)
-                        photosRecyclerView?.show()
+                        photosRecyclerView?.apply {
+                            adapter = imageAdapter
+                            show()
+                        }
                         addPhoto?.hide()
+                        createReviewViewModel.updateProgressBarFromPhotos()
                     }
                 }
             }
@@ -230,6 +233,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             photosRecyclerView?.hide()
             addPhoto?.show()
         }
+        createReviewViewModel.updateProgressBarFromPhotos()
     }
 
     override fun onTemplateSelected(template: String) {
@@ -465,7 +469,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                     }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
-            dismiss()
             startActivityForResult(intent, CreateReviewFragment.REQUEST_CODE_IMAGE)
         }
     }
