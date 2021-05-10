@@ -2,7 +2,6 @@ package com.tokopedia.user.session;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.util.Pair;
 
 import com.tokopedia.user.session.util.EncoderDecoder;
@@ -123,10 +122,6 @@ public class MigratedUserSession {
         String newPrefName = String.format("%s%s", prefName, suffix);
         String newKeyName = String.format("%s%s", keyName, suffix);
         String debug = "";
-        Log.d("NORMAN", "prefName > "+prefName);
-        Log.d("NORMAN", "keyName > "+keyName);
-        Log.d("NORMAN", "newPrefName > "+newPrefName);
-        Log.d("NORMAN", "newKeyName > "+newKeyName);
         boolean isGettingFromMap = false;
 
 
@@ -144,13 +139,10 @@ public class MigratedUserSession {
             } catch (Exception ignored) {
             }
         }
-        Log.d("NORMAN", "isGettingFromMap > "+isGettingFromMap);
 
         String oldValue = internalGetString(prefName, keyName, defValue);
 
         if (oldValue != null && !oldValue.equals(defValue)) {
-            Log.d("NORMAN", "oldValue > "+oldValue);
-            Log.d("NORMAN", "execute migration > ");
             internalCleanKey(prefName, keyName);
             internalSetString(newPrefName, newKeyName, EncoderDecoder.Encrypt(oldValue, UserSession.KEY_IV));
             UserSessionMap.map.put(key, oldValue);
@@ -161,17 +153,14 @@ public class MigratedUserSession {
         String value = sharedPrefs.getString(newKeyName, defValue);
 
         if (value != null) {
-            if(value.equals(defValue)) {// if value same with def value
-                Log.d("NORMAN", "same with def value");
+            if(value.equals(defValue)) {// if value same with def value\
                 return value;
             }else{
                 value = EncoderDecoder.Decrypt(value, UserSession.KEY_IV);// decrypt here
                 UserSessionMap.map.put(key, value);
-                Log.d("NORMAN", "decrypt with value "+value);
                 return value;
             }
         }else{
-            Log.d("NORMAN", "immediate return");
             return value;
         }
     }
