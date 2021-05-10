@@ -1,4 +1,4 @@
-package com.tokopedia.navigation.com.tokopedia.navigation.screenshot.light
+package com.tokopedia.navigation.screenshot.light
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry

@@ -1,4 +1,4 @@
-package com.tokopedia.navigation.com.tokopedia.navigation.screenshot.dark
+package com.tokopedia.navigation.screenshot.dark
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
