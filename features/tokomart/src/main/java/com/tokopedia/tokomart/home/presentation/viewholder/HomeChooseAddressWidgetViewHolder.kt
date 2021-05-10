@@ -9,7 +9,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.tokomart.home.R
+import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
 
 class HomeChooseAddressWidgetViewHolder(

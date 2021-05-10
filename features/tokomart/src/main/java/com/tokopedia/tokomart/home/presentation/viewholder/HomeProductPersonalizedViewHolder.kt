@@ -6,7 +6,7 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.tokomart.home.R
+import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeSliderProductPersonalizedUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx

@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.tokomart.home.presentation.uimodel.*
 import com.tokopedia.tokomart.home.presentation.viewholder.*
 
@@ -22,7 +24,7 @@ class TokoMartHomeAdapterTypeFactory(private val fragment: Fragment): BaseAdapte
         return when(type) {
             HomeSectionViewHolder.LAYOUT -> HomeSectionViewHolder(parent)
             HomeAllCategoryViewHolder.LAYOUT -> HomeAllCategoryViewHolder(parent)
-            HomeSliderBannerViewHolder.LAYOUT -> HomeSliderBannerViewHolder(parent)
+            HomeSliderBannerViewHolder.LAYOUT -> HomeSliderBannerViewHolder(parent, null, null)
             HomeSliderProductViewHolder.LAYOUT -> HomeSliderProductViewHolder(parent)
             HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(parent, fragment)
             HomeSliderProductPersonalizedViewHolder.LAYOUT -> HomeSliderProductPersonalizedViewHolder(parent)

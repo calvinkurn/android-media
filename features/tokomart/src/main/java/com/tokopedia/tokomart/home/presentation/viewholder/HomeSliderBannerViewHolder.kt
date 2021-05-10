@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.home_component.R
+import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.decoration.BannerChannelDecoration
 import com.tokopedia.home_component.decoration.BannerChannelSingleItemDecoration
@@ -20,69 +21,21 @@ import com.tokopedia.home_component.viewholders.adapter.BannerChannelAdapter
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
 import com.tokopedia.home_component.viewholders.adapter.BannerItemModel
 import com.tokopedia.home_component.viewholders.layoutmanager.PeekingLinearLayoutManager
-import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.tokomart.home.R
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeSliderBannerUiModel
-import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.home_component_banner.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-//class HomeSliderBannerViewHolder (
-//        itemView: View
-//): AbstractViewHolder<HomeSliderBannerUiModel>(itemView) {
-//
-//    companion object {
-//        @LayoutRes
-//        val LAYOUT = R.layout.item_tokomart_slider_banner
-//    }
-//
-//    private var carousel: CarouselUnify? = null
-//    private var tpTitle: Typography? = null
-//    private var tpDesc: Typography? = null
-//    private var tpSmallDesc: Typography? = null
-//
-//    init {
-//        initCarousel()
-//    }
-//
-//    private var itmListener = { view: View, data: Any ->
-//        tpTitle = view.findViewById(R.id.tp_title)
-//        tpDesc = view.findViewById(R.id.tp_desc)
-//        tpSmallDesc = view.findViewById(R.id.tp_small_desc)
-//        val dataList = data as String
-//        if (dataList.contains("dia")) {
-//            tpSmallDesc?.hide()
-//        }
-//    }
-//
-//    override fun bind(element: HomeSliderBannerUiModel?) {
-//        carousel?.apply {
-//            stage.removeAllViews()
-//            if (stage.childCount == 0) {
-//                addItems(R.layout.partial_item_tokomart_slider_banner, arrayListOf("ana","dia"), itmListener)
-//            }
-//        }
-//    }
-//
-//    private fun initCarousel() {
-//        carousel = itemView.findViewById(R.id.carousel_slider)
-//        carousel?.apply {
-//            indicatorPosition = CarouselUnify.INDICATOR_BL
-//            infinite = true
-//        }
-//    }
-//}
-
-class HomeSliderBannerViewHolder(itemView: View)
+class HomeSliderBannerViewHolder(itemView: View,
+                                private val bannerListener: BannerComponentListener?,
+                                private val homeComponentListener: HomeComponentListener?
+)
     : AbstractViewHolder<HomeSliderBannerUiModel>(itemView),
         BannerItemListener, CoroutineScope {
     private var isCache = true
-    private val rvBanner: RecyclerView = itemView.findViewById(com.tokopedia.home_component.R.id.rv_banner)
+    private val rvBanner: RecyclerView = itemView.findViewById(R.id.rv_banner)
     private var layoutManager = LinearLayoutManager(itemView.context)
 
     private val masterJob = Job()
@@ -100,6 +53,13 @@ class HomeSliderBannerViewHolder(itemView: View)
     private val state_paused = 1
     private var autoScrollState = state_paused
 
+    private fun autoScrollLauncher() = launch(coroutineContext) {
+        while (autoScrollState == state_running) {
+            delay(interval.toLong())
+            autoScrollCoroutine()
+        }
+    }
+
     init {
         itemView.addOnAttachStateChangeListener(object: View.OnAttachStateChangeListener {
             override fun onViewDetachedFromWindow(p0: View?) {
@@ -112,54 +72,47 @@ class HomeSliderBannerViewHolder(itemView: View)
         })
     }
 
-    private fun autoScrollLauncher() = launch(coroutineContext) {
-        while (autoScrollState == state_running) {
-            delay(interval.toLong())
-            autoScrollCoroutine()
+    override fun bind(element: HomeSliderBannerUiModel) {
+        try {
+            setHeaderComponent(element)
+            setViewPortImpression(element)
+            channelModel = element?.channelModel
+            isCache = element?.isCache ?: false
+
+//            channelModel?.let { it ->
+//                this.isCache = element?.isCache ?: false
+//                try {
+//                    initBanner(it.convertToBannerItemModel())
+//                } catch (e: NumberFormatException) {
+//                    e.printStackTrace()
+//                }
+//            }
+
+                try {
+                    initBanner(listOf(BannerItemModel(0, "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg"), BannerItemModel(0, "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg"), BannerItemModel(0, "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg")))
+                } catch (e: NumberFormatException) {
+                    e.printStackTrace()
+                }
+
+
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     private fun setViewPortImpression(element: HomeSliderBannerUiModel) {
         if (!element.isCache) {
             itemView.addOnImpressionListener(holder = element, onView = {
-                //to do impression
+                element.channelModel?.let {
+                    bannerListener?.onChannelBannerImpressed(it, adapterPosition)
+                }
                 setScrollListener()
             })
         }
     }
 
-    override fun bind(element: HomeSliderBannerUiModel) {
-        try {
-            setHeaderComponent(element)
-            setViewPortImpression(element)
-            channelModel = element.channelModel
-            isCache = element.isCache
-
-//            channelModel?.let { it ->
-//                this.isCache = element.isCache
-//                try {
-////                    initBanner(it.convertToBannerItemModel())
-//                    initBanner(listOf(
-//                            BannerItemModel(0, "https://cdn-2.tstatic.net/tribunnews/foto/bank/images/tes-kepribadian-gambar-pertama-11.jpg"),
-//                            BannerItemModel(2, "https://cdn-2.tstatic.net/tribunnews/foto/bank/images/tes-kepribadian-gambar-pertama-11.jpg"),
-//                            ))
-//                } catch (e: NumberFormatException) {
-//                    e.printStackTrace()
-//                }
-//            }
-
-            try {
-//                    initBanner(it.convertToBannerItemModel())
-                initBanner(listOf(
-                        BannerItemModel(0, "https://cdn-2.tstatic.net/tribunnews/foto/bank/images/tes-kepribadian-gambar-pertama-11.jpg"),
-                        BannerItemModel(2, "https://cdn-2.tstatic.net/tribunnews/foto/bank/images/tes-kepribadian-gambar-pertama-11.jpg"),
-                ))
-            } catch (e: NumberFormatException) {
-                e.printStackTrace()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+    override fun bind(element: HomeSliderBannerUiModel, payloads: MutableList<Any>) {
+        bind(element)
     }
 
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
@@ -167,8 +120,7 @@ class HomeSliderBannerViewHolder(itemView: View)
             rvBanner.smoothScrollToPosition(currentPagePosition)
 
             channelModel?.let {
-//                val size = channelModel?.channelGrids?.size?:0
-                val size = 1
+                val size = channelModel?.channelGrids?.size?:0
                 if (currentPagePosition == (size-1) ) {
                     currentPagePosition = 0
                 } else {
@@ -244,7 +196,7 @@ class HomeSliderBannerViewHolder(itemView: View)
     override fun onClick(position: Int) {
         channelModel?.let {channel ->
             channel.selectGridInPosition(position) {
-//                bannerListener?.onBannerClickListener(position, it, channel)
+                bannerListener?.onBannerClickListener(position, it, channel)
             }
         }
     }
@@ -252,41 +204,42 @@ class HomeSliderBannerViewHolder(itemView: View)
     private fun onPromoScrolled(position: Int) {
         channelModel?.let {channel ->
             channel.selectGridInPosition(position) {
-//                if (bannerListener?.isMainViewVisible() == true && !isCache && !bannerListener.isBannerImpressed(it.id) && position != -1) {
-//                    bannerListener.onPromoScrolled(channel, it ,position)
-//                }
+                if (bannerListener?.isMainViewVisible() == true && !isCache && !bannerListener.isBannerImpressed(it.id) && position != -1) {
+                    bannerListener.onPromoScrolled(channel, it ,position)
+                }
             }
         }
 
     }
 
     private fun onPageDragStateChanged(isDrag: Boolean) {
-//        bannerListener?.onPageDragStateChanged(isDrag)
+        bannerListener?.onPageDragStateChanged(isDrag)
     }
 
     private fun setHeaderComponent(element: HomeSliderBannerUiModel) {
+        var header: DynamicChannelHeaderView? = null
+        header = itemView?.findViewById(R.id.home_component_header_view)
         if (element.channelModel?.channelHeader?.name?.isNotEmpty() == true) {
             element.channelModel.let {
-                itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
+                header.setChannel(element.channelModel, object : HeaderListener {
                     override fun onSeeAllClick(link: String) {
-//                        bannerListener?.onPromoAllClick(element.channelModel)
+                        bannerListener?.onPromoAllClick(element.channelModel)
                     }
 
                     override fun onChannelExpired(channelModel: ChannelModel) {
-//                        homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
+                        homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
                     }
                 })
             }
-//            itemView.home_component_header_view.visible()
+            header.visible()
         } else {
-//            itemView.home_component_header_view.gone()
+            header.gone()
         }
     }
 
     private fun ChannelModel.convertToBannerItemModel(): List<BannerItemModel> {
         return try {
-//            this.channelGrids.map{ BannerItemModel(it.id.toInt(), it.imageUrl) }
-            listOf(BannerItemModel(0, "https://cdn-2.tstatic.net/tribunnews/foto/bank/images/tes-kepribadian-gambar-pertama-11.jpg"))
+            this.channelGrids.map{ BannerItemModel(it.id.toInt(), it.imageUrl) }
         } catch (e: NumberFormatException) {
             listOf()
         }
@@ -301,6 +254,6 @@ class HomeSliderBannerViewHolder(itemView: View)
 
     companion object {
         @LayoutRes
-        val LAYOUT = com.tokopedia.home_component.R.layout.home_component_banner
+        val LAYOUT = R.layout.home_component_banner
     }
 }

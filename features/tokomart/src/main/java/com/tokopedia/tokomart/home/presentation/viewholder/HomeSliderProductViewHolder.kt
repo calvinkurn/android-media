@@ -8,7 +8,7 @@ import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.tokomart.home.R
+import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeSliderProductUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography

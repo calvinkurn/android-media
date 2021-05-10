@@ -1,5 +1,6 @@
 package com.tokopedia.tokomart.home.presentation.adapter
 
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.tokomart.home.presentation.uimodel.*
 
 interface TokoMartHomeTypeFactory {

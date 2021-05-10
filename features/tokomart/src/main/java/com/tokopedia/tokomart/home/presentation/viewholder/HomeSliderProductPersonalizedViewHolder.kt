@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.tokomart.home.R
+import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeSliderProductPersonalizedAdapter
 import com.tokopedia.tokomart.home.presentation.adapter.delegate.TokoMartHomeSliderProductPersonalizedDelegate
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeSliderBannerUiModel
