@@ -7,7 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.topads.common.view.sheet.StaticInfoBottomSheet
 import com.tokopedia.topads.edit.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -33,6 +35,13 @@ class EditKeywordSortSheet : BottomSheetUnify() {
         val sortListItemUnify = mapToItemUnifyList()
 
         view.sortList.setData(sortListItemUnify)
+
+        view.goToStaticSheet?.text = MethodChecker.fromHtml(getString(com.tokopedia.topads.common.R.string.topads_common_choose_type_bs_extra))
+
+        view.goToStaticSheet?.setOnClickListener {
+            val sheet = StaticInfoBottomSheet.newInstance()
+            sheet.show(childFragmentManager)
+        }
 
         view.sortList?.let {
             it.onLoadFinish {

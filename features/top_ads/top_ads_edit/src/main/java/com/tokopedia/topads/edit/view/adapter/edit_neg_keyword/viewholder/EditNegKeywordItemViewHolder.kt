@@ -25,10 +25,11 @@ class EditNegKeywordItemViewHolder(val view: View,
         var LAYOUT = R.layout.topads_edit_negative_keyword_edit_item_layout
         val TITLE_1 = "Luas"
         val TITLE_2 = "Spesifik"
-        val BROAD = 11
+        val BROAD = 12
         val SPECIFIC = 22
     }
 
+    private lateinit var sortKeywordList: EditKeywordSortSheet
 
     override fun bind(item: EditNegKeywordItemViewModel) {
         item.data.let {
@@ -38,16 +39,33 @@ class EditNegKeywordItemViewHolder(val view: View,
                 actionDelete?.invoke(adapterPosition)
             }
             if (it.type == BROAD)
-                view.sort.text = TITLE_1
+                view.sort.text = "Luas"
             else
-                view.sort.text = TITLE_2
+                view.sort.text = "Spesifik"
 
             view.drop_down_arrow.setImageDrawable(view.context.getResDrawable(com.tokopedia.iconunify.R.drawable.iconunify_edit))
 
             view.drop_down_arrow.setOnClickListener {
-                actionStatusChange.invoke(adapterPosition)
+                sortKeywordList = EditKeywordSortSheet.newInstance()
+                sortKeywordList.setChecked(view.sort.text.toString())
+                sortKeywordList.show((view.context as FragmentActivity).supportFragmentManager, "")
+                sortKeywordList.onItemClick = {
+                    val prev = view.sort.text
+                    if (prev != view.sort.text)
+                        actionStatusChange.invoke(adapterPosition)
+                    if (sortKeywordList.getSelectedSortId() == TITLE_1) {
+                        item.data.type = BROAD
+                        view.sort.text = "Luas"
+                    } else {
+                        item.data.type = SPECIFIC
+                        view.sort.text = "Spesifik"
+                    }
+                }
+
             }
+
         }
+
     }
 
 }

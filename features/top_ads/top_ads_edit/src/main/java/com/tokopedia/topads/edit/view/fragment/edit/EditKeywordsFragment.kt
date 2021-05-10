@@ -12,10 +12,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
@@ -60,6 +62,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeyword
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
@@ -198,9 +201,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
         if (productIds.isNotEmpty())
             viewModelKeyword.getSuggestionKeyword(productIds, 0, ::onSuccessRecommended)
-        else {
-            setEmptyView()
-        }
     }
 
     private fun getLatestBid() {
@@ -450,8 +450,19 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             setEmptyView()
         }
         adapter.notifyDataSetChanged()
+        setCount()
+        ticker.gone()
+        updateString()
+        view?.let {
+            Toaster.build(it, getString(com.tokopedia.topads.common.R.string.topads_keyword_common_del_toaster),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL).show()
+        }
     }
 
+//    fun sendAutoBidValue(autoBidValue: String) {
+//        sharedViewModel.setAutoBidStatus(autoBidValue)
+//    }
     private fun isExistsOriginal(position: Int): Boolean {
         return (originalKeyList.find { (adapter.items[position] as EditKeywordItemViewModel).data.name == it } != null)
     }
@@ -544,8 +555,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         if (requestCode == REQUEST_OK) {
             if (resultCode == Activity.RESULT_OK) {
                 selectedData = data?.getParcelableArrayListExtra(SELECTED_DATA)
-                if (selectedData?.size != 0)
+                if (selectedData?.size != 0) {
                     updateKeywords(selectedData)
+                    setCount()
+                }
             }
         }
     }
@@ -599,7 +612,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     fun sendData(): Bundle {
         val bundle = Bundle()
         val list: ArrayList<KeySharedModel> = arrayListOf()
-        list.addAll(adapter.getCurrentItems())
+            list.addAll(adapter.getCurrentItems())
 
         if (adapter.items.isNotEmpty() && adapter.items[0] !is EditKeywordEmptyViewModel) {
             adapter.items.forEachIndexed { index, item ->

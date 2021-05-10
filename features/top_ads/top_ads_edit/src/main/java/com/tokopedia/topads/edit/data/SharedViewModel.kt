@@ -15,6 +15,7 @@ class SharedViewModel : ViewModel() {
     private var negKeyword: MutableLiveData<List<GetKeywordResponse.KeywordsItem>> = MutableLiveData()
     private var bidForGroup: MutableLiveData<Int> = MutableLiveData()
     private var dailyBudget: MutableLiveData<Int> = MutableLiveData()
+    private var autoBidStatus: String = ""
 
     fun setProductIds(text: MutableList<String>) {
         productId.value = text
@@ -56,5 +57,12 @@ class SharedViewModel : ViewModel() {
         return dailyBudget
     }
 
+    fun getAutoBidStatus() : String {
+        return autoBidStatus
+    }
+
+    fun setAutoBidStatus(status: String) {
+        autoBidStatus = status
+    }
 
 }

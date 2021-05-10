@@ -76,8 +76,8 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
 
         val keywordsPositiveCreate = dataKeyword[POSITIVE_CREATE] as? MutableList<KeySharedModel>
         val keywordsPositiveDelete = dataKeyword[POSITIVE_DELETE] as? MutableList<KeySharedModel>
-        val keywordsNegCreate = dataKeyword[NEGATIVE_KEYWORDS_ADDED] as? MutableList<KeySharedModel>
-        val keywordsNegDelete = dataKeyword[NEGATIVE_KEYWORDS_DELETED] as? MutableList<KeySharedModel>
+        val keywordsNegCreate = dataKeyword[NEGATIVE_KEYWORDS_ADDED] as? MutableList<GetKeywordResponse.KeywordsItem>
+        val keywordsNegDelete = dataKeyword[NEGATIVE_KEYWORDS_DELETED] as? MutableList<GetKeywordResponse.KeywordsItem>
         val keywordsPostiveEdit = dataKeyword[POSITIVE_EDIT] as? MutableList<KeySharedModel>
 
         //always
@@ -173,7 +173,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
             keyword.price_bid = 0.0
-            keyword.id = negKey.id
+            keyword.id = negKey.keywordId
             keyword.tag = null
             keyword.status = null
             keyword.type = null
@@ -188,13 +188,13 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             val keyword = KeywordEditInput.Keyword()
             keyword.id = "0"
             keyword.price_bid = 0.0
-            if (negKey.typeInt == KEYWORD_TYPE_NEGATIVE_PHRASE) {
+            if (negKey.type == KEYWORD_TYPE_NEGATIVE_PHRASE) {
                 keyword.type = NEGATIVE_PHRASE
             } else {
                 keyword.type = NEGATIVE_SPECIFIC
             }
             keyword.status = ACTIVE
-            keyword.tag = negKey.name
+            keyword.tag = negKey.tag
             keyword.source = negKey.source
             keywordEditInput.keyword = keyword
             keywordEditInput.action = ACTION_CREATE

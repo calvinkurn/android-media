@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+private const val AUTOBID_DEFUALT_BUDGET = 16000
 class EditGroupAdFragment : BaseDaggerFragment() {
 
     private var btnState: Boolean = true
@@ -114,9 +115,10 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     fun onSuccessGroupName(data: ResponseGroupValidateName.TopAdsGroupValidateName) {
         if (data.errors.isEmpty()) {
-            group_name?.setError(true)
+            group_name?.setError(false)
             validation1 = true
             actionEnable()
+            group_name.setMessage("")
         } else {
             onErrorGroupName(data.errors[0].detail)
         }
