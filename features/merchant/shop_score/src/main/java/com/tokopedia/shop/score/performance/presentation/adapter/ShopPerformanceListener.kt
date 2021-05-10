@@ -10,6 +10,7 @@ interface ShopPerformanceListener {
 interface ItemShopPerformanceListener {
     fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String,
                                          identifierPerformanceDetail: String)
+    fun onItemClickedToFaqClicked()
 }
 
 interface ItemStatusPMProListener {

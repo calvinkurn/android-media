@@ -47,13 +47,48 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
 
     private fun setupProgressBarScore(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
+            val shopScore = element?.shopScore.toIntOrZero()
             if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
                 progressBarNewSeller?.show()
                 progressBarScorePerformance?.hide()
             } else {
                 progressBarNewSeller?.hide()
                 progressBarScorePerformance?.show()
-                progressBarScorePerformance?.setValue(element?.shopScore.toIntOrZero())
+                progressBarScorePerformance?.setValue(shopScore)
+                setupProgressBarScoreColor(shopScore)
+            }
+        }
+    }
+
+    private fun setupProgressBarScoreColor(shopScore: Int) {
+        with(itemView) {
+            when (shopScore) {
+                in ShopScoreConstant.SHOP_SCORE_ZERO..ShopScoreConstant.SHOP_SCORE_FIFTY_NINE -> {
+                    progressBarScorePerformance?.progressBarColor = intArrayOf(
+                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500),
+                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
+                    )
+                }
+                in ShopScoreConstant.SHOP_SCORE_SIXTY..ShopScoreConstant.SHOP_SCORE_SIXTY_NINE -> {
+                    progressBarScorePerformance?.progressBarColor = intArrayOf(
+                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300),
+                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300)
+                    )
+                }
+                in ShopScoreConstant.SHOP_SCORE_SEVENTY..ShopScoreConstant.SHOP_SCORE_SEVENTY_NINE -> {
+                    progressBarScorePerformance?.progressBarColor = intArrayOf(
+                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G300),
+                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G300)
+                    )
+                }
+
+                in ShopScoreConstant.SHOP_SCORE_EIGHTY..ShopScoreConstant.SHOP_SCORE_ONE_HUNDRED -> {
+                    progressBarScorePerformance?.progressBarColor = intArrayOf(
+                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400),
+                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                    )
+                }
+                else -> { }
             }
         }
     }

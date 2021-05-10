@@ -27,7 +27,10 @@
 
     <!-- Shop Performance page -->
     <string name="title_detail_performa">Periode Performa: %s</string>
+    <string name="title_detail_performance_new_seller">Detail Performa</string>
     <string name="title_update_date">Update selanjutnya: %s</string>
+    <string name="title_update_date_new_seller">Sedang dikumpulkan dari %1s (%2s hari)</string>
+
     <string name="maximum_score_performance">/100</string>
     <string name="title_pm_value">Power Merchant</string>
     
@@ -200,11 +203,11 @@
 
     <string name="title_point_have_not_been_deducted">Poin belum &lt;br /&gt;dipotong</string>
     <string name="desc_point_have_not_been_deducted">Penalti belum aktif dan poin pelanggaran akan dikenakan mulai dari tanggal yang tertera.</string>
-    <string name="desc_on_going_status_penalty">Penalti saat ini sedang aktif dan poin pelanggaran akan dikenakan pada tokomu. Masa aktif penalti berlangsung selama 30 hari dari tanggal aktif.</string>
+    <string name="desc_on_going_status_penalty">Penalti saat ini sedang aktif dan poin pelanggaran akan dikenakan pada tokomu. Masa aktif penalti berlangsung selama 4 minggu dari tanggal aktif.</string>
     <string name="desc_done_status_penalty">Penalti sudah tidak aktif dan tidak akan dikenakan poin pelanggaran.</string>
 
     <string name="title_on_going">Sedang &lt;br /&gt;berlangsung</string>
-    <string name="desc_on_going">Penalti saat ini sedang aktif dan poin pelanggaran akan dikenakan pada tokomu. Masa aktif penalti berlangsung selama 30 hari dari tanggal aktif.</string>
+    <string name="desc_on_going">Penalti saat ini sedang aktif dan poin pelanggaran akan dikenakan pada tokomu. Masa aktif penalti berlangsung selama 4 minggu dari tanggal aktif.</string>
     <string name="title_penalty_over">Penalti &lt;br /&gt;selesai</string>
     <string name="desc_penalty_over">Penalti sudah tidak aktif dan tidak akan dikenakan poin pelanggaran.</string>
     <string name="example_desc_result_detail_penalty">Penalti belum aktif dan poin pelanggaran akan dikenakan mulai dari tanggal yang tertera.</string>

@@ -1,5 +1,6 @@
 package com.tokopedia.shop.score.performance.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -9,14 +10,19 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreCoachMarkPrefs
 import com.tokopedia.shop.score.common.ShopScoreConstant
@@ -147,7 +153,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 shopIncome = shopLevelData?.niv?.toString().orEmpty(),
                 productSold = shopLevelData?.itemSold.toString(),
                 period = shopLevelData?.period.orEmpty(),
-                nextUpdate = shopLevelData?.nextUpdate ?: "-")
+                nextUpdate = if (shopLevelData?.nextUpdate?.isBlank() == true) "-" else shopLevelData?.nextUpdate ?: "-")
         bottomSheetShopTooltipLevel.show(childFragmentManager)
     }
 
@@ -169,8 +175,13 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      * ItemShopPerformanceListener
      */
     override fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String, identifierPerformanceDetail: String) {
+
         val bottomSheetDetail = BottomSheetPerformanceDetail.createInstance(titlePerformanceDetail, identifierPerformanceDetail)
         bottomSheetDetail.show(childFragmentManager)
+    }
+
+    override fun onItemClickedToFaqClicked() {
+        goToFaqSection()
     }
 
     override fun onItemClickedGotoPMPro() {
@@ -214,7 +225,26 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onItemClickedRecommendationFeature(appLink: String, identifier: String) {
         shopScorePenaltyTracking.clickMerchantToolsRecommendation(identifier)
-        RouteManager.route(context, appLink)
+        context?.let { context ->
+            if (GlobalConfig.isSellerApp()) {
+                RouteManager.route(context, appLink)
+            } else {
+                if (appLink.startsWith(ApplinkConst.SellerApp.CREATE_VOUCHER)) {
+                    val appLinks = ArrayList<String>().apply {
+                        add(ApplinkConstInternalSellerapp.SELLER_HOME)
+                        add(ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+                    }
+                    goToSellerMigrationPage(context = context, appLinks)
+                } else {
+                    RouteManager.route(context, appLink)
+                }
+            }
+        }
+    }
+
+    private fun goToSellerMigrationPage(context: Context, appLinks: ArrayList<String>) {
+        val intent = SellerMigrationActivity.createIntent(context, SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER, SCREEN_NAME, appLinks)
+        startActivity(intent)
     }
 
     override fun onItemImpressRecommendationFeature() {
@@ -225,18 +255,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      * ItemTimerNewSellerListener
      */
     override fun onBtnShopPerformanceToFaqClicked() {
-        val faqData = shopPerformanceAdapter.list.find { it is SectionFaqUiModel }
-        if (faqData != null) {
-            val positionFaqSection = shopPerformanceAdapter.list.indexOf(faqData)
-            val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
-                override fun getVerticalSnapPreference(): Int {
-                    return SNAP_TO_END
-                }
-            }
-            smoothScroller.targetPosition = positionFaqSection
-            rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
-        }
-        shopScorePenaltyTracking.clickLearnShopPerformanceNewSeller()
+        goToFaqSection()
     }
 
     override fun onBtnShopPerformanceToInterruptClicked(infoPageUrl: String) {
@@ -272,6 +291,21 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onImpressHelpCenter() {
         shopScorePenaltyTracking.impressHelpCenterFaqNewSeller(isNewSeller)
+    }
+
+    private fun goToFaqSection() {
+        val faqData = shopPerformanceAdapter.list.find { it is SectionFaqUiModel }
+        if (faqData != null) {
+            val positionFaqSection = shopPerformanceAdapter.list.indexOf(faqData)
+            val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_END
+                }
+            }
+            smoothScroller.targetPosition = positionFaqSection
+            rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
+        }
+        shopScorePenaltyTracking.clickLearnShopPerformanceNewSeller()
     }
 
     private fun toggleMenuForNewSeller() {
@@ -509,7 +543,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun getHeaderPerformanceView(): View? {
         val itemHeaderPosition = shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }.takeIf {
-            it != RecyclerView.NO_POSITION }
+            it != RecyclerView.NO_POSITION
+        }
         val view = itemHeaderPosition?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
         val headerViewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
         return headerViewHolder?.itemView
@@ -517,7 +552,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun getPeriodDetailPerformanceView(): View? {
         val itemPeriodPosition = shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }.takeIf {
-            it != RecyclerView.NO_POSITION }
+            it != RecyclerView.NO_POSITION
+        }
         val view = itemPeriodPosition?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
         val periodViewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
         return periodViewHolder?.itemView
@@ -621,6 +657,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         private const val COACHMARK_LAST_POSITION_PM_RM = 2
         private const val COACHMARK_HEADER_POSITION = 0
         private const val COACHMARK_ITEM_DETAIL_POSITION = 1
+        private const val SCREEN_NAME = "MA - Shop Performance"
 
         @JvmStatic
         fun newInstance(): ShopPerformancePageFragment {

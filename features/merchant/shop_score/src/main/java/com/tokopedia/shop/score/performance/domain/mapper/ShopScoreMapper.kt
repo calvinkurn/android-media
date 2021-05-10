@@ -146,7 +146,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             }
 
             add(mapToHeaderShopPerformance(shopScoreWrapperResponse.shopScoreLevelResponse?.result, shopAge))
-            add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreWrapperResponse.shopScoreTooltipResponse?.result))
+            add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreWrapperResponse.shopScoreTooltipResponse?.result, isNewSeller))
             if (shopScoreResult?.shopScoreDetail?.isNotEmpty() == true) {
                 addAll(mapToItemDetailPerformanceUiModel(shopScoreResult.shopScoreDetail, shopAge))
             }
@@ -438,7 +438,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                         targetDetailPerformance = targetDetailPerformanceText,
                         isDividerHide = index + 1 == shopScoreLevelSize,
                         identifierDetailPerformance = shopScoreDetail.identifier,
-                        parameterValueDetailPerformance = parameterItemDetailPerformance
+                        parameterValueDetailPerformance = parameterItemDetailPerformance,
+                        shopAge = shopAge
                 ))
             }
         }
@@ -480,9 +481,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 transitionEndDate = DateFormatUtils.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT, shopInfoPeriodUiModel.periodEndDate))
     }
 
-    private fun mapToSectionPeriodDetailPerformanceUiModel(shopScoreTooltipResponse: ShopLevelTooltipResponse.ShopLevel.Result?): PeriodDetailPerformanceUiModel {
+    private fun mapToSectionPeriodDetailPerformanceUiModel(shopScoreTooltipResponse: ShopLevelTooltipResponse.ShopLevel.Result?, isNewSeller: Boolean): PeriodDetailPerformanceUiModel {
         return PeriodDetailPerformanceUiModel(period = shopScoreTooltipResponse?.period
-                ?: "-", nextUpdate = shopScoreTooltipResponse?.nextUpdate ?: "-")
+                ?: "-", nextUpdate = shopScoreTooltipResponse?.nextUpdate ?: "-", isNewSeller = isNewSeller)
     }
 
     private fun mapToTransitionPeriodReliefUiModel(endDate: String): TransitionPeriodReliefUiModel {
