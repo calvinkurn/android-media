@@ -23,7 +23,7 @@ class CategoryIsleViewHolder(itemView: View): AbstractViewHolder<CategoryIsleDat
                 CategoryIsleDataView("Daging & Seafood"),
                 CategoryIsleDataView("Makanan Kering")
         )
-        val adapter = CategoryIsleAdapter(dummyData)
+        val adapter = CategoryIsleAdapter(dummyData.subList(0, 2))
         itemView.rv_category_isle.setHasFixedSize(true)
         itemView.rv_category_isle.layoutManager = GridLayoutManager(itemView.context, 2)
         itemView.rv_category_isle.adapter = adapter
