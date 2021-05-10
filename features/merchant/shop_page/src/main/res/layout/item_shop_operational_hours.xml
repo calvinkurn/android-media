@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/Unify_N0"
     android:paddingTop="@dimen/dp_12">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -37,7 +36,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvOperationalDay"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_N100"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
