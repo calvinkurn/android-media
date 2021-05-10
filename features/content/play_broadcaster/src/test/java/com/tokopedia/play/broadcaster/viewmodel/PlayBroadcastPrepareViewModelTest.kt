@@ -44,6 +44,8 @@ class PlayBroadcastPrepareViewModelTest {
     private lateinit var productDataStore: MockProductDataStore
     private lateinit var coverDataStore: MockCoverDataStore
     private lateinit var broadcastScheduleDataStore: BroadcastScheduleDataStore
+    private lateinit var titleDataStore: TitleDataStore
+    private lateinit var tagsDataStore: TagsDataStore
     private lateinit var mockSetupDataStore: MockSetupDataStore
     private lateinit var dataStore: PlayBroadcastDataStore
 
@@ -67,7 +69,9 @@ class PlayBroadcastPrepareViewModelTest {
         productDataStore = MockProductDataStore(dispatcherProvider)
         coverDataStore = MockCoverDataStore(dispatcherProvider)
         broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
-        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore)
+        titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
+        tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
+        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore)
 
         dataStore = PlayBroadcastDataStoreImpl(mockSetupDataStore)
 
@@ -90,27 +94,6 @@ class PlayBroadcastPrepareViewModelTest {
                 mDataStore = dataStore,
                 playBroadcastMapper = playBroadcastMapper
         )
-    }
-
-    @Test
-    fun `when cover title is set up and then fetched, then it should return the correct title`() {
-        val title = "abcde"
-        dataStore.getSetupDataStore().getCoverDataStore().setFullCover(
-                modelBuilder.buildPlayCoverUiModel(
-                        title = title
-                )
-        )
-
-        Assertions
-                .assertThat(viewModel.title)
-                .isEqualTo(title)
-    }
-
-    @Test
-    fun `when cover title is not set up and then fetched, then it should throw error`() {
-        Assertions
-                .assertThatIllegalStateException()
-                .isThrownBy { viewModel.title }
     }
 
     @Test
@@ -181,7 +164,6 @@ class PlayBroadcastPrepareViewModelTest {
     fun `when create livestream with products and valid cover, it should return success`() {
         productDataStore.setSelectedProducts(listOf(modelBuilder.buildProductData()))
         coverDataStore.setFullCover(PlayCoverUiModel(
-                title = "abc",
                 croppedCover = CoverSetupState.Cropped.Uploaded(null, mockk(relaxed = true), CoverSource.Camera),
                 state = SetupDataState.Uploaded
         ))

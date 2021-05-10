@@ -36,10 +36,6 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
 
-    val title: String
-//        get() = mDataStore.getSetupDataStore().getSelectedCover()?.title ?: throw IllegalStateException("Cover / Cover Title is null")
-        get() = "" //TODO("Handle This")
-
     val maxDurationDesc: String
         get() = try { channelConfigStore.getMaxDurationDesc() } catch (e: Throwable) { "" }
 

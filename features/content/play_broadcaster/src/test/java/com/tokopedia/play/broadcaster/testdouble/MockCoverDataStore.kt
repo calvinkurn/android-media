@@ -41,16 +41,7 @@ class MockCoverDataStore(
         realImpl.updateCoverState(state)
     }
 
-    override fun updateCoverTitle(title: String) {
-        realImpl.updateCoverTitle(title)
-    }
-
     override suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit> {
         return realImpl.uploadSelectedCover(channelId)
-    }
-
-    override suspend fun uploadCoverTitle(channelId: String): NetworkResult<Unit> {
-        return if (isSuccess) NetworkResult.Success(Unit)
-        else NetworkResult.Fail(uploadCoverTitleException)
     }
 }

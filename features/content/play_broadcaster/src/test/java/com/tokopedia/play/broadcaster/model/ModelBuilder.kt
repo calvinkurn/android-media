@@ -63,11 +63,9 @@ class ModelBuilder {
 
     fun buildPlayCoverUiModel(
             croppedCover: CoverSetupState = CoverSetupState.Blank,
-            title: String = "",
             state: SetupDataState = SetupDataState.Draft
     ) = PlayCoverUiModel(
             croppedCover = croppedCover,
-            title = title,
             state = state
     )
 }

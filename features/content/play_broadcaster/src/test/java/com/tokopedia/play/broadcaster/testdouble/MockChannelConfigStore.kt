@@ -25,14 +25,6 @@ class MockChannelConfigStore(
         return ""
     }
 
-    override fun setTitle(title: String) {
-
-    }
-
-    override fun getTitle(): String {
-        return ""
-    }
-
     override fun setMaxDurationDesc(desc: String) {
 
     }
