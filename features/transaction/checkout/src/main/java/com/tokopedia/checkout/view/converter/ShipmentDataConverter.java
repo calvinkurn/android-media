@@ -190,6 +190,7 @@ public class ShipmentDataConverter {
             }
             setCartItemModelError(shipmentCartItemModel);
             shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
+            shipmentCartItemModel.setDisableChangeCourier(groupShop.isDisableChangeCourier());
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 

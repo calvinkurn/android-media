@@ -95,6 +95,7 @@ public class ShipmentCartItemModel implements Parcelable {
     private boolean isEligibleNewShippingExperience;
     private boolean isTriggerShippingVibrationAnimation;
     private boolean isShippingBorderRed;
+    private boolean isDisableChangeCourier;
 
     public ShipmentCartItemModel() {
     }
@@ -152,6 +153,7 @@ public class ShipmentCartItemModel implements Parcelable {
         bookingFee = in.readInt();
         hasSetDropOffLocation = in.readByte() != 0;
         listPromoCodes = in.createStringArrayList();
+        isDisableChangeCourier = in.readByte() != 0;
     }
 
     @Override
@@ -208,6 +210,7 @@ public class ShipmentCartItemModel implements Parcelable {
         dest.writeInt(bookingFee);
         dest.writeByte((byte) (hasSetDropOffLocation ? 1 : 0));
         dest.writeStringList(listPromoCodes);
+        dest.writeByte((byte) (isDisableChangeCourier ? 1 : 0));
     }
 
     @Override
@@ -271,6 +274,7 @@ public class ShipmentCartItemModel implements Parcelable {
         newShipmentCartItemModel.setVoucherLogisticItemUiModel(shipmentCartItemModel.getVoucherLogisticItemUiModel());
         newShipmentCartItemModel.setIsLeasingProduct(shipmentCartItemModel.getIsLeasingProduct());
         newShipmentCartItemModel.setListPromoCodes(shipmentCartItemModel.getListPromoCodes());
+        newShipmentCartItemModel.setDisableChangeCourier(shipmentCartItemModel.isDisableChangeCourier());
         return newShipmentCartItemModel;
     }
 
@@ -720,6 +724,14 @@ public class ShipmentCartItemModel implements Parcelable {
 
     public void setShopAlertMessage(String shopAlertMessage) {
         this.shopAlertMessage = shopAlertMessage;
+    }
+
+    public boolean isDisableChangeCourier() {
+        return isDisableChangeCourier;
+    }
+
+    public void setDisableChangeCourier(boolean disableChangeCourier) {
+        isDisableChangeCourier = disableChangeCourier;
     }
 
     @Override
