@@ -15,9 +15,13 @@ import timber.log.Timber
 class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
     companion object{
         const val TOKO_NOW_EXTRA = "isTokoNow"
+        const val PAGE_SOURCE_EXTRA = "pageSource"
+        const val PARENT_ID_EXTRA = "parentId"
     }
 
     private var isTokoNow = false
+    private var pageSource = ""
+    private var parentId = ""
 
     override fun getNewFragment(): Fragment? = null
 
@@ -36,7 +40,9 @@ class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
 
         if (bundle != null) {
             isTokoNow = bundle.getString(TOKO_NOW_EXTRA, "false").toBoolean()
-            Log.e("pidnya","tokomart $isTokoNow")
+            pageSource = bundle.getString(PAGE_SOURCE_EXTRA, "")
+            parentId = bundle.getString(PARENT_ID_EXTRA, "")
+
         }
 
         super.onCreate(savedInstanceState)
