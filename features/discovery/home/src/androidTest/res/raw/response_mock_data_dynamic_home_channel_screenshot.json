@@ -1795,15 +1795,6 @@
                     }
                 },
                 {
-                    "id": 74104,
-                    "layout": "dg_bills"
-                },
-                {
-                    "id": 75166,
-                    "layout": "home_widget_2",
-                    "widgetParam": "?section=top_up_dan_tagihan"
-                },
-                {
                     "id": 17771,
                     "group_id": 149,
                     "galaxy_attribution": "",
@@ -1945,10 +1936,6 @@
                         "attribution": "",
                         "gradient_color": []
                     }
-                },
-                {
-                    "id": 74103,
-                    "layout": "salam_todo"
                 },
                 {
                     "id": 7345,
