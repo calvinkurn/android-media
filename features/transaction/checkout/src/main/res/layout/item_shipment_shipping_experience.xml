@@ -45,14 +45,14 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/icon_shipping_logo"
                     android:layout_width="@dimen/layout_lvl3"
                     android:layout_height="@dimen/layout_lvl3"
-                    app:icon_color_night_enable="@color/Unify_G500"
                     app:icon_color_light_enable="@color/Unify_G500"
+                    app:icon_color_night_enable="@color/Unify_G500"
                     app:icon_name="COURIER"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +92,7 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_selected_shipping_duration"
@@ -321,6 +321,57 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/unify_chips_ic_chevron_normal"
                     tools:ignore="ContentDescription" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_state_has_selected_single_shipping"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/spacing_lvl4"
+                android:paddingTop="@dimen/unify_space_12"
+                android:paddingEnd="@dimen/spacing_lvl4"
+                android:paddingBottom="@dimen/unify_space_12"
+                app:layout_constraintCircleRadius="@dimen/dp_4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_selected_single_shipping"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler"
+                    tools:text="Pengiriman 2 jam (Rp25.000 Rp10.000)" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_single_shipping_eta"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/label_selected_single_shipping"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler"
+                    tools:text="Estimasi tiba pukul 20.00. Garansi Tepat Waktu!" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_single_shipping_message"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/label_single_shipping_eta"
+                    app:typographyType="small"
+                    app:typographyWeight="reguler"
+                    tools:text="Transaksimu belum mencapai batas minimum gratis ongkir." />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
