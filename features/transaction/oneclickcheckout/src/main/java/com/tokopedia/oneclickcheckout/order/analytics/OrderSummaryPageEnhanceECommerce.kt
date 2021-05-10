@@ -92,8 +92,8 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_SHOP_NAME_DIMENSION] = shopName
     }
 
-    fun setShopTypeDimension(shopType: String) {
-        data[KEY_SHOP_TYPE_DIMENSION] = setDefaultIfEmpty(shopType)
+    fun setShopTypeDimension(isOfficial: Int, isGold: Int) {
+        data[KEY_SHOP_TYPE_DIMENSION] = if (isOfficial == 1) "official_store" else if (isGold == 1) "gold_merchant" else "marketplace"
     }
 
     fun setCategoryId(categoryId: String) {
