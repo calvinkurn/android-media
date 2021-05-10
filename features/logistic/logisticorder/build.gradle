@@ -46,7 +46,11 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.viewModelKtx
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
+
 
     //-------------------------------------------------------------------//
     //--------------------- Testing Library Section ---------------------//

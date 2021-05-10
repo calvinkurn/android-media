@@ -2,6 +2,7 @@ package com.tokopedia.logisticorder.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.logisticorder.view.TrackingPageFragment;
+import com.tokopedia.logisticorder.view.TrackingPageFragmentKotlin;
 
 import dagger.Component;
 
@@ -14,5 +15,6 @@ import dagger.Component;
 public interface TrackingPageComponent {
 
     void inject(TrackingPageFragment fragment);
+    void inject(TrackingPageFragmentKotlin fragment);
 
 }
