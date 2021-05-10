@@ -28,7 +28,7 @@ class PeriodDetailPerformanceViewHolder(view: View) :
             if (element?.isNewSeller == true) {
                 val totalRangeDays = rangeTotalDays(element.period).toString()
                 tvPerformanceDetailLabel?.text = getString(R.string.title_detail_performance_new_seller)
-                tvPerformanceDetailDate?.text = getString(R.string.title_update_date_new_seller, totalRangeDays)
+                tvPerformanceDetailDate?.text = context?.getString(R.string.title_update_date_new_seller, element.period, totalRangeDays)
                 tvPerformanceDetailDateNewSeller?.text = getString(R.string.title_update_date, element.nextUpdate)
             } else {
                 tvPerformanceDetailLabel?.text = getString(R.string.title_detail_performa, element?.period.orEmpty())
