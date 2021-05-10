@@ -42,7 +42,7 @@ public class PurchaseNotifier {
                 Bundle bundle = new Bundle();
                 bundle.putString(Constants.ARG_NOTIFICATION_TITLE, TOKOPEDIA);
                 bundle.putString(Constants.ARG_NOTIFICATION_DESCRIPTION, getTransferNotificationMessage(context, extras));
-                bundle.putString(Constants.ARG_NOTIFICATION_APPLINK, ApplinkConstInternalPayment.INSTANCE.getPMS_PAYMENT_LIST());
+                bundle.putString(Constants.ARG_NOTIFICATION_APPLINK, ApplinkConstInternalPayment.PMS_PAYMENT_LIST);
 
                 ApplinkBuildAndShowNotification.showApplinkNotification(context, bundle);
 

@@ -337,12 +337,6 @@ public class RouteManager {
         }
     }
 
-    public static void putQueryParamsInIntent(Intent intent, Uri uri) {
-        if (uri != null && !TextUtils.isEmpty(uri.toString())) {
-            putQueryParamsInIntent(intent, uri.toString());
-        }
-    }
-
     /**
      * return the intent for the given deeplink
      * If no activity found will return to home
@@ -462,17 +456,6 @@ public class RouteManager {
             return buildInternalExplicitIntent(context, dynamicFeatureDeeplink) != null;
         }
         return buildInternalExplicitIntent(context, mappedDeeplink) != null;
-    }
-
-    public static String routeWithAttribution(Context context, String applink,
-                                              String trackerAttribution) {
-        String attributionApplink;
-        if (applink.contains("?")) {
-            attributionApplink = applink + "&" + trackerAttribution;
-        } else {
-            attributionApplink = applink + "?" + trackerAttribution;
-        }
-        return attributionApplink;
     }
 
     public static void routeNoFallbackCheck(Context context, String applink, String url) {

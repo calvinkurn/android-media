@@ -2,7 +2,6 @@ package com.tokopedia.applink.home
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.startsWithPattern
@@ -72,8 +71,7 @@ object DeeplinkMapperHome {
         val segments = parsedUri.pathSegments
 
         val categoryId = if (segments.size > 1) segments.last() else "0"
-        val completedURI = UriUtil.buildUri(ApplinkConstInternalMechant.BRANDLIST, categoryId)
-        return completedURI
+        return UriUtil.buildUri(ApplinkConstInternalMechant.BRANDLIST, categoryId)
     }
 
     fun getRegisteredNavigationHomeFeed(): String {

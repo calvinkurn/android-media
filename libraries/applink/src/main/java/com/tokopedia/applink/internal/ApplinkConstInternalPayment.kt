@@ -8,7 +8,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 object ApplinkConstInternalPayment {
 
     const val HOST_PAYMENT = "payment"
-    val INTERNAL_PAYMENT = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_PAYMENT}"
+    const val INTERNAL_PAYMENT = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_PAYMENT}"
 
     // TopPayActivity
     @JvmField
@@ -24,12 +24,12 @@ object ApplinkConstInternalPayment {
 
     // PMS
 
-    val INTERNAL_PMS = "${DeeplinkConstant.SCHEME_INTERNAL}://buyer"
+    const val INTERNAL_PMS = "${DeeplinkConstant.SCHEME_INTERNAL}://buyer"
 
-    val PMS_PAYMENT_LIST = "${INTERNAL_PMS}/payment"
+    const val PMS_PAYMENT_LIST = "${INTERNAL_PMS}/payment"
 
     // how to pay
 
-    val INTERNAL_HOW_TO_PAY = "${DeeplinkConstant.SCHEME_INTERNAL}://howtopay"
+    const val INTERNAL_HOW_TO_PAY = "${DeeplinkConstant.SCHEME_INTERNAL}://howtopay"
 
 }

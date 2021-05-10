@@ -73,10 +73,6 @@ object DeepLinkMapperProductManage {
         }
     }
 
-    /**
-     * @param deepLink : tokopedia://seller/product/manage/{action}/..
-     * @return corresponding internal applink
-     */
     private fun Uri.getProductListOtherAction(): String? {
         pathSegments?.getOrNull(OTHER_ACTION_INDEX)?.let { action ->
             return when (action) {

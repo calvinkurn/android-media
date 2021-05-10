@@ -153,9 +153,6 @@ public interface ApplinkConst {
     String CHAT_BOT = "tokopedia://chatbot";
     String CHAT_TEMPLATE = "tokopedia://chat/settings/templatechat";
     String REFERRAL = "tokopedia://referral";
-    String WALLET_HOME = "tokopedia://wallet";
-    String WALLET_ACTIVATION = "tokopedia://wallet/activation";
-    String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
     String BROWSER = "tokopedia://browser";
     String FAVORITE = "tokopedia://home/favorite";
     String SUB_PROMO = "tokopedia://sale/{slug}/{category_slug}";
@@ -574,33 +571,7 @@ public interface ApplinkConst {
         String ORDER_MARKETPLACE_DETAIL_WAITING_INVOICE = "tokopedia://marketplace/order?payment_id={payment_id}&cart_string={cart_string}";
         String ORDER_OMS_DETAIL_UPSTREAM = "tokopedia://order/{order_id}?upstream={upstream}";
 
-        String EXTRA_SHOP_ID = "shop_id";
-        String EXTRA_PRODUCT_ID = "product_id";
-        String EXTRA_NOTES = "notes";
-        String EXTRA_QUANTITY = "quantity";
-        String EXTRA_SELECTED_VARIANT_ID = "selected_variant_id";
-        String EXTRA_ACTION = "action";
-        String EXTRA_PRODUCT_IMAGE = "product_image";
-        String EXTRA_SHOP_TYPE = "shop_type";
-        String EXTRA_SHOP_NAME = "shop_name";
-        String EXTRA_OCS = "ocs";
-        String EXTRA_NEED_REFRESH = "extra_need_refresh";
-        String TRACKER_ATTRIBUTION = "tracker_attribution";
-        String TRACKER_LIST_NAME = "tracker_list_name";
-        String EXTRA_REFERENCE = "reference";
-        String EXTRA_IS_LEASING = "is_leasing";
-        String EXTRA_CUSTOM_EVENT_LABEL = "custom_event_label";
-        String EXTRA_CUSTOM_EVENT_ACTION = "custom_event_action";
-        String EXTRA_CUSTOM_DIMENSION40 = "custom_dimension40";
-        String EXTRA_LAYOUT_NAME = "layout_name";
-        String EXTRA_ATC_EXTERNAL_SOURCE = "atc_external_source";
-
-        String EXTRA_CATEGORY_ID = "category_id";
-        String EXTRA_CATEGORY_NAME = "category_name";
         String EXTRA_CART_ID = "cart_id";
-        String EXTRA_PRODUCT_TITLE = "product_title";
-        String EXTRA_PRODUCT_PRICE = "product_price";
-        String EXTRA_PRODUCT_CONDITION = "product_condition";
         String RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message";
 
         String ORDER_LIST = "tokopedia-android-internal://transaction/order-list";

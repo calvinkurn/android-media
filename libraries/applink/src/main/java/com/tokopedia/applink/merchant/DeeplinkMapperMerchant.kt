@@ -21,19 +21,15 @@ object DeeplinkMapperMerchant {
 
     private const val PARAM_RATING = "rating"
     private const val PARAM_UTM_SOURCE = "utm_source"
-    private const val DEFAULT_SHOP_ID = "0"
     private const val ACTION_REVIEW = "review"
     private const val PRODUCT_SEGMENT = "product"
     private const val FEED_SEGMENT = "feed"
     private const val FOLLOWER_LIST_SEGMENT = "follower"
     private const val SHOP_PAGE_SETTING_SEGMENT = "settings"
     private const val SHOP_PAGE_SEGMENT_SIZE = 1
-    private const val SHOP_REVIEW_SEGMENT_SIZE = 2
-    private const val SHOP_PRODUCT_SEGMENT_SIZE = 2
     private const val SHOP_FEED_SEGMENT_SIZE = 2
     private const val SHOP_FOLLOWER_LIST_SEGMENT_SIZE = 2
     private const val SHOP_PAGE_SETTING_WITH_SHOP_ID_SEGMENT_SIZE = 2
-    private const val PARAM_PRODUCT_ID = "productId"
     private const val PARAM_SELLER_TAB = "tab"
     private const val SELLER_CENTER_URL = "https://seller.tokopedia.com/edu/"
 
@@ -232,14 +228,14 @@ object DeeplinkMapperMerchant {
     fun getSellerInfoDetailApplink(uri: Uri?): String {
         return uri?.let {
             val url = uri.getQueryParameter(PARAM_URL)
-            if (url.isNullOrEmpty()) {
-                return if (GlobalConfig.isSellerApp()) {
+            return if (url.isNullOrEmpty()) {
+                if (GlobalConfig.isSellerApp()) {
                     ApplinkConst.SELLER_INFO
                 } else {
                     ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO
                 }
             } else {
-                return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, url)
+                UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, url)
             }
         } ?: ""
     }
@@ -341,11 +337,6 @@ object DeeplinkMapperMerchant {
 
     fun getRegisteredSellerCenter(): String {
         return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, SELLER_CENTER_URL)
-    }
-
-    fun isShopPageSettingCustomerApp(deeplink: String): Boolean {
-        val uri = Uri.parse(deeplink)
-        return deeplink.startsWithPattern(ApplinkConst.SHOP_SETTINGS_CUSTOMER_APP) && uri.lastPathSegment == SHOP_PAGE_SETTING_SEGMENT
     }
 
     fun isShopPageSettingSellerApp(deeplink: String): Boolean {

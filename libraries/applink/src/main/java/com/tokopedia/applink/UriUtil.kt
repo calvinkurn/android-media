@@ -50,7 +50,7 @@ object UriUtil {
         try {
             if (bundle == null) bundleOutput = Bundle()
             val uriPattern = Uri.parse(uriPatternString) ?: return bundle
-            val size = Math.min(uri.pathSegments.size, uriPattern.pathSegments.size)
+            val size = uri.pathSegments.size.coerceAtMost(uriPattern.pathSegments.size)
             var i = 0
             while (i < size) {
                 if (uriPattern.pathSegments[i].startsWith("{") &&
@@ -85,13 +85,6 @@ object UriUtil {
      * @param pattern  example: "tokopedia-android-internal://marketplace/shop/{id_1}/etalase/{id_2}/"
      * @param inputUri example: "tokopedia-android-internal://marketplace/shop/123/etalase/345"
      * @param checkScheme      if true, will check pattern uri scheme
-     * @return list of ids listOf (123, 345), if not match, will return null
-     */
-    /**
-     * Compare between uri pattern and uri input.
-     *
-     * @param pattern  example: "tokopedia-android-internal://marketplace/shop/{id_1}/etalase/{id_2}/"
-     * @param inputUri example: "tokopedia-android-internal://marketplace/shop/123/etalase/345"
      * @return list of ids listOf (123, 345), if not match, will return null
      */
     @JvmOverloads

@@ -1,9 +1,7 @@
 package com.tokopedia.applink.fintech
 
 import android.net.Uri
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.constant.DeeplinkConstant
-import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 
 object DeeplinkMapperFintech {
@@ -13,7 +11,7 @@ object DeeplinkMapperFintech {
 
     fun getRegisteredNavigationForLayanan(deeplink: String): String {
         deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL).let {
-            if (!it[it.length - 1].equals("/")) {
+            if (it[it.length - 1] != '/') {
                 return "$it/"
             }
             return it

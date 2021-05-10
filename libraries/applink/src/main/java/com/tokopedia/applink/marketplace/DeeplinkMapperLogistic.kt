@@ -1,8 +1,6 @@
 package com.tokopedia.applink.marketplace
 
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
-import com.tokopedia.applink.startsWithPattern
 
 object DeeplinkMapperLogistic {
 

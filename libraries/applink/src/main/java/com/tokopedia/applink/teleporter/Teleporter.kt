@@ -2,7 +2,6 @@ package com.tokopedia.applink.teleporter
 
 import android.content.Context
 import android.net.Uri
-import android.text.TextUtils
 import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.UriUtil
@@ -59,10 +58,10 @@ object Teleporter {
             val remoteConfig = FirebaseRemoteConfigInstance.get(context)
             var webviewSwitchConfig = ""
 
-            if (GlobalConfig.isSellerApp()) {
-                webviewSwitchConfig = remoteConfig.getString(SELLERAPP_SWITCH_TO_WEBVIEW)
+            webviewSwitchConfig = if (GlobalConfig.isSellerApp()) {
+                remoteConfig.getString(SELLERAPP_SWITCH_TO_WEBVIEW)
             } else {
-                webviewSwitchConfig = remoteConfig.getString(MAINAPP_SWITCH_TO_WEBVIEW)
+                remoteConfig.getString(MAINAPP_SWITCH_TO_WEBVIEW)
             }
 
             if (webviewSwitchConfig != null) {

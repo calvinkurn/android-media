@@ -11,16 +11,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 
 object DeepLinkChecker {
 
-    private val APP_EXCLUDED_URL = "app_excluded_url"
-    private val APP_EXCLUDED_HOST_V2 = "app_excluded_host_v2"
+    private const val APP_EXCLUDED_URL = "app_excluded_url"
+    private const val APP_EXCLUDED_HOST_V2 = "app_excluded_host_v2"
     private const val AMP = "amp"
     private const val EXCLUDED_AMP = "excluded_amp"
     private const val DEFAULT_EXCLUDED_AMP_VALUE = "stories"
 
-    @JvmField
-    val WEB_HOST = "www.tokopedia.com"
-    @JvmField
-    val MOBILE_HOST = "m.tokopedia.com"
+    const val WEB_HOST = "www.tokopedia.com"
+    const val MOBILE_HOST = "m.tokopedia.com"
 
     const val OTHER = -1
     const val BROWSE = 0
@@ -132,9 +130,9 @@ object DeepLinkChecker {
         if (!URLUtil.isNetworkUrl(url)) {
             return APPLINK
         }
-        try {
+        return try {
             val uriData = Uri.parse(url)
-            return if (isExcludedHostUrl(context, uriData) || isExcludedUrl(context, uriData))
+            if (isExcludedHostUrl(context, uriData) || isExcludedUrl(context, uriData))
                 OTHER
             else if (isHome(uriData)) {
                 HOME
@@ -143,7 +141,7 @@ object DeepLinkChecker {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            return OTHER
+            OTHER
         }
 
     }
@@ -217,11 +215,11 @@ object DeepLinkChecker {
     }
 
     private fun openIfExist(context: Context, intent: Intent): Boolean {
-        if (intent.resolveActivity(context.packageManager) == null) {
-            return false
+        return if (intent.resolveActivity(context.packageManager) == null) {
+            false
         } else {
             context.startActivity(intent)
-            return true
+            true
         }
     }
 
