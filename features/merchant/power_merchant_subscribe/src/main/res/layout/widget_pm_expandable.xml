@@ -51,7 +51,7 @@
         android:id="@+id/rvPmExpandableItem"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginBottom="@dimen/layout_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/guidelineExpandableEnd"
