@@ -94,18 +94,33 @@
                 android:text="@string/title_content_pm_section"
                 android:textColor="@color/Unify_N700_96" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrierTitleContentPMSection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:constraint_referenced_ids="tv_title_content_pm_section"
+                app:barrierDirection="bottom" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_desc_content_pm_section"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_12"
                 android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginStart="@dimen/dp_12"
                 android:paddingBottom="@dimen/spacing_lvl4"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/tv_title_content_pm_section"
-                app:layout_constraintTop_toBottomOf="@id/tv_title_content_pm_section"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrierTitleContentPMSection"
                 app:typographyType="body_2"
                 tools:text="@string/desc_content_pm_section" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
