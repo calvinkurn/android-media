@@ -127,6 +127,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_customerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_new_relic";
     private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
+    private static final String ENABLE_ASYNC_AB_TEST = "android_enable_async_abtest";
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -149,6 +150,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         super.onCreate();
         createAndCallPostSeq();
         initializeAbTestVariant();
+        createAndCallFetchAbTest();
         createAndCallFontLoad();
 
         registerActivityLifecycleCallbacks();
@@ -185,9 +187,11 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     protected abstract String getOriginalPackageApp();
+    protected abstract void loadSignatureLibrary();
 
     private boolean checkAppSignature() {
         try {
+            loadSignatureLibrary();
             PackageInfo info;
             boolean signatureValid;
             byte[] rawCertJava = null;
@@ -325,7 +329,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
 
     private void createAndCallPreSeq() {
-
         //don't convert to lambda does not work in kit kat
         WeaveInterface preWeave = new WeaveInterface() {
             @NotNull
@@ -609,10 +612,26 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     private void initializeAbTestVariant() {
-        SharedPreferences sharedPreferences = getSharedPreferences(AbTestPlatform.Companion.getSHARED_PREFERENCE_AB_TEST_PLATFORM(), Context.MODE_PRIVATE);
-        Long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
         RemoteConfigInstance.initAbTestPlatform(this);
-        Long current = new Date().getTime();
+    }
+
+    private void createAndCallFetchAbTest(){
+        //don't convert to lambda does not work in kit kat
+        WeaveInterface weave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                fetchAbTestVariant();
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_AB_TEST, context);
+    }
+
+    private void fetchAbTestVariant() {
+        SharedPreferences sharedPreferences = getSharedPreferences(AbTestPlatform.Companion.getSHARED_PREFERENCE_AB_TEST_PLATFORM(), Context.MODE_PRIVATE);
+        long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
+        long current = new Date().getTime();
         if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
             RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
         }
@@ -675,17 +694,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         } else {
             return false;
         }
-    }
-
-    public int getCurrentVersion(Context context) {
-        PackageInfo pInfo = null;
-        try {
-            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return pInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 
     public Class<?> getDeeplinkClass() {

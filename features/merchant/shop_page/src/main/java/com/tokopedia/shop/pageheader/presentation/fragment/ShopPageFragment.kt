@@ -926,7 +926,7 @@ class ShopPageFragment :
             shopPageTracking?.clickShareButton(customDimensionShopPage)
         }
         removeTemporaryShopImage(shopImageFilePath)
-        getWriteReadStoragePermission()
+        saveShopImage()
     }
 
     private fun clickSearch() {
@@ -978,25 +978,6 @@ class ShopPageFragment :
                         REQUEST_CODE_USER_LOGIN_CART)
             }
         }
-    }
-
-    private fun getWriteReadStoragePermission() = activity?.let {
-        permissionChecker.checkPermissions(it, arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-                PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
-        ), object : PermissionCheckerHelper.PermissionCheckListener {
-            override fun onPermissionDenied(permissionText: String) {
-                permissionChecker.onPermissionDenied(it, permissionText)
-            }
-
-            override fun onNeverAskAgain(permissionText: String) {
-                permissionChecker.onNeverAskAgain(it, permissionText)
-            }
-
-            override fun onPermissionGranted() {
-                saveShopImage()
-            }
-        })
     }
 
     private fun onSuccessGetShopPageTabData(shopPageP1Data: ShopPageP1HeaderData) {

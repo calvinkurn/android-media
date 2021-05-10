@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -305,8 +306,18 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    open fun redirectAfterValidationSuccessful(bundle: Bundle) {
-        activity?.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
+    private fun redirectAfterValidationSuccessful(bundle: Bundle) {
+        if ((activity as VerificationActivity).isResetPin2FA) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
+                bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true)
+                bundle.putString(ApplinkConstInternalGlobal.PARAM_USER_ID, otpData.userId)
+                putExtras(bundle)
+            }
+            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+            activity?.startActivity(intent)
+        } else {
+            activity?.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
+        }
         activity?.finish()
     }
 
@@ -366,7 +377,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    protected fun resetCountDown() {
+    private fun resetCountDown() {
         verificationPref.hasTimer = false
     }
 

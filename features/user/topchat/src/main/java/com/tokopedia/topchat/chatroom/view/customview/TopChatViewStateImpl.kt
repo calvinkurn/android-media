@@ -51,7 +51,7 @@ import com.tokopedia.unifyprinciples.Typography
  * @author : Steven 29/11/18
  */
 
-class TopChatViewStateImpl constructor(
+open class TopChatViewStateImpl constructor(
         @NonNull override val view: View,
         private val typingListener: TypingListener,
         private val sendListener: SendButtonListener,

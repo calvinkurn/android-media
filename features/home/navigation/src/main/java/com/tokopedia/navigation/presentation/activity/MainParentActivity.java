@@ -54,7 +54,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.cart.view.CartFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker;
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker;
@@ -173,6 +172,9 @@ public class MainParentActivity extends BaseActivity implements
     private static final String ROLLANCE_EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
     private static final String ROLLANCE_VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD;
     private static final String ROLLANCE_VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
+
+
+    private static final String OS_KEY_MOBILE = "mobile";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -390,6 +392,14 @@ public class MainParentActivity extends BaseActivity implements
         Fragment fragment = fragmentList.get(tabPosition);
         if (fragment != null) {
             this.currentFragment = fragment;
+            if (fragment instanceof OfficialHomeContainerFragment) {
+                if (getIntent().getExtras().getString(OfficialHomeContainerFragment.KEY_CATEGORY).equals(OS_KEY_MOBILE)) {
+                    ((OfficialHomeContainerFragment) fragment).selectFirstTab();
+                } else {
+                    String categoryId = getIntent().getExtras().getString(OfficialHomeContainerFragment.KEY_CATEGORY);
+                    ((OfficialHomeContainerFragment) fragment).selectTabByCategoryId(categoryId);
+                }
+            }
             selectFragment(fragment);
         }
     }
@@ -660,7 +670,13 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
         fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
-        fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
+
+        Bundle cartBundle = getIntent().getExtras();
+        if (cartBundle == null) {
+            cartBundle = new Bundle();
+        }
+        cartBundle.putString("CartFragment", MainParentActivity.class.getSimpleName());
+        fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.CART_FRAGMENT, cartBundle));
         fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
 
         return fragmentList;
