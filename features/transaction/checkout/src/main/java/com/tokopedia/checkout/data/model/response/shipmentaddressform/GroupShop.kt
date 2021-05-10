@@ -40,5 +40,9 @@ data class GroupShop(
         @SerializedName("promo_codes")
         val listPromoCodes: List<String> = emptyList(),
         @SerializedName("shipment_information")
-        val shipmentInformation: ShipmentInformation = ShipmentInformation()
+        val shipmentInformation: ShipmentInformation = ShipmentInformation(),
+        @SerializedName("is_disable_change_courier")
+        val isDisableChangeCourier: Boolean = false,
+        @SerializedName("bo_metadata")
+        val boMetadata: BoMetadata = BoMetadata()
 )

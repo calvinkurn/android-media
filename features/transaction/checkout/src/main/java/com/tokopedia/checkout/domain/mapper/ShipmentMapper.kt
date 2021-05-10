@@ -67,6 +67,7 @@ class ShipmentMapper @Inject constructor() {
             groupAddress = mapGroupAddresses(shipmentAddressFormDataResponse, isDisablePPP)
             isHasError = checkCartHasError(this)
             popUpMessage = shipmentAddressFormDataResponse.popUpMessage
+            errorTicker = shipmentAddressFormDataResponse.errorTicker
             shipmentAddressFormDataResponse.tickers.firstOrNull()?.let {
                 tickerData = mapTickerData(it)
             }
@@ -131,6 +132,8 @@ class ShipmentMapper @Inject constructor() {
                         shop = mapShopData(it.shop)
                         shopShipments = mapShopShipments(it.shopShipments)
                         products = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
+                        isDisableChangeCourier = it.isDisableChangeCourier
+                        boMetadata = it.boMetadata
                     }
             )
         }
