@@ -30,7 +30,7 @@ class ShopNoteBottomSheetViewHolder(view: View): BaseViewHolder(view) {
     private var tpTitle: Typography? = null
     private var tpDescription: Typography? = null
     private var ivChevron: ImageView? = null
-    private var divider: DividerUnify? = null
+    private var divider: View? = null
     private var mHeight = 0
 
     private fun setupUi(title: String, description: Spanned, isTheLastPosition: Boolean) {
