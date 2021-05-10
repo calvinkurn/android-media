@@ -25,8 +25,7 @@ object Const {
     object TickerPageName {
         const val SHOP_INSIGHT = "seller-statistic"
         const val BUYER_INSIGHT = "wawasan-pembeli"
-        // TODO: Change the source to correct one
-        const val PRODUCT_INSIGHT = "wawasan-penjual"
+        const val PRODUCT_INSIGHT = "seller-statistic#wawasan-produk"
     }
 
     object BottomSheet {

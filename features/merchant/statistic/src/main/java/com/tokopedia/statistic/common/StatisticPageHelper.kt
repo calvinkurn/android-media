@@ -101,17 +101,13 @@ object StatisticPageHelper {
     }
 
     private fun getProductDateFilters(context: Context, userSession: UserSessionInterface): List<DateFilterItem> {
-        // TODO: Change method to return correct filter data
         return if (getRegularMerchantStatus(userSession)) {
             listOf(getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true))
         } else {
             listOf(
+                    getDateRangeItemToday(context, true),
                     getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true),
-                    getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
-                    DateFilterItem.Divider,
-                    getDateFilterPerWeek(context, true),
-                    getFilterPerMonth(context, false),
-                    DateFilterItem.ApplyButton
+                    getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false)
             )
         }
     }
