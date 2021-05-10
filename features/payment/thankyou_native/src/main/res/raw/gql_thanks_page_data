@@ -18,6 +18,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
     order_amount_str
     amount
     amount_str
+    combine_amount
     payment_items{
         item_name
         item_desc

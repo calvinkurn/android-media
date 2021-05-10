@@ -29,6 +29,8 @@ data class ThanksPageData(
         val amount: Long,
         @SerializedName("amount_str")
         val amountStr: String,
+        @SerializedName("combine_amount")
+        val combinedAmount: Double,
         @SerializedName("order_list")
         val shopOrder: ArrayList<ShopOrder>,
         @SerializedName("additional_info")
@@ -53,6 +55,8 @@ data class ThanksPageData(
         val paymentDetails: ArrayList<PaymentDetail>?,
         @SerializedName("order_amount_str")
         val orderAmountStr: String,
+        @SerializedName("order_amount")
+        val orderAmount: Double,
         @SerializedName("current_site")
         val currentSite: String,
         @SerializedName("business_unit")
@@ -412,5 +416,9 @@ data class ThankPageTopTickerData(
         @SerializedName("ticker_text")
         val tickerDescription : String?,
         @SerializedName("ticker_type")
-        val ticketType : String?
+        val ticketType : String?,
+        @SerializedName("ticker_cta_url")
+        val tickerCTAUrl : String?,
+        @SerializedName("ticker_cta_title")
+        val tickerCTATitle : String?
 )

@@ -122,5 +122,7 @@
 
     <string name="thanks_msg_success_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="thanks_msg_success_add_wishlist">Sukses menambah wishlist</string>
+    <string name="thanks_total_combined_amount">Total Gabungan Pembayaran</string>
+    <string name="thanks_ticker_description_html">%1$s &lt;a href="#"&gt;%2$s&lt;/a&gt;</string>
 
 </resources>

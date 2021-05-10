@@ -42,6 +42,7 @@ import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.IDi
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -230,12 +231,24 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
 
-
     private fun setTopTickerData(data: ThankPageTopTickerData) {
         getTopTickerView()?.apply {
             visible()
             tickerTitle = data.tickerTitle ?: ""
-            setTextDescription(data.tickerDescription ?: "")
+            data.tickerCTATitle?.let {
+                setHtmlDescription(getString(R.string.thanks_ticker_description_html,
+                                data.tickerDescription, it))
+                setDescriptionClickEvent(object :TickerCallback{
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        openWebLink(data.tickerCTAUrl)
+                    }
+
+                    override fun onDismiss() {}
+                })
+            }?: run {
+                setTextDescription(data.tickerDescription ?: "")
+            }
+
             closeButtonVisibility = View.GONE
             tickerType = when (data.ticketType) {
                 TICKER_WARNING -> Ticker.TYPE_WARNING
@@ -331,6 +344,15 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
                 thanksPageData.paymentID.toString())
         activity?.finish()
+    }
+
+    private fun openWebLink(urlStr : String?) {
+        urlStr?.let {
+            activity?.apply {
+                RouteManager.route(this,
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlStr))
+            }
+        }
     }
 
     override fun launchApplink(applink: String) {

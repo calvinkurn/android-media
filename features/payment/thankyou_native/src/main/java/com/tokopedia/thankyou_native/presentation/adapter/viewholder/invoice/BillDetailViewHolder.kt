@@ -20,8 +20,7 @@ class BillDetailViewHolder(val view: View) : AbstractViewHolder<TotalFee>(view) 
 
     override fun bind(element: TotalFee?) {
         element?.let {
-            tvInvoiceTotalBillValue.text = getString(R.string.thankyou_rp_without_space,
-                    element.totalBillAmountStr)
+            tvInvoiceTotalBillValue.text = element.totalBillAmountStr
             element.feeDetailList.forEach {
                 addFeeDetail(itemView.context, it)
             }
