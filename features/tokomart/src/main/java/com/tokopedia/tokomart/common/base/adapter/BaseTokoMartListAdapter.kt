@@ -1,14 +1,13 @@
-package com.tokopedia.tokomart.home.base.adapter
+package com.tokopedia.tokomart.common.base.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
-import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeDiffer
 
-abstract class BaseHomeListAdapter<T, F: AdapterTypeFactory>(
+open class BaseTokoMartListAdapter<T, F: AdapterTypeFactory>(
     baseListAdapterTypeFactory: F,
-    private val differ: TokoMartHomeDiffer
+    private val differ: BaseTokoMartDiffer
 ): BaseListAdapter<T, F>(baseListAdapterTypeFactory) {
 
     fun submitList(items: List<Visitable<*>>) {
