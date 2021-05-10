@@ -16,7 +16,8 @@ class GetSearchUseCaseModule {
 
     @Provides
     @SearchScope
-    fun provideMultiRequestGraphqlUseCase() = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
+    fun provideMultiRequestGraphqlUseCase() =
+            GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
 
     @SearchScope
     @Provides
@@ -30,7 +31,9 @@ class GetSearchUseCaseModule {
     @SearchScope
     @Provides
     @Named(SEARCH_LOAD_MORE_PAGE_USE_CASE)
-    fun provideSearchLoadMorePageUseCase(): UseCase<SearchModel> {
-        return GetSearchLoadMorePageUseCase()
+    fun provideSearchLoadMorePageUseCase(
+            graphqlUseCase: MultiRequestGraphqlUseCase,
+    ): UseCase<SearchModel> {
+        return GetSearchLoadMorePageUseCase(graphqlUseCase)
     }
 }

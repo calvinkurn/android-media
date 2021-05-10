@@ -1,15 +1,44 @@
 package com.tokopedia.tokomart.searchcategory.presentation
 
-import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokomart.common.base.adapter.BaseTokoMartDiffer
+import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 
-open class SearchCategoryDiffUtil: DiffUtil.ItemCallback<Visitable<*>>() {
+open class SearchCategoryDiffUtil: BaseTokoMartDiffer() {
 
-    override fun areItemsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
-        return oldItem::class == newItem::class
+    private var oldList: List<Visitable<*>> = listOf()
+    private var newList: List<Visitable<*>> = listOf()
+
+    override fun create(
+            oldList: List<Visitable<*>>,
+            newList: List<Visitable<*>>
+    ): BaseTokoMartDiffer {
+        this.oldList = oldList
+        this.newList = newList
+        return this
     }
 
-    override fun areContentsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        if (oldItemPosition !in oldList.indices) return false
+        if (newItemPosition !in newList.indices) return false
+
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+
+        return if (oldItem is ProductItemDataView && newItem is ProductItemDataView)
+            areProductItemTheSame(oldItem, newItem)
+        else
+            oldItem::class == newItem::class
+    }
+
+    private fun areProductItemTheSame(oldItem: ProductItemDataView, newItem: ProductItemDataView) =
+            oldItem.id == newItem.id
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return true
     }
+
+    override fun getOldListSize() = oldList.size
+
+    override fun getNewListSize() = newList.size
 }

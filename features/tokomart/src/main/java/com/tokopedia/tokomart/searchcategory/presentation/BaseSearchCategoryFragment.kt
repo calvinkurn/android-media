@@ -24,6 +24,7 @@ abstract class BaseSearchCategoryFragment: BaseDaggerFragment() {
     }
 
     private var searchCategoryAdapter: SearchCategoryAdapter? = null
+    private var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
 
     protected var navToolbar: NavToolbar? = null
     protected var recyclerView: RecyclerView? = null
@@ -76,13 +77,15 @@ abstract class BaseSearchCategoryFragment: BaseDaggerFragment() {
 
     protected open fun configureRecyclerView() {
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, VERTICAL)
-        val endlessScrollListener = createEndlessScrollListener(staggeredGridLayoutManager)
-
+        endlessScrollListener = createEndlessScrollListener(staggeredGridLayoutManager)
         searchCategoryAdapter = SearchCategoryAdapter(createTypeFactory())
 
         recyclerView?.adapter = searchCategoryAdapter
         recyclerView?.layoutManager = staggeredGridLayoutManager
-        recyclerView?.addOnScrollListener(endlessScrollListener)
+
+        endlessScrollListener?.let {
+            recyclerView?.addOnScrollListener(it)
+        }
     }
 
     private fun createEndlessScrollListener(layoutManager: StaggeredGridLayoutManager) =
@@ -96,6 +99,7 @@ abstract class BaseSearchCategoryFragment: BaseDaggerFragment() {
 
     protected open fun observeViewModel() {
         getViewModel().visitableListLiveData.observe(viewLifecycleOwner, this::submitList)
+        getViewModel().hasNextPageLiveData.observe(viewLifecycleOwner, this::updateEndlessScrollListener)
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
@@ -103,6 +107,11 @@ abstract class BaseSearchCategoryFragment: BaseDaggerFragment() {
     protected open fun submitList(visitableList: List<Visitable<*>>) {
         if (visitableList.isNotEmpty())
             searchCategoryAdapter?.submitList(visitableList)
+    }
+
+    protected open fun updateEndlessScrollListener(hasNextPage: Boolean) {
+        endlessScrollListener?.updateStateAfterGetData()
+        endlessScrollListener?.setHasNextPage(hasNextPage)
     }
 
     protected open fun onLoadMore() {

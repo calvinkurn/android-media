@@ -31,6 +31,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         `Then assert visitable list header`(visitableList, categoryModel)
         `Then assert visitable list contents`(visitableList, categoryModel)
         `Then assert visitable list footer`(visitableList)
+        `Then assert has next page value`(false)
     }
 
     private fun `When view created`() {
@@ -70,5 +71,6 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         `Then assert visitable list header`(visitableList, categoryModel)
         `Then assert visitable list contents`(visitableList, categoryModel)
         `Then assert visitable list end with loading more model`(visitableList)
+        `Then assert has next page value`(true)
     }
 }

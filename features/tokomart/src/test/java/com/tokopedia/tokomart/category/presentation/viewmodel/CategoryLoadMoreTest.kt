@@ -26,6 +26,7 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
         val visitableList = categoryViewModel.visitableListLiveData.value!!
         `Then assert load more page data`(categoryModelPage1, categoryModelPage2, visitableList)
         `Then assert visitable list footer`(visitableList)
+        `Then assert has next page value`(false)
     }
 
     private fun `Given get category load more page use case will be successful`(categoryModel: CategoryModel) {
@@ -71,6 +72,7 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
         val visitableList = categoryViewModel.visitableListLiveData.value!!
         `Then assert load more page data`(categoryModelPage1, categoryModelPage2, visitableList)
         `Then assert visitable list end with loading more model`(visitableList)
+        `Then assert has next page value`(true)
     }
 
     @Test
@@ -78,6 +80,7 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
         val categoryModelPage1 = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
 
         `Given get category first page use case will be successful`(categoryModelPage1)
+        `Given view already created`()
 
         `When view load more`()
 

@@ -24,6 +24,9 @@ abstract class BaseSearchCategoryViewModel(
     protected val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
     val visitableListLiveData: LiveData<List<Visitable<*>>> = visitableListMutableLiveData
 
+    protected val hasNextPageMutableLiveData = MutableLiveData(false)
+    val hasNextPageLiveData: LiveData<Boolean> = hasNextPageMutableLiveData
+
     protected var totalData = 0
     protected var totalFetchedData = 0
     protected var nextPage = 1
@@ -39,8 +42,7 @@ abstract class BaseSearchCategoryViewModel(
 
         createVisitableListFirstPage(headerDataView, contentDataView)
         updateVisitableListLiveData()
-
-        nextPage++
+        updateNextPageData()
     }
 
     private fun createVisitableListFirstPage(
@@ -88,6 +90,14 @@ abstract class BaseSearchCategoryViewModel(
         visitableListMutableLiveData.value = visitableList
     }
 
+    private fun updateNextPageData() {
+        val hasNextPage = totalData > totalFetchedData
+
+        hasNextPageMutableLiveData.value = hasNextPage
+
+        if (hasNextPage) nextPage++
+    }
+
     open fun onLoadMore() {
         if (hasLoadedAllData()) return
 
@@ -103,8 +113,7 @@ abstract class BaseSearchCategoryViewModel(
 
         updateVisitableListForNextPage(contentDataView)
         updateVisitableListLiveData()
-
-        nextPage++
+        updateNextPageData()
     }
 
     private fun updateVisitableListForNextPage(contentDataView: ContentDataView) {

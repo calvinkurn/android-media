@@ -54,6 +54,10 @@ open class BaseSearchPageLoadTest: SearchTestFixtures() {
         assertThat(visitableList.last(), not(instanceOf(LoadingMoreModel::class.java)))
     }
 
+    protected fun `Then assert has next page value`(expectedHasNextPage: Boolean) {
+        assertThat(searchViewModel.hasNextPageLiveData.value!!, shouldBe(expectedHasNextPage))
+    }
+
     protected fun `Then assert visitable list end with loading more model`(visitableList: List<Visitable<*>>) {
         assertThat(visitableList.last(), instanceOf(LoadingMoreModel::class.java))
     }

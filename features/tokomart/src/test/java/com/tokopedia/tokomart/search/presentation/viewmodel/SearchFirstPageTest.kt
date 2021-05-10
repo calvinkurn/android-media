@@ -28,6 +28,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert visitable list header`(visitableList, searchModel)
         `Then assert visitable list contents`(visitableList, searchModel)
         `Then assert visitable list does not end with loading more model`(visitableList)
+        `Then assert has next page value`(false)
     }
 
     private fun `When view created`() {
@@ -68,5 +69,6 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert visitable list header`(visitableList, searchModel)
         `Then assert visitable list contents`(visitableList, searchModel)
         `Then assert visitable list end with loading more model`(visitableList)
+        `Then assert has next page value`(true)
     }
 }
