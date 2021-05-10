@@ -101,7 +101,7 @@ class ShopNoteBottomSheetViewHolder(view: View): BaseViewHolder(view) {
     private fun setIconColor(resourceId: Int) {
         AppCompatResources.getDrawable(itemView.context, resourceId)?.let {
             val backgroundDrawable = DrawableCompat.wrap(it).mutate()
-            DrawableCompat.setTint(backgroundDrawable, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+            DrawableCompat.setTint(backgroundDrawable, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             ivChevron?.loadImage(backgroundDrawable)
             ivChevron?.layoutParams?.width = 36.toPx()
             ivChevron?.layoutParams?.height = 21.toPx()
