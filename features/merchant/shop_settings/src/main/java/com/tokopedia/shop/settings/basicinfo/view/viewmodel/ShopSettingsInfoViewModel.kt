@@ -63,6 +63,7 @@ class ShopSettingsInfoViewModel @Inject constructor (
         _shopBasicData.value = null
         _shopStatusData.value = null
         _updateScheduleResult.value = null
+        _shopBadgeData.value = null
     }
 
     fun getShopData(shopId: String, includeOS: Boolean) {
