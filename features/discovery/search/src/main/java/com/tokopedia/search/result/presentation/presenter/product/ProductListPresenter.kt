@@ -961,6 +961,8 @@ class ProductListPresenter @Inject constructor(
 
         if (!productDataView.isQuerySafe) view.showAdultRestriction()
 
+        if (shouldShowSearchPMProPopUp()) view.showPowerMerchantProPopUp()
+
         if (isABTestNavigationRevamp && !isEnableChooseAddress)
             list.add(SearchProductCountDataView(list.size, searchProduct.header.totalDataText))
 
@@ -1030,6 +1032,10 @@ class ProductListPresenter @Inject constructor(
         if (productDataView.totalData > getSearchRows().toIntOrZero())
             view.addLoading()
         view.stopTracePerformanceMonitoring()
+    }
+
+    private fun shouldShowSearchPMProPopUp(): Boolean {
+        return searchCoachMarkLocalCache.shouldShowSearchPMProPopUp()
     }
 
     private fun getFirstProductPositionWithBOELabel(list: List<Visitable<*>>): Int {
