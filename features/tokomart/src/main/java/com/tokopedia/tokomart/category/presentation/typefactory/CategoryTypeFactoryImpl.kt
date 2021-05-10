@@ -16,8 +16,6 @@ class CategoryTypeFactoryImpl(
 
     override fun type(categoryIsleDataView: CategoryIsleDataView) = CategoryIsleViewHolder.LAYOUT
 
-    override fun type(bannerDataModel: BannerDataModel) = BannerComponentViewHolder.LAYOUT
-
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             CategoryIsleViewHolder.LAYOUT -> CategoryIsleViewHolder(view)
