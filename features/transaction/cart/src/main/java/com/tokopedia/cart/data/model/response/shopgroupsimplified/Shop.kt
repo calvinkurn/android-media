@@ -1,6 +1,5 @@
 package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -55,5 +54,11 @@ data class Shop(
         @SerializedName("gold_merchant")
         val goldMerchant: GoldMerchant = GoldMerchant(),
         @SerializedName("official_store")
-        val officialStore: OfficialStore = OfficialStore()
+        val officialStore: OfficialStore = OfficialStore(),
+        @SerializedName("shop_ticker")
+        val shopTicker: String = "",
+        @SerializedName("maximum_weight_wording")
+        val maximumWeightWording: String = "",
+        @SerializedName("maximum_shipping_weight")
+        val maximumShippingWeight: Double = 0.0
 )

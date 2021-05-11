@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
+import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_INFORMATION
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
@@ -39,6 +40,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         renderIncidentLabel(cartShopHolderData)
         renderFreeShipping(cartShopHolderData)
         renderEstimatedTimeArrival(cartShopHolderData)
+        renderMaximumWeight(cartShopHolderData)
     }
 
     private fun renderWarningAndError(cartShopHolderData: CartShopHolderData) {
@@ -115,7 +117,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             if (cartShopHolderData.shopGroupAvailableData?.fulfillmentName?.isNotBlank() == true) {
                 if (cartShopHolderData.shopGroupAvailableData?.isFulfillment == true && cartShopHolderData.shopGroupAvailableData?.fulfillmentBadgeUrl?.isNotEmpty() == true) {
                     iuImageFulfill.show()
-                    iuImageFulfill.loadImageWithoutPlaceholder(cartShopHolderData.shopGroupAvailableData?.fulfillmentBadgeUrl ?: "")
+                    iuImageFulfill.loadImageWithoutPlaceholder(cartShopHolderData.shopGroupAvailableData?.fulfillmentBadgeUrl
+                            ?: "")
                 } else {
                     iuImageFulfill.gone()
                 }
@@ -276,6 +279,40 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             } else {
                 imgFreeShipping.gone()
                 separatorFreeShipping.gone()
+            }
+        }
+    }
+
+    private fun renderMaximumWeight(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.shopGroupAvailableData?.shouldValidateWeight == true) {
+            val currentWeight = cartShopHolderData.shopGroupAvailableData?.totalWeight ?: return
+            val maximumWeight = cartShopHolderData.shopGroupAvailableData?.maximumShippingWeight
+                    ?: return
+            val extraWeight = currentWeight - maximumWeight
+            if (extraWeight > 0) {
+                with(binding.llWarningAndError) {
+                    tickerWarning.tickerTitle = null
+                    tickerWarning.setTextDescription(cartShopHolderData.shopGroupAvailableData?.maximumWeightWording
+                            ?: "")
+                    tickerWarning.tickerType = TYPE_INFORMATION
+                    tickerWarning.tickerShape = SHAPE_LOOSE
+                    tickerWarning.closeButtonVisibility = View.GONE
+                    tickerWarning.show()
+                    tickerWarning.post {
+                        binding.llWarningAndError.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                        binding.llWarningAndError.tickerWarning.requestLayout()
+                    }
+                    layoutError.gone()
+                    layoutWarning.show()
+                    root.show()
+                }
+            } else {
+                with(binding.llWarningAndError) {
+                    tickerWarning.gone()
+                    layoutWarning.gone()
+                    root.gone()
+                }
             }
         }
     }

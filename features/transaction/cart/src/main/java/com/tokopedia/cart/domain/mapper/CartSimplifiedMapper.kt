@@ -227,6 +227,9 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             }
             it.incidentInfo = availableGroup.shop.shopAlertMessage
             it.estimatedTimeArrival = availableGroup.shipmentInformation.estimation
+            it.shopTicker = availableGroup.shop.shopTicker
+            it.maximumWeightWording = "availableGroup.shop.maximumWeightWording"
+            it.maximumShippingWeight = availableGroup.shop.maximumShippingWeight + 1000
             it
         }
     }

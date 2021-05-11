@@ -21,7 +21,6 @@ import com.tokopedia.cart.view.subscriber.*
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -33,7 +32,6 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -262,6 +260,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         // Get total error product
         val errorProductCount = getErrorProductCount(dataList)
 
+        // Calculate Weight Per Shop
+        calculateWeightPerShop(dataList)
+
         // Collect all Cart Item
         val tmpAllCartItemDataList = getAvailableCartItemDataList(dataList)
 
@@ -489,6 +490,28 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
         val pricePair = Pair(subtotalBeforeSlashedPrice, subtotalPrice)
         return Triple(totalItemQty, pricePair, subtotalCashback)
+    }
+
+    private fun calculateWeightPerShop(dataList: List<CartShopHolderData>) {
+        for (cartShopHolderData in dataList) {
+            if (cartShopHolderData.shopGroupAvailableData?.cartItemDataList != null &&
+                    cartShopHolderData.shopGroupAvailableData?.isError == false &&
+                    (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected)) {
+                var shopWeight = 0.0
+                cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
+                    for (cartItemHolderData in it) {
+                        if (cartItemHolderData.cartItemData?.isError == false && cartItemHolderData.isSelected) {
+                            val quantity = cartItemHolderData.cartItemData?.updatedData?.quantity
+                                    ?: break
+                            val weight = cartItemHolderData.cartItemData?.originData?.weightPlan
+                                    ?: break
+                            shopWeight += quantity * weight
+                        }
+                    }
+                }
+                cartShopHolderData.shopGroupAvailableData?.totalWeight = shopWeight
+            }
+        }
     }
 
     override fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
