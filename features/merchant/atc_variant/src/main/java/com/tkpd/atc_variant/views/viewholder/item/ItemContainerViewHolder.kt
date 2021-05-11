@@ -1,11 +1,15 @@
 package com.tkpd.atc_variant.views.viewholder.item
 
 import android.content.Context
+import android.graphics.Rect
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.DimenRes
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.*
 import com.tkpd.atc_variant.R
 import com.tkpd.atc_variant.views.AtcVariantListener
 import com.tkpd.atc_variant.views.adapter.variantitem.AtcVariantOptionAdapter
@@ -13,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+
 
 /**
  * Created by mzennis on 2020-03-11.
@@ -44,8 +49,23 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
 
             if (data.variantOptions.firstOrNull()?.hasCustomImages == true) {
                 rvVariant.layoutManager = GridLayoutManager(view.context, 5)
+                if (rvVariant.itemDecorationCount == 0) {
+                    rvVariant.addItemDecoration(HorizontalVariantImageDecorator(context, 5, R.dimen.space_vertical_variant_image))
+                }
             } else {
-                rvVariant.layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
+                rvVariant.layoutManager = FlexboxLayoutManager(context).apply {
+                    alignItems = AlignItems.FLEX_START
+                    flexWrap = FlexWrap.WRAP
+                    flexDirection = FlexDirection.ROW
+                }
+                if (rvVariant.itemDecorationCount == 0) {
+                    val itemDecoration = FlexboxItemDecoration(context).apply {
+                        setDrawable(ContextCompat.getDrawable(context, R.drawable.bg_atc_chip_divider))
+                        setOrientation(FlexboxItemDecoration.HORIZONTAL)
+                    }
+
+                    rvVariant.addItemDecoration(itemDecoration)
+                }
             }
 
             variantOptionAdapter.setData(data.variantOptions)
@@ -94,7 +114,24 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
         }
     }
 
-    companion object {
-        const val VARIANT_OPTION_CHANGED = "option_changed"
+    inner class HorizontalVariantImageDecorator(context: Context, private val spanCount: Int, @DimenRes horizontalMargin: Int) : RecyclerView.ItemDecoration() {
+
+        private val horizontalMarginInPx: Int =
+                context.resources.getDimension(horizontalMargin).toInt()
+
+        override fun getItemOffsets(
+                outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
+        ) {
+            val layoutParams = view.layoutParams as GridLayoutManager.LayoutParams
+            val spanIndex = layoutParams.spanIndex
+
+            val itemPosition = parent.getChildAdapterPosition(view)
+            if (itemPosition == RecyclerView.NO_POSITION) return
+
+            if (spanIndex <= spanCount) {
+                outRect.bottom = horizontalMarginInPx
+            }
+        }
+
     }
 }

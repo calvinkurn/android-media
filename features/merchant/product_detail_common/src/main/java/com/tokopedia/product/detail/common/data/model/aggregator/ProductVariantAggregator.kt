@@ -22,4 +22,8 @@ data class ProductVariantAggregator(
         @SerializedName("warehouseInfo")
         @Expose
         val nearestWarehouse: List<NearestWarehouseResponse> = listOf()
-)
+) {
+    fun isAggregatorEmpty(): Boolean {
+        return (!variantData.hasChildren && !variantData.hasVariant) || cardRedirection.data.isEmpty() || nearestWarehouse.isEmpty()
+    }
+}

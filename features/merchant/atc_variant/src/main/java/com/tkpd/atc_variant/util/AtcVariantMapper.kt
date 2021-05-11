@@ -1,6 +1,7 @@
 package com.tkpd.atc_variant.util
 
 
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
@@ -14,6 +15,14 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 
 object AtcVariantMapper {
     var selectedOptionId = listOf<String>()
+
+    fun isPartiallySelectedOptionId(selectedOptionIds: Map<String, String>?): Boolean {
+        if (selectedOptionIds == null) return false
+
+        return selectedOptionIds.any {
+            it.value.toLongOrZero() == 0L
+        } || selectedOptionIds.isEmpty()
+    }
 
     fun mapVariantIdentifierToHashMap(variantData: ProductVariant?): MutableMap<String, String> {
         return variantData?.variants?.associateBy({
@@ -33,11 +42,13 @@ object AtcVariantMapper {
         return hashMap
     }
 
-    fun processVariant(variantData: ProductVariant?, mapOfSelectedVariant: MutableMap<String, String>? = mutableMapOf(), level: Int = -1, isPartialySelected: Boolean = false): List<VariantCategory>? {
-        val variantChilderValidation = validateVariantChildren(variantData?.children ?: listOf(), variantData?.variants?.size ?: 0)
+    fun processVariant(variantData: ProductVariant?, mapOfSelectedVariant: MutableMap<String, String>? = mutableMapOf(), level: Int = -1): List<VariantCategory>? {
+        val variantChilderValidation = validateVariantChildren(variantData?.children
+                ?: listOf(), variantData?.variants?.size ?: 0)
         if (variantData == null) return null
         if (!variantChilderValidation) return null
 
+        val isPartialySelected = isPartiallySelectedOptionId(mapOfSelectedVariant)
         val listOfVariant: MutableList<VariantCategory> = mutableListOf()
         var updatedSelectedOptionsId: List<String>
         val isSelectedLevelOne = level < 1
@@ -74,17 +85,6 @@ object AtcVariantMapper {
         }
 
         return listOfVariant
-    }
-
-    fun selectedProductData(variantData: ProductVariant): Pair<Int, VariantChild?>? {
-        var pairOfValue: Pair<Int, VariantChild?>? = null
-        for ((index, it: VariantChild) in variantData.children.withIndex()) {
-            if (it.optionIds == selectedOptionId) {
-                pairOfValue = Pair(index, it)
-                break
-            }
-        }
-        return pairOfValue
     }
 
     private fun updateSelectedOptionsIds(variantData: ProductVariant, updatedSelectedOptionsId: List<String>, mapOfSelectedVariant: MutableMap<String, String>?) {

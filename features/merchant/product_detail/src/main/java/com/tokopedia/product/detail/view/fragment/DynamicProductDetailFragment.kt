@@ -2944,7 +2944,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 //                    ApplinkConst.SHOP, shopId),
 //                    ProductDetailConstant.REQUEST_CODE_SHOP_INFO)
 //        }
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, "asd","pdp")
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, "true","pdp","")
         startActivity(intent)
     }
 

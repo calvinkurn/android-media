@@ -26,6 +26,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.baseList)
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation project(rootProject.ext.features.medialoader)
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

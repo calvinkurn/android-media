@@ -1,5 +1,6 @@
 package com.tokopedia.abstraction.base.view.adapter.adapter
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncDifferConfig
@@ -15,6 +16,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 abstract class BaseListAdapterDiffutil<F : AdapterTypeFactory>(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>,
                                                                private val adapterTypeFactory: F) : ListAdapter<Visitable<*>, AbstractViewHolder<*>>(asyncDifferConfig) {
 
+    companion object {
+        const val PAYLOAD_KEY_EXTRA = "payload"
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return adapterTypeFactory.createViewHolder(view, viewType)
@@ -27,9 +32,18 @@ abstract class BaseListAdapterDiffutil<F : AdapterTypeFactory>(asyncDifferConfig
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int,
                                   payloads: List<Any?>) {
         if (payloads.isNotEmpty()) {
-            (holder as AbstractViewHolder<Visitable<*>>).bind(getItem(position), payloads)
+            bind(holder, getItem(position), payloads)
         } else {
             super.onBindViewHolder(holder, position, payloads)
+        }
+    }
+
+    fun bind(holder: AbstractViewHolder<*>, item: Visitable<*>, payloads: List<Any?>) {
+        val payloadInt = (payloads.firstOrNull() as? Bundle)?.getInt(PAYLOAD_KEY_EXTRA)
+        if (payloads.isNotEmpty() && payloads.firstOrNull() != null && payloadInt != null) {
+            (holder as AbstractViewHolder<Visitable<*>>).bind(item, listOf(payloadInt))
+        } else {
+            (holder as AbstractViewHolder<Visitable<*>>).bind(item)
         }
     }
 

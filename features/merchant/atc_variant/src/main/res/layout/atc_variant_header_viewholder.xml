@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:padding="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -32,6 +33,8 @@
         android:layout_height="wrap_content"
         app:labelType="general_light_green"
         android:layout_marginTop="6dp"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintStart_toStartOf="@+id/txt_header_main_price"
         app:layout_constraintTop_toBottomOf="@+id/txt_header_main_price"
         tools:text="Cashback 5%"/>
@@ -44,6 +47,8 @@
         android:layout_marginTop="6dp"
         android:layout_marginStart="4dp"
         app:layout_goneMarginStart="0dp"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintEnd_toStartOf="@+id/txt_header_slash_price"
         app:layout_constraintStart_toEndOf="@+id/lbl_header_cashback_percentage"
         app:layout_constraintTop_toBottomOf="@+id/txt_header_main_price"
@@ -58,6 +63,8 @@
         android:layout_marginStart="4dp"
         app:layout_goneMarginStart="0dp"
         app:layout_goneMarginTop="6dp"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintStart_toEndOf="@+id/lbl_header_discounted_percentage"
         app:layout_constraintTop_toTopOf="@+id/lbl_header_discounted_percentage"
         tools:text="Rp300.000"/>

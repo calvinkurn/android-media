@@ -158,6 +158,10 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
             throw MessageErrorException(error.firstOrNull()?.message ?: "")
         }
 
+        if (!data.variantData.hasVariant && !data.variantData.hasChildren) {
+            throw NullPointerException("variant empty")
+        }
+
         return data
     }
 }

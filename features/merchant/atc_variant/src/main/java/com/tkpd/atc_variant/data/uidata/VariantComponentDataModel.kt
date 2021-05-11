@@ -3,7 +3,6 @@ package com.tkpd.atc_variant.data.uidata
 import android.os.Bundle
 import com.tkpd.atc_variant.views.adapter.AtcVariantTypeFactory
 import com.tkpd.atc_variant.views.adapter.AtcVariantVisitable
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 
 /**
@@ -14,10 +13,6 @@ data class VariantComponentDataModel(
         var listOfVariantCategory: List<VariantCategory>? = null,
         var mapOfSelectedVariant: MutableMap<String, String> = mutableMapOf()
 ) : AtcVariantVisitable {
-
-    fun isPartialySelected(): Boolean = mapOfSelectedVariant.any {
-        it.value.toLongOrZero() == 0L
-    } || mapOfSelectedVariant.isEmpty()
 
     override fun uniqueId(): Long = position
 

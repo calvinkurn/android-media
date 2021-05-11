@@ -21,6 +21,31 @@ data class ProductVariant(
         @SerializedName("children")
         val children: List<VariantChild> = listOf()
 ){
+        fun getChildByOptionId(selectedIds: List<String>): VariantChild? {
+                var childResult: VariantChild? = null
+                for (it: VariantChild in children) {
+                        if (it.optionIds == selectedIds) {
+                                childResult = it
+                                break
+                        }
+                }
+                return childResult
+        }
+
+        fun getChildByProductId(selectedVariantId: String?): VariantChild? {
+                if (selectedVariantId.isNullOrEmpty()) {
+                        return null
+                }
+                if (hasChildren) {
+                        for (child: VariantChild in children) {
+                                if (child.productId.equals(selectedVariantId, false)) {
+                                        return child
+                                }
+                        }
+                }
+                return null
+        }
+
         fun getVariantsIdentifier(): String {
                 return if (variants.any { it.name == null }) "" else variants.joinToString(" & ") { it.name.toString() }
         }
@@ -68,22 +93,8 @@ data class ProductVariant(
                 }
         }
 
-        fun getVariant(selectedVariantId: String?): VariantChild? {
-                if (selectedVariantId.isNullOrEmpty()) {
-                        return null
-                }
-                if (hasChildren) {
-                        for (child: VariantChild in children) {
-                                if (child.productId.equals(selectedVariantId, false)) {
-                                        return child
-                                }
-                        }
-                }
-                return null
-        }
-
         fun getOptionListString(selectedVariantId: String?): List<String>? {
-                return getVariant(selectedVariantId)?.getOptionStringList(variants)
+                return getChildByProductId(selectedVariantId)?.getOptionStringList(variants)
         }
 
         fun mapSelectedProductVariants(selectedVariantId: String?): ArrayMap<String, ArrayMap<String, String>>? {
