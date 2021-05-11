@@ -1064,7 +1064,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         adapter = null
         homeRecyclerView?.layoutManager = null
         layoutManager = null
-        getHomeViewModel().onCloseChannel()
         unRegisterBroadcastReceiverTokoCash()
     }
 
@@ -1788,7 +1787,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun hideLoading() {
-
         refreshLayout.isRefreshing = false
         homeRecyclerView?.isEnabled = true
     }
@@ -1812,7 +1810,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         navAbTestCondition(ifNavRevamp = {
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
-        getHomeViewModel().showTicker()
         observeHomeNotif()
         pageLoadTimeCallback?.invalidate()
     }

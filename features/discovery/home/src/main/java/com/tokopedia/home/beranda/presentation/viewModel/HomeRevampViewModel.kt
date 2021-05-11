@@ -24,7 +24,6 @@ import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
-import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
@@ -48,7 +47,6 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.ConstantKey
-import com.tokopedia.home.util.*
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelShop
@@ -119,9 +117,8 @@ open class HomeRevampViewModel @Inject constructor(
         private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
         private val bestSellerMapper: Lazy<BestSellerMapper>,
         private val homeDispatcher: Lazy<CoroutineDispatchers>,
-        private val homeProcessor: Lazy<HomeCommandProcessor>,
         private val playWidgetTools: Lazy<PlayWidgetTools>
-) : BaseCoRoutineScope(homeDispatcher.get().io), ResultCommandProcessor {
+) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
         private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
@@ -147,7 +144,6 @@ open class HomeRevampViewModel @Inject constructor(
     val homeLiveData: LiveData<HomeDataModel>
         get() = _homeLiveData
     private val _homeLiveData: MutableLiveData<HomeDataModel> = MutableLiveData()
-    private var homeVisitableListData: MutableList<Visitable<*>> = mutableListOf()
 
     val searchHint: LiveData<SearchPlaceholder>
         get() = _searchHint
@@ -270,9 +266,10 @@ open class HomeRevampViewModel @Inject constructor(
     private var takeTicker = true
 
     private var homeNotifModel = HomeNotifModel()
-    private var homeBalanceModel = HomeBalanceModel()
 
     private var homeChooseAddressData = HomeChooseAddressData()
+
+    private var homeDataModel = HomeDataModel()
 
     init {
         initialShimmerData = HomeInitialShimmerDataModel()
@@ -310,7 +307,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun getRecommendationWidget(){
-        val data = homeVisitableListData
+        val data = homeDataModel.list
         data.withIndex().filter { it.value is BestSellerDataModel }.forEach {
             val bestSellerDataModel = it.value as BestSellerDataModel
             launchCatchError(coroutineContext, block = {
@@ -336,22 +333,17 @@ open class HomeRevampViewModel @Inject constructor(
                             recommendationFilterChips = recomFilterList
                     )
                     val dataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
-                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
-                            dataModel.copy(
-                                    id = bestSellerDataModel.id,
-                                    pageName = bestSellerDataModel.pageName,
-                                    widgetParam = bestSellerDataModel.widgetParam
-                            ),
-                            it.index,
-                            this@HomeRevampViewModel
-                    ))
+                    updateWidget(dataModel.copy(
+                            id = bestSellerDataModel.id,
+                            pageName = bestSellerDataModel.pageName,
+                            widgetParam = bestSellerDataModel.widgetParam
+                    ), it.index)
                 } else {
-                    homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(bestSellerDataModel, it.index, this@HomeRevampViewModel))
+                    deleteWidget(bestSellerDataModel, it.index)
                 }
             }){
-                homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(bestSellerDataModel, -1, this@HomeRevampViewModel))
+                deleteWidget(bestSellerDataModel, -1)
             }
-
         }
     }
 
@@ -380,34 +372,22 @@ open class HomeRevampViewModel @Inject constructor(
                                         && filterChip.isActivated)
                             }
                     )
-                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
-                            newModel,
-                            it.index,
-                            this@HomeRevampViewModel
-                    ))
+                    updateWidget(newModel, it.index)
                 } else {
-                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
-                            bestSellerDataModel.copy(
-                                    filterChip = bestSellerDataModel.filterChip.map{
-                                        it.copy(isActivated = filterChip.name == it.name
-                                                && !filterChip.isActivated)
-                                    }
-                            ),
-                            it.index,
-                            this@HomeRevampViewModel
-                    ))
+                    updateWidget(bestSellerDataModel.copy(
+                            filterChip = bestSellerDataModel.filterChip.map{
+                                it.copy(isActivated = filterChip.name == it.name
+                                        && !filterChip.isActivated)
+                            }
+                    ), it.index)
                 }
             }){ _ ->
-                homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
-                        bestSellerDataModel.copy(
-                                filterChip = bestSellerDataModel.filterChip.map {
-                                    it.copy(isActivated = filterChip.name == it.name
-                                            && !filterChip.isActivated)
-                                }
-                        ),
-                        it.index,
-                        this@HomeRevampViewModel
-                ))
+                updateWidget(bestSellerDataModel.copy(
+                        filterChip = bestSellerDataModel.filterChip.map {
+                            it.copy(isActivated = filterChip.name == it.name
+                                    && !filterChip.isActivated)
+                        }
+                ), it.index)
             }
         }
     }
@@ -417,10 +397,6 @@ open class HomeRevampViewModel @Inject constructor(
             compositeSubscription.unsubscribe()
         }
         super.onCleared()
-    }
-
-    fun onCloseChannel(){
-        homeProcessor.get().onClear()
     }
 
     fun getHeaderData() {
@@ -439,22 +415,22 @@ open class HomeRevampViewModel @Inject constructor(
     fun updateBannerTotalView(channelId: String?, totalView: String?) {
         if (channelId == null || totalView == null) return
 
-        val homeList = homeVisitableListData
+        val homeList = homeDataModel.list
         val playCard = homeList.withIndex().find {
             (_, visitable) -> (visitable is PlayCardDataModel && visitable.playCardHome?.channelId == channelId)
         } ?: return
         if(playCard.value is PlayCardDataModel && (playCard.value as PlayCardDataModel).playCardHome != null) {
             val newPlayCard = (playCard.value as PlayCardDataModel).copy(playCardHome = (playCard.value as PlayCardDataModel).playCardHome?.copy(totalView = totalView))
-            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newPlayCard, playCard.index, this))
+            updateWidget(newPlayCard, playCard.index)
         }
     }
 
     private fun newUpdateHeaderViewModel(homeBalanceModel: HomeBalanceModel) {
-        val homeHeaderOvoDataModel = (homeVisitableListData.find { visitable-> visitable is HomeHeaderOvoDataModel } as HomeHeaderOvoDataModel?)
+        val homeHeaderOvoDataModel = (homeDataModel.list.find { visitable-> visitable is HomeHeaderOvoDataModel } as HomeHeaderOvoDataModel?)
         homeHeaderOvoDataModel?.let {
             val currentPosition = -1
             if(headerDataModel == null){
-                homeVisitableListData.withIndex().find { (_, model) ->  model is HomeHeaderOvoDataModel }?.index ?: -1
+                homeDataModel.list.withIndex().find { (_, model) ->  model is HomeHeaderOvoDataModel }?.index ?: -1
                 headerDataModel = homeHeaderOvoDataModel.headerDataModel
             }
 
@@ -462,8 +438,8 @@ open class HomeRevampViewModel @Inject constructor(
                     homeBalanceModel = homeBalanceModel,
                     isUserLogin = userSession.get().isLoggedIn
             )
-            this.homeBalanceModel = homeBalanceModel
-            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(homeHeaderOvoDataModel as Visitable<*>, currentPosition, this))
+            this.homeDataModel.homeBalanceModel = homeBalanceModel
+            updateWidget(homeHeaderOvoDataModel as Visitable<*>, currentPosition)
         }
     }
 
@@ -474,11 +450,11 @@ open class HomeRevampViewModel @Inject constructor(
                                       isPendingTokocashChecked: Boolean? = null,
                                       isWalletDataError: Boolean? = null,
                                       isTokoPointDataError: Boolean? = null) {
-        val homeHeaderOvoDataModel = (homeVisitableListData.find { visitable-> visitable is HomeHeaderOvoDataModel } as HomeHeaderOvoDataModel?)
+        val homeHeaderOvoDataModel = (homeDataModel.list.find { visitable-> visitable is HomeHeaderOvoDataModel } as HomeHeaderOvoDataModel?)
         homeHeaderOvoDataModel?.let {
             val currentPosition = -1
             if(headerDataModel == null){
-                homeVisitableListData.withIndex().find { (_, model) ->  model is HomeHeaderOvoDataModel }?.index ?: -1
+                homeDataModel.list.withIndex().find { (_, model) ->  model is HomeHeaderOvoDataModel }?.index ?: -1
                 headerDataModel = homeHeaderOvoDataModel.headerDataModel
             }
 
@@ -506,10 +482,10 @@ open class HomeRevampViewModel @Inject constructor(
                 }
                 headerDataModel = headerDataModel?.copy(
                         isUserLogin = userSession.get().isLoggedIn,
-                        homeBalanceModel = homeBalanceModel
+                        homeBalanceModel = homeDataModel.homeBalanceModel
                 )
                 homeHeaderOvoDataModel.headerDataModel = headerDataModel
-                homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(homeHeaderOvoDataModel as Visitable<*>, currentPosition, this))
+                updateWidget(homeHeaderOvoDataModel as Visitable<*>, currentPosition)
             }
         }
     }
@@ -532,66 +508,12 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    private fun evaluateAvailableComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
-        homeDataModel?.let {
-            var newHomeRevampViewModel = homeDataModel
-            newHomeRevampViewModel = evaluateHomeFlagData(newHomeRevampViewModel)
-            newHomeRevampViewModel = evaluateChooseAddressData(newHomeRevampViewModel)
-            newHomeRevampViewModel = evaluatePlayWidget(newHomeRevampViewModel)
-            newHomeRevampViewModel = evaluateBuWidgetData(newHomeRevampViewModel)
-            newHomeRevampViewModel = evaluateRecommendationSection(newHomeRevampViewModel)
-            return newHomeRevampViewModel
-        }
-        return homeDataModel
-    }
-
-    private fun evaluateHomeFlagData(homeDataModel: HomeDataModel?): HomeDataModel? {
-        homeDataModel?.let {HomeDataModel ->
-            var isNeedToGetData = homeBalanceModel.balanceType == null
-            homeBalanceModel.balanceType = when(HomeDataModel.homeFlag.getFlagValue(HomeFlag.TYPE.HAS_TOKOPOINTS)) {
-                1 -> {
-                    setNewBalanceWidget(false)
-                    HomeBalanceModel.TYPE_STATE_1
-                }
-                2 -> {
-                    setNewBalanceWidget(true)
-                    HomeBalanceModel.TYPE_STATE_2
-                }
-                3 -> {
-                    setNewBalanceWidget(true)
-                    HomeBalanceModel.TYPE_STATE_3
-                }
-                else -> {
-                    setNewBalanceWidget(true)
-                    HomeBalanceModel.TYPE_STATE_4
-                }
-            }
-            homeBalanceModel.initBalanceModelByType()
-            if (isNeedToGetData) {
-                getHeaderData()
-            }
-
-            val list = homeDataModel.list.toMutableList()
-
-            val homeHeaderOvoDataModel = homeVisitableListData.find { visitable -> visitable is HomeHeaderOvoDataModel}
-            val headerIndex = homeDataModel.list.indexOfFirst { visitable -> visitable is HomeHeaderOvoDataModel }
-            (homeHeaderOvoDataModel as? HomeHeaderOvoDataModel)?.let {
-                it.needToShowUserWallet = HomeDataModel.homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
-                list[headerIndex] = homeHeaderOvoDataModel
-            }
-
-            return HomeDataModel.copy(list = list)
-
-        }
-        return homeDataModel
-    }
-
     fun getPlayBanner(position: Int){
         val playBanner =
-                if (position < homeVisitableListData.size
-                        && homeVisitableListData.get(position) is PlayCardDataModel)
-                    homeVisitableListData.getOrNull(position) as PlayCardDataModel
-                else homeVisitableListData.find { it is PlayCardDataModel }
+                if (position < homeDataModel.list.size
+                        && homeDataModel.list.get(position) is PlayCardDataModel)
+                    homeDataModel.list.getOrNull(position) as PlayCardDataModel
+                else homeDataModel.list.find { it is PlayCardDataModel }
         playBanner?.let {
             getLoadPlayBannerFromNetwork(playBanner as PlayCardDataModel)
         }
@@ -600,7 +522,7 @@ open class HomeRevampViewModel @Inject constructor(
     // Logic detect play banner should load data from API
     private fun getPlayBanner(){
         // Check the current index is play card view model
-        val playBanner = homeVisitableListData.find { it is PlayCardDataModel }
+        val playBanner = homeDataModel.list.find { it is PlayCardDataModel }
         if(playBanner != null && playBanner is PlayCardDataModel) {
             getLoadPlayBannerFromNetwork(playBanner)
         }
@@ -609,15 +531,15 @@ open class HomeRevampViewModel @Inject constructor(
     // If the image is valid it will be set play banner to UI
     fun setPlayBanner(playCardDataModel: PlayCardDataModel){
         val newList = mutableListOf<Visitable<*>>()
-        newList.addAll(homeVisitableListData)
-        homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(playCardDataModel, -1, this))
+        newList.addAll(homeDataModel.list)
+        updateWidget(playCardDataModel, -1)
     }
 
     // play widget it will be removed when load image is failed (deal from PO)
     // because don't let the banner blank
     fun clearPlayBanner(){
-        homeVisitableListData.withIndex().find { (_, visitable) -> visitable is PlayCardDataModel }?.let{
-            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(it.value, it.index, this))
+        homeDataModel.list.withIndex().find { (_, visitable) -> visitable is PlayCardDataModel }?.let{
+            deleteWidget(it.value, it.index)
         }
     }
 
@@ -626,70 +548,29 @@ open class HomeRevampViewModel @Inject constructor(
 // =================================================================================
 
     private fun insertSuggestedReview(suggestedProductReview: SuggestedProductReview) {
-        val findReviewViewModel = homeVisitableListData.find { visitable -> visitable is ReviewDataModel }
-        val indexOfReviewViewModel = homeVisitableListData.indexOf(findReviewViewModel)
+        val findReviewViewModel = homeDataModel.list.find { visitable -> visitable is ReviewDataModel }
+        val indexOfReviewViewModel = homeDataModel.list.indexOf(findReviewViewModel)
         if(indexOfReviewViewModel != -1 && findReviewViewModel is ReviewDataModel){
             val newFindReviewViewModel = findReviewViewModel.copy(
                     suggestedProductReview = suggestedProductReview
             )
-            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newFindReviewViewModel, indexOfReviewViewModel, this))
+            updateWidget(newFindReviewViewModel, indexOfReviewViewModel)
         }
-    }
-
-    private fun onRemoveSuggestedReview(homeDataModel: HomeDataModel?): HomeDataModel? {
-        homeDataModel?.let { it->
-            val findReviewViewModel =
-                    it.list.find { visitable -> visitable is ReviewDataModel }
-            val currentList = it.list.toMutableList()
-            currentList.let { list->
-                if (findReviewViewModel is ReviewDataModel) {
-                    val mutableIterator = list.iterator()
-                    for (e in mutableIterator) {
-                        if(e is ReviewDataModel){
-                            mutableIterator.remove()
-                            break
-                        }
-                    }
-                    return it.copy(
-                            list = list
-                    )
-                }
-            }
-        }
-        return homeDataModel
-    }
-
-    private fun takeHomeTicker(homeDataModel: HomeDataModel?): HomeDataModel? {
-        if (takeTicker) {
-            homeDataModel?.let { homeModel->
-                val findTickerModel =
-                        homeModel.list.withIndex().find { visitable -> visitable.value is TickerDataModel }
-                findTickerModel?.let { indexedValue ->
-                    val currentList = homeModel.list.toMutableList()
-                    (indexedValue.value as? TickerDataModel)?.let {
-                        homeTicker = Pair(indexedValue.index, it)
-                        currentList.remove(findTickerModel.value)
-                        return homeModel.copy(list = currentList)
-                    }
-                }
-            }
-        }
-        return homeDataModel
     }
 
     fun onRemoveSuggestedReview() {
         val findReviewViewModel =
-                homeVisitableListData.find { visitable -> visitable is ReviewDataModel }
+                homeDataModel.list.find { visitable -> visitable is ReviewDataModel }
                         ?: return
         if (findReviewViewModel is ReviewDataModel) {
-            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(findReviewViewModel, -1, this))
+            deleteWidget(findReviewViewModel, -1)
         }
     }
 
     fun onCloseBuyAgain(channelId: String, position: Int){
-        val dynamicChannelDataModel = homeVisitableListData.find { visitable ->
+        val dynamicChannelDataModel = homeDataModel.list.find { visitable ->
             visitable is DynamicChannelDataModel && visitable.channel?.id == channelId }
-        val recommendationListHomeComponentModel = homeVisitableListData.find {
+        val recommendationListHomeComponentModel = homeDataModel.list.find {
             visitable ->  visitable is RecommendationListCarouselDataModel && visitable.channelModel.id == channelId
         }
 
@@ -698,7 +579,7 @@ open class HomeRevampViewModel @Inject constructor(
                 closeChannelUseCase.get().setParams(channelId)
                 val closeChannel = closeChannelUseCase.get().executeOnBackground()
                 if(closeChannel.success){
-                    homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(dynamicChannelDataModel, position, this@HomeRevampViewModel))
+                    deleteWidget(dynamicChannelDataModel, position)
                 } else {
                     _errorEventLiveData.postValue(Event(""))
                 }
@@ -713,7 +594,7 @@ open class HomeRevampViewModel @Inject constructor(
                 closeChannelUseCase.get().setParams(channelId)
                 val closeChannel = closeChannelUseCase.get().executeOnBackground()
                 if(closeChannel.success){
-                    homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(recommendationListHomeComponentModel, position, this@HomeRevampViewModel))
+                    deleteWidget(recommendationListHomeComponentModel, position)
                 } else {
                     _errorEventLiveData.postValue(Event(""))
                 }
@@ -725,18 +606,18 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun removeViewHolderAtPosition(position: Int) {
-        if(position != -1 && position < homeVisitableListData.size) {
-            val detectViewHolder = homeVisitableListData[position]
+        if(position != -1 && position < homeDataModel.list.size) {
+            val detectViewHolder = homeDataModel.list[position]
             detectViewHolder.let {
-                homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(it, position, this))
+                deleteWidget(it, position)
             }
         }
     }
 
     fun onCloseTicker() {
-        val detectTicker = homeVisitableListData.find { visitable -> visitable is TickerDataModel }
+        val detectTicker = homeDataModel.list.find { visitable -> visitable is TickerDataModel }
         (detectTicker as? TickerDataModel)?.let {
-            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(it, -1, this))
+            deleteWidget(it, -1)
         }
     }
 
@@ -775,7 +656,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun insertRechargeRecommendation(data: RechargeRecommendation) {
         if (data.recommendations.isNotEmpty()) {
-            homeVisitableListData.apply {
+            homeDataModel.list.apply {
                 val findRechargeRecommendationViewModel = find { visitable -> visitable is ReminderWidgetModel
                         && (visitable.source == ReminderEnum.RECHARGE)}
                 val indexOfRechargeRecommendationViewModel = indexOf(findRechargeRecommendationViewModel)
@@ -784,7 +665,7 @@ open class HomeRevampViewModel @Inject constructor(
                             data = mapperRechargetoReminder(data),
                             source = ReminderEnum.RECHARGE
                     )
-                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel, this@HomeRevampViewModel))
+                    updateWidget(newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel)
                 }
             }
         } else {
@@ -794,7 +675,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun insertSalamWidget(data: SalamWidget) {
         if (isSalamWidgetAvailable(data.salamWidget)) {
-            homeVisitableListData.let {
+            homeDataModel.list.let {
                 val findSalamWidgetModel = it.find { visitable -> visitable is ReminderWidgetModel
                         && (visitable.source == ReminderEnum.SALAM)}
                 val indexOfSalamWidgetModel = it.indexOf(findSalamWidgetModel)
@@ -803,7 +684,7 @@ open class HomeRevampViewModel @Inject constructor(
                             data = mapperSalamtoReminder(data),
                             source = ReminderEnum.SALAM
                     )
-                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newFindSalamWidgetModel, indexOfSalamWidgetModel, this@HomeRevampViewModel))
+                    updateWidget(newFindSalamWidgetModel, indexOfSalamWidgetModel)
                 }
             }
         } else {
@@ -813,12 +694,12 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun insertRechargeBUWidget(data: RechargePerso) {
         if (data.items.isNotEmpty()) {
-            homeVisitableListData.let {
+            homeDataModel.list.let {
                 val findRechargeBUWidget = it.find { visitable -> visitable is RechargeBUWidgetDataModel }
                 val indexOfRechargeBUWidget = it.indexOf(findRechargeBUWidget)
                 if (indexOfRechargeBUWidget > -1 && findRechargeBUWidget is RechargeBUWidgetDataModel) {
                     val newFindRechargeBUWidget = findRechargeBUWidget.copy(data = data)
-                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newFindRechargeBUWidget, indexOfRechargeBUWidget, this@HomeRevampViewModel))
+                    updateWidget(newFindRechargeBUWidget, indexOfRechargeBUWidget)
                 }
             }
         } else {
@@ -828,27 +709,27 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun removeRechargeRecommendation() {
         val findRechargeRecommendationViewModel =
-                homeVisitableListData.find { visitable -> visitable is ReminderWidgetModel  && (visitable.source == ReminderEnum.RECHARGE)}
+                homeDataModel.list.find { visitable -> visitable is ReminderWidgetModel  && (visitable.source == ReminderEnum.RECHARGE)}
                         ?: return
         if (findRechargeRecommendationViewModel is ReminderWidgetModel && findRechargeRecommendationViewModel.source==ReminderEnum.RECHARGE) {
-            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(findRechargeRecommendationViewModel, -1, this))
+            deleteWidget(findRechargeRecommendationViewModel, -1)
         }
     }
 
     private fun removeSalamWidget() {
         val findSalamWidgetModel =
-                homeVisitableListData.find { visitable -> visitable is ReminderWidgetModel  && (visitable.source == ReminderEnum.SALAM)}
+                homeDataModel.list.find { visitable -> visitable is ReminderWidgetModel  && (visitable.source == ReminderEnum.SALAM)}
                         ?: return
         if (findSalamWidgetModel is ReminderWidgetModel && findSalamWidgetModel.source==ReminderEnum.SALAM) {
-            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(findSalamWidgetModel, -1, this))
+            deleteWidget(findSalamWidgetModel, -1)
         }
     }
 
     private fun removeRechargeBUWidget() {
         val findRechargeBUWidgetViewModel =
-                homeVisitableListData.find { visitable -> visitable is RechargeBUWidgetDataModel } ?: return
+                homeDataModel.list.find { visitable -> visitable is RechargeBUWidgetDataModel } ?: return
         if (findRechargeBUWidgetViewModel is RechargeBUWidgetDataModel) {
-            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(findRechargeBUWidgetViewModel, -1, this))
+            deleteWidget(findRechargeBUWidgetViewModel, -1)
         }
     }
 
@@ -856,120 +737,7 @@ open class HomeRevampViewModel @Inject constructor(
 // ============================== Evaluate Controller ==============================
 // =================================================================================
 
-    private fun evaluateChooseAddressData(homeDataModel: HomeDataModel?): HomeDataModel? {
-        homeDataModel?.let { HomeRevampViewModel ->
-            // find the old data from current list
-            val list = HomeRevampViewModel.list.toMutableList()
-
-            val homeHeaderOvoDataModel = homeVisitableListData.find { visitable -> visitable is HomeHeaderOvoDataModel}
-            val headerIndex = homeDataModel.list.indexOfFirst { visitable -> visitable is HomeHeaderOvoDataModel }
-            (homeHeaderOvoDataModel as? HomeHeaderOvoDataModel)?.let {
-                it.needToShowChooseAddress = getAddressData().isActive
-                list[headerIndex] = homeHeaderOvoDataModel
-            }
-
-            return HomeRevampViewModel.copy(list = list)
-        }
-        return homeDataModel
-    }
-
-    private fun evaluatePlayWidget(homeDataModel: HomeDataModel?): HomeDataModel? {
-        homeDataModel?.let { HomeRevampViewModel ->
-            // find the old data from current list
-            val playWidget = homeVisitableListData.find { visitable -> visitable is PlayCardDataModel}
-            if(playWidget != null) {
-                // Find the new play widget is still available or not
-                val list = HomeRevampViewModel.list.toMutableList()
-                val playIndex = list.indexOfFirst { visitable -> visitable is PlayCardDataModel }
-
-                // if on new home available the data, it will be load new data
-                if(playIndex != -1){
-                    list[playIndex] = playWidget
-                    return HomeRevampViewModel.copy(list = list)
-                }
-            }
-        }
-
-        return homeDataModel
-    }
-
-    private fun evaluateBuWidgetData(homeDataModel: HomeDataModel?): HomeDataModel? {
-        homeDataModel?.let { HomeRevampViewModel ->
-            val findBuWidgetViewModel =
-                    homeVisitableListData.find { visitable -> visitable is NewBusinessUnitWidgetDataModel }
-            findBuWidgetViewModel?.let { findBu->
-                val currentList = HomeRevampViewModel.list.toMutableList()
-                currentList.let {list ->
-                    val buwidgetIndex = list.indexOfFirst { visitable -> visitable is NewBusinessUnitWidgetDataModel }
-                    if(buwidgetIndex != -1) {
-                        list[buwidgetIndex] = findBu
-                        return HomeRevampViewModel.copy(list = list)
-                    }
-                }
-            }
-
-            if (findBuWidgetViewModel == null) {
-                val findCurrentBuWidgetViewModel =
-                        HomeRevampViewModel.list.find { visitable -> visitable is NewBusinessUnitWidgetDataModel }
-                findCurrentBuWidgetViewModel?.let {
-                    val currentList = HomeRevampViewModel.list.toMutableList()
-                    currentList.let {list ->
-                        val buwidgetIndex = list.indexOfFirst { visitable -> visitable is NewBusinessUnitWidgetDataModel }
-                        if(buwidgetIndex != -1) {
-                            list[buwidgetIndex] = findCurrentBuWidgetViewModel
-                            return HomeRevampViewModel.copy(list = list)
-                        }
-                    }
-                }
-            }
-        }
-        return homeDataModel
-    }
-
-    private fun evaluateRecommendationSection(homeDataModel: HomeDataModel?): HomeDataModel? {
-        //check if still contains recom loading, then don't do anything
-        if(homeVisitableListData.find { it::class.java == HomeLoadingMoreModel::class.java } != null)
-            return homeDataModel
-
-        homeDataModel?.let {
-            //reuse the recommendation viewmodel
-            val detectHomeRecom = homeVisitableListData.find { visitable -> visitable is HomeRecommendationFeedDataModel }
-            return if (detectHomeRecom != null) {
-                val currentList = homeDataModel.list.toMutableList()
-                val isAddressChanged =
-                        (detectHomeRecom as? HomeRecommendationFeedDataModel)?.homeChooseAddressData != homeChooseAddressData
-                if (isAddressChanged) {
-                    currentList.remove(detectHomeRecom)
-                    initializeRecomSection(homeDataModel.copy(list = currentList))
-                } else {
-                    currentList.add(detectHomeRecom)
-                    homeDataModel.copy(list = currentList)
-                }
-            } else {
-                initializeRecomSection(homeDataModel)
-            }
-        }
-        return homeDataModel
-    }
-
-    private fun initializeRecomSection(homeDataModel: HomeDataModel): HomeDataModel {
-        val visitableMutableList: MutableList<Visitable<*>> = homeDataModel.list.toMutableList()
-        val mutableIterator = visitableMutableList.iterator()
-        for (e in mutableIterator) {
-            if (e is HomeRetryModel) {
-                mutableIterator.remove()
-                break
-            }
-        }
-        if (!homeDataModel.isCache) {
-            if (visitableMutableList.find { it::class.java == HomeLoadingMoreModel::class.java } == null) visitableMutableList.add(HomeLoadingMoreModel())
-            getFeedTabData()
-        }
-        return homeDataModel.copy(
-                list = visitableMutableList)
-    }
-
-    fun getRecommendationFeedSectionPosition() = homeVisitableListData.size -1
+    fun getRecommendationFeedSectionPosition() = homeDataModel.list.size -1
 
 // ===========================================================================================
 // ===================================== API CONTROLLER ======================================
@@ -981,23 +749,20 @@ open class HomeRevampViewModel @Inject constructor(
 
         launch {
             val homeCacheData = homeUseCase.get().getHomeCachedData()
-            homeCacheData?.let {it ->
-                homeVisitableListData = it.list.toMutableList()
-                val homeDataModel = evaluateChooseAddressData(it)
-                homeDataModel?.let {
-                    _homeLiveData.postValue(homeDataModel)
+            homeCacheData?.let { homeDataModel ->
+                homeDataModel.evaluateChooseAddressData()
+                _homeLiveData.postValue(homeDataModel)
 
-                    if (homeDataModel.list.size > 1) {
-                        _isRequestNetworkLiveData.postValue(Event(false))
-                        takeTicker = false
-                    }
-                    if (homeDataModel.list.size == 1) {
-                        val initialHomeDataModel = HomeDataModel(list = listOf(
-                                HomeHeaderOvoDataModel(),
-                                HomeInitialShimmerDataModel()
-                        ))
-                        homeProcessor.get().sendWithQueueMethod(UpdateHomeData(initialHomeDataModel, this@HomeRevampViewModel))
-                    }
+                if (homeDataModel.list.size > 1) {
+                    _isRequestNetworkLiveData.postValue(Event(false))
+                    takeTicker = false
+                }
+                if (homeDataModel.list.size == 1) {
+                    val initialHomeDataModel = HomeDataModel(list = listOf(
+                            HomeHeaderOvoDataModel(),
+                            HomeInitialShimmerDataModel()
+                    ))
+                    updateHomeData(initialHomeDataModel)
                 }
             }
             initFlow()
@@ -1006,34 +771,26 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun initFlow() {
         launchCatchError(coroutineContext, block = {
-            homeFlowData.collect { homeDataModel ->
-                if (homeDataModel?.isCache == false) {
+            homeFlowData.collect { homeNewDataModel ->
+                if (homeNewDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
                     onRefreshState = false
-                    var homeData = takeHomeTicker(homeDataModel)
-                    if (homeData?.isProcessingDynamicChannle == false) {
-                        homeData = evaluateAvailableComponent(homeData)
+                    if (homeNewDataModel.list.isEmpty()) {
+                        ServerLogger.log(Priority.P2, "HOME_STATUS",
+                                mapOf("type" to "revamp_empty_update",
+                                        "reason" to "Visitables is empty",
+                                        "isProcessingDynamicChannel" to homeNewDataModel.isProcessingDynamicChannle.toString(),
+                                        "isProcessingAtf" to homeNewDataModel.isProcessingAtf.toString(),
+                                        "isFirstPage" to homeNewDataModel.isFirstPage.toString(),
+                                        "isCache" to homeNewDataModel.isCache.toString()
+                                ))
                     }
-                    homeData?.let {
-                        if (it.list.isEmpty()) {
-                            ServerLogger.log(Priority.P2, "HOME_STATUS",
-                                    mapOf("type" to "revamp_empty_update",
-                                            "reason" to "Visitables is empty",
-                                            "isProcessingDynamicChannel" to it.isProcessingDynamicChannle.toString(),
-                                            "isProcessingAtf" to it.isProcessingAtf.toString(),
-                                            "isFirstPage" to it.isFirstPage.toString(),
-                                            "isCache" to it.isCache.toString()
-                                    ))
-                        }
-                        homeProcessor.get().sendWithQueueMethod(UpdateHomeData(it, this@HomeRevampViewModel))
+                    updateHomeData(homeNewDataModel)
 
-                        //initialize master list data here
-                        homeVisitableListData = it.list.toMutableList()
-                    }
                     /**
                      * Get external response when ATF is completed (first page = false)
                      */
-                    if (homeData?.isProcessingAtf == false) {
+                    if (homeNewDataModel.isProcessingAtf == false) {
                         getPlayWidget()
                         getHeaderData()
                         getReviewData()
@@ -1043,18 +800,14 @@ open class HomeRevampViewModel @Inject constructor(
                         getRecommendationWidget()
                         getTopAdsBannerData()
                     }
-                    _trackingLiveData.postValue(Event(homeVisitableListData.filterIsInstance<HomeVisitable>()))
+                    _trackingLiveData.postValue(Event(homeNewDataModel.list.filterIsInstance<HomeVisitable>()))
                 } else if (onRefreshState) {
                     if (homeDataModel?.list?.size?:0 > 1) {
                         _isRequestNetworkLiveData.postValue(Event(false))
                         takeTicker = false
                     }
                     if (homeDataModel?.list?.size?:0 > 0) {
-                        val evaluatedData = evaluateChooseAddressData(homeDataModel)
-
-                        evaluatedData?.let {
-                            homeProcessor.get().sendWithQueueMethod(UpdateHomeData(it, this@HomeRevampViewModel))
-                        }
+                        homeDataModel?.let { updateHomeData(it) }
                     }
                     refreshHomeData()
                 }
@@ -1121,16 +874,16 @@ open class HomeRevampViewModel @Inject constructor(
     fun getBusinessUnitTabData(position: Int){
         launchCatchError(coroutineContext, block = {
             val data = getBusinessWidgetTab.get().executeOnBackground()
-            (homeVisitableListData.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
+            (homeDataModel.list.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
                 val buWidgetData = buWidget.copy(
                         tabList = data.tabBusinessList,
                         backColor = data.widgetHeader.backColor,
                         contentsList = data.tabBusinessList.withIndex().map { BusinessUnitDataModel(tabName = it.value.name, tabPosition = it.index) })
-                homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(buWidgetData, position, this@HomeRevampViewModel))
+                updateWidget(buWidgetData, position)
             }
         }){
-            (homeVisitableListData.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
-                homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(buWidget.copy(tabList = listOf()), position, this@HomeRevampViewModel))
+            (homeDataModel.list.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
+                updateWidget(buWidget.copy(tabList = listOf()), position)
             }
         }
     }
@@ -1140,21 +893,21 @@ open class HomeRevampViewModel @Inject constructor(
         buWidgetJob = launchCatchError(coroutineContext, block = {
             getBusinessUnitDataUseCase.get().setParams(tabId, position, tabName)
             val data = getBusinessUnitDataUseCase.get().executeOnBackground()
-            homeVisitableListData.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
+            homeDataModel.list.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
                 val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
                 val newBuList = oldBuData.contentsList.copy().toMutableList()
                 newBuList[position] = newBuList[position].copy(list = data)
-                homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(oldBuData.copy(contentsList = newBuList), buModel.index, this@HomeRevampViewModel))
+                updateWidget(oldBuData.copy(contentsList = newBuList), buModel.index)
             }
         }){
             // show error
-            homeVisitableListData.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
+            homeDataModel.list.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
                 val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
                 val newBuList = oldBuData.contentsList.copy().toMutableList()
                 newBuList[position] = newBuList[position].copy(list = listOf())
-                val newList = homeVisitableListData.copy().toMutableList()
+                val newList = homeDataModel.list.copy().toMutableList()
                 newList[buModel.index] = oldBuData.copy(contentsList = newBuList)
-                homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(oldBuData.copy(contentsList = newBuList),buModel.index, this))
+                updateWidget(oldBuData.copy(contentsList = newBuList),buModel.index)
             }
         }
     }
@@ -1165,21 +918,21 @@ open class HomeRevampViewModel @Inject constructor(
                     dynamicChannelDataModel.channel?.groupId?:"")
 
             if(visitableList.isEmpty()) {
-                homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(dynamicChannelDataModel, position, this@HomeRevampViewModel))
+                deleteWidget(dynamicChannelDataModel, position)
             } else {
                 var lastIndex = position
-                val dynamicData = homeVisitableListData.getOrNull(lastIndex)
+                val dynamicData = homeDataModel.list.getOrNull(lastIndex)
                 if(dynamicData !is DynamicChannelDataModel && dynamicData != dynamicChannelDataModel){
-                    lastIndex = homeVisitableListData.indexOf(dynamicChannelDataModel)
+                    lastIndex = homeDataModel.list.indexOf(dynamicChannelDataModel)
                 }
-                homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(dynamicChannelDataModel, lastIndex, this@HomeRevampViewModel))
+                deleteWidget(dynamicChannelDataModel, lastIndex)
                 visitableList.reversed().forEach {
-                    homeProcessor.get().sendWithQueueMethod(AddWidgetCommand(it, lastIndex, this@HomeRevampViewModel))
+                    addWidget(it, lastIndex)
                 }
                 _trackingLiveData.postValue(Event(visitableList.filterIsInstance(HomeVisitable::class.java)))
             }
         }){
-            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(dynamicChannelDataModel, position, this))
+            deleteWidget(dynamicChannelDataModel, position)
         }
     }
 
@@ -1188,21 +941,21 @@ open class HomeRevampViewModel @Inject constructor(
             val visitableList = homeUseCase.get().onDynamicChannelExpired(channelModel.groupId)
 
             if(visitableList.isEmpty()){
-                homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(visitable, position, this@HomeRevampViewModel))
+                deleteWidget(visitable, position)
             } else {
                 var lastIndex = position
-                val dynamicData = homeVisitableListData.getOrNull(lastIndex)
+                val dynamicData = homeDataModel.list.getOrNull(lastIndex)
                 if(dynamicData !is DynamicChannelDataModel && dynamicData != visitable){
-                    lastIndex = homeVisitableListData.indexOf(visitable)
+                    lastIndex = homeDataModel.list.indexOf(visitable)
                 }
-                homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(visitable, lastIndex, this@HomeRevampViewModel))
+                deleteWidget(visitable, lastIndex)
                 visitableList.reversed().forEach {
-                    homeProcessor.get().sendWithQueueMethod(AddWidgetCommand(it, lastIndex, this@HomeRevampViewModel))
+                    addWidget(it, lastIndex)
                 }
                 _trackingLiveData.postValue(Event(visitableList.filterIsInstance(HomeVisitable::class.java)))
             }
         }){
-            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(visitable, position, this))
+            deleteWidget(visitable, position)
         }
     }
 
@@ -1233,7 +986,7 @@ open class HomeRevampViewModel @Inject constructor(
 
 
     private fun isReminderWidgetAvailable() : Boolean{
-        return homeVisitableListData.find {
+        return homeDataModel.list.find {
             visitable -> visitable is ReminderWidgetModel
         } != null
     }
@@ -1269,15 +1022,17 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getFeedTabData() {
         if (getTabRecommendationJob?.isActive == true) return
+        addWidget(HomeLoadingMoreModel())
         getTabRecommendationJob = launchCatchError(coroutineContext, block={
             getRecommendationTabUseCase.get().setParams(getHomeLocationDataParam())
             val homeRecommendationTabs = getRecommendationTabUseCase.get().executeOnBackground()
-            val findRetryModel = homeVisitableListData.withIndex().find { data -> data.value is HomeRetryModel
+            val findRetryModel = homeDataModel.list.withIndex().find { data -> data.value is HomeRetryModel
             }
-            val findRecommendationModel = homeVisitableListData.find {
+            val findRecommendationModel = homeDataModel.list.find {
                 data -> data is HomeRecommendationFeedDataModel
             }
-            val findLoadingModel = homeVisitableListData.withIndex().find { data -> data.value is HomeLoadingMoreModel
+            val findLoadingModel = homeDataModel.list.withIndex().find {
+                data -> data.value is HomeLoadingMoreModel
             }
 
             if (findRecommendationModel != null) return@launchCatchError
@@ -1286,22 +1041,17 @@ open class HomeRevampViewModel @Inject constructor(
             homeRecommendationFeedViewModel.recommendationTabDataModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
 
-            homeProcessor.get().sendWithQueueMethod(listOf(
-                    AddWidgetCommand(homeRecommendationFeedViewModel, -1, this@HomeRevampViewModel),
-                    DeleteWidgetCommand(findLoadingModel?.value, findLoadingModel?.index ?: -1, this@HomeRevampViewModel),
-                    DeleteWidgetCommand(findRetryModel?.value, findRetryModel?.index ?: -1, this@HomeRevampViewModel)
-            ))
+            findLoadingModel?.value?.let { updateWidget(homeRecommendationFeedViewModel, findLoadingModel.index?:-1, it) }
+            findRetryModel?.value?.let { updateWidget(homeRecommendationFeedViewModel, findLoadingModel?.index?:-1, it) }
 
         }){
-            val findRetryModel = homeVisitableListData.withIndex().find { data -> data.value is HomeRetryModel
+            val findRetryModel = homeDataModel.list.withIndex().find { data -> data.value is HomeRetryModel
             }
-            val findLoadingModel = homeVisitableListData.withIndex().find { data -> data.value is HomeLoadingMoreModel
+            val findLoadingModel = homeDataModel.list.withIndex().find { data -> data.value is HomeLoadingMoreModel
             }
-            homeProcessor.get().sendWithQueueMethod(listOf(
-                    AddWidgetCommand(HomeRetryModel(), -1, this@HomeRevampViewModel),
-                    DeleteWidgetCommand(findLoadingModel?.value, findLoadingModel?.index ?: -1, this@HomeRevampViewModel),
-                    DeleteWidgetCommand(findRetryModel?.value, findRetryModel?.index ?: -1, this@HomeRevampViewModel)
-            ))
+            addWidget(HomeRetryModel())
+            deleteWidget(findLoadingModel?.value, findLoadingModel?.index ?: -1)
+            deleteWidget(findRetryModel?.value, findRetryModel?.index ?: -1)
         }
     }
 
@@ -1323,7 +1073,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getTopAdsBannerData() {
         if(getTopAdsBannerDataJob?.isActive == true) return
-        homeVisitableListData.withIndex().find {
+        homeDataModel.list.withIndex().find {
             it.value is HomeTopAdsBannerDataModel
         }?.let {visitable ->
             getTopAdsBannerDataJob = launchCatchError(coroutineContext, {
@@ -1341,7 +1091,7 @@ open class HomeRevampViewModel @Inject constructor(
                     (visitable.value as? HomeTopAdsBannerDataModel)?.let { topAdsModel ->
                         launch(coroutineContext){
                             val newTopAdsModel = topAdsModel.copy(topAdsImageViewModel = results[0])
-                            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newTopAdsModel, visitable.index, this@HomeRevampViewModel))
+                            updateWidget(newTopAdsModel, visitable.index)
                         }
                     }
                 } else {
@@ -1355,16 +1105,16 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun removeAllTopAdsData() {
-        val topadsData = homeVisitableListData.withIndex().filter {
+        val topadsData = homeDataModel.list.withIndex().filter {
             it.value is HomeTopAdsBannerDataModel
         }
         topadsData.map {
-            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(it.value, it.index, this@HomeRevampViewModel))
+            deleteWidget(it.value, it.index)
         }
     }
 
     private fun getPopularKeyword() {
-        val data = homeVisitableListData.find { it is PopularKeywordListDataModel }
+        val data = homeDataModel.list.find { it is PopularKeywordListDataModel }
         if(data != null && data is PopularKeywordListDataModel) {
             getPopularKeywordData()
         }
@@ -1377,32 +1127,31 @@ open class HomeRevampViewModel @Inject constructor(
             val results = popularKeywordUseCase.get().executeOnBackground()
             if (results.data.keywords.isNotEmpty()) {
                 val resultList = convertPopularKeywordDataList(results.data)
-                homeVisitableListData.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
+                homeDataModel.list.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
                     val oldData = indexedData.value
                     if (oldData is PopularKeywordListDataModel) {
-                        homeProcessor.get().sendWithQueueMethod(
-                                UpdateWidgetCommand(oldData.copy(
-                                        title = results.data.title,
-                                        subTitle = results.data.subTitle,
-                                        popularKeywordList = resultList,
-                                        isErrorLoad = false
-                                ), indexedData.index, this@HomeRevampViewModel))
+                        updateWidget(oldData.copy(
+                                title = results.data.title,
+                                subTitle = results.data.subTitle,
+                                popularKeywordList = resultList,
+                                isErrorLoad = false
+                        ), indexedData.index)
                     }
                 }
                 popularKeywordRefreshCount++
             } else {
-                homeVisitableListData.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
+                homeDataModel.list.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
                     val oldData = indexedData.value
                     if (oldData is PopularKeywordListDataModel) {
-                        homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(oldData.copy(isErrorLoad = true), indexedData.index, this@HomeRevampViewModel))
+                        updateWidget(oldData.copy(isErrorLoad = true), indexedData.index)
                     }
                 }
             }
         }){ throwable ->
-            homeVisitableListData.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
+            homeDataModel.list.withIndex().find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
                 val oldData = indexedData.value
                 if (oldData is PopularKeywordListDataModel) {
-                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(oldData.copy(isErrorLoad = true), indexedData.index, this@HomeRevampViewModel))
+                    updateWidget(oldData.copy(isErrorLoad = true), indexedData.index)
                 }
             }
 
@@ -1420,21 +1169,21 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getDisplayTopAdsHeader(){
-        homeVisitableListData.withIndex().filter { it.value is FeaturedShopDataModel }.forEach { indexed ->
+        homeDataModel.list.withIndex().filter { it.value is FeaturedShopDataModel }.forEach { indexed ->
             val featuredShopDataModel = indexed.value as FeaturedShopDataModel
             launchCatchError(coroutineContext, block={
                 getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
                 val data = getDisplayHeadlineAds.get().executeOnBackground()
                 if(data.isEmpty()){
-                    homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(featuredShopDataModel, indexed.index, this@HomeRevampViewModel))
+                    deleteWidget(featuredShopDataModel, indexed.index)
                 } else {
-                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(featuredShopDataModel.copy(
+                    updateWidget(featuredShopDataModel.copy(
                             channelModel = featuredShopDataModel.channelModel.copy(
                                     channelGrids = mappingTopAdsHeaderToChannelGrid(data)
-                            )), indexed.index, this@HomeRevampViewModel))
+                            )), indexed.index)
                 }
             }){
-                homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(featuredShopDataModel, indexed.index, this))
+                deleteWidget(featuredShopDataModel, indexed.index)
             }
         }
     }
@@ -1517,9 +1266,9 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getBalanceWidgetData() {
-        if (homeBalanceModel.balanceDrawerItemModels.isEmpty()) {
-            newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
-            newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
+        if (homeDataModel.homeBalanceModel.balanceDrawerItemModels.isEmpty()) {
+            newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
+            newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
         }
 
         launchCatchError(coroutineContext, block = {
@@ -1531,17 +1280,17 @@ open class HomeRevampViewModel @Inject constructor(
             try {
                 walletContent = getWalletBalanceContent()
             } catch (e: Exception) {
-                homeBalanceModel.isTokopointsOrOvoFailed = true
-                homeBalanceModel.mapErrorWallet()
-                newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
+                homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+                homeDataModel.homeBalanceModel.mapErrorWallet()
+                newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
             }
 
             try {
                 tokopointContent = getTokopointBalanceContent()
             } catch (e: Exception) {
-                homeBalanceModel.isTokopointsOrOvoFailed = true
-                homeBalanceModel.mapErrorTokopoints()
-                newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_ERROR))
+                homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+                homeDataModel.homeBalanceModel.mapErrorTokopoints()
+                newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_ERROR))
             }
 
             walletContent?.let {
@@ -1549,7 +1298,7 @@ open class HomeRevampViewModel @Inject constructor(
                     try {
                         pendingCashback = getPendingTokoCashContent()
                         pendingCashback?.let { pendingData ->
-                            homeBalanceModel.mapBalanceData(
+                            homeDataModel.homeBalanceModel.mapBalanceData(
                                     tokopointDrawerListHomeData = tokopointContent,
                                     homeHeaderWalletAction = walletContent.copy(cashBalance = pendingData.amountText),
                                     pendingCashBackData = PendingCashbackModel(
@@ -1561,19 +1310,19 @@ open class HomeRevampViewModel @Inject constructor(
                             )
                         }
                     } catch (e: Exception) {
-                        homeBalanceModel.isTokopointsOrOvoFailed = true
-                        newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
+                        homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
                     }
                 } else {
-                    homeBalanceModel.mapBalanceData(homeHeaderWalletAction = walletContent)
+                    homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = walletContent)
                 }
             }
 
             tokopointContent?.let {
-                homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = getTokopointBalanceContent())
+                homeDataModel.homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = getTokopointBalanceContent())
             }
 
-            newUpdateHeaderViewModel(homeBalanceModel)
+            newUpdateHeaderViewModel(homeDataModel.homeBalanceModel)
         }) {
 
         }
@@ -1581,34 +1330,34 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getTokopointDrawerListData() {
         //set loading to wallet item
-        newUpdateHeaderViewModel(homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
+        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
 
         launchCatchError(coroutineContext, block = {
             val tokopointsDrawerListHome = getHomeTokopointsListDataUseCase.get().executeOnBackground()
-            homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointsDrawerListHome)
-            newUpdateHeaderViewModel(homeBalanceModel = homeBalanceModel)
+            homeDataModel.homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointsDrawerListHome)
+            newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
         }) {
-            homeBalanceModel.mapErrorTokopoints()
-            homeBalanceModel.setTokopointBalanceState(state = STATE_ERROR)
-            newUpdateHeaderViewModel(homeBalanceModel = homeBalanceModel)
+            homeDataModel.homeBalanceModel.mapErrorTokopoints()
+            homeDataModel.homeBalanceModel.setTokopointBalanceState(state = STATE_ERROR)
+            newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
         }
     }
 
     private fun getWalletBalanceData() {
         //set loading to wallet item
-        newUpdateHeaderViewModel(homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
+        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
 
         launchCatchError(coroutineContext, block = {
             val homeHeaderWalletAction = mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
-            homeBalanceModel.mapBalanceData(homeHeaderWalletAction = homeHeaderWalletAction)
-            newUpdateHeaderViewModel(homeBalanceModel = homeBalanceModel)
+            homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = homeHeaderWalletAction)
+            newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
             if (homeHeaderWalletAction?.isShowAnnouncement == true && homeHeaderWalletAction.appLinkActionButton.isNotEmpty()) {
                 _popupIntroOvoLiveData.postValue(Event(homeHeaderWalletAction.appLinkActionButton))
             }
         }){
-            homeBalanceModel.mapErrorWallet()
-            homeBalanceModel.setWalletBalanceState(state = STATE_ERROR)
-            newUpdateHeaderViewModel(homeBalanceModel = homeBalanceModel)
+            homeDataModel.homeBalanceModel.mapErrorWallet()
+            homeDataModel.homeBalanceModel.setWalletBalanceState(state = STATE_ERROR)
+            newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
         }
     }
 
@@ -1679,14 +1428,6 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    private fun addInitialShimmering() {
-        homeProcessor.get().sendWithQueueMethod(AddWidgetCommand(initialShimmerData,0,this@HomeRevampViewModel))
-    }
-
-    private fun removeInitialShimmering() {
-//        homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(initialShimmerData,0,this@HomeRevampViewModel))
-    }
-
     fun injectCouponTimeBased() {
         if(injectCouponTimeBasedJob?.isActive == true) return
         injectCouponTimeBasedJob = launchCatchError(coroutineContext, {
@@ -1703,53 +1444,34 @@ open class HomeRevampViewModel @Inject constructor(
     // ============================================================================================
     // ================================ Live Data Controller ======================================
     // ============================================================================================
-    override suspend fun updateWidget(visitable: Visitable<*>, position: Int) {
-        val newList = homeVisitableListData.toMutableList()
-        logChannelUpdate("Update channel: (Update widget ${visitable.javaClass.simpleName})")
-        if (position != -1 && newList.isNotEmpty() && newList.size > position && newList[position]::class.java == visitable::class.java) {
-            newList[position] = visitable
-        } else {
-            newList.withIndex().find {
-                it.value::class.java == visitable::class.java && getVisitableId(it.value) == getVisitableId(visitable)
-            }?.let {
-                newList[it.index] = visitable
-            }
-        }
-        homeVisitableListData = newList
-        _homeLiveData.postValue(_homeLiveData.value?.copy(list = homeVisitableListData.copy()))
+
+    fun addWidget(visitable: Visitable<*>, position: Int? = null) {
+        homeDataModel.addWidget(visitable, position) { _homeLiveData.postValue(homeDataModel) }
     }
 
-    override suspend fun addWidget(visitable: Visitable<*>, position: Int) {
-        val newList = homeVisitableListData.toMutableList()
-        logChannelUpdate("Update channel: (Add widget ${visitable.javaClass.simpleName})")
-        if(newList.find { getVisitableId(it) == getVisitableId(visitable) && it::class.java == visitable::class.java } != null) return
-
-        //prevent widget becomes the last instead of recom
-        if (homeVisitableListData.find { it is HomeRecommendationFeedDataModel } != null &&
-                visitable is HomeRecommendationFeedDataModel) {
-            return
-        }
-
-        if((position == -1 || position > newList.size)) newList.add(visitable)
-        else newList.add(position, visitable)
-        homeVisitableListData = newList
-        _homeLiveData.postValue(_homeLiveData.value?.copy(list = homeVisitableListData.copy()))
+    fun updateWidget(visitable: Visitable<*>, position: Int, visitableToChange: Visitable<*>? = null) {
+        homeDataModel.updateWidgetModel(visitable, visitableToChange, position) { _homeLiveData.postValue(homeDataModel) }
     }
 
-    override suspend fun deleteWidget(visitable: Visitable<*>, position: Int) {
-        val newList = homeVisitableListData.toMutableList()
-        logChannelUpdate("Update channel: (Remove widget ${visitable.javaClass.simpleName} | ${getVisitableId(visitable)})")
-        newList.find {getVisitableId(it) == getVisitableId(visitable)}?.let {
-            newList.remove(it)
-        }
-        homeVisitableListData = newList
-        _homeLiveData.postValue(_homeLiveData.value?.copy(list = homeVisitableListData.copy()))
+    fun deleteWidget(visitable: Visitable<*>?, position: Int) {
+        homeDataModel.deleteWidget(visitable, position) { _homeLiveData.postValue(homeDataModel) }
     }
 
-    override suspend fun updateHomeData(homeDataModel: HomeDataModel) {
+    fun updateHomeData(homeNewDataModel: HomeDataModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${homeDataModel.list.map { it.javaClass.simpleName }}")
-        homeVisitableListData = homeDataModel.list.toMutableList()
+        this.homeDataModel = homeNewDataModel
         _homeLiveData.postValue(homeDataModel)
+
+        if (!homeNewDataModel.isProcessingDynamicChannle) {
+            homeNewDataModel.evaluateHomeFlagData(
+                    onNewBalanceWidgetSelected = { setNewBalanceWidget(it) },
+                    onNeedToGetBalanceData = { getBalanceWidgetData() }
+            )
+            homeNewDataModel.copyStaticWidgetDataFrom(homeDataModel)
+            homeNewDataModel.evaluateRecommendationSection(
+                    onNeedTabLoad = { getFeedTabData() }
+            )
+        }
     }
 
     private fun getVisitableId(visitable: Visitable<*>): Any?{
@@ -1765,10 +1487,10 @@ open class HomeRevampViewModel @Inject constructor(
      * Play Widget
      */
     fun getPlayWidget() {
-        val dataModel = homeVisitableListData.find { it is CarouselPlayWidgetDataModel } ?: return
+        val dataModel = homeDataModel.list.find { it is CarouselPlayWidgetDataModel } ?: return
         if (dataModel !is CarouselPlayWidgetDataModel) return
 
-        val index = homeVisitableListData.indexOfFirst { it is CarouselPlayWidgetDataModel }
+        val index = homeDataModel.list.indexOfFirst { it is CarouselPlayWidgetDataModel }
 
         launchCatchError(block = {
             val response = playWidgetTools.get().getWidgetFromNetwork(
@@ -1776,12 +1498,10 @@ open class HomeRevampViewModel @Inject constructor(
                     homeDispatcher.get().io
             )
             val uiModel = playWidgetTools.get().mapWidgetToModel(response)
-            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(dataModel.copy(
-                    widgetUiModel = uiModel
-            ), index, this@HomeRevampViewModel))
+            updateWidget(dataModel.copy(widgetUiModel = uiModel), index)
 
         }) {
-            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(dataModel, index, this@HomeRevampViewModel))
+            deleteWidget(dataModel, index)
         }
     }
 
@@ -1828,21 +1548,11 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun updateWidget(onUpdate: (oldVal: CarouselPlayWidgetDataModel) -> CarouselPlayWidgetDataModel) {
-        val dataModel = homeVisitableListData.find { it is CarouselPlayWidgetDataModel } ?: return
+        val dataModel = homeDataModel.list.find { it is CarouselPlayWidgetDataModel } ?: return
         if (dataModel !is CarouselPlayWidgetDataModel) return
 
-        val index = homeVisitableListData.indexOfFirst { it is CarouselPlayWidgetDataModel }
-        homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(onUpdate(dataModel), index, this@HomeRevampViewModel))
-    }
-
-    fun showTicker() {
-        if (homeVisitableListData.filterIsInstance(TickerDataModel::class.java).isEmpty()) {
-            homeTicker?.let {
-                homeProcessor.get().sendWithQueueMethod(AddWidgetCommand(it.second, it.first, this), 3000) {
-                    takeTicker = false
-                }
-            }
-        }
+        val index = homeDataModel.list.indexOfFirst { it is CarouselPlayWidgetDataModel }
+        updateWidget(onUpdate(dataModel), index)
     }
 
     fun setHomeNotif(notifCount: Int, messageCount: Int, cartCount: Int) {
@@ -1901,14 +1611,14 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun removeDynamicChannelLoadingModel() {
-        val currentList = homeVisitableListData
+        val currentList = homeDataModel.list
         currentList.let {
-            val detectLoadingModel = homeVisitableListData.find { visitable -> visitable is DynamicChannelLoadingModel }
-            val detectRetryModel = homeVisitableListData.find { visitable -> visitable is DynamicChannelRetryModel }
+            val detectLoadingModel = homeDataModel.list.find { visitable -> visitable is DynamicChannelLoadingModel }
+            val detectRetryModel = homeDataModel.list.find { visitable -> visitable is DynamicChannelRetryModel }
 
             (detectRetryModel as? DynamicChannelRetryModel)?.let {
                 launch(Dispatchers.Main) {
-                    homeVisitableListData.let {list ->
+                    homeDataModel.list.let {list ->
                         updateWidget(DynamicChannelRetryModel(false), list.indexOf(it))
                     }
                 }
@@ -1916,7 +1626,7 @@ open class HomeRevampViewModel @Inject constructor(
 
             (detectLoadingModel as? DynamicChannelLoadingModel)?.let {
                 launch(Dispatchers.Main) {
-                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(it, currentList.indexOf(it), this@HomeRevampViewModel))
+                    updateWidget(it, currentList.indexOf(it))
                     addWidget(DynamicChannelRetryModel(false), currentList.size)
                 }
             }
@@ -1947,13 +1657,12 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun removeChooseAddressWidget() {
-        val homeHeaderOvoDataModel = homeVisitableListData.withIndex().find {
+        val homeHeaderOvoDataModel = homeDataModel.list.withIndex().find {
             it.value is HomeHeaderOvoDataModel
         }
         (homeHeaderOvoDataModel?.value as? HomeHeaderOvoDataModel)?.needToShowChooseAddress = false
         homeHeaderOvoDataModel?.let {
-            homeProcessor.get().sendWithQueueMethod(
-                    UpdateWidgetCommand(homeHeaderOvoDataModel.value, homeHeaderOvoDataModel.index, this))
+            updateWidget(homeHeaderOvoDataModel.value, homeHeaderOvoDataModel.index)
         }
     }
 

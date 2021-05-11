@@ -11,7 +11,7 @@ data class ReminderWidgetModel(
         var source: ReminderEnum
 ): ImpressHolder(), HomeComponentVisitable {
     override fun visitableId(): String? {
-        return data.id
+        return source.name
     }
 
     override fun equalsWith(b: Any?): Boolean {
