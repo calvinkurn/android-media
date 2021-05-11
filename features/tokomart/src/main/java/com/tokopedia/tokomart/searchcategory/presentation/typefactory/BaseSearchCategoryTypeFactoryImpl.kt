@@ -40,32 +40,6 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
 
     override fun type(productItemDataView: ProductItemDataView) = ProductItemViewHolder.LAYOUT
 
-//    // Home Component Section
-//
-//    override fun type(bannerDataModel: BannerDataModel) = BannerComponentViewHolder.LAYOUT
-//
-//    override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int = 0
-//
-//    override fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int = 0
-//
-//    override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int = 0
-//
-//    override fun type(reminderWidgetModel: ReminderWidgetModel): Int = 0
-//
-//    override fun type(mixLeftDataModel: MixLeftDataModel): Int = 0
-//
-//    override fun type(mixTopDataModel: MixTopDataModel): Int = 0
-//
-//    override fun type(productHighlightDataModel: ProductHighlightDataModel): Int = 0
-//
-//    override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int = 0
-//
-//    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int = 0
-//
-//    override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int = 0
-//
-//    override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int = 0
-
     override fun type(viewModel: LoadingMoreModel) = LoadingMoreViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -76,7 +50,6 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             TitleViewHolder.LAYOUT -> TitleViewHolder(view, titleListener)
             QuickFilterViewHolder.LAYOUT -> QuickFilterViewHolder(view)
             ProductCountViewHolder.LAYOUT -> ProductCountViewHolder(view)
-//            BannerComponentViewHolder.LAYOUT -> BannerComponentViewHolder(view, bannerListener, null)
             LoadingMoreViewHolder.LAYOUT -> LoadingMoreViewHolder(view)
             else -> super.createViewHolder(view, type)
         }

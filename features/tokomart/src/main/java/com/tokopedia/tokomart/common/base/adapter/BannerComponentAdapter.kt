@@ -57,7 +57,7 @@ class BannerChannelImageViewHolder(itemView: View, val listener: BannerItemListe
         private const val FPM_HOMEPAGE_BANNER = "banner_component_channel"
     }
     fun bind(item: BannerDataView) {
-        itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).loadImage(item.imgUrl)
+        itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).loadImage(item.imageUrl)
         itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).setOnClickListener { listener.onClick(adapterPosition) }
 //        itemView.addOnImpressionListener(item) {
 //            listener.onImpressed(adapterPosition)

@@ -37,6 +37,8 @@ class BannerViewHolder(
     override val coroutineContext: CoroutineContext
         get() = masterJob + Dispatchers.Main
 
+    private var bannerDataView: BannerDataView? = null
+
     //set to true if you want to activate auto-scroll
     private var isAutoScroll = true
     private var interval = 5000
@@ -66,37 +68,8 @@ class BannerViewHolder(
     }
 
     override fun bind(element: BannerDataView) {
-        // ====== tokonow
-        initBanner(listOf())
-        // ====== home_component
-//        try {
-//            setHeaderComponent(element)
-//            setViewPortImpression(element)
-//            channelModel = element.channelModel
-//            isCache = element.isCache
-//
-//            channelModel?.let { it ->
-//                this.isCache = element.isCache
-//                try {
-//                    initBanner(it.convertToBannerItemModel())
-//                } catch (e: NumberFormatException) {
-//                    e.printStackTrace()
-//                }
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-    }
-
-    private fun setViewPortImpression(element: BannerDataView) {
-//        if (!element.isCache) {
-//            itemView.addOnImpressionListener(holder = element, onView = {
-//                element.channelModel?.let {
-//                    bannerListener?.onChannelBannerImpressed(it, adapterPosition)
-//                }
-//                setScrollListener()
-//            })
-//        }
+        this.bannerDataView = element
+        initBanner(listOf(element))
     }
 
     override fun bind(element: BannerDataView, payloads: MutableList<Any>) {
@@ -140,9 +113,6 @@ class BannerViewHolder(
     }
 
     private fun initBanner(list: List<BannerDataView>){
-        val list = listOf(BannerDataView(
-                "https://ecs7.tokopedia.net/img/cache/200-square/attachment/2019/7/23/20723472/20723472_5a07ff96-8ee1-4615-955c-f8290b070c0a.png"
-        ))
         rvBanner.clearOnScrollListeners()
 
         val snapHelper: SnapHelper = PagerSnapHelper()
@@ -181,7 +151,10 @@ class BannerViewHolder(
     }
 
     override fun onClick(position: Int) {
-        bannerListener?.onBannerClick()
+        // TODO: Adjust onclick with real data
+        bannerDataView?.let {
+            bannerListener?.onBannerClick(it.applink)
+        }
     }
 
     private fun onPromoScrolled(position: Int) {

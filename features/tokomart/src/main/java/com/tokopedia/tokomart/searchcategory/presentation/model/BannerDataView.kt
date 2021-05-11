@@ -4,7 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 
 class BannerDataView(
-        var imgUrl: String 
+        val position: Int = -1,
+        val text: String = "",
+        val applink: String = "",
+        val imageUrl: String = ""
 ): Visitable<BaseSearchCategoryTypeFactory> {
 
     override fun type(typeFactory: BaseSearchCategoryTypeFactory?) =
