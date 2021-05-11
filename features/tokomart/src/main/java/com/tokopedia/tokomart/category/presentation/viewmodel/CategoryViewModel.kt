@@ -5,7 +5,7 @@ import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
 import com.tokopedia.tokomart.category.utils.CATEGORY_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokomart.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CASE
-import com.tokopedia.tokomart.searchcategory.presentation.BaseSearchCategoryViewModel
+import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject

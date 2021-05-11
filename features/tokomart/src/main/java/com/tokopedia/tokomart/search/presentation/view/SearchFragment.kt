@@ -7,7 +7,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.tokomart.search.di.SearchComponent
 import com.tokopedia.tokomart.search.presentation.typefactory.SearchTypeFactoryImpl
 import com.tokopedia.tokomart.search.presentation.viewmodel.SearchViewModel
-import com.tokopedia.tokomart.searchcategory.presentation.BaseSearchCategoryFragment
+import com.tokopedia.tokomart.searchcategory.presentation.view.BaseSearchCategoryFragment
 import javax.inject.Inject
 
 class SearchFragment: BaseSearchCategoryFragment() {

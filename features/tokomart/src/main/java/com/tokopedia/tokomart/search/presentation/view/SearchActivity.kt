@@ -6,7 +6,7 @@ import com.tokopedia.tokomart.search.di.DaggerSearchComponent
 import com.tokopedia.tokomart.search.di.SearchComponent
 import com.tokopedia.tokomart.search.di.SearchContextModule
 import com.tokopedia.tokomart.search.di.SearchQueryParamModule
-import com.tokopedia.tokomart.searchcategory.presentation.BaseSearchCategoryActivity
+import com.tokopedia.tokomart.searchcategory.presentation.view.BaseSearchCategoryActivity
 
 class SearchActivity: BaseSearchCategoryActivity(), HasComponent<SearchComponent> {
 

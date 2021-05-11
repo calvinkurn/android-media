@@ -1,4 +1,4 @@
-package com.tokopedia.tokomart.searchcategory.presentation
+package com.tokopedia.tokomart.searchcategory.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -1,4 +1,4 @@
-package com.tokopedia.tokomart.searchcategory.presentation
+package com.tokopedia.tokomart.searchcategory.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokomart.common.base.adapter.BaseTokoMartDiffer

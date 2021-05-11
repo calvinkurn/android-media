@@ -1,4 +1,4 @@
-package com.tokopedia.tokomart.searchcategory.presentation
+package com.tokopedia.tokomart.searchcategory.presentation.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable

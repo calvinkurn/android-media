@@ -6,7 +6,7 @@ import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_QUERY_PARAM_MAP
-import com.tokopedia.tokomart.searchcategory.presentation.BaseSearchCategoryViewModel
+import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject

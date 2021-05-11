@@ -1,5 +1,5 @@
 package com.tokopedia.tokomart.search.presentation.typefactory
 
-import com.tokopedia.tokomart.searchcategory.presentation.BaseSearchCategoryTypeFactory
+import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 
 interface SearchTypeFactory: BaseSearchCategoryTypeFactory

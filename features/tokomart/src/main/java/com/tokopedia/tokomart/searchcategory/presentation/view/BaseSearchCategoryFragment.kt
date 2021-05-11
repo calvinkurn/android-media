@@ -1,4 +1,4 @@
-package com.tokopedia.tokomart.searchcategory.presentation
+package com.tokopedia.tokomart.searchcategory.presentation.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,6 +16,9 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
+import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 
 abstract class BaseSearchCategoryFragment: BaseDaggerFragment() {
 
