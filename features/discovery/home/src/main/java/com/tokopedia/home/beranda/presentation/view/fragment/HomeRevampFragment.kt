@@ -1099,8 +1099,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observeRequestImagePlayBanner()
         observeViewModelInitialized()
         observeHomeRequestNetwork()
-        observeSalamWidget()
-        observeRechargeRecommendation()
         observeIsNeedRefresh()
         observeSearchHint()
         observePlayWidgetReminder()
@@ -1303,22 +1301,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 getHomeViewModel().clearPlayBanner()
                             }
                         })
-            })
-        }
-    }
-
-    private fun observeSalamWidget() {
-        context?.let {
-            getHomeViewModel().salamWidgetLiveData.observe(viewLifecycleOwner, Observer {
-                getHomeViewModel().insertSalamWidget(it.peekContent())
-            })
-        }
-    }
-
-    private fun observeRechargeRecommendation() {
-        context?.let {
-            getHomeViewModel().rechargeRecommendationLiveData.observe(viewLifecycleOwner, Observer {
-                getHomeViewModel().insertRechargeRecommendation(it.peekContent())
             })
         }
     }
@@ -2226,7 +2208,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels) {
-        getHomeViewModel().getPopularKeywordData()
+        getHomeViewModel().getPopularKeyword()
         PopularKeywordTracking.sendPopularKeywordClickReload(channel, getUserSession().userId)
     }
 

@@ -65,7 +65,6 @@ class HomeViewModelTickerUnitTest {
         // home viewModel
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
-        homeViewModel.showTicker()
         homeViewModel.onCloseTicker()
 
         // Expect ticker not show on user screen
@@ -123,7 +122,6 @@ class HomeViewModelTickerUnitTest {
         // home viewModel
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
-        homeViewModel.showTicker()
 
         // Expect ticker not show on user screen
         verifyOrder {

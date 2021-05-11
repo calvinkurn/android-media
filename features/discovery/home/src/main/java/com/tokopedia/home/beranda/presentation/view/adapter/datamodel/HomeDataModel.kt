@@ -20,15 +20,10 @@ data class HomeDataModel(
         val isFirstPage: Boolean = false,
         val isProcessingAtf: Boolean = true,
         val isProcessingDynamicChannle: Boolean = false,
-        val homeChooseAddressData: HomeChooseAddressData = HomeChooseAddressData(),
+        var homeChooseAddressData: HomeChooseAddressData = HomeChooseAddressData(),
         var homeBalanceModel: HomeBalanceModel = HomeBalanceModel()
 ) {
     private var _list: MutableList<Visitable<*>> = list.toMutableList()
-    private var _homeChooseAddressData: HomeChooseAddressData = homeChooseAddressData
-    set(value) {
-        evaluateChooseAddressData()
-        field = value
-    }
 
     init {
         evaluateChooseAddressData()
@@ -159,7 +154,7 @@ data class HomeDataModel(
         val homeHeaderOvoDataModel = _list.find { visitable -> visitable is HomeHeaderOvoDataModel }
         val headerIndex = _list.indexOfFirst { visitable -> visitable is HomeHeaderOvoDataModel }
         (homeHeaderOvoDataModel as? HomeHeaderOvoDataModel)?.let {
-            it.needToShowChooseAddress = _homeChooseAddressData.isActive
+            it.needToShowChooseAddress = homeChooseAddressData.isActive
             _list[headerIndex] = homeHeaderOvoDataModel
         }
     }
@@ -226,5 +221,10 @@ data class HomeDataModel(
             is RecommendationVisitable -> this.visitableId()
             else -> null
         }
+    }
+
+    fun setAndEvaluateHomeChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
+        this.homeChooseAddressData = homeChooseAddressData
+        evaluateChooseAddressData()
     }
 }
