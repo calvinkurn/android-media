@@ -21,7 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_16"
         android:background="@drawable/checkout_module_bg_rounded_grey"
-        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -189,7 +188,7 @@
                     android:id="@+id/label_description_courier_tnc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_3"
+                    android:layout_marginStart="@dimen/dp_3"
                     android:text="@string/label_otdg_tnc"
                     android:textColor="@color/Unify_G500"
                     app:layout_constraintBaseline_toBaselineOf="@+id/label_description_courier"
@@ -300,9 +299,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/label_free_shipping_courier_name"
                         android:layout_marginStart="@dimen/dp_8"
-                        android:layout_marginLeft="@dimen/dp_8"
                         android:layout_toEndOf="@+id/label_free_shipping_original_price"
-                        android:layout_toRightOf="@+id/label_free_shipping_original_price"
                         android:textColor="@color/Unify_N700_68"
                         app:typographyType="body_3"
                         app:typographyWeight="reguler"
@@ -335,7 +332,7 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_selected_single_shipping"
@@ -353,6 +350,7 @@
                     android:id="@+id/label_single_shipping_eta"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
                     android:textColor="@color/Unify_N700_96"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -365,6 +363,7 @@
                     android:id="@+id/label_single_shipping_message"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
                     android:textColor="@color/Unify_N700_96"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -372,6 +371,112 @@
                     app:typographyType="small"
                     app:typographyWeight="reguler"
                     tools:text="Transaksimu belum mencapai batas minimum gratis ongkir." />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_state_has_error_shipping"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/spacing_lvl4"
+                android:paddingTop="@dimen/unify_space_12"
+                android:paddingEnd="@dimen/spacing_lvl4"
+                android:paddingBottom="@dimen/unify_space_12"
+                app:layout_constraintCircleRadius="@dimen/dp_4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="gone">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_error_shipping_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
+                    tools:text="Pengiriman tidak tersedia." />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_error_shipping_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/label_error_shipping_title"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler"
+                    tools:text="Atur kembali barang belanjaanmu di Keranjang ya." />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_state_failed_shipping"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/spacing_lvl4"
+                android:paddingTop="@dimen/unify_space_12"
+                android:paddingEnd="@dimen/spacing_lvl4"
+                android:paddingBottom="@dimen/unify_space_12"
+                app:layout_constraintCircleRadius="@dimen/dp_4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_failed_shipping_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintEnd_toStartOf="@+id/icon_reload_shipping"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
+                    tools:text="Pengiriman" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_failed_shipping_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
+                    android:textColor="@color/Unify_R600"
+                    app:layout_constraintEnd_toStartOf="@+id/icon_reload_shipping"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/label_failed_shipping_title"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler"
+                    tools:text="Gagal menampilkan pengiriman" />
+
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/icon_reload_shipping"
+                    android:layout_width="@dimen/layout_lvl3"
+                    android:layout_height="@dimen/layout_lvl2"
+                    android:paddingStart="@dimen/spacing_lvl2"
+                    android:paddingEnd="@dimen/spacing_lvl2"
+                    app:icon_color_light_enable="@color/Unify_G500"
+                    app:icon_color_night_enable="@color/Unify_G500"
+                    app:icon_name="RELOAD"
+                    app:layout_constraintBottom_toBottomOf="@+id/btn_reload_shipping"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_reload_shipping"
+                    app:layout_constraintTop_toTopOf="@+id/btn_reload_shipping" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/btn_reload_shipping"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_lvl4"
+                    android:text="@string/checkout_label_reload_shipping"
+                    android:textColor="@color/Unify_G500"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

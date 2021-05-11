@@ -189,6 +189,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private FrameLayout containerShippingExperience;
     private ConstraintLayout layoutStateNoSelectedShipping;
     private ConstraintLayout layoutStateHasSelectedNormalShipping;
+    private ConstraintLayout layoutStateFailedShipping;
+    private ConstraintLayout layoutStateHasErrorShipping;
+    private Typography labelErrorShippingTitle;
+    private Typography labelErrorShippingDescription;
+    private ConstraintLayout layoutStateHasSelectedSingleShipping;
     private Typography labelSelectedShippingDuration;
     private ImageView iconChevronChooseDuration;
     private Typography labelSelectedShippingCourier;
@@ -309,6 +314,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         containerShippingExperience = itemView.findViewById(R.id.container_shipping_experience);
         layoutStateNoSelectedShipping = itemView.findViewById(R.id.layout_state_no_selected_shipping);
         layoutStateHasSelectedNormalShipping = itemView.findViewById(R.id.layout_state_has_selected_normal_shipping);
+        layoutStateFailedShipping = itemView.findViewById(R.id.layout_state_failed_shipping);
+        layoutStateHasErrorShipping = itemView.findViewById(R.id.layout_state_has_error_shipping);
+        labelErrorShippingTitle = itemView.findViewById(R.id.label_error_shipping_title);
+        labelErrorShippingDescription = itemView.findViewById(R.id.label_error_shipping_description);
+        layoutStateHasSelectedSingleShipping = itemView.findViewById(R.id.layout_state_has_selected_single_shipping);
         labelSelectedShippingDuration = itemView.findViewById(R.id.label_selected_shipping_duration);
         iconChevronChooseDuration = itemView.findViewById(R.id.icon_chevron_choose_duration);
         labelSelectedShippingCourier = itemView.findViewById(R.id.label_selected_shipping_courier);
@@ -655,6 +665,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                                 RatesDataConverter ratesDataConverter) {
         layoutTradeInShippingInfo.setVisibility(View.GONE);
 
+        if (shipmentCartItemModel.isError()) {
+            renderErrorCourierState();
+            return;
+        }
+
         CourierItemData selectedCourierItemData = null;
         boolean isTradeInDropOff = mActionListener.isTradeInByDropOff();
 
@@ -675,6 +690,23 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
     }
 
+    private void renderErrorCourierState() {
+        llShippingOptionsContainer.setVisibility(View.VISIBLE);
+        layoutStateNoSelectedShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedSingleShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
+        layoutStateFailedShipping.setVisibility(View.GONE);
+
+        labelErrorShippingTitle.setText("Pengiriman tidak tersedia");
+        labelErrorShippingDescription.setText("Error yang aneh dan panjang sekali, Error yang aneh dan panjang sekali, Error yang aneh dan panjang sekali");
+        layoutStateHasErrorShipping.setVisibility(View.VISIBLE);
+
+        llShippingExperienceStateLoading.setVisibility(View.GONE);
+        containerShippingExperience.setVisibility(View.VISIBLE);
+        containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey);
+    }
+
     private void renderSelectedCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
         llShippingOptionsContainer.setVisibility(View.VISIBLE);
         layoutStateNoSelectedShipping.setVisibility(View.GONE);
@@ -693,6 +725,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderNormalShippingCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
         layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
+        layoutStateFailedShipping.setVisibility(View.GONE);
+        layoutStateHasErrorShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedSingleShipping.setVisibility(View.GONE);
         layoutStateHasSelectedNormalShipping.setVisibility(View.VISIBLE);
 
         TextViewExtKt.setTextAndContentDescription(labelSelectedShippingDuration, selectedCourierItemData.getEstimatedTimeDelivery(), R.string.content_desc_label_selected_shipping_duration);
@@ -766,6 +801,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderFreeShippingCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
         layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
+        layoutStateFailedShipping.setVisibility(View.GONE);
+        layoutStateHasErrorShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedSingleShipping.setVisibility(View.GONE);
         layoutStateHasSelectedFreeShipping.setVisibility(View.VISIBLE);
         layoutStateHasSelectedFreeShipping.setOnClickListener(
                 getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
@@ -1351,7 +1389,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
             boolean isCourierSelected = shipmentDetailData != null && courierItemData != null;
 
-            if (isCourierSelected) {
+            if (isCourierSelected && !shipmentCartItemModel.isError()) {
                 if (isCourierInstantOrSameday(courierItemData.getShipperId())) {
                     if (!shipmentCartItemModel.isOrderPrioritasDisable() && (courierItemData.getNow() && !shipmentCartItemModel.isProductIsPreorder())) {
                         tvPrioritasInfo.setText(courierItemData.getPriorityCheckboxMessage());
@@ -1373,7 +1411,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             } else {
                 tvPrioritasTicker.setText(spanText);
             }
-
+        } else {
+            hideAllTicker();
         }
         imgPriorityTnc.setOnClickListener(v -> mActionListener.onPriorityTncClicker());
     }
