@@ -67,26 +67,6 @@ fun getCalculatedFormattedDate(format: String, n: Int): CharSequence {
     return DateFormat.format(format, dateParam.time)
 }
 
-// return month name in 3 characters
-fun convertMonth(mm: Int): String {
-    var monthString = ""
-    when (mm) {
-        0 -> monthString = "Jan"
-        1 -> monthString = "Feb"
-        2 -> monthString = "Mar"
-        3 -> monthString = "Apr"
-        4 -> monthString = "Mei"
-        5 -> monthString = "Jun"
-        6 -> monthString = "Jul"
-        7 -> monthString = "Ags"
-        8 -> monthString = "Sep"
-        9 -> monthString = "Okt"
-        10 -> monthString = "Nov"
-        11 -> monthString = "Des"
-    }
-    return monthString
-}
-
 // convert from initDateFormat to endDateFormat
 @SuppressLint("SimpleDateFormat")
 fun convertFormatDate(date: String, initDateFormat: String, endDateFormat: String): String {
