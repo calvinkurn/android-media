@@ -6,7 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.unifycomponents.UnifyButton
 
 class ProductItemViewHolder(itemView: View): AbstractViewHolder<ProductItemDataView>(itemView) {
 
@@ -26,7 +29,30 @@ class ProductItemViewHolder(itemView: View): AbstractViewHolder<ProductItemDataV
                         productImageUrl = element.imageUrl300,
                         productName = element.name,
                         formattedPrice = element.price,
+                        slashedPrice = element.originalPrice,
+                        labelGroupList = element.labelGroupDataViewList.mapToLabelGroup(),
+                        labelGroupVariantList = element.labelGroupVariantDataViewList.mapToLabelGroupVariant(),
+                        hasAddToCartButton = true,
+                        addToCartButtonType = UnifyButton.Type.MAIN,
                 )
+        )
+    }
+
+    private fun List<LabelGroupDataView>.mapToLabelGroup() = map {
+        ProductCardModel.LabelGroup(
+                position = it.position,
+                title = it.title,
+                type = it.type,
+                imageUrl = it.url,
+        )
+    }
+
+    private fun List<LabelGroupVariantDataView>.mapToLabelGroupVariant() = map {
+        ProductCardModel.LabelGroupVariant(
+                type = it.type,
+                typeVariant = it.typeVariant,
+                title = it.title,
+                hexColor = it.hexColor,
         )
     }
 }

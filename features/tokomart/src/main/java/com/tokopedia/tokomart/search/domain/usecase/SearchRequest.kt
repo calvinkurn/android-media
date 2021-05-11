@@ -19,11 +19,25 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
         }
         data {
           products {
-            imageUrl300
             id
+            imageUrl300
             name
             price
             priceInt
+            discountPercentage
+            originalPrice
+            labelGroups {
+              url
+              title
+              type
+              position
+            }
+            labelGroupVariant {
+              title
+              type
+              type_variant
+              hex_color
+            }
           }
         }
       }

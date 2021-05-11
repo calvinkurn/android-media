@@ -10,6 +10,8 @@ import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
@@ -75,6 +77,24 @@ abstract class BaseSearchCategoryViewModel(
                         name = product.name,
                         price = product.price,
                         priceInt = product.priceInt,
+                        discountPercentage = product.discountPercentage,
+                        originalPrice = product.originalPrice,
+                        labelGroupDataViewList = product.labelGroupList.map { labelGroup ->
+                            LabelGroupDataView(
+                                    url = labelGroup.url,
+                                    title = labelGroup.title,
+                                    position = labelGroup.position,
+                                    type = labelGroup.type,
+                            )
+                        },
+                        labelGroupVariantDataViewList = product.labelGroupVariantList.map { labelGroupVariant ->
+                            LabelGroupVariantDataView(
+                                    title = labelGroupVariant.title,
+                                    type = labelGroupVariant.type,
+                                    typeVariant = labelGroupVariant.typeVariant,
+                                    hexColor = labelGroupVariant.hexColor,
+                            )
+                        }
                 )
             }
 

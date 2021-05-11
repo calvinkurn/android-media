@@ -56,12 +56,6 @@
             "isActive": true,
             "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
           },
-          "labels": [
-            {
-              "title": "Tukar Tambah",
-              "color": "#42b549"
-            }
-          ],
           "labelGroups": [
             {
               "position": "offers",
@@ -84,8 +78,8 @@
           ],
           "rating": 5,
           "countReview": 259,
-          "originalPrice": "",
-          "discountPercentage": 0,
+          "originalPrice": "Rp7.000",
+          "discountPercentage": 30,
           "shop": {
             "id": 3102419,
             "name": "Maxi phone cell",
@@ -118,12 +112,6 @@
             "isActive": false,
             "imgUrl": ""
           },
-          "labels": [
-            {
-              "title": "Tukar Tambah",
-              "color": "#42b549"
-            }
-          ],
           "labelGroups": [
             {
               "position": "offers",
@@ -174,12 +162,6 @@
             "isActive": false,
             "imgUrl": ""
           },
-          "labels": [
-            {
-              "title": "Tukar Tambah",
-              "color": "#42b549"
-            }
-          ],
           "labelGroups": [
             {
               "position": "offers",
@@ -230,12 +212,6 @@
             "isActive": false,
             "imgUrl": ""
           },
-          "labels": [
-            {
-              "title": "Tukar Tambah",
-              "color": "#42b549"
-            }
-          ],
           "labelGroups": [
             {
               "position": "offers",
@@ -286,12 +262,6 @@
             "isActive": false,
             "imgUrl": ""
           },
-          "labels": [
-            {
-              "title": "Tukar Tambah",
-              "color": "#42b549"
-            }
-          ],
           "labelGroups": [
             {
               "position": "offers",
@@ -304,6 +274,32 @@
               "title": "Official Store",
               "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
               "show": true
+            }
+          ],
+          "labelGroupVariant": [
+            {
+              "title": "S",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "M",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "L",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "XL",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": "#FFFFFF"
             }
           ],
           "rating": 5,
@@ -342,12 +338,6 @@
             "isActive": false,
             "imgUrl": ""
           },
-          "labels": [
-            {
-              "title": "Tukar Tambah",
-              "color": "#42b549"
-            }
-          ],
           "labelGroups": [
             {
               "position": "offers",
@@ -398,12 +388,6 @@
             "isActive": false,
             "imgUrl": ""
           },
-          "labels": [
-            {
-              "title": "Tukar Tambah",
-              "color": "#42b549"
-            }
-          ],
           "labelGroups": [
             {
               "position": "offers",
@@ -454,12 +438,6 @@
             "isActive": false,
             "imgUrl": ""
           },
-          "labels": [
-            {
-              "title": "Tukar Tambah",
-              "color": "#42b549"
-            }
-          ],
           "labelGroups": [
             {
               "position": "offers",
