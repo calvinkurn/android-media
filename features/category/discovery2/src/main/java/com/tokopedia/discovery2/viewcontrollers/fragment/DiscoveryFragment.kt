@@ -202,6 +202,7 @@ class DiscoveryFragment :
         showOldToolbar = !RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
         val oldToolbar: Toolbar = view.findViewById(R.id.oldToolbar)
         navToolbar = view.findViewById(R.id.navToolbar)
+        viewLifecycleOwner.lifecycle.addObserver(navToolbar)
         if (showOldToolbar) {
             oldToolbar.visibility = View.VISIBLE
             navToolbar.visibility = View.GONE
@@ -455,7 +456,7 @@ class DiscoveryFragment :
                                 .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
                                 .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
                 )
-                navToolbar.setBadgeCounter(IconList.ID_CART, getCartCounter())
+                navToolbar.updateNotification()
             }
         } else {
             if (showOldToolbar) {
@@ -518,13 +519,7 @@ class DiscoveryFragment :
                         .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
                         .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
         )
-        navToolbar.setBadgeCounter(IconList.ID_CART, getCartCounter())
-    }
-
-    private fun getCartCounter(): Int {
-        return (context?.let {
-            LocalCacheHandler(context, Utils.CART_CACHE_NAME).getInt(Utils.CART_TOTAL_CACHE_KEY, 0)
-        }).orZero()
+        navToolbar.updateNotification()
     }
 
     private fun setupSearchBar(data: PageInfo?) {
