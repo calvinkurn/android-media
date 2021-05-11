@@ -91,6 +91,10 @@ object DeeplinkMapper {
     @JvmStatic
     fun getRegisteredNavigation(context: Context, deeplink: String): String {
         val uri = Uri.parse(deeplink)
+        val teleporterResult = Teleporter.switchIfNeeded(context, uri)
+        if (teleporterResult.isNotEmpty()) {
+            return createAppendDeeplinkWithQuery(teleporterResult, uri.query)
+        }
         val mappedDeepLink: String = when (uri.scheme) {
             DeeplinkConstant.SCHEME_HTTP,
             DeeplinkConstant.SCHEME_HTTPS -> {
@@ -111,7 +115,7 @@ object DeeplinkMapper {
             }
             else -> deeplink
         }
-        return Teleporter.switchToWebviewIfNeeded(context, mappedDeepLink, deeplink)
+        return mappedDeepLink
     }
 
     private fun getRegisteredNavigationProductTalk(productId: String?): String {

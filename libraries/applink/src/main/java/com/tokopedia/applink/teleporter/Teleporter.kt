@@ -14,42 +14,40 @@ import org.json.JSONObject
 object Teleporter {
     var configJSON: JSONObject? = null
     var lastFetch: Long = 0L
-    const val DURATION_FETCH = 1800000
-    const val MAINAPP_SWITCH_TO_WEBVIEW = "android_mainapp_switch_to_webview"
-    const val SELLERAPP_SWITCH_TO_WEBVIEW = "android_sellerapp_switch_to_webview"
+    const val DURATION_FETCH = 900000
+    const val MAINAPP_SWITCH_TO_WEBVIEW = "android_mainapp_teleporter"
+    const val SELLERAPP_SWITCH_TO_WEBVIEW = "android_sellerapp_teleporter"
 
-    fun switchToWebviewIfNeeded(context: Context, mappedLink: String, originalLink: String): String {
+    fun switchIfNeeded(context: Context, uri: Uri): String {
         try {
             val now = System.currentTimeMillis()
             if (now - lastFetch > DURATION_FETCH) {
                 getLatestConfig(context)
                 lastFetch = now
             }
-            val jsonObj = configJSON ?: return mappedLink
+            val jsonObj = configJSON ?: return ""
 
-            val link = if (mappedLink.isNotEmpty()) mappedLink else originalLink
-            val uri = Uri.parse(link)
-            val trimmedDeeplink = UriUtil.trimDeeplink(uri, link)
+            val trimmedDeeplink = UriUtil.trimDeeplink(uri, uri.toString())
 
-            val switchData = jsonObj.optJSONObject(trimmedDeeplink) ?: return mappedLink
+            val switchData = jsonObj.optJSONObject(trimmedDeeplink) ?: return ""
 
-            val environment = switchData.optString("environment")
+            val environment = switchData.optString("env")
             val versions = switchData.optString("versions")
-            val weblink = switchData.optString("weblink")
+            val weblink = switchData.optString("link")
 
-            if (GlobalConfig.isAllowDebuggingTools() && environment != "dev") return mappedLink
-            if (!GlobalConfig.isAllowDebuggingTools() && environment != "prod") return mappedLink
+            if (GlobalConfig.isAllowDebuggingTools() && environment != "dev") return ""
+            if (!GlobalConfig.isAllowDebuggingTools() && environment != "prod") return ""
 
             val versionList = versions.split(",")
-            if (GlobalConfig.VERSION_NAME !in versionList) return mappedLink
+            if (GlobalConfig.VERSION_NAME !in versionList) return ""
 
             val webviewApplink = UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, weblink)
 
-            ServerLogger.log(Priority.P1, "WEBVIEW_SWITCH", mapOf("type" to link, "url" to weblink))
+            ServerLogger.log(Priority.P1, "WEBVIEW_SWITCH", mapOf("type" to uri.toString(), "url" to weblink))
 
             return DeeplinkMapper.createAppendDeeplinkWithQuery(webviewApplink, uri.query)
         } catch (e: Exception) {
-            return mappedLink
+            return ""
         }
     }
 
