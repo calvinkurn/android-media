@@ -20,7 +20,7 @@ object ApplinkConstInternalCategory {
     const val PARAM_TRADEIN_TYPE ="TRADEIN_TYPE"
     const val INTERNAL_CATEGORY = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_CATEGORY}"
 
-    const val AGE_RESTRICTION = "$INTERNAL_CATEGORY/age_restriction"
+    val AGE_RESTRICTION = "$INTERNAL_CATEGORY/age_restriction"
     const val TRADEIN = "$INTERNAL_CATEGORY/tradein"
     const val FINAL_PRICE = "$INTERNAL_CATEGORY/host_final_price"
     const val DEVICE_VALIDATION = "device_validation"

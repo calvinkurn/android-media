@@ -34,7 +34,7 @@ public class AdultManager {
     }
 
     private static Intent buildIntent(Context context, int origin, String destinationGtm) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.AGE_RESTRICTION);
+        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.INSTANCE.getAGE_RESTRICTION());
         intent.putExtra(EXTRA_ORIGIN, origin);
         intent.putExtra(EXTRA_DESTINATION_GTM, destinationGtm);
         return intent;
