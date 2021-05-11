@@ -47,6 +47,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelShop
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.util.HomeNetworkUtil
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -642,49 +643,45 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getRechargeRecommendation() {
         if(getRechargeRecommendationJob?.isActive == true) return
-        if(!widgetIsAvailable<ReminderWidgetModel>()) return
-        getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
-            getRechargeRecommendationUseCase.get().setParams()
-            val data = getRechargeRecommendationUseCase.get().executeOnBackground()
-
-            findWidget<ReminderWidgetModel>(
-                    actionOnFound = { reminderWidgetModel, i ->
+        findWidget<ReminderWidgetModel>(
+                actionOnFound = { reminderWidgetModel, i ->
+                    getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
+                        getRechargeRecommendationUseCase.get().setParams()
+                        val data = getRechargeRecommendationUseCase.get().executeOnBackground()
                         val newFindRechargeRecommendationViewModel = reminderWidgetModel.copy(
                                 data = mapperRechargetoReminder(data),
                                 source = ReminderEnum.RECHARGE
                         )
                         updateWidget(newFindRechargeRecommendationViewModel, i)
-                    },
-                    predicate = {
-                        it?.source == ReminderEnum.RECHARGE
+                    }) {
+                        removeRechargeRecommendation()
                     }
-            )
-        }) {
-            removeRechargeRecommendation()
-        }
+                },
+                predicate = {
+                    it?.source == ReminderEnum.RECHARGE
+                }
+        )
     }
 
     fun getSalamWidget(){
         if(getSalamWidgetJob?.isActive == true) return
-        if(!widgetIsAvailable<ReminderWidgetModel>()) return
-
-        getSalamWidgetJob = launchCatchError(coroutineContext,  block = {
-            val data = getSalamWidgetUseCase.get().executeOnBackground()
-            findWidget<ReminderWidgetModel>(
-                    actionOnFound = { reminderWidgetModel, i ->
+        findWidget<ReminderWidgetModel>(
+                actionOnFound = { reminderWidgetModel, i ->
+                    getSalamWidgetJob = launchCatchError(coroutineContext,  block = {
+                        val data = getSalamWidgetUseCase.get().executeOnBackground()
                         val newFindRechargeRecommendationViewModel = reminderWidgetModel.copy(
                                 data = mapperSalamtoReminder(data),
                                 source = ReminderEnum.SALAM
                         )
                         updateWidget(newFindRechargeRecommendationViewModel, i)
-                    },
-                    predicate = {
-                        it?.source == ReminderEnum.SALAM
+                    }){
+                        removeSalamWidget()
                     }
-            )
-        }){
-            removeSalamWidget()
-        }
+                },
+                predicate = {
+                    it?.source == ReminderEnum.SALAM
+                }
+        )
     }
 
     fun declineRechargeRecommendationItem(requestParams: Map<String, String>) {
