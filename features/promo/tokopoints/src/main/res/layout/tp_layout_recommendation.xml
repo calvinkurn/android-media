@@ -37,7 +37,7 @@
         android:layout_marginTop="@dimen/dp_4"
         android:textColor="@color/Unify_G400"
         app:typographyType="heading_6"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_title_recomm"

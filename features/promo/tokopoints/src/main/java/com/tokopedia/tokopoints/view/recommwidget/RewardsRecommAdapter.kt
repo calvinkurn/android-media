@@ -6,12 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.tokopointhome.RecommendationWrapper
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
+import com.tokopedia.tokopoints.view.tokopointhome.RewardsRecomListener
 
-class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>) :
+class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper> , val listener : RewardsRecomListener) :
     RecyclerView.Adapter<RewardsRecommAdapter.ProductCardViewHolder>() {
 
     inner class ProductCardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -22,16 +21,15 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>) :
             productView.setProductModel(model.recomData)
             val impressItem = model.recomendationItem
             productView.setImageProductViewHintListener(
-                model.recomendationItem,
-                object : ViewHintListener {
+                model.recomendationItem,object : ViewHintListener {
                     override fun onViewHint() {
-                        recomViewAnalytics(impressItem, position)
+                        listener.onProductImpression(impressItem,position)
                     }
                 }
             )
 
             productView.setOnClickListener {
-                recomClickAnalytics(impressItem, position)
+                listener.onProductClick(impressItem,"",position)
             }
         }
 
@@ -49,33 +47,5 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>) :
 
     override fun onBindViewHolder(holder: ProductCardViewHolder, position: Int) {
         holder.bind(list[position])
-    }
-
-    private fun recomViewAnalytics(impressItem: RecommendationItem, position: Int) {
-        AnalyticsTrackerUtil.impressionProductRecomItem(
-            impressItem.productId.toString(),
-            impressItem.recommendationType,
-            position,
-            "none / other",
-            impressItem.categoryBreadcrumbs,
-            impressItem.name,
-            "none / other",
-            impressItem.price,
-            impressItem.isTopAds
-        )
-    }
-
-    private fun recomClickAnalytics(impressItem: RecommendationItem, position: Int) {
-        AnalyticsTrackerUtil.clickProductRecomItem(
-            impressItem.productId.toString(),
-            impressItem.recommendationType,
-            position,
-            "none / other",
-            impressItem.categoryBreadcrumbs,
-            impressItem.name,
-            "none / other",
-            impressItem.price,
-            impressItem.isTopAds
-        )
     }
 }

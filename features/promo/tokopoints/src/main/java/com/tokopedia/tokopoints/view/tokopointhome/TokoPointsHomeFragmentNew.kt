@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.tokopointhome
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -25,8 +26,9 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
@@ -88,6 +90,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private val viewBinders = mutableMapOf<String, SectionItemBinder>()
     private val sectionList: ArrayList<Any> = ArrayList()
     lateinit var sectionListViewBinder: SectionHorizontalViewBinder
+    var listener: RewardsRecomListener? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
@@ -233,6 +237,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
     }
     private fun initViews(view: View) {
+        listener = getRecommendationListener()
         coordinatorLayout = view.findViewById(R.id.container)
         mContainerMain = view.findViewById(R.id.container_main)
         mPagerPromos = view.findViewById(R.id.view_pager_promos)
@@ -417,7 +422,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
             }
 
-            val sectionRecomViewBinder = recommList?.let { SectionRecomViewBinder(it) }
+            val sectionRecomViewBinder = recommList?.let { SectionRecomViewBinder(it,listener!!) }
             @Suppress("UNCHECKED_CAST")
             viewBinders.put(
                     CommonConstant.SectionLayoutType.RECOMM,
@@ -445,6 +450,77 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
     }
 
+
+    private fun getRecommendationListener(): RewardsRecomListener {
+
+        return object : RewardsRecomListener {
+
+            override fun onProductImpression(impressItem: RecommendationItem, position: Int) {
+                val productIdString: String = if (impressItem.productId != null) {
+                    impressItem.productId.toString()
+                } else {
+                    ""
+                }
+                AnalyticsTrackerUtil.impressionProductRecomItem(
+                    productIdString,
+                    impressItem.recommendationType,
+                    position,
+                    "none / other",
+                    impressItem.categoryBreadcrumbs,
+                    impressItem.name,
+                    "none / other",
+                    impressItem.price,
+                    impressItem.isTopAds
+                )
+            }
+
+            override fun onProductClick(
+                impressItem: RecommendationItem,
+                layoutType: String?,
+                vararg position: Int
+            ) {
+
+                val productIdString: String = if (impressItem.productId != null) {
+                    impressItem.productId.toString()
+                } else {
+                    ""
+                }
+                AnalyticsTrackerUtil.clickProductRecomItem(
+                    impressItem.productId.toString(),
+                    impressItem.recommendationType,
+                    position[0],
+                    "none / other",
+                    impressItem.categoryBreadcrumbs,
+                    impressItem.name,
+                    "none / other",
+                    impressItem.price,
+                    impressItem.isTopAds
+                )
+
+                val intent = RouteManager.getIntent(
+                    context,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    impressItem.productId.toString()
+                )
+                if (position.isNotEmpty()) intent.putExtra(
+                    PDP_EXTRA_UPDATED_POSITION,
+                    position[0]
+                )
+                this@TokoPointsHomeFragmentNew.startActivityForResult(intent, REQUEST_FROM_PDP)
+            }
+
+            override fun onProductImpression(item: RecommendationItem) {
+
+            }
+
+            override fun onWishlistClick(
+                item: RecommendationItem,
+                isAddWishlist: Boolean,
+                callback: (Boolean, Throwable?) -> Unit
+            ) {
+            }
+        }
+    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -502,6 +578,9 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         private const val CONTAINER_MAIN = 1
         private const val CONTAINER_ERROR = 2
         private const val SHOW_ERROR_TOOLBAR = 1
+        const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
+        const val PDP_WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+        const val REQUEST_FROM_PDP = 138
 
         fun newInstance(): TokoPointsHomeFragmentNew {
             return TokoPointsHomeFragmentNew()
