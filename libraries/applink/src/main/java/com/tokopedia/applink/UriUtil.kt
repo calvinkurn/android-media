@@ -23,7 +23,7 @@ object UriUtil {
                  vararg parameter: String?): String {
         var result = uriPattern
         if (parameter.isNotEmpty()) {
-            val p = Pattern.compile("\\{(.*?)}")
+            val p = Pattern.compile("""\{(.*?)\}""")
             val m = p.matcher(uriPattern)
             var i = 0
             while (m.find()) {
