@@ -177,6 +177,7 @@ data class HomeDataModel(
         copyWidget(homeDataModel) { it is NewBusinessUnitWidgetDataModel }
         copyWidget(homeDataModel) { it is HomeLoadingMoreModel }
         copyWidget(homeDataModel) { it is HomeHeaderOvoDataModel }
+        setAndEvaluateHomeChooseAddressData(homeDataModel.homeChooseAddressData)
     }
 
     fun evaluateRecommendationSection(onNeedTabLoad: () -> Unit) {

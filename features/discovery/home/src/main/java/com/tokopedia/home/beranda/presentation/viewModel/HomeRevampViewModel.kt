@@ -980,8 +980,6 @@ open class HomeRevampViewModel @Inject constructor(
     private fun updateHomeData(homeNewDataModel: HomeDataModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${homeDataModel.list.map { it.javaClass.simpleName }}")
         this.homeDataModel = homeNewDataModel
-        _homeLiveData.postValue(homeDataModel)
-
         if (!homeNewDataModel.isProcessingDynamicChannle) {
             homeNewDataModel.evaluateHomeFlagData(
                     onNewBalanceWidgetSelected = { setNewBalanceWidget(it) },
@@ -992,6 +990,7 @@ open class HomeRevampViewModel @Inject constructor(
                     onNeedTabLoad = { getFeedTabData() }
             )
         }
+        _homeLiveData.postValue(homeDataModel)
     }
 
     private fun logChannelUpdate(message: String){
