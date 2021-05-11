@@ -467,5 +467,118 @@
         }
       ]
     }
+  },
+
+  "quick_filter": {
+    "filter": [
+      {
+        "title": "COD",
+        "options": [
+          {
+            "name": "COD",
+            "key": "cod",
+            "icon": "",
+            "value": "true",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Gratis Ongkir",
+        "options": [
+          {
+            "name": "Gratis Ongkir",
+            "key": "free_shipping",
+            "icon": "",
+            "value": "true",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Official Store",
+        "options": [
+          {
+            "name": "Official Store",
+            "key": "official",
+            "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+            "value": "true",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Tukar Tambah",
+        "options": [
+          {
+            "name": "Tukar Tambah",
+            "key": "trade_in",
+            "icon": "",
+            "value": "true",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Kurir Instan",
+        "options": [
+          {
+            "name": "Kurir Instan",
+            "key": "shipping",
+            "icon": "",
+            "value": "10,13",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Power Merchant",
+        "options": [
+          {
+            "name": "Power Merchant",
+            "key": "goldmerchant",
+            "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+            "value": "true",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      }
+    ]
   }
 }

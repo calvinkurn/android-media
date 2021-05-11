@@ -46,7 +46,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         visitableList[0].assertChooseAddressDataView()
         visitableList[1].assertBannerDataView()
         visitableList[2].assertTitleDataView(title = "", hasSeeAllCategoryButton = false)
-        visitableList[3].assertQuickFilterDataView()
+        visitableList[3].assertQuickFilterDataView(searchModel.quickFilter)
         visitableList[4].assertProductCountDataView(searchModel.searchProduct.header.totalDataText)
     }
 

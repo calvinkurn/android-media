@@ -6,8 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.common.data.Option
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
+import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
+import com.tokopedia.tokomart.searchcategory.domain.model.QuickFilterModel
 import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupDataView
@@ -15,6 +20,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupVarian
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 
@@ -65,7 +71,18 @@ abstract class BaseSearchCategoryViewModel(
             ChooseAddressDataView(),
             BannerDataView(),
             TitleDataView(headerDataView.title, headerDataView.hasSeeAllCategoryButton),
-            QuickFilterDataView(),
+            QuickFilterDataView(
+                    quickFilterItemList = headerDataView.quickFilterDataValue.filter.map {
+                        SortFilterItemDataView(
+                                option = it.options.getOrNull(0) ?: Option(),
+                                sortFilterItem = SortFilterItem(it.title) {
+
+                                }.also { sortFilterItem ->
+                                    sortFilterItem.typeUpdated = false
+                                }
+                        )
+                    }
+            ),
             ProductCountDataView(headerDataView.aceSearchProductHeader.totalDataText),
     )
 
@@ -148,7 +165,8 @@ abstract class BaseSearchCategoryViewModel(
     protected data class HeaderDataView(
             val title: String = "",
             val hasSeeAllCategoryButton: Boolean = false,
-            val aceSearchProductHeader: AceSearchProductModel.SearchProductHeader
+            val aceSearchProductHeader: SearchProductHeader = SearchProductHeader(),
+            val quickFilterDataValue: DataValue = DataValue(),
     )
 
     protected data class ContentDataView(

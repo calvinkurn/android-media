@@ -2,11 +2,9 @@ package com.tokopedia.tokomart.search.domain.usecase
 
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.data.mapper.getSearchProduct
 import com.tokopedia.usecase.coroutines.UseCase
-import rx.functions.Func1
 
 class GetSearchLoadMorePageUseCase(
         private val graphqlUseCase: MultiRequestGraphqlUseCase,
@@ -16,7 +14,7 @@ class GetSearchLoadMorePageUseCase(
         val params = useCaseRequestParams.parameters
 
         graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(createAceSearchProductGraphqlRequest(UrlParamUtils.generateUrlParamString(params)))
+        graphqlUseCase.addRequest(createAceSearchProductRequest(UrlParamUtils.generateUrlParamString(params)))
 
         val graphqlResponse = graphqlUseCase.executeOnBackground()
 

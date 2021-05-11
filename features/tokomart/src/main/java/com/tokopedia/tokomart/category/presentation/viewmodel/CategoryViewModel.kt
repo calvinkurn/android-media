@@ -35,6 +35,7 @@ class CategoryViewModel @Inject constructor (
                 title = "Category_Title",
                 hasSeeAllCategoryButton = true,
                 aceSearchProductHeader = categoryModel.searchProduct.header,
+                quickFilterDataValue = categoryModel.quickFilter,
         )
 
         val contentDataView = ContentDataView(
