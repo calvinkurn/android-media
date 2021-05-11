@@ -22,10 +22,12 @@ import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCa
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
-        ChooseAddressListener {
+        ChooseAddressListener,
+        TitleListener {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
@@ -146,4 +148,8 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun getFragment() = this
+
+    override fun onSeeAllCategoryClicked() {
+
+    }
 }
