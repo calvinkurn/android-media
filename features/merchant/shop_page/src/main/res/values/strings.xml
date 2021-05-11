@@ -296,12 +296,9 @@
     <string name="follow_button_label">Follow</string>
     <string name="follow_button_label_npl">Follow Toko</string>
 
-    <!-- Shop Operational Hour -->
+    <!-- Shop Operational Hour Bottomsheet -->
     <string name="shop_ops_hour_bottomsheet_title">Jam Operasional</string>
     <string name="shop_ops_hour_bottomsheet_description">Pesanan yang lewat dari jam operasional akan diproses saat toko beroperasi kembali.</string>
-    <string name="shop_ops_hour_datetime_format_text">Jam %1$s - %2$s WIB</string>
-    <string name="shop_ops_hour_datetime_format_24_hours_text">Buka 24 Jam</string>
-    <string name="shop_ops_hour_datetime_format_holiday_text">Libur</string>
 
     <!-- shop share -->
     <string name="shop_page_share_to_social_media_text">Bagikan ke media sosial</string>

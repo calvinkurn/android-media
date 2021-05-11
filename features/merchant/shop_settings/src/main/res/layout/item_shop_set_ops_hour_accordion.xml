@@ -1,38 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="@dimen/dp_16">
+    android:paddingBottom="@dimen/dp_8">
 
-    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-        android:layout_width="wrap_content"
+    <RadioGroup
+        android:id="@+id/ops_hour_options"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="24 Jam"
-        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/option_all_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shop_operational_hour_24_hours"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="@dimen/dp_12"
+            />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/option_holiday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shop_operational_hour_holiday"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="@dimen/dp_12"
+            />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/option_choose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shop_operational_hour_choose"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="@dimen/dp_12"
+            />
+
+    </RadioGroup>
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/text_field_start_time_ops_hour"
+        android:layout_width="88dp"
+        android:layout_height="48dp"
+        app:text_field_label_static="true"
+        app:text_field_placeholder="Pilih Jam"
+        app:text_field_label="Buka"
+        app:layout_constraintTop_toBottomOf="@id/ops_hour_options"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_18"
+        android:layout_marginStart="@dimen/dp_18"
         />
 
-    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/ops_hour_connector"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Libur"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintTop_toTopOf="@id/text_field_start_time_ops_hour"
+        app:layout_constraintLeft_toRightOf="@id/text_field_start_time_ops_hour"
+        android:text="@string/connector"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_16"
+        android:textColor="@color/Unify_N700_68"
         />
 
-    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pilih Jam"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="@dimen/dp_8"
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/text_field_end_time_ops_hour"
+        android:layout_width="88dp"
+        android:layout_height="48dp"
+        app:text_field_label_static="true"
+        app:text_field_placeholder="Pilih Jam"
+        app:text_field_label="Tutup"
+        android:layout_marginTop="@dimen/dp_18"
+        android:layout_marginStart="@dimen/dp_24"
+        app:layout_constraintTop_toBottomOf="@id/ops_hour_options"
+        app:layout_constraintLeft_toRightOf="@id/ops_hour_connector"
         />
 
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

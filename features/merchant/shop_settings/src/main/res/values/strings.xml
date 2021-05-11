@@ -41,6 +41,15 @@
     <string name="hint_date">Day, dd/mm/yyyy</string>
     <string name="shop_operational_hour_title_set_hour">Atur jam buka-tutup toko</string>
     <string name="shop_operational_hour_desc_set_hour">Pembeli akan diinformasikan kalau pesanan yang masuk saat toko tutup akan diproses keesokan hari dan tidak mengurangi skor tokomu.</string>
+    <string name="shop_operational_hour_24_hours">Buka 24 Jam</string>
+    <string name="shop_operational_hour_holiday">Libur</string>
+    <string name="shop_operational_hour_choose">Pilih Jam</string>
+    <string name="shop_operational_hour_choose_open_shop">Pilih jam buka</string>
+    <string name="shop_operational_hour_choose_close_shop">Pilih jam tutup</string>
+    <string name="shop_operational_hour_format_with_timezone">%1$s:%2$s WIB</string>
+    <string name="shop_operational_hour_endtime_info">Pilih antara jam %1$s - %2$s</string>
+    <string name="shop_operational_hour_dialog_title">Simpan perubahan jam buka-tutup tokomu?</string>
+    <string name="shop_operational_hour_dialog_description">Informasi jadwal toko akan langsung berubah sesuai dengan pengaturanmu.</string>
 
     <string name="title_dialog_delete_shop_note">Hapus Catatan</string>
     <string name="desc_dialog_delete_shop_note">Hapus Catatan “%1$s”?</string>
@@ -152,6 +161,8 @@
     <string name="label_cancel">Batal</string>
     <string name="label_close">Tutup</string>
     <string name="label_save">Simpan</string>
+    <string name="label_choose">Pilih</string>
+    <string name="connector">-</string>
     <string name="tokopedia_domain" translatable="false">www.tokopedia.com</string>
     <string name="label_regular_merchant">Regular Merchant</string>
     <string name="label_power_merchant">Power Merchant</string>
