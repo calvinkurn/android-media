@@ -15,6 +15,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
       ace_search_product_v4(params: ${'$'}params){
         header {
           totalData
+          totalDataText
         }
         data {
           products {

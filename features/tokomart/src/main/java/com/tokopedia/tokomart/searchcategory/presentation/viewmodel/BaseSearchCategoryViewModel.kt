@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
@@ -39,7 +40,7 @@ abstract class BaseSearchCategoryViewModel(
             headerDataView: HeaderDataView,
             contentDataView: ContentDataView,
     ) {
-        totalData = headerDataView.totalData
+        totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.productList.size
 
         createVisitableListFirstPage(headerDataView, contentDataView)
@@ -63,7 +64,7 @@ abstract class BaseSearchCategoryViewModel(
             BannerDataView(),
             TitleDataView(headerDataView.title, headerDataView.hasSeeAllCategoryButton),
             QuickFilterDataView(),
-            ProductCountDataView(headerDataView.totalData),
+            ProductCountDataView(headerDataView.aceSearchProductHeader.totalDataText),
     )
 
     protected open fun createContentVisitableList(contentDataView: ContentDataView) =
@@ -127,7 +128,7 @@ abstract class BaseSearchCategoryViewModel(
     protected data class HeaderDataView(
             val title: String = "",
             val hasSeeAllCategoryButton: Boolean = false,
-            val totalData: Int = 0
+            val aceSearchProductHeader: AceSearchProductModel.SearchProductHeader
     )
 
     protected data class ContentDataView(

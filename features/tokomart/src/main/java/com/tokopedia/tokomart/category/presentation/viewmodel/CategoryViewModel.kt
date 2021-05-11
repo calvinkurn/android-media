@@ -34,7 +34,7 @@ class CategoryViewModel @Inject constructor (
         val headerDataView = HeaderDataView(
                 title = "Category_Title",
                 hasSeeAllCategoryButton = true,
-                totalData = categoryModel.searchProduct.header.totalData,
+                aceSearchProductHeader = categoryModel.searchProduct.header,
         )
 
         val contentDataView = ContentDataView(

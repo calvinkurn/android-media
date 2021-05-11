@@ -54,11 +54,11 @@ fun Visitable<*>.assertQuickFilterDataView() {
 
 }
 
-fun Visitable<*>.assertProductCountDataView(productCount: Int) {
+fun Visitable<*>.assertProductCountDataView(productCountText: String) {
     assertThat(this, instanceOf(ProductCountDataView::class.java))
 
     val productCountDataView = this as ProductCountDataView
-    assertThat(productCountDataView.totalData, shouldBe(productCount))
+    assertThat(productCountDataView.totalDataText, shouldBe(productCountText))
 }
 
 fun verifyProductItemDataViewList(
