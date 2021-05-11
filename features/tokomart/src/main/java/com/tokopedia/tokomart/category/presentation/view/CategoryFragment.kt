@@ -6,6 +6,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.tokomart.category.di.CategoryComponent
 import com.tokopedia.tokomart.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokomart.category.presentation.viewmodel.CategoryViewModel
+import com.tokopedia.tokomart.category.presentation.widget.CategoryChooserBottomSheet
 import com.tokopedia.tokomart.searchcategory.presentation.view.BaseSearchCategoryFragment
 import javax.inject.Inject
 
@@ -29,6 +30,7 @@ class CategoryFragment: BaseSearchCategoryFragment() {
         super.onCreate(savedInstanceState)
 
         initViewModel()
+        showSubCategoryBottomSheet()
     }
 
     private fun initViewModel() {
@@ -36,6 +38,12 @@ class CategoryFragment: BaseSearchCategoryFragment() {
             categoryViewModel = ViewModelProvider(it, viewModelFactory).get(CategoryViewModel::class.java)
         }
     }
+
+    private fun showSubCategoryBottomSheet() {
+        val bottomSheet = CategoryChooserBottomSheet()
+        bottomSheet.show(childFragmentManager, "")
+    }
+
 
     override fun createNavToolbarIconBuilder() = IconBuilder()
             .addShare()

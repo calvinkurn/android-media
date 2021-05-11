@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_category_chooser"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/telco_button_select_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:text="Tampilkan ### Produk"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"/>
+
+</LinearLayout>
