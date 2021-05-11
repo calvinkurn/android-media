@@ -40,14 +40,15 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
 
     private fun setupView(element: WidgetGradeBenefitUiModel) = with(itemView) {
         tvPmLearMorePowerMerchant.setOnClickListener {
-            RouteManager.route(context, Constant.Url.POWER_MERCHANT_EDU)
+            RouteManager.route(context, Constant.Url.PM_PRO_BENEFIT_PACKAGE_EDU)
         }
 
         val isPmPro = element.selectedPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         tvPmGradeBenefitDescription.isVisible = isPmPro
 
         if (element.benefitPages.isNotEmpty()) {
-            val selectedTab = element.benefitPages.firstOrNull { it.isActive } ?: element.benefitPages[0]
+            val selectedTab = element.benefitPages.firstOrNull { it.isActive }
+                    ?: element.benefitPages[0]
             val gradeName = selectedTab.gradeName.asCamelCase()
             setGradeBenefitTitle(isPmPro, gradeName)
         }
@@ -55,7 +56,7 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
 
     private fun setGradeBenefitTitle(isPmPro: Boolean, grade: String) {
         val title = if (isPmPro) {
-            getString(R.string.pm_grade_benefit_widget_title_pm_pro, grade)
+            itemView.context.getString(R.string.pm_grade_benefit_widget_title_pm_pro, Constant.POWER_MERCHANT_PRO_CHARGING, grade)
         } else {
             getString(R.string.pm_grade_benefit_widget_title_pm)
         }
@@ -88,8 +89,7 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     val selectedTabIndex = tabPmGradeBenefit.tabLayout.selectedTabPosition
-                    setOnTabSelected(selectedTabIndex)
-                    //setGradeBenefitTitle(isPmPro, gradeName)
+                    setOnTabSelected(element, selectedTabIndex)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -99,8 +99,13 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         }
     }
 
-    private fun setOnTabSelected(position: Int) = with(itemView) {
+    private fun setOnTabSelected(element: WidgetGradeBenefitUiModel, position: Int) = with(itemView) {
         rvPmGradeBenefitPager.smoothScrollToPosition(position)
+
+        val isPmPro = element.selectedPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val selectedPage = element.benefitPages.getOrNull(position)
+        val gradeName = selectedPage?.gradeName.orEmpty().asCamelCase()
+        setGradeBenefitTitle(isPmPro, gradeName)
     }
 
     private fun setupPagerView(element: WidgetGradeBenefitUiModel) {

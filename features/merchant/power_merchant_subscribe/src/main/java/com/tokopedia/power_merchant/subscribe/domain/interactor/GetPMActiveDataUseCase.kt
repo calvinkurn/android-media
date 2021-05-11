@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.domain.interactor
 
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMCurrentAndNextShopGradeUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMCurrentAndNextShopGradeUseCase
@@ -49,7 +50,7 @@ class GetPMActiveDataUseCase @Inject constructor(
     private suspend fun getCurrentAndNextPMGrade(): PMCurrentAndNextShopGradeUiModel {
         getPMCurrentAndNextShopGradeUseCase.params = GetPMCurrentAndNextShopGradeUseCase.createParams(
                 shopId = userSession.shopId,
-                source = Constant.PM_SETTING_INFO_SOURCE
+                source = PMConstant.PM_SETTING_INFO_SOURCE
         )
         return getPMCurrentAndNextShopGradeUseCase.executeOnBackground()
     }

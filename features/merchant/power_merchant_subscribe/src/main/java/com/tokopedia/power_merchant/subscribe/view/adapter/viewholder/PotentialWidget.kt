@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.view.adapter.PotentialAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.PotentialItemUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetPotentialUiModel
@@ -30,7 +31,7 @@ class PotentialWidget(itemView: View) : AbstractViewHolder<WidgetPotentialUiMode
             }
             rvPmPotential.adapter = PotentialAdapter(benefitList)
 
-            tvPmPotentialDescription.text = getString(R.string.pm_registration_potential_description, PMConstant.POWER_MERCHANT_CHARGING).parseAsHtml()
+            tvPmPotentialDescription.text = getString(R.string.pm_registration_potential_description, Constant.POWER_MERCHANT_CHARGING).parseAsHtml()
         }
     }
 

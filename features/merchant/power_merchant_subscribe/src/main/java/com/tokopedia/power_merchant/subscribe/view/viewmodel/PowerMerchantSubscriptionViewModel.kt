@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMGradeBenefitUseCase
 import com.tokopedia.gm.common.domain.interactor.PowerMerchantActivateUseCase
-import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMActiveDataUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.PMActiveDataUiModel
 import com.tokopedia.usecase.RequestParams
@@ -50,7 +50,7 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         launchCatchError(block = {
             getPMGradeBenefitUseCase.get().params = GetPMGradeBenefitUseCase.createParams(
                     shopId = userSession.get().shopId,
-                    source = Constant.PM_SETTING_INFO_SOURCE
+                    source = PMConstant.PM_SETTING_INFO_SOURCE
             )
             val result = withContext(dispatchers.io) {
                 getPMGradeBenefitUseCase.get().executeOnBackground()

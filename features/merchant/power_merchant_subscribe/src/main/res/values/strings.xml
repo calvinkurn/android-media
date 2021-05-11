@@ -148,7 +148,7 @@
     <string name="pm_registration_potential_description"><![CDATA[Dari data di 2020, dengan biaya layanan <b>%1$s</b> saja dari setiap produk terjual, tokomu berpotensi:]]></string>
     <string name="pm_tnc_agreement_text">Saya setuju dengan <font color="#03AC0E"><b>S&amp;K</b></font> yang berlaku.</string>
     <string name="pm_grade_benefit_widget_title_pm">Keuntungan yang bisa kamu dapatkan:</string>
-    <string name="pm_grade_benefit_widget_title_pm_pro">Dengan biaya layanan 1,5% saja, dapatkan paket keuntungan %1$s sesuai level tokomu!</string>
+    <string name="pm_grade_benefit_widget_title_pm_pro">Dengan biaya layanan %1$s saja, dapatkan paket keuntungan %2$s sesuai level tokomu!</string>
     <string name="pm_grade_benefit_widget_description">Paket keuntungan dapat mengalami kenaikan setiap bulan dan penurunan setiap kuartal.</string>
     <string name="pm_pm_transition_period_learnmore">Pelajari Power Merchant Selengkapnya</string>
     <string name="pm_pm_registration_header_ticker_message">Tunggu, ya! Jika verifikasi data berhasil, tokomu akan langsung jadi Power Merchant!</string>
@@ -171,7 +171,7 @@
     <string name="pm_label_have_not_one_active_product_yet"><![CDATA[Tambah minimal 1 produk aktif. Tambah Produk]]></string>
     <string name="pm_shop_score_eligible"><![CDATA[Skor Toko: <font color=\"%1$s\">%2$d</font>]]></string>
     <string name="pm_shop_score_not_eligible"><![CDATA[Skor Toko: <font color=\"%1$s\">%2$d</font>]]></string>
-    <string name="pm_shop_score_eligible_description"><![CDATA[Skormu sudah mencapai batas <strong>min. skor %1$d</strong> untuk daftar Power Merchant. Skor akan diperbarui setiap Senin, ya.]]></string>
+    <string name="pm_shop_score_eligible_description">Batas min. skor %1$d</string>
     <string name="pm_shop_score_not_eligible_description"><![CDATA[Tingkatkan skor hingga min. %1$d, ya! <br>Pelajari Performa Toko]]></string>
     <string name="pm_add_product">Tambah Produk</string>
     <string name="pm_learn_shop_performance">Pelajari Performa Toko</string>
