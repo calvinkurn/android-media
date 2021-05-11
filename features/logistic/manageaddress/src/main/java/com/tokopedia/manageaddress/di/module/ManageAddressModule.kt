@@ -21,12 +21,6 @@ object ManageAddressModule  {
 
     @Provides
     @ActivityScope
-    fun provideGetAddressCornerUseCase(@ApplicationContext context: Context, graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase, mapper: AddressCornerMapper): GetAddressCornerUseCase {
-        return GetAddressCornerUseCase(context, graphqlUseCase, mapper)
-    }
-
-    @Provides
-    @ActivityScope
     fun provideDeletePeopleAddressUseCase(@ApplicationContext repository: GraphqlRepository): DeletePeopleAddressUseCase =
             DeletePeopleAddressUseCase(GraphqlUseCase(repository))
 
