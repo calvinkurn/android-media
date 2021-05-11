@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.testdouble
 
-import androidx.lifecycle.LiveData
 import com.tokopedia.play.broadcaster.data.datastore.ProductDataStore
 import com.tokopedia.play.broadcaster.data.datastore.ProductDataStoreImpl
 import com.tokopedia.play.broadcaster.data.model.ProductData

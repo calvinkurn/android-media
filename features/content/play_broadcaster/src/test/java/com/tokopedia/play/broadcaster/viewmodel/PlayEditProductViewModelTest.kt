@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.*
-import com.tokopedia.play.broadcaster.model.ModelBuilder
+import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.testdouble.MockCoverDataStore
 import com.tokopedia.play.broadcaster.testdouble.MockProductDataStore
 import com.tokopedia.play.broadcaster.testdouble.MockSetupDataStore
@@ -40,7 +40,7 @@ class PlayEditProductViewModelTest {
 
     private lateinit var viewModel: PlayEditProductViewModel
 
-    private val modelBuilder = ModelBuilder()
+    private val modelBuilder = UiModelBuilder()
 
     private val channelId = "12345"
 

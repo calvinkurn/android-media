@@ -16,7 +16,7 @@ import java.io.File
 /**
  * Created by jegul on 25/09/20
  */
-class ModelBuilder {
+class UiModelBuilder {
 
     private val gson = Gson()
 

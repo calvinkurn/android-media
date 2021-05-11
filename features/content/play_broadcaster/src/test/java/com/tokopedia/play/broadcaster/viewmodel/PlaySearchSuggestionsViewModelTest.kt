@@ -1,25 +1,5 @@
 package com.tokopedia.play.broadcaster.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
-import com.tokopedia.play.broadcaster.model.ModelBuilder
-import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
-import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.play.broadcaster.util.getOrAwaitValue
-import com.tokopedia.play.broadcaster.view.viewmodel.PlaySearchSuggestionsViewModel
-import com.tokopedia.play_common.model.result.NetworkResult
-import io.mockk.coEvery
-import io.mockk.mockk
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.runBlockingTest
-import org.assertj.core.api.Assertions
-import org.assertj.core.internal.RecursiveFieldByFieldComparator
-import org.assertj.core.internal.TypeComparators
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-
 /**
  * Created by jegul on 25/09/20
 class PlaySearchSuggestionsViewModelTest {

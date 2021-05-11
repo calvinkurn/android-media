@@ -14,16 +14,11 @@ import io.mockk.mockk
  */
 class MockCoverDataStore(
         dispatcherProvider: CoroutineDispatchers,
-        private val uploadCoverTitleException: Throwable = IllegalStateException()
 ) : CoverDataStore {
 
     private val realImpl = CoverDataStoreImpl(dispatcherProvider, mockk(), mockk())
 
     private var isSuccess: Boolean = false
-
-    fun setIsSuccess(isSuccess: Boolean) {
-        this.isSuccess = isSuccess
-    }
 
     override fun getObservableSelectedCover(): LiveData<PlayCoverUiModel> {
         return realImpl.getObservableSelectedCover()

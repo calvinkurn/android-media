@@ -2,12 +2,11 @@ package com.tokopedia.play.broadcaster.viewmodel
 
 import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.tokopedia.play.broadcaster.data.config.*
 import com.tokopedia.play.broadcaster.data.datastore.*
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.UploadImageToRemoteV2UseCase
-import com.tokopedia.play.broadcaster.model.ModelBuilder
+import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.testdouble.MockCoverDataStore
 import com.tokopedia.play.broadcaster.testdouble.MockImageTransformer
 import com.tokopedia.play.broadcaster.testdouble.MockPlayCoverImageUtil
@@ -53,7 +52,7 @@ class PlayCoverSetupViewModelTest {
 
     private lateinit var viewModel: PlayCoverSetupViewModel
 
-    private val modelBuilder = ModelBuilder()
+    private val modelBuilder = UiModelBuilder()
 
     private val uploadCoverTitleException = IllegalStateException("error upload cover title")
 
@@ -63,7 +62,7 @@ class PlayCoverSetupViewModelTest {
         titleConfigStore = TitleConfigStoreImpl()
 
         productDataStore = ProductDataStoreImpl(dispatcherProvider, mockk())
-        coverDataStore = MockCoverDataStore(dispatcherProvider, uploadCoverTitleException)
+        coverDataStore = MockCoverDataStore(dispatcherProvider)
         broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
         titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
         tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
