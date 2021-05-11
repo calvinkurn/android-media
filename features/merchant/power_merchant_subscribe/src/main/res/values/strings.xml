@@ -28,9 +28,9 @@
     <string name="pm_bottom_sheet_expired_label">Layanan otomatis berhenti pada %1$s, pukul %2$s WIB.</string>
     <string name="pm_title_activity">Power Merchant</string>
 
-    <string name="pm_label_bottom_sheet_cancel_header">Yakin mau turun status \nke Regular Merchant?</string>
+    <string name="pm_label_bottom_sheet_cancel_header">Yakin mau turunkan status tokomu ke \nRegular Merchant?</string>
     <string name="pm_label_bottom_sheet_cancel_button">Berhenti Jadi Power Merchant</string>
-    <string name="pm_label_bottom_sheet_cancel_desc">Tokomu akan kehilangan semua keuntungan eksklusif Power Merchant:</string>
+    <string name="pm_label_bottom_sheet_cancel_desc">Tokomu akan kehilangan semua keuntungan eksklusif Power Merchant, yaitu:</string>
 
     <string name="pm_i_agree">Saya Setuju</string>
     <string name="pm_terms_agree">Dengan ini, saya menyetujui syarat dan ketentuan Power Merchant Tokopedia.</string>
@@ -39,7 +39,6 @@
     <string name="pm_cancellation_success">Pengajuan untuk berhenti berhasil.</string>
 
     <string name="pm_title_tnc">Syarat dan Ketentuan</string>
-    <string name="pm_label_bs_cancel_desc_2">Toko dengan Power Merchant terbukti dapat tingkatkan penjualan dan lebih dipercaya calon pembeli.</string>
 
     <string name="pm_title_cancellation_questionnaire">Berhenti Power Merchant</string>
     <string name="pm_label_cancellation_questionnaire_intro_title">Bantu kami meningkatkan layanan Power Merchant</string>
@@ -263,4 +262,9 @@
     <string name="pm_pro_general_benefit_4">Badge khusus Power Merchant PRO ditampilkan pada calon pembeli</string>
     <string name="pm_pro_general_benefit_5">Nikmati layanan prioritas Tokopedia Care</string>
     <string name="pm_pro_general_benefit_6">Semakin banyak keuntungan jika level-mu semakin tinggi! </string>
+    <string name="pm_badge_power_merchant">Badge Power Merchant</string>
+    <string name="pm_be_selected_shop_by_buyer">Menjadi toko pilihan pembeli</string>
+    <string name="pm_get_extra_topads_credit">Dapat tambahan kredit TopAds</string>
+    <string name="pm_get_free_shipping_benefit">Punya layanan Bebas Ongkir</string>
+    <string name="pm_deactivation_bottom_sheet_message">Mulai 14 Juni, Regular Merchant dengan jumlah transaksi <b>di atas 100 transaksi</b> akan dikenai biaya sebesar <b>0,5%</b> per produk terjual.</string>
 </resources>
