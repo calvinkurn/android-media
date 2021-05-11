@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
+import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayTitleAndTagsSetupViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.mockk
@@ -38,6 +39,12 @@ class PlayTitleAndTagsViewModelRobot(
     fun isTagValid(tag: String): Boolean {
         return viewModel.isTagValid(tag)
     }
+
+    fun isTitleValid(title: String): Boolean {
+        return viewModel.isTitleValid(title)
+    }
+
+    fun getSavedTitle() = viewModel.observableTitle.getOrAwaitValue()
 }
 
 fun givenPlayTitleAndTagsViewModel(

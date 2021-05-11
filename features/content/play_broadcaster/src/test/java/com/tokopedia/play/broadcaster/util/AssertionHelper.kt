@@ -10,3 +10,9 @@ fun <T: Any> T.isEqualTo(expected: T) {
             .assertThat(this)
             .isEqualTo(expected)
 }
+
+fun <T: Throwable> T.isErrorType(error: Class<out T>) {
+    Assertions
+            .assertThat(this)
+            .isInstanceOf(error)
+}
