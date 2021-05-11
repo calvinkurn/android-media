@@ -12,6 +12,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
@@ -31,10 +32,10 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
     }
 
     override fun bind(element: WidgetGradeBenefitUiModel) {
+        setupView(element)
         setupTabLayout(element)
         setupPagerView(element)
         selectDefaultTab(element)
-        setupView(element)
     }
 
     private fun setupView(element: WidgetGradeBenefitUiModel) = with(itemView) {
@@ -43,13 +44,22 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         }
 
         val isPmPro = element.selectedPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        if (isPmPro) {
-            tvPmGradeBenefitTitle.text = getString(R.string.pm_grade_benefit_widget_title_pm_pro)
-            tvPmGradeBenefitDescription.visible()
-        } else {
-            tvPmGradeBenefitTitle.text = getString(R.string.pm_grade_benefit_widget_title_pm)
-            tvPmGradeBenefitDescription.gone()
+        tvPmGradeBenefitDescription.isVisible = isPmPro
+
+        if (element.benefitPages.isNotEmpty()) {
+            val selectedTab = element.benefitPages.firstOrNull { it.isActive } ?: element.benefitPages[0]
+            val gradeName = selectedTab.gradeName.asCamelCase()
+            setGradeBenefitTitle(isPmPro, gradeName)
         }
+    }
+
+    private fun setGradeBenefitTitle(isPmPro: Boolean, grade: String) {
+        val title = if (isPmPro) {
+            getString(R.string.pm_grade_benefit_widget_title_pm_pro, grade)
+        } else {
+            getString(R.string.pm_grade_benefit_widget_title_pm)
+        }
+        itemView.tvPmGradeBenefitTitle.text = title
     }
 
     private fun selectDefaultTab(element: WidgetGradeBenefitUiModel) {
@@ -79,6 +89,7 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     val selectedTabIndex = tabPmGradeBenefit.tabLayout.selectedTabPosition
                     setOnTabSelected(selectedTabIndex)
+                    //setGradeBenefitTitle(isPmPro, gradeName)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
