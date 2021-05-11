@@ -94,5 +94,7 @@ data class ShopTypeResponse(
         @SerializedName("badge")
         val badge: String = "",
         @SerializedName("title")
-        val title: String = ""
+        val title: String = "",
+        @SerializedName("title_fmt")
+        val titleFmt: String = ""
 )

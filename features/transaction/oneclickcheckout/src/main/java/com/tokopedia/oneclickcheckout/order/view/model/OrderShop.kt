@@ -9,6 +9,7 @@ data class OrderShop(
         var shopBadge: String = "",
         var shopTier: Int = 0,
         var shopTypeName: String = "",
+        var shopType: String = "",
         var isGold: Int = 0,
         var isOfficial: Int = 0,
         var postalCode: String = "",
