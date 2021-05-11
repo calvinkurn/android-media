@@ -2,8 +2,6 @@ package com.tokopedia.sellerorder.common.presenter.bottomsheet
 
 import android.content.Context
 import android.content.res.Configuration
-import android.view.View
-import android.view.ViewGroup
 import com.google.firebase.crashlytics.internal.common.CommonUtils.hideKeyboard
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -11,18 +9,21 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
 
-class SomOrderEditAwbBottomSheet(context: Context) : SomBottomSheet(context) {
+class SomOrderEditAwbBottomSheet(
+        context: Context
+) : SomBottomSheet(LAYOUT, true, true, false, "", context, true) {
 
     companion object {
         private const val KEYBOARD_HEIGHT_PERCENTAGE_PORTRAIT = 0.4f
         private const val KEYBOARD_HEIGHT_PERCENTAGE_LANDSCAPE = 0.5f
+
+        private val LAYOUT = R.layout.bottomsheet_cancel_order
     }
 
     private var listener: SomOrderEditAwbBottomSheetListener? = null
-    private var childView: View? = null
 
-    init {
-        childView = inflate(context, R.layout.bottomsheet_cancel_order, null).apply {
+    override fun setupChildView() {
+        childViews?.run {
             tf_cancel_notes?.clearFocus()
             tf_cancel_notes?.setLabelStatic(true)
             tf_cancel_notes?.setMessage(context.getString(R.string.change_no_resi_notes))
@@ -55,6 +56,7 @@ class SomOrderEditAwbBottomSheet(context: Context) : SomBottomSheet(context) {
                 dismiss()
                 listener?.onEditAwbButtonClicked(tf_cancel_notes?.textFieldInput?.text.toString())
             }
+            handleHideKeyboardWhenClickOnBottomSheet()
         }
     }
 
@@ -68,29 +70,20 @@ class SomOrderEditAwbBottomSheet(context: Context) : SomBottomSheet(context) {
     }
 
     private fun isPortrait(): Boolean {
-        return resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        return context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     }
 
     override fun dismiss() {
-        childView?.tf_cancel_notes?.rootView?.windowToken?.run {
-            hideKeyboard(context, childView?.tf_cancel_notes?.rootView)
+        childViews?.tf_cancel_notes?.rootView?.windowToken?.run {
+            hideKeyboard(context, childViews?.tf_cancel_notes?.rootView)
         }
         super.dismiss()
     }
 
     private fun handleHideKeyboardWhenClickOnBottomSheet() {
-        childView?.parent?.let {
-            if (it is ViewGroup) {
-                it.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper).setOnClickListener {
-                    childView?.tf_cancel_notes?.clearFocus()
-                }
-            }
+        bottomSheetLayout?.setOnClickListener {
+            childViews?.tf_cancel_notes?.clearFocus()
         }
-    }
-
-    fun init(view: ViewGroup) {
-        super.init(view, requireNotNull(childView), true)
-        handleHideKeyboardWhenClickOnBottomSheet()
     }
 
     fun setListener(listener: SomOrderEditAwbBottomSheetListener) {

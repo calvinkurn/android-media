@@ -2,7 +2,6 @@ package com.tokopedia.sellerorder.common.presenter.bottomsheet
 
 import android.content.Context
 import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
@@ -13,15 +12,18 @@ import com.tokopedia.sellerorder.common.presenter.model.PopUp
 import com.tokopedia.sellerorder.common.util.SomConsts
 import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel_order.view.*
 
-class SomOrderRequestCancelBottomSheet(context: Context) : SomBottomSheet(context) {
+class SomOrderRequestCancelBottomSheet(
+        context: Context
+) : SomBottomSheet(LAYOUT, true, true, false, "", context, true) {
+
+    companion object {
+        private val LAYOUT = R.layout.bottomsheet_buyer_request_cancel_order
+    }
 
     private var listener: SomOrderRequestCancelBottomSheetListener? = null
-    private var childViews: View? = null
 
-    init {
-        childViews = inflate(context, R.layout.bottomsheet_buyer_request_cancel_order, null).apply {
-            tickerPerformanceInfo?.setTextDescription(context.getString(R.string.som_shop_performance_info))
-        }
+    override fun setupChildView() {
+        childViews?.tickerPerformanceInfo?.setTextDescription(context.getString(R.string.som_shop_performance_info))
     }
 
     private fun setupBuyerRequestCancelBottomSheetButtons(
@@ -131,13 +133,12 @@ class SomOrderRequestCancelBottomSheet(context: Context) : SomBottomSheet(contex
         )
     }
 
-    fun init(viewGroup: ViewGroup, popUp: PopUp, reason: String, orderStatusCode: Int) {
+    fun init(popUp: PopUp, reason: String, orderStatusCode: Int) {
         childViews?.apply {
             tv_buyer_request_cancel?.text = popUp.body
             tvBuyerRequestCancelNotes?.text = reason.replace("\\n", System.getProperty("line.separator") ?: "")
             setupBuyerRequestCancelBottomSheetButtons(this, reason, popUp.actionButtons, orderStatusCode)
         }
-        super.init(viewGroup, requireNotNull(childViews), true)
     }
 
     fun setListener(listener: SomOrderRequestCancelBottomSheetListener) {

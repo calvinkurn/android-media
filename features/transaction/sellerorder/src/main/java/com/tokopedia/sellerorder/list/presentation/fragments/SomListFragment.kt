@@ -626,6 +626,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 } ?: SomOrderRequestCancelBottomSheet(it.context).apply {
                     setupBuyerRequestCancelBottomSheet(this, it, order)
                 }
+                orderRequestCancelBottomSheet?.init(it)
                 orderRequestCancelBottomSheet?.show()
                 return
             }
@@ -645,6 +646,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 } ?: SomOrderEditAwbBottomSheet(it.context).apply {
                     setupSomOrderEditAwbBottomSheet(this, it, orderId)
                 }
+                somOrderEditAwbBottomSheet?.init(it)
                 somOrderEditAwbBottomSheet?.show()
                 return
             }
@@ -739,7 +741,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     rejectCancelOrder(selectedOrderId)
                 }
             })
-            init(view, order.buttons.firstOrNull()?.popUp ?: PopUp(), order.cancelRequestOriginNote, order.orderStatusId)
+            init(order.buttons.firstOrNull()?.popUp ?: PopUp(), order.cancelRequestOriginNote, order.orderStatusId)
             setTitle(view.context.getString(R.string.som_request_cancel_bottomsheet_title))
             hideKnob()
             showCloseButton()
@@ -754,7 +756,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     viewModel.editAwb(orderId, cancelNotes, invoice)
                 }
             })
-            init(it)
             setTitle(SomConsts.TITLE_UBAH_RESI)
             hideKnob()
             showCloseButton()
@@ -978,15 +979,15 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         viewModel.bulkAcceptOrderResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
-                    if (somListBulkProcessOrderBottomSheet?.isVisible == true) {
+                    if (somListBulkProcessOrderBottomSheet?.isShowing() == true) {
                         somListBulkProcessOrderBottomSheet?.dismiss()
                     }
                     showBulkAcceptOrderDialog(getSelectedOrderIds().size)
                 }
                 is Fail -> {
-                    if (somListBulkProcessOrderBottomSheet?.isVisible == true) {
+                    if (somListBulkProcessOrderBottomSheet?.isShowing() == true) {
                         somListBulkProcessOrderBottomSheet?.onBulkAcceptOrderFailed()
-                        showCommonToaster(somListBulkProcessOrderBottomSheet?.getChildViews(), "Terjadi kesalahan.", Toaster.TYPE_ERROR)
+                        showCommonToaster(view, "Terjadi kesalahan.", Toaster.TYPE_ERROR)
                     } else {
                         result.throwable.showErrorToaster()
                     }
@@ -1779,7 +1780,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         add(SomListBulkProcessOrderDescriptionUiModel(getString(R.string.som_list_bottom_sheet_bulk_accept_order_description), false))
                         addAll(getOrdersProducts(adapter.data.filterIsInstance<SomListOrderUiModel>().filter { it.isChecked }))
                     }
-                    bottomSheet.init(it, true)
+                    bottomSheet.init(it)
                     bottomSheet.setTitle(getString(R.string.som_list_bulk_accept_order_button))
                     bottomSheet.setItems(items)
                     bottomSheet.showButtonAction()
@@ -1808,7 +1809,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                                 true
                         ))
                     }
-                    bottomSheet.init(fragmentView, true)
+                    bottomSheet.init(fragmentView)
                     bottomSheet.setTitle(getString(R.string.som_list_bulk_confirm_shipping_order_button))
                     bottomSheet.setItems(items)
                     bottomSheet.hideButtonAction()

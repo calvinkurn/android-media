@@ -1,8 +1,6 @@
 package com.tokopedia.sellerorder.detail.presentation.bottomsheet
 
 import android.content.Context
-import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.sellerorder.R
@@ -12,29 +10,28 @@ import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 class SomDetailSecondaryActionBottomSheet(
         context: Context,
         private val listener: SomBottomSheetRejectOrderAdapter.ActionListener
-) : SomBottomSheet(context) {
+) : SomBottomSheet(LAYOUT, true, true, false, context.getString(R.string.som_detail_other_bottomsheet_title), context, true) {
 
-    private var adapter: SomBottomSheetRejectOrderAdapter? = null
-    private var childView: View? = null
+    companion object {
+        private val LAYOUT = R.layout.bottomsheet_secondary
+    }
 
-    init {
-        childView = inflate(context, R.layout.bottomsheet_secondary, null).apply {
-            adapter = SomBottomSheetRejectOrderAdapter(listener, false)
+    private var secondaryActionAdapter: SomBottomSheetRejectOrderAdapter? = null
+
+    override fun setupChildView() {
+        secondaryActionAdapter = SomBottomSheetRejectOrderAdapter(listener, false)
+        childViews?.run {
             rv_bottomsheet_secondary?.apply {
                 layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-                adapter = this@SomDetailSecondaryActionBottomSheet.adapter
+                adapter = secondaryActionAdapter
             }
             fl_btn_primary?.gone()
             tf_extra_notes?.gone()
         }
     }
 
-    fun init(view: ViewGroup) {
-        super.init(view, requireNotNull(childView), true)
-    }
-
     fun setActions(actions: HashMap<String, String>) {
-        adapter?.mapKey = actions
-        adapter?.notifyDataSetChanged()
+        secondaryActionAdapter?.mapKey = actions
+        secondaryActionAdapter?.notifyDataSetChanged()
     }
 }

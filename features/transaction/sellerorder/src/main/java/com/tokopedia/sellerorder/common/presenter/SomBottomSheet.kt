@@ -2,7 +2,6 @@ package com.tokopedia.sellerorder.common.presenter
 
 import android.animation.Animator
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
@@ -13,25 +12,37 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-abstract class SomBottomSheet(context: Context) : View(context) {
+abstract class SomBottomSheet(
+        childViewsLayoutResourceId: Int,
+        private val showOverlay: Boolean,
+        private val showCloseButton: Boolean,
+        private val showKnob: Boolean,
+        private val bottomSheetTitle: String,
+        protected val context: Context,
+        protected var dismissOnClickOverlay: Boolean
+) {
 
     companion object {
         private const val TAG_OVERLAY_VIEW = "tag_overlay_view"
-
         private const val OVERLAY_LAYOUT_ANIMATION_DURATION = 300L
     }
 
     private var overlayLayout: View? = null
-    private var bottomSheetLayout: View? = null
+    private var overlayFadeOutAnimation: ValueAnimator? = null
+    private var overlayFadeInAnimation: ValueAnimator? = null
     private var bottomSheetBehavior: BottomSheetBehavior<out View>? = null
     private var bottomSheetCallback: BottomSheetBehavior.BottomSheetCallback? = null
 
-    private var overlayFadeOutAnimation: ValueAnimator? = null
-    private var overlayFadeInAnimation: ValueAnimator? = null
+    protected var bottomSheetLayout: View? = null
+    protected var childViews: View? = null
 
-    protected var dismissOnClickOverlay: Boolean = true
+    abstract fun setupChildView()
 
-    @SuppressLint("ClickableViewAccessibility")
+    init {
+        val childView = View.inflate(context, childViewsLayoutResourceId, null)
+        this.childViews = childView
+    }
+
     private fun showOverlay(view: ViewGroup) {
         val overlayLayout = getOverlayLayout(view)
         this.overlayLayout = overlayLayout
@@ -39,16 +50,34 @@ abstract class SomBottomSheet(context: Context) : View(context) {
     }
 
     private fun getOverlayLayout(view: ViewGroup): View {
-        return overlayLayout ?: view.findViewWithTag(TAG_OVERLAY_VIEW) ?: View(context).apply {
+        return overlayLayout ?: View(context).apply {
             tag = TAG_OVERLAY_VIEW
             setOnOverlayClickListener(this)
-            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            setupOverlayBackgroundColor(view, this)
             layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         }
     }
 
+    private fun setupOverlayBackgroundColor(fragmentView: ViewGroup, overlayView: View) {
+        if (!hasVisibleTransparentOverlay(fragmentView)) {
+            overlayView.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        } else {
+            overlayView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
+        }
+    }
+
+    private fun hasVisibleTransparentOverlay(fragmentView: ViewGroup): Boolean {
+        for (i in 0 until fragmentView.childCount) {
+            val view = fragmentView.getChildAt(i)
+            if (view?.tag == TAG_OVERLAY_VIEW && view.visibility == View.VISIBLE) {
+                return true
+            }
+        }
+        return false
+    }
+
     private fun addOverlayLayoutToParent(view: ViewGroup, overlayLayout: View) {
-        if (view.indexOfChild(overlayLayout) == -1) {
+        if (overlayLayout.parent == null) {
             view.addView(overlayLayout)
         }
     }
@@ -57,21 +86,6 @@ abstract class SomBottomSheet(context: Context) : View(context) {
         overlayLayout.setOnClickListener {
             if (dismissOnClickOverlay) {
                 dismiss()
-            }
-        }
-    }
-
-    private fun getBottomSheetCallback(): BottomSheetBehavior.BottomSheetCallback {
-        return bottomSheetCallback ?: object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                // noop
-            }
-
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> overlayLayout?.animateFadeOut()
-                    else -> overlayLayout?.animateFadeIn()
-                }
             }
         }
     }
@@ -91,7 +105,7 @@ abstract class SomBottomSheet(context: Context) : View(context) {
             if (overlayFadeOutAnimation?.isRunning == true) return
             overlayFadeInAnimation?.cancel()
             overlayFadeOutAnimation = animateFade(alpha, 0f).apply {
-                addListener(object: Animator.AnimatorListener {
+                addListener(object : Animator.AnimatorListener {
                     override fun onAnimationRepeat(animation: Animator?) {
                         // noop
                     }
@@ -121,29 +135,52 @@ abstract class SomBottomSheet(context: Context) : View(context) {
         }
     }
 
-    protected fun init(view: ViewGroup, childView: View, showOverlay: Boolean) {
-        childView.tag = this::class.java.simpleName
-        if (showOverlay) {
-            showOverlay(view)
-        }
-        val bottomSheetLayout: View = bottomSheetLayout
-                ?: view.findViewById<ViewGroup>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)?.parent as? View
-                ?: inflate(context, com.tokopedia.unifycomponents.R.layout.bottom_sheet_layout, view)
-        val bottomSheetWrapper: ViewGroup? = bottomSheetLayout.findViewById<ViewGroup>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)?.apply {
-            isClickable = true
-            getChildAt(childCount - 1)?.let {
-                if (it.tag != null && it.tag != this::class.java.simpleName) {
-                    removeView(it)
+    private fun createBottomSheetCallback(): BottomSheetBehavior.BottomSheetCallback {
+        return object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // noop
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> onBottomSheetHidden()
+                    else -> overlayLayout?.animateFadeIn()
                 }
-                addView(childView)
             }
         }
-        val bottomSheetBehavior = bottomSheetBehavior
-                ?: BottomSheetBehavior.from(requireNotNull(bottomSheetWrapper)).apply {
-                    state = BottomSheetBehavior.STATE_HIDDEN
-                }
+    }
+
+    private fun setupBottomSheetContent(view: ViewGroup) {
+        val bottomSheetLayout = this.bottomSheetLayout ?: (View.inflate(context, com.tokopedia.unifycomponents.R.layout.bottom_sheet_layout, view) as ViewGroup).getChildAt(view.childCount - 1)?.apply {
+            this as ViewGroup
+            isClickable = true
+            if (childViews?.parent != null) {
+                (childViews?.parent as? ViewGroup)?.removeView(childViews)
+            }
+            addView(childViews)
+            val bottomSheetBehavior = bottomSheetBehavior ?: BottomSheetBehavior.from(requireNotNull(this)).apply {
+                state = BottomSheetBehavior.STATE_HIDDEN
+            }
+            val bottomSheetCallback = bottomSheetCallback ?: createBottomSheetCallback()
+            bottomSheetBehavior.addBottomSheetCallback(bottomSheetCallback)
+            this@SomBottomSheet.bottomSheetCallback = bottomSheetCallback
+            this@SomBottomSheet.bottomSheetBehavior = bottomSheetBehavior
+        }
         this.bottomSheetLayout = bottomSheetLayout
-        this.bottomSheetBehavior = bottomSheetBehavior
+    }
+
+    protected open fun onBottomSheetHidden() {
+        overlayLayout?.animateFadeOut()
+    }
+
+    open fun show() {
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    open fun dismiss() {
+        requireNotNull(bottomSheetBehavior).apply {
+            if (state != BottomSheetBehavior.STATE_HIDDEN) state = BottomSheetBehavior.STATE_HIDDEN
+        }
     }
 
     fun setTitle(title: String) {
@@ -161,16 +198,22 @@ abstract class SomBottomSheet(context: Context) : View(context) {
         bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_knob)?.gone()
     }
 
-    fun show() {
-        val bottomSheetCallback = getBottomSheetCallback()
-        this.bottomSheetCallback = bottomSheetCallback
-        bottomSheetBehavior?.addBottomSheetCallback(bottomSheetCallback)
-        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+    fun isShowing(): Boolean {
+        return bottomSheetBehavior?.state != BottomSheetBehavior.STATE_HIDDEN
     }
 
-    open fun dismiss() {
-        requireNotNull(bottomSheetBehavior).apply {
-            if (state != BottomSheetBehavior.STATE_HIDDEN) state = BottomSheetBehavior.STATE_HIDDEN
+    fun init(view: ViewGroup) {
+        if (showOverlay) {
+            showOverlay(view)
         }
+        setupBottomSheetContent(view)
+        setTitle(bottomSheetTitle)
+        if (showCloseButton) {
+            showCloseButton()
+        }
+        if (!showKnob) {
+            hideKnob()
+        }
+        setupChildView()
     }
 }
