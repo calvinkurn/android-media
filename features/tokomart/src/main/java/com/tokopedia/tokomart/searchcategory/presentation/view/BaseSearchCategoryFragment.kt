@@ -24,6 +24,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategory
 import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
+import com.tokopedia.unifycomponents.Toaster
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
@@ -156,6 +157,6 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onBannerClick(applink: String) {
-        RouteManager.route(context, applink)
+        Toaster.build(requireView(), "Navigate to Applink", Toaster.TYPE_NORMAL, Toaster.LENGTH_SHORT)
     }
 }
