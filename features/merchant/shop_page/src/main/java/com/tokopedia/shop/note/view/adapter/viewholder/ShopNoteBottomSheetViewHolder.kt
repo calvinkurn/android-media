@@ -30,7 +30,7 @@ class ShopNoteBottomSheetViewHolder(view: View): BaseViewHolder(view) {
     private var tpTitle: Typography? = null
     private var tpDescription: Typography? = null
     private var ivChevron: ImageView? = null
-    private var divider: DividerUnify? = null
+    private var divider: View? = null
     private var mHeight = 0
 
     private fun setupUi(title: String, description: Spanned, isTheLastPosition: Boolean) {
@@ -101,7 +101,7 @@ class ShopNoteBottomSheetViewHolder(view: View): BaseViewHolder(view) {
     private fun setIconColor(resourceId: Int) {
         AppCompatResources.getDrawable(itemView.context, resourceId)?.let {
             val backgroundDrawable = DrawableCompat.wrap(it).mutate()
-            DrawableCompat.setTint(backgroundDrawable, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+            DrawableCompat.setTint(backgroundDrawable, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             ivChevron?.loadImage(backgroundDrawable)
             ivChevron?.layoutParams?.width = 36.toPx()
             ivChevron?.layoutParams?.height = 21.toPx()
