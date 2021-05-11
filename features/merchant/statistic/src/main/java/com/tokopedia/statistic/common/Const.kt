@@ -16,6 +16,8 @@ object Const {
 
     const val WHITE_LIST_KEY_BUYER_INSIGHT = "buyer-insight-apps"
 
+    const val SHOW_PRODUCT_INSIGHT_COACHMARK_KEY = "show_product_insight_coachmark"
+
     object PageSource {
         const val SHOP_INSIGHT = "shop-insight"
         const val BUYER_INSIGHT = "buyer-insight"
