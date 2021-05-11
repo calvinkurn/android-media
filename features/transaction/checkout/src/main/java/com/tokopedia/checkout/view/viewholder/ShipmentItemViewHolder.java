@@ -844,7 +844,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 )) + ")";
                 labelFreeShippingDiscountedEtaPrice.setText(DiscountedEtaPrice);
                 labelFreeShippingDiscountedPrice.setVisibility(View.GONE);
-
             }
             labelFreeShippingEtaText.setVisibility(View.VISIBLE);
             if (!selectedCourierItemData.getEtaText().isEmpty()) {

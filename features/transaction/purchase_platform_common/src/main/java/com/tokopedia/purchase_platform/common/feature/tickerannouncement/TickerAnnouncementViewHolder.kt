@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.tickerannouncement
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.item_ticker_anouncement.view.*
@@ -21,6 +21,7 @@ class TickerAnnouncementViewHolder(itemView: View, val actionListener: TickerAnn
             itemView.cartTicker.requestLayout()
         }
 
+        // todo: implement error ticker here? Or new view holder?
         actionListener?.onShowCartTicker(tickerAnnouncementData.id)
     }
 
