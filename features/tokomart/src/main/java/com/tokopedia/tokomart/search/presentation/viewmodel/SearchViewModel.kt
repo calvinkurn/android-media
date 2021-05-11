@@ -7,6 +7,7 @@ import com.tokopedia.tokomart.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_QUERY_PARAM_MAP
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -20,7 +21,8 @@ class SearchViewModel @Inject constructor (
         private val getSearchFirstPageUseCase: UseCase<SearchModel>,
         @param:Named(SEARCH_LOAD_MORE_PAGE_USE_CASE)
         private val getSearchLoadMorePageUseCase: UseCase<SearchModel>,
-): BaseSearchCategoryViewModel(baseDispatcher) {
+        chooseAddressWrapper: ChooseAddressWrapper,
+): BaseSearchCategoryViewModel(baseDispatcher, chooseAddressWrapper) {
 
     val query = queryParamMap[SearchApiConst.Q] ?: ""
 

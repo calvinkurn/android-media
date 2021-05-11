@@ -13,9 +13,11 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.ProductCountData
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
+import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 
 abstract class BaseSearchCategoryViewModel(
-        baseDispatcher: CoroutineDispatchers
+        baseDispatcher: CoroutineDispatchers,
+        protected val chooseAddressWrapper: ChooseAddressWrapper,
 ): BaseViewModel(baseDispatcher.io) {
 
     protected val loadingMoreModel = LoadingMoreModel()

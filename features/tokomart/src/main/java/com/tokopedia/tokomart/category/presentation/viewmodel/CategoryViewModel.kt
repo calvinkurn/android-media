@@ -6,6 +6,7 @@ import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
 import com.tokopedia.tokomart.category.utils.CATEGORY_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokomart.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -17,7 +18,8 @@ class CategoryViewModel @Inject constructor (
         private val getCategoryFirstPageUseCase: UseCase<CategoryModel>,
         @param:Named(CATEGORY_LOAD_MORE_PAGE_USE_CASE)
         private val getCategoryLoadMorePageUseCase: UseCase<CategoryModel>,
-): BaseSearchCategoryViewModel(baseDispatcher) {
+        chooseAddressWrapper: ChooseAddressWrapper,
+): BaseSearchCategoryViewModel(baseDispatcher, chooseAddressWrapper) {
 
     override fun onViewCreated() {
         getCategoryFirstPageUseCase.cancelJobs()

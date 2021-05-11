@@ -55,7 +55,7 @@ class SearchFragment: BaseSearchCategoryFragment() {
         getComponent(SearchComponent::class.java).inject(this)
     }
 
-    override fun createTypeFactory() = SearchTypeFactoryImpl()
+    override fun createTypeFactory() = SearchTypeFactoryImpl(this)
 
     override fun getViewModel() = searchViewModel
 }
