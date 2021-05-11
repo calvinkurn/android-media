@@ -2,15 +2,16 @@ package com.tokopedia.tokomart.category.presentation.view
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.tokomart.category.di.CategoryComponent
 import com.tokopedia.tokomart.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokomart.category.presentation.viewmodel.CategoryViewModel
-import com.tokopedia.tokomart.common.base.listener.BannerComponentCallback
+import com.tokopedia.tokomart.common.base.listener.BannerListener
 import com.tokopedia.tokomart.searchcategory.presentation.BaseSearchCategoryFragment
 import javax.inject.Inject
 
-class CategoryFragment: BaseSearchCategoryFragment() {
+class CategoryFragment: BaseSearchCategoryFragment(), BannerListener {
 
     companion object {
 
@@ -49,7 +50,11 @@ class CategoryFragment: BaseSearchCategoryFragment() {
         getComponent(CategoryComponent::class.java).inject(this)
     }
 
-    override fun createTypeFactory() = CategoryTypeFactoryImpl(BannerComponentCallback(context))
+    override fun createTypeFactory() = CategoryTypeFactoryImpl(this)
 
     override fun getViewModel() = categoryViewModel
+
+    override fun onBannerClick(applink: String) {
+        RouteManager.route(context, applink)
+    }
 }

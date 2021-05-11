@@ -8,10 +8,11 @@ import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
 import com.tokopedia.tokomart.category.presentation.viewholder.CategoryIsleViewHolder
+import com.tokopedia.tokomart.common.base.listener.BannerListener
 import com.tokopedia.tokomart.searchcategory.presentation.BaseSearchCategoryTypeFactoryImpl
 
 class CategoryTypeFactoryImpl(
-        bannerListener: BannerComponentListener
+        bannerListener: BannerListener
 ): BaseSearchCategoryTypeFactoryImpl(bannerListener), CategoryTypeFactory {
 
     override fun type(categoryIsleDataView: CategoryIsleDataView) = CategoryIsleViewHolder.LAYOUT

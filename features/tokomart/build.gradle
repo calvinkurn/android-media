@@ -35,6 +35,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
