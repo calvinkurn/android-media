@@ -64,4 +64,17 @@ class TestDoubleModelBuilder {
             dispatcher,
             setChannelTagsUseCase
     )
+
+    /**
+     * Real Impl
+     */
+    fun buildRealTitleDataStore(
+            dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,
+            updateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true),
+            userSession: UserSessionInterface = mockk(relaxed = true)
+    ) = TitleDataStoreImpl(
+            dispatcher,
+            updateChannelUseCase,
+            userSession
+    )
 }

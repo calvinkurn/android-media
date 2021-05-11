@@ -18,15 +18,25 @@ class PlayTitleAndTagsViewModelRobot(
         private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase
 ) : Robot {
 
-    val viewModel: PlayTitleAndTagsSetupViewModel = PlayTitleAndTagsSetupViewModel(
+    private val viewModel: PlayTitleAndTagsSetupViewModel = PlayTitleAndTagsSetupViewModel(
             hydraConfigStore = hydraConfigStore,
             dispatcher = dispatcher,
             setupDataStore = setupDataStore,
             getRecommendedChannelTagsUseCase = getRecommendedChannelTagsUseCase,
     )
 
+    fun getAddedTags() = viewModel.addedTags
+
     fun toggleTag(tag: String) {
         viewModel.toggleTag(tag)
+    }
+
+    fun finishSetup(title: String) {
+        viewModel.finishSetup(title)
+    }
+
+    fun isTagValid(tag: String): Boolean {
+        return viewModel.isTagValid(tag)
     }
 }
 

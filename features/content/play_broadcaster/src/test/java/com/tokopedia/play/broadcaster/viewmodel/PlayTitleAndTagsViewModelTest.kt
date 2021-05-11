@@ -2,11 +2,13 @@ package com.tokopedia.play.broadcaster.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.data.datastore.TagsDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.robot.andThen
 import com.tokopedia.play.broadcaster.robot.andWhen
 import com.tokopedia.play.broadcaster.robot.givenPlayTitleAndTagsViewModel
 import com.tokopedia.play.broadcaster.robot.thenVerify
+import com.tokopedia.play.broadcaster.testdouble.MockTitleDataStore
 import com.tokopedia.play.broadcaster.util.PlayBroadcasterResponseBuilder
 import com.tokopedia.play.broadcaster.util.TestDoubleModelBuilder
 import com.tokopedia.play.broadcaster.util.isEqualTo
@@ -32,12 +34,20 @@ class PlayTitleAndTagsViewModelTest {
 
     val dispatcher = CoroutineTestDispatchers
 
-    val responseBuilder = PlayBroadcasterResponseBuilder()
-    val testModelBuilder = TestDoubleModelBuilder()
+    private val responseBuilder = PlayBroadcasterResponseBuilder()
+    private val testModelBuilder = TestDoubleModelBuilder()
+
+    private val recommendedTags = setOf("abc", "def", "ghi")
+
+    private val recommendedTagsResponse = responseBuilder.buildRecommendedChannelTagsResponse(recommendedTags.toList())
+    private val recommendedTagsUseCase: GetRecommendedChannelTagsUseCase = mockk(relaxed = true)
+
 
     @Before
     fun setUp() {
         Dispatchers.setMain(dispatcher.coroutineDispatcher)
+
+        coEvery { recommendedTagsUseCase.executeOnBackground() } returns recommendedTagsResponse
     }
 
     @After
@@ -46,13 +56,7 @@ class PlayTitleAndTagsViewModelTest {
     }
 
     @Test
-    fun `given added tags, when retrieved, it should return the correct added tags`() {
-        val recommendedTags = setOf("abc", "def", "ghi")
-
-        val recommendedTagsResponse = responseBuilder.buildRecommendedChannelTagsResponse(recommendedTags.toList())
-        val recommendedTagsUseCase: GetRecommendedChannelTagsUseCase = mockk(relaxed = true)
-        coEvery { recommendedTagsUseCase.executeOnBackground() } returns recommendedTagsResponse
-
+    fun `given added tags, when retrieved, then it should return the correct added tags`() {
         val addedTags = recommendedTags.take(2).toSet()
         val setupDataStore: PlayBroadcastSetupDataStore = mockk(relaxed = true)
 
@@ -61,15 +65,82 @@ class PlayTitleAndTagsViewModelTest {
                 setupDataStore = setupDataStore,
                 getRecommendedChannelTagsUseCase = recommendedTagsUseCase
         ).andWhen {
-            viewModel.addedTags
+            getAddedTags()
         }.thenVerify {
             it.isEqualTo(addedTags)
         }.andThen {
             toggleTag(recommendedTags.last())
         }.andWhen {
-            viewModel.addedTags
+            getAddedTags()
         }.thenVerify {
             it.isEqualTo((addedTags + recommendedTags.last()).toSet())
+        }
+    }
+
+    @Test
+    fun `given upload tags is always failed, when finish setup, then title should never be uploaded`() {
+        val mockTitleDataStore = MockTitleDataStore(dispatcher)
+        val mockTagsDataStore: TagsDataStore = mockk(relaxed = true)
+
+        givenPlayTitleAndTagsViewModel(
+                setupDataStore = testModelBuilder.buildSetupDataStore(
+                        titleDataStore = mockTitleDataStore,
+                        tagsDataStore = mockTagsDataStore
+                ),
+                getRecommendedChannelTagsUseCase = recommendedTagsUseCase
+        ) {
+            coEvery { mockTagsDataStore.uploadTags(any()) } returns false
+        }.thenVerify {
+            mockTitleDataStore.isUploaded.isEqualTo(false)
+        }.andThen {
+            finishSetup("title")
+        }.thenVerify {
+            mockTitleDataStore.isUploaded.isEqualTo(false)
+        }
+    }
+
+    @Test
+    fun `given upload tags is always successful, when finish setup, then title should be uploaded`() {
+        val mockTitleDataStore = MockTitleDataStore(dispatcher)
+        val mockTagsDataStore: TagsDataStore = mockk(relaxed = true)
+
+        givenPlayTitleAndTagsViewModel(
+                setupDataStore = testModelBuilder.buildSetupDataStore(
+                        titleDataStore = mockTitleDataStore,
+                        tagsDataStore = mockTagsDataStore
+                ),
+                getRecommendedChannelTagsUseCase = recommendedTagsUseCase
+        ) {
+            coEvery { mockTagsDataStore.uploadTags(any()) } returns true
+        }.thenVerify {
+            mockTitleDataStore.isUploaded.isEqualTo(false)
+        }.andThen {
+            finishSetup("title")
+        }.thenVerify {
+            mockTitleDataStore.isUploaded.isEqualTo(true)
+        }
+    }
+
+    @Test
+    fun `when validating tag, it should only be valid when not blank and more between 2 and 32 chars`() {
+        givenPlayTitleAndTagsViewModel(
+                getRecommendedChannelTagsUseCase = recommendedTagsUseCase
+        ).andWhen {
+            isTagValid("")
+        }.thenVerify {
+            it.isEqualTo(false)
+        }.andWhen {
+            isTagValid("a")
+        }.thenVerify {
+            it.isEqualTo(false)
+        }.andWhen {
+            isTagValid("abc")
+        }.thenVerify {
+            it.isEqualTo(true)
+        }.andWhen {
+            isTagValid(List(33){ "a"}.joinToString(""))
+        }.thenVerify {
+            it.isEqualTo(false)
         }
     }
 }
