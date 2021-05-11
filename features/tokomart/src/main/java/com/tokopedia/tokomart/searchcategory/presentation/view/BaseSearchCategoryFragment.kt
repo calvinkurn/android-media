@@ -19,11 +19,12 @@ import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
+import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
 
 abstract class BaseSearchCategoryFragment: BaseDaggerFragment() {
 
     companion object {
-        private const val DEFAULT_SPAN_COUNT = 2
+        protected const val DEFAULT_SPAN_COUNT = 2
     }
 
     private var searchCategoryAdapter: SearchCategoryAdapter? = null
@@ -85,6 +86,7 @@ abstract class BaseSearchCategoryFragment: BaseDaggerFragment() {
 
         recyclerView?.adapter = searchCategoryAdapter
         recyclerView?.layoutManager = staggeredGridLayoutManager
+        recyclerView?.addProductItemDecoration()
 
         endlessScrollListener?.let {
             recyclerView?.addOnScrollListener(it)
@@ -99,6 +101,20 @@ abstract class BaseSearchCategoryFragment: BaseDaggerFragment() {
             }
 
     abstract fun createTypeFactory(): BaseSearchCategoryTypeFactory
+
+    protected open fun RecyclerView.addProductItemDecoration() {
+        try {
+            val context = context ?: return
+            val spacing = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+
+            if (itemDecorationCount >= 1)
+                invalidateItemDecorations()
+
+            addItemDecoration(ProductItemDecoration(spacing))
+        } catch (throwable: Throwable) {
+
+        }
+    }
 
     protected open fun observeViewModel() {
         getViewModel().visitableListLiveData.observe(viewLifecycleOwner, this::submitList)
