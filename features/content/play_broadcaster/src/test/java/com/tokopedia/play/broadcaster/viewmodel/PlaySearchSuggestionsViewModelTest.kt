@@ -1,77 +1,87 @@
 package com.tokopedia.play.broadcaster.viewmodel
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
+import com.tokopedia.play.broadcaster.robot.*
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
+import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
+import com.tokopedia.play.broadcaster.util.*
+import com.tokopedia.play.broadcaster.view.viewmodel.PlaySearchSuggestionsViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import java.util.concurrent.TimeoutException
+
 /**
  * Created by jegul on 25/09/20
+ */
+
 class PlaySearchSuggestionsViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val dispatcherProvider = CoroutineTestDispatchersProvider
+    private val dispatcher = CoroutineTestDispatchers
 
-    private val playBroadcastMapper = PlayBroadcastUiMapper()
+    private val playBroadcastMapper = PlayBroadcastUiMapper(
+            TestHtmlTextTransformer()
+    )
 
-    private val getProductInEtalaseUseCase: GetProductsInEtalaseUseCase = mockk(relaxed = true)
-
-    private val modelBuilder = ModelBuilder()
-    private val mockProductsInEtalase by lazy { modelBuilder.buildProductsInEtalase() }
-
-    private lateinit var viewModel: PlaySearchSuggestionsViewModel
+    private val responseBuilder = PlayBroadcasterResponseBuilder()
 
     @Before
     fun setUp() {
-        viewModel = PlaySearchSuggestionsViewModel(
-                dispatcherProvider,
-                getProductInEtalaseUseCase,
-                mockk(relaxed = true),
-                playBroadcastMapper
+        Dispatchers.setMain(dispatcher.coroutineDispatcher)
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
+    @Test
+    fun `when load suggestions from a keyword, then it should correct return suggestion list`() {
+        val mockUseCase: GetProductsInEtalaseUseCase = mockk(relaxed = true)
+        val idNameList = listOf(
+                "1" to "pizza tomat",
+                "2" to "pizza keju",
+                "3" to "pizza nanas"
         )
+        val keyword = "pizza"
+
+        val mockResponse = responseBuilder.buildGetProductsInEtalaseResponse(idNameList)
+
+        givenPlaySearchSuggestionsViewModel(
+                getProductsInEtalaseUseCase = mockUseCase
+        ) {
+            coEvery { mockUseCase.executeOnBackground() } returns mockResponse
+        }.andThen {
+            loadSuggestions(keyword)
+        }.andWhen {
+            getSuggestionList()
+        }.thenVerify {
+            it.assertWhenSuccess { actual ->
+                actual.isEqualToIgnoringFields(playBroadcastMapper.mapSearchSuggestionList(keyword, mockResponse), SearchSuggestionUiModel::spannedSuggestion)
+            }
+        }
     }
 
     @Test
-    fun `when load suggestion is success, then it should return success`() = runBlockingTest(testDispatcher) {
-        coEvery { getProductInEtalaseUseCase.executeOnBackground() } returns mockProductsInEtalase
-
-        val keyword = "123"
-        viewModel.loadSuggestionsFromKeyword(keyword)
-
-        advanceUntilIdle()
-
-        val result = viewModel.observableSuggestionList.getOrAwaitValue()
-
-        val typeComparator = TypeComparators()
-        typeComparator.put(CharSequence::class.java) { _, _ -> 0 }
-
-        Assertions
-                .assertThat(result)
-                .usingComparatorForType(
-                        RecursiveFieldByFieldComparator(emptyMap(), typeComparator) as Comparator<SearchSuggestionUiModel>,
-                        SearchSuggestionUiModel::class.java
-                )
-                .isEqualToComparingFieldByFieldRecursively(
-                        NetworkResult.Success(
-                                playBroadcastMapper.mapSearchSuggestionList(keyword, mockProductsInEtalase)
-                        )
-                )
+    fun `when not load suggestions from a keyword, then it should be error`() {
+        givenPlaySearchSuggestionsViewModel(
+        ).andMaybeWhen {
+            getSuggestionList()
+        }.thenExpectThrowable {
+            it.isErrorType(TimeoutException::class.java)
+        }
     }
-
-    @Test
-    fun `when load suggestion is failed, then it should return failed`() = runBlockingTest(testDispatcher) {
-        val error = IllegalStateException()
-
-        coEvery { getProductInEtalaseUseCase.executeOnBackground() } throws error
-
-        val keyword = "123"
-        viewModel.loadSuggestionsFromKeyword(keyword)
-
-        advanceUntilIdle()
-
-        val result = viewModel.observableSuggestionList.getOrAwaitValue()
-
-        Assertions
-                .assertThat(result)
-                .isInstanceOf(NetworkResult.Fail::class.java)
-    }
-
 }
- */

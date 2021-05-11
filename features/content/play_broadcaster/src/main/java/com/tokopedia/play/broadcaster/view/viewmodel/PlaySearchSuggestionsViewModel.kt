@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
@@ -24,9 +25,6 @@ class PlaySearchSuggestionsViewModel @Inject constructor(
         private val playBroadcastMapper: PlayBroadcastMapper
 ): ViewModel() {
 
-    private val job: Job = SupervisorJob()
-    private val scope = CoroutineScope(job + dispatcher.main)
-
     val observableSuggestionList: LiveData<NetworkResult<List<SearchSuggestionUiModel>>>
         get() = _observableSuggestionList
     private val _observableSuggestionList = MutableLiveData<NetworkResult<List<SearchSuggestionUiModel>>>()
@@ -34,12 +32,7 @@ class PlaySearchSuggestionsViewModel @Inject constructor(
     private val searchChannel = BroadcastChannel<String>(Channel.CONFLATED)
 
     init {
-        scope.launch { initSearchChannel() }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        scope.cancel()
+        viewModelScope.launch { initSearchChannel() }
     }
 
     fun loadSuggestionsFromKeyword(keyword: String) {
