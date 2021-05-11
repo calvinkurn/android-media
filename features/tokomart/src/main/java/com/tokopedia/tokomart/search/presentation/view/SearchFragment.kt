@@ -2,11 +2,12 @@ package com.tokopedia.tokomart.search.presentation.view
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.tokomart.search.di.SearchComponent
 import com.tokopedia.tokomart.search.presentation.typefactory.SearchTypeFactoryImpl
 import com.tokopedia.tokomart.search.presentation.viewmodel.SearchViewModel
-import com.tokopedia.tokomart.searchcategory.presentation.BaseSearchCategoryFragment
+import com.tokopedia.tokomart.searchcategory.presentation.view.BaseSearchCategoryFragment
 import javax.inject.Inject
 
 class SearchFragment: BaseSearchCategoryFragment() {
@@ -37,6 +38,13 @@ class SearchFragment: BaseSearchCategoryFragment() {
         }
     }
 
+    override fun configureNavToolbar() {
+        super.configureNavToolbar()
+        navToolbar?.setupSearchbar(
+                listOf(HintData(searchViewModel.query, searchViewModel.query))
+        )
+    }
+
     override fun createNavToolbarIconBuilder() = IconBuilder()
             .addCart()
             .addGlobalNav()
@@ -47,7 +55,14 @@ class SearchFragment: BaseSearchCategoryFragment() {
         getComponent(SearchComponent::class.java).inject(this)
     }
 
+<<<<<<< HEAD
     override fun createTypeFactory() = SearchTypeFactoryImpl(BannerComponentCallback(context))
+=======
+    override fun createTypeFactory() = SearchTypeFactoryImpl(
+            chooseAddressListener = this,
+            titleListener = this,
+    )
+>>>>>>> b37abc6b08895a326bf5078c5eeeb7bba9730f6a
 
     override fun getViewModel() = searchViewModel
 }

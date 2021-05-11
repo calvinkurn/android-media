@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="tokomart_search_title">Hasil pencarian di TokoNOW!</string>
+    <string name="tokomart_all_category">Semua Kategori</string>
+    <string name="tokomart_search_category_product_count_template">%s Produk</string>
+
+</resources>

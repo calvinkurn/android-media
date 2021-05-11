@@ -1,4 +1,4 @@
-package com.tokopedia.tokomart.searchcategory.presentation
+package com.tokopedia.tokomart.searchcategory.presentation.typefactory
 
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView

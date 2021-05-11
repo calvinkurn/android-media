@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 
-abstract class BaseTokoMartListAdapter<T, F: AdapterTypeFactory>(
+open class BaseTokoMartListAdapter<T, F: AdapterTypeFactory>(
     baseListAdapterTypeFactory: F,
     private val differ: BaseTokoMartDiffer
 ): BaseListAdapter<T, F>(baseListAdapterTypeFactory) {

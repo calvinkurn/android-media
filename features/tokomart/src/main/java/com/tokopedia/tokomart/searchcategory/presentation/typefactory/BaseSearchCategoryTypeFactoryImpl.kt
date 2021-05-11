@@ -1,25 +1,13 @@
-package com.tokopedia.tokomart.searchcategory.presentation
+package com.tokopedia.tokomart.searchcategory.presentation.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.HomeComponentTypeFactory
-import com.tokopedia.home_component.listener.BannerComponentListener
-import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
-import com.tokopedia.home_component.visitable.BannerDataModel
-import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
-import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
-import com.tokopedia.home_component.visitable.FeaturedShopDataModel
-import com.tokopedia.home_component.visitable.Lego4AutoDataModel
-import com.tokopedia.home_component.visitable.MixLeftDataModel
-import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.home_component.visitable.ProductHighlightDataModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
-import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.tokomart.common.base.listener.BannerListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.BannerViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
@@ -28,13 +16,16 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataV
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.ChooseAddressViewHolder
+import com.tokopedia.tokomart.searchcategory.presentation.viewholder.LoadingMoreViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.ProductCountViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.ProductItemViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.QuickFilterViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.TitleViewHolder
 
 abstract class BaseSearchCategoryTypeFactoryImpl(
-    private val bannerListener: BannerListener
+        protected val chooseAddressListener: ChooseAddressListener,
+        protected val titleListener: TitleListener,
+        protected val bannerListener: BannerListener
 ): BaseAdapterTypeFactory(), BaseSearchCategoryTypeFactory {
 
     override fun type(chooseAddressDataView: ChooseAddressDataView) = ChooseAddressViewHolder.LAYOUT
@@ -75,15 +66,18 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
 //
 //    override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int = 0
 
+    override fun type(viewModel: LoadingMoreModel) = LoadingMoreViewHolder.LAYOUT
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             ProductItemViewHolder.LAYOUT -> ProductItemViewHolder(view)
-            ChooseAddressViewHolder.LAYOUT -> ChooseAddressViewHolder(view)
+            ChooseAddressViewHolder.LAYOUT -> ChooseAddressViewHolder(view, chooseAddressListener)
             BannerViewHolder.LAYOUT -> BannerViewHolder(view, bannerListener)
-            TitleViewHolder.LAYOUT -> TitleViewHolder(view)
+            TitleViewHolder.LAYOUT -> TitleViewHolder(view, titleListener)
             QuickFilterViewHolder.LAYOUT -> QuickFilterViewHolder(view)
             ProductCountViewHolder.LAYOUT -> ProductCountViewHolder(view)
 //            BannerComponentViewHolder.LAYOUT -> BannerComponentViewHolder(view, bannerListener, null)
+            LoadingMoreViewHolder.LAYOUT -> LoadingMoreViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

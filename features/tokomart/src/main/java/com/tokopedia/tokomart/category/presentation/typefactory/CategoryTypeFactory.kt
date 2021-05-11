@@ -1,7 +1,7 @@
 package com.tokopedia.tokomart.category.presentation.typefactory
 
 import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
-import com.tokopedia.tokomart.searchcategory.presentation.BaseSearchCategoryTypeFactory
+import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 
 interface CategoryTypeFactory: BaseSearchCategoryTypeFactory {
 

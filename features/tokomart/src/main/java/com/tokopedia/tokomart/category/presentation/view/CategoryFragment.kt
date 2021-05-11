@@ -8,7 +8,7 @@ import com.tokopedia.tokomart.category.di.CategoryComponent
 import com.tokopedia.tokomart.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokomart.category.presentation.viewmodel.CategoryViewModel
 import com.tokopedia.tokomart.common.base.listener.BannerListener
-import com.tokopedia.tokomart.searchcategory.presentation.BaseSearchCategoryFragment
+import com.tokopedia.tokomart.searchcategory.presentation.view.BaseSearchCategoryFragment
 import javax.inject.Inject
 
 class CategoryFragment: BaseSearchCategoryFragment(), BannerListener {
@@ -50,7 +50,10 @@ class CategoryFragment: BaseSearchCategoryFragment(), BannerListener {
         getComponent(CategoryComponent::class.java).inject(this)
     }
 
-    override fun createTypeFactory() = CategoryTypeFactoryImpl(this)
+    override fun createTypeFactory() = CategoryTypeFactoryImpl(
+            chooseAddressListener = this,
+            titleListener = this,
+    )
 
     override fun getViewModel() = categoryViewModel
 

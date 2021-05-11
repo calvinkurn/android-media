@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.tokomart.category.di.CategoryComponent
 import com.tokopedia.tokomart.category.di.CategoryContextModule
 import com.tokopedia.tokomart.category.di.DaggerCategoryComponent
-import com.tokopedia.tokomart.searchcategory.presentation.BaseSearchCategoryActivity
+import com.tokopedia.tokomart.searchcategory.presentation.view.BaseSearchCategoryActivity
 
 class CategoryActivity: BaseSearchCategoryActivity(), HasComponent<CategoryComponent> {
 

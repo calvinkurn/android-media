@@ -33,10 +33,10 @@
                 <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data-->
-                <!--                    android:scheme="@string/internal_scheme"-->
-                <!--                    android:host="@string/host_discovery"-->
-                <!--                    android:path="@string/path_search_result"/>-->
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_tokomart"
+                    android:path="@string/path_tokomart_search"/>
             </intent-filter>
 
         </activity>
@@ -52,10 +52,10 @@
                 <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!--                <data-->
-                <!--                    android:scheme="@string/internal_scheme"-->
-                <!--                    android:host="@string/host_discovery"-->
-                <!--                    android:path="@string/path_search_result"/>-->
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_tokomart"
+                    android:path="@string/path_tokomart_category"/>
             </intent-filter>
 
         </activity>

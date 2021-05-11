@@ -6,7 +6,10 @@ import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
 import io.mockk.every
 import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert
+import org.junit.Assert.assertThat
+import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
 
@@ -19,10 +22,14 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
     }
 
     protected fun `Then assert visitable list footer`(visitableList: List<Visitable<*>>) {
-        Assert.assertThat(visitableList.last(), CoreMatchers.instanceOf(CategoryIsleDataView::class.java))
+        assertThat(visitableList.last(), instanceOf(CategoryIsleDataView::class.java))
     }
 
     protected fun `Then assert visitable list end with loading more model`(visitableList: List<Visitable<*>>) {
-        Assert.assertThat(visitableList.last(), CoreMatchers.instanceOf(LoadingMoreModel::class.java))
+        assertThat(visitableList.last(), instanceOf(LoadingMoreModel::class.java))
+    }
+
+    protected fun `Then assert has next page value`(expectedHasNextPage: Boolean) {
+        assertThat(categoryViewModel.hasNextPageLiveData.value!!, shouldBe(expectedHasNextPage))
     }
 }
