@@ -170,7 +170,6 @@ class PopularKeywordViewHolder (val view: View,
             if(!element.isErrorLoad) {
                 errorPopularKeyword?.hide()
                 channelTitle?.show()
-                channelSubtitle?.show()
                 ivReload?.show()
                 tvReload?.show()
             } else {

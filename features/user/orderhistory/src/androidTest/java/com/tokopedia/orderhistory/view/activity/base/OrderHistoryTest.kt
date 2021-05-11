@@ -3,7 +3,6 @@ package com.tokopedia.orderhistory.view.activity.base
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions
@@ -16,14 +15,12 @@ import com.tokopedia.orderhistory.R
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
 import com.tokopedia.orderhistory.di.OrderHistoryContextModule
 import com.tokopedia.orderhistory.idling.FragmentTransactionIdle
+import com.tokopedia.orderhistory.stub.common.di.DaggerFakeBaseAppComponent
+import com.tokopedia.orderhistory.stub.common.di.module.FakeAppModule
 import com.tokopedia.orderhistory.stub.di.DaggerOrderHistoryComponentStub
 import com.tokopedia.orderhistory.stub.di.OrderHistoryComponentStub
 import com.tokopedia.orderhistory.stub.usecase.GetProductOrderHistoryUseCaseStub
 import com.tokopedia.orderhistory.stub.view.activity.OrderHistoryActivityStub
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Rule
 import javax.inject.Inject
@@ -34,9 +31,6 @@ open class OrderHistoryTest {
     var activityTestRule = IntentsTestRule(
             OrderHistoryActivityStub::class.java, false, false
     )
-
-    @get:Rule
-    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     protected open lateinit var activity: OrderHistoryActivityStub
     protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
@@ -58,11 +52,11 @@ open class OrderHistoryTest {
 
     protected lateinit var orderHistoryComponentStub: OrderHistoryComponentStub
 
-    @ExperimentalCoroutinesApi
     @Before
     open fun before() {
-        Dispatchers.setMain(TestCoroutineDispatcher())
-        val baseComponent = (applicationContext as BaseMainApplication).baseAppComponent
+        val baseComponent = DaggerFakeBaseAppComponent.builder()
+                .fakeAppModule(FakeAppModule(applicationContext))
+                .build()
         orderHistoryComponentStub = DaggerOrderHistoryComponentStub.builder()
                 .baseAppComponent(baseComponent)
                 .orderHistoryContextModule(OrderHistoryContextModule(context))
