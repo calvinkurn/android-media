@@ -9,6 +9,7 @@ import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.tokopointhome.RecommendationWrapper
 import com.tokopedia.tokopoints.view.tokopointhome.RewardsRecomListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper> , val listener : RewardsRecomListener) :
     RecyclerView.Adapter<RewardsRecommAdapter.ProductCardViewHolder>() {
@@ -23,12 +24,28 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper> , val list
             productView.setImageProductViewHintListener(
                 model.recomendationItem,object : ViewHintListener {
                     override fun onViewHint() {
+                        if (impressItem.isTopAds) {
+                            TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                                className,
+                                impressItem.trackerImageUrl,
+                                impressItem.productId.toString(),
+                                impressItem.name,
+                                impressItem.imageUrl,"")
+                        }
                         listener.onProductImpression(impressItem,position)
                     }
                 }
             )
 
             productView.setOnClickListener {
+                if (impressItem.isTopAds) {
+                        TopAdsUrlHitter(itemView.context).hitClickUrl(
+                            className,
+                            impressItem.clickUrl,
+                            impressItem.productId.toString(),
+                            impressItem.name,
+                            impressItem.imageUrl,"")
+                }
                 listener.onProductClick(impressItem,"",position)
             }
         }
@@ -47,5 +64,9 @@ class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper> , val list
 
     override fun onBindViewHolder(holder: ProductCardViewHolder, position: Int) {
         holder.bind(list[position])
+    }
+
+    companion object{
+        const val className = "com.tokopedia.tokopoints.view.recommwidget.RewardsRecommAdapter"
     }
 }

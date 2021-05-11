@@ -2,7 +2,6 @@ package com.tokopedia.tokopoints.view.tokopointhome
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -455,58 +454,58 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
         return object : RewardsRecomListener {
 
-            override fun onProductImpression(impressItem: RecommendationItem, position: Int) {
-                val productIdString: String = if (impressItem.productId != null) {
-                    impressItem.productId.toString()
+            override fun onProductImpression(item: RecommendationItem, position: Int) {
+                val productIdString: String = if (item.productId != null) {
+                    item.productId.toString()
                 } else {
                     ""
                 }
                 AnalyticsTrackerUtil.impressionProductRecomItem(
                     productIdString,
-                    impressItem.recommendationType,
+                    item.recommendationType,
                     position,
                     "none / other",
-                    impressItem.categoryBreadcrumbs,
-                    impressItem.name,
+                    item.categoryBreadcrumbs,
+                    item.name,
                     "none / other",
-                    impressItem.price,
-                    impressItem.isTopAds
+                    item.price,
+                    item.isTopAds
                 )
             }
 
             override fun onProductClick(
-                impressItem: RecommendationItem,
+                item: RecommendationItem,
                 layoutType: String?,
                 vararg position: Int
             ) {
 
-                val productIdString: String = if (impressItem.productId != null) {
-                    impressItem.productId.toString()
+                val productIdString: String = if (item.productId != null) {
+                    item.productId.toString()
                 } else {
                     ""
                 }
                 AnalyticsTrackerUtil.clickProductRecomItem(
-                    impressItem.productId.toString(),
-                    impressItem.recommendationType,
+                    item.productId.toString(),
+                    item.recommendationType,
                     position[0],
                     "none / other",
-                    impressItem.categoryBreadcrumbs,
-                    impressItem.name,
+                    item.categoryBreadcrumbs,
+                    item.name,
                     "none / other",
-                    impressItem.price,
-                    impressItem.isTopAds
+                    item.price,
+                    item.isTopAds
                 )
 
                 val intent = RouteManager.getIntent(
                     context,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    impressItem.productId.toString()
+                    item.productId.toString()
                 )
                 if (position.isNotEmpty()) intent.putExtra(
                     PDP_EXTRA_UPDATED_POSITION,
                     position[0]
                 )
-                this@TokoPointsHomeFragmentNew.startActivityForResult(intent, REQUEST_FROM_PDP)
+                this@TokoPointsHomeFragmentNew.startActivity(intent)
             }
 
             override fun onProductImpression(item: RecommendationItem) {
