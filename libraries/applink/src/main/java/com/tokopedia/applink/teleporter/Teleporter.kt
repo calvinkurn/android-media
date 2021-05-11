@@ -2,71 +2,117 @@ package com.tokopedia.applink.teleporter
 
 import android.content.Context
 import android.net.Uri
-import com.tokopedia.applink.DeeplinkMapper
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import org.json.JSONObject
+import java.lang.reflect.Type
 
 object Teleporter {
-    var configJSON: JSONObject? = null
+    var teleporterPatternList: List<TeleporterPattern>? = null
     var lastFetch: Long = 0L
     const val DURATION_FETCH = 900000
-    const val MAINAPP_SWITCH_TO_WEBVIEW = "android_mainapp_teleporter"
-    const val SELLERAPP_SWITCH_TO_WEBVIEW = "android_sellerapp_teleporter"
+    const val MAINAPP_TELEPORTER_REMOTE_CONFIG = "android_mainapp_teleporter"
+    const val SELLERAPP_TELEPORTER_REMOTE_CONFIG = "android_sellerapp_teleporter"
+    val gson = Gson()
 
-    fun switchIfNeeded(context: Context, uri: Uri): String {
+    /**
+     * Example input:
+     * patternList:
+     * listOf (Pattern(
+     *            "tokopedia",
+     *            "product",
+     *            "{product_id}",
+     *            "abc={abc_id}" // this query is must have. Input uri must have this query to map.
+     *            "aff={aff_id}",// this query is optional. no need to exist in input
+     *            "tokopedia-android-internal/product/test?id={product_id}&def={abc_id}&affiliate={aff_id}")
+     *       , Pattern(...)
+     *       , ...)
+     * uriToCheck: tokopedia://product/123?abc=879&aff=2142&xyz=987
+     *
+     * output: tokopedia-android-internal/product/test?id=123&def=879&affiliate=2142&xyz=987
+     */
+    fun switchIfNeeded(context: Context, uriToCheck: Uri): String {
+        val patternList = getConfig(context)?: return ""
+        return switchIfNeeded(patternList, uriToCheck)
+    }
+
+    fun switchIfNeeded(patternList: List<TeleporterPattern>, uriToCheck: Uri): String {
         try {
-            val now = System.currentTimeMillis()
-            if (now - lastFetch > DURATION_FETCH) {
-                getLatestConfig(context)
-                lastFetch = now
+            val schemeToCheck = uriToCheck.scheme
+            val hostToCheck = uriToCheck.host
+            val query = uriToCheck.query
+
+            val patternMatch = patternList.find { pattern ->
+                pattern.scheme == schemeToCheck && pattern.host == hostToCheck
+            } ?: return ""
+
+            // check path
+            // example: will result into map of ids {product_id} to 123}
+            val pathMatchMap = UriUtil.matchPathsWithPatternToMap(patternMatch.pathPatternList,
+                    uriToCheck.pathSegments) ?: return ""
+
+            // example: will result to query map (abc to 879, aff to 2142, xyz to 987)
+            val queryToCheckMap = UriUtil.stringQueryParamsToMap(query)
+
+            val queryMustHaveMatchMap = if (patternMatch.queryMustHavePatternMap.isNotEmpty()) {
+                val queryMap = UriUtil.matchQueryWithPatternToMap(patternMatch.queryMustHavePatternMap, queryToCheckMap)
+                        ?: return ""
+                for ((_, value)in queryMap) {
+                    if (value.isEmpty()) {
+                        return ""
+                    }
+                }
+                queryMap
+            } else {
+                mapOf()
             }
-            val jsonObj = configJSON ?: return ""
 
-            val trimmedDeeplink = UriUtil.trimDeeplink(uri, uri.toString())
+            // will result to mapOf ({aff_id} to 2142)
+            val queryOptionalMatchMap = UriUtil.matchQueryWithPatternToMap(patternMatch.queryOptionalPatternMap, queryToCheckMap)
 
-            val switchData = jsonObj.optJSONObject(trimmedDeeplink) ?: return ""
+            var resultUriString = UriUtil.buildUri(patternMatch.target, pathMatchMap)
+            resultUriString = UriUtil.buildUri(resultUriString, queryMustHaveMatchMap)
+            resultUriString = UriUtil.buildUri(resultUriString, queryOptionalMatchMap)
 
-            val environment = switchData.optString("env")
-            val versions = switchData.optString("versions")
-            val weblink = switchData.optString("link")
+            ServerLogger.log(Priority.P1, "WEBVIEW_SWITCH", mapOf("type" to uriToCheck.toString(), "url" to resultUriString))
 
-            if (GlobalConfig.isAllowDebuggingTools() && environment != "dev") return ""
-            if (!GlobalConfig.isAllowDebuggingTools() && environment != "prod") return ""
-
-            val versionList = versions.split(",")
-            if (GlobalConfig.VERSION_NAME !in versionList) return ""
-
-            val webviewApplink = UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, weblink)
-
-            ServerLogger.log(Priority.P1, "WEBVIEW_SWITCH", mapOf("type" to uri.toString(), "url" to weblink))
-
-            return DeeplinkMapper.createAppendDeeplinkWithQuery(webviewApplink, uri.query)
+            // appendDiffDeeplinkWithQuery is used to append missing queries to target deeplink
+            return UriUtil.appendDiffDeeplinkWithQuery(resultUriString, query)
         } catch (e: Exception) {
             return ""
         }
     }
 
+    private fun getConfig(context: Context): List<TeleporterPattern>? {
+        val now = System.currentTimeMillis()
+        if (now - lastFetch > DURATION_FETCH) {
+            getLatestConfig(context)
+            lastFetch = now
+        }
+        return teleporterPatternList
+    }
+
     private fun getLatestConfig(context: Context) {
         try {
             val remoteConfig = FirebaseRemoteConfigInstance.get(context)
-            var webviewSwitchConfig = ""
+            var configString = ""
 
-            webviewSwitchConfig = if (GlobalConfig.isSellerApp()) {
-                remoteConfig.getString(SELLERAPP_SWITCH_TO_WEBVIEW)
+            configString = if (GlobalConfig.isSellerApp()) {
+                remoteConfig.getString(SELLERAPP_TELEPORTER_REMOTE_CONFIG)
             } else {
-                remoteConfig.getString(MAINAPP_SWITCH_TO_WEBVIEW)
+                remoteConfig.getString(MAINAPP_TELEPORTER_REMOTE_CONFIG)
             }
 
-            if (webviewSwitchConfig != null) {
-                configJSON = JSONObject(webviewSwitchConfig)
+            if (configString != null) {
+                val listType: Type = object : TypeToken<MutableList<TeleporterPattern>>() {}.type
+                teleporterPatternList = gson.fromJson(configString, listType)
             }
         } catch (e: Exception) {
-            configJSON = null
+            teleporterPatternList = null
         }
 
     }

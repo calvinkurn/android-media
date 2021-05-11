@@ -198,8 +198,6 @@ public class RouteManager {
      * @return true if successfully routing to activity
      */
     public static boolean route(Context context, String applinkPattern, String... parameter) {
-        Bundle bundle = getBundleFromAppLinkQueryParams(applinkPattern);
-        bundle.putBundle(QUERY_PARAM, bundle);
         return route(context, new Bundle(), applinkPattern, parameter);
     }
 
@@ -329,14 +327,6 @@ public class RouteManager {
         return bundle;
     }
 
-    public static void putQueryParamsInIntent(Intent intent, String mappedDeeplink) {
-        Map<String, String> map = UriUtil.uriQueryParamsToMap(mappedDeeplink);
-        for (String key : map.keySet()) {
-            String value = map.get(key);
-            intent.putExtra(key, value);
-        }
-    }
-
     /**
      * return the intent for the given deeplink
      * If no activity found will return to home
@@ -354,16 +344,6 @@ public class RouteManager {
             intent.setData(Uri.parse(deeplink));
             intent.putExtra(EXTRA_APPLINK_UNSUPPORTED, true);
         }
-        return intent;
-    }
-
-    public static Intent getIntent(Context context, String deeplinkPattern, Uri orignUri, String... parameter) {
-        Intent intent = getIntent(context, deeplinkPattern, parameter);
-
-        Bundle queryParamBundle = RouteManager.getBundleFromAppLinkQueryParams(orignUri);
-        Bundle defaultBundle = new Bundle();
-        defaultBundle.putBundle(RouteManager.QUERY_PARAM, queryParamBundle);
-        intent.putExtras(defaultBundle);
         return intent;
     }
 

@@ -93,7 +93,7 @@ object DeeplinkMapper {
         val uri = Uri.parse(deeplink)
         val teleporterResult = Teleporter.switchIfNeeded(context, uri)
         if (teleporterResult.isNotEmpty()) {
-            return createAppendDeeplinkWithQuery(teleporterResult, uri.query)
+            return UriUtil.appendDiffDeeplinkWithQuery(teleporterResult, uri.query)
         }
         val mappedDeepLink: String = when (uri.scheme) {
             DeeplinkConstant.SCHEME_HTTP,
@@ -103,12 +103,12 @@ object DeeplinkMapper {
             DeeplinkConstant.SCHEME_TOKOPEDIA -> {
                 val query = uri.query
                 val tempDeeplink = getRegisteredNavigationFromTokopedia(context, uri, deeplink)
-                createAppendDeeplinkWithQuery(tempDeeplink, query)
+                UriUtil.appendDiffDeeplinkWithQuery(tempDeeplink, query)
             }
             DeeplinkConstant.SCHEME_SELLERAPP -> {
                 val query = uri.query
                 val tempDeeplink = getRegisteredNavigationFromSellerapp(uri, deeplink)
-                createAppendDeeplinkWithQuery(tempDeeplink, query)
+                UriUtil.appendDiffDeeplinkWithQuery(tempDeeplink, query)
             }
             DeeplinkConstant.SCHEME_INTERNAL -> {
                 getRegisteredNavigationFromInternalTokopedia(context, uri, deeplink)
@@ -151,28 +151,6 @@ object DeeplinkMapper {
 
     private fun isChatBotTrue(uri: Uri): Boolean {
         return uri.getQueryParameter("is_chat_bot")?.equals("true") == true
-    }
-
-    fun createAppendDeeplinkWithQuery(deeplink: String, query: String?): String {
-        val uri = Uri.parse(deeplink)
-        return if (query?.isNotEmpty() == true && deeplink.isNotEmpty()) {
-            val diffQuery = UriUtil.getDiffQuery(query, uri)
-            appendDeeplinkWithQuery(deeplink, diffQuery)
-        } else {
-            deeplink
-        }
-    }
-
-    private fun appendDeeplinkWithQuery(deeplink: String, query: String): String {
-        if (query.isEmpty()) {
-            return deeplink
-        }
-        val questionMarkIndex = deeplink.indexOf("?")
-        return deeplink + if (questionMarkIndex == -1) {
-            "?$query"
-        } else {
-            "&$query"
-        }
     }
 
     private fun getRegisteredNavigationTopChat(uri: Uri, deeplink: String): String {

@@ -2,7 +2,6 @@ package com.tokopedia.applink
 
 import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
 import java.net.URLDecoder
 import java.util.*
 import java.util.regex.Pattern
@@ -28,6 +27,41 @@ object UriUtil {
             var i = 0
             while (m.find()) {
                 result = result.replace(m.group(), parameter[i]!!)
+                i++
+            }
+        }
+        return result
+    }
+
+    /**
+     * Build pattern uri to uri String
+     *
+     * @param uriPattern example: "tokopedia-android-internal://merchant/product/{id}/edit/"
+     * @param map  example: map("{id}" to "123", "{id2}" to "234")
+     * @return "tokopedia-android-internal://merchant/product/213/edit/
+     */
+    @JvmStatic
+    fun buildUri(uriPattern: String,
+                 map: Map<String, String>?): String {
+        var result = uriPattern
+        if (map.isNullOrEmpty()) {
+            return uriPattern
+        } else {
+            val p = Pattern.compile("""\{(.*?)\}""")
+            val m = p.matcher(uriPattern)
+            var i = 0
+            while (m.find()) {
+                val matchString = m.group()
+                val mapTarget = map[matchString]
+                if (mapTarget != null) {
+                    result = result.replace(matchString, mapTarget)
+                } else {
+                    val idBracket = "{$matchString}"
+                    val mapBracket = map[idBracket]
+                    if (mapBracket != null) {
+                        result = result.replace(matchString, mapBracket)
+                    }
+                }
                 i++
             }
         }
@@ -79,6 +113,7 @@ object UriUtil {
         val result = matchWithPattern(uriPatternString, uri, checkScheme)
         return result ?: ArrayList()
     }
+
     /**
      * Compare between uri pattern and uri input.
      *
@@ -99,29 +134,94 @@ object UriUtil {
             if (host != null && host != inputUri.host) {
                 return null
             }
+            return matchPathsWithPattern(uriPattern.pathSegments, inputUri.pathSegments)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    fun matchPathsWithPattern(patternPaths: List<String>, inputPaths: List<String>): List<String>? {
+        try {
             val resultList: MutableList<String> = ArrayList()
-            val patternPathSegments = uriPattern.pathSegments
-            val inputPathSegments = inputUri.pathSegments
-            val uriPatternSize = patternPathSegments.size
-            if (uriPatternSize != inputPathSegments.size) {
+            val uriPatternSize = patternPaths.size
+            if (uriPatternSize != inputPaths.size) {
                 return null
             }
             var i = 0
             while (i < uriPatternSize) {
-                val pathpattern = patternPathSegments[i]
+                val pathpattern = patternPaths[i]
                 if (pathpattern.startsWith("{") && pathpattern.endsWith("}")) {
-                    resultList.add(inputPathSegments[i])
+                    resultList.add(inputPaths[i])
                     i++
                     continue
                 }
-                if (pathpattern != inputPathSegments[i]) {
+                if (pathpattern != inputPaths[i]) {
                     return null
                 }
                 i++
             }
-            resultList
+            return resultList
         } catch (e: Exception) {
-            null
+            return null
+        }
+    }
+
+    /**
+     * Compare between uri pattern and uri input.
+     *
+     * @param pattern  example: "shop/{id_1}/etalase/{id_2}/"
+     * @param inputUri example: "shop/123/etalase/345"
+     * @return map of ids mapOf ({id_1} to 123, {id_2} to 345), if not match, will return null
+     */
+    fun matchPathsWithPatternToMap(patternPaths: List<String>, inputPaths: List<String>): Map<String, String>? {
+        try {
+            val resultMap: MutableMap<String, String> = mutableMapOf()
+            val uriPatternSize = patternPaths.size
+            if (uriPatternSize != inputPaths.size) {
+                return null
+            }
+            var i = 0
+            while (i < uriPatternSize) {
+                val pathpattern = patternPaths[i]
+                if (pathpattern.startsWith("{") && pathpattern.endsWith("}")) {
+                    resultMap[pathpattern] = inputPaths[i]
+                    i++
+                    continue
+                }
+                if (pathpattern != inputPaths[i]) {
+                    return null
+                }
+                i++
+            }
+            return resultMap
+        } catch (e: Exception) {
+            return null
+        }
+    }
+
+    /**
+     * Compare between uri pattern and uri input.
+     *
+     * @param pattern  example: aff={aff_id} b={b_id}
+     * @param inputUri example: aff=123 b=345
+     * @return map of ids mapOf ({aff_id} to 123, {b} to 345), if not match, will return null
+     */
+    fun matchQueryWithPatternToMap(patternQuery: Map<String, String>, inputQueries: Map<String, String>): Map<String, String>? {
+        try {
+            val resultMap: MutableMap<String, String> = mutableMapOf()
+            var i = 0
+            for (pattern in patternQuery) {
+                val key = pattern.key
+                val inputValue = inputQueries[key]
+                if (inputValue != null) {
+                    resultMap[pattern.value] = inputValue
+                } else {
+                    resultMap[pattern.value] = ""
+                }
+            }
+            return resultMap
+        } catch (e: Exception) {
+            return null
         }
     }
 
@@ -201,12 +301,25 @@ object UriUtil {
 
     @JvmStatic
     fun uriQueryParamsToMap(url: String): Map<String, String> {
+        return (uriQueryParamsToMap(Uri.parse(url)))
+    }
+
+    @JvmStatic
+    fun uriQueryParamsToMap(uri: Uri): Map<String, String> {
+        try {
+            val query = uri.query
+            return stringQueryParamsToMap(query)
+        } catch (e: Exception) {
+        }
+        return mapOf()
+    }
+
+    @JvmStatic
+    fun stringQueryParamsToMap(query: String?): Map<String, String> {
         val map: MutableMap<String, String> = HashMap()
         try {
-            val uri = Uri.parse(url)
-            val query = uri.query
-            if (!TextUtils.isEmpty(query)) {
-                val pairs = query!!.split(QUERY_PARAM_SEPRATOR).toTypedArray()
+            if (!query.isNullOrEmpty()) {
+                val pairs = query.split(QUERY_PARAM_SEPRATOR)
                 for (pair in pairs) {
                     val idx = pair.indexOf("=")
                     map[URLDecoder.decode(pair.substring(0, idx), ENCODING)] = URLDecoder.decode(pair.substring(idx + 1), ENCODING)
@@ -238,19 +351,47 @@ object UriUtil {
     fun getDiffQuery(query: String, uri: Uri): String {
         return try {
             val queryList = query.split("&")
-            val strResultList:MutableList<String> = mutableListOf()
+            val strResultList: MutableList<String> = mutableListOf()
             for (q in queryList) {
                 val keyValueSplit = q.split("=")
                 val key = keyValueSplit[0]
                 val value = keyValueSplit[1]
                 val valueOriginalUri = uri.getQueryParameter(key)
                 if (valueOriginalUri == null) {
-                    strResultList.add (keyValueSplit[0] + "=" + value)
+                    strResultList.add(keyValueSplit[0] + "=" + value)
                 }
             }
             strResultList.joinToString("&")
         } catch (e: Exception) {
             query
+        }
+    }
+
+    /**
+     * only append the difference query
+     * deeplink: a://a?a=123&b=234
+     * query: c=345&a=234
+     * result: a://a?a=123&b=234&c=345 (a is not overwriten)
+     */
+    fun appendDiffDeeplinkWithQuery(deeplink: String, query: String?): String {
+        val uri = Uri.parse(deeplink)
+        return if (query?.isNotEmpty() == true && deeplink.isNotEmpty()) {
+            val diffQuery = UriUtil.getDiffQuery(query, uri)
+            appendDeeplinkWithQuery(deeplink, diffQuery)
+        } else {
+            deeplink
+        }
+    }
+
+    fun appendDeeplinkWithQuery(deeplink: String, query: String): String {
+        if (query.isEmpty()) {
+            return deeplink
+        }
+        val questionMarkIndex = deeplink.indexOf("?")
+        return deeplink + if (questionMarkIndex == -1) {
+            "?$query"
+        } else {
+            "&$query"
         }
     }
 }
