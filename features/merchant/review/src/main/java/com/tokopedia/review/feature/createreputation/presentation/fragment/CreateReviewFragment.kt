@@ -331,13 +331,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
             }
         })
 
-        createReviewAnonymousCheckbox.setOnClickListener {
-            if (createReviewAnonymousCheckbox.isChecked) {
-                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode, feedbackId.toString())
-            }
-            clearFocusAndHideSoftInput(view)
-        }
-
         review_container.setOnTouchListener { _, _ ->
             clearFocusAndHideSoftInput(view)
             return@setOnTouchListener false
@@ -933,9 +926,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun initAnonymousText() {
         createReviewAnonymousText.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                createReviewAnonymousCheckbox.isChecked = !createReviewAnonymousCheckbox.isChecked
-            }
             if (createReviewAnonymousCheckbox.isChecked) {
                 CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode, feedbackId.toString())
             }

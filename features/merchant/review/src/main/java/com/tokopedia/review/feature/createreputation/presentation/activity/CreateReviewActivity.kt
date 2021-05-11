@@ -17,6 +17,7 @@ import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import timber.log.Timber
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
@@ -36,6 +37,7 @@ class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, Rev
     private var reputationId: String = ""
     private var utmSource: String = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    private var createReviewBottomSheet: BottomSheetUnify? = null
 
 //    override fun getNewFragment(): Fragment? {
 //        if (isNewWriteForm()) return null
@@ -176,15 +178,15 @@ class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, Rev
     }
 
     private fun showWriteFormBottomSheet() {
-        val bottomSheet = CreateReviewBottomSheet.createInstance(rating, productId.toLongOrZero(), reputationId.toLongOrZero(), feedbackId, utmSource, isEditMode)
-        bottomSheet.apply {
+        createReviewBottomSheet = CreateReviewBottomSheet.createInstance(rating, productId.toLongOrZero(), reputationId.toLongOrZero(), feedbackId, utmSource, isEditMode)
+        createReviewBottomSheet?.apply {
             isDragable = true
             isHideable = true
             showKnob = true
             showCloseIcon = false
             show(supportFragmentManager, "BottomSheet Tag")
             setShowListener {
-                bottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+                bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
             }
         }
     }

@@ -133,6 +133,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         setSubmitButtonOnClickListener()
         setTextAreaListener()
         setDismissBehavior()
+        setAnonymousOptionClickListener()
         setPaddings()
         setRatingInitialState()
         getTemplates()
@@ -268,6 +269,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         ratingStars?.setListener(object : AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
             override fun onClick(position: Int) {
                 super.onClick(position)
+                trackRatingChanged(position)
                 updateTitleBasedOnSelectedRating(position)
                 val isGoodRating = isGoodRating()
                 createReviewViewModel.updateButtonState(isGoodRating)
@@ -378,8 +380,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                     return
                 }
             }
-            setProductDetail(productData)
             updateProductId(productData.productID)
+            setProductDetail(productData)
+            CreateReviewTracking.reviewOnViewTracker(orderID, productId.toString())
         }
     }
 
@@ -535,6 +538,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun setPaddings() {
+        bottomSheetTitle.hide()
         bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
     }
 
@@ -596,5 +600,37 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun hideTemplates() {
         templatesRecyclerView?.hide()
+    }
+
+    private fun setAnonymousOptionClickListener() {
+        anonymousOption?.setOnClickListener {
+            if (anonymousOption?.isChecked() == true) {
+                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode, feedbackId.toString())
+            }
+        }
+    }
+
+    private fun trackSubmitReview() {
+        CreateReviewTracking.reviewOnSubmitTracker(
+                getOrderId(),
+                productId.toString(10),
+                ratingStars?.clickAt.toString(),
+                textArea?.isEmpty() ?: false,
+                createReviewViewModel.getSelectedImagesUrl().size.toString(10),
+                anonymousOption?.isChecked() ?: false,
+                isEditMode,
+                feedbackId.toString(),
+                createReviewViewModel.isUserEligible() && isReviewComplete()
+        )
+    }
+    private fun trackRatingChanged(position: Int) {
+        CreateReviewTracking.reviewOnRatingChangedTracker(
+                getOrderId(),
+                productId.toString(10),
+                (position).toString(10),
+                true,
+                isEditMode,
+                feedbackId.toString()
+        )
     }
 }

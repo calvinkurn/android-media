@@ -96,4 +96,8 @@ class CreateReviewTextArea : BaseCustomView {
     fun setPlaceHolder(text: String) {
         createReviewEditText.hint = text
     }
+
+    fun isEmpty(): Boolean {
+        return createReviewEditText.text.isEmpty()
+    }
 }
