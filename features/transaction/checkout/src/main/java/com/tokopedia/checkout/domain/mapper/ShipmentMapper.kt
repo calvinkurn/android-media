@@ -129,7 +129,7 @@ class ShipmentMapper @Inject constructor() {
                         shipmentInformationData = mapShipmentInformationData(it.shipmentInformation)
                         shop = mapShopData(it.shop)
                         shopShipments = mapShopShipments(it.shopShipments)
-                        products = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
+                        products = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
                     }
             )
         }
@@ -139,7 +139,8 @@ class ShipmentMapper @Inject constructor() {
     private fun mapProducts(groupShop: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
                             groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
                             shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
-                            isDisablePPP: Boolean): MutableList<Product> {
+                            isDisablePPP: Boolean,
+                            shopTypeInfoData: ShopTypeInfoData): MutableList<Product> {
         val productListResult = arrayListOf<Product>()
         groupShop.products.forEach {
             val productResult = Product().apply {
@@ -148,7 +149,8 @@ class ShipmentMapper @Inject constructor() {
                         groupAddress.userAddress,
                         groupShop,
                         shipmentAddressFormDataResponse.cod,
-                        shipmentAddressFormDataResponse.promoSAFResponse
+                        shipmentAddressFormDataResponse.promoSAFResponse,
+                        shopTypeInfoData
                 )
                 if (it.tradeInInfo.isValidTradeIn) {
                     productPrice = it.tradeInInfo.newDevicePrice.toLong()
@@ -213,7 +215,8 @@ class ShipmentMapper @Inject constructor() {
                                                 userAddress: UserAddress,
                                                 groupShop: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
                                                 cod: Cod,
-                                                promoSAFResponse: PromoSAFResponse): AnalyticsProductCheckoutData {
+                                                promoSAFResponse: PromoSAFResponse,
+                                                shopTypeInfoData: ShopTypeInfoData): AnalyticsProductCheckoutData {
         return AnalyticsProductCheckoutData().apply {
             productId = product.productId.toString()
             productAttribution = product.productTrackerData.attribution
@@ -227,7 +230,7 @@ class ShipmentMapper @Inject constructor() {
             }
             productShopId = groupShop.shop.shopId.toString()
             productShopName = groupShop.shop.shopName
-            productShopType = groupShop.shop.shopTypeInfo.titleFmt
+            productShopType = shopTypeInfoData.shopType
             productVariant = ""
             productBrand = ""
             productQuantity = product.productQuantity
@@ -297,7 +300,7 @@ class ShipmentMapper @Inject constructor() {
             shopImage = shop.shopImage
             shopUrl = shop.shopUrl
             shopStatus = shop.shopStatus
-            shopTypeInfoData = mapShopTypeInfo(shop.shopTypeInfo)
+            shopTypeInfoData = mapShopTypeInfo(shop)
             postalCode = shop.postalCode
             latitude = shop.latitude
             longitude = shop.longitude
@@ -312,7 +315,14 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapShopTypeInfo(shopTypeInfo: ShopTypeInfo): ShopTypeInfoData {
+    private fun mapShopTypeInfo(shop: Shop): ShopTypeInfoData {
+        val shopTypeInfo = shop.shopTypeInfo
+        val tmpShopType =
+                when {
+                    shop.isGold == 1 -> SHOP_TYPE_GOLD_MERCHANT
+                    shop.isOfficial == 1 -> SHOP_TYPE_OFFICIAL_STORE
+                    else -> SHOP_TYPE_REGULER
+                }
         return ShopTypeInfoData().apply {
             shopTier = shopTypeInfo.shopTier
             shopGrade = shopTypeInfo.shopGrade
@@ -320,6 +330,7 @@ class ShipmentMapper @Inject constructor() {
             badgeSvg = shopTypeInfo.badgeSvg
             title = shopTypeInfo.title
             titleFmt = shopTypeInfo.titleFmt
+            shopType = tmpShopType
         }
     }
 
@@ -718,6 +729,10 @@ class ShipmentMapper @Inject constructor() {
     }
 
     companion object {
+        private const val SHOP_TYPE_OFFICIAL_STORE = "official_store"
+        private const val SHOP_TYPE_GOLD_MERCHANT = "gold_merchant"
+        private const val SHOP_TYPE_REGULER = "reguler"
+
         const val DISABLED_DROPSHIPPER = "dropshipper"
         const val DISABLED_ORDER_PRIORITY = "order_prioritas"
         const val DISABLED_EGOLD = "egold"

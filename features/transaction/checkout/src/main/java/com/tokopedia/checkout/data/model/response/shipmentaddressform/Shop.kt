@@ -36,5 +36,12 @@ data class Shop(
         @SerializedName("shop_alert_message")
         val shopAlertMessage: String = "",
         @SerializedName("shop_type_info")
-        val shopTypeInfo: ShopTypeInfo = ShopTypeInfo()
+        val shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
+
+        // Temporary field to determine value of shop type to be sent as dimension81
+        // Need to remove in the future when implementing tracking for PM Pro
+        @SerializedName("is_gold")
+        val isGold: Int = 0,
+        @SerializedName("is_official")
+        val isOfficial: Int = 0
 )

@@ -155,6 +155,8 @@ fun getQueryCartRevamp(): String {
                       }
                       is_dropship_enabled
                     }
+                    is_gold
+                    is_official
                     shop_type_info {
                       shop_tier
                       shop_grade
@@ -397,6 +399,8 @@ fun getQueryCartRevamp(): String {
                       }
                       is_dropship_enabled
                     }
+                    is_gold
+                    is_official
                     shop_type_info {
                       shop_tier
                       shop_grade

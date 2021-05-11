@@ -24,6 +24,10 @@ import kotlin.math.min
 class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: Context) {
 
     companion object {
+        const val SHOP_TYPE_OFFICIAL_STORE = "official_store"
+        const val SHOP_TYPE_GOLD_MERCHANT = "gold_merchant"
+        const val SHOP_TYPE_REGULER = "reguler"
+
         const val DEFAULT_WORDING_SHOW_MORE = "Tampilkan Semua"
         const val DEFAULT_WORDING_SHOW_LESS = "Tampilkan Lebih Sedikit"
     }
@@ -188,7 +192,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.errorTitle = ""
             it.shopName = availableGroup.shop.shopName
             it.shopId = availableGroup.shop.shopId
-            it.shopTypeInfo = mapShopTypeInfo(availableGroup.shop.shopTypeInfo)
+            it.shopTypeInfo = mapShopTypeInfo(availableGroup.shop)
             it.isFulfillment = availableGroup.isFulFillment
             it.fulfillmentName = if (availableGroup.isFulFillment) cartDataListResponse.tokoCabangInfo.message else availableGroup.shipmentInformation.shopLocation
             it.fulfillmentBadgeUrl = cartDataListResponse.tokoCabangInfo.badgeUrl
@@ -210,7 +214,14 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         }
     }
 
-    private fun mapShopTypeInfo(shopTypeInfo: ShopTypeInfo): ShopTypeInfoData {
+    private fun mapShopTypeInfo(shop: Shop): ShopTypeInfoData {
+        val shopTypeInfo = shop.shopTypeInfo
+        val tmpShopType =
+                when {
+                    shop.isGold == 1 -> SHOP_TYPE_GOLD_MERCHANT
+                    shop.isOfficial == 1 -> SHOP_TYPE_OFFICIAL_STORE
+                    else -> SHOP_TYPE_REGULER
+                }
         return ShopTypeInfoData().apply {
             shopTier = shopTypeInfo.shopTier
             shopGrade = shopTypeInfo.shopGrade
@@ -218,6 +229,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             badgeSvg = shopTypeInfo.badgeSvg
             title = shopTypeInfo.title
             titleFmt = shopTypeInfo.titleFmt
+            shopType = tmpShopType
         }
     }
 
@@ -400,7 +412,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.shopName = availableGroup.shop.shopName
             it.shopCity = availableGroup.shop.cityName
             it.shopId = availableGroup.shop.shopId
-            it.shopTypeInfoData = mapShopTypeInfo(availableGroup.shop.shopTypeInfo)
+            it.shopTypeInfoData = mapShopTypeInfo(availableGroup.shop)
             it.cartString = availableGroup.cartString
             it.warehouseId = availableGroup.warehouse.warehouseId
             it.listPromoCheckout = listPromoCheckout
@@ -412,7 +424,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.shopName = unavailableGroup.shop.shopName
             it.shopCity = unavailableGroup.shop.cityName
             it.shopId = unavailableGroup.shop.shopId
-            it.shopTypeInfoData = mapShopTypeInfo(unavailableGroup.shop.shopTypeInfo)
+            it.shopTypeInfoData = mapShopTypeInfo(unavailableGroup.shop)
             it.cartString = unavailableGroup.cartString
             it.warehouseId = unavailableGroup.warehouse.warehouseId
         }
@@ -542,7 +554,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.errorLabel = unavailableGroup.errors.firstOrNull() ?: ""
             it.shopName = unavailableGroup.shop.shopName
             it.shopId = unavailableGroup.shop.shopId
-            it.shopTypeInfoData = mapShopTypeInfo(unavailableGroup.shop.shopTypeInfo)
+            it.shopTypeInfoData = mapShopTypeInfo(unavailableGroup.shop)
             it.cityName = unavailableGroup.shop.cityName
             it.isFulfillment = unavailableGroup.isFulFillment
             it.fulfillmentName = unavailableGroup.shipmentInformation.shopLocation
