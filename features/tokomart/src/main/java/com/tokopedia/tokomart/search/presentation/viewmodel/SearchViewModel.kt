@@ -1,10 +1,12 @@
 package com.tokopedia.tokomart.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
-import com.tokopedia.tokomart.searchcategory.presentation.BaseSearchCategoryViewModel
+import com.tokopedia.tokomart.search.utils.SEARCH_QUERY_PARAM_MAP
+import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -12,19 +14,31 @@ import javax.inject.Named
 
 class SearchViewModel @Inject constructor (
         baseDispatcher: CoroutineDispatchers,
+        @param:Named(SEARCH_QUERY_PARAM_MAP)
+        private val queryParamMap: Map<String, String>,
         @param:Named(SEARCH_FIRST_PAGE_USE_CASE)
         private val getSearchFirstPageUseCase: UseCase<SearchModel>,
         @param:Named(SEARCH_LOAD_MORE_PAGE_USE_CASE)
         private val getSearchLoadMorePageUseCase: UseCase<SearchModel>,
 ): BaseSearchCategoryViewModel(baseDispatcher) {
 
+    val query = queryParamMap[SearchApiConst.Q] ?: ""
+
     override fun onViewCreated() {
         getSearchFirstPageUseCase.cancelJobs()
         getSearchFirstPageUseCase.execute(
                 this::onGetSearchFirstPageSuccess,
                 this::onGetSearchFirstPageError,
-                RequestParams.create()
+                createRequestParams()
         )
+    }
+
+    private fun createRequestParams() = RequestParams.create().also {
+        it.putInt(SearchApiConst.PAGE, nextPage)
+        it.putBoolean(SearchApiConst.USE_PAGE, true)
+        it.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
+        it.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
+        it.putAll(queryParamMap)
     }
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {
@@ -50,7 +64,7 @@ class SearchViewModel @Inject constructor (
         getSearchLoadMorePageUseCase.execute(
                 this::onGetSearchLoadMorePageSuccess,
                 this::onGetSearchLoadMorePageError,
-                RequestParams.create(),
+                createRequestParams(),
         )
     }
 

@@ -28,13 +28,18 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
 
         val visitableList = categoryViewModel.visitableListLiveData.value!!
 
-        `Then assert visitable list header`(visitableList, categoryModel)
-        `Then assert visitable list contents`(visitableList, categoryModel)
+        `Then assert first page visitables`(visitableList, categoryModel)
         `Then assert visitable list footer`(visitableList)
+        `Then assert has next page value`(false)
     }
 
     private fun `When view created`() {
         categoryViewModel.onViewCreated()
+    }
+
+    private fun `Then assert first page visitables`(visitableList: List<Visitable<*>>, categoryModel: CategoryModel) {
+        `Then assert visitable list header`(visitableList, categoryModel)
+        `Then assert visitable list contents`(visitableList, categoryModel)
     }
 
     private fun `Then assert visitable list header`(
@@ -67,8 +72,8 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
 
         val visitableList = categoryViewModel.visitableListLiveData.value!!
 
-        `Then assert visitable list header`(visitableList, categoryModel)
-        `Then assert visitable list contents`(visitableList, categoryModel)
+        `Then assert first page visitables`(visitableList, categoryModel)
         `Then assert visitable list end with loading more model`(visitableList)
+        `Then assert has next page value`(true)
     }
 }

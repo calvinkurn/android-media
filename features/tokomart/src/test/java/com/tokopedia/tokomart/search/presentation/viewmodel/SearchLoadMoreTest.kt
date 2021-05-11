@@ -23,13 +23,16 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
         `When view load more`()
 
         val visitableList = searchViewModel.visitableListLiveData.value!!
+
+        `Then assert request params map`(createFirstPageMandatoryParams(2))
         `Then assert load more page data`(searchModelPage1, searchModelPage2, visitableList)
         `Then assert visitable list does not end with loading more model`(visitableList)
+        `Then assert has next page value`(false)
     }
 
     private fun `Given get search load more page use case will be successful`(searchModel: SearchModel) {
         every {
-            getSearchLoadMorePageUseCase.execute(any(), any(), any())
+            getSearchLoadMorePageUseCase.execute(any(), any(), capture(requestParamsSlot))
         } answers {
             firstArg<(SearchModel) -> Unit>().invoke(searchModel)
         }
@@ -68,8 +71,11 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
         `When view load more`()
 
         val visitableList = searchViewModel.visitableListLiveData.value!!
+
+        `Then assert request params map`(createFirstPageMandatoryParams(2))
         `Then assert load more page data`(searchModelPage1, searchModelPage2, visitableList)
         `Then assert visitable list end with loading more model`(visitableList)
+        `Then assert has next page value`(true)
     }
 
     @Test
@@ -77,6 +83,7 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
         val searchModelPage1 = "search/first-page-8-products.json".jsonToObject<SearchModel>()
 
         `Given get search first page use case will be successful`(searchModelPage1)
+        `Given view already created`()
 
         `When view load more`()
 

@@ -1,4 +1,4 @@
-package com.tokopedia.tokomart.searchcategory.presentation
+package com.tokopedia.tokomart.searchcategory.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -24,8 +24,12 @@ abstract class BaseSearchCategoryViewModel(
     protected val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
     val visitableListLiveData: LiveData<List<Visitable<*>>> = visitableListMutableLiveData
 
+    protected val hasNextPageMutableLiveData = MutableLiveData(false)
+    val hasNextPageLiveData: LiveData<Boolean> = hasNextPageMutableLiveData
+
     protected var totalData = 0
     protected var totalFetchedData = 0
+    protected var nextPage = 1
 
     abstract fun onViewCreated()
 
@@ -38,6 +42,7 @@ abstract class BaseSearchCategoryViewModel(
 
         createVisitableListFirstPage(headerDataView, contentDataView)
         updateVisitableListLiveData()
+        updateNextPageData()
     }
 
     private fun createVisitableListFirstPage(
@@ -85,6 +90,14 @@ abstract class BaseSearchCategoryViewModel(
         visitableListMutableLiveData.value = visitableList
     }
 
+    private fun updateNextPageData() {
+        val hasNextPage = totalData > totalFetchedData
+
+        hasNextPageMutableLiveData.value = hasNextPage
+
+        if (hasNextPage) nextPage++
+    }
+
     open fun onLoadMore() {
         if (hasLoadedAllData()) return
 
@@ -98,11 +111,15 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun onGetLoadMorePageSuccess(contentDataView: ContentDataView) {
         totalFetchedData += contentDataView.productList.size
 
+        updateVisitableListForNextPage(contentDataView)
+        updateVisitableListLiveData()
+        updateNextPageData()
+    }
+
+    private fun updateVisitableListForNextPage(contentDataView: ContentDataView) {
         visitableList.remove(loadingMoreModel)
         visitableList.addAll(createContentVisitableList(contentDataView))
         visitableList.addFooter()
-
-        updateVisitableListLiveData()
     }
 
     protected data class HeaderDataView(

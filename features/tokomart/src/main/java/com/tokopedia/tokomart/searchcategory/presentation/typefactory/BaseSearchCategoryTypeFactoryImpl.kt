@@ -1,8 +1,9 @@
-package com.tokopedia.tokomart.searchcategory.presentation
+package com.tokopedia.tokomart.searchcategory.presentation.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.BannerViewHolder
@@ -12,6 +13,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataV
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.ChooseAddressViewHolder
+import com.tokopedia.tokomart.searchcategory.presentation.viewholder.LoadingMoreViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.ProductCountViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.ProductItemViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.QuickFilterViewHolder
@@ -33,6 +35,8 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
 
     override fun type(productItemDataView: ProductItemDataView) = ProductItemViewHolder.LAYOUT
 
+    override fun type(viewModel: LoadingMoreModel) = LoadingMoreViewHolder.LAYOUT
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             ProductItemViewHolder.LAYOUT -> ProductItemViewHolder(view)
@@ -41,6 +45,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             TitleViewHolder.LAYOUT -> TitleViewHolder(view)
             QuickFilterViewHolder.LAYOUT -> QuickFilterViewHolder(view)
             ProductCountViewHolder.LAYOUT -> ProductCountViewHolder(view)
+            LoadingMoreViewHolder.LAYOUT -> LoadingMoreViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
