@@ -22,6 +22,8 @@ class SearchViewModel @Inject constructor (
         private val getSearchLoadMorePageUseCase: UseCase<SearchModel>,
 ): BaseSearchCategoryViewModel(baseDispatcher) {
 
+    val query = queryParamMap[SearchApiConst.Q] ?: ""
+
     override fun onViewCreated() {
         getSearchFirstPageUseCase.cancelJobs()
         getSearchFirstPageUseCase.execute(

@@ -1,6 +1,7 @@
 package com.tokopedia.tokomart.search.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
@@ -17,13 +18,14 @@ open class SearchTestFixtures {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    protected val defaultQueryParamMap = mapOf("q" to "samsung")
+    protected val defaultKeyword = "samsung"
+    protected val defaultQueryParamMap = mapOf(SearchApiConst.Q to defaultKeyword)
     protected val getSearchFirstPageUseCase = mockk<UseCase<SearchModel>>(relaxed = true)
     protected val getSearchLoadMorePageUseCase = mockk<UseCase<SearchModel>>(relaxed = true)
     protected lateinit var searchViewModel: SearchViewModel
 
     @Before
-    fun setUp() {
+    open fun setUp() {
         setUpViewModel()
     }
 
