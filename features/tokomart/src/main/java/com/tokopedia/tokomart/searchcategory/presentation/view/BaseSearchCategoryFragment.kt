@@ -157,6 +157,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onBannerClick(applink: String) {
+        // TODO: Route to applink
         Toaster.build(requireView(), "Navigate to Applink", Toaster.TYPE_NORMAL, Toaster.LENGTH_SHORT)
     }
 }
