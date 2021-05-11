@@ -64,7 +64,7 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun createHeaderVisitableList(headerDataView: HeaderDataView) = listOf(
             ChooseAddressDataView(),
-            BannerDataView(),
+            BannerDataView(""),
             TitleDataView(headerDataView.title, headerDataView.hasSeeAllCategoryButton),
             QuickFilterDataView(),
             ProductCountDataView(headerDataView.aceSearchProductHeader.totalDataText),

@@ -55,14 +55,15 @@ class SearchFragment: BaseSearchCategoryFragment() {
         getComponent(SearchComponent::class.java).inject(this)
     }
 
-<<<<<<< HEAD
-    override fun createTypeFactory() = SearchTypeFactoryImpl(BannerComponentCallback(context))
-=======
     override fun createTypeFactory() = SearchTypeFactoryImpl(
             chooseAddressListener = this,
             titleListener = this,
+            bannerListener = this
     )
->>>>>>> b37abc6b08895a326bf5078c5eeeb7bba9730f6a
 
     override fun getViewModel() = searchViewModel
+
+    override fun onBannerClick(applink: String) {
+        TODO("Not yet implemented")
+    }
 }

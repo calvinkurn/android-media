@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.tokomart.common.base.listener.BannerListener
+import com.tokopedia.tokomart.common.base.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
@@ -25,7 +25,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.viewholder.TitleViewHo
 abstract class BaseSearchCategoryTypeFactoryImpl(
         protected val chooseAddressListener: ChooseAddressListener,
         protected val titleListener: TitleListener,
-        protected val bannerListener: BannerListener
+        protected val bannerListener: BannerComponentListener
 ): BaseAdapterTypeFactory(), BaseSearchCategoryTypeFactory {
 
     override fun type(chooseAddressDataView: ChooseAddressDataView) = ChooseAddressViewHolder.LAYOUT

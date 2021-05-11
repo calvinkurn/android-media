@@ -1,5 +1,5 @@
 package com.tokopedia.tokomart.common.base.listener
 
-interface BannerListener {
+interface BannerComponentListener {
     fun onBannerClick(applink: String)
 }

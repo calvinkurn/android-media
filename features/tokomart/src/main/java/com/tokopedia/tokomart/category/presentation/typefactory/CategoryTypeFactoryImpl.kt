@@ -3,13 +3,9 @@ package com.tokopedia.tokomart.category.presentation.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.listener.BannerComponentListener
-import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
-import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
 import com.tokopedia.tokomart.category.presentation.viewholder.CategoryIsleViewHolder
-import com.tokopedia.tokomart.common.base.listener.BannerListener
-import com.tokopedia.tokomart.searchcategory.presentation.BaseSearchCategoryTypeFactoryImpl
+import com.tokopedia.tokomart.common.base.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
@@ -17,7 +13,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearch
 class CategoryTypeFactoryImpl(
         chooseAddressListener: ChooseAddressListener,
         titleListener: TitleListener,
-        bannerListener: BannerListener
+        bannerListener: BannerComponentListener
 ): BaseSearchCategoryTypeFactoryImpl(
         chooseAddressListener,
         titleListener,
