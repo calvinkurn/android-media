@@ -211,6 +211,7 @@ ext {
             cart                            : ":features:transaction:cart",
             checkout                        : ":features:transaction:checkout",
             promoCheckoutMarketplace        : ":features:transaction:promo_checkout_marketplace",
+            minicart                        : ":features:transaction:minicart",
             loyalty                         : ":features:promo:loyalty",
             loyaltyCommon                   : ":features:promo:loyalty_common",
             sellerorder                     : ":features:transaction:sellerorder",
