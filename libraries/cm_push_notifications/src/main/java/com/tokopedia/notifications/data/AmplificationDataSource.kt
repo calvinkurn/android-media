@@ -46,9 +46,9 @@ object AmplificationDataSource {
         * preventing multiple fetching of amplification data
         * check based-on `next_fetch` from payload
         * */
-        if (currentTime <= cacheManager.getNextFetch()) {
-            return
-        }
+//        if (currentTime <= cacheManager.getNextFetch()) {
+//            return
+//        }
 
         val query = loadRaw(application.resources, R.raw.query_notification_amplification)
         val amplificationUseCase = AmplificationUseCase(useCase, query)
@@ -66,17 +66,19 @@ object AmplificationDataSource {
     }
 
     private fun pushData(application: Application, amplification: Amplification) {
-        if (amplification.pushData.isNotEmpty()) {
-            amplification.pushData.forEach {
+//        if (amplification.pushData.isNotEmpty()) {
+//            amplification.pushData.forEach {
+        val it = "{\"id\":-1112,\"icon\":\"\",\"sound\":\"\",\"notificationId\":-1112,\"source\":\"toko-cm\",\"tribe\":\"toko-cm\",\"notificationType\":\"General\",\"notificationProductType\":\"\",\"priorityPreOreo\":0,\"subText\":\"\",\"startTime\":\"1620181990000\",\"endTime\":\"1620268390000\",\"userId\":\"76681493\",\"shopId\":\"\",\"transId\":\"LTM0MSM3NjY4MTQ5MyMxNjIwMTgxOTkwNzg4NjQyMjU5\$EPZ-VJMBQZYNWFLRWBDIH4:APA91BFFK_PLOJS3W5FSLGBDECXFQWUVZJISKLHHUKBOM_AGG6XBB8BDJ5M4B9L_JKSUBGDBXAXAIYZ4I6UZ_NBAV9EUG-HPN3HQJK7TXONIRLQ93EAJ0R0NWUVXDTDJKW3PHB9NXHEV\",\"userTransId\":\"LTM0MSM3NjY4MTQ5MyMxNjIwMTgxOTkwNzg4NjQyMjU5\",\"notifcenterBlastId\":\"\",\"channel\":\"\",\"isTest\":false,\"title\":\"Halo Toppers, selamat pagi nih! Ampli #1\",\"desc\":\"\",\"message\":\"Ayo cek Tokopedia yuk, banyak barang bagus yang bisa kamu beli\",\"appLink\":\"tokopedia://home\",\"ceid\":0,\"eeid\":0,\"webhook_params\":\"\",\"campaignUserToken\":\"LTM0MSM3NjY4MTQ5MyMxNjIwMTgxOTkwNzg4NjQyMjU5\$EPZ-VJMBQZYNWFLRWBDIH4:APA91BFFK_PLOJS3W5FSLGBDECXFQWUVZJISKLHHUKBOM_AGG6XBB8BDJ5M4B9L_JKSUBGDBXAXAIYZ4I6UZ_NBAV9EUG-HPN3HQJK7TXONIRLQ93EAJ0R0NWUVXDTDJKW3PHB9NXHEV\",\"campaignId\":-1112,\"parentId\":-1112,\"is_common_service\":true,\"is_last_batch\":true,\"event_time\":{\"request\":\"2021-05-05T09:33:10+07:00\",\"sent\":\"2021-05-05T09:33:11.051375509+07:00\"},\"mainappPriority\":1,\"sellerappPriority\":1,\"isAdvanceTarget\":true}"
                 PushController(application).handleNotificationAmplification(it)
-            }
-        }
+//            }
+//        }
     }
 
     private fun inAppData(application: Application, amplification: Amplification) {
-        if (amplification.inAppData.isNotEmpty()) {
-            amplification.inAppData.forEach {
+//        if (amplification.inAppData.isNotEmpty()) {
+//            amplification.inAppData.forEach {
                 try {
+                    val it = "{\"appLink\":\"tokopedia://home\",\"campaignId\":-1111,\"campaignUserToken\":\"LTgxNSM3NjY4MTQ5Mw==\$EPZ-VJMBQZYNWFLRWBDIH4:APA91BFFK_PLOJS3W5FSLGBDECXFQWUVZJISKLHHUKBOM_AGG6XBB8BDJ5M4B9L_JKSUBGDBXAXAIYZ4I6UZ_NBAV9EUG-HPN3HQJK7TXONIRLQ93EAJ0R0NWUVXDTDJKW3PHB9NXHEV\",\"d\":true,\"event_time\":{\"request\":\"2021-05-05T09:25:11.375956169+07:00\",\"sent\":\"0001-01-01T00:00:00Z\"},\"freq\":1,\"isTest\":false,\"notificationId\":-1111,\"notificationType\":\"interstitial\",\"parentId\":-1111,\"perstOn\":false,\"s\":\"com.tokopedia.navigation.presentation.activity.MainParentActivity\",\"source\":\"toko-cm-inapp\",\"ss\":\"\",\"ui\":{\"appLink\":\"tokopedia://discovery/pasar-sabtu-minggu\",\"bg\":{\"clr\":\"#00000000\",\"img\":\"\",\"rd\":5,\"sc\":\"#00000000\",\"sw\":1},\"btnOri\":\"horizontal\",\"img\":\"https://ecs7.tokopedia.net/img/VqbcmM/2020/6/8/3d4da779-a9c6-4fde-9265-42fdc55e9cca.jpg\",\"inAppButtons\":[{\"appLink\":\"tokopedia://webview?titlebar=false\\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels\",\"bgc\":\"#f17808\",\"clr\":\"#ffffff\",\"id\":1,\"sz\":\"14\",\"text\":\"Cek Sekarang #1\",\"unifySize\":\"large\",\"unifyType\":\"main\",\"unifyVariant\":\"filled\"}],\"msg\":{\"clr\":\"#ffffff\",\"sz\":\"0\",\"txt\":\"\"},\"ttl\":{\"clr\":\"#ffffff\",\"sz\":\"0\",\"txt\":\"\"}}}"
                     val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
                     val amplificationCMInApp: AmplificationCMInApp = gson.fromJson(it, AmplificationCMInApp::class.java)
 
@@ -94,14 +96,15 @@ object AmplificationDataSource {
                     // send amplification tracker
                     sendAmplificationInAppEvent(application, INAPP_DELIVERED, cmInApp)
                 } catch (e: Exception) {
+                    println(e.message)
                     ServerLogger.log(Priority.P2, "CM_VALIDATION",
                             mapOf("type" to "exception",
                                     "err" to Log.getStackTraceString(e)
                                             .take(CMConstant.TimberTags.MAX_LIMIT),
                                     "data" to ""))
                 }
-            }
-        }
+//            }
+//        }
     }
 
     private fun nextFetch(time: Long): Long {
