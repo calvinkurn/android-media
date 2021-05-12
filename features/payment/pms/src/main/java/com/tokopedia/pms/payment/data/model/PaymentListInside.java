@@ -15,6 +15,9 @@ public class PaymentListInside {
     @SerializedName("transaction_expire")
     @Expose
     private String transactionExpire;
+    @SerializedName("transaction_expire_unix")
+    @Expose
+    private Long transactionExpireUnix;
     @SerializedName("merchant_code")
     @Expose
     private String merchantCode;
@@ -269,5 +272,13 @@ public class PaymentListInside {
 
     public void setTickerMessage(String tickerMessage) {
         this.tickerMessage = tickerMessage;
+    }
+
+    public Long getTransactionExpireUnix() {
+        return transactionExpireUnix;
+    }
+
+    public void setTransactionExpireUnix(Long transactionExpireUnix) {
+        this.transactionExpireUnix = transactionExpireUnix;
     }
 }
