@@ -7,7 +7,7 @@
             android:label="@string/payment_title_payment_status"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            android:name=".payment.view.activity.PaymentListActivity">
+            android:name=".paymentlist.presentation.activity.PaymentListActivity">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

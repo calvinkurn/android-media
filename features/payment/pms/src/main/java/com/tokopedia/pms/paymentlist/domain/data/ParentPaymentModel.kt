@@ -6,7 +6,6 @@ open class BasePaymentModel {
     var productImage: String = ""
 }
 
-
 data class VirtualAccountPaymentModel(
     val paymentCode: String,
     var howtoPayAppLink: String,

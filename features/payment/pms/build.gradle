@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android'
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }

@@ -1,19 +1,19 @@
-package com.tokopedia.pms.payment.view.activity
+package com.tokopedia.pms.paymentlist.presentation.activity
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.pms.payment.view.fragment.PaymentListFragment
 import com.tokopedia.pms.paymentlist.di.DaggerPaymentListComponent
 import com.tokopedia.pms.paymentlist.di.PaymentListComponent
+import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment
 
 class PaymentListActivity : BaseSimpleActivity(), HasComponent<PaymentListComponent> {
 
     private lateinit var component: PaymentListComponent
 
     override fun getNewFragment(): Fragment? {
-        return PaymentListFragment.createInstance()
+        return DeferredPaymentListFragment.createInstance()
     }
 
     override fun getComponent(): PaymentListComponent {
