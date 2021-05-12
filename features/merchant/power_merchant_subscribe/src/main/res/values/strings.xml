@@ -25,7 +25,7 @@
     <string name="pm_content_desc_transition_period_image_kyc">transition period image kyc verification</string>
 
     <string name="expired_label">Pengajuan untuk berhenti jadi Power Merchant berhasil. Layanan otomatis berhenti pada %1$s, pukul %2$s WIB.</string>
-    <string name="pm_bottom_sheet_expired_label">Layanan otomatis berhenti pada %1$s, pukul %2$s WIB.</string>
+    <string name="pm_bottom_sheet_expired_label">Status PM otomatis berhenti pada %1$s WIB.</string>
     <string name="pm_title_activity">Power Merchant</string>
 
     <string name="pm_label_bottom_sheet_cancel_header">Yakin mau turunkan status tokomu ke \nRegular Merchant?</string>
