@@ -18,14 +18,14 @@
             android:textColor="@color/Unify_N700"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_2"
+            app:typographyType="body_1"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginTop="@dimen/layout_lvl1"
             android:text="@string/pm_label_bottom_sheet_cancel_desc"
             android:textColor="@color/Unify_N700"
             app:layout_constraintTop_toBottomOf="@id/textTitle"
@@ -193,7 +193,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPmDeactivationMessage"
             app:typographyType="small"
-            tools:text="Dengan kembali menjadi RM, saya setuju dengan S&amp;K yang berlaku" />
+            tools:text="@string/pm_pm_deactivation_be_rm_tnc" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnCancel"

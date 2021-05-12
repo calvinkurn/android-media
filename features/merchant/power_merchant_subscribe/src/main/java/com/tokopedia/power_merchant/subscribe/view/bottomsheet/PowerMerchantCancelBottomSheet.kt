@@ -1,14 +1,20 @@
 package com.tokopedia.power_merchant.subscribe.view.bottomsheet
 
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantDateFormatter
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.bottom_sheet_power_merchant_cancellation.*
@@ -75,6 +81,18 @@ class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
             listener?.onClickBackButton()
             dismiss()
         }
+
+        val clickableText = "S&K"
+        val tncDescription = PowerMerchantSpannableUtil.createSpannableString(
+                text = getString(R.string.pm_pm_deactivation_be_rm_tnc).parseAsHtml(),
+                highlightText = clickableText,
+                colorId = requireContext().getResColor(com.tokopedia.unifyprinciples.R.color.Green_G500),
+                isBold = true
+        ) {
+            RouteManager.route(requireContext(), Constant.Url.POWER_MERCHANT_TERMS_AND_CONDITION)
+        }
+        tvPmDeactivationTnC.movementMethod = LinkMovementMethod.getInstance()
+        tvPmDeactivationTnC.text = tncDescription
 
         imageFreeShipping.showWithCondition(freeShippingEnabled)
         textFreeShipping.showWithCondition(freeShippingEnabled)

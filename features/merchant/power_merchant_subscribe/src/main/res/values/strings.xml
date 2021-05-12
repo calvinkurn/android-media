@@ -267,4 +267,5 @@
     <string name="pm_get_extra_topads_credit">Dapat tambahan kredit TopAds</string>
     <string name="pm_get_free_shipping_benefit">Punya layanan Bebas Ongkir</string>
     <string name="pm_deactivation_bottom_sheet_message">Mulai 14 Juni, Regular Merchant dengan jumlah transaksi <b>di atas 100 transaksi</b> akan dikenai biaya sebesar <b>0,5%</b> per produk terjual.</string>
+    <string name="pm_pm_deactivation_be_rm_tnc">Dengan kembali menjadi RM, saya setuju dengan S&amp;K yang berlaku</string>
 </resources>
