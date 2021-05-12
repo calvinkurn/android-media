@@ -8,7 +8,7 @@ import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.catalog.R
-import com.tokopedia.keys.Keys.getGoogleGeoApiKey
+import com.tokopedia.keys.Keys
 import kotlinx.android.synthetic.main.activity_catalog_youtube_player.*
 
 class CatalogYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener,
@@ -36,8 +36,7 @@ class CatalogYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
 
         selectedIndex = intent.getIntExtra(EXTRA_YOUTUBE_VIDEO_INDEX, 0)
         videoUrls = intent.getStringArrayExtra(EXTRA_YOUTUBE_VIDEO_DATA).asList()
-        // TODO need to check in the future, map api is used for youtube?
-        youtube_player_main.initialize(this.getGoogleGeoApiKey(), this)
+        youtube_player_main.initialize(Keys.AUTH_GOOGLE_YOUTUBE_API_KEY, this)
     }
 
     override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, p2: Boolean) {
