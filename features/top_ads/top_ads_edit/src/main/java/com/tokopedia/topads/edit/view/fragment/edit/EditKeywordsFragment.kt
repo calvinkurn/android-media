@@ -61,6 +61,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeyword
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordItemViewModel
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyImageButton
@@ -103,8 +104,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private lateinit var budgetInput: TextFieldUnify
     private lateinit var selectedKeyword: Typography
     private lateinit var selected_Keyword: Typography
-    private lateinit var info1: UnifyImageButton
-    private lateinit var info2: UnifyImageButton
+    private lateinit var info1: ImageUnify
+    private lateinit var info2: ImageUnify
     private lateinit var div: View
 
     private var productId: MutableList<String> = mutableListOf()
@@ -247,12 +248,12 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 return
             }
             result < minBid.toDouble() -> {
-                setMessageErrorField(getString(R.string.min_bid_error), minBid, true)
+                setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true)
                 actionEnable(false)
             }
             result > maxBid.toDouble() -> {
                 actionEnable(false)
-                setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
+                setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true)
             }
             result % (Constants.MULTIPLY_CONST.toInt()) != 0 -> {
                 actionEnable(false)
@@ -494,7 +495,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
         adapter.notifyDataSetChanged()
         setCount()
-        ticker.gone()
+        ticker.visibility = View.GONE
         updateString()
         view?.let {
             Toaster.build(
@@ -610,6 +611,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 if (selectedData?.size != 0) {
                     updateKeywords(selectedData)
                     setCount()
+                    ticker.visibility = View.GONE
                 }
             }
         }

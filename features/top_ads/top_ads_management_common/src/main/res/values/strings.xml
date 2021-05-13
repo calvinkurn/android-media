@@ -31,11 +31,14 @@
     <string name="format_selected_keyword" tools:ignore="PluralsCandidate">%d kata kunci dipilih</string>
     <string name="format_selected_produk">%d produk dipilih</string>
     <string name="topads_common_selected_product">Produk dipilih (%d)</string>
-    <string name="no_promoted_product">Produkmu belum\ndiiklankan</string>
+    <string name="no_promoted_product">Semua produk sudah \ndiiklankan</string>
     <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %s</string>
     <string name="recommendated_bid_message_new">Rekomendasi &lt;b>Rp%s&lt;/b></string>
-    <string name="min_bid_error">Biaya minimum %s rupiah</string>
-    <string name="max_bid_error">Biaya maximum %s rupiah</string>
+    <string name="min_bid_error">Biaya minimum Rp%s</string>
+    <string name="angarran_harrian_min_bid_error">Angaran harian min. Rp%s</string>
+    <string name="max_bid_error">Biaya maksimum Rp%s</string>
+    <string name="min_bid_error_new">Biaya min. Rp%s</string>
+    <string name="max_bid_error_new">Biaya maks. Rp%s</string>
     <string name="topads_common_50_multiply_error">Biaya harus kelipatan Rp %s</string>
     <string name="topads_common_cancel_btn">Batalkan</string>
     <string name="topads_common_title_product_ad_edit">Ubah Iklan Produk</string>
@@ -130,7 +133,8 @@
     <string name="topads_common_min_bid">Biaya minimum Rp%s</string>
     <string name="topads_common_recom_bid">Rekomendasi Rp%s</string>
     <string name="topads_common_headline_klik">/1000 kali tampil</string>
-    <string name="topads_common_maximum_daily_budget">Batas maksimum Rp %s</string>
+    <string name="topads_common_maximum_daily_budget">Batas maksimum Rp%s</string>
+    <string name="topads_common_minimum_daily_budget">Batas minimum Rp%s</string>
     <string name="topads_common_keyword_avg_cost">Biaya rata-rata kompetitor %s</string>
 
     <string name="topads_common_recommended_budget">Rekomendasi Biaya</string>

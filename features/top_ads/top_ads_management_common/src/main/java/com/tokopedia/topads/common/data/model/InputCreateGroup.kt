@@ -9,7 +9,5 @@ open class InputCreateGroup(
         @SerializedName("shopID")
         var shopID: String = "",
         @SerializedName("group")
-        var group: Group = Group(),
-        @SerializedName("strategies")
-        var strategies: List<String>? = listOf()
+        var group: Group = Group()
 )

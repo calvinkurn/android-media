@@ -53,15 +53,13 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="heading_5" />
 
-                    <com.tokopedia.unifycomponents.UnifyImageButton
+                    <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/info1"
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
+                        android:layout_width="@dimen/dp_16"
+                        android:layout_height="@dimen/dp_16"
                         android:layout_marginStart="@dimen/dp_4"
                         app:layout_constraintStart_toEndOf="@id/txtInfo"
-                        app:layout_constraintTop_toTopOf="@id/txtInfo"
-                        app:srcCompat="@drawable/topads_info"
-                        app:unifyImageButtonVariant="image" />
+                        app:layout_constraintTop_toTopOf="@id/txtInfo" />
 
                     <com.tokopedia.unifycomponents.TextFieldUnify
                         android:id="@+id/budget"
@@ -94,15 +92,13 @@
                         app:layout_constraintTop_toBottomOf="@+id/divider"
                         app:typographyType="heading_5" />
 
-                    <com.tokopedia.unifycomponents.UnifyImageButton
+                    <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/info2"
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
+                        android:layout_width="@dimen/dp_16"
+                        android:layout_height="@dimen/dp_16"
                         android:layout_marginStart="@dimen/dp_4"
                         app:layout_constraintStart_toEndOf="@id/selected_keyword"
-                        app:layout_constraintTop_toTopOf="@id/selected_keyword"
-                        app:srcCompat="@drawable/topads_info"
-                        app:unifyImageButtonVariant="image" />
+                        app:layout_constraintTop_toTopOf="@id/selected_keyword"/>
 
                     <View
                         android:id="@+id/div"
@@ -180,15 +176,14 @@
         android:id="@+id/tipView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_10"
         app:layout_constraintBottom_toTopOf="@+id/bottom">
 
         <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
             android:id="@+id/tip_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_24"
             app:fbType="group"
+            android:background="@color/Unify_N0"
             app:layout_constraintBottom_toTopOf="@+id/view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

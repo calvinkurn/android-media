@@ -45,10 +45,10 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
                 val result = number.toInt()
                 when {
                     result < minBid.toDouble() -> {
-                        setMessageErrorField(getString(R.string.min_bid_error), minBid, true)
+                        setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true)
                     }
                     result > maxBid.toDouble() -> {
-                        setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
+                        setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true)
                     }
 
                     result % 50 != 0 -> {

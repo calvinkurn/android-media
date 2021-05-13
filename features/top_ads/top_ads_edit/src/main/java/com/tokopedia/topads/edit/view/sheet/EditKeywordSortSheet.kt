@@ -22,6 +22,7 @@ class EditKeywordSortSheet : BottomSheetUnify() {
     var onItemClick: ((sortId: String) -> Unit)? = null
     var selectedSortText = 0
     var positionSort = 0
+    var selected: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var contentView = View.inflate(context, R.layout.topads_edit_keyword_edit_sort_sheet, null)
@@ -93,10 +94,10 @@ class EditKeywordSortSheet : BottomSheetUnify() {
     }
 
     fun setChecked(current: String) {
-        if(current == TITLE_1) {
-            positionSort = 0
+        positionSort = if(current == TITLE_1) {
+            0
         } else {
-            positionSort = 1
+            1
         }
     }
 
@@ -122,8 +123,8 @@ class EditKeywordSortSheet : BottomSheetUnify() {
 
     companion object {
 
-        const val TITLE_1 = "Pencarian luas"
-        const val TITLE_2 = "Pencarian Spesifik"
+        const val TITLE_1 = "Luas"
+        const val TITLE_2 = "Spesifik"
 
         fun newInstance(): EditKeywordSortSheet {
             return EditKeywordSortSheet()

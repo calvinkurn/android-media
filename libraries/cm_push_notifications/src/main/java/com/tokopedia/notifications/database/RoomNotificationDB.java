@@ -29,7 +29,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
         CMInApp.class,
         ElapsedTime.class,
         BaseNotificationModel.class,
-}, version = 5,exportSchema = false)
+}, version = 5)
 
 @TypeConverters({ButtonListConverter.class,
         NotificationModeConverter.class,

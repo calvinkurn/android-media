@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
@@ -202,8 +203,8 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                         daily_budget?.setError(true)
                         daily_budget?.setMessage(
                             String.format(
-                                getString(R.string.min_bid_error),
-                                AUTOBID_DEFUALT_BUDGET.toString()
+                                getString(R.string.angarran_harrian_min_bid_error),
+                                Utils.convertToCurrency(AUTOBID_DEFUALT_BUDGET.toLong())
                             )
                         )
                         validation3 = false
@@ -213,7 +214,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                         daily_budget?.setError(true)
                         daily_budget?.setMessage(
                             String.format(
-                                getString(R.string.min_bid_error),
+                                getString(R.string.topads_common_minimum_daily_budget),
                                 currentBudget
                             )
                         )

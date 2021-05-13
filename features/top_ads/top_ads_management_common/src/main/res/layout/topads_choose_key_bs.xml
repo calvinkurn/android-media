@@ -25,6 +25,7 @@
             android:id="@+id/desc_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title_1"
             app:typographyType="body_3" />
@@ -32,6 +33,7 @@
         <com.tokopedia.unifycomponents.DividerUnify
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_2"
+            android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_16" />
 
         <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
@@ -40,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layoutDirection="rtl"
             android:padding="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
             android:text="@string/topads_common_keyword_edit_info_sheet_title_2"
             android:textAlignment="textStart"
             app:bold="true" />
@@ -49,6 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title_2"
             app:typographyType="body_3" />

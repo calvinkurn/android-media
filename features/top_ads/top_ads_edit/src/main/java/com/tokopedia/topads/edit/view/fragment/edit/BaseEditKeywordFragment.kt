@@ -40,6 +40,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
 
     private var buttonStateCallback: SaveButtonStateCallBack? = null
     private var btnState = true
+    private var bidStrategy: String = ""
     private var autoBidSelectionSheet: AutoBidSelectionSheet? = null
     var positivekeywordsAll: ArrayList<KeySharedModel>? = arrayListOf()
     var negativekeywordsAll: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
@@ -89,6 +90,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
 
     private fun handleAutoBidState(autoBidState: String) {
         sharedViewModel.setAutoBidStatus(autoBidState)
+        bidStrategy = autoBidState
         if (autoBidState.isNotEmpty()) {
             buttonDisable(true)
             autobid_selection.text = "Otomatis"
@@ -157,21 +159,23 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         val strategies: ArrayList<String> = arrayListOf()
         var bidGroup =0
 
-        if (fragments?.get(0) is EditKeywordsFragment) {
-            val bundle: Bundle = (fragments[0] as EditKeywordsFragment).sendData()
-            addedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_CREATE)
-            deletedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_DELETE)
-            editedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_EDIT)
-            positivekeywordsAll = bundle.getParcelableArrayList(POSITIVE_KEYWORD_ALL)
-            bidGroup = bundle.getInt(Constants.PRICE_BID)
+        if(bidStrategy.isEmpty()) {
+            if (fragments?.get(0) is EditKeywordsFragment) {
+                val bundle: Bundle = (fragments[0] as EditKeywordsFragment).sendData()
+                addedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_CREATE)
+                deletedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_DELETE)
+                editedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_EDIT)
+                positivekeywordsAll = bundle.getParcelableArrayList(POSITIVE_KEYWORD_ALL)
+                bidGroup = bundle.getInt(Constants.PRICE_BID)
 
-        }
-        if (fragments?.get(1) is EditNegativeKeywordsFragment) {
-            val bundle: Bundle = (fragments[1] as EditNegativeKeywordsFragment).sendData()
-            dataNegativeAdded = bundle.getParcelableArrayList(NEGATIVE_KEYWORDS_ADDED)
-            dataNegativeDeleted = bundle.getParcelableArrayList(NEGATIVE_KEYWORDS_DELETED)
-            negativekeywordsAll = bundle.getParcelableArrayList(NEGATIVE_KEYWORD_ALL)
+            }
+            if (fragments?.get(1) is EditNegativeKeywordsFragment) {
+                val bundle: Bundle = (fragments[1] as EditNegativeKeywordsFragment).sendData()
+                dataNegativeAdded = bundle.getParcelableArrayList(NEGATIVE_KEYWORDS_ADDED)
+                dataNegativeDeleted = bundle.getParcelableArrayList(NEGATIVE_KEYWORDS_DELETED)
+                negativekeywordsAll = bundle.getParcelableArrayList(NEGATIVE_KEYWORD_ALL)
 
+            }
         }
         strategies.clear()
         if(autobid_selection.text == "Otomatis") {

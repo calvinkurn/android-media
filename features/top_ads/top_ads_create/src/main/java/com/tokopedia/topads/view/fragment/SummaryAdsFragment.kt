@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -72,7 +73,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private var input = InputCreateGroup()
     var keyword = KeywordsItem()
     var group = Group()
-    private var autoBidState: MutableList<String> = mutableListOf()
+    private var strategies: MutableList<String> = mutableListOf()
     private var keywordsList: MutableList<KeywordsItem> = mutableListOf()
     private var adsItemsList: MutableList<AdsItem> = mutableListOf()
     private var selectedProductIds: MutableList<String> = mutableListOf()
@@ -176,7 +177,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 onErrorGroupName(getString(R.string.topads_create_group_name_empty_error))
             }
         }
-        setGroupName()
+//        setGroupName()
         setUpInitialValues()
         toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -187,7 +188,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 } catch (e: NumberFormatException) {
                 }
                 if (budget < suggestion && daily_budget.isVisible) {
-                    daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), minBudget))
+                    daily_budget.setMessage(String.format(getString(R.string.topads_common_minimum_daily_budget), minBudget))
                     daily_budget.setError(true)
                     validation2 = false
                     actionEnable()
@@ -233,6 +234,17 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         else
             AUTOBID_DEFUALT_BUDGET
         daily_budget.textFieldInput.setText(dailyBudget.toString())
+        groupInput?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus) {
+                setGroupName()
+            } else {
+                groupInput.textFieldInput.setText(stepperModel?.groupName)
+                groupInput?.setError(false)
+                validation1 = true
+                actionEnable()
+                groupInput?.setMessage("")
+            }
+        }
     }
 
     private fun setGroupName() {
@@ -281,6 +293,12 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         bidRange?.text = String.format(resources.getString(R.string.bid_range), stepperModel?.minBid.toString(), stepperModel?.maxBid.toString())
         productCount?.text = stepperModel?.selectedProductIds?.count().toString()
         keywordCount?.text = stepperModel?.selectedKeywordStage?.count().toString()
+
+        goToProduct.setImageDrawable(context?.getResDrawable(com.tokopedia.iconunify.R.drawable.iconunify_edit))
+        goToAutobid.setImageDrawable(context?.getResDrawable(com.tokopedia.iconunify.R.drawable.iconunify_edit))
+        goToBudget.setImageDrawable(context?.getResDrawable(com.tokopedia.iconunify.R.drawable.iconunify_edit))
+        goToKeyword.setImageDrawable(context?.getResDrawable(com.tokopedia.iconunify.R.drawable.iconunify_edit))
+
         goToProduct?.setOnClickListener {
             stepperModel?.redirectionToSummary = true
             stepperListener?.getToFragment(1, stepperModel)
@@ -339,7 +357,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 val input = number.toInt()
                 if (isMinValidation(input)) {
                     daily_budget.setError(true)
-                    daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), minBudget))
+                    daily_budget.setMessage(String.format(getString(com.tokopedia.topads.common.R.string.angarran_harrian_min_bid_error), Utils.convertToCurrency(minBudget.toLong())))
                     validation2 = false
                     actionEnable()
                 } else if (input % DAILYBUDGET_FACTOR != 0) {
@@ -347,9 +365,9 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                     daily_budget.setMessage(String.format(getString(R.string.topads_common_error_multiple_50), DAILYBUDGET_FACTOR))
                     validation2 = false
                     actionEnable()
-                } else if (input > MAXIMUM_LIMIT && daily_budget.isVisible) {
+                } else if (input > MAXIMUM_LIMIT.toDouble() && daily_budget.isVisible) {
                     daily_budget.setError(true)
-                    daily_budget.setMessage(String.format(getString(R.string.topads_common_maximum_daily_budget), MAXIMUM_LIMIT))
+                    daily_budget.setMessage(String.format(getString(R.string.topads_common_maximum_daily_budget), Utils.convertToCurrency(MAXIMUM_LIMIT.toLong())))
                     validation2 = false
                     actionEnable()
                 } else {
@@ -381,7 +399,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         }
         input.shopID = userSession.shopId
         input.group.groupName = stepperModel?.groupName ?: ""
-        if(stepperModel?.autoBidState?.isNotEmpty() == true) {
+        if(stepperModel?.autoBidState?.isEmpty() == true) {
             input.group.priceBid = stepperModel?.finalBidPerClick?.toDouble() ?: 0.0
         } else {
             input.group.priceBid = stepperModel?.minBid?.toDouble() ?: 0.0
@@ -404,11 +422,11 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             input.group.ads = adsItemsList
         }
 
-        stepperModel?.autoBidState?.let {
-            autoBidState.clear()
-            autoBidState.add(it)
+        if(stepperModel?.autoBidState?.isNotEmpty() == true) {
+            strategies.clear()
+            strategies.add(stepperModel?.autoBidState!!)
         }
-        input.strategies = autoBidState
+        input.group.strategies = strategies
 
         map[INPUT] = input
         return map

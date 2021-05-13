@@ -4,6 +4,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.util.Utils.KALI
 import com.tokopedia.topads.edit.R
@@ -11,7 +14,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeyword
 import com.tokopedia.topads.edit.view.adapter.keyword.viewholder.KeywordItemViewHolder.Companion.HIGH
 import com.tokopedia.topads.edit.view.adapter.keyword.viewholder.KeywordItemViewHolder.Companion.LOW
 import com.tokopedia.topads.edit.view.adapter.keyword.viewholder.KeywordItemViewHolder.Companion.MEDIUM
-import com.tokopedia.unifycomponents.UnifyImageButton
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -22,9 +25,9 @@ class EditKeywordItemViewHolder(val view: View,
                                 var actionDelete: (pos: Int) -> Unit, var editBudget: ((pos: Int) -> Unit)?, var editType: ((pos: Int) -> Unit)?) : EditKeywordViewHolder<EditKeywordItemViewModel>(view) {
 
 
-    private var btnDelete = view.findViewById<UnifyImageButton>(com.tokopedia.topads.common.R.id.btnDelete)
-    private var budgetEdit = view.findViewById<UnifyImageButton>(com.tokopedia.topads.common.R.id.editBudget)
-    private var typeEdit = view.findViewById<UnifyImageButton>(com.tokopedia.topads.common.R.id.editType)
+    private var btnDelete = view.findViewById<ImageUnify>(com.tokopedia.topads.common.R.id.btnDelete)
+    private var budgetEdit = view.findViewById<ImageUnify>(com.tokopedia.topads.common.R.id.editBudget)
+    private var typeEdit = view.findViewById<ImageUnify>(com.tokopedia.topads.common.R.id.editType)
     private var keywordData = view.findViewById<Typography>(com.tokopedia.topads.common.R.id.keywordData)
     private var keywordName = view.findViewById<Typography>(com.tokopedia.topads.common.R.id.keywordName)
     private var typeKeyword = view.findViewById<Typography>(com.tokopedia.topads.common.R.id.typeKeyword)
@@ -41,6 +44,9 @@ class EditKeywordItemViewHolder(val view: View,
     override fun bind(item: EditKeywordItemViewModel, added: MutableList<Boolean>, minBid: String) {
 
         item.let {
+            btnDelete.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.DELETE))
+            budgetEdit.setImageDrawable(view.context.getResDrawable(com.tokopedia.iconunify.R.drawable.iconunify_edit))
+            typeEdit.setImageDrawable(view.context.getResDrawable(com.tokopedia.iconunify.R.drawable.iconunify_edit))
             btnDelete.setOnClickListener {
                 view.context?.let { context ->
                     val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)

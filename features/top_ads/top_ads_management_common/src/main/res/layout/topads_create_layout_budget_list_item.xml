@@ -44,15 +44,14 @@
             app:typographyType="body_3"
             tools:text="Luas" />
 
-        <com.tokopedia.unifycomponents.UnifyImageButton
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/editType"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_4"
+            android:tint="@color/tkpd_green_header"
             app:layout_constraintStart_toEndOf="@id/typeKeyword"
-            app:layout_constraintTop_toTopOf="@id/typeKeyword"
-            app:srcCompat="@drawable/topads_create_pen"
-            app:unifyImageButtonVariant="image" />
+            app:layout_constraintTop_toTopOf="@id/typeKeyword" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/keywordBudget"
@@ -67,27 +66,23 @@
             app:typographyType="body_3"
             tools:text="800" />
 
-        <com.tokopedia.unifycomponents.UnifyImageButton
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/editBudget"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_4"
+            android:tint="@color/tkpd_green_header"
             app:layout_constraintStart_toEndOf="@id/keywordBudget"
-            app:layout_constraintTop_toTopOf="@id/typeKeyword"
-            app:srcCompat="@drawable/topads_create_pen"
-            app:unifyImageButtonVariant="image" />
+            app:layout_constraintTop_toTopOf="@id/typeKeyword" />
 
-        <com.tokopedia.unifycomponents.UnifyImageButton
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/btnDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
             android:background="@color/transparent"
             android:gravity="center_vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/editType"
-            app:srcCompat="@drawable/topads_delete"
-            app:unifyImageButtonType="main"
-            app:unifyImageButtonVariant="image" />
+            app:layout_constraintTop_toTopOf="@id/editType" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

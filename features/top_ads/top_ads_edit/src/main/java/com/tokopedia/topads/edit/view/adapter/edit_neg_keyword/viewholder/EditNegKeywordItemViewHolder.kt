@@ -49,9 +49,9 @@ class EditNegKeywordItemViewHolder(val view: View,
                 sortKeywordList = EditKeywordSortSheet.newInstance()
                 sortKeywordList.setChecked(view.sort.text.toString())
                 sortKeywordList.show((view.context as FragmentActivity).supportFragmentManager, "")
-                sortKeywordList.onItemClick = {
+                sortKeywordList.onItemClick = { type ->
                     val prev = view.sort.text
-                    if (prev != view.sort.text)
+                    if (prev != type)
                         actionStatusChange.invoke(adapterPosition)
                     if (sortKeywordList.getSelectedSortId() == TITLE_1) {
                         item.data.type = BROAD

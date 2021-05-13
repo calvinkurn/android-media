@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
@@ -71,8 +73,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private lateinit var selectedkeyword: Typography
     private lateinit var tipButton: FloatingButtonUnify
     private lateinit var loading: LoaderUnify
-    private lateinit var info1: UnifyImageButton
-    private lateinit var info2: UnifyImageButton
+    private lateinit var info1: ImageUnify
+    private lateinit var info2: ImageUnify
     private lateinit var bidList: RecyclerView
     private lateinit var bottomLayout: ConstraintLayout
     private lateinit var tipLayout: ConstraintLayout
@@ -223,9 +225,10 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         stepperModel?.minBid = minBid
         stepperModel?.minSuggestBidKeyword = minSuggestKeyword
         stepperModel?.selectedKeywordStage = getItemSelected()
-        if (stepperModel?.redirectionToSummary == false)
+        if (stepperModel?.redirectionToSummary == false) {
+            stepperModel?.goToSummary = true
             stepperListener?.goToNextPage(stepperModel)
-        else {
+        } else {
             stepperModel?.redirectionToSummary = false
             stepperListener?.getToFragment(4, stepperModel)
         }
@@ -264,7 +267,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         viewModel.getBidInfo(suggestions, this::onSuccessSuggestion, this::onEmptySuggestion)
         val list: MutableList<String>? = stepperModel?.selectedProductIds
         val productId = list?.joinToString(",")
-        if (stepperModel?.selectedKeywordStage?.isNotEmpty() != false) {
+        if (stepperModel?.goToSummary == true) {
             setRestoreValue()
         } else {
             viewModel.getSuggestionKeyword(productId
@@ -304,10 +307,14 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private fun setRestoreValue() {
         ticker?.gone()
         setCount()
-        stepperModel?.selectedKeywordStage?.forEach { it ->
-            bidInfoAdapter.items.add(BidInfoItemViewModel(it))
+        if(stepperModel?.selectedKeywordStage?.isEmpty() == true) {
+            onEmptySuggestion()
+        } else {
+            stepperModel?.selectedKeywordStage?.forEach { it ->
+                bidInfoAdapter.items.add(BidInfoItemViewModel(it))
+            }
+            bidInfoAdapter.notifyDataSetChanged()
         }
-        bidInfoAdapter.notifyDataSetChanged()
     }
 
     private fun onDefaultSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
@@ -360,6 +367,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         buttonNext.setOnClickListener {
             gotoNextPage()
         }
+        info1.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
+        info2.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
         info1.setOnClickListener {
             InfoBottomSheet.newInstance().show(childFragmentManager, 0)
         }
@@ -405,12 +414,12 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                 stepperModel?.finalBidPerClick = result
                 when {
                     result < minBid.toDouble() -> {
-                        setMessageErrorField(getString(R.string.min_bid_error), minBid, true)
+                        setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true)
                         isEnable = false
                     }
                     result > maxBid.toDouble() -> {
                         isEnable = false
-                        setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
+                        setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true)
                     }
 
                     result % (FACTOR.toInt()) != 0 -> {

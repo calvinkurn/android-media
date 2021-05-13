@@ -109,6 +109,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         bundle.putInt(GROUP_ID, groupId ?: 0)
         bundle.putString(GROUP_NAME, groupName)
         bundle.putInt(GROUP_TOTAL, groupTotal)
+        bundle.putString(TopAdsDashboardConstant.GROUP_STRATEGY, autoBidStatus)
         list.add(FragmentTabItem(PRODUK, ProductTabFragment.createInstance(bundle)))
         list.add(FragmentTabItem(KATA_KUNCI, KeywordTabFragment.createInstance(bundle)))
         list.add(FragmentTabItem(NEG_KATA_KUNCI, NegKeywordTabFragment.createInstance(bundle)))
@@ -177,6 +178,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             per_click.visibility = View.GONE
             budgetPerClick.text = getString(com.tokopedia.topads.common.R.string.autobid_otomatis)
         } else {
+            autoBidStatus = ""
             per_click.visibility = View.VISIBLE
             budgetPerClick.text = "Rp " + data.priceBid
         }
