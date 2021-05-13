@@ -101,6 +101,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
+import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionData
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
@@ -400,7 +401,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         // Then just ignore onActivityResult with this variable
         outState.putBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, false)
     }
-
 
     override fun onPause() {
         super.onPause()
@@ -1325,6 +1325,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 viewModel.getUserLocationCache()
         )
 
+        renderRestrictionBottomSheet(viewModel.p2Data.value?.restrictionInfo ?: RestrictionInfoResponse())
+
         /*
             If the p2 data is empty, dont update the button
             this condition will be reproduceable when variant auto select is faster then p2 data from network
@@ -1508,7 +1510,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     private fun observeToggleFavourite() {
         viewLifecycleOwner.observe(viewModel.toggleFavoriteResult) { data ->
-            nplFollowersButton?.stopLoading()
+            setLoadingNplShopFollowers(false)
             data.doSuccessOrFail({
                 onSuccessFavoriteShop(it.data.first, it.data.second)
                 setupShopFavoriteToaster(it.data.second)
@@ -1671,7 +1673,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
         intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
         intent.putExtras(shipmentFormRequest)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_CHECKOUT)
     }
 
@@ -1740,12 +1741,33 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         actionButtonView.visibility = !isAffiliate
     }
 
+    private fun renderRestrictionBottomSheet(data: RestrictionInfoResponse) {
+        val reData = data.getReByProductId(viewModel.getDynamicProductInfoP1?.basic?.productID ?: "")
+        if (reData == null) {
+            nplFollowersButton?.setupVisibility = false
+            return
+        }
+
+        when {
+            reData.restrictionExclusiveType() -> {
+                renderExclusiveBottomSheet(reData)
+            }
+            reData.restrictionShopFollowersType() -> {
+                updateNplButtonFollowers(reData)
+            }
+            else -> {
+                nplFollowersButton?.setupVisibility = false
+            }
+        }
+    }
+
     private fun onSuccessGetDataP2(it: ProductInfoP2UiData, boeData: BebasOngkirImage, ratesData: P2RatesEstimateData?) {
         val minimumShippingPriceP2 = ratesData?.cheapestShippingPrice?.toInt() ?: 0
         if (minimumShippingPriceP2 != 0) {
             viewModel.shippingMinimumPrice = minimumShippingPriceP2
         }
-        updateNplButtonFollowers(it.restrictionInfo)
+
+        renderRestrictionBottomSheet(it.restrictionInfo)
         updateButtonState()
 
         if (it.helpfulReviews?.isEmpty() == true && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.toIntOrZero() == 0) {
@@ -1809,19 +1831,16 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         updateUi()
     }
 
-    private fun updateNplButtonFollowers(restrictionInfo: RestrictionInfoResponse) {
-        val alreadyFollowShop = restrictionInfo.restrictionData.firstOrNull()?.alreadyFollowShop
-                ?: true
-        val shouldShowRe = !alreadyFollowShop
-        if (shouldShowRe && !viewModel.isShopOwner()) {
+    private fun updateNplButtonFollowers(reData: RestrictionData?) {
+        val alreadyFollowShop = reData?.isEligible ?: true
+        val shouldShowRe = !alreadyFollowShop && pdpUiUpdater?.shopCredibility?.isFavorite == false //show when user not follow the shop
+        if (shouldShowRe && !viewModel.isShopOwner() && reData?.restrictionShopFollowersType() == true) {
             if (!base_btn_follow.isShown) {
                 base_btn_follow.translationY = 100.toPx().toFloat()
             }
 
-            val title = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.title
-                    ?: ""
-            val desc = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.description
-                    ?: ""
+            val title = reData.action.firstOrNull()?.title ?: ""
+            val desc = reData.action.firstOrNull()?.description ?: ""
             nplFollowersButton?.renderView(title, desc, alreadyFollowShop)
         }
         setupNplVisibility(shouldShowRe)
@@ -2470,7 +2489,13 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun onSuccessAddWishlist(productId: String?) {
-        view?.showToasterSuccess(toasterWishlistText)
+        view?.showToasterSuccess(
+                message = toasterWishlistText,
+                ctaText = getString(com.tokopedia.wishlist.common.R.string.lihat_label),
+                ctaListener = {
+                    goToWishlist()
+                }
+        )
         pdpUiUpdater?.updateWishlistData(true)
         updateUi()
         DynamicProductDetailTracking.Branch.eventBranchAddToWishlist(viewModel.getDynamicProductInfoP1, (UserSession(activity)).userId, pdpUiUpdater?.productInfoMap?.data?.find { content ->
@@ -2536,6 +2561,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         search_pdp_toolbar?.hide()
         navToolbar = view?.findViewById(R.id.pdp_navtoolbar)
         navToolbar?.apply {
+            viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
                     IconBuilder()
                             .addIcon(IconList.ID_SHARE) {
@@ -2929,7 +2955,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {
         if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
             doActionOrLogin({
-                nplFollowersButton?.startLoading()
+                setLoadingNplShopFollowers(true)
                 trackToggleFavoriteShop(componentTrackDataModel)
                 pdpUiUpdater?.shopCredibility?.enableButtonFavorite = false
                 viewModel.toggleFavorite(viewModel.getDynamicProductInfoP1?.basic?.shopID
@@ -2959,11 +2985,46 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun setupNplVisibility(isFavorite: Boolean) {
-        val restrictionData = viewModel.p2Data.value?.restrictionInfo?.restrictionData
-        nplFollowersButton?.setupVisibility = if (restrictionData?.isNotEmpty() == true && restrictionData.firstOrNull()?.action?.isNotEmpty() == true && !viewModel.isShopOwner()) {
+        val reData = viewModel.p2Data.value?.restrictionInfo?.getReByProductId(viewModel.getDynamicProductInfoP1?.basic?.productID ?: "")
+        if (reData?.restrictionShopFollowersType() == false) return
+
+        nplFollowersButton?.setupVisibility = if (reData != null && reData.action.isNotEmpty() && !viewModel.isShopOwner()) {
             isFavorite
         } else {
             false
+        }
+    }
+
+    private fun setupExclusiveVisibility(shouldVisible: Boolean, isExclusiveType: Boolean) {
+        if (!isExclusiveType) return
+        nplFollowersButton?.setupVisibility = shouldVisible
+    }
+
+    private fun renderExclusiveBottomSheet(restrictionData: RestrictionData?) {
+        if (restrictionData == null) return
+        val isExclusiveType = restrictionData.restrictionExclusiveType()
+        if (restrictionData.action.isNotEmpty()) {
+            val title = restrictionData.action.firstOrNull()?.title ?: ""
+            val desc = restrictionData.action.firstOrNull()?.description ?: ""
+            val badgeUrl = restrictionData.action.firstOrNull()?.badgeURL ?: ""
+            nplFollowersButton?.renderView(title = title,
+                    alreadyFollowShop = false,
+                    desc = desc,
+                    iconUrl = badgeUrl,
+                    hideButton = true,
+                    maxLine = 2,
+                    centerImage = true)
+        }
+        setupExclusiveVisibility(restrictionData.isNotEligibleExclusive(), isExclusiveType)
+    }
+
+    private fun setLoadingNplShopFollowers(isLoading: Boolean) {
+        val restrictionData = viewModel.p2Data.value?.restrictionInfo
+        if (restrictionData?.restrictionData?.firstOrNull()?.restrictionShopFollowersType() == false) return
+        if (isLoading) {
+            nplFollowersButton?.startLoading()
+        } else {
+            nplFollowersButton?.stopLoading()
         }
     }
 

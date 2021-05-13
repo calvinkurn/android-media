@@ -25,9 +25,9 @@
         android:id="@+id/tickerSomList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:enableAutoSlide="true"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="parent"
         app:tickerType="announcement" />
 
     <com.tokopedia.unifycomponents.SearchBarUnify

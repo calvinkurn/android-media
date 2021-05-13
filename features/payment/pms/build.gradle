@@ -48,6 +48,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
