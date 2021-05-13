@@ -75,6 +75,9 @@ public class PaymentListInside {
     @SerializedName("show_help_page")
     @Expose
     private boolean showHelpPage;
+    @SerializedName("show_ticker_message")
+    @Expose
+    private boolean isShowTickerMessage;
     @SerializedName("ticker_message")
     @Expose
     private String tickerMessage;
@@ -280,5 +283,13 @@ public class PaymentListInside {
 
     public void setTransactionExpireUnix(Long transactionExpireUnix) {
         this.transactionExpireUnix = transactionExpireUnix;
+    }
+
+    public boolean isShowTickerMessage() {
+        return isShowTickerMessage;
+    }
+
+    public void setShowTickerMessage(boolean showTickerMessage) {
+        isShowTickerMessage = showTickerMessage;
     }
 }

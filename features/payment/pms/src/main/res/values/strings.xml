@@ -68,6 +68,11 @@
     <string name="pms_hwp_bank_account_number_copy">Nomor rekening berhasil disalin.</string>
     <string name="pms_hwp_code_copy_success">Kode Pembayaran berhasil disalin.</string>
     <string name="pms_hwp_va_copy_success">Nomor virtual account berhasil disalin.</string>
+
+    <string name="pms_htp_redirect_label">Lihat Cara Bayar</string>
+    <string name="pms_deferred_payment_card_title">Belanja</string>
+    <string name="pms_deferred_payment_expire_title">Bayar Sebelum</string>
+    <string name="pms_deferred_payment_waiting_label">Menunggu verifikasi</string>
     <string-array name="payment_list_bank_name">
         <item>BCA</item>
         <item>MANDIRI</item>

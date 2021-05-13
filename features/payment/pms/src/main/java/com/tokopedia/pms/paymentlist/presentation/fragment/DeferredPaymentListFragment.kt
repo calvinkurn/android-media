@@ -42,10 +42,15 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recycler_view.apply {
-            adapter = DeferredPaymentListAdapter()
+            adapter = DeferredPaymentListAdapter { actionItem, url ->
+                handleUrlRedirection(actionItem, url)
+            }
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
         observeViewModels()
+    }
+
+    private fun handleUrlRedirection(actionItem: Int, url: String) {
     }
 
     private fun loadDeferredTransactions(cursor: String = "") {
@@ -70,6 +75,8 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        const val ACTION_HOW_TO_PAY_REDIRECTION = 1
+        const val ACTION_INVOICE_PAGE_REDIRECTION = 2
         fun createInstance() = DeferredPaymentListFragment()
     }
 

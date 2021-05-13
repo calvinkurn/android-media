@@ -8,6 +8,7 @@ import com.tokopedia.pms.payment.data.model.PaymentListInside
 import com.tokopedia.pms.paymentlist.domain.data.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import kotlinx.coroutines.channels.ticker
 import javax.inject.Inject
 
 class PaymentListMapperUseCase @Inject constructor(
@@ -162,6 +163,7 @@ class PaymentListMapperUseCase @Inject constructor(
 
     private fun getCreditCardPaymentModel(paymentListInside: PaymentListInside): CreditCardPaymentModel {
         paymentListInside.apply {
+            val tickerMessage = if (isShowTickerMessage) tickerMessage else ""
             return CreditCardPaymentModel(
                 tickerMessage, transactionId, merchantCode,
                 transactionExpireUnix, transactionDate, paymentAmount, isShowCancelButton,

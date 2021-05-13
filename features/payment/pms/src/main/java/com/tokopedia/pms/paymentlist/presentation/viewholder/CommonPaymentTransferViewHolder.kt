@@ -12,10 +12,10 @@ import com.tokopedia.pms.paymentlist.domain.data.VirtualAccountPaymentModel
 
 class CommonPaymentTransferViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-    fun bindVA(item: VirtualAccountPaymentModel) {
+    private fun bindVA(item: VirtualAccountPaymentModel) {
     }
 
-    fun bindKlicBCA(item: KlicBCAPaymentModel) {
+    private fun bindKlicBCA(item: KlicBCAPaymentModel) {
 
     }
 
