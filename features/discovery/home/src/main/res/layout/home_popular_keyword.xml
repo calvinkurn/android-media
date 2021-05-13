@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_popular_keyword"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_4">
+    android:paddingTop="@dimen/dp_16">
 
     <ViewStub
+        tools:visibility="visible"
         android:id="@+id/channel_title"
         android:inflatedId="@+id/channel_title"
         android:layout="@layout/view_stub_pk_title"
@@ -20,16 +23,34 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+
+    <ViewStub
+        android:id="@+id/channel_subtitle"
+        android:inflatedId="@+id/channel_subtitle"
+        android:layout="@layout/view_stub_dc_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginStart="@dimen/home_component_margin_default"
+        android:layout_marginLeft="@dimen/home_component_margin_default"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:background="@color/Unify_N700"
+        tools:text="Berakhir dalam"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/channel_title"/>
+
     <ViewStub
         android:id="@+id/iv_reload"
         android:inflatedId="@+id/iv_reload"
         android:layout="@layout/view_stub_iv_reload"
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
+        tools:background="@color/Unify_N700"
         android:layout_marginRight="@dimen/dp_4"
         app:layout_constraintRight_toLeftOf="@+id/tv_reload"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/channel_title"/>
+        app:layout_constraintTop_toTopOf="@+id/loader_popular_keyword_title"
+        app:layout_constraintBottom_toBottomOf="@+id/loader_popular_keyword_title"/>
 
     <ViewStub
         android:id="@+id/tv_reload"
@@ -37,13 +58,28 @@
         android:layout="@layout/view_stub_tv_reload"
         android:layout_marginRight="@dimen/home_component_margin_default"
         android:layout_marginEnd="@dimen/home_component_margin_default"
+        tools:layout_width="20dp"
+        tools:layout_height="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/channel_title" />
+        app:layout_constraintTop_toTopOf="@id/iv_reload"
+        app:layout_constraintBottom_toBottomOf="@id/iv_reload"
+        />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        tools:visibility="visible"
+        android:visibility="visible"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:id="@+id/loader_popular_keyword_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="250dp"
+        android:layout_height="@dimen/dp_24"
+        app:loader_type="rect"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_popular_keyword"
@@ -56,10 +92,17 @@
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:itemCount="4"
         tools:listitem="@layout/layout_popular_keyword_item"
-        app:layout_constraintTop_toBottomOf="@+id/channel_title"
+        app:layout_constraintTop_toBottomOf="@+id/channel_subtitle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/channel_title"
         app:layout_constraintRight_toRightOf="@+id/tv_reload"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/header_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="channel_subtitle, loader_popular_keyword_title"
+        app:barrierDirection="bottom"/>
 
     <ViewStub
         android:id="@+id/loading_popular"
@@ -67,18 +110,24 @@
         android:layout="@layout/stub_popular_keyword_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_13"
-        android:layout_marginRight="@dimen/home_component_margin_default"
-        android:layout_marginLeft="@dimen/home_component_margin_default"
-        app:layout_constraintTop_toBottomOf="@+id/channel_title"
+        android:layout_marginTop="@dimen/dp_8"
+        tools:layout_width="match_parent"
+        tools:layout_height="match_parent"
+        tools:visibility="visible"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+        app:layout_constraintTop_toBottomOf="@+id/header_barrier"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
     <com.tokopedia.unifycomponents.LocalLoad
+        tools:visibility="invisible"
         android:id="@+id/error_popular_keyword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
         app:unify_local_load_title="@string/popular_keyword_error_title"
         app:layout_constraintTop_toBottomOf="@+id/channel_title"
         app:layout_constraintStart_toStartOf="parent"

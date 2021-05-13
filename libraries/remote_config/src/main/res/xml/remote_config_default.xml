@@ -426,6 +426,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_enable_async_abtest</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>android_async_addshortcuts</key>
         <value>true</value>
     </entry>

@@ -8,7 +8,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.DrawableMatcher
-import com.tokopedia.topchat.assertion.ToastMatcher
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.matchers.isKeyboardShown
 import com.tokopedia.topchat.matchers.withRecyclerView
@@ -16,7 +15,6 @@ import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers.`is`
 import org.junit.Test
-
 
 class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
@@ -310,7 +308,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         onView(withId(R.id.send_but)).perform(click())
 
         //Then
-        ToastMatcher.onToast(R.string.topchat_desc_empty_text_box)
+        assertSnackbarText(context.getString(R.string.topchat_desc_empty_text_box))
     }
 
 }

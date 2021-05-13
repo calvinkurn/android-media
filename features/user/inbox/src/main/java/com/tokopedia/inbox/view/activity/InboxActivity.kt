@@ -51,6 +51,7 @@ import javax.inject.Inject
  * This page accept 2 optional query parameters:
  * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_PAGE]
  * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_ROLE]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_SOURCE]
  * the value you can use are as follows
  * param page:
  * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_PAGE_NOTIFICATION]
@@ -60,6 +61,8 @@ import javax.inject.Inject
  * param role:
  * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_ROLE_BUYER]
  * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_ROLE_SELLER]
+ * param source:
+ * - you can put any value to this param
  * If the query parameters is not provided it will use recent/last opened page & role
  *
  * example form of applinks:
@@ -67,6 +70,7 @@ import javax.inject.Inject
  * - tokopedia://inbox?page=notification&role=buyer
  * - tokopedia://inbox?page=notification
  * - tokopedia://inbox?role=buyer
+ * - tokopedia://inbox?source=uoh
  *
  * How to construct the applink with query parameters:
  * ```
@@ -82,6 +86,8 @@ import javax.inject.Inject
  * use variables provided in [com.tokopedia.applink.ApplinkConst]
  */
 class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentContainer {
+
+    private var source = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -155,6 +161,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         val data = intent?.data
         val page = data?.getQueryParameter(PARAM_PAGE)
         val role = data?.getQueryParameter(PARAM_ROLE)
+        val source = data?.getQueryParameter(PARAM_SOURCE)
         val pageInt = when (page) {
             VALUE_PAGE_NOTIFICATION -> InboxFragmentType.NOTIFICATION
             VALUE_PAGE_CHAT -> InboxFragmentType.CHAT
@@ -172,6 +179,9 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         }
         roleInt?.let {
             InboxConfig.setRole(it)
+        }
+        source?.let {
+            this.source = it
         }
     }
 
@@ -232,7 +242,12 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         bottomNav?.setBadgeCount(InboxFragmentType.REVIEW, notificationRole.reviewInt)
     }
 
+    override fun getPageSource(): String {
+        return source
+    }
+
     private fun setupToolbar() {
+        toolbar?.let { this.lifecycle.addObserver(it) }
         toolbar?.switchToLightToolbar()
         val view = View.inflate(
                 this, R.layout.partial_inbox_nav_content_view, null

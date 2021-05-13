@@ -22,8 +22,8 @@ import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.model.HomeAtfData
-import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
-import com.tokopedia.home.beranda.data.usecase.HomeUseCase
+import com.tokopedia.home.beranda.data.repository.HomeRevampRepositoryImpl
+import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.di.module.query.QueryHome
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
@@ -59,7 +59,7 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
         get() = Dispatchers.Main + masterJob
 
     companion object {
-        private lateinit var homeUseCase: HomeUseCase
+        private lateinit var homeUseCase: HomeRevampUseCase
         private lateinit var homeDao: HomeDao
         private lateinit var context: Context
         private lateinit var gson: Gson
@@ -130,7 +130,7 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
             val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource> = Lazy {
                 GeolocationRemoteDataSource(HomeAceApi { Observable.just(Response.success("Test")) })
             }
-            val homeRepository = HomeRepositoryImpl(
+            val homeRepository = HomeRevampRepositoryImpl(
                     homeCachedDataSource,
                     homeRemoteDataSource,
                     HomeDefaultDataSource(),
@@ -139,7 +139,7 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
                     context,
                     remoteConfig
             )
-            homeUseCase = HomeUseCase(
+            homeUseCase = HomeRevampUseCase(
                     homeRepository,
                     homeDataMapper
             )
