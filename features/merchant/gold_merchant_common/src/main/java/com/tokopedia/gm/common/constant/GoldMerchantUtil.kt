@@ -17,7 +17,7 @@ object GoldMerchantUtil {
             val joinDate = simpleDateFormat.parse(dateString)
             val diffInMs: Long = abs(System.currentTimeMillis() - joinDate?.time.orZero())
             val diff = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
-            return diff.toInt()
+            return diff.toInt() + 1
         } catch (e: Exception) {
             e.printStackTrace()
             0
@@ -31,7 +31,7 @@ object GoldMerchantUtil {
             val endDateParse = simpleDateFormat.parse(enDate)
             val diffInMs: Long = abs(startDateParse?.time.orZero() - endDateParse?.time.orZero())
             val diff = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
-            return diff.toInt()
+            return diff.toInt() + 1
         } catch (e: Exception) {
             e.printStackTrace()
             0

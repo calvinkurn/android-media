@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.constant.NEW_SELLER_DAYS
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
@@ -422,13 +423,18 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                             else -> Pair("-", "")
                         }
 
-                val rawValueFormatted = when (shopScoreDetail.identifier) {
-                    ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY -> {
-                        (shopScoreDetail.rawValue * ONE_HUNDRED_PERCENT).roundToInt().toString()
-                    }
-                    else -> {
-                        shopScoreDetail.rawValue.roundToInt().toString()
-                    }
+                val rawValueFormatted =
+                        if (shopScoreDetail.rawValue.roundToInt().isLessThanZero()) {
+                            "-"
+                        } else {
+                        when (shopScoreDetail.identifier) {
+                            ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY -> {
+                                (shopScoreDetail.rawValue * ONE_HUNDRED_PERCENT).roundToInt().toString()
+                            }
+                            else -> {
+                                shopScoreDetail.rawValue.roundToInt().toString()
+                            }
+                        }
                 }
 
                 add(ItemDetailPerformanceUiModel(
