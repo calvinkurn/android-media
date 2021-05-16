@@ -37,6 +37,9 @@ object ApplinkConstInternalMarketplace {
     // CartActivity
     @JvmField
     val CART = "$INTERNAL_MARKETPLACE/cart"
+    // MiniCartExample
+    @JvmField
+    val MINI_CART_EXAMPLE = "$INTERNAL_MARKETPLACE/minicartexample"
     // ShipmentActivity
     @JvmField
     val CHECKOUT = "$INTERNAL_MARKETPLACE/checkout"
