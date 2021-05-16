@@ -7,6 +7,5 @@ package com.tokopedia.gm.common.data.source.local.model
 data class PowerMerchantBasicInfoUiModel(
         val pmStatus: PMStatusUiModel,
         val shopInfo: PMShopInfoUiModel,
-        val settingInfo: PowerMerchantSettingInfoUiModel,
         val isFreeShippingEnabled: Boolean = false
 )

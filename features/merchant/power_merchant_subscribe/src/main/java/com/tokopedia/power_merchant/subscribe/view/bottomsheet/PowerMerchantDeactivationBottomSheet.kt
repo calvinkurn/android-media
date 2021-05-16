@@ -17,9 +17,9 @@ import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantDateForm
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.bottom_sheet_power_merchant_cancellation.*
+import kotlinx.android.synthetic.main.bottom_sheet_power_merchant_deactivation.*
 
-class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
+class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
 
     private var listener: BottomSheetCancelListener? = null
     private val powerMerchantTracking: PowerMerchantTracking by lazy {
@@ -35,8 +35,8 @@ class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
         fun newInstance(
                 dateExpired: String,
                 freeShippingEnabled: Boolean
-        ): PowerMerchantCancelBottomSheet {
-            return PowerMerchantCancelBottomSheet().apply {
+        ): PowerMerchantDeactivationBottomSheet {
+            return PowerMerchantDeactivationBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putString(ARGUMENT_DATA_DATE, dateExpired)
                 bundle.putBoolean(EXTRA_FREE_SHIPPING_ENABLED, freeShippingEnabled)
@@ -48,7 +48,7 @@ class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val itemView = View.inflate(context,
-                R.layout.bottom_sheet_power_merchant_cancellation, null)
+                R.layout.bottom_sheet_power_merchant_deactivation, null)
 
         isFullpage = true
         setChild(itemView)

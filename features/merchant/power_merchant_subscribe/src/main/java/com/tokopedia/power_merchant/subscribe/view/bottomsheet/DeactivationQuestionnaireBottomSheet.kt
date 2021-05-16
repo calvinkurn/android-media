@@ -26,7 +26,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.bottom_sheet_pm_deactivation.view.*
+import kotlinx.android.synthetic.main.bottom_sheet_pm_deactivation_questionnaire.view.*
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -34,13 +34,13 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 05/03/21
  */
 
-class DeactivationBottomSheet : BaseBottomSheet() {
+class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
 
     companion object {
         private const val TAG = "DeactivationBottomSheet"
 
-        fun createInstance(): DeactivationBottomSheet {
-            return DeactivationBottomSheet().apply {
+        fun createInstance(): DeactivationQuestionnaireBottomSheet {
+            return DeactivationQuestionnaireBottomSheet().apply {
                 overlayClickDismiss = false
                 isFullpage = true
             }
@@ -63,7 +63,7 @@ class DeactivationBottomSheet : BaseBottomSheet() {
     }
     private var onDeactivationSuccess: (() -> Unit)? = null
 
-    override fun getChildResLayout(): Int = R.layout.bottom_sheet_pm_deactivation
+    override fun getChildResLayout(): Int = R.layout.bottom_sheet_pm_deactivation_questionnaire
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

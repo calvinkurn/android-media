@@ -30,10 +30,7 @@ import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.SubscriptionActivityInterface
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.PMWidgetListener
-import com.tokopedia.power_merchant.subscribe.view.bottomsheet.DeactivationBottomSheet
-import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PMNotificationBottomSheet
-import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PowerMerchantCancelBottomSheet
-import com.tokopedia.power_merchant.subscribe.view.bottomsheet.UpdateInfoBottomSheet
+import com.tokopedia.power_merchant.subscribe.view.bottomsheet.*
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
 import com.tokopedia.power_merchant.subscribe.view.model.*
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSharedViewModel
@@ -119,20 +116,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     override fun loadData(page: Int) {}
 
     override fun setOnDeactivatePMClickListener() {
-        val bottomSheet = PowerMerchantCancelBottomSheet.newInstance(getExpiredTimeFmt(), pmBasicInfo?.isFreeShippingEnabled.orFalse())
-        if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
-
-        bottomSheet.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
-            override fun onClickCancelButton() {
-                showDeactivationQuestionnaire()
-                bottomSheet.dismiss()
-            }
-
-            override fun onClickBackButton() {
-                bottomSheet.dismiss()
-            }
-        })
-        bottomSheet.show(childFragmentManager)
+        val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        if (isPmPro) {
+            showPmProDeactivationBottomSheet()
+        } else {
+            showRegularPmDeactivationBottomSheet()
+        }
     }
 
     override fun cancelPmDeactivationSubmission(position: Int) {
@@ -155,6 +144,30 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val fragment = UpdateInfoBottomSheet.createInstance()
         if (childFragmentManager.isStateSaved || fragment.isAdded) return
         fragment.show(childFragmentManager)
+    }
+
+    private fun showPmProDeactivationBottomSheet() {
+        val bottomSheet = PowerMerchantProDeactivationBottomSheet.createInstance()
+        if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
+
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun showRegularPmDeactivationBottomSheet() {
+        val bottomSheet = PowerMerchantDeactivationBottomSheet.newInstance(getExpiredTimeFmt(), pmBasicInfo?.isFreeShippingEnabled.orFalse())
+        if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
+
+        bottomSheet.setListener(object : PowerMerchantDeactivationBottomSheet.BottomSheetCancelListener {
+            override fun onClickCancelButton() {
+                showDeactivationQuestionnaire()
+                bottomSheet.dismiss()
+            }
+
+            override fun onClickBackButton() {
+                bottomSheet.dismiss()
+            }
+        })
+        bottomSheet.show(childFragmentManager)
     }
 
     fun setOnFooterCtaClickedListener(term: RegistrationTermUiModel?, isEligiblePm: Boolean, tncAgreed: Boolean) {
@@ -343,7 +356,20 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun setOnPmActivationSuccess() {
-        showSuccessRegistrationPopupEndGamePeriod()
+        view?.rootView?.let {
+            val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
+            val message = if (isPmPro) {
+                getString(R.string.pm_pro_registration_success_message)
+            } else {
+                getString(R.string.pm_registration_success_message)
+            }
+            val actionText = getString(R.string.oke)
+
+            Toaster.toasterCustomBottomHeight = it.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+            Toaster.build(it, message, Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL, actionText)
+                    .show()
+        }
     }
 
     private fun showActivationProgress() {
@@ -352,16 +378,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun hideActivationProgress() {
         (activity as? SubscriptionActivityInterface)?.hideActivationProgress()
-    }
-
-    private fun showSuccessRegistrationPopupEndGamePeriod() {
-        val title = getString(R.string.pm_registration_success_title)
-        val description = getString(R.string.pm_registration_success_description_end_game)
-        val ctaText = getString(R.string.pm_see_the_next)
-        val illustrationUrl = PMConstant.Images.PM_REGISTRATION_SUCCESS
-        showNotificationBottomSheet(title, description, ctaText, illustrationUrl, onDismiss = {
-            fetchPowerMerchantBasicInfo()
-        })
     }
 
     private fun showNotificationBottomSheet(
@@ -530,9 +546,11 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val shouldShowNextGradeWidget = data.nextPMGrade != null && isAutoExtendEnabled
                 && data.currentPMGrade?.gradeName != PMShopGrade.ULTIMATE && isPmPro
         if (shouldShowNextGradeWidget) {
+            val pmProThreshold = pmBasicInfo?.shopInfo?.itemSoldPmProThreshold
+                    ?: PMShopInfoUiModel.DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD
             widgets.add(getNextShopGradeWidgetData(data))
             widgets.add(WidgetDividerUiModel)
-            widgets.add(WidgetNextUpdateUiModel(data.nextQuarterlyCalibrationRefreshDate))
+            widgets.add(WidgetNextUpdateUiModel(pmProThreshold, data.nextQuarterlyCalibrationRefreshDate))
         }
         widgets.add(WidgetDividerUiModel)
         if (isAutoExtendEnabled) {
@@ -627,21 +645,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         return DateFormatUtils.getFormattedDate(endOfTenureMillis, dateFormat)
     }
 
-    private fun getPmNextCalculationDate(): String {
-        val shopInfo = pmBasicInfo?.shopInfo
-        return if (shopInfo?.isNewSeller.orTrue()) {
-            val day60ofTenure = 60
-            val shopAge = shopInfo?.shopAge ?: 1
-            return if (shopAge < day60ofTenure) {
-                getNewSellerTenure()
-            } else {
-                pmBasicInfo?.settingInfo?.periodeEndDate.orEmpty()
-            }
-        } else {
-            pmBasicInfo?.settingInfo?.periodeEndDate.orEmpty()
-        }
-    }
-
     private fun getRegistrationHeaderWidgetData(shopInfo: PMShopInfoUiModel): WidgetRegistrationHeaderUiModel {
         return WidgetRegistrationHeaderUiModel(
                 shopInfo = shopInfo,
@@ -655,7 +658,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun showDeactivationQuestionnaire() {
-        val bottomSheet = DeactivationBottomSheet.createInstance()
+        val bottomSheet = DeactivationQuestionnaireBottomSheet.createInstance()
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
         bottomSheet.show(childFragmentManager)
         bottomSheet.setOnDeactivationSuccess {
