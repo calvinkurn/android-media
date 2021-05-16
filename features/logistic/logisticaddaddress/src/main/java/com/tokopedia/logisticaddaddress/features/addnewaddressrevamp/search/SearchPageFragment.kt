@@ -196,4 +196,12 @@ class SearchPageFragment: BaseDaggerFragment() {
             }
         }
     }
+
+    companion object {
+        fun newInstance(bundle: Bundle): SearchPageFragment {
+            return SearchPageFragment().apply {
+                arguments = bundle
+            }
+        }
+    }
 }

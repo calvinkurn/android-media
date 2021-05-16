@@ -35,11 +35,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_6"
                 android:textSize="@dimen/sp_16"
                 app:typographyWeight="bold"
                 app:layout_constraintStart_toEndOf="@+id/btn_back"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/tv_desc"
+                app:layout_constraintTop_toTopOf="parent"
                 android:text="Cari Alamat"/>
 
             <com.tokopedia.unifyprinciples.Typography
@@ -49,10 +50,11 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:textSize="@dimen/sp_12"
+                app:typographyWeight="reguler"
                 app:layout_constraintStart_toEndOf="@+id/btn_back"
                 app:layout_constraintTop_toBottomOf="@id/tv_title"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:text="Di mana lokasi tujuan pengirimanmu?"/>
+                android:text="Di mana lokasi tujuan pengirimanmu?"
+                android:textColor="@color/Neutral_N700_44"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btn_add"

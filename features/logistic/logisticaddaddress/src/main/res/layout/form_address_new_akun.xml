@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/et_nama_penerima"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:text_field_label="Nama Penerima"
+        app:text_field_message="Ini akan jadi nama akunmu, bisa diubah nanti. Info lebih lanjut"/>
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/et_nomor_hp"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_32"
+        app:text_field_label="Nomor Hp"
+        app:text_field_append_drawable_icon_2= "@drawable/iconunify_contact"/>
+
+</LinearLayout>

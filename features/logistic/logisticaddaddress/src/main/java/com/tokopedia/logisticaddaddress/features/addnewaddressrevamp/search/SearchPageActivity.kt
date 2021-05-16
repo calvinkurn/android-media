@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
+import kotlinx.android.synthetic.main.activity_search_address.*
 
 class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampComponent> {
 
@@ -19,11 +20,11 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_address)
-//        initViews()
+        initViews()
         component.inject(this)
     }
 
-  /*  private fun initViews() {
+    private fun initViews() {
         val bundle = Bundle()
         if (intent != null && intent.extras != null) {
             bundle.putAll(intent.extras)
@@ -32,6 +33,6 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
         btn_back.setOnClickListener {
             onBackPressed()
         }
-    }*/
+    }
 
 }

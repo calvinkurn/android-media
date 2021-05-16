@@ -460,12 +460,12 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun openFormAddressView(data: RecipientAddressModel?) {
         val token = viewModel.token
         if (data == null) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
             intent.putExtra(KERO_TOKEN, token)
             intent.putExtra(EXTRA_REF, SCREEN_NAME_USER_NEW)
             startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
         } else {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
             val mapper = AddressModelMapper()
             intent.putExtra(EDIT_PARAM, mapper.transform(data))
             intent.putExtra(KERO_TOKEN, token)
