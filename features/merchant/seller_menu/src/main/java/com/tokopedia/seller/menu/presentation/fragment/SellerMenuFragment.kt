@@ -187,6 +187,8 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                         pmShopScoreInterruptHelper.showsShopScoreConsentToaster(view?.rootView)
                     }
                 }
+
+                pmShopScoreInterruptHelper.showToasterPmProInterruptPage(it, view?.rootView)
             }
         }
     }

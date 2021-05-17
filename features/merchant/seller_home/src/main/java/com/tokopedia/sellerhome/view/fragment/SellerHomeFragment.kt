@@ -495,10 +495,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     fun onNewIntent(uri: Uri?) {
         uri?.let {
             activity?.let { activity ->
-                pmShopScoreInterruptHelper.setShopScoreConsentStatus(activity, it) {
-                    if (it) {
-                        pmShopScoreInterruptHelper.showsShopScoreConsentToaster(view?.rootView)
+                view?.run {
+                    pmShopScoreInterruptHelper.setShopScoreConsentStatus(activity, it) {
+                        if (it) {
+                            pmShopScoreInterruptHelper.showsShopScoreConsentToaster(view?.rootView)
+                        }
                     }
+
+                    pmShopScoreInterruptHelper.showToasterPmProInterruptPage(it, view?.rootView)
                 }
             }
         }

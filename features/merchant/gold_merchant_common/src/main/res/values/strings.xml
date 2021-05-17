@@ -25,4 +25,7 @@
     <string name="pm_on_back_pressed_disabled_message">Baca hingga akhir untuk lanjut</string>
     <string name="gmc_shop_score_consent_approved_message">Kamu sudah membaca dan paham perubahan skema Perfoma Toko.</string>
     <string name="gmc_oke">Oke</string>
+    <string name="gmc_pm_pro_interrupt_action_approved">Hore! Kamu bisa menikmati berbagai keuntungan Power Merchant PRO mulai 14 Juni 2021.</string>
+    <string name="gmc_pm_pro_interrupt_action_stay">Kamu tetap menjadi Power Merchant dengan skema keanggotaan baru berlaku 14 Juni 2021.</string>
+    <string name="gmc_pm_pro_interrupt_action_agreed"><![CDATA[Kamu menyetujui Syarat & Ketentuan skema keanggotaan baru yang berlaku mulai 14 Juni 2021.]]></string>
 </resources>
