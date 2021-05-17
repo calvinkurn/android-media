@@ -460,6 +460,15 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         verifyProgressBarValueEquals(expectedProgressBarState)
     }
 
+    @Test
+    fun `when updateButtonState should update button state accordingly`() {
+        val isEnabled = true
+
+        viewModel.updateButtonState(isEnabled)
+
+        viewModel.submitButtonState.verifyValueEquals(isEnabled)
+    }
+
     private fun fillInImages() {
         val feedbackId = anyLong()
         val expectedReviewDetailResponse = ProductrevGetReviewDetailResponseWrapper(
