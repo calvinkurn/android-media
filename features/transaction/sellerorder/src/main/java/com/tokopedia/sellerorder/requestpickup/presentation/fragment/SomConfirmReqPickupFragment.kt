@@ -227,6 +227,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
         setupChild(viewBottomSheetSchedulePickup)
 
         bottomSheetSchedulePickup?.apply {
+            clearContentPadding = true
             setCloseClickListener { dismiss() }
             setChild(viewBottomSheetSchedulePickup)
             setOnDismissListener { dismiss() }
