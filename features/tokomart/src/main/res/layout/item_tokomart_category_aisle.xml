@@ -9,7 +9,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_category_isle"
+        android:id="@+id/rv_category_aisle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

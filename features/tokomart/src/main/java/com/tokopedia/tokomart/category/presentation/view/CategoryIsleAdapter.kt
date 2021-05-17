@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
-import kotlinx.android.synthetic.main.item_tokomart_category_isle_card.view.*
+import kotlinx.android.synthetic.main.item_tokomart_category_aisle_card.view.*
 
 class CategoryIsleAdapter(
         private val categoryItem: List<CategoryIsleDataView>
@@ -15,7 +15,7 @@ class CategoryIsleAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryItemViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_tokomart_category_isle_card, parent, false)
+                .inflate(R.layout.item_tokomart_category_aisle_card, parent, false)
         return CategoryItemViewHolder(view)
     }
 
