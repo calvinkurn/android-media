@@ -96,10 +96,14 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
                     } else {
                         it.startActivity(intentHome)
                     }
-                    finishOnBoarding()
+                    it.finish()
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     @NotNull
@@ -227,13 +231,24 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     private fun goToNextPage(appLink: String) {
         context?.let {
+            finishOnBoarding()
             val defferedDeeplinkPath = TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists
             val page = RouteManager.getIntent(it, appLink)
             if (defferedDeeplinkPath.isEmpty()) {
-                activity?.startActivityForResult(page, REQUEST_NEXT_PAGE)
+                if (appLink == ApplinkConst.REGISTER || appLink == ApplinkConst.LOGIN) {
+                    activity?.startActivityForResult(page, REQUEST_NEXT_PAGE)
+                } else if (appLink !=  ApplinkConst.HOME) {
+                    val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
+                    intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    activity?.startActivities(arrayOf(intentHome, page))
+                    activity?.finish()
+                } else {
+                    activity?.startActivity(page)
+                    activity?.finish()
+                }
             } else {
                 RouteManager.route(it, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
-                finishOnBoarding()
+                activity?.finish()
             }
         }
     }
@@ -242,7 +257,6 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         activity?.let {
             saveFirstInstallTime()
             userSession.setFirstTimeUserOnboarding(false)
-            it.finish()
         }
     }
 

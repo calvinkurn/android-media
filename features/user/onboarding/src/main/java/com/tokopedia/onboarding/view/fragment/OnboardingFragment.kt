@@ -116,7 +116,7 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
                     } else {
                         it.startActivity(intentHome)
                     }
-                    finishOnBoarding()
+                    it.finish()
                 }
             }
         }
@@ -207,9 +207,10 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
 
                 launchCatchError(
                         block = {
+                            finishOnBoarding()
                             val intent = getIntentforApplink(it, applink)
                             startActivity(intent)
-                            finishOnBoarding()
+                            activity?.finish()
                         },
                         onError = {
                         }
@@ -234,6 +235,7 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
         context?.let {
             launchCatchError(
                     block = {
+                        finishOnBoarding()
                         val intent = getIntentforApplink(it, ApplinkConst.REGISTER)
                         activity?.startActivityForResult(intent, REQUEST_REGISTER)
                     },
@@ -259,7 +261,6 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
         activity?.let {
             saveFirstInstallTime()
             userSession.setFirstTimeUserOnboarding(false)
-            it.finish()
         }
     }
 
