@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.tokomart.search.di.SearchScope
 import com.tokopedia.tokomart.search.domain.usecase.GetSearchUseCaseModule
 import com.tokopedia.tokomart.search.presentation.viewmodel.SearchViewModel
 import dagger.Binds

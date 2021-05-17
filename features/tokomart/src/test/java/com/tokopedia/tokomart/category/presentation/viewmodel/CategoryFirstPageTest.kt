@@ -49,8 +49,8 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         visitableList[0].assertChooseAddressDataView()
         visitableList[1].assertBannerDataView()
         visitableList[2].assertTitleDataView(title = "Category_Title", hasSeeAllCategoryButton = true)
-        visitableList[3].assertQuickFilterDataView()
-        visitableList[4].assertProductCountDataView(categoryModel.searchProduct.header.totalData)
+        visitableList[3].assertQuickFilterDataView(categoryModel.quickFilter)
+        visitableList[4].assertProductCountDataView(categoryModel.searchProduct.header.totalDataText)
     }
 
     private fun `Then assert visitable list contents`(

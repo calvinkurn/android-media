@@ -56,7 +56,10 @@ class CategoryFragment: BaseSearchCategoryFragment() {
         getComponent(CategoryComponent::class.java).inject(this)
     }
 
-    override fun createTypeFactory() = CategoryTypeFactoryImpl()
+    override fun createTypeFactory() = CategoryTypeFactoryImpl(
+            chooseAddressListener = this,
+            titleListener = this,
+    )
 
     override fun getViewModel() = categoryViewModel
 }
