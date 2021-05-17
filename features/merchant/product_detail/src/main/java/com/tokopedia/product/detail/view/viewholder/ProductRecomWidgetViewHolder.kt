@@ -2,6 +2,8 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -24,39 +26,37 @@ class ProductRecomWidgetViewHolder (
     }
 
     override fun bind(element: ProductRecomWidgetDataModel) {
-        element.recomWidgetData?.let {
-            itemView.widget_recom.bind(
-                    carouselData = RecommendationCarouselData(it),
-                    adapterPosition = adapterPosition,
-                    widgetListener = this)
+        itemView.visible()
+        if (element.recomWidgetData == null || element.recomWidgetData?.recommendationItemList?.isEmpty() == true) {
+            itemView.widget_recom.bindTemporaryHeader(itemView.context.getString(R.string.title_other_product))
+        } else {
+            element.recomWidgetData?.let {
+                itemView.widget_recom.bind(
+                        carouselData = RecommendationCarouselData(it, RecommendationCarouselData.STATE_READY),
+                        adapterPosition = adapterPosition,
+                        widgetListener = this)
+            }
         }
     }
 
     override fun onChannelExpired(data: RecommendationCarouselData, channelPosition: Int) {
-        TODO("Not yet implemented")
     }
 
     override fun onSeeAllBannerClicked(data: RecommendationCarouselData, applink: String) {
-        TODO("Not yet implemented")
     }
 
     override fun onRecomChannelImpressed(data: RecommendationCarouselData) {
-        TODO("Not yet implemented")
     }
 
     override fun onRecomProductCardImpressed(data: RecommendationCarouselData, recomItem: RecommendationItem, itemPosition: Int, adapterPosition: Int) {
-        TODO("Not yet implemented")
     }
 
     override fun onRecomProductCardClicked(data: RecommendationCarouselData, recomItem: RecommendationItem, applink: String, itemPosition: Int, adapterPosition: Int) {
-        TODO("Not yet implemented")
     }
 
     override fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int) {
-        TODO("Not yet implemented")
     }
 
     override fun onRecomBannerClicked(data: RecommendationCarouselData, applink: String, adapterPosition: Int) {
-        TODO("Not yet implemented")
     }
 }

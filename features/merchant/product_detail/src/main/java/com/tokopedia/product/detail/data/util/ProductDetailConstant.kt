@@ -100,6 +100,7 @@ object ProductDetailConstant {
     const val VARIANT_OPTIONS = "variant_options"
     const val VARIANT = "variant"
     const val PDP_3 = "pdp_3"
+    const val PDP_5 = "pdp_5"
     const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"

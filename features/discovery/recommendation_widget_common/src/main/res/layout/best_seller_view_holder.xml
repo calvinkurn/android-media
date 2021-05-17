@@ -112,7 +112,7 @@
 
     <include
         android:id="@+id/best_seller_loading_recommendation"
-        layout="@layout/partial_shimmering_grid_list_horizontal"
+        layout="@layout/partial_recom_shimmering_grid_list_horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
