@@ -224,9 +224,9 @@ data class ProductCardModel (
                 && labelFulfillment.imageUrl.isNotEmpty()
     }
 
-    fun isShowLabelCategory() = !willShowVariant() && (getLabelCategory()?.title?.isNotEmpty() == true)
+    fun isShowLabelCategory() = getLabelCategory()?.title?.isNotEmpty() == true
 
-    fun isShowLabelCostPerUnit() = !willShowVariant() && (getLabelCostPerUnit()?.title?.isNotEmpty() == true)
+    fun isShowLabelCostPerUnit() = getLabelCostPerUnit()?.title?.isNotEmpty() == true
 
     fun isShowCategoryAndCostPerUnit() = isShowLabelCategory() && isShowLabelCostPerUnit()
 
