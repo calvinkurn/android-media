@@ -7,4 +7,6 @@
     <string name="comparison_see_more_specs">Lihat Spesifikasi Selengkapnya</string>
     <string name="recom_see_more_dc_mix">Lihat Produk Lainnya</string>
     <string name="recom_lihat_semua">Lihat Semua</string>
+    <string name="content_desc_arrow">content_desc_arrow</string>
+    <string name="content_desc_banner">content_desc_banner</string>
 </resources>

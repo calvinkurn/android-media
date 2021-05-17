@@ -29,7 +29,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent"/>
+            app:layout_constraintTop_toBottomOf="parent"
+            android:contentDescription="@string/content_desc_banner"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_dc_mix_see_more"
@@ -54,6 +55,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
+            app:layout_constraintVertical_chainStyle="packed"
+            android:contentDescription="@string/content_desc_arrow"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
