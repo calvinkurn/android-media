@@ -203,8 +203,13 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private fun observeShopBadgeData() {
         shopSettingsInfoViewModel.shopBadgeData.observe(viewLifecycleOwner, Observer {
-            if(it is Success){
+            if (it is Success) {
                 shopBadge = it.data
+                if (tv_power_merchant_type.text.isNotEmpty()) {
+                    iv_logo_power_merchant.loadImage(shopBadge)
+                } else if (tv_official_store.text.isNotEmpty()) {
+                    iv_logo_official_store.loadImage(shopBadge)
+                }
             }
         })
     }
