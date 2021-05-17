@@ -7,7 +7,7 @@ import com.tokopedia.home_component.model.ReminderWidget
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class ReminderWidgetModel(
-        val id: String,
+        val id: String = "",
         val data: ReminderWidget = ReminderWidget(),
         var source: ReminderEnum
 ): ImpressHolder(), HomeComponentVisitable {
