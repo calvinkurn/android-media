@@ -1326,7 +1326,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun onGoToLogin() {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT)
-        activity?.startActivityForResult(intent, REQUEST_CODE_LOGIN)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
     private fun onGoToCreateShop() {
