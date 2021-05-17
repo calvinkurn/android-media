@@ -28,6 +28,19 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
     override fun bind(element: WidgetShopGradeUiModel) {
         setupShopGrade(element)
         setupShopScore(element)
+        showTopedIllustration(element)
+    }
+
+    private fun showTopedIllustration(element: WidgetShopGradeUiModel) {
+        val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
+        val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val imgUrl = when {
+            isPmPro && isPmActive -> PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
+            isPmPro && !isPmActive -> PMConstant.Images.IMG_TOPED_PM_PRO_INACTIVE
+            !isPmPro && isPmActive -> PMConstant.Images.IMG_TOPED_PM_ACTIVE
+            else -> PMConstant.Images.IMG_TOPED_PM_INACTIVE
+        }
+        itemView.imgPmShopGradeIllustration.loadImageWithoutPlaceholder(imgUrl)
     }
 
     private fun setupShopScore(element: WidgetShopGradeUiModel) = with(itemView) {

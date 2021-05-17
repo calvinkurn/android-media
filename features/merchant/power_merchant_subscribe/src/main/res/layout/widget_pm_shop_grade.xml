@@ -87,6 +87,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPmShopGradeStatus"
+            app:unify_image_corner_radius="0"
             app:unify_image_placeholder="@android:color/transparent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
