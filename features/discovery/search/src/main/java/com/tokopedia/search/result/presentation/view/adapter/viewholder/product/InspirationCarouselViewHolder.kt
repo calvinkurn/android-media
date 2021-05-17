@@ -18,6 +18,7 @@ import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.search.R
+import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselChipsAdapter
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapter
@@ -238,8 +239,16 @@ class InspirationCarouselViewHolder(
                         position = it.position,
                         type = it.type,
                         imageUrl = it.imageUrl,
-                ) }
+                ) },
+                shopLocation = shopLocation,
+                shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges()
         )
+    }
+
+    private fun List<BadgeItemDataView>?.toProductCardModelShopBadges(): List<ProductCardModel.ShopBadge> {
+        return this?.map {
+            ProductCardModel.ShopBadge(it.isShown, it.imageUrl)
+        } ?: listOf()
     }
 
     private suspend fun getProductCardMaxHeight(list: List<ProductCardModel>): Int {

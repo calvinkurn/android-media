@@ -399,6 +399,14 @@ class SearchProductFirstPageGqlUseCase(
                                 }
                                 original_price
                                 discount_percentage
+                              	badges {
+                                    title
+                                    image_url
+                                    show
+                                }
+                              	shop {
+                                    city
+                                }
                             }
                         }
                     }
