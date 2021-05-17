@@ -116,6 +116,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private val snapHelper: SnapHelper = PagerSnapHelper()
+    private lateinit var linearLayoutManager: LinearLayoutManager
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -358,7 +359,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         allMarker.forEach {
             if (it.tag == marker.tag) {
                 cardListPosition = it.tag as Int
-                rvHorizontalPropertiesHotelSearchMap.smoothScrollToPosition(cardListPosition)
+                rvHorizontalPropertiesHotelSearchMap.scrollToCenterPosition(cardListPosition)
                 changeMarkerState(cardListPosition)
                 putPriceMarkerOnTop(cardListPosition)
                 with(hotelSearchMapViewModel.searchParam) {
@@ -374,6 +375,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }
         }
         return true
+    }
+
+    fun RecyclerView.scrollToCenterPosition(position: Int){
+        if(::linearLayoutManager.isInitialized) {
+            linearLayoutManager.scrollToPositionWithOffset(position, RV_HORIZONTAL_SCROLL_OFFSET)
+        }
     }
 
     override fun onItemClicked(property: Property, position: Int) {
@@ -685,7 +692,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun initRecyclerViewMap() {
         rvHorizontalPropertiesHotelSearchMap.adapter = adapterCardList
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvHorizontalPropertiesHotelSearchMap.layoutManager = linearLayoutManager
 
         if (rvHorizontalPropertiesHotelSearchMap.onFlingListener == null) {
@@ -1440,6 +1447,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val MAPS_STREET_LEVEL_ZOOM: Float = 15f
         private const val MAPS_ZOOM_IN: Float = 11f
         private const val MAPS_ZOOM_OUT: Float = 9f
+        private const val RV_HORIZONTAL_SCROLL_OFFSET: Int = 139
 
         private const val PREFERENCES_NAME = "hotel_search_map_preferences"
         private const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
