@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.search.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.tokomart.search.domain.model.SearchModel
+import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -22,6 +23,7 @@ open class SearchTestFixtures {
     protected val defaultQueryParamMap = mapOf(SearchApiConst.Q to defaultKeyword)
     protected val getSearchFirstPageUseCase = mockk<UseCase<SearchModel>>(relaxed = true)
     protected val getSearchLoadMorePageUseCase = mockk<UseCase<SearchModel>>(relaxed = true)
+    protected val chooseAdddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected lateinit var searchViewModel: SearchViewModel
 
     @Before
@@ -35,6 +37,7 @@ open class SearchTestFixtures {
                 queryParamMap,
                 getSearchFirstPageUseCase,
                 getSearchLoadMorePageUseCase,
+                chooseAdddressWrapper,
         )
     }
 

@@ -6,16 +6,27 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.common.data.Option
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
+import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
+import com.tokopedia.tokomart.searchcategory.domain.model.QuickFilterModel
 import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
+import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 
 abstract class BaseSearchCategoryViewModel(
-        baseDispatcher: CoroutineDispatchers
+        baseDispatcher: CoroutineDispatchers,
+        protected val chooseAddressWrapper: ChooseAddressWrapper,
 ): BaseViewModel(baseDispatcher.io) {
 
     protected val loadingMoreModel = LoadingMoreModel()
@@ -37,7 +48,7 @@ abstract class BaseSearchCategoryViewModel(
             headerDataView: HeaderDataView,
             contentDataView: ContentDataView,
     ) {
-        totalData = headerDataView.totalData
+        totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.productList.size
 
         createVisitableListFirstPage(headerDataView, contentDataView)
@@ -60,8 +71,19 @@ abstract class BaseSearchCategoryViewModel(
             ChooseAddressDataView(),
             BannerDataView(),
             TitleDataView(headerDataView.title, headerDataView.hasSeeAllCategoryButton),
-            QuickFilterDataView(),
-            ProductCountDataView(headerDataView.totalData),
+            QuickFilterDataView(
+                    quickFilterItemList = headerDataView.quickFilterDataValue.filter.map {
+                        SortFilterItemDataView(
+                                option = it.options.getOrNull(0) ?: Option(),
+                                sortFilterItem = SortFilterItem(it.title) {
+
+                                }.also { sortFilterItem ->
+                                    sortFilterItem.typeUpdated = false
+                                }
+                        )
+                    }
+            ),
+            ProductCountDataView(headerDataView.aceSearchProductHeader.totalDataText),
     )
 
     protected open fun createContentVisitableList(contentDataView: ContentDataView) =
@@ -72,6 +94,24 @@ abstract class BaseSearchCategoryViewModel(
                         name = product.name,
                         price = product.price,
                         priceInt = product.priceInt,
+                        discountPercentage = product.discountPercentage,
+                        originalPrice = product.originalPrice,
+                        labelGroupDataViewList = product.labelGroupList.map { labelGroup ->
+                            LabelGroupDataView(
+                                    url = labelGroup.url,
+                                    title = labelGroup.title,
+                                    position = labelGroup.position,
+                                    type = labelGroup.type,
+                            )
+                        },
+                        labelGroupVariantDataViewList = product.labelGroupVariantList.map { labelGroupVariant ->
+                            LabelGroupVariantDataView(
+                                    title = labelGroupVariant.title,
+                                    type = labelGroupVariant.type,
+                                    typeVariant = labelGroupVariant.typeVariant,
+                                    hexColor = labelGroupVariant.hexColor,
+                            )
+                        }
                 )
             }
 
@@ -125,7 +165,8 @@ abstract class BaseSearchCategoryViewModel(
     protected data class HeaderDataView(
             val title: String = "",
             val hasSeeAllCategoryButton: Boolean = false,
-            val totalData: Int = 0
+            val aceSearchProductHeader: SearchProductHeader = SearchProductHeader(),
+            val quickFilterDataValue: DataValue = DataValue(),
     )
 
     protected data class ContentDataView(

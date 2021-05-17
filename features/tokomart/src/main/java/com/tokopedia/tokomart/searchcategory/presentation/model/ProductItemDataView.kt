@@ -9,6 +9,10 @@ data class ProductItemDataView(
         val name: String = "",
         val price: String = "",
         val priceInt: Double = 0.0,
+        val discountPercentage: Int = 0,
+        val originalPrice: String = "",
+        val labelGroupDataViewList: List<LabelGroupDataView> = listOf(),
+        val labelGroupVariantDataViewList: List<LabelGroupVariantDataView> = listOf(),
 ): Visitable<BaseSearchCategoryTypeFactory> {
 
     override fun type(typeFactory: BaseSearchCategoryTypeFactory?) =

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
@@ -20,8 +21,13 @@ import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearch
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
+import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 
-abstract class BaseSearchCategoryFragment: BaseDaggerFragment() {
+abstract class BaseSearchCategoryFragment:
+        BaseDaggerFragment(),
+        ChooseAddressListener,
+        TitleListener {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
@@ -135,5 +141,15 @@ abstract class BaseSearchCategoryFragment: BaseDaggerFragment() {
 
     protected open fun onLoadMore() {
         getViewModel().onLoadMore()
+    }
+
+    override fun onLocalizingAddressSelected() {
+
+    }
+
+    override fun getFragment() = this
+
+    override fun onSeeAllCategoryClicked() {
+
     }
 }
