@@ -18,7 +18,7 @@
             android:layout_width="@dimen/unify_space_24"
             android:layout_height="@dimen/unify_space_24"
             android:layout_marginStart="@dimen/unify_space_12"
-            app:layout_constraintBottom_toBottomOf="@+id/transactionDate"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPaymentTransactionDate"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/cardTitle"
             tools:src="@tools:sample/avatars" />
@@ -37,7 +37,7 @@
             android:text="@string/pms_deferred_payment_card_title" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/transactionDate"
+            android:id="@+id/tvPaymentTransactionDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700_68"
@@ -73,7 +73,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tvTransactionExpireLabel"
             app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="small"
-            app:typographyWeight="reguler"
+            app:typographyWeight="bold"
             tools:text="11 Nov, 12:40" />
 
         <com.tokopedia.iconunify.IconUnify
@@ -108,7 +108,7 @@
             android:layout_marginEnd="@dimen/unify_space_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/transactionDate" />
+            app:layout_constraintTop_toBottomOf="@+id/tvPaymentTransactionDate" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivGatewayImage"
@@ -290,7 +290,8 @@
             app:layout_constraintTop_toTopOf="@+id/tvTotalAmountHeading"
             app:unifyButtonSize="micro"
             app:unifyButtonType="main"
-            app:unifyButtonVariant="ghost" />
+            app:unifyButtonVariant="ghost"
+            tools:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

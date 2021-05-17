@@ -82,9 +82,14 @@ class PaymentListMapperUseCase @Inject constructor(
 
                 // will be null in case of Combined VA which is intentional
                 model?.let {
+                    model.paymentCode =  paymentCode
                     model.gatewayImage = gatewayImg
                     model.gatewayName = gatewayName
                     model.productImage = productImg
+                    model.howtoPayAppLink = appLink
+                    model.invoiceDetailUrl = invoiceUrl
+                    model.shouldShowHowToPay = isShowHelpPage
+                    model.actionList.addAll(getListOfAction(this))
                     paymentListModels.add(model)
                 }
             }
@@ -99,7 +104,7 @@ class PaymentListMapperUseCase @Inject constructor(
     ): VirtualAccountPaymentModel {
         model.apply {
             return VirtualAccountPaymentModel(
-                paymentCode, appLink, transactionExpireUnix,
+                transactionExpireUnix,
                 transactionDate, paymentAmount,
                 vaItemList
             )
@@ -163,11 +168,13 @@ class PaymentListMapperUseCase @Inject constructor(
 
     private fun getCreditCardPaymentModel(paymentListInside: PaymentListInside): CreditCardPaymentModel {
         paymentListInside.apply {
-            val tickerMessage = if (isShowTickerMessage) tickerMessage else ""
+            // @TODO uncomment
+            //val tm = if (isShowTickerMessage) tickerMessage else ""
+
             return CreditCardPaymentModel(
                 tickerMessage, transactionId, merchantCode,
                 transactionExpireUnix, transactionDate, paymentAmount, isShowCancelButton,
-                invoiceUrl, productName
+                productName
             )
         }
 
@@ -177,8 +184,7 @@ class PaymentListMapperUseCase @Inject constructor(
         paymentListInside.apply {
             return KlicBCAPaymentModel(
                 transactionId, merchantCode, transactionExpireUnix,
-                transactionDate, paymentAmount, isShowCancelButton,
-                invoiceUrl, productName
+                transactionDate, paymentAmount, isShowCancelButton, productName
             )
         }
     }
@@ -187,8 +193,7 @@ class PaymentListMapperUseCase @Inject constructor(
         paymentListInside.apply {
             return StorePaymentModel(
                 transactionId, merchantCode, transactionExpireUnix,
-                transactionDate, paymentAmount, isShowCancelButton,
-                invoiceUrl, productName
+                transactionDate, paymentAmount, isShowCancelButton, productName
             )
         }
     }
@@ -197,8 +202,7 @@ class PaymentListMapperUseCase @Inject constructor(
         paymentListInside.apply {
             return BankTransferPaymentModel(
                 transactionId, merchantCode, transactionExpireUnix,
-                transactionDate, paymentAmount, isShowCancelButton,
-                invoiceUrl, productName,
+                transactionDate, paymentAmount, isShowCancelButton, productName,
                 BankInfo(userBankAccount.accNo, userBankAccount.accName),
                 BankInfo(destBankAccount.accNo, destBankAccount.accName)
             )
@@ -209,7 +213,7 @@ class PaymentListMapperUseCase @Inject constructor(
         insideModel.isIsVa.not() && insideModel.isIsKlikbca.not() && insideModel.paymentCode?.isNotEmpty() == true
 
 
-    private fun getLabelDynamicViewDetailPayment(
+    /*private fun getLabelDynamicViewDetailPayment(
         paymentListInside: PaymentListInside,
     ): String {
         if (paymentListInside.isIsKlikbca) {
@@ -222,7 +226,7 @@ class PaymentListMapperUseCase @Inject constructor(
 
     private fun getPaymentImage(paymentModel: PaymentListInside) =
         if (TextUtils.isEmpty(paymentModel.bankImg)) paymentModel.gatewayImg else paymentModel.bankImg
-
+*/
     private fun isBankTransfer(paymentListInside: PaymentListInside) =
         paymentListInside.destBankAccount != null && !TextUtils.isEmpty(paymentListInside.destBankAccount.accNo)
                 && paymentListInside.userBankAccount != null && !TextUtils.isEmpty(paymentListInside.userBankAccount.accNo)

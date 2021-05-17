@@ -35,8 +35,10 @@ const val GQL_PAYMENT_LIST_QUERY = """query paymentList(${'$'}cursor : String!){
           show_edit_klikbca_button
           show_cancel_button
           show_help_page
+          show_ticker_message
           ticker_message
           app_link
+          how_to_pay_url
         }
     }
 }

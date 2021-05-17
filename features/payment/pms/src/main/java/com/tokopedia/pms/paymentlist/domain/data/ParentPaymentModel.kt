@@ -1,14 +1,17 @@
 package com.tokopedia.pms.paymentlist.domain.data
 
 open class BasePaymentModel {
+    var paymentCode:String = ""
     var gatewayName: String = ""
     var gatewayImage: String = ""
     var productImage: String = ""
+    var howtoPayAppLink: String= ""
+    var actionList = ArrayList<String>()
+    var invoiceDetailUrl: String = ""
+    var shouldShowHowToPay: Boolean = false
 }
 
 data class VirtualAccountPaymentModel(
-    val paymentCode: String,
-    var howtoPayAppLink: String,
     var expiryTime: Long,
     var expiryDate: String,
     var totalAmount: Int,
@@ -34,7 +37,6 @@ data class CreditCardPaymentModel(
     val expiryDate: String,
     val amount: Int,
     val showCancelButton: Boolean,
-    val invoiceUrl: String,
     val productName: String,
 ): BasePaymentModel()
 
@@ -45,7 +47,6 @@ data class KlicBCAPaymentModel(
     val expiryDate: String,
     val amount: Int,
     val showCancelButton: Boolean,
-    val invoiceUrl: String,
     val productName: String,
 ): BasePaymentModel()
 
@@ -56,7 +57,6 @@ data class StorePaymentModel(
     val expiryDate: String,
     val amount: Int,
     val showCancelButton: Boolean,
-    val invoiceUrl: String,
     val productName: String,
 ): BasePaymentModel()
 
@@ -67,7 +67,6 @@ data class BankTransferPaymentModel(
     val expiryDate: String,
     val amount: Int,
     val showCancelButton: Boolean,
-    val invoiceUrl: String,
     val productName: String,
     val senderBankInfo: BankInfo,
     val destinationBankInfo: BankInfo,

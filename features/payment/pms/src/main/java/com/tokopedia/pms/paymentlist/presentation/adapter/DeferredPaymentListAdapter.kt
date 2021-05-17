@@ -9,14 +9,14 @@ import com.tokopedia.pms.paymentlist.presentation.viewholder.CommonPaymentTransf
 import com.tokopedia.pms.paymentlist.presentation.viewholder.CreditCardTransferViewHolder
 import java.lang.IllegalStateException
 
-class DeferredPaymentListAdapter(val actionItemListener: (Int, String) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class DeferredPaymentListAdapter(private val actionItemListener: (Int, BasePaymentModel) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var deferredPaymentList = ArrayList<BasePaymentModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
-            TYPE_BANK_TRANSFER -> BankTransferViewHolder.getViewHolder(LayoutInflater.from(parent.context), parent)
+            TYPE_BANK_TRANSFER -> BankTransferViewHolder.getViewHolder(LayoutInflater.from(parent.context), parent, actionItemListener)
             TYPE_CREDIT_CARD -> CreditCardTransferViewHolder.getViewHolder(LayoutInflater.from(parent.context), parent, actionItemListener)
-            TYPE_GENERAL_PAYMENT -> CommonPaymentTransferViewHolder.getViewHolder(LayoutInflater.from(parent.context), parent)
+            TYPE_GENERAL_PAYMENT -> CommonPaymentTransferViewHolder.getViewHolder(LayoutInflater.from(parent.context), parent, actionItemListener)
             else -> throw IllegalStateException("No such payment type found")
         }
     }

@@ -7,12 +7,17 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.pms.R
 import com.tokopedia.pms.paymentlist.di.PaymentListComponent
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
+import com.tokopedia.pms.paymentlist.domain.data.CreditCardPaymentModel
+import com.tokopedia.pms.paymentlist.domain.data.VirtualAccountPaymentModel
 import com.tokopedia.pms.paymentlist.presentation.adapter.DeferredPaymentListAdapter
 import com.tokopedia.pms.paymentlist.viewmodel.PaymentListViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_payment_list.*
@@ -42,15 +47,45 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recycler_view.apply {
-            adapter = DeferredPaymentListAdapter { actionItem, url ->
-                handleUrlRedirection(actionItem, url)
+            adapter = DeferredPaymentListAdapter { actionItem, model ->
+                handleActionRedirection(actionItem, model)
             }
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
         observeViewModels()
     }
 
-    private fun handleUrlRedirection(actionItem: Int, url: String) {
+    private fun handleActionRedirection(actionItem: Int, model: BasePaymentModel) {
+        when(actionItem) {
+            ACTION_HOW_TO_PAY_REDIRECTION -> redirectToHowToPay(model)
+            ACTION_INVOICE_PAGE_REDIRECTION -> openInvoiceDetail(model)
+            ACTION_INVOICE_PAGE_REDIRECTION_COMBINED_VA -> checkAndOpenInvoiceDetail(model)
+            ACTION_CHEVRON_ACTIONS -> openActionBottomSheet(model)
+        }
+    }
+
+    private fun openInvoiceDetail(model: BasePaymentModel) {
+        Toaster.make(recycler_view, model.invoiceDetailUrl, Toaster.LENGTH_LONG)
+        //RouteManager.route(context, model.invoiceDetailUrl)
+    }
+
+    private fun redirectToHowToPay(model: BasePaymentModel) {
+        Toaster.make(recycler_view, model.howtoPayAppLink, Toaster.LENGTH_LONG)
+        //RouteManager.route(context, model.howtoPayAppLink)
+    }
+
+    private fun checkAndOpenInvoiceDetail(model: BasePaymentModel) {
+        (model as VirtualAccountPaymentModel).transactionList.let {
+            if (it.size > 1) {
+                Toaster.make(recycler_view, "Open list bottomsheet ${model.transactionList.size}", Toaster.LENGTH_LONG)
+                // open combined list bottom sheet
+            } else openInvoiceDetail(model)
+        }
+    }
+
+    private fun openActionBottomSheet(model: BasePaymentModel) {
+        // open list of action bottom sheet
+        Toaster.make(recycler_view, "Open action list bottomsheet ${model.actionList.size}", Toaster.LENGTH_LONG)
     }
 
     private fun loadDeferredTransactions(cursor: String = "") {
@@ -77,6 +112,8 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
     companion object {
         const val ACTION_HOW_TO_PAY_REDIRECTION = 1
         const val ACTION_INVOICE_PAGE_REDIRECTION = 2
+        const val ACTION_INVOICE_PAGE_REDIRECTION_COMBINED_VA = 3
+        const val ACTION_CHEVRON_ACTIONS = 4
         fun createInstance() = DeferredPaymentListFragment()
     }
 
