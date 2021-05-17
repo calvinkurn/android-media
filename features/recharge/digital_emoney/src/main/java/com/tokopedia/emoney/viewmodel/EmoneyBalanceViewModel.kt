@@ -122,7 +122,6 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
             }
         } else {
-            isoDep.close()
             errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
         }
     }
