@@ -53,6 +53,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelShop
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.util.HomeNetworkUtil
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
@@ -1010,8 +1011,8 @@ open class HomeRevampViewModel @Inject constructor(
                 if (homeDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
                     onRefreshState = false
-                    var homeData = takeHomeTicker(homeDataModel)
-                    if (homeData?.isProcessingDynamicChannle == false) {
+                    var homeData = homeDataModel
+                    if (!homeData.isProcessingDynamicChannle) {
                         homeData = evaluateAvailableComponent(homeData)
                     }
                     homeData?.let {
@@ -1222,7 +1223,6 @@ open class HomeRevampViewModel @Inject constructor(
     fun getSalamWidget(){
         if(getSalamWidgetJob?.isActive == true) return
         if(!isReminderWidgetAvailable()) return
-
         getSalamWidgetJob = launchCatchError(coroutineContext,  block = {
             val data = getSalamWidgetUseCase.get().executeOnBackground()
             _salamWidgetLiveData.postValue(Event(data))

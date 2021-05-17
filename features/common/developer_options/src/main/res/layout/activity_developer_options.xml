@@ -322,6 +322,15 @@
             android:padding="@dimen/margin_small"
             android:text="Enable ANR Debugger" />
 
+        <CheckBox
+            android:id="@+id/toggle_leak_canary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable Leak Canary" />
+
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/remote_config_prefix"
             android:layout_width="match_parent"
