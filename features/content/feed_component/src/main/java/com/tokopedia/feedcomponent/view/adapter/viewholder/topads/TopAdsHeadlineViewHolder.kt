@@ -5,9 +5,12 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
@@ -15,7 +18,7 @@ import com.tokopedia.user.session.UserSessionInterface
 
 const val TOPADS_HEADLINE_VALUE_SRC = "fav_product"
 class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionInterface,
-                               private val topAdsHeadlineListener: TopAdsHeadlineListener? = null) : AbstractViewHolder<TopadsHeadlineUiModel>(view), TopAdsShopFollowBtnClickListener {
+                               private val topAdsHeadlineListener: TopAdsHeadlineListener? = null) : AbstractViewHolder<TopadsHeadlineUiModel>(view), TopAdsShopFollowBtnClickListener, TopAdsBannerClickListener {
 
     private val topadsHeadlineView: TopAdsHeadlineView = view.findViewById(R.id.topads_headline_view)
     private var topadsHeadlineUiModel: TopadsHeadlineUiModel? = null
@@ -26,6 +29,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     }
 
     init {
+        topadsHeadlineView.setTopAdsBannerClickListener(this)
         topadsHeadlineView.setFollowBtnClickListener(this)
     }
 
@@ -74,14 +78,30 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.show()
         topadsHeadlineView.displayAds(cpmModel)
+        if(topadsHeadlineUiModel != null) {
+            setImpressionListener(topadsHeadlineUiModel!!)
+        }
     }
 
     interface TopAdsHeadlineListener {
-        fun onFollowClick(positionInFeed: Int, shopId: String)
+        fun onFollowClick(positionInFeed: Int, shopId: String, adId: String)
+        fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel)
+        fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData)
     }
 
-    override fun onFollowClick(shopId: String) {
-        topAdsHeadlineListener?.onFollowClick(adapterPosition, shopId)
+    override fun onFollowClick(shopId: String, adId: String) {
+        topAdsHeadlineListener?.onFollowClick(adapterPosition, shopId, adId)
     }
 
+    private fun setImpressionListener(element: TopadsHeadlineUiModel) {
+        if(element.cpmModel != null) {
+            topadsHeadlineView.addOnImpressionListener(element.impressHolder) {
+                topAdsHeadlineListener?.onTopAdsHeadlineImpression(adapterPosition, element.cpmModel!!)
+            }
+        }
+    }
+
+    override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
+        topAdsHeadlineListener?.onTopAdsHeadlineAdsClick(position, applink, data!!)
+    }
 }

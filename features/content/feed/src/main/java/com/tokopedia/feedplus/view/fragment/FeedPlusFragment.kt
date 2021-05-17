@@ -130,9 +130,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.topads.sdk.domain.model.Data
-import com.tokopedia.topads.sdk.domain.model.Product
-import com.tokopedia.topads.sdk.domain.model.Shop
+import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
 import com.tokopedia.track.TrackApp
@@ -2103,8 +2101,40 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedViewModel.updatePlayWidgetTotalView(channelId, totalView)
     }
 
-    override fun onFollowClick(positionInFeed: Int, shopId: String) {
+    override fun onFollowClick(positionInFeed: Int, shopId: String, adId: String) {
+        var eventLabel = "$adId - $shopId"
+
+        var eventAction = "click - follow - topads"
+        analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
         feedViewModel.doToggleFavoriteShop(positionInFeed, 0, shopId)
+    }
+
+    override fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel) {
+        var eventLabel = "${cpmModel.data[0].id} - ${cpmModel.data[0].cpm.cpmShop.id}"
+
+        var eventAction1 = "impression - card - topads";
+        var eventAction2 = "impression - product - topads";
+
+        analytics.sendFeedTopAdsHeadlineAdsImpression(eventAction1, eventLabel, cpmModel.data[0].id, position, userSession.userId)
+        analytics.sendFeedTopAdsHeadlineProductImpression(eventAction2, eventLabel, cpmModel.data[0].cpm.cpmShop.products, userSession.userId)
+    }
+
+    override fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData) {
+        RouteManager.route(context, applink)
+
+        var eventAction = ""
+        var eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
+
+        if(applink?.contains("shop") == true && position == 0){
+            eventAction = "click - cek sekarang - topads"
+            analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
+        } else if(applink?.contains("shop") == true && position == 1){
+            eventAction = "click - shop - topads"
+            analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
+        } else {
+            eventAction = " click - product - topads"
+            analytics.sendFeedTopAdsHeadlineProductClick(eventAction, eventLabel, cpmData.cpm.cpmShop.products, userSession.userId)
+        }
     }
 
     override fun urlCreated(linkerShareData: LinkerShareResult?) {
