@@ -36,11 +36,6 @@ class SomBottomSheetShopClosed(
 
     override fun setupChildView() {
         childViews?.run {
-            // setup closing start date
-            tf_start_shop_closed?.textFieldWrapper?.hint = context.getString(R.string.start_shop_closed_label)
-            tf_start_shop_closed?.textFieldInput?.setText(defaultDateNow)
-            tf_start_shop_closed?.textFieldInput?.isEnabled = false
-
             // setup closing end date
             tf_end_shop_closed?.textFieldWrapper?.hint = context.getString(R.string.end_shop_closed_label)
             tf_end_shop_closed?.textFieldInput?.apply {
@@ -80,9 +75,19 @@ class SomBottomSheetShopClosed(
     }
 
     private fun reset() {
-        defaultDateNow = Date().toFormattedString("dd/MM/yyyy")
-        updateClosingEndDate(convertFormatDate(defaultDateNow, "dd/MM/yyyy", "dd MMM yyyy"))
+        val now = Calendar.getInstance()
+        defaultDateNow = now.time.toFormattedString("dd/MM/yyyy")
+        updateClosingEndDate("${now.time.toFormattedString("dd")} ${convertMonth(now.get(Calendar.MONTH))} ${now.time.toFormattedString("yyyy")}")
         childViews?.tf_shop_closed_notes?.textFieldInput?.setText("")
+        childViews?.tf_end_shop_closed?.textFieldInput?.setText(defaultDateNow)
+        setupStartDate()
+    }
+
+    private fun setupStartDate() {
+        // setup closing start date
+        childViews?.tf_start_shop_closed?.textFieldWrapper?.hint = context.getString(R.string.start_shop_closed_label)
+        childViews?.tf_start_shop_closed?.textFieldInput?.setText(defaultDateNow)
+        childViews?.tf_start_shop_closed?.textFieldInput?.isEnabled = false
     }
 
     private fun setupTicker() {
@@ -113,8 +118,8 @@ class SomBottomSheetShopClosed(
         datePicker.show(childFragmentManager, "")
         datePicker.datePickerButton.setOnClickListener {
             val resultDate = datePicker.getDate()
-            tfEndShopClosed.textFieldInput.setText("${resultDate[0]}/${resultDate[1] + 1}/${resultDate[2]}")
-            updateClosingEndDate("${resultDate[0]} ${convertMonth(resultDate[1])} ${resultDate[2]}")
+            tfEndShopClosed.textFieldInput.setText(resultDate.time.toFormattedString("dd/MM/yyyy"))
+            updateClosingEndDate("${resultDate.time.toFormattedString("dd")} ${convertMonth(resultDate.get(Calendar.MONTH))} ${resultDate.time.toFormattedString("yyyy")}")
             datePicker.dismiss()
         }
         datePicker.setCloseClickListener { datePicker.dismiss() }
