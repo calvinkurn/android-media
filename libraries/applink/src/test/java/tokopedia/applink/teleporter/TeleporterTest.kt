@@ -68,6 +68,28 @@ class TeleporterTest {
     }
 
     @Test
+    fun `teleporter more than 1 pattern duplicate host and scheme`() {
+        val patternList = mutableListOf(
+                TeleporterPattern("tokopedia",
+                        "product",
+                        "{id}",
+                        "a=1",
+                        "",
+                        "tokopedia-android-internal://product/abc/{id}/"),
+                TeleporterPattern("tokopedia",
+                        "product",
+                        "{id}",
+                        "",
+                        "",
+                        "tokopedia-android-internal://test/abc/{id}/")
+        )
+        Assert.assertEquals("tokopedia-android-internal://product/abc/123/",
+                Teleporter.switchIfNeeded(patternList, Uri.parse("tokopedia://product/123?a=1")))
+        Assert.assertEquals("tokopedia-android-internal://test/abc/123/",
+                Teleporter.switchIfNeeded(patternList, Uri.parse("tokopedia://product/123")))
+    }
+
+    @Test
     fun `teleporter replace path multiple`() {
         val patternList = mutableListOf(
                 TeleporterPattern("tokopedia",

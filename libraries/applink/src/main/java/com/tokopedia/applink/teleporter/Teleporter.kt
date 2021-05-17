@@ -36,7 +36,7 @@ object Teleporter {
      * output: tokopedia-android-internal/product/test?id=123&def=879&affiliate=2142&xyz=987
      */
     fun switchIfNeeded(context: Context, uriToCheck: Uri): String {
-        val patternList = getConfig(context)?: return ""
+        val patternList = getConfig(context) ?: return ""
         return switchIfNeeded(patternList, uriToCheck)
     }
 
@@ -46,30 +46,47 @@ object Teleporter {
             val hostToCheck = uriToCheck.host
             val query = uriToCheck.query
 
-            val patternMatch = patternList.find { pattern ->
-                pattern.scheme == schemeToCheck && pattern.host == hostToCheck
-            } ?: return ""
-
-            // check path
-            // example: will result into map of ids {product_id} to 123}
-            val pathMatchMap = UriUtil.matchPathsWithPatternToMap(patternMatch.pathPatternList,
-                    uriToCheck.pathSegments) ?: return ""
-
             // example: will result to query map (abc to 879, aff to 2142, xyz to 987)
-            val queryToCheckMap = UriUtil.stringQueryParamsToMap(query)
+            lateinit var queryToCheckMap: Map<String, String>
+            lateinit var queryMustHaveMatchMap: Map<String, String>
+            lateinit var pathMatchMap: Map<String, String>
 
-            val queryMustHaveMatchMap = if (patternMatch.queryMustHavePatternMap.isNotEmpty()) {
-                val queryMap = UriUtil.matchQueryWithPatternToMap(patternMatch.queryMustHavePatternMap, queryToCheckMap)
-                        ?: return ""
-                for ((_, value)in queryMap) {
-                    if (value.isEmpty()) {
-                        return ""
-                    }
+            val patternMatch = patternList.asSequence().filter { pattern ->
+                pattern.scheme == schemeToCheck && pattern.host == hostToCheck
+            }.filter {
+                var conditionPathPassed = true
+                // check path
+                // example: will result into map of ids {product_id} to 123}
+                val pathMatchMapTemp = UriUtil.matchPathsWithPatternToMap(it.pathPatternList,
+                        uriToCheck.pathSegments)
+                if (pathMatchMapTemp == null) {
+                    conditionPathPassed = false
+                } else {
+                    pathMatchMap = pathMatchMapTemp
                 }
-                queryMap
-            } else {
-                mapOf()
-            }
+                conditionPathPassed
+            }.filter {
+                var conditionQueryPassed = true
+                queryToCheckMap = UriUtil.stringQueryParamsToMap(query)
+                queryMustHaveMatchMap = if (it.queryMustHavePatternMap.isNotEmpty()) {
+                    val queryMap = UriUtil.matchQueryWithPatternToMap(it.queryMustHavePatternMap, queryToCheckMap)
+                    if (queryMap == null) {
+                        conditionQueryPassed = false
+                        mapOf()
+                    } else {
+                        for ((_, value) in queryMap) {
+                            if (value.isEmpty()) {
+                                conditionQueryPassed = false
+                                break
+                            }
+                        }
+                        queryMap
+                    }
+                } else {
+                    mapOf()
+                }
+                conditionQueryPassed
+            }.firstOrNull() ?: return ""
 
             // will result to mapOf ({aff_id} to 2142)
             val queryOptionalMatchMap = UriUtil.matchQueryWithPatternToMap(patternMatch.queryOptionalPatternMap, queryToCheckMap)

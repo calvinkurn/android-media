@@ -207,9 +207,8 @@ object UriUtil {
      * @return map of ids mapOf ({aff_id} to 123, {b} to 345), if not match, will return null
      */
     fun matchQueryWithPatternToMap(patternQuery: Map<String, String>, inputQueries: Map<String, String>): Map<String, String>? {
-        try {
+        return try {
             val resultMap: MutableMap<String, String> = mutableMapOf()
-            var i = 0
             for (pattern in patternQuery) {
                 val key = pattern.key
                 val inputValue = inputQueries[key]
@@ -219,9 +218,9 @@ object UriUtil {
                     resultMap[pattern.value] = ""
                 }
             }
-            return resultMap
+            resultMap
         } catch (e: Exception) {
-            return null
+            null
         }
     }
 
