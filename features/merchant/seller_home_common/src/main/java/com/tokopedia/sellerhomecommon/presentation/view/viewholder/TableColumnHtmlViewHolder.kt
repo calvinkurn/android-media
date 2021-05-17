@@ -70,11 +70,6 @@ class TableColumnHtmlViewHolder(
                             }
                         }
                     })
-            if (element.isLeftAlign) {
-                tvTableColumnHtml.gravity = Gravity.START
-            } else {
-                tvTableColumnHtml.gravity = Gravity.END
-            }
         }
     }
 
@@ -95,7 +90,7 @@ class TableColumnHtmlViewHolder(
                         }
                     }
                 }
-                false
+                true
             }
             else -> false
         }
