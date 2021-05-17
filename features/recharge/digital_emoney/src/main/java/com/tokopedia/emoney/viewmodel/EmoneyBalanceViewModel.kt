@@ -25,7 +25,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
     val emoneyInquiry = SingleLiveEvent<EmoneyInquiry>()
     val errorInquiryBalance = SingleLiveEvent<Throwable>()
 
-    private lateinit var isoDep: IsoDep
+    lateinit var isoDep: IsoDep
 
     fun processEmoneyTagIntent(isoDep: IsoDep, balanceRawQuery: String, idCard: Int) {
         //do something with tagFromIntent
@@ -101,7 +101,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
         }
     }
 
-    private fun writeBalanceToCard(payload: String, balanceRawQuery: String, id: Int, mapAttributes: HashMap<String, Any>) {
+    fun writeBalanceToCard(payload: String, balanceRawQuery: String, id: Int, mapAttributes: HashMap<String, Any>) {
         if (::isoDep.isInitialized && isoDep.isConnected) {
             try {
                 val responseInByte = isoDep.transceive(NFCUtils.hexStringToByteArray(payload))
@@ -112,6 +112,9 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                         val response = NFCUtils.toHex(responseInByte)
                         mapAttributes[PARAM_PAYLOAD] = response
                         getEmoneyInquiryBalance(PARAM_SEND_COMMAND, balanceRawQuery, id, mapAttributes)
+                    } else {
+                        isoDep.close()
+                        errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
                     }
                 }
             } catch (e: IOException) {

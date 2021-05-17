@@ -201,4 +201,101 @@ class EmoneyBalanceViewModelTest {
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
         assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, emoneyBalanceViewModel.errorCardMessage.value)
     }
+
+    @Test
+    fun processTagIntent_WriteSaldoEmoneyErrorIO_NullResponseInByte() {
+        //given
+        emoneyBalanceViewModel.isoDep = isoDep
+        initSuccessData()
+
+        var mapParam = HashMap<String, Any>()
+        mapParam.put(EmoneyBalanceViewModel.TYPE_CARD, "")
+        mapParam.put(EmoneyBalanceViewModel.ID_CARD, "")
+        mapParam.put(EmoneyBalanceViewModel.ATTRIBUTES_CARD, "")
+
+        val emoneyInquiry = EmoneyInquiry(attributesEmoneyInquiry = AttributesEmoneyInquiry(lastBalance = 1000, status = 1, payload = "1"))
+
+        val result = HashMap<Type, Any>()
+        result[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(
+                EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "")))
+        val gqlResponseGetInquirySuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        val result1 = HashMap<Type, Any>()
+        result1[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(emoneyInquiry)
+        val gqlResponseWriteBalanceSuccess = GraphqlResponse(result1, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseWriteBalanceSuccess)
+        every { isoDep.transceive(NFCUtils.hexStringToByteArray("1")) } answers { null }
+        //when
+        emoneyBalanceViewModel.writeBalanceToCard("", "", 0, mapParam)
+
+        //then
+        assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
+        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, emoneyBalanceViewModel.errorCardMessage.value)
+    }
+
+    @Test
+    fun processTagIntent_WriteSaldoEmoneyErrorIO_ISOError() {
+        //given
+        emoneyBalanceViewModel.isoDep = isoDep
+        initSuccessData()
+
+        var mapParam = HashMap<String, Any>()
+        mapParam.put(EmoneyBalanceViewModel.TYPE_CARD, "")
+        mapParam.put(EmoneyBalanceViewModel.ID_CARD, "")
+        mapParam.put(EmoneyBalanceViewModel.ATTRIBUTES_CARD, "")
+
+        val emoneyInquiry = EmoneyInquiry(attributesEmoneyInquiry = AttributesEmoneyInquiry(lastBalance = 1000, status = 1, payload = "1"))
+
+        val result = HashMap<Type, Any>()
+        result[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(
+                EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "")))
+        val gqlResponseGetInquirySuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        val result1 = HashMap<Type, Any>()
+        result1[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(emoneyInquiry)
+        val gqlResponseWriteBalanceSuccess = GraphqlResponse(result1, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseWriteBalanceSuccess)
+        every { isoDep.transceive(NFCUtils.hexStringToByteArray("1")) } answers { null }
+        //when
+        emoneyBalanceViewModel.writeBalanceToCard("", "", 0, mapParam)
+
+        //then
+        assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
+        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, emoneyBalanceViewModel.errorCardMessage.value)
+    }
+
+    @Test
+    fun processTagIntent_WriteSaldoEmoneyErrorIO_ISONotConnected() {
+        //given
+        emoneyBalanceViewModel.isoDep = isoDep
+        initSuccessData()
+
+        var mapParam = HashMap<String, Any>()
+        mapParam.put(EmoneyBalanceViewModel.TYPE_CARD, "")
+        mapParam.put(EmoneyBalanceViewModel.ID_CARD, "")
+        mapParam.put(EmoneyBalanceViewModel.ATTRIBUTES_CARD, "")
+
+        val emoneyInquiry = EmoneyInquiry(attributesEmoneyInquiry = AttributesEmoneyInquiry(lastBalance = 1000, status = 1, payload = "1"))
+
+        val result = HashMap<Type, Any>()
+        result[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(
+                EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "")))
+        val gqlResponseGetInquirySuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        val result1 = HashMap<Type, Any>()
+        result1[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(emoneyInquiry)
+        val gqlResponseWriteBalanceSuccess = GraphqlResponse(result1, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseWriteBalanceSuccess)
+        every { isoDep.transceive(NFCUtils.hexStringToByteArray("1")) } answers { null }
+        every { emoneyBalanceViewModel.isoDep.isConnected } answers { false }
+        //when
+        emoneyBalanceViewModel.writeBalanceToCard("", "", 0, mapParam)
+
+        //then
+        assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
+        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, emoneyBalanceViewModel.errorCardMessage.value)
+    }
 }

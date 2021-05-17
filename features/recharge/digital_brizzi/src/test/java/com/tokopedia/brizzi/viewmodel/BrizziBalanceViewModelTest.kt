@@ -25,6 +25,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.internal.runners.statements.Fail
 import java.lang.reflect.Type
 
 class BrizziBalanceViewModelTest {
@@ -112,6 +113,26 @@ class BrizziBalanceViewModelTest {
     }
 
     @Test
+    fun processTagIntent_GetBalance_CardReadFailedMessageNull() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[BrizziTokenResponse::class.java] = BrizziTokenResponse(BrizziToken(token = "abcd"))
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        every { brizzi.Init(any(),any()) } returns mockk()
+        every { brizzi.setUserName(any()) } returns mockk()
+        every { brizzi.getBalanceInquiry(any(), any()) } answers { secondArg<Callback>().OnFailure(BrizziException()) }
+
+        //when
+        brizziBalanceViewModel.processBrizziTagIntent(intent, brizzi, "", "",true)
+
+        //then
+        assertNotNull(brizziBalanceViewModel.errorCardMessage.value)
+        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, brizziBalanceViewModel.errorCardMessage.value)
+    }
+
+    @Test
     fun processTagIntent_RefreshToken_Failed() {
         //given
         val errorGql = GraphqlError()
@@ -127,8 +148,8 @@ class BrizziBalanceViewModelTest {
         brizziBalanceViewModel.processBrizziTagIntent(intent, brizzi, "", "",true)
 
         //then
-        assertNotNull(brizziBalanceViewModel.errorCardMessage.value)
-        assertEquals(NfcCardErrorTypeDef.FAILED_REFRESH_TOKEN, brizziBalanceViewModel.errorCardMessage.value)
+        assertNotNull(brizziBalanceViewModel.errorCommonBrizzi.value)
+        assertEquals(errorGql.message, (brizziBalanceViewModel.errorCommonBrizzi.value as Throwable).message)
     }
 
     @Test
