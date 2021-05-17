@@ -42,7 +42,6 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
     private val counterLike: TextView
     private val containerReplyView: View
     private val containerLike: View
-    private val cvReviewContent: CardView
     private val context: Context
     override fun bind(element: ReviewProductModelContent) {
         adapter.setListener(onImageClicked(element))
