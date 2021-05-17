@@ -189,30 +189,6 @@ class EmoneyBalanceViewModelTest {
     }
 
     @Test
-    fun processTagIntent_IsodepDisconnectedWriteCard_FailedUpdateSaldoAppCrash() {
-        //given
-        initSuccessData()
-
-        val result = HashMap<Type, Any>()
-        result[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(
-                EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "payload")))
-        val gqlResponseGetInquirySuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseGetInquirySuccess
-        every { NFCUtils.hexStringToByteArray("payload") } answers { throw IOException() }
-
-        //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
-
-        //then
-        assertNotNull(emoneyBalanceViewModel.issuerId.value)
-        assertEquals(emoneyBalanceViewModel.issuerId.value, 1)
-
-        assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
-        assertEquals(NfcCardErrorTypeDef.FAILED_UPDATE_BALANCE, emoneyBalanceViewModel.errorCardMessage.value)
-    }
-
-    @Test
     fun processTagIntent_ErrorOnTryCatch_ShowingErrorFailedReadCard() {
         //given
         initSuccessData()
@@ -224,27 +200,5 @@ class EmoneyBalanceViewModelTest {
         //then
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
         assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, emoneyBalanceViewModel.errorCardMessage.value)
-    }
-
-    @Test
-    fun processTagIntent_ErrorOnTryCatch_ShowingErrorCardNotFound() {
-        //given
-        initSuccessData()
-        every { NFCUtils.toHex(byteNfc) } returns "8000"
-
-        val emoneyInquiry = EmoneyInquiry(attributesEmoneyInquiry = AttributesEmoneyInquiry(lastBalance = 1000, status = 1))
-
-        val result = HashMap<Type, Any>()
-        result[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(emoneyInquiry)
-        val gqlResponseWriteBalanceSuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseWriteBalanceSuccess
-
-        //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
-
-        //then
-        assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
-        assertEquals(NfcCardErrorTypeDef.CARD_NOT_FOUND, emoneyBalanceViewModel.errorCardMessage.value)
     }
 }
