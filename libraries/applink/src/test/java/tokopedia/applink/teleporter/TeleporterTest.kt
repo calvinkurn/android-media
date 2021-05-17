@@ -83,7 +83,7 @@ class TeleporterTest {
                         "",
                         "tokopedia-android-internal://test/abc/{id}/")
         )
-        Assert.assertEquals("tokopedia-android-internal://product/abc/123/",
+        Assert.assertEquals("tokopedia-android-internal://product/abc/123/?a=1",
                 Teleporter.switchIfNeeded(patternList, Uri.parse("tokopedia://product/123?a=1")))
         Assert.assertEquals("tokopedia-android-internal://test/abc/123/",
                 Teleporter.switchIfNeeded(patternList, Uri.parse("tokopedia://product/123")))
