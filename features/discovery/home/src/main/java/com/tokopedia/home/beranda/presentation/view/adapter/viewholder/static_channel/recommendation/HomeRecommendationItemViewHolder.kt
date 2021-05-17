@@ -57,6 +57,11 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
             )
             setImageProductViewHintListener(element, object: ViewHintListener {
                 override fun onViewHint() {
+                    //if pm pro
+                    val isPmPro = false
+                    if (isPmPro) {
+                        listener.onProductWithPmProImpressed(productCardView.getShopBadgeView())
+                    }
                     listener.onProductImpression(element, adapterPosition)
                 }
             })

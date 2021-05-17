@@ -120,6 +120,8 @@
     <string name="onboarding_coachmark_wallet_title">Kenalan sama TokoPoints, yuk! </string>
     <string name="onboarding_coachmark_wallet_description">Points ini bisa ditukar buat belanja. Transaksi pakai kupon cashback buat nambah points-mu, ya!</string>
 
+    <string name="home_pmpro_coachmark_title">Yuk, kenalan sama Power Merchant PRO!</string>
+    <string name="home_pmpro_coachmark_description">Belanja dengan layanan memuaskan dari penjual terbaik di Tokopedia.</string>
 
     <string name="text_dialog_success_reset_password">Masuk lagi ke Tokopedia dengan kata sandimu yang baru, ya!</string>
     <string name="cta_dialog_success_reset_password">Masuk</string>

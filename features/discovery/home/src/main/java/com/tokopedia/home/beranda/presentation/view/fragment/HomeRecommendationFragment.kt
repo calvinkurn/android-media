@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.fragment
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,10 +19,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistLogin
@@ -95,7 +99,8 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private var parentPool: RecyclerView.RecycledViewPool? = null
     private var homeCategoryListener: HomeCategoryListener? = null
     private var component: BerandaComponent? = null
-
+    private var pmProCoachmarkIsShowing = false
+    private var coachmarkLocalCache: CoachMarkLocalCache? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.layout_home_feed_fragment, container, false)
@@ -106,6 +111,11 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         initInjector()
         initViewModel()
         viewModel.topAdsBannerNextPageToken = homeCategoryListener?.getTopAdsBannerNextPageToken()?:""
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        this.coachmarkLocalCache = CoachMarkLocalCache(context = context)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -153,7 +163,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     open fun initBuilderComponent(): DaggerBerandaComponent.Builder {
-        return DaggerBerandaComponent.builder().baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
+        return DaggerBerandaComponent.builder().baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
     }
 
     @VisibleForTesting
@@ -314,6 +324,22 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, getLocationParamString())
     }
 
+    override fun onProductWithPmProImpressed(pmProView: View?) {
+        if (shouldShowPmProCoachmark()) {
+            pmProView?.let {
+                showPMProCoachmark(pmProView)
+            }
+        }
+    }
+
+    private fun shouldShowPmProCoachmark(): Boolean {
+        return if (!pmProCoachmarkIsShowing) {
+            coachmarkLocalCache?.shouldShowHomePMProCoachMark()?: false
+        } else {
+            false
+        }
+    }
+
     private fun initListeners() {
         if (view == null) return
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -371,6 +397,38 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         }
     }
 
+    private fun isValidToShowCoachMark(): Boolean {
+        activity?.let {
+            return !it.isFinishing
+        }
+        return false
+    }
+
+    private fun showPMProCoachmark(pmProBadgeView: View) {
+        context?.let {
+            val pmProCoachmarkItem = arrayListOf(
+                    CoachMark2Item(
+                            title = getString(R.string.home_pmpro_coachmark_title),
+                            description = getString(R.string.home_pmpro_coachmark_description),
+                            anchorView = pmProBadgeView
+                    )
+            )
+            val pmProCoachmark = CoachMark2(it)
+            pmProCoachmark.let {
+                //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
+                //will be removed along the coachmark removal in the future
+                try {
+                    if (pmProCoachmarkItem.isNotEmpty() && isValidToShowCoachMark()) {
+                        pmProCoachmark.showCoachMark(step = pmProCoachmarkItem)
+                        pmProCoachmarkIsShowing = true
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
     fun scrollToTop() {
         if (view == null) {
             return
@@ -418,7 +476,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     private fun showMessageSuccessAddWishlist() {
         if (activity == null) return
-        val view = activity!!.findViewById<View>(android.R.id.content)
+        val view = requireActivity().findViewById<View>(android.R.id.content)
         val message = getString(R.string.msg_success_add_wishlist)
         view?.let {
             Toaster.make(
@@ -438,7 +496,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     private fun showMessageSuccessRemoveWishlist() {
         if (activity == null) return
-        val view = activity!!.findViewById<View>(android.R.id.content)
+        val view = requireActivity().findViewById<View>(android.R.id.content)
         val message = getString(R.string.msg_success_remove_wishlist)
         Toaster.make(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
     }
