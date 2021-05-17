@@ -110,10 +110,16 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     fun processBrizzi(intent: Intent) {
-        if (CardUtils.cardIsEmoney(intent)) {
+        if (CardUtils.isEmoneyCard(intent)) {
             processEmoney(intent)
-        } else {
+        } else if (CardUtils.isBrizziCard(intent)) {
             executeBrizzi(false, intent)
+        } else {
+            showError(resources.getString(com.tokopedia.brizzi.R.string.brizzi_card_is_not_supported),
+                    resources.getString(com.tokopedia.brizzi.R.string.brizzi_device_is_not_supported),
+                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_card_is_not_supported),
+                    false
+            )
         }
     }
 

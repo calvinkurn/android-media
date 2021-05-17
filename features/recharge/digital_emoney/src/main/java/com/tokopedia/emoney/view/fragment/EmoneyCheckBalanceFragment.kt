@@ -101,7 +101,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     private fun executeMandiri(intent: Intent) {
-        if (CardUtils.cardIsEmoney(intent)) {
+        if (CardUtils.isEmoneyCard(intent)) {
             val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
             if (tag != null) {
                 emoneyBalanceViewModel.processEmoneyTagIntent(IsoDep.get(tag),
@@ -113,8 +113,14 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                         resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card),
                         true)
             }
-        } else {
+        } else if(CardUtils.isBrizziCard(intent)) {
             processBrizzi(intent)
+        } else {
+            showError(resources.getString(com.tokopedia.emoney.R.string.emoney_card_isnot_supported),
+                    resources.getString(com.tokopedia.emoney.R.string.emoney_nfc_not_supported),
+                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_card_is_not_supported),
+                    false
+            )
         }
         emoneyBalanceViewModel.emoneyInquiry.observe(this, Observer { emoneyInquiry ->
             emoneyInquiry.attributesEmoneyInquiry?.let { attributes ->
