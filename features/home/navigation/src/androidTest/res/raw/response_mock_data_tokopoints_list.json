@@ -1,0 +1,107 @@
+[
+  {
+    "data": {
+      "tokopointsDrawerList": {
+        "drawerList": [
+          {
+            "iconImageURL": "https://ecs7.tokopedia.net/img/blog/promo/2021/04/kupon-saya.png",
+            "redirectAppLink": "tokopedia://rewards/kupon-saya",
+            "redirectURL": "https://www.tokopedia.com/rewards/kupon-saya",
+            "sectionContent": [
+              {
+                "tagAttributes": {
+                  "backgroundColor": "",
+                  "text": ""
+                },
+                "textAttributes": {
+                  "color": "#31353B",
+                  "isBold": true,
+                  "text": "Kupon Saya"
+                },
+                "type": "text"
+              },
+              {
+                "tagAttributes": {
+                  "backgroundColor": "",
+                  "text": ""
+                },
+                "textAttributes": {
+                  "color": "#adadad",
+                  "isBold": true,
+                  "text": "800 Kupon Baru"
+                },
+                "type": "text"
+              }
+            ],
+            "type": "Coupon"
+          },
+          {
+            "iconImageURL": "https://ecs7.tokopedia.net/img/tokopoints/benefit/BebasOngkir.png",
+            "redirectAppLink": "tokopedia://cart",
+            "redirectURL": "https://m.tokopedia.com/install-app/bbo",
+            "sectionContent": [
+              {
+                "tagAttributes": {
+                  "backgroundColor": "",
+                  "text": ""
+                },
+                "textAttributes": {
+                  "color": "#31353B",
+                  "isBold": true,
+                  "text": "Bebas Ongkir"
+                },
+                "type": "text"
+              },
+              {
+                "tagAttributes": {
+                  "backgroundColor": "",
+                  "text": ""
+                },
+                "textAttributes": {
+                  "color": "#adadad",
+                  "isBold": false,
+                  "text": "800 Kuota baru"
+                },
+                "type": "text"
+              }
+            ],
+            "type": "BBO"
+          },
+          {
+            "iconImageURL": "https://ecs7.tokopedia.net/img/blog/promo/2021/04/tokopoints.png",
+            "redirectAppLink": "tokopedia://webview?url=https://www.tokopedia.com/points-center",
+            "redirectURL": "https://www.tokopedia.com/points-center",
+            "sectionContent": [
+              {
+                "tagAttributes": {
+                  "backgroundColor": "",
+                  "text": ""
+                },
+                "textAttributes": {
+                  "color": "#31353B",
+                  "isBold": true,
+                  "text": "Rp8.000.000"
+                },
+                "type": "text"
+              },
+              {
+                "tagAttributes": {
+                  "backgroundColor": "",
+                  "text": ""
+                },
+                "textAttributes": {
+                  "color": "#adadad",
+                  "isBold": false,
+                  "text": "(8.000.000 Points)"
+                },
+                "type": "text"
+              }
+            ],
+            "type": "TokoPoints"
+          }
+        ],
+        "offFlag": false
+      }
+    }
+  }
+]

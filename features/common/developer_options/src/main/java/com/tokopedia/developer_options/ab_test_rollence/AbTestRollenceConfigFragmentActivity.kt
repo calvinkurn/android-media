@@ -97,7 +97,7 @@ class AbTestRollenceConfigFragmentActivity : FragmentActivity(), AbTestRollenceC
             rvConfigList.adapter = listAdapter
         } else {
             rvConfigList.visibility = View.GONE
-            findViewById<AppCompatTextView>(R.id.empty_message).visibility = View.VISIBLE
+            findViewById<View>(R.id.empty_group).visibility = View.VISIBLE
         }
     }
 

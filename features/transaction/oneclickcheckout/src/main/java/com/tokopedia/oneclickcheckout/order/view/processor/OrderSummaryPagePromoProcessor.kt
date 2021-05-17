@@ -138,7 +138,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val promoRequest = PromoRequest()
 
         val ordersItem = Order()
-        ordersItem.shopId = orderCart.shop.shopId
+        ordersItem.shopId = orderCart.shop.shopId.toLong()
         ordersItem.uniqueId = orderCart.cartString
         ordersItem.product_details = listOf(ProductDetail(orderCart.product.productId, orderCart.product.quantity.orderQuantity))
         ordersItem.isChecked = true
@@ -197,7 +197,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val validateUsePromoRequest = lastValidateUsePromoRequest ?: ValidateUsePromoRequest()
 
         val ordersItem = OrdersItem()
-        ordersItem.shopId = orderCart.shop.shopId.toInt()
+        ordersItem.shopId = orderCart.shop.shopId.toLong()
         ordersItem.uniqueId = orderCart.cartString
 
         ordersItem.productDetails = listOf(ProductDetailsItem(orderCart.product.quantity.orderQuantity, orderCart.product.productId))
