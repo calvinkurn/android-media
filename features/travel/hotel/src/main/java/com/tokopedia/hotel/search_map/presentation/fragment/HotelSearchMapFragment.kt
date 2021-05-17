@@ -341,6 +341,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     override fun onMapReady(map: GoogleMap) {
+        mapHotelSearchMap.contentDescription = "MAP READY"
         this.googleMap = map
         setGoogleMap()
     }
