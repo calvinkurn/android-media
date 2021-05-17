@@ -5,11 +5,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.ActivityResultMatchers.hasResultCode
 import androidx.test.espresso.contrib.ActivityResultMatchers.hasResultData
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity
 import org.hamcrest.MatcherAssert.assertThat
@@ -38,6 +39,11 @@ class ResultRobot {
         dataKey?.let {
             assertThat(activityRule.activityResult, hasResultData(hasExtraWithKey(it)))
         }
+    }
+
+    fun globalErrorNoInternetConnectionShown() {
+        onView(withId(R.id.global_error)).check(matches(isDisplayed()))
+        onView(withText("Koneksi internetmu terganggu!")).check(matches(isDisplayed()))
     }
 }
 

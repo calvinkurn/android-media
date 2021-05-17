@@ -64,6 +64,7 @@ public class FakeAppModule {
         return new FakeGraphqlRepository();
     }
 
+    @ApplicationScope
     @Provides
     public GraphqlUseCaseInterface provideGraphqlUsecase() {
         return new FakeGraphqlUseCase(context);

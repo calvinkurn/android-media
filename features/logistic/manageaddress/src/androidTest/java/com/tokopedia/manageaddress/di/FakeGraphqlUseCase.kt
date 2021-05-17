@@ -15,6 +15,7 @@ import timber.log.Timber
 class FakeGraphqlUseCase(private val context: Context) : GraphqlUseCaseInterface {
 
     var gqlRequest: GraphqlRequest? = null
+    private var e: Exception? = null
 
     override fun clearRequest() {
         gqlRequest = null
@@ -26,6 +27,9 @@ class FakeGraphqlUseCase(private val context: Context) : GraphqlUseCaseInterface
 
     override fun getExecuteObservable(requestParam: RequestParams?): Observable<GraphqlResponse> {
         Timber.d("executing fake usecase")
+        e?.let {
+            return Observable.error(e)
+        }
         if (gqlRequest == null) throw Exception("gql request is null")
         when {
             gqlRequest!!.query.contains("keroAddressCorner") -> return Observable.just(GraphqlResponse(
@@ -33,10 +37,14 @@ class FakeGraphqlUseCase(private val context: Context) : GraphqlUseCaseInterface
                             Gson().fromJson(getRawString(context, R.raw.address), GetPeopleAddressResponse::class.java)
                     ), mapOf(), false))
         }
-        return Observable.error<GraphqlResponse>(Throwable("unrecognized query"))
+        return Observable.error(Throwable("unrecognized query"))
     }
 
     override fun unsubscribe() {
         // no op
+    }
+
+    fun returnException(exception: Exception) {
+        e = exception
     }
 }
