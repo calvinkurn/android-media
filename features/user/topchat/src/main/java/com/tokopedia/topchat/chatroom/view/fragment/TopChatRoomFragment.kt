@@ -496,15 +496,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             adapterPosition: Int,
             parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
     ) {
-        var productId = product.parentId
-        if(productId == "0") {
-            productId = product.productId
+        var id = product.parentId
+        if(id == "0") {
+            id = product.productId
         }
         val intent = RouteManager.getIntent(
                 context, ApplinkConstInternalMarketplace.RESERVED_STOCK,
-                productId, product.shopId.toString()
+                id, product.shopId.toString()
         )
-        presenter.addOngoingUpdateProductStock(product, adapterPosition, parentMetaData)
+        presenter.addOngoingUpdateProductStock(id, product, adapterPosition, parentMetaData)
         startActivityForResult(intent, REQUEST_UPDATE_STOCK)
     }
 
@@ -1097,7 +1097,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             ) ?: return
             var productName = data.getStringExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME)
             val updateProductResult = presenter.onGoingStockUpdate[productId] ?: return
-            val variantResult = getVariantResultUpdateStock(data, productId)
+            val variantResult = getVariantResultUpdateStock(
+                    data, updateProductResult.product.productId)
             variantResult?.let {
                 stockCount = variantResult.stockCount
                 status = variantResult.status.name
