@@ -2,7 +2,6 @@ package com.tokopedia.developer_options.remote_config
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,8 +32,12 @@ class RemoteConfigFragmentActivity : FragmentActivity(), RemoteConfigListener {
     }
 
     override fun onListItemClick(selectedConfigKey: String) {
+        showEditRemoteConfigDialog(selectedConfigKey)
+    }
+
+    fun showEditRemoteConfigDialog(keyToEdit:String) {
         val fragmentBundle = Bundle()
-        fragmentBundle.putString(ARGS_SELECTED_KEY, selectedConfigKey)
+        fragmentBundle.putString(ARGS_SELECTED_KEY, keyToEdit)
 
         val dialog = RemoteConfigEditorDialog()
         dialog.arguments = fragmentBundle
@@ -94,7 +97,10 @@ class RemoteConfigFragmentActivity : FragmentActivity(), RemoteConfigListener {
             rvConfigList.adapter = listAdapter
         } else {
             rvConfigList.visibility = View.GONE
-            findViewById<AppCompatTextView>(R.id.empty_message).visibility = View.VISIBLE
+            findViewById<View>(R.id.empty_group).visibility = View.VISIBLE
+            findViewById<View>(R.id.button_add_empty)?.setOnClickListener {
+                showEditRemoteConfigDialog(intent?.extras?.getString(DeveloperOptionActivity.REMOTE_CONFIG_PREFIX) ?: "")
+            }
         }
     }
 }
