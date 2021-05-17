@@ -232,7 +232,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     }
 
     fun updateButtonState(isEnabled: Boolean) {
-        _submitButtonState.value = _submitButtonState.value ?: false && isEnabled
+        _submitButtonState.value = isEnabled
     }
 
     fun updateProgressBarFromRating(isGoodRating: Boolean) {

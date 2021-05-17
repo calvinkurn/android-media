@@ -215,7 +215,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     override fun onTextChanged(textLength: Int) {
         val isNotEmpty = textLength != 0
-        createReviewViewModel.updateButtonState(isNotEmpty)
+        updateButtonState(isGoodRating(), isNotEmpty)
         createReviewViewModel.updateProgressBarFromTextArea(isNotEmpty)
     }
 
@@ -272,7 +272,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 trackRatingChanged(position)
                 updateTitleBasedOnSelectedRating(position)
                 val isGoodRating = isGoodRating()
-                createReviewViewModel.updateButtonState(isGoodRating)
+                updateButtonState(isGoodRating, textArea?.isEmpty()?.not() ?: false)
                 createReviewViewModel.updateProgressBarFromRating(isGoodRating)
                 if(isGoodRating) {
                     showTemplates()
@@ -289,6 +289,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             renderInitialReviewWithData(rating)
         }
         updateTitleBasedOnSelectedRating(rating)
+        updateButtonState(isGoodRating(), textArea?.isEmpty()?.not() ?: false)
     }
 
     private fun getForm() {
@@ -632,5 +633,13 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 isEditMode,
                 feedbackId.toString()
         )
+    }
+
+    private fun updateButtonState(isGoodRating: Boolean, isTextAreaNotEmpty: Boolean) {
+        if(isGoodRating) {
+            createReviewViewModel.updateButtonState(isGoodRating)
+        } else {
+            createReviewViewModel.updateButtonState(isTextAreaNotEmpty)
+        }
     }
 }
