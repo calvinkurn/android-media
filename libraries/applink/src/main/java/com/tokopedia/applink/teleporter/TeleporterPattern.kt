@@ -24,7 +24,7 @@ class TeleporterPattern(
         @SerializedName("target")
         val target: String = ""
 ) {
-    val pathPatternList: List<String> = path.split("/").filter { it.isNotEmpty() }
-    val queryMustHavePatternMap = UriUtil.stringQueryParamsToMap(query)
-    val queryOptionalPatternMap = UriUtil.stringQueryParamsToMap(queryOptional)
+    val pathPatternList by lazy { path.split("/").filter { it.isNotEmpty() } }
+    val queryMustHavePatternMap by lazy { UriUtil.stringQueryParamsToMap(query) }
+    val queryOptionalPatternMap by lazy { UriUtil.stringQueryParamsToMap(queryOptional) }
 }
