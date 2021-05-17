@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.fingerprint.R;
-import com.tokopedia.fingerprint.util.FingerPrintUtilKt;
+import com.tokopedia.fingerprint.util.FingerPrintUtil;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 
 import java.io.IOException;
@@ -126,7 +126,7 @@ public class FingerPrintDialog extends BottomSheets {
 
             @Override
             public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
-                getCallback().onAuthenticationSucceeded(FingerPrintUtilKt.getPublicKey(FingerPrintUtilKt.generatePublicKey(context)), getSignature());
+                getCallback().onAuthenticationSucceeded(FingerPrintUtil.INSTANCE.getPublicKey(FingerPrintUtil.INSTANCE.generatePublicKey(context)), getSignature());
             }
 
             @Override
@@ -189,7 +189,7 @@ public class FingerPrintDialog extends BottomSheets {
             keyStore = KeyStore.getInstance(FingerprintConstant.ANDROID_KEY_STORE);
             keyStore.load(null);
 
-            FingerPrintUtilKt.generateKeyPair(keyStore);
+            FingerPrintUtil.INSTANCE.generateKeyPair(keyStore);
         } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         } catch (NoSuchProviderException e) {

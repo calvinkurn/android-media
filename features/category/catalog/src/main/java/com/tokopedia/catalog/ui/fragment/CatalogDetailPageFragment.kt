@@ -223,6 +223,7 @@ class CatalogDetailPageFragment : Fragment(),
     private fun initNavToolbar() {
         navToolbar = view?.findViewById(R.id.catalog_navtoolbar)
         navToolbar?.apply {
+            viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
                     IconBuilder()
                             .addIcon(IconList.ID_SHARE) {

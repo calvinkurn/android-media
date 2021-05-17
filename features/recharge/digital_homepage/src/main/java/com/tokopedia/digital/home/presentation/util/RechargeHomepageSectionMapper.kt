@@ -80,7 +80,7 @@ object RechargeHomepageSectionMapper {
                     SECTION_URGENCY_WIDGET -> {
                         // Check if it is initial sections or not
                         if (it.title.isEmpty() && it.items.isEmpty()) {
-                            ReminderWidgetModel(ReminderWidget(id), ReminderEnum.RECHARGE)
+                            ReminderWidgetModel(data = ReminderWidget(id), source = ReminderEnum.RECHARGE)
                         } else {
                             getReminderWidgetModel(it)
                         }
@@ -132,7 +132,7 @@ object RechargeHomepageSectionMapper {
 
     private fun getReminderWidgetModel(section: RechargeHomepageSections.Section): ReminderWidgetModel? {
         section.items.firstOrNull()?.run {
-            return ReminderWidgetModel(ReminderWidget(section.id,
+            return ReminderWidgetModel(data = ReminderWidget(section.id,
                     listOf(ReminderData(
                             applink,
                             id = section.id,
@@ -152,7 +152,7 @@ object RechargeHomepageSectionMapper {
                                 else -> ReminderState.NEUTRAL
                             }
                     ))
-            ), ReminderEnum.RECHARGE)
+            ), source = ReminderEnum.RECHARGE)
         }
         return null
     }
