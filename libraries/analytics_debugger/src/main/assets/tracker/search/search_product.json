@@ -44,6 +44,9 @@
       "eventLabel": ".+",
       "item_list": "/searchproduct - organic|/searchproduct - organic ads",
       "sessionIris": ".+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+",
       "items": [
         {
           "item_id": ".+",
@@ -51,7 +54,6 @@
           "item_brand": ".+",
           "item_category": ".+",
           "item_variant": ".+",
-          "userId": ".+",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "shopId": ".+",
           "index": "\\d*.\\d*",
@@ -95,6 +97,9 @@
       "searchFilter": ".+",
       "item_list": "/searchproduct - organic|/searchproduct - organic ads",
       "sessionIris": ".+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+",
       "items": [
         {
           "item_id": ".+",
@@ -102,7 +107,6 @@
           "item_brand": ".+",
           "item_category": ".+",
           "item_variant": ".+",
-          "userId": ".+",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "shopId": ".+",
           "index": "\\d*.\\d*",
