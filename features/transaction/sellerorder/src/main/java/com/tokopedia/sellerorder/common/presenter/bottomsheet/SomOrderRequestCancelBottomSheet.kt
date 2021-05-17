@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel_order.vie
 
 class SomOrderRequestCancelBottomSheet(
         context: Context
-) : SomBottomSheet(LAYOUT, true, true, false, "", context, true) {
+) : SomBottomSheet(LAYOUT, true, true, false, context.getString(R.string.som_request_cancel_bottomsheet_title), context, true) {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_buyer_request_cancel_order

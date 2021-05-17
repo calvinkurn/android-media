@@ -7,11 +7,12 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
+import com.tokopedia.sellerorder.common.util.SomConsts
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
 
 class SomOrderEditAwbBottomSheet(
         context: Context
-) : SomBottomSheet(LAYOUT, true, true, false, "", context, true) {
+) : SomBottomSheet(LAYOUT, true, true, false, SomConsts.TITLE_UBAH_RESI, context, true) {
 
     companion object {
         private const val KEYBOARD_HEIGHT_PERCENTAGE_PORTRAIT = 0.4f
