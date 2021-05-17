@@ -21,7 +21,6 @@ import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.matchers.withRecyclerView
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.Matcher
 
 open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
@@ -43,7 +42,6 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
             "I am seller", "Yes, this product is ready"
     )
 
-    @ExperimentalCoroutinesApi
     override fun before() {
         super.before()
         setupDefaultResponse()

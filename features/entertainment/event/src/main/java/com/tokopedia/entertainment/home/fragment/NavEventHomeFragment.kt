@@ -204,11 +204,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     override fun onMenuTransactionListClick() {
-        if (userSession.isLoggedIn) {
-            RouteManager.route(context, ApplinkConst.EVENTS_ORDER)
-        } else {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_LOGIN_TRANSACTION)
-        }
+        RouteManager.route(context, ApplinkConst.EVENTS_ORDER)
     }
 
     override fun getAdapterTypeFactory(): HomeTypeFactoryImpl =
