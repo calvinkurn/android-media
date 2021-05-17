@@ -8,7 +8,6 @@
     android:visibility="gone"
     android:clickable="true"
     android:focusable="true"
-    android:background="?attr/selectableItemBackground"
     app:unifyButtonVariant="ghost"
     app:unifyButtonType="alternate"
     app:unifyButtonSize="small"
