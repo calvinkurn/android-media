@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
@@ -28,6 +29,7 @@ import com.tokopedia.home_component.viewholders.adapter.MixLeftAdapter
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
@@ -120,19 +122,30 @@ class MixLeftComponentViewHolder (itemView: View,
     private fun setupBackground(channel: ChannelModel) {
         if (channel.channelBanner.imageUrl.isNotEmpty()) {
             loadingBackground.show()
+            image.invisible()
+
+            //reset layout to 0,0,0,0. There is possibility where view is being reused, makes image
+            //becomes stretched.
+            //https://github.com/bumptech/glide/issues/1591
+            image.layout(0,0,0,0)
             image.addOnImpressionListener(channel){
                 if (!isCacheData)
                     mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)
             }
-            image.loadImage(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
+            parallaxBackground.setBackgroundColor(
+                    ContextCompat.getColor(itemView.context, R.color.transparent)
+            )
+            image.loadImageWithoutPlaceholder(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {
                     parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
                     loadingBackground.hide()
+                    image.show()
                 }
 
                 override fun failedLoad() {
                     parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
                     loadingBackground.hide()
+                    image.show()
                 }
             })
         } else {

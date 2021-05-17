@@ -311,7 +311,7 @@ di tempatmu.</string>
 
     <string name="flight_min_date_label">Berangkat</string>
     <string name="flight_max_date_label">Pulang</string>
-    <string name="flight_calendar_lowest_fare_price_color">#42b549</string>
+    <string name="flight_dms_calendar_lowest_fare_price_color">#42b549</string>
     <string name="flight_rupiah_label">Rp</string>
     <string name="flight_filter_lowest_price_label">Terendah</string>
     <string name="flight_filter_highest_price_label">Tertinggi</string>
@@ -398,5 +398,11 @@ di tempatmu.</string>
 
     <string name="flight_order_detail_success_copy_message">%1$s berhasil di salin.</string>
     <string name="reset">Reset</string>
+    <string name="flight_srp_promo_chips_content_title">Dapatkan harga spesial tiket</string>
+    <string name="flight_srp_promo_chips_content_line2">%1$s sekarang!</string>
+    <string name="flight_srp_promo_chips_start">Mulai dari</string>
+    <string name="flight_promo_chips_starting_price">Rp. 520.000</string>
+    <string name="flight_srp_promo_chips_person">/orang</string>
     <string name="flight_booking_passport_number_min_length">Min. 6 karakter</string>
+    <string name="flight_promo_chips_title">Sortir dari maskapai harga termurah</string>
 </resources>

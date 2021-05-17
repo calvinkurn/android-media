@@ -7,7 +7,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
@@ -18,6 +17,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewcontrollers.fragment.PAGE_REFRESH_LOGIN
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 
@@ -47,13 +47,13 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
 
         multiBannerViewModel.getPushBannerStatusData().observe(fragment.viewLifecycleOwner, Observer {
             if (bannersItemList.isNotEmpty() && it != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS) {
-                ImageHandler.LoadImage(bannersItemList[it].bannerImageView as ImageUnify, bannersItemList[it].bannerItemData.registeredImageApp)
+                (bannersItemList[it].bannerImageView as ImageUnify).loadImageFitCenter(bannersItemList[it].bannerItemData.registeredImageApp)
             }
         })
 
         multiBannerViewModel.getPushBannerSubscriptionData().observe(fragment.viewLifecycleOwner, Observer {
             if (bannersItemList.isNotEmpty() && it != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS) {
-                ImageHandler.LoadImage(bannersItemList[it].bannerImageView as ImageUnify, bannersItemList[it].bannerItemData.registeredImageApp)
+                (bannersItemList[it].bannerImageView as ImageUnify).loadImageFitCenter(bannersItemList[it].bannerItemData.registeredImageApp)
             }
         })
         multiBannerViewModel.getShowLoginData().observe(fragment.viewLifecycleOwner, Observer {

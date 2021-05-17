@@ -16,6 +16,7 @@ import com.tokopedia.play_common.model.result.PageInfo
 import com.tokopedia.play_common.model.result.PageResult
 import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -65,6 +66,10 @@ class PlayParentViewModel constructor(
         get() = _observableChannelIdsResult
     private val _observableChannelIdsResult = MutableLiveData<PageResult<List<String>>>()
 
+    val observableFirstChannelEvent: LiveData<Event<Unit>>
+        get() = _observableFirstChannelEvent
+    private val _observableFirstChannelEvent = MutableLiveData<Event<Unit>>()
+
     val sourceType: String
         get() = handle[PLAY_KEY_SOURCE_TYPE] ?: ""
     
@@ -93,7 +98,9 @@ class PlayParentViewModel constructor(
     fun setNewChannelParams(bundle: Bundle) {
         val channelId = bundle.get(PLAY_KEY_CHANNEL_ID) as? String
 
-        if (channelId != null) {
+        val isFromPiP = bundle.getBoolean(IS_FROM_PIP, false)
+
+        if (!isFromPiP && !channelId.isNullOrEmpty()) {
             handle.set(PLAY_KEY_CHANNEL_ID, channelId)
             handle.set(PLAY_KEY_SOURCE_TYPE, bundle.get(PLAY_KEY_SOURCE_TYPE))
             handle.set(PLAY_KEY_SOURCE_ID, bundle.get(PLAY_KEY_SOURCE_ID))
@@ -120,7 +127,10 @@ class PlayParentViewModel constructor(
     }
 
     private fun getChannelDetailsWithRecom(nextKey: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey) {
-        if (nextKey is GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId) playChannelStateStorage.clearData()
+        if (nextKey is GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId) {
+            _observableFirstChannelEvent.value = Event(Unit)
+            playChannelStateStorage.clearData()
+        }
 
         _observableChannelIdsResult.value = PageResult.Loading(playChannelStateStorage.getChannelList())
 
@@ -157,5 +167,6 @@ class PlayParentViewModel constructor(
     companion object {
 
         private const val KEY_START_MILLIS = "start_vod_millis"
+        private const val IS_FROM_PIP = "is_from_pip"
     }
 }

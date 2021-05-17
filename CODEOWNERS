@@ -163,6 +163,8 @@
 /features/ordermanagement/snapshot/                     @tokopedia/android-minionbob-dev
 
 /features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
+/features/media/media-common/			                @tokopedia/android-minionkevin-dev
+/features/media/medialoader/                            @tokopedia/android-minionkevin-dev
 
 /features/user/chatbot/                         		@tokopedia/android-minionskywalker-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev

@@ -5,21 +5,21 @@
       "event": "clickCheckoutExpress",
       "eventCategory": "purchase setting",
       "eventAction": "click button jadikan pilihan utama from tambah pilihan",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     },
     {
       "event": "clickCheckoutExpress",
       "eventCategory": "purchase setting",
       "eventAction": "click tambah preferensi from tambah pilihan",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     },
     {
       "event": "clickCheckoutExpress",
       "eventCategory": "purchase setting",
       "eventAction": "click gear logo from tambah pilihan",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     }
   ],

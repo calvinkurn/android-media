@@ -43,6 +43,7 @@ public class RemoteConfigKey {
     public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
     public static final String CUSTOMER_HOTEL_SHOW_PROMO = "android_customer_hotel_show_promo";
     public static final String CUSTOMER_HOTEL_BOOK_FOR_TODAY = "android_customer_hotel_enable_booking_for_today";
+    public static final String CUSTOMER_HOTEL_SEARCH_WITH_MAP = "android_customer_hotel_search_with_map";
     public static final String ANDROID_CUSTOMER_FLIGHT_SHOW_FREE_RAPID_TEST = "app_flag_flight_rapid_test";
     public static final String ANDROID_CUSTOMER_FLIGHT_SHOW_SEAT_DISTANCING = "app_flag_flight_seat_distancing";
     public static final String SHOW_IMAGE_SEARCH = "enable_image_search";

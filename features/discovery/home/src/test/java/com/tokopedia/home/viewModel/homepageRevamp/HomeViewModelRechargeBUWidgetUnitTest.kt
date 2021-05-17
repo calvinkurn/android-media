@@ -6,8 +6,6 @@ import com.tokopedia.home.beranda.domain.interactor.GetRechargeBUWidgetUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
-import com.tokopedia.home.viewModel.homepage.givenGetRechargeBUWidgetThrowReturn
-import com.tokopedia.home.viewModel.homepage.givenGetRechargeBUWidgetUseCase
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.RechargePerso

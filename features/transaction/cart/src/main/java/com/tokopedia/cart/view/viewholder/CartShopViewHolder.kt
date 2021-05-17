@@ -146,7 +146,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         with(binding) {
             if (data.shopGroupAvailableData.isError) {
                 cbSelectShop.isEnabled = false
-                flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, R.drawable.fg_disabled_item)
+                flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item)
                 llShopContainer.setBackgroundResource(R.drawable.bg_error_shop)
                 if (data.shopGroupAvailableData.errorTitle?.isNotBlank() == true) {
                     val errorDescription = data.shopGroupAvailableData.errorDescription
@@ -173,7 +173,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 }
             } else {
                 cbSelectShop.isEnabled = true
-                flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, R.drawable.fg_enabled_item)
+                flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
                 llShopContainer.setBackgroundColor(llShopContainer.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 llWarningAndError.layoutError.gone()
             }
@@ -265,6 +265,12 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 ImageHandler.loadImageWithoutPlaceholderAndError(
                         imgFreeShipping, cartShopHolderData.shopGroupAvailableData.freeShippingBadgeUrl
                 )
+                val contentDescriptionStringResource = if (cartShopHolderData.shopGroupAvailableData.isFreeShippingExtra) {
+                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
+                } else {
+                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
+                }
+                imgFreeShipping.contentDescription = itemView.context.getString(contentDescriptionStringResource)
                 imgFreeShipping.show()
                 separatorFreeShipping.show()
             } else {

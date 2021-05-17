@@ -109,6 +109,7 @@ dependencies {
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.testDependencies.uiautomator
 
     implementation project(rootProject.ext.libraries.linker)
 

@@ -264,6 +264,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_customer_hotel_search_with_map</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>nonb_1_ttl</key>
         <value>Bebas Beli Apa Saja</value>
     </entry>
@@ -419,6 +423,10 @@
     </entry>
     <entry>
         <key>android_enable_home_sndscr</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_enable_async_abtest</key>
         <value>true</value>
     </entry>
     <entry>

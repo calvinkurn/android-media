@@ -5,11 +5,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.telephony.SubscriptionManager
-import android.telephony.TelephonyManager
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
@@ -18,7 +16,6 @@ import android.text.style.ForegroundColorSpan
 import android.util.Patterns
 import android.view.*
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import com.facebook.CallbackManager
@@ -32,33 +29,39 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.util.getParamBoolean
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.common.PartialRegisterInputUtils
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
-import com.tokopedia.loginregister.common.data.DynamicBannerConstant
-import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
+import com.tokopedia.loginregister.common.utils.PhoneUtils
+import com.tokopedia.loginregister.common.utils.PhoneUtils.Companion.removeSymbolPhone
 import com.tokopedia.loginregister.common.view.LoginTextView
-import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.common.view.PartialRegisterInputView
+import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
+import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
+import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
+import com.tokopedia.loginregister.common.view.dialog.ProceedWithPhoneDialog
+import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
+import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
+import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
 import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
 import com.tokopedia.loginregister.external_register.base.listener.BaseDialogConnectAccListener
@@ -66,29 +69,26 @@ import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAn
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
-import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
-import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialRouter
+import com.tokopedia.loginregister.registerinitial.view.util.RegisterInitialRouterHelper
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
-import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
+import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
-import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.util.TokenGenerator
+import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -97,7 +97,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -113,7 +112,7 @@ import javax.inject.Named
  */
 open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.PartialRegisterInputViewListener, RegisterInitialRouter {
 
-    private lateinit var optionTitle: TextView
+    private lateinit var optionTitle: Typography
     private lateinit var separator: View
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var emailPhoneEditText: AutoCompleteTextView
@@ -124,9 +123,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private lateinit var tickerAnnouncement: Ticker
     private lateinit var bannerRegister: ImageView
     private lateinit var socmedButton: UnifyButton
-    private lateinit var bottomSheet: BottomSheetUnify
-    private lateinit var socmedButtonsContainer: LinearLayout
+    private lateinit var bottomSheet: SocmedBottomSheet
+    private var socmedButtonsContainer: LinearLayout? = null
     private lateinit var sharedPrefs: SharedPreferences
+    private lateinit var registerInitialRouter: RegisterInitialRouterHelper
 
     private var phoneNumber: String? = ""
     private var source: String = ""
@@ -174,22 +174,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private var isRegisterOvo = false
 
-    private val draw: Drawable?
-        get() {
-            var drawable: TextDrawable? = null
-            activity?.let {
-                drawable = TextDrawable(it)
-                drawable?.text = resources.getString(R.string.login)
-                drawable?.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
-                drawable?.textSize = 14f
-            }
-            return drawable
-        }
-
     override fun onStart() {
         super.onStart()
-        activity?.run {
-            analytics.trackScreen(this, screenName)
+        activity?.let {
+            analytics.trackScreen(it, screenName)
         }
     }
 
@@ -212,13 +200,14 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         clearData()
         callbackManager = CallbackManager.Factory.create()
 
-        activity?.run {
+        activity?.let {
+            registerInitialRouter = RegisterInitialRouterHelper()
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getGoogleClientId(this))
+                    .requestIdToken(getGoogleClientId(it))
                     .requestEmail()
                     .requestProfile()
                     .build()
-            mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+            mGoogleSignInClient = GoogleSignIn.getClient(it, gso)
         }
 
         phoneNumber = getParamString(PHONE_NUMBER, arguments, savedInstanceState, "")
@@ -226,6 +215,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         isSmartLogin = getParamBoolean(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, arguments, savedInstanceState, false)
         isPending = getParamBoolean(ApplinkConstInternalGlobal.PARAM_IS_PENDING, arguments, savedInstanceState, false)
         email = getParamString(ApplinkConstInternalGlobal.PARAM_EMAIL, arguments, savedInstanceState, "")
+
+        registerInitialRouter.source = source
     }
 
     private fun clearData() {
@@ -244,10 +235,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     override fun onResume() {
         super.onResume()
         checkForOvoResume()
-        activity?.run {
+        activity?.let {
             if (userSession.isLoggedIn && activity != null && activityShouldEnd) {
-                setResult(Activity.RESULT_OK)
-                finish()
+                it.setResult(Activity.RESULT_OK)
+                it.finish()
             }
         }
     }
@@ -268,12 +259,14 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         bannerRegister = view.findViewById(R.id.banner_register)
         prepareView()
         if (isSmartLogin) {
-            if (isPending) {
-                val intent = goToVerification(email = email, otpType = OTP_TYPE_ACTIVATE)
-                startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
-            } else {
-                val intent = goToVerification(email = email, otpType = OTP_TYPE_REGISTER)
-                startActivityForResult(intent, REQUEST_OTP_VALIDATE)
+            activity?.let {
+                if (isPending) {
+                    val intent =  registerInitialRouter.goToVerification(email = email, otpType = OTP_TYPE_ACTIVATE, context = requireContext())
+                    startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
+                } else {
+                    val intent =  registerInitialRouter.goToVerification(email = email, otpType = OTP_TYPE_REGISTER, context = requireContext())
+                    startActivityForResult(intent, REQUEST_OTP_VALIDATE)
+                }
             }
         }
         return view
@@ -285,36 +278,23 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         fetchRemoteConfig()
         initObserver()
         initData()
+        setupToolbar()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu?.let {
-            it.add(Menu.NONE, ID_ACTION_LOGIN, 0, "")
-            val menuItem = it.findItem(ID_ACTION_LOGIN)
-            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-            if (draw != null) {
-                menuItem.icon = draw
-            }
-        }
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        item?.let {
-            activity?.run {
-                val id = it.itemId
-                if (id == ID_ACTION_LOGIN) {
-                    if (activity != null) {
-                        registerAnalytics.trackClickTopSignInButton()
-                        goToLoginPage()
-                    }
-                    return true
+    private fun setupToolbar() {
+        activity?.let{ activity ->
+            activity.findViewById<HeaderUnify>(R.id.unifytoolbar)?.apply {
+                headerTitle = getString(R.string.register)
+                actionText = getString(R.string.login)
+                setNavigationOnClickListener {
+                    activity.onBackPressed()
+                }
+                actionTextView?.setOnClickListener {
+                    registerAnalytics.trackClickTopSignInButton()
+                    registerInitialRouter.goToLoginPage(activity)
                 }
             }
         }
-
-        return super.onOptionsItemSelected(item)
     }
 
     private fun fetchRemoteConfig() {
@@ -345,26 +325,20 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 showTicker()
             }
         }
-
     }
 
     @SuppressLint("RtlHardcoded")
     private fun prepareView() {
-        activity?.run {
-            val viewBottomSheetDialog = View.inflate(context, R.layout.layout_socmed_bottomsheet, null)
-            socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
-
-            bottomSheet = BottomSheetUnify()
-            bottomSheet.setTitle(getString(R.string.choose_social_media))
-            bottomSheet.setChild(viewBottomSheetDialog)
+        activity?.let { act ->
+            bottomSheet = SocmedBottomSheet(context)
+            socmedButtonsContainer = bottomSheet.getSocmedButtonContainer()
             bottomSheet.setCloseClickListener {
                 registerAnalytics.trackClickCloseSocmedButton()
                 bottomSheet.dismiss()
             }
-
             socmedButton.setOnClickListener {
                 registerAnalytics.trackClickSocmedButton()
-                bottomSheet.show(supportFragmentManager, getString(R.string.bottom_sheet_show))
+                bottomSheet.show(act.supportFragmentManager, getString(R.string.bottom_sheet_show))
             }
 
             registerButton.visibility = View.GONE
@@ -475,15 +449,17 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             }
         })
         registerInitialViewModel.showPopup.observe(viewLifecycleOwner, Observer {
-            if (it != null) showPopupError(it.header, it.body, it.action)
+            if (it != null) PopupErrorDialog.createDialog(context, it.header, it.body, it.action)?.show()
         })
         registerInitialViewModel.goToActivationPage.observe(viewLifecycleOwner, Observer {
             if (it != null) onGoToActivationPage(it)
         })
         registerInitialViewModel.goToSecurityQuestion.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                val intent = goToVerification(email = it, otpType = OTP_SECURITY_QUESTION)
-                startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
+                activity?.let { act ->
+                    val intent =  registerInitialRouter.goToVerification(email = it, otpType = OTP_SECURITY_QUESTION, context = requireContext())
+                    startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
+                }
             }
         })
         registerInitialViewModel.goToActivationPageAfterRelogin.observe(viewLifecycleOwner, Observer {
@@ -549,9 +525,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     fun showConnectOvoDialog() {
-        activity?.run {
+        activity?.let {
             ovoCreationAnalytics.trackViewOvoConnectDialog()
-            OvoAccountDialog.showConnectDialogUnify(this, object : BaseDialogConnectAccListener {
+            OvoAccountDialog.showConnectDialogUnify(it, object : BaseDialogConnectAccListener {
                 override fun onDialogPositiveBtnClicked() {
                     isRegisterOvo = true
                     ovoCreationAnalytics.trackClickConnectOvo()
@@ -569,9 +545,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     fun goToOvoAddName(phone: String) {
-        activity?.run {
+        activity?.let {
             val formattedPhone = removeSymbolPhone(phone)
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.OVO_ADD_NAME)
+            val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.OVO_ADD_NAME)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, formattedPhone)
             startActivityForResult(intent, ExternalRegisterConstants.REQUEST_OVO_REGISTER)
         }
@@ -581,7 +557,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         doRegisterCheck()
     }
 
-    private fun onSuccessGetProvider(discoverItems: ArrayList<DiscoverItemViewModel>) {
+    private fun onSuccessGetProvider(discoverItems: ArrayList<DiscoverItemDataModel>) {
         dismissLoadingDiscover()
 
         val layoutParams = LinearLayout.LayoutParams(
@@ -589,22 +565,22 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 resources.getDimensionPixelSize(R.dimen.dp_52))
         layoutParams.setMargins(0, 10, 0, 10)
 
-        socmedButtonsContainer.removeAllViews()
+        socmedButtonsContainer?.removeAllViews()
 
         for (i in discoverItems.indices) {
             val item = discoverItems[i]
             if (item.id != PHONE_NUMBER) {
                 val loginTextView = LoginTextView(activity, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 loginTextView.setText(item.name)
-                loginTextView.setBorderColor(MethodChecker.getColor(activity, R.color
-                        .black_38))
                 loginTextView.setImage(item.image)
                 loginTextView.setRoundCorner(10)
 
                 setDiscoverOnClickListener(item, loginTextView)
 
-                socmedButtonsContainer.addView(loginTextView, socmedButtonsContainer.childCount,
-                        layoutParams)
+                socmedButtonsContainer?.run {
+                    addView(loginTextView, childCount,
+                            layoutParams)
+                }
             }
         }
     }
@@ -723,21 +699,19 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 listTickerInfo.forEach {
                     mockData.add(TickerData(it.title, it.message, getTickerType(it.color), true))
                 }
-                activity?.let {
-                    val adapter = TickerPagerAdapter(it, mockData)
-                    adapter.setDescriptionClickEvent(object : TickerCallback {
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            registerAnalytics.trackClickLinkTicker(linkUrl.toString())
-                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                        }
+                val adapter = TickerPagerAdapter(requireActivity(), mockData)
+                adapter.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                    }
 
-                        override fun onDismiss() {
-                            registerAnalytics.trackClickCloseTickerButton()
-                        }
+                    override fun onDismiss() {
+                        registerAnalytics.trackClickCloseTickerButton()
+                    }
 
-                    })
-                    tickerAnnouncement.addPagerView(adapter, mockData)
-                }
+                })
+                tickerAnnouncement.addPagerView(adapter, mockData)
             } else {
                 listTickerInfo.first().let {
                     tickerAnnouncement.tickerTitle = it.title
@@ -756,10 +730,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
                 })
             }
-            tickerAnnouncement.setOnClickListener {
-                registerAnalytics.trackClickTicker()
-            }
-
+        }
+        tickerAnnouncement.setOnClickListener {
+            registerAnalytics.trackClickTicker()
         }
     }
 
@@ -796,13 +769,17 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     override fun goToOTPActivateEmail(email: String) {
-        val intent = goToVerification(email = email, otpType = OTP_TYPE_ACTIVATE)
-        startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
+        activity?.let {
+            val intent = registerInitialRouter.goToVerification(email = email, otpType = OTP_TYPE_ACTIVATE, context = requireContext())
+            startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
+        }
     }
 
     override fun goToOTPRegisterEmail(email: String) {
-        val intent = goToVerification(email = email, otpType = OTP_TYPE_REGISTER)
-        startActivityForResult(intent, REQUEST_OTP_VALIDATE)
+        activity?.let {
+            val intent = registerInitialRouter.goToVerification(email = email, otpType = OTP_TYPE_REGISTER, context = requireContext())
+            startActivityForResult(intent, REQUEST_OTP_VALIDATE)
+        }
     }
 
     private fun onFailedRegisterCheck(throwable: Throwable) {
@@ -814,7 +791,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun onSuccessActivateUser(activateUserData: ActivateUserData) {
         userSession.clearToken()
-        userSession.setToken(activateUserData.accessToken, activateUserData.tokenType, activateUserData.refreshToken)
+        userSession.setToken(activateUserData.accessToken, activateUserData.tokenType, EncoderDecoder.Encrypt(activateUserData.refreshToken, userSession.refreshTokenIV))
         registerInitialViewModel.getUserInfo()
     }
 
@@ -862,20 +839,14 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     override fun goToRegisterEmailPage() {
         showProgressBar()
-        val intent = RegisterEmailActivity.getCallingIntent(activity)
-        startActivityForResult(intent, REQUEST_REGISTER_EMAIL)
+        registerInitialRouter.goToRegisterEmail(this)
     }
 
     override fun goToRegisterEmailPageWithEmail(email: String, token: String, source: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
-
         activity?.let {
             showProgressBar()
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.EMAIL_REGISTER)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, token)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-            startActivityForResult(intent, REQUEST_REGISTER_EMAIL)
+            registerInitialRouter.goToRegisterEmailPageWithParams(this, email, token, source)
         }
     }
 
@@ -927,8 +898,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 if (data != null) {
                     data.extras?.let { bundle ->
                         if (bundle.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
-                            val intent = goToVerification(otpType = OTP_SECURITY_QUESTION)
-                            startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
+                            activity?.let {
+                                val intent = registerInitialRouter.goToVerification(otpType = OTP_SECURITY_QUESTION, context = requireContext())
+                                startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
+                            }
                         } else {
                             it.finish()
                         }
@@ -1017,22 +990,12 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun goToAddPin2FA(enableSkip2FA: Boolean) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
-        intent.putExtras(Bundle().apply {
-            putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
-            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
-            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
-        })
-        startActivityForResult(intent, REQUEST_ADD_PIN)
+        registerInitialRouter.goToAddPin2FA(this, enableSkip2FA, validateToken)
     }
 
     private fun goToAddName(uuid: String) {
-        if (activity != null) {
-            val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW
-            val intent = RouteManager.getIntent(activity, applink)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
-            startActivityForResult(intent, REQUEST_ADD_NAME_REGISTER_PHONE)
+        phoneNumber?.run {
+            registerInitialRouter.goToAddName(this@RegisterInitialFragment, uuid, this)
         }
     }
 
@@ -1040,25 +1003,29 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         registerAnalytics.trackClickSignUpButton()
         if (Patterns.PHONE.matcher(id).matches()) {
             setTempPhoneNumber(id)
-            registerInitialViewModel.registerCheck(removeSymbolPhone(id))
+            registerInitialViewModel.registerCheck(PhoneUtils.removeSymbolPhone(id))
         } else {
             registerInitialViewModel.registerCheck(id)
         }
     }
 
     private fun showLoadingDiscover() {
-        val pb = layoutInflater.inflate(R.layout.loader_socmed_container, null, false)
-        val lastPos = socmedButtonsContainer.childCount - 1
-        if (socmedButtonsContainer.getChildAt(lastPos) !is LoaderUnify) {
-            socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
+        LetUtil.ifLet(context, socmedButtonsContainer) { (ctx, socmedButtonsContainer) ->
+            if(ctx is Context && socmedButtonsContainer is LinearLayout) {
+                val pb = LoaderUnify(ctx)
+                val lastPos = socmedButtonsContainer.childCount - 1
+                if (socmedButtonsContainer.getChildAt(lastPos) !is LoaderUnify) {
+                    socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
+                }
+                emailExtension?.hide()
+            }
         }
-        emailExtension?.hide()
     }
 
-    private fun setDiscoverOnClickListener(discoverItemViewModel: DiscoverItemViewModel,
+    private fun setDiscoverOnClickListener(discoverItemDataModel: DiscoverItemDataModel,
                                            loginTextView: LoginTextView) {
 
-        when (discoverItemViewModel.id.toLowerCase()) {
+        when (discoverItemDataModel.id.toLowerCase()) {
             FACEBOOK -> loginTextView.setOnClickListener { onRegisterFacebookClick() }
             GPLUS -> loginTextView.setOnClickListener { onRegisterGoogleClick() }
         }
@@ -1074,9 +1041,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     }
 
-    override fun goToRegisterFacebook() {
-        registerInitialViewModel.getFacebookCredential(this, callbackManager)
-    }
+    override fun goToRegisterFacebook() {registerInitialViewModel.getFacebookCredential(this, callbackManager)
+        }
 
     private fun onRegisterGoogleClick() {
         activity?.let {
@@ -1094,24 +1060,22 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun dismissLoadingDiscover() {
-        val lastPos = socmedButtonsContainer.childCount - 1
-        if (socmedButtonsContainer.getChildAt(lastPos) is LoaderUnify) {
-            socmedButtonsContainer.removeViewAt(socmedButtonsContainer.childCount - 1)
+        socmedButtonsContainer?.run {
+            val lastPos = childCount - 1
+            if (getChildAt(lastPos) is LoaderUnify) {
+                removeViewAt(childCount - 1)
+            }
         }
     }
 
     private fun showProgressBar() {
-
         progressBar.visibility = View.VISIBLE
         container.visibility = View.GONE
         textTermAndCondition?.visibility = View.GONE
-
     }
 
     private fun dismissProgressBar() {
-
         progressBar.visibility = View.GONE
-
         container.visibility = View.VISIBLE
         textTermAndCondition?.visibility = View.VISIBLE
     }
@@ -1124,63 +1088,50 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun showRegisteredEmailDialog(email: String) {
         registerAnalytics.trackFailedClickEmailSignUpButton(RegisterAnalytics.LABEL_EMAIL_EXIST)
         registerAnalytics.trackFailedClickEmailSignUpButtonAlreadyRegistered()
+        val dialog = RegisteredDialog.createRegisteredEmailDialog(context, email)
         activity?.let {
-            activity?.runOnUiThread {
-                val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-                dialog.setTitle(getString(R.string.email_already_registered))
-                dialog.setDescription(
-                        String.format(resources.getString(
-                                R.string.email_already_registered_info), email))
-                dialog.setPrimaryCTAText(getString(R.string.already_registered_yes))
-                dialog.setPrimaryCTAClickListener {
-                    registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
-                    dialog.dismiss()
-                    val intent = LoginActivity.DeepLinkIntents.getIntentLoginFromRegister(it, email)
-                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
-                    startActivity(intent)
-                    it.finish()
-                }
-                dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
-                dialog.setSecondaryCTAClickListener {
-                    registerAnalytics.trackClickChangeButtonRegisteredEmailDialog()
-                    dialog.dismiss()
-                }
-                dialog.show()
+            activity ->
+            dialog?.setPrimaryCTAClickListener {
+                registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
+                dialog.dismiss()
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LOGIN_EMAIL, Uri.encode(email), source)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
+                startActivity(intent)
+                activity.finish()
             }
         }
+        dialog?.setSecondaryCTAClickListener {
+            registerAnalytics.trackClickChangeButtonRegisteredEmailDialog()
+            dialog.dismiss()
+        }
+        dialog?.show()
     }
 
     private fun showRegisteredPhoneDialog(phone: String) {
         registerAnalytics.trackFailedClickPhoneSignUpButton(RegisterAnalytics.LABEL_PHONE_EXIST)
         registerAnalytics.trackFailedClickPhoneSignUpButtonAlreadyRegistered()
-        context?.let {
-            activity?.runOnUiThread {
-                val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-                dialog.setTitle(getString(R.string.phone_number_already_registered))
-                dialog.setDescription(
-                        String.format(resources.getString(
-                                R.string.reigster_page_phone_number_already_registered_info), phone))
-                dialog.setPrimaryCTAText(getString(R.string.already_registered_yes))
-                dialog.setPrimaryCTAClickListener {
-                    registerAnalytics.trackClickYesButtonRegisteredPhoneDialog()
-                    dialog.dismiss()
-                    goToLoginRegisteredPhoneNumber(phone)
-                }
-                dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
-                dialog.setSecondaryCTAClickListener {
-                    registerAnalytics.trackClickChangeButtonRegisteredPhoneDialog()
-                    dialog.dismiss()
-                }
-                dialog.show()
-            }
+        val dialog = RegisteredDialog.createRegisteredPhoneDialog(context, phone)
+        dialog?.setPrimaryCTAClickListener {
+            registerAnalytics.trackClickYesButtonRegisteredPhoneDialog()
+            dialog.dismiss()
+            phoneNumber = phone
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+            goToLoginRegisteredPhoneNumber(phone)
         }
+        dialog?.setSecondaryCTAClickListener {
+            registerAnalytics.trackClickChangeButtonRegisteredPhoneDialog()
+            dialog?.dismiss()
+        }
+        dialog?.show()
     }
 
     override fun goToLoginRegisteredPhoneNumber(phone: String) {
         phoneNumber = phone
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-        val intent = goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER)
-        startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
+        activity?.let {
+            val intent =  registerInitialRouter.goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER, context = requireContext())
+            startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
+        }
     }
 
     private fun goToVerification(phone: String = "", email: String = "", otpType: Int): Intent {
@@ -1196,59 +1147,38 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
-        activity?.let {
-            val intent = RouteManager.getIntent(it,
-                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
-            startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
-        }
+        registerInitialRouter.goToChooseAccountPage(this, accessToken, phoneNumber)
     }
 
     private fun goToChooseAccountPageFacebook(accessToken: String) {
-        activity?.let {
-            val intent = RouteManager.getIntent(it,
-                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, FACEBOOK_LOGIN_TYPE)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FACEBOOK, true)
-            startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
-        }
+        registerInitialRouter.goToChooseAccountPageFacebook(this, accessToken)
     }
-
-    private fun getChooseAccountData(data: Intent): ChooseTokoCashAccountViewModel {
-        return data.getParcelableExtra(ChooseTokoCashAccountViewModel.ARGS_DATA)
-    }
-
 
     private fun showProceedWithPhoneDialog(phone: String) {
-        context?.let {
-            activity?.runOnUiThread {
-                val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-                dialog.setTitle(phone)
-                dialog.setDescription(resources.getString(R.string.phone_number_not_registered_info))
-                dialog.setPrimaryCTAText(getString(R.string.proceed_with_phone_number))
-                dialog.setPrimaryCTAClickListener {
-                    registerAnalytics.trackClickYesButtonPhoneDialog()
-                    dialog.dismiss()
-                    goToRegisterWithPhoneNumber(phone)
-                }
-                dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
-                dialog.setSecondaryCTAClickListener {
-                    registerAnalytics.trackClickChangeButtonPhoneDialog()
-                    dialog.dismiss()
-                }
-                dialog.show()
+        val dialog = ProceedWithPhoneDialog.createDialog(context, phone)
+        registerAnalytics.trackClickPhoneSignUpButton()
+        dialog?.setPrimaryCTAClickListener {
+            registerAnalytics.trackClickYesButtonPhoneDialog()
+            dialog.dismiss()
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+            activity?.let {
+                val intent = registerInitialRouter.goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER, context = requireContext())
+                startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
             }
         }
+        dialog?.setSecondaryCTAClickListener {
+            registerAnalytics.trackClickChangeButtonPhoneDialog()
+            dialog.dismiss()
+        }
+        dialog?.show()
     }
 
     override fun goToRegisterWithPhoneNumber(phone: String) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-        val intent = goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER)
-        startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
+        activity?.let {
+            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+            val intent =  registerInitialRouter.goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER, context = requireContext())
+            startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
+        }
     }
 
     private fun setTempPhoneNumber(maskedPhoneNumber: String) {
@@ -1260,7 +1190,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun sendTrackingSuccessRegister() {
         registerAnalytics.trackSuccessRegister(
                 userSession.loginMethod,
-                userSession.userId.toIntOrZero(),
+                userSession.userId,
                 userSession.name,
                 userSession.email,
                 userSession.phoneNumber,
@@ -1272,26 +1202,23 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     override fun onSuccessRegister() {
         activityShouldEnd = true
-
         registerPushNotif()
-
         activity?.let {
             if (isFromAccount() || isFromOnboarding()) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
                 startActivity(intent)
             }
-
             val intent = Intent()
             intent.putExtra(PARAM_IS_SUCCESS_REGISTER, true)
 
             it.setResult(Activity.RESULT_OK, intent)
             it.finish()
-
             saveFirstInstallTime()
 
             SubmitDeviceWorker.scheduleWorker(requireContext(), true)
             DataVisorWorker.scheduleWorker(requireContext(), true)
             AppAuthWorker.scheduleWorker(it, true)
+            TwoFactorMluHelper.clear2FaInterval(it)
         }
     }
 
@@ -1302,10 +1229,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun isFromOnboarding(): Boolean = source == SOURCE_ONBOARDING
 
     private fun onGoToChangeName() {
-        activity?.let {
-            val intent = (it.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.ADD_NAME_PROFILE)
-            startActivityForResult(intent, REQUEST_CHANGE_NAME)
-        }
+        registerInitialRouter.goToChangeName(this)
     }
 
     private fun onGoToForbiddenPage() {
@@ -1314,15 +1238,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun getTickerType(hexColor: String): Int {
         return when (hexColor) {
-            "#cde4c3" -> {
-                Ticker.TYPE_ANNOUNCEMENT
-            }
-            "#ecdb77" -> {
-                Ticker.TYPE_WARNING
-            }
-            else -> {
-                Ticker.TYPE_ANNOUNCEMENT
-            }
+            "#cde4c3" -> Ticker.TYPE_ANNOUNCEMENT
+            "#ecdb77" -> Ticker.TYPE_WARNING
+            else -> Ticker.TYPE_ANNOUNCEMENT
         }
     }
 
@@ -1333,64 +1251,36 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     permissionCheckerHelper.onPermissionDenied(it, permissionText)
                 }
             }
-
             override fun onNeverAskAgain(permissionText: String) {
                 context?.let {
                     permissionCheckerHelper.onNeverAskAgain(it, permissionText)
                 }
             }
-
             override fun onPermissionGranted() {
                 getPhoneNumber()
             }
-
         })
     }
-
-    private fun removeSymbolPhone(phone: String): String = phone.replace(Regex(REGEX_REMOVE_SYMBOL_PHONE), "")
 
     @SuppressLint("MissingPermission", "HardwareIds", "PrivateResource")
     fun getPhoneNumber() {
         activity?.let {
-            if (permissionCheckerHelper.hasPermission(it, arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE))) {
-                val phoneNumbers = arrayListOf<String>()
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    val subscription = it.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-                    if (subscription.activeSubscriptionInfoList != null && subscription.activeSubscriptionInfoCount > 0) {
-                        for (info in subscription.activeSubscriptionInfoList) {
-                            if (!info.number.isNullOrEmpty() &&
-                                    PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
-                                    PartialRegisterInputUtils.isValidPhone(info.number)) {
-                                phoneNumbers.add(removeSymbolPhone(info.number))
-                            }
-                        }
-                    }
-                } else {
-                    val telephony = it.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager
-                    if (!telephony.line1Number.isNullOrEmpty() &&
-                            PartialRegisterInputUtils.getType(telephony.line1Number) == PartialRegisterInputUtils.PHONE_TYPE &&
-                            PartialRegisterInputUtils.isValidPhone(telephony.line1Number)) {
-                        phoneNumbers.add(removeSymbolPhone(telephony.line1Number))
-                    }
-                }
-
-                if (phoneNumbers.isNotEmpty())
-                    partialRegisterInputView.setAdapterInputEmailPhone(
-                            ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers)
-                    ) { v, hasFocus ->
-                        if (v.windowVisibility == View.VISIBLE) {
-                            activity?.isFinishing?.let { isFinishing ->
-                                if (!isFinishing) {
-                                    if (hasFocus && this::emailPhoneEditText.isInitialized && emailPhoneEditText.hasFocus()) {
-                                        emailPhoneEditText.showDropDown()
-                                    } else {
-                                        emailPhoneEditText.dismissDropDown()
+            val phoneNumbers = PhoneUtils.getPhoneNumber(it, permissionCheckerHelper)
+            if (phoneNumbers.isNotEmpty()) {
+                partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers),
+                        View.OnFocusChangeListener { v, hasFocus ->
+                            if (v?.windowVisibility == View.VISIBLE) {
+                                activity?.isFinishing?.let { isFinishing ->
+                                    if (!isFinishing) {
+                                        if (hasFocus && ::emailPhoneEditText.isInitialized && emailPhoneEditText.hasFocus()) {
+                                            emailPhoneEditText.showDropDown()
+                                        } else {
+                                            emailPhoneEditText.dismissDropDown()
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }
+                        })
             }
         }
     }
@@ -1449,7 +1339,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 tickerAnnouncement.tickerShape = Ticker.TYPE_ANNOUNCEMENT
                 tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {}
-
                     override fun onDismiss() {
                         registerAnalytics.trackClickCloseTickerButton()
                     }
@@ -1492,30 +1381,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         }
     }
 
-    private fun showPopupError(header: String, body: String, url: String) {
-        context?.let {
-            val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(header)
-            dialog.setDescription(body)
-            dialog.setPrimaryCTAText(getString(R.string.check_full_information))
-            dialog.setSecondaryCTAText(getString(R.string.close_popup))
-            dialog.setPrimaryCTAClickListener {
-                RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
-            }
-            dialog.setSecondaryCTAClickListener {
-                dialog.hide()
-            }
-            dialog.show()
-        }
-    }
-
-
     private fun showPopupErrorAkamai() {
-        showPopupError(
-                getString(R.string.popup_error_title),
-                getString(R.string.popup_error_desc),
-                TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
-        )
+        PopupErrorDialog.showPopupErrorAkamai(context)
     }
 
     private fun showErrorToaster(message: String) {
@@ -1575,16 +1442,13 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     companion object {
-
-        private val ID_ACTION_LOGIN = 112
-
-        private val REQUEST_REGISTER_EMAIL = 101
+        val REQUEST_REGISTER_EMAIL = 101
         private val REQUEST_CREATE_PASSWORD = 102
         private val REQUEST_SECURITY_QUESTION = 103
         private val REQUEST_VERIFY_PHONE_REGISTER_PHONE = 105
         val REQUEST_ADD_NAME_REGISTER_PHONE = 107
         private val REQUEST_VERIFY_PHONE_TOKOCASH = 108
-        private val REQUEST_CHOOSE_ACCOUNT = 109
+        val REQUEST_CHOOSE_ACCOUNT = 109
         val REQUEST_CHANGE_NAME = 111
         private val REQUEST_LOGIN_GOOGLE = 112
         private val REQUEST_OTP_VALIDATE = 113
@@ -1608,7 +1472,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         private const val SOURCE_ATC = "atc"
         private const val SOURCE_ONBOARDING = "onboarding"
 
-        private const val FACEBOOK_LOGIN_TYPE = "fb"
+        const val FACEBOOK_LOGIN_TYPE = "fb"
 
         private const val REMOTE_CONFIG_KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
         private const val REMOTE_CONFIG_KEY_BANNER_REGISTER = "android_user_banner_register"
@@ -1619,14 +1483,12 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
         private const val BANNER_REGISTER_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
 
-        private const val TOKOPEDIA_CARE_PATH = "help"
-
-        private const val REGEX_REMOVE_SYMBOL_PHONE = "[+| |-]"
-
+        const val TOKOPEDIA_CARE_PATH = "help"
         fun createInstance(bundle: Bundle): RegisterInitialFragment {
             val fragment = RegisterInitialFragment()
             fragment.arguments = bundle
             return fragment
         }
     }
+
 }

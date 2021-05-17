@@ -629,6 +629,14 @@
             "enable": true,
             "total_profile": 1,
             "change_template_text": "Tambah template"
+          },
+          "occ_remove_profile": {
+            "enable": true,
+            "ui_type": 2,
+            "message": {
+              "title": "",
+              "description": ""
+            }
           }
         }
       }

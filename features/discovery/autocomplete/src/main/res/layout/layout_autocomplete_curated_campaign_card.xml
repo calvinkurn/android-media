@@ -8,6 +8,7 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4"
+    app:cardBackgroundColor="@color/discovery_common_dms_card_background"
     android:foreground="?attr/selectableItemBackground"
     android:layout_marginTop="@dimen/dp_4"
     android:layout_marginBottom="@dimen/dp_16"

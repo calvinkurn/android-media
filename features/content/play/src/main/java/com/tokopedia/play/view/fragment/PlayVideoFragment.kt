@@ -27,6 +27,7 @@ import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
+import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.pip.PlayViewerPiPView
@@ -64,7 +65,7 @@ import javax.inject.Inject
  */
 class PlayVideoFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
-        dispatchers: CoroutineDispatchers,
+        private val dispatchers: CoroutineDispatchers,
         private val pipAnalytic: PlayPiPAnalytic,
         private val analytic: PlayAnalytic,
         private val pipSessionStorage: PiPSessionStorage
@@ -206,7 +207,11 @@ class PlayVideoFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
-        playParentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayParentViewModel::class.java)
+
+        val theActivity = requireActivity()
+        if (theActivity is PlayActivity) {
+            playParentViewModel = ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -244,7 +249,7 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic()
+        if (!isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(channelId)
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -329,7 +334,9 @@ class PlayVideoFragment @Inject constructor(
 
     private fun removePiP() {
         pipAdapter.removeByKey(FLOATING_WINDOW_KEY)
-        videoViewOnStateChanged()
+        scope.launch(dispatchers.main) {
+            videoViewOnStateChanged()
+        }
     }
 
     //region observe

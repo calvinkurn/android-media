@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.CommonUtils.fromJson
 import com.tokopedia.settingnotif.data.MockResponse.pushNotificationResponse
+import com.tokopedia.settingnotif.usersetting.analytics.MoengageManager
 import com.tokopedia.settingnotif.usersetting.data.pojo.UserNotificationResponse
 import com.tokopedia.settingnotif.usersetting.data.pojo.setusersetting.SetUserSettingResponse
 import com.tokopedia.settingnotif.usersetting.data.pojo.setusersetting.SetUserSettingStatus
@@ -30,6 +31,7 @@ class UserSettingViewModelTest {
     // useCase
     private var getUserSettingUseCase: GetUserSettingUseCase = mockk(relaxed = true)
     private var setUserSettingUseCase: SetUserSettingUseCase = mockk(relaxed = true)
+    private var moengageManager: MoengageManager = mockk(relaxed = true)
 
     // observable
     private val getUserSettingObservable: Observer<UserSettingDataView> = mockk(relaxed = true)
@@ -44,6 +46,7 @@ class UserSettingViewModelTest {
         viewModel = UserSettingViewModel(
                 getUserSettingUseCase,
                 setUserSettingUseCase,
+                moengageManager,
                 testDispatcher
         )
 
@@ -130,15 +133,36 @@ class UserSettingViewModelTest {
         viewModel.errorErrorState isEqualsTo expectedReturnValue
     }
 
-    @Test fun `it should update moengage correctly`() {
-        val mockValue = mockk<List<Map<String, Any>>>(relaxed = true)
-        val expectedValue = mapOf(
-                "name" to "isfhani",
-                "value" to true
-        )
-        every { mockValue.first() } returns expectedValue
-        viewModel.requestUpdateMoengageUserSetting(mockValue)
-        assertTrue(mockValue.isNotEmpty())
+    @Test fun `it should didnt called moengage tracker for push notification`() {
+        every { moengageManager.setPushPreference(true) } returns Unit
+
+        viewModel.requestUpdateMoengageUserSetting("", true)
+
+        verify(exactly = 0) { moengageManager.setPushPreference(true) }
+    }
+
+    @Test fun `it should update moengage for push notification correctly`() {
+        every { moengageManager.setPushPreference(true) } returns Unit
+
+        viewModel.requestUpdateMoengageUserSetting("promo", true)
+
+        verify(exactly = 1) { moengageManager.setPushPreference(true) }
+    }
+
+    @Test fun `it should didnt called moengage tracker for email newsletter`() {
+        every { moengageManager.setNewsletterEmailPref(true) } returns Unit
+
+        viewModel.requestUpdateMoengageUserSetting("", true)
+
+        verify(exactly = 0) { moengageManager.setNewsletterEmailPref(true) }
+    }
+
+    @Test fun `it should update moengage for email newsletter correctly`() {
+        every { moengageManager.setNewsletterEmailPref(true) } returns Unit
+
+        viewModel.requestUpdateMoengageUserSetting("bulletin_newsletter", true)
+
+        verify(exactly = 1) { moengageManager.setNewsletterEmailPref(true) }
     }
 
     @After fun tearDown() {

@@ -67,6 +67,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.features.mediauploader)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation project(rootProject.ext.libraries.deviceInfo)
 
@@ -81,6 +82,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.maps
@@ -103,12 +105,11 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.libraries.analyticAnnotationCentral)
+    implementation project(rootProject.ext.features.productManageCommon)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
-    androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
-    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
-    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib

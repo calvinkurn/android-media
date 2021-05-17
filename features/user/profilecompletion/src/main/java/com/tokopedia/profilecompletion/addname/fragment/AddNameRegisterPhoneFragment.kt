@@ -3,10 +3,7 @@ package com.tokopedia.profilecompletion.addname.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.SpannableString
-import android.text.TextPaint
-import android.text.TextWatcher
+import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -26,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addname.AddNameRegisterPhoneAnalytics
 import com.tokopedia.profilecompletion.addname.di.DaggerAddNameComponent
@@ -205,6 +203,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
+                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400)
             }
         }
     }
@@ -249,7 +248,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
     override fun onSuccessRegister(registerInfo: RegisterInfo) {
         userSession.clearToken()
-        userSession.setToken(registerInfo.accessToken, "Bearer", registerInfo.refreshToken)
+        userSession.setToken(registerInfo.accessToken, "Bearer", EncoderDecoder.Encrypt(registerInfo.refreshToken, userSession.refreshTokenIV))
 
         activity?.run {
             dismissLoading()
