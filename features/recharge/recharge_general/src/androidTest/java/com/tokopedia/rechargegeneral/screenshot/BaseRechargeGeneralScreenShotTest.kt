@@ -37,6 +37,7 @@ import com.tokopedia.test.application.espresso_component.CommonActions.screenSho
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.test.application.espresso_component.CommonActions.takeScreenShotVisibleViewInScreen
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
@@ -44,7 +45,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class RechargeGeneralScreenShotTest {
+abstract class BaseRechargeGeneralScreenShotTest {
 
     @get:Rule
     var mActivityRule = ActivityTestRule(RechargeGeneralActivity::class.java, false, false)
@@ -52,6 +53,7 @@ class RechargeGeneralScreenShotTest {
     @Before
     fun stubAllExternalIntents() {
         Intents.init()
+        setupDarkModeTest(forceDarkMode())
         setupGraphqlMockResponse(RechargeGeneralLoginMockResponseConfig(RechargeGeneralProduct.LISTRIK))
 
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
@@ -170,7 +172,9 @@ class RechargeGeneralScreenShotTest {
         findViewAndScreenShot(R.id.tab_layout, filePrefix(), "tab_layout")
     }
 
-    private fun filePrefix() = "recharge_general"
+    abstract fun forceDarkMode(): Boolean
+
+    abstract fun filePrefix(): String
 
     private fun getRecyclerViewItemCount(resId: Int): Int {
         val recyclerView = mActivityRule.activity.findViewById<RecyclerView>(resId)
