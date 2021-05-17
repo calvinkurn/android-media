@@ -1,4 +1,4 @@
-package com.tokopedia.tokomart.searchcategory.presentation
+package com.tokopedia.tokomart.searchcategory.presentation.view
 
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes

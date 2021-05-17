@@ -6,7 +6,7 @@ import dagger.Component
 
 @SearchScope
 @Component(
-        modules = [SearchViewModelModule::class, SearchContextModule::class],
+        modules = [SearchViewModelModule::class, SearchContextModule::class, SearchQueryParamModule::class],
         dependencies = [BaseAppComponent::class])
 interface SearchComponent {
 

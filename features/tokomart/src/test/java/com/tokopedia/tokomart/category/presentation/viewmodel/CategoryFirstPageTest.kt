@@ -12,12 +12,12 @@ import com.tokopedia.tokomart.searchcategory.assertTitleDataView
 import com.tokopedia.tokomart.searchcategory.jsonToObject
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.verifyProductItemDataViewList
-import io.mockk.coEvery
+import io.mockk.every
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert.assertThat
 import org.junit.Test
 
-class CategoryFirstPageTest: CategoryTestFixtures() {
+class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
 
     @Test
     fun `test first page is last page`() {
@@ -28,21 +28,18 @@ class CategoryFirstPageTest: CategoryTestFixtures() {
 
         val visitableList = categoryViewModel.visitableListLiveData.value!!
 
-        `Then assert visitable list header`(visitableList, categoryModel)
-        `Then assert visitable list contents`(visitableList, categoryModel)
+        `Then assert first page visitables`(visitableList, categoryModel)
         `Then assert visitable list footer`(visitableList)
-    }
-
-    private fun `Given get category first page use case will be successful`(categoryModel: CategoryModel) {
-        coEvery {
-            getCategoryFirstPageUseCase.execute(any(), any(), any())
-        } coAnswers {
-            firstArg<(CategoryModel) -> Unit>().invoke(categoryModel)
-        }
+        `Then assert has next page value`(false)
     }
 
     private fun `When view created`() {
         categoryViewModel.onViewCreated()
+    }
+
+    private fun `Then assert first page visitables`(visitableList: List<Visitable<*>>, categoryModel: CategoryModel) {
+        `Then assert visitable list header`(visitableList, categoryModel)
+        `Then assert visitable list contents`(visitableList, categoryModel)
     }
 
     private fun `Then assert visitable list header`(
@@ -52,8 +49,8 @@ class CategoryFirstPageTest: CategoryTestFixtures() {
         visitableList[0].assertChooseAddressDataView()
         visitableList[1].assertBannerDataView()
         visitableList[2].assertTitleDataView(title = "Category_Title", hasSeeAllCategoryButton = true)
-        visitableList[3].assertQuickFilterDataView()
-        visitableList[4].assertProductCountDataView(categoryModel.searchProduct.header.totalData)
+        visitableList[3].assertQuickFilterDataView(categoryModel.quickFilter)
+        visitableList[4].assertProductCountDataView(categoryModel.searchProduct.header.totalDataText)
     }
 
     private fun `Then assert visitable list contents`(
@@ -66,10 +63,6 @@ class CategoryFirstPageTest: CategoryTestFixtures() {
         verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList)
     }
 
-    private fun `Then assert visitable list footer`(visitableList: List<Visitable<*>>) {
-        assertThat(visitableList.last(), instanceOf(CategoryIsleDataView::class.java))
-    }
-
     @Test
     fun `test first page has next page`() {
         val categoryModel = "category/first-page-16-products.json".jsonToObject<CategoryModel>()
@@ -79,12 +72,8 @@ class CategoryFirstPageTest: CategoryTestFixtures() {
 
         val visitableList = categoryViewModel.visitableListLiveData.value!!
 
-        `Then assert visitable list header`(visitableList, categoryModel)
-        `Then assert visitable list contents`(visitableList, categoryModel)
+        `Then assert first page visitables`(visitableList, categoryModel)
         `Then assert visitable list end with loading more model`(visitableList)
-    }
-
-    private fun `Then assert visitable list end with loading more model`(visitableList: List<Visitable<*>>) {
-        assertThat(visitableList.last(), instanceOf(LoadingMoreModel::class.java))
+        `Then assert has next page value`(true)
     }
 }
