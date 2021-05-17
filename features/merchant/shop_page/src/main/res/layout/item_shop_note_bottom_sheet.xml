@@ -40,10 +40,11 @@
 
     </RelativeLayout>
 
-    <com.tokopedia.unifycomponents.DividerUnify
+    <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"/>
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/Unify_N100"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tp_description"
