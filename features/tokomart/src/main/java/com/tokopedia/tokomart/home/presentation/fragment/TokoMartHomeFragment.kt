@@ -98,7 +98,7 @@ class TokoMartHomeFragment: Fragment() {
                         it
                 )
                 if (isUpdated) {
-                    adapter.updateHomeChooseAddressWidget(HomeChooseAddressWidgetUiModel(true))
+                    adapter.updateHomeChooseAddressWidget(true)
                 }
             }
         }

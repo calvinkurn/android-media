@@ -1,31 +1,32 @@
 package com.tokopedia.tokomart.home.domain.mapper
 
-import com.tokopedia.tokomart.home.constant.HomeLayoutType
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
-import com.tokopedia.tokomart.home.presentation.uimodel.*
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeAllCategoryUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeSectionUiModel
 
 object HomeLayoutMapper {
 
-    private val SUPPORTED_TYPE = listOf(
-        HomeLayoutType.SECTION,
-        HomeLayoutType.ALL_CATEGORY,
-        HomeLayoutType.DYNAMIC_CHANNEL,
-        HomeLayoutType.SLIDER_BANNER,
-        HomeLayoutType.SLIDER_PRODUCT,
-        HomeLayoutType.CHOOSE_ADDRESS_WIDGET,
-        HomeLayoutType.SLIDER_PRODUCT_PERSONALIZED
-    )
-
-    fun mapToHomeUiModel(response: List<HomeLayoutResponse>): List<HomeLayoutUiModel> {
-        return response.filter { SUPPORTED_TYPE.contains(it.type) }.map {
-            when(it.type) {
-                HomeLayoutType.ALL_CATEGORY -> HomeAllCategoryUiModel(it.id, it.title)
-                HomeLayoutType.SLIDER_BANNER -> HomeSliderBannerUiModel(null, false)
-                HomeLayoutType.SLIDER_PRODUCT -> HomeSliderProductUiModel()
-                HomeLayoutType.CHOOSE_ADDRESS_WIDGET -> HomeChooseAddressWidgetUiModel(false)
-                HomeLayoutType.SLIDER_PRODUCT_PERSONALIZED -> HomeSliderProductPersonalizedUiModel()
-                else -> HomeSectionUiModel(it.id, it.title)
-            }
+    fun mapToHomeUiModel(response: List<HomeLayoutResponse>): List<Visitable<*>> {
+        // Temp Dummy Data
+        return response.run {
+            listOf(
+                    HomeChooseAddressWidgetUiModel("0", "Choose Address Widget"),
+                    HomeAllCategoryUiModel("1", "Kategori"),
+                    HomeSectionUiModel("2", "Another section"),
+                    BannerDataModel(ChannelModel(
+                            "1221",
+                            "12",
+                            channelGrids = listOf(
+                                    ChannelGrid(id = "0", imageUrl = "http://www.helpmykidlearn.ie/images/uploads/Big_and_small_329.jpg"),
+                                    ChannelGrid(id = "1", imageUrl = "http://www.helpmykidlearn.ie/images/uploads/Big_and_small_329.jpg")
+                            )
+                    ))
+            )
         }
     }
 }

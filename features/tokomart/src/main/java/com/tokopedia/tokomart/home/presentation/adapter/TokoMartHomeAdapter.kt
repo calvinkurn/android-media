@@ -8,13 +8,13 @@ import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetU
 class TokoMartHomeAdapter(
     typeFactory: TokoMartHomeAdapterTypeFactory,
     differ: TokoMartHomeListDiffer
-): BaseHomeListAdapter<Visitable<*>, TokoMartHomeAdapterTypeFactory>(typeFactory, differ) {
+): BaseTokoMartListAdapter<Visitable<*>, TokoMartHomeAdapterTypeFactory>(typeFactory, differ) {
 
-    fun updateHomeChooseAddressWidget(homeChooseAddressWidgetUiModel: HomeChooseAddressWidgetUiModel) {
+    fun updateHomeChooseAddressWidget(isRefresh: Boolean) {
         val items = data.toMutableList()
         val index = items.find { it is HomeChooseAddressWidgetUiModel }?.let { firstIndex }
         index?.let {
-            items[it] = homeChooseAddressWidgetUiModel
+            items[it] = (items[it] as HomeChooseAddressWidgetUiModel).copy(isRefresh = isRefresh)
             submitList(items)
         }
     }
