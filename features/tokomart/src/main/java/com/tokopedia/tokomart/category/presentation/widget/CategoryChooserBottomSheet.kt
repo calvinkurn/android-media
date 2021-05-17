@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,13 +21,6 @@ class CategoryChooserBottomSheet(
 
     private lateinit var mAdapter: CategoryChooserAdapter
     private lateinit var rvSubcategory: RecyclerView
-
-    private val mLayoutManager = object : LinearLayoutManager(context, RecyclerView.VERTICAL, false) {
-        override fun onLayoutCompleted(state: RecyclerView.State?) {
-            super.onLayoutCompleted(state)
-            initBottomSheetState()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +40,11 @@ class CategoryChooserBottomSheet(
         mAdapter = CategoryChooserAdapter(subCategoryList.map { it.first }, this)
         rvSubcategory.run {
             adapter = mAdapter
-            layoutManager = mLayoutManager
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             addItemDecoration(itemDivider)
+            runWhenReady {
+                initBottomSheetState()
+            }
         }
         setChild(childView)
     }
@@ -70,6 +67,16 @@ class CategoryChooserBottomSheet(
                 vh?.itemView?.radio_button_subcategory?.isChecked = false
             }
         }
+    }
+
+    private inline fun RecyclerView.runWhenReady(crossinline action: () -> Unit) {
+        val globalLayoutListener = object: ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                action()
+                viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        }
+        viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
     }
 
     inner class CategoryChooserAdapter(

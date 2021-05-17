@@ -30,6 +30,7 @@ class CategoryFragment: BaseSearchCategoryFragment() {
         super.onCreate(savedInstanceState)
 
         initViewModel()
+        showSubCategoryBottomSheet()
     }
 
     private fun initViewModel() {
