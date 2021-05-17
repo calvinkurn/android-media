@@ -2,33 +2,38 @@ package com.tokopedia.manageaddress.di
 
 import android.content.Context
 import com.google.gson.Gson
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
 import com.tokopedia.logisticCommon.domain.response.GetPeopleAddressResponse
-import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.manageaddress.test.R
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
+import com.tokopedia.usecase.RequestParams
 import rx.Observable
 import timber.log.Timber
 
-class FakeGraphqlUsecase(private val context: Context) : GraphqlUseCaseInterface {
+class FakeGraphqlUseCase(private val context: Context) : GraphqlUseCaseInterface {
+
+    var gqlRequest: GraphqlRequest? = null
+
     override fun clearRequest() {
-        // no op
+        gqlRequest = null
     }
 
     override fun addRequest(requestObject: GraphqlRequest?) {
-        // no op
+        gqlRequest = requestObject
     }
 
     override fun getExecuteObservable(requestParam: RequestParams?): Observable<GraphqlResponse> {
         Timber.d("executing fake usecase")
-        return Observable.just(GraphqlResponse(
-                mapOf(GetPeopleAddressResponse::class.java to
-                        Gson().fromJson(getRawString(context, R.raw.address), GetPeopleAddressResponse::class.java)
-                ), mapOf(), false))
+        if (gqlRequest == null) throw Exception("gql request is null")
+        when {
+            gqlRequest!!.query.contains("keroAddressCorner") -> return Observable.just(GraphqlResponse(
+                    mapOf(GetPeopleAddressResponse::class.java to
+                            Gson().fromJson(getRawString(context, R.raw.address), GetPeopleAddressResponse::class.java)
+                    ), mapOf(), false))
+        }
+        return Observable.error<GraphqlResponse>(Throwable("unrecognized query"))
     }
 
     override fun unsubscribe() {

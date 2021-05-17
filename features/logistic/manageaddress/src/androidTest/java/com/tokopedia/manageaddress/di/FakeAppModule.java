@@ -10,11 +10,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
-import com.tokopedia.graphql.coroutines.data.repository.GraphqlRepositoryImpl;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface;
-import com.tokopedia.manageaddress.di.FakeGraphqlUsecase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -70,6 +67,6 @@ public class FakeAppModule {
 
     @Provides
     public GraphqlUseCaseInterface provideGraphqlUsecase() {
-        return new FakeGraphqlUsecase(context);
+        return new FakeGraphqlUseCase(context);
     }
 }
