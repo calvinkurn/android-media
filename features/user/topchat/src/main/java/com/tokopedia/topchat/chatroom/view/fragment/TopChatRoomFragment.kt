@@ -26,8 +26,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
-import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -106,6 +104,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredVie
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.custom.*
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
@@ -114,7 +113,6 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.*
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
-import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
@@ -717,21 +715,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onRetrySendImage(element: ImageUploadViewModel) {
-        val bottomSheetBuilder = CheckedBottomSheetBuilder(activity).setMode(BottomSheetBuilder.MODE_LIST)
-        bottomSheetBuilder.addItem(InboxMessageConstant.RESEND, R.string.resend, null)
-        bottomSheetBuilder.addItem(InboxMessageConstant.DELETE, R.string.delete, null)
-        bottomSheetBuilder.expandOnStart(true).setItemClickListener {
-            UploadImageChatService.removeDummyOnList(element)
-            when (it.itemId) {
-                InboxMessageConstant.RESEND -> {
-                    removeDummy(element)
-                    resendImage(element)
-                }
-                InboxMessageConstant.DELETE -> {
-                    removeDummy(element)
-                }
-            }
-        }.createDialog().show()
+        context?.let {
+            val bs = TopchatBottomSheetBuilder.getErrorUploadImageBs(it,
+                    onRetryClicked = {
+                        removeDummy(element)
+                        resendImage(element)
+                    },
+                    onDeleteClicked = {
+                        removeDummy(element)
+                    }
+            )
+            bs.show(childFragmentManager, "Retry Image Upload")
+        }
     }
 
     private fun resendImage(element: ImageUploadViewModel) {
