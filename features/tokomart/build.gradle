@@ -15,15 +15,12 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.carouselProductCard)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.medialoader)
-    implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.localizationchooseaddress)
     implementation project(rootProject.ext.features.homeComponent)
 
-    implementation project(rootProject.ext.libraries.adapterDelegate)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
@@ -37,7 +34,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.header
-    implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
