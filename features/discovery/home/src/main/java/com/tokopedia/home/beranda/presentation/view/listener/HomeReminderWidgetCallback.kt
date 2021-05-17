@@ -10,18 +10,6 @@ class HomeReminderWidgetCallback(
         val rechargeListener: RechargeRecommendationListener,
         val salamListener: SalamWidgetListener
 ) : ReminderWidgetListener {
-
-    override fun getReminderWidgetData(reminderData: ReminderWidgetModel) {
-        when (reminderData.source) {
-            ReminderEnum.RECHARGE -> {
-                rechargeListener.getRechargeRecommendation()
-            }
-            ReminderEnum.SALAM -> {
-                salamListener.getSalamWidget()
-            }
-        }
-    }
-
     override fun onReminderWidgetClickListener(reminderData: ReminderWidgetModel) {
         val reminder = reminderData.data.reminders.firstOrNull()
         reminder?.let {
