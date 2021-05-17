@@ -40,7 +40,11 @@ class CategoryFragment: BaseSearchCategoryFragment() {
     }
 
     private fun showSubCategoryBottomSheet() {
-        val bottomSheet = CategoryChooserBottomSheet()
+        val dummySubCategory = listOf("Semua", "Susu Bubuk", "Susu UHT", "Susu Segar", "Kental Manis")
+        val dummyItemAmount = listOf(10, 4, 3, 2, 1)
+        val bottomSheet = CategoryChooserBottomSheet.newInstance(
+                dummySubCategory zip dummyItemAmount
+        )
         bottomSheet.show(childFragmentManager, "")
     }
 

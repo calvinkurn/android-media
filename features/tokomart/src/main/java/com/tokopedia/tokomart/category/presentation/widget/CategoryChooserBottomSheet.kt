@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,23 +11,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.category.presentation.listener.RadioButtonListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.bottom_sheet_tokomart_category_chooser.*
 import kotlinx.android.synthetic.main.item_tokomart_category_chooser_subcategory.view.*
 
 class CategoryChooserBottomSheet(
-        private val subCategoryList: List<String> = listOf()
+        private val subCategoryList: List<Pair<String, Int>>
 ): BottomSheetUnify(), RadioButtonListener {
 
     private lateinit var mAdapter: CategoryChooserAdapter
     private lateinit var rvSubcategory: RecyclerView
 
+    private val mLayoutManager = object : LinearLayoutManager(context, RecyclerView.VERTICAL, false) {
+        override fun onLayoutCompleted(state: RecyclerView.State?) {
+            super.onLayoutCompleted(state)
+            initBottomSheetState()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         initBottomSheet()
     }
 
     private fun initBottomSheet() {
-        val dummySubCategory = listOf("Semua", "Susu Bubuk", "Susu UHT", "Susu Segar", "Kental Manis")
         showCloseIcon = true
         setTitle(getString(R.string.tokomart_category_bottom_sheet_title))
         setCloseClickListener { dismiss() }
@@ -38,17 +43,27 @@ class CategoryChooserBottomSheet(
                 .apply { context?.let { ContextCompat.getDrawable(it, R.drawable.divider_category_chooser) } }
 
         rvSubcategory = childView.findViewById(R.id.rv_category_chooser)
-        mAdapter = CategoryChooserAdapter(dummySubCategory, this)
+        mAdapter = CategoryChooserAdapter(subCategoryList.map { it.first }, this)
         rvSubcategory.run {
             adapter = mAdapter
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = mLayoutManager
             addItemDecoration(itemDivider)
         }
         setChild(childView)
     }
 
+    private fun initBottomSheetState() {
+        val categorySemua = rvSubcategory.findViewHolderForLayoutPosition(0)
+        categorySemua?.itemView?.radio_button_subcategory?.isChecked = true
+    }
+
+    private fun updateProductAmount(amount: String) {
+        button_select_item.text = getString(
+                R.string.tokomart_category_bottom_sheet_button, amount)
+    }
+
     override fun onChecked(position: Int) {
-        // TODO : Check the consistency of this function
+        updateProductAmount(subCategoryList[position].second.toString())
         for (i in 0 until mAdapter.itemCount) {
             if (i != position) {
                 val vh = rvSubcategory.findViewHolderForLayoutPosition(i)
@@ -80,7 +95,6 @@ class CategoryChooserBottomSheet(
                 itemView.radio_button_subcategory.setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
                         radioButtonListener.onChecked(layoutPosition)
-                        println("Category : $item")
                     }
                 }
             }
@@ -89,8 +103,10 @@ class CategoryChooserBottomSheet(
 
     companion object {
 
-        fun newInstance(): CategoryChooserBottomSheet {
-            val fragment = CategoryChooserBottomSheet()
+        fun newInstance(
+            subCategoryList: List<Pair<String, Int>> = listOf()
+        ): CategoryChooserBottomSheet {
+            val fragment = CategoryChooserBottomSheet(subCategoryList)
             return fragment
         }
     }
