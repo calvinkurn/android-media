@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.DeepLinkChecker
 import com.tokopedia.applink.DeeplinkMatcher
 import com.tokopedia.applink.RouteManager
@@ -51,17 +52,28 @@ class TableColumnHtmlViewHolder(
 
     private fun setOnHtmlTextClicked(element: TableRowsUiModel.RowColumnHtml) {
         with(itemView) {
-            tvTableColumnHtml?.setClickableUrlHtml(element.valueStr) { url ->
-                listener.onHyperlinkClicked(url)
-                Uri.parse(url).let { uri ->
-                    if (isAppLink(uri)) {
-                        RouteManager.route(context, url)
-                    } else {
-                        if (!checkUrlForNativePage(context, uri)) {
-                            goToDefaultIntent(context, uri)
+            tvTableColumnHtml?.setClickableUrlHtml(
+                    element.valueStr,
+                    applyCustomStyling = {
+                        isUnderlineText = false
+                        color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96)
+                    },
+                    onUrlClicked = { url ->
+                        listener.onHyperlinkClicked(url)
+                        Uri.parse(url).let { uri ->
+                            if (isAppLink(uri)) {
+                                RouteManager.route(context, url)
+                            } else {
+                                if (!checkUrlForNativePage(context, uri)) {
+                                    goToDefaultIntent(context, uri)
+                                }
+                            }
                         }
-                    }
-                }
+                    })
+            if (element.isLeftAlign) {
+                tvTableColumnHtml.gravity = Gravity.START
+            } else {
+                tvTableColumnHtml.gravity = Gravity.END
             }
         }
     }
