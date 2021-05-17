@@ -264,7 +264,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         } else {
             trackingHistory.setVisibility(View.VISIBLE);
             trackingHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
-            trackingHistory.setAdapter(new TrackingHistoryAdapter(model.getHistoryList(), dateUtil));
+//            trackingHistory.setAdapter(new TrackingHistoryAdapter(model.getHistoryList(), dateUtil));
         }
     }
 

@@ -21,7 +21,7 @@ data class TrackOrderModel(
         var noHistory: Int = -1,
         var receiverName: String = "",
         var shippingRefNum: String = "",
-        var invalid: Int = -1
+        var invalid: Boolean = false
 )
 
 data class DetailModel(

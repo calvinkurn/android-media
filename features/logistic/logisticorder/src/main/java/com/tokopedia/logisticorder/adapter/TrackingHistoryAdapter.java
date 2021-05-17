@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.logisticorder.R;
-import com.tokopedia.logisticorder.uimodel.TrackingHistoryUiModel;
+import com.tokopedia.logisticorder.uimodel.TrackHistoryModel;
 import com.tokopedia.logisticorder.utils.DateUtil;
 
 import java.util.List;
@@ -25,10 +25,10 @@ import java.util.List;
 
 public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistoryAdapter.TrackingHistoryViewHolder> {
 
-    private List<TrackingHistoryUiModel> trackingHistoryData;
+    private List<TrackHistoryModel> trackingHistoryData;
     private DateUtil dateUtil;
 
-    public TrackingHistoryAdapter(List<TrackingHistoryUiModel> trackingHistoryData, DateUtil dateUtil) {
+    public TrackingHistoryAdapter(List<TrackHistoryModel> trackingHistoryData, DateUtil dateUtil) {
         this.trackingHistoryData = trackingHistoryData;
         this.dateUtil = dateUtil;
     }
@@ -51,14 +51,14 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
         holder.comment.setVisibility(View.GONE);
         holder.description.setText(!TextUtils.isEmpty(trackingHistoryData.get(position).getStatus()) ?
                 Html.fromHtml(trackingHistoryData.get(position).getStatus()) : "");
-        holder.dot.setColorFilter(Color.parseColor(trackingHistoryData.get(position).getColor()));
+//        holder.dot.setColorFilter(Color.parseColor(trackingHistoryData.get(position).getColor()));
         if (position == trackingHistoryData.size() - 1) {
+            holder.dot.setColorFilter(holder.context.getResources().getColor(R.color.label_color));
             holder.dotTrail.setVisibility(View.GONE);
         } else {
+            holder.dot.setColorFilter(holder.context.getResources().getColor(R.color.label_color));
             holder.dotTrail.setVisibility(View.VISIBLE);
-            holder.dotTrail.setBackgroundColor(
-                    Color.parseColor(trackingHistoryData.get(position).getColor())
-            );
+            holder.dotTrail.setBackgroundColor(holder.context.getResources().getColor(R.color.label_color));
         }
     }
 

@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.logisticorder.R
+import com.tokopedia.logisticorder.adapter.EmptyTrackingNotesAdapter
 import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
@@ -259,13 +260,12 @@ class TrackingPageFragmentKotlin: BaseDaggerFragment() {
     }
 
     private fun setHistoryView(model: TrackOrderModel) {
-        if (model.change == 0 || model.trackHistory.isEmpty()) {
+        if (model.invalid || model.orderStatus == 501 || model.change == 0 || model.trackHistory.isEmpty()) {
             trackingHistory?.visibility = View.GONE
         } else {
             trackingHistory?.visibility = View.VISIBLE
             trackingHistory?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            //set Adapter here
-            //trackingHistory?.adapter = TrackingHistoryAdapter(trackOrder?.trackHistory, dateUtil)
+            trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, dateUtil)
         }
     }
 
@@ -279,7 +279,20 @@ class TrackingPageFragmentKotlin: BaseDaggerFragment() {
     }
 
     private fun setEmptyHistoryView(model: TrackOrderModel) {
-        // if model is invalid(?)
+        if (model.invalid) {
+            emptyUpdateNotification?.visibility = View.VISIBLE
+            notificationText?.text = getString(R.string.warning_courier_invalid)
+            notificationHelpStep?.visibility = View.VISIBLE
+            notificationHelpStep?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            notificationHelpStep?.adapter = EmptyTrackingNotesAdapter()
+        } else if (model.orderStatus == 501 || model.change == 0 || model.trackHistory.isEmpty()) {
+            emptyUpdateNotification?.visibility = View.VISIBLE
+            notificationText?.text = getString(R.string.warning_no_courier_change)
+            notificationHelpStep?.visibility = View.GONE
+        } else {
+            emptyUpdateNotification?.visibility = View.GONE
+            notificationHelpStep?.visibility = View.GONE
+        }
     }
 
     private fun setLiveTrackingButton(model: TrackOrderModel) {

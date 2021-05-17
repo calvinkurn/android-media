@@ -14,7 +14,7 @@ class TrackingPageMapperNew @Inject constructor() {
         }
     }
 
-    fun mapTrackOrder(response: TrackOrder): TrackOrderModel {
+    private fun mapTrackOrder(response: TrackOrder): TrackOrderModel {
         return TrackOrderModel().apply {
             detail = mapDetailOrder(response.detail)
             trackHistory = mapTrackingHistory(response.trackHistory)
@@ -24,7 +24,7 @@ class TrackingPageMapperNew @Inject constructor() {
             noHistory = response.noHistory
             receiverName = response.receiverName
             shippingRefNum = response.shippingRefNum
-            invalid =  response.invalid
+            invalid =  switchInteger(response.invalid)
         }
     }
 
@@ -72,6 +72,10 @@ class TrackingPageMapperNew @Inject constructor() {
             urlDetail = additionalInfo.urlDetail
             urlText = additionalInfo.urlText
         }
+    }
+
+    private fun switchInteger(value: Int): Boolean {
+        return value == 1
     }
 }
 
