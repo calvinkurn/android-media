@@ -282,11 +282,18 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     private fun initToolbar() {
+        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+            headerReviewInboxContainer?.hide()
+            return
+        }
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
                 setSupportActionBar(headerReviewInboxContainer)
-                headerReviewInboxContainer?.title = getString(R.string.title_activity_reputation_review)
+                headerReviewInboxContainer?.apply {
+                    title = getString(R.string.title_activity_reputation_review)
+                    show()
+                }
             }
         }
     }
