@@ -138,6 +138,8 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         } else {
             showToasterError(rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error), view)
         }
+        shouldRefreshOrderList = true
+        loadDetail()
     }
 
     override fun onSuccessSetDelivered(deliveredData: SetDelivered) {
