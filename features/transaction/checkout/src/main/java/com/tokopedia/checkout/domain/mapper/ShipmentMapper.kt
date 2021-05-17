@@ -111,9 +111,8 @@ class ShipmentMapper @Inject constructor() {
         groupAddress.groupShop.forEach {
             groupShopListResult.add(
                     GroupShop().apply {
-                        val e = listOf("asdf")
-                        isError = !e.isNullOrEmpty()
-                        errorMessage = convertToString(e)
+                        isError = !it.errors.isNullOrEmpty()
+                        errorMessage = convertToString(it.errors)
                         shippingId = it.shippingId
                         spId = it.spId
                         dropshipperName = it.dropshiper.name
