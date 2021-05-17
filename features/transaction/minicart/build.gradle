@@ -24,15 +24,22 @@ android {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.localizationchooseaddress)
+
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.explore_promo
+    implementation rootProject.ext.unifyDependencies.total_amount
+
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.utils)
+    implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.baseList)
+    implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 }

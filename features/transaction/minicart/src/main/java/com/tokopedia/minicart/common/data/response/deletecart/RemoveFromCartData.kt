@@ -2,7 +2,7 @@ package com.tokopedia.minicart.common.data.response.deletecart
 
 import com.google.gson.annotations.SerializedName
 
-data class RemoveFromCart(
+data class RemoveFromCartData(
         @SerializedName("status")
         val status: String = "",
         @SerializedName("error_message")

@@ -9,7 +9,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetMiniCartWidgetDataUseCase@Inject constructor(private val graphqlRepository: GraphqlRepository) : UseCase<MiniCartData>() {
+class GetMiniCartWidgetDataUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : UseCase<MiniCartData>() {
 
     // Todo : set params
 
@@ -25,9 +25,21 @@ class GetMiniCartWidgetDataUseCase@Inject constructor(private val graphqlReposit
         }
     }
 
-    // Todo : set query
     companion object {
         val QUERY = """
+        query mini_cart(${'$'}shopId: String) {
+          status
+          mini_cart(shopId:${'$'}shopId) {
+            error_message
+            status
+            data {
+              errors
+              total_product_count
+              total_product_error
+              total_product_price
+            }
+          }
+        }
         """.trimIndent()
     }
 

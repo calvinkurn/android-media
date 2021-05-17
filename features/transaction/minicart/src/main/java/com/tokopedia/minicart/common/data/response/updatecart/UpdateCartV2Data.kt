@@ -2,7 +2,7 @@ package com.tokopedia.minicart.common.data.response.updatecart
 
 import com.google.gson.annotations.SerializedName
 
-data class UpdateCartV2(
+data class UpdateCartV2Data(
         @SerializedName("error_message")
         val error: List<String> = emptyList(),
         @SerializedName("status")
