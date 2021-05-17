@@ -17,6 +17,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/cv_dynamic_post_feed"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_2"
         android:layout_marginRight="@dimen/dp_16"
