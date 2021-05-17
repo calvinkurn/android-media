@@ -62,6 +62,7 @@ class SmartBillsViewHolder(val view: View,
                 //remove checkbox in paid type
                 disableView()
                 cb_smart_bills_item.gone()
+                tv_smart_bills_item_price.gone()
             }
 
 
