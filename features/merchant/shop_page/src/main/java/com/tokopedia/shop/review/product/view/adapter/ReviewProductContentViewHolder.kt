@@ -93,6 +93,23 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
         }
         adapter.addList(convertToAdapterViewModel(element.reviewAttachment))
         adapter.notifyDataSetChanged()
+
+        val cvReviewContent = itemView.findViewById<CardView>(R.id.cv_review_content)
+        if (context.isDarkMode()) {
+            cvReviewContent.setBackgroundColor(
+                    ContextCompat.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N50
+                    )
+            )
+        } else {
+            cvReviewContent.setBackgroundColor(
+                    ContextCompat.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    )
+            )
+        }
     }
 
     fun setLikeStatus(element: ReviewProductModelContent) {
@@ -279,21 +296,5 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
         counterLike = itemView.findViewById(R.id.text_counter_like)
         containerReplyView = itemView.findViewById(R.id.container_reply_view)
         containerLike = itemView.findViewById(R.id.container_like)
-        cvReviewContent = itemView.findViewById(R.id.cv_review_content)
-        if (context.isDarkMode()) {
-            cvReviewContent.setBackgroundColor(
-                    ContextCompat.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N50
-                    )
-            )
-        } else {
-            cvReviewContent.setBackgroundColor(
-                    ContextCompat.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N0
-                    )
-            )
-        }
     }
 }
