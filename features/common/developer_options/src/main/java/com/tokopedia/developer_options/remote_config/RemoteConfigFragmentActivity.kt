@@ -23,6 +23,7 @@ class RemoteConfigFragmentActivity : FragmentActivity(), RemoteConfigListener {
     private lateinit var listAdapter: RemoteConfigListAdapter
     private var remoteConfig: RemoteConfig? = null
     private var isListEmpty: Boolean = false
+    private var rvConfigList:RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +78,7 @@ class RemoteConfigFragmentActivity : FragmentActivity(), RemoteConfigListener {
                 else -> getPrefixes("mainapp", "android", "app")
             }
 
+            updateVisibility(configListData.isNotEmpty())
             listAdapter.setConfigData(remoteConfig, configListData)
         }
     }
@@ -87,20 +89,25 @@ class RemoteConfigFragmentActivity : FragmentActivity(), RemoteConfigListener {
 
         updateListAdapterData()
 
-        val rvConfigList: RecyclerView = findViewById(R.id.config_list_container)
+        rvConfigList = findViewById(R.id.config_list_container)
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        val dividerItemDecoration = DividerItemDecoration(this, layoutManager.orientation)
+        rvConfigList?.layoutManager = layoutManager
+        rvConfigList?.addItemDecoration(dividerItemDecoration)
+        rvConfigList?.adapter = listAdapter
+        findViewById<View>(R.id.button_add_empty)?.setOnClickListener {
+            showEditRemoteConfigDialog(intent?.extras?.getString(DeveloperOptionActivity.REMOTE_CONFIG_PREFIX) ?: "")
+        }
+        updateVisibility(!isListEmpty)
+    }
 
-        if (!isListEmpty) {
-            val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-            val dividerItemDecoration = DividerItemDecoration(rvConfigList.context, layoutManager.orientation)
-            rvConfigList.layoutManager = layoutManager
-            rvConfigList.addItemDecoration(dividerItemDecoration)
-            rvConfigList.adapter = listAdapter
+    private fun updateVisibility(mainDataVisible:Boolean) {
+        if (mainDataVisible) {
+            rvConfigList?.visibility = View.VISIBLE
+            findViewById<View>(R.id.empty_group).visibility = View.GONE
         } else {
-            rvConfigList.visibility = View.GONE
+            rvConfigList?.visibility = View.GONE
             findViewById<View>(R.id.empty_group).visibility = View.VISIBLE
-            findViewById<View>(R.id.button_add_empty)?.setOnClickListener {
-                showEditRemoteConfigDialog(intent?.extras?.getString(DeveloperOptionActivity.REMOTE_CONFIG_PREFIX) ?: "")
-            }
         }
     }
 }
