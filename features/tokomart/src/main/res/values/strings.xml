@@ -4,5 +4,6 @@
     <string name="tokomart_search_title">Hasil pencarian di TokoNOW!</string>
     <string name="tokomart_all_category">Semua Kategori</string>
     <string name="tokomart_search_category_product_count_template">%s Produk</string>
+    <string name="tokomart_category_aisle_header">Lihat Kategori</string>
 
 </resources>
