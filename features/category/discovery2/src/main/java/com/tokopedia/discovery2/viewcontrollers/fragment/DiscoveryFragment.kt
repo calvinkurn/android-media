@@ -301,16 +301,19 @@ class DiscoveryFragment :
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
                         if (listComponent.isNullOrEmpty()) {
+                            discoveryAdapter.addDataList(ArrayList())
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
                             scrollToPinnedComponent(listComponent)
                         }
                     }
+                    hideGlobalError()
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
                 }
                 is Fail -> {
                     mProgressBar.hide()
+                    setPageErrorState(it)
                 }
             }
             mSwipeRefreshLayout.isRefreshing = false
@@ -336,6 +339,7 @@ class DiscoveryFragment :
                     setToolBarPageInfoOnSuccess(it.data)
                 }
                 is Fail -> {
+                    discoveryAdapter.addDataList(ArrayList())
                     setToolBarPageInfoOnFail()
                     setPageErrorState(it)
                 }
@@ -579,6 +583,10 @@ class DiscoveryFragment :
             globalError.hide()
             showLoadingWithRefresh()
         }
+    }
+
+    private fun hideGlobalError(){
+        globalError.hide()
     }
 
     private fun fetchDiscoveryPageData() {
