@@ -21,6 +21,7 @@ class ScreenRecorderActivity : AppCompatActivity() {
         private const val REQUEST_PERMISSION_RECORD_SCREEN = 1;
         private val PERMISSIONS = arrayOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.RECORD_AUDIO
         )
 
@@ -30,15 +31,7 @@ class ScreenRecorderActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.screen_recorder_activity_screen_record)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            showFeatureNotSupported()
-            finish()
-        }
         findViewById<Button>(R.id.btnActivate).setOnClickListener { v -> activateScreenRecorder() }
-    }
-
-    private fun showFeatureNotSupported() {
-        Toast.makeText(this, getString(R.string.screen_recorder_os_below_lollipop_info), Toast.LENGTH_SHORT).show()
     }
 
     private fun activateScreenRecorder() {

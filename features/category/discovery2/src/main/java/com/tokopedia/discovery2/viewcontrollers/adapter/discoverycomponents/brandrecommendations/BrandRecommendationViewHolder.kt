@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -32,9 +31,10 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         brandRecommendationViewModel = discoveryBaseViewModel as BrandRecommendationViewModel
+        brandRecommendationViewModel.mapBrandRecomItems()
         brandRecommendationViewModel.getListData()?.let {
             if (it.isNotEmpty()) {
-                sendBrandRecommendationImpressionGtm(it.firstOrNull()?.data ?: ArrayList())
+                sendBrandRecommendationImpressionGtm(it)
             }
         }
     }
@@ -69,8 +69,8 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
         }
     }
 
-    private fun sendBrandRecommendationImpressionGtm(item: List<DataItem>) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(item, brandRecommendationViewModel.getComponentPosition())
+    private fun sendBrandRecommendationImpressionGtm(item: List<ComponentsItem>) {
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBrandRecommendationImpression(item, brandRecommendationViewModel.getComponentPosition())
     }
 
     private fun setTitle(title: String) {
