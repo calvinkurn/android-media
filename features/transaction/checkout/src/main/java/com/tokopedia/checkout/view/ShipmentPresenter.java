@@ -1866,9 +1866,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public List<ShippingCourierUiModel> getShippingCourierViewModelsState(int itemPosition) {
+    public List<ShippingCourierUiModel> getShippingCourierViewModelsState(int orderNumber) {
         if (shippingCourierViewModelsState != null) {
-            return shippingCourierViewModelsState.get(itemPosition);
+            return shippingCourierViewModelsState.get(orderNumber);
         }
         return null;
     }
@@ -1876,11 +1876,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setShippingCourierViewModelsState
             (List<ShippingCourierUiModel> shippingCourierUiModelsState,
-             int itemPosition) {
+             int orderNumber) {
         if (this.shippingCourierViewModelsState == null) {
             this.shippingCourierViewModelsState = new HashMap<>();
         }
-        this.shippingCourierViewModelsState.put(itemPosition, shippingCourierUiModelsState);
+        this.shippingCourierViewModelsState.put(orderNumber, shippingCourierUiModelsState);
     }
 
     @Override

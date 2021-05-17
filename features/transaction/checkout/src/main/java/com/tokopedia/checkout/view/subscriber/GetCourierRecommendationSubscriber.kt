@@ -44,7 +44,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                                     return
                                 } else {
                                     shippingCourierUiModel.isSelected = true
-                                    presenter.setShippingCourierViewModelsState(shippingDurationUiModel.shippingCourierViewModelList, itemPosition)
+                                    presenter.setShippingCourierViewModelsState(shippingDurationUiModel.shippingCourierViewModelList, shipmentCartItemModel.orderNumber)
                                     val courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
                                     shippingRecommendationData.logisticPromo?.let {
                                         val disableMsg = it.disableText

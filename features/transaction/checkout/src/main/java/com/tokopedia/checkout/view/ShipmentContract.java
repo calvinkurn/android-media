@@ -289,9 +289,9 @@ public interface ShipmentContract {
         ShipmentButtonPaymentModel getShipmentButtonPaymentModel();
 
         void setShippingCourierViewModelsState(List<ShippingCourierUiModel> shippingCourierUiModelsState,
-                                               int itemPosition);
+                                               int orderNumber);
 
-        List<ShippingCourierUiModel> getShippingCourierViewModelsState(int itemPosition);
+        List<ShippingCourierUiModel> getShippingCourierViewModelsState(int orderNumber);
 
         void setCouponStateChanged(boolean appliedCoupon);
 

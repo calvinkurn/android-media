@@ -2060,8 +2060,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         List<ShippingCourierUiModel> shippingCourierUiModels = shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels();
         sendAnalyticsOnClickChangeCourierShipmentRecommendation(shipmentCartItemModel);
         if (shippingCourierUiModels == null || shippingCourierUiModels.size() == 0 &&
-                shipmentPresenter.getShippingCourierViewModelsState(cartPosition) != null) {
-            shippingCourierUiModels = shipmentPresenter.getShippingCourierViewModelsState(cartPosition);
+                shipmentPresenter.getShippingCourierViewModelsState(shipmentCartItemModel.getOrderNumber()) != null) {
+            shippingCourierUiModels = shipmentPresenter.getShippingCourierViewModelsState(shipmentCartItemModel.getOrderNumber());
         }
         Activity activity = getActivity();
         if (activity != null) {
