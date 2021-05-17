@@ -17,8 +17,15 @@
     <string name="post_time_just_now_new">1 mnt</string>
     <string name="post_time_minutes_ago_new"> mnt</string>
     <string name="post_time_hours_ago_new">jam </string>
+    <string name="post_time_days_ago">hari</string>
     <string name="post_time_hour_new">\u0020pukul\u0020</string>
     <string name="post_time_yesterday_at_new">Kemarin pukul\u0020</string>
+
+    <!--Post Time Comment -->
+    <string name="comment_time_just_now">Beberapa detik yang lalu</string>
+    <string name="comment_time_minutes_ago"> menit yang lalu</string>
+    <string name="comment_time_hours_ago">jam yang lalu</string>
+    <string name="comment_time_days_ago">hari yang lalu</string>
 
     <!-- Action -->
     <string name="feed_content_reported">Konten berhasil dilaporkan</string>
@@ -92,8 +99,6 @@
     <string name="feed_header_time_format" formatted="false">%s • %s</string>
     <string name="feed_header_time_new" formatted="false">%s</string>
 
-    <string name="feed_header_separator" formatted="false">•</string>
-
     <string name="content_desc_authorImage">image profil</string>
     <string name="content_desc_authorBadge">image badge</string>
     <string name="content_desc_authorTitle">text nama toko</string>
@@ -112,6 +117,13 @@
     <string name="feed_component_not_interested">Tidak Tertarik</string>
     <string name="feed_common_terjual">Terjual</string>
 
+    <!--Follow Functionalities ASSETS-->
+    <string name="feed_component_unfollow_success_toast">Berhasil berhenti mengikuti toko ini</string>
+    <string name="feed_header_separator" formatted="false"><![CDATA["<font color='#31353B'><b> • </b></font> ]]></string>
+    <string name="kol_action_follow_color"><![CDATA["<font color='#03AC0E'><b>Follow</b></font> ]]></string>
+    <string name="kol_Action_following_color"><![CDATA["<font color='#6D7588'><b>following</b></font> ]]></string>
+    <string name="feed_header_follow_count_text">Rekomendasi • %s</string>
+
 
     <!--REPORT BOTTOM SHEETS ASSETS-->
     <string name="feed_component_report_Header">Kenapa kamu ingin laporkan postingan ini?</string>
@@ -127,8 +139,10 @@
     <string name="feed_component_report_option_text5">Pelanggaran kekayaan intelektual</string>
 
     <!--DYNAMIC POST ASSETS-->
-    <string name="feed_component_liked_count_text">%s orang menyukai</string>
-    <string name="feed_component_liked_by_text">Disukai oleh %s dan %s lainnya</string>
+    <string name="feed_component_liked_count_text"> Disukai oleh <![CDATA["<font color='#212121'><b> %s orang</b></font> ]]></string>
+    <string name="feed_component_liked_count_text_only_me">Disukai olehmu</string>
+    <string name="feed_component_liked_by_text">Disukai oleh %s dan  <![CDATA["<font color='#212121'><b>%s lainnya</b></font> ]]></string>
+    <string name="feed_component_liked_by_text_me">Disukai olehmu dan <![CDATA["<font color='#212121'><b>%s lainnya</b></font> ]]></string>
     <string name="feed_component_see_all_comments">Lihat Semua %s Komentar</string>
     <string name="feed_component_add_comment">Comment as %s…</string>
     <string name="feed_component_read_more_button">Selengkapnya</string>

@@ -191,7 +191,16 @@ open class DynamicPostViewHolder(v: View,
             itemView.menu.shouldShowWithAction(template.report) {
                 if (canShowMenu(header.reportable, header.deletable, header.editable)) {
                     itemView.menu.setOnClickListener {
-                        listener.onMenuClick(adapterPosition, postId, header.reportable, header.deletable, header.editable)
+                        listener.onMenuClick(
+                            adapterPosition,
+                            postId,
+                            header.reportable,
+                            header.deletable,
+                            header.editable,
+                            true,
+                            "",
+                            ""
+                        )
                     }
                 } else{
                     itemView.menu.hide()
@@ -523,7 +532,16 @@ open class DynamicPostViewHolder(v: View,
 
         fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean)
 
-        fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean)
+        fun onMenuClick(
+            positionInFeed: Int,
+            postId: Int,
+            reportable: Boolean,
+            deletable: Boolean,
+            editable: Boolean,
+            isFollowed: Boolean,
+            authorId: String,
+            authorType: String
+        )
 
         fun onCaptionClick(positionInFeed: Int, redirectUrl: String)
 

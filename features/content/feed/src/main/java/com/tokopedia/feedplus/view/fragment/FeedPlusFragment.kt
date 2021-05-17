@@ -375,6 +375,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         val data = it.data
                         if (data.isSuccess) {
                             onSuccessFollowUnfollowKol(data.rowNumber)
+                            if (!data.isFollow) {
+                                view?.run {
+                                    Toaster.build(
+                                        this,
+                                        getString(R.string.feed_component_unfollow_success_toast),
+                                        Toaster.LENGTH_SHORT,
+                                        Toaster.TYPE_NORMAL
+                                    )
+                                }
+
+                            }
                         } else {
                             data.errorMessage = getString(R.string.default_request_error_unknown)
                             onErrorFollowUnfollowKol(data)
@@ -527,14 +538,25 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     is Fail -> {
                         val message = it.throwable.localizedMessage
                         view?.run {
-                            Toaster.build(this, message
-                                    ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                            Toaster.build(
+                                this, message
+                                    ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
+                            ).show()
                         }
                     }
                     is Success -> {
                         onSuccessDeletePost(it.data.rowNumber)
                     }
                 }
+
+//                if (it["error"]?.isNotEmpty() == true) {
+//                    view?.run {
+//                        Toaster.build(this, it["error"]
+//                                ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+//                    }
+//                } else {
+//                    onSuccessDeletePost(it["id"].toIntOrZero())
+//                }
             })
         }
     }
@@ -964,7 +986,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                   activityType: String) {
-        //TODO
         RouteManager.getIntent(
                 requireContext(),
                 UriUtil.buildUriAppendParam(
@@ -1248,9 +1269,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
                 analytics.eventFollowCardPost(
                         if (isFollow) FeedAnalytics.Element.UNFOLLOW else FeedAnalytics.Element.FOLLOW,
-                        trackingPostModel.activityName,
-                        trackingPostModel.postId.toString(),
-                        trackingPostModel.mediaType
+                    trackingPostModel.activityName,
+                    trackingPostModel.postId.toString(),
+                    trackingPostModel.mediaType
                 )
             }
         } else {
@@ -1258,26 +1279,44 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean,
-                             editable: Boolean) {
+    override fun onMenuClick(
+        positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean,
+        editable: Boolean,
+        isFollowed: Boolean,
+        authorId: String,
+        authorType: String
+    ) {
         if (context != null) {
             feedAnalytics.evenClickMenu(postId.toString())
-            val sheet = MenuOptionsBottomSheet.newInstance("Follow", false)
+            val followText = if (isFollowed) {
+                getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow)
+            } else {
+                getString(com.tokopedia.feedcomponent.R.string.feed_component_follow)
+            }
+            val sheet = MenuOptionsBottomSheet.newInstance(followText, false)
             sheet.show((context as FragmentActivity).supportFragmentManager, "")
             sheet.onReport = {
                 if (userSession.isLoggedIn) {
                     context?.let {
-                        ReportBottomSheet.newInstance(postId, context = object : ReportBottomSheet.OnReportOptionsClick {
-                            override fun onOption1(reasonType: String, reasonDesc: String) {
-                                feedViewModel.sendReport(positionInFeed ,postId,reasonType,reasonDesc,"post")
-                            }
-                        }).show((context as FragmentActivity).supportFragmentManager, "")
+                        ReportBottomSheet.newInstance(
+                            postId,
+                            context = object : ReportBottomSheet.OnReportOptionsClick {
+                                override fun onOption1(reasonType: String, reasonDesc: String) {
+                                    feedViewModel.sendReport(
+                                        positionInFeed,
+                                        postId,
+                                        reasonType,
+                                        reasonDesc,
+                                        "content"
+                                    )
+                                }
+                            }).show((context as FragmentActivity).supportFragmentManager, "")
                     }
+                }
             }
             sheet.onDeleteorFollow = {
-                onFollowKolClicked(positionInFeed,postId)
-            } }
-
+                onHeaderActionClick(positionInFeed, authorId, authorType, isFollowed)
+            }
         }
     }
 
@@ -1474,9 +1513,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onReadMoreClicked(trackingPostModel: TrackingPostModel) {
         feedAnalytics.eventTimelineClickReadMore(
-                trackingPostModel.postId.toString(),
-                trackingPostModel.activityName,
-                trackingPostModel.mediaType
+            trackingPostModel.postId.toString(),
+            trackingPostModel.activityName,
+            trackingPostModel.mediaType
         )
     }
 
@@ -1484,12 +1523,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedAnalytics.eventImageClicked(activityId)
     }
 
-    override fun onTagClicked(postId: Int,products:List<FeedXProduct>, listener: DynamicPostViewHolder.DynamicPostListener) {
-        ProductItemInfoBottomSheet().show(childFragmentManager, products, listener,postId)
+    override fun onTagClicked(
+        postId: Int,
+        products: List<FeedXProduct>,
+        listener: DynamicPostViewHolder.DynamicPostListener
+    ) {
+        ProductItemInfoBottomSheet().show(childFragmentManager, products, listener, postId)
     }
 
-    override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: Int,
-                                 redirectLink: String) {
+    override fun onGridItemClick(
+        positionInFeed: Int, contentPosition: Int, productPosition: Int,
+        redirectLink: String
+    ) {
         onGoToLink(redirectLink)
 
         if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
@@ -1681,10 +1726,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessFollowUnfollowKol(rowNumber: Int) {
-        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
-        val (_, _, header) = newList[rowNumber]
-        header.followCta.isFollow = !header.followCta.isFollow
-        adapter.updateList(newList)
+        if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
+            val item = (adapter.getlist()[rowNumber] as DynamicPostUiModel)
+            item.feedXCard.followers.isFollowed = !item.feedXCard.followers.isFollowed
+            adapter.notifyItemChanged(rowNumber)
+        }
     }
 
     private fun onErrorFollowUnfollowKol(data: FollowKolViewModel) {
@@ -1700,30 +1746,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
         val newList = adapter.getlist()
-        if (newList.size > rowNumber && newList[rowNumber] is DynamicPostViewModel) {
-            val (_, _, _, _, footer) = newList[rowNumber] as DynamicPostViewModel
-            val like = footer.like
-            like.isChecked = !like.isChecked
-            if (like.isChecked) {
-                try {
-                    val likeValue = Integer.valueOf(like.fmt) + 1
-                    like.fmt = likeValue.toString()
-                } catch (ignored: NumberFormatException) {
-                }
-
-                like.value = like.value + 1
-            } else {
-                try {
-                    val likeValue = Integer.valueOf(like.fmt) - 1
-                    like.fmt = likeValue.toString()
-                } catch (ignored: NumberFormatException) {
-                }
-
-                like.value = like.value - 1
-            }
-            adapter.notifyItemChanged(rowNumber)
-        }
-
         if (newList.size > rowNumber && newList[rowNumber] is DynamicPostUiModel) {
             val item = (newList[rowNumber] as DynamicPostUiModel)
             val like = item.feedXCard.like
@@ -1746,9 +1768,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 like.count = like.count - 1
             }
             adapter.notifyItemChanged(rowNumber)
-            //  adapter.notifyDataSetChanged()
-            //      adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_LIKE)
-
         }
     }
 
@@ -1767,13 +1786,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessDeletePost(rowNumber: Int) {
-        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
-        newList.removeAt(rowNumber)
-        adapter.updateList(newList)
-        view?.let {
-            Toaster.build(it, getString(R.string.feed_post_deleted), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.affiliatecommon.R.string.af_title_ok), View.OnClickListener {
-                Toaster.snackBar.dismiss()
-            })
+        if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
+            adapter.getlist().removeAt(rowNumber)
+            adapter.notifyDataSetChanged()
+            view?.let {
+                Toaster.build(
+                    it,
+                    getString(R.string.feed_post_deleted),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.affiliatecommon.R.string.af_title_ok),
+                    View.OnClickListener {
+                        Toaster.snackBar.dismiss()
+                    })
+            }
         }
         if (adapter.getlist().isEmpty()) {
             showRefresh()

@@ -35,6 +35,8 @@ import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments
 import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -89,7 +91,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         kolComment = parentView.findViewById(R.id.new_comment)
         avatarShop = parentView.findViewById(R.id.avatar_shop)
         globalError = parentView.findViewById(R.id.globalError)
-        //todo
         sendButton = parentView.findViewById(R.id.send_but)
         prepareView()
         presenter.attachView(this)
@@ -101,8 +102,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         super.onCreate(savedInstanceState)
         userSession = UserSession(activity)
         totalNewComment = 0
-        //todo
-
     }
 
     companion object {
@@ -142,7 +141,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                     delay(Toaster.LENGTH_LONG.toLong())
                     if (activity != null && isAdded) {
                         if (toBeDeleted)
-                            presenter.deleteComment(commentId, adapterPosition)
+                            presenter.deleteComment(id, adapterPosition)
                     }
 
                 }
@@ -194,9 +193,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     override fun onSuccessGetComments(kolComments: KolComments?) {
         val list = ArrayList<Visitable<*>?>()
-        kolComments?.listComments?.let {
-            list.addAll(it)
-        }
+        kolComments?.let { list.addAll(it.listNewComments) }
         list.reverse()
         adapter?.addList(list)
 
@@ -314,9 +311,11 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun onErrorGetCommentsFirstTime(errorMessage: String?) {
+        globalError.visible()
         globalError.setOnClickListener {
             presenter.getCommentFirstTime(
-                    requireArguments().getInt(KolCommentActivity.ARGS_ID))
+                requireArguments().getInt(KolCommentActivity.ARGS_ID)
+            )
         }
 
         showError(
@@ -329,6 +328,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     private fun showError(isConnectionError: Boolean, onError: () -> Unit) {
         removeLoading()
+        globalError.visible()
         globalError.setActionClickListener {
             showLoading()
             onError()
@@ -352,10 +352,12 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun onSuccessGetCommentsFirstTime(kolComments: KolComments?) {
+        globalError.gone()
+        removeLoading()
         header = kolComments?.headerNewModel
         setHeader(header)
         val list = ArrayList<Visitable<*>?>()
-        kolComments?.listNewComments?.let { list.addAll(it) }
+        kolComments?.let { list.addAll(it.listNewComments) }
         list.reverse()
         adapter?.setList(list)
         adapter?.notifyDataSetChanged()

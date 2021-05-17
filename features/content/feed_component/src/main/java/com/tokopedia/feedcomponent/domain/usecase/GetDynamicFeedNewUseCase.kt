@@ -186,6 +186,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         title
         subTitle
         text
+        appLink
         products {
           id
           name

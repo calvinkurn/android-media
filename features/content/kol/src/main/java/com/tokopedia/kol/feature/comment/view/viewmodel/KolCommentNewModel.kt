@@ -73,15 +73,17 @@ open class KolCommentNewModel : Visitable<KolCommentTypeFactory?>, Parcelable {
     }
 
     companion object {
-        val CREATOR: Parcelable.Creator<KolCommentNewModel?> = object : Parcelable.Creator<KolCommentNewModel?> {
-            override fun createFromParcel(source: Parcel): KolCommentNewModel? {
-                return KolCommentNewModel(source)
-            }
+        @JvmField
+        val CREATOR: Parcelable.Creator<KolCommentNewModel?> =
+            object : Parcelable.Creator<KolCommentNewModel?> {
+                override fun createFromParcel(source: Parcel): KolCommentNewModel? {
+                    return KolCommentNewModel(source)
+                }
 
-            override fun newArray(size: Int): Array<KolCommentNewModel?> {
-                return arrayOfNulls(size)
+                override fun newArray(size: Int): Array<KolCommentNewModel?> {
+                    return arrayOfNulls(size)
+                }
             }
-        }
     }
 
     override fun type(typeFactory: KolCommentTypeFactory?): Int {

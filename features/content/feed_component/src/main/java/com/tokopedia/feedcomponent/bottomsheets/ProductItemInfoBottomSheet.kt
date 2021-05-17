@@ -16,7 +16,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.item_posttag.*
@@ -44,7 +43,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvPosttag.isNestedScrollingEnabled = false
         rvPosttag.layoutManager = layoutManager
-        rvPosttag.setMargin(0, 0, 0, 0)
+        rvPosttag.setPadding(0, 0, 0, 0)
         rvPosttag.adapter = PostTagAdapter(mapPostTag(listProducts),
                 PostTagTypeFactoryImpl(listener, DeviceScreenInfo.getScreenWidth(requireContext())))
         (rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()

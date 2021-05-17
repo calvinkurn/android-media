@@ -26,8 +26,7 @@
                 android:paddingTop="@dimen/dp_8"
                 android:scrollbars="vertical"
                 android:tag="feed_plus_list"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            />
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
@@ -53,9 +52,10 @@
                 android:fontFamily="sans-serif"
                 android:text="@string/you_have_new_feed"
                 android:textColor="@color/Unify_N700_44"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_12"
+                android:visibility="gone" />
         </LinearLayout>
 
     </RelativeLayout>
-    
+
 </RelativeLayout>

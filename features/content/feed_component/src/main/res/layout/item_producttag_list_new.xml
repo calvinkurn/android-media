@@ -27,7 +27,7 @@
             android:layout_marginRight="@dimen/dp_2"
             android:background="@drawable/bg_frame_rounded">
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/productImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

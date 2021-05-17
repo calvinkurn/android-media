@@ -1,12 +1,14 @@
 package com.tokopedia.feedcomponent.view.widget
 
 import android.content.Context
+import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -32,6 +34,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.URLEncoder
@@ -42,14 +45,18 @@ private const val SPAN_SIZE_FULL = 6
 private const val SPAN_SIZE_HALF = 3
 private const val SPAN_SIZE_SINGLE = 2
 
-class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : ConstraintLayout(context, attrs, defStyleAttr) {
+class PostDynamicViewNew @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : ConstraintLayout(context, attrs, defStyleAttr), GestureDetector.OnDoubleTapListener {
 
     private var shopImage: ImageUnify
     private var shopBadge: ImageUnify
     private var shopName: Typography
-    private var shopNameSeparator: Typography
-    private var followText: Typography
+
+    //  private var shopNameSeparator: Typography
+    //  private var followText: Typography
     private var shopMenuIcon: IconUnify
     private var carouselView: CarouselUnify
     private var pageControl: PageControl
@@ -68,6 +75,7 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
     private var seeAllCommentText: Typography
     private var userImage: ImageUnify
     private var addCommentHint: Typography
+    private var followCount: Typography
 
     //private var gridView: ConstraintLayout
     private var gridList: RecyclerView
@@ -77,13 +85,14 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
     private var positionInFeed: Int = 0
 
     init {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_post_dynamic_new_content, this, true)
+        val view =
+            LayoutInflater.from(context).inflate(R.layout.item_post_dynamic_new_content, this, true)
         view.run {
             shopImage = findViewById(R.id.shop_image)
             shopBadge = findViewById(R.id.shop_badge)
             shopName = findViewById(R.id.shop_name)
-            shopNameSeparator = findViewById(R.id.shop_name_separator)
-            followText = findViewById(R.id.follow_text)
+            //   shopNameSeparator = findViewById(R.id.shop_name_separator)
+            //  followText = findViewById(R.id.follow_text)
             shopMenuIcon = findViewById(R.id.menu_button)
             carouselView = findViewById(R.id.feed_carousel)
             pageControl = findViewById(R.id.page_indicator)
@@ -104,67 +113,221 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
             addCommentHint = findViewById(R.id.comment_hint)
             //  gridView = findViewById(R.id.gridView)
             gridList = findViewById(R.id.gridList)
+            followCount = findViewById(R.id.follow_count)
         }
     }
 
-    fun bindData(dynamicPostListener: DynamicPostViewHolder.DynamicPostListener, gridItemListener: GridPostAdapter.GridItemListener,
-                 adapterPosition: Int, userSession: UserSessionInterface, feedXCard: FeedXCard) {
+    fun bindData(
+        dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
+        gridItemListener: GridPostAdapter.GridItemListener,
+        adapterPosition: Int,
+        userSession: UserSessionInterface,
+        feedXCard: FeedXCard
+    ) {
         this.listener = dynamicPostListener
         this.gridPostListener = gridItemListener
         this.positionInFeed = adapterPosition
-        bindHeader(feedXCard.id.toIntOrZero(), feedXCard.author, feedXCard.followers.isFollowed)
+        bindHeader(
+            feedXCard.id.toIntOrZero(),
+            feedXCard.author,
+            feedXCard.followers.isFollowed,
+            feedXCard.followers.countFmt
+        )
         bindItems(feedXCard.typename, feedXCard.id.toIntOrZero(), feedXCard.media, feedXCard)
         bindCaption(feedXCard)
         bindPublishedAt(feedXCard.publishedAt, feedXCard.subTitle)
         bindLike(feedXCard.like, feedXCard.id.toIntOrZero())
-        bindComment(feedXCard.comments, userSession.profilePicture, userSession.name, feedXCard.id.toIntOrZero())
+        bindComment(
+            feedXCard.comments,
+            userSession.profilePicture,
+            userSession.name,
+            feedXCard.id.toIntOrZero()
+        )
         shareButton.setOnClickListener {
             //please confirm for the values passed as function params
-            listener?.onShareClick(positionInFeed, feedXCard.id.toIntOrZero(), feedXCard.share.label, "", feedXCard.share.operation, "")
+            listener?.onShareClick(
+                positionInFeed,
+                feedXCard.id.toIntOrZero(),
+                feedXCard.share.label,
+                "",
+                feedXCard.share.operation,
+                ""
+            )
         }
     }
 
-    private fun bindHeader(activityId: Int, author: FeedXAuthor, isFollowed: Boolean) {
+    private fun bindHeader(
+        activityId: Int,
+        author: FeedXAuthor,
+        isFollowed: Boolean,
+        countFmt: String
+    ) {
+
+        followCount.text =
+            String.format(context.getString(R.string.feed_header_follow_count_text), countFmt)
+        var isFollow = isFollowed
+        followCount.showWithCondition(!isFollow)
         shopImage.setImageUrl(author.logoURL)
         shopBadge.setImageUrl(author.badgeURL)
         shopBadge.showWithCondition(author.badgeURL.isNotEmpty())
-        shopName.text = author.name
-        followText.showWithCondition(!isFollowed)
-        //as activityName is unclear since in new gql we aint getting responses on the basis of activity like kolpost or others
         val activityName = ""
         val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
-        val followCta = FollowCta(authorID = author.id, authorType = authorType, isFollow = isFollowed)
+        val followCta =
+            FollowCta(authorID = author.id, authorType = authorType, isFollow = isFollowed)
+        val textToShow =
+            /*author.name + */ MethodChecker.fromHtml(
+            context.getString(R.string.feed_header_separator) + context.getString(
+                R.string.feed_component_follow
+            )
+        )
+        val startIndex = author.name.length + 2
+        val endIndex = startIndex + 6
+        val spannableString = SpannableStringBuilder("")
+        spannableString.append(author.name)
+        shopName.movementMethod = LinkMovementMethod.getInstance()
+
+        if (!isFollow) {
+            spannableString.append(textToShow)
+            spannableString.setSpan(object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    shopName.text = author.name
+                    shopName.append(MethodChecker.fromHtml(context.getString(R.string.feed_header_separator)))
+                    shopName.append(MethodChecker.fromHtml(context.getString(R.string.kol_Action_following_color)))
+                    listener?.onHeaderActionClick(
+                        positionInFeed, author.id,
+                        authorType, isFollow
+                    )
+                    isFollow = true
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
+                    ds.color = MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    )
+
+                }
+
+            }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+
+        if (!isFollow)
+            shopName.text = spannableString
+        else
+            shopName.text = author.name
+
+        spannableString.setSpan(object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                listener?.onAvatarClick(
+                    positionInFeed,
+                    author.appLink,
+                    activityId,
+                    activityName,
+                    followCta
+                )
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+                ds.color = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Neutral_N600
+                )
+            }
+        }, 0, author.name.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+
+
         shopImage.setOnClickListener {
-            listener?.onAvatarClick(positionInFeed, author.appLink, activityId, activityName, followCta)
+            listener?.onAvatarClick(
+                positionInFeed,
+                author.appLink,
+                activityId,
+                activityName,
+                followCta
+            )
         }
-        shopName.setOnClickListener {
-            listener?.onAvatarClick(positionInFeed, author.appLink, activityId, activityName, followCta)
-        }
-        followText.setOnClickListener {
-            followText.text = context.getString(R.string.kol_Action_following)
-            followText.setTextColor(MethodChecker.getColor(context, R.color.Unify_N75))
-            listener?.onHeaderActionClick(positionInFeed, author.id,
-                    authorType, isFollowed)
-        }
+//        shopName.setOnClickListener {
+//            listener?.onAvatarClick(
+//                positionInFeed,
+//                author.appLink,
+//                activityId,
+//                activityName,
+//                followCta
+//            )
+//        }
+
+
+        //   val shopName = author.name + context.getString(R.string.feed_header_separator)
+        //   followText.showWithCondition(!isFollowed)
+        //as activityName is unclear since in new gql we aint getting responses on the basis of activity like kolpost or others
+
+//        followText.setOnClickListener {
+//            shopName.text = author.name
+//            if(!isFollowed){
+//                shopName.append(MethodChecker.fromHtml(context.getString(R.string.feed_header_separator)))
+//                shopName.append(MethodChecker.fromHtml(context.getString(R.string.kol_Action_following_color)))
+//            }
+//            listener?.onHeaderActionClick(positionInFeed, author.id,
+//                    authorType, isFollowed)
+//        }
         shopMenuIcon.setOnClickListener {
-            listener?.onMenuClick(positionInFeed, activityId, true, true, true)
+            listener?.onMenuClick(
+                positionInFeed,
+                activityId,
+                true,
+                true,
+                true,
+                isFollowed,
+                author.id,
+                authorType
+            )
         }
     }
 
     private fun bindLike(like: FeedXLike, id: Int) {
         if (like.isLiked) {
-            val colorGreen = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            val colorGreen =
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             likeButton.setImage(IconUnify.THUMB_FILLED, colorGreen, colorGreen)
         } else {
-            // val colorWhite = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-            likeButton.setImage(IconUnify.THUMB, null, null)
+            val colorGrey =
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+            likeButton.setImage(IconUnify.THUMB, colorGrey, colorGrey)
         }
         if (like.likedBy.isNotEmpty() || like.count != 0) {
             likedText.show()
             if (like.likedBy.isEmpty()) {
-                likedText.text = context.getString(R.string.feed_component_liked_count_text, like.countFmt)
+                if (like.isLiked) {
+                    if (like.count == 1) {
+                        likedText.text =
+                            context.getString(R.string.feed_component_liked_count_text_only_me)
+                    } else
+                        likedText.text =
+                            MethodChecker.fromHtml(
+                                context.getString(
+                                    R.string.feed_component_liked_by_text_me,
+                                    (like.count - 1).toString()
+                                )
+                            )
+                } else
+                    likedText.text =
+                        MethodChecker.fromHtml(
+                            context.getString(
+                                R.string.feed_component_liked_count_text,
+                                like.countFmt
+                            )
+                        )
             } else {
-                likedText.text = context.getString(R.string.feed_component_liked_by_text, getLikedByText(like.likedBy), like.countFmt)
+                likedText.text = MethodChecker.fromHtml(
+                    context.getString(
+                        R.string.feed_component_liked_by_text,
+                        getLikedByText(like.likedBy),
+                        like.countFmt
+                    )
+                )
             }
         } else {
             likedText.hide()
@@ -190,34 +353,45 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
         val tagConverter = TagConverter()
         captionText.shouldShowWithAction(caption.text.isNotEmpty()) {
             if (caption.text.length > DynamicPostViewHolder.MAX_CHAR ||
-                    hasSecondLine(caption.text)) {
-                val captionEnd = if (findSubstringSecondLine(caption.text) < DynamicPostViewHolder.CAPTION_END)
-                    findSubstringSecondLine(caption.text)
-                else
-                    DynamicPostViewHolder.CAPTION_END
-                val captionTxt = caption.text.substring(0, captionEnd)
-                        .replace("\n", "<br/>")
-                        .replace(DynamicPostViewHolder.NEWLINE, "<br/>")
-                        .plus("... ")
-                        .plus("<font color='#6D7588'><b>")
-                        .plus(context.getString(R.string.feed_component_read_more_button))
-                        .plus("</b></font>")
+                hasSecondLine(caption.text)
+            ) {
+                val captionEnd =
+                    if (findSubstringSecondLine(caption.text) < DynamicPostViewHolder.CAPTION_END)
+                        findSubstringSecondLine(caption.text)
+                    else
+                        DynamicPostViewHolder.CAPTION_END
+                val captionTxt = ("<b>" + caption.author.name + "</b>" + " - ")
+                    .plus(caption.text.substring(0, captionEnd))
+                    .replace("\n", "<br/>")
+                    .replace(DynamicPostViewHolder.NEWLINE, "<br/>")
+                    .plus("... ")
+                    .plus("<font color='#6D7588'><b>")
+                    .plus(context.getString(R.string.feed_component_read_more_button))
+                    .plus("</b></font>")
 
                 captionText.text = tagConverter.convertToLinkifyHashtag(
-                        SpannableString(MethodChecker.fromHtml(captionTxt)), colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag) }
+                    SpannableString(MethodChecker.fromHtml(captionTxt)), colorLinkHashtag
+                ) { hashtag -> onHashtagClicked(hashtag) }
                 captionText.setOnClickListener {
-//                    if (caption.appLink.isNotEmpty()) {
-//                        listener?.onCaptionClick(positionInFeed, caption.appLink)
-//                    } else {
-                    captionText.text = tagConverter.convertToLinkifyHashtag(SpannableString(caption.text),
-                            colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag) }
+                    captionText.text = tagConverter.convertToLinkifyHashtag(
+                        SpannableString(MethodChecker.fromHtml(("<b>" + caption.author.name + "</b>" + " - " + caption.text))),
+                        colorLinkHashtag
+                    ) { hashtag -> onHashtagClicked(hashtag) }
                     //  }
                 }
                 captionText.movementMethod = LinkMovementMethod.getInstance()
             } else {
                 captionText.text = tagConverter
-                        .convertToLinkifyHashtag(SpannableString(caption.text.replace(DynamicPostViewHolder.NEWLINE, " ")),
-                                colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag) }
+                    .convertToLinkifyHashtag(
+                        SpannableString(
+                            MethodChecker.fromHtml(
+                                ("<b>" + caption.author.name + "</b>" + " - ").plus(
+                                    caption.text.replace(DynamicPostViewHolder.NEWLINE, " ")
+                                )
+                            )
+                        ),
+                        colorLinkHashtag
+                    ) { hashtag -> onHashtagClicked(hashtag) }
                 captionText.movementMethod = LinkMovementMethod.getInstance()
             }
         }
@@ -238,13 +412,21 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
 
     private fun findSubstringSecondLine(caption: String): Int {
         val firstIndex = caption.indexOf("\n", 0)
-        return if (hasSecondLine(caption)) caption.indexOf("\n",
-                firstIndex + 1) else caption.length
+        return if (hasSecondLine(caption)) caption.indexOf(
+            "\n",
+            firstIndex + 1
+        ) else caption.length
     }
 
-    private fun bindComment(comments: FeedXComments, profilePicture: String, name: String, id: Int) {
+    private fun bindComment(
+        comments: FeedXComments,
+        profilePicture: String,
+        name: String,
+        id: Int
+    ) {
         seeAllCommentText.showWithCondition(comments.count != 0)
-        seeAllCommentText.text = context.getString(R.string.feed_component_see_all_comments, comments.countFmt)
+        seeAllCommentText.text =
+            context.getString(R.string.feed_component_see_all_comments, comments.countFmt)
         comments.commentItems.firstOrNull()?.let {
             commentUserImage1.setImageUrl(it.author.badgeURL)
             commentUserImage1.showWithCondition(it.author.badgeURL.isNotEmpty())
@@ -282,7 +464,12 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
         }
     }
 
-    private fun bindItems(typeName: String, postId: Int, media: List<FeedXMedia>, feedXCard: FeedXCard) {
+    private fun bindItems(
+        typeName: String,
+        postId: Int,
+        media: List<FeedXMedia>,
+        feedXCard: FeedXCard
+    ) {
         if (typeName != TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
             val products = feedXCard.tags
             gridList.gone()
@@ -301,7 +488,10 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
                 media.forEach {
                     if (it.type == TYPE_IMAGE) {
                         val imageItem = View.inflate(context, R.layout.item_post_image_new, null)
-                        val param = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                        val param = LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
                         imageItem.layoutParams = param
                         imageItem.run {
                             findViewById<ImageUnify>(R.id.post_image).setImageUrl(it.mediaUrl)
@@ -348,10 +538,10 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
             commentButton.gone()
             shopMenuIcon.gone()
             val layoutManager = GridLayoutManager(
-                    gridList.context,
-                    SPAN_SIZE_FULL,
-                    LinearLayoutManager.VERTICAL,
-                    false
+                gridList.context,
+                SPAN_SIZE_FULL,
+                LinearLayoutManager.VERTICAL,
+                false
             )
             layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
@@ -363,7 +553,11 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
                 }
             }
             gridList.layoutManager = layoutManager
-            val adapter = GridPostAdapter(0, getGridPostModel(feedXCard, feedXCard.products), gridPostListener)
+            val adapter = GridPostAdapter(
+                0,
+                getGridPostModel(feedXCard, feedXCard.products),
+                gridPostListener
+            )
             gridList.adapter = adapter
             setGridListPadding(feedXCard.products.size)
         }
@@ -375,46 +569,76 @@ class PostDynamicViewNew @JvmOverloads constructor(context: Context, attrs: Attr
             gridList.setPadding(0, 0, 0, 0)
         } else {
             gridList.setPadding(
-                    gridList.getDimens(R.dimen.dp_3),
-                    0,
-                    gridList.getDimens(R.dimen.dp_3),
-                    0
+                gridList.getDimens(R.dimen.dp_3),
+                0,
+                gridList.getDimens(R.dimen.dp_3),
+                0
             )
         }
     }
 
-    private fun getGridPostModel(feedXCard: FeedXCard, products: List<FeedXProduct>): GridPostViewModel {
+    private fun getGridPostModel(
+        feedXCard: FeedXCard,
+        products: List<FeedXProduct>
+    ): GridPostViewModel {
         return GridPostViewModel(
-                getGridItemViewModel(products),
-                "actionText",
-                feedXCard.actionButtonOperationApp,
-                products.size,
-                true,
-                mutableListOf(),
-                feedXCard.id.toInt(),
-                positionInFeed
+            getGridItemViewModel(products),
+            "Lihat Lainnya",
+            feedXCard.appLink,
+            products.size,
+            true,
+            mutableListOf(),
+            feedXCard.id.toInt(),
+            positionInFeed
         )
     }
 
     private fun getGridItemViewModel(products: List<FeedXProduct>): MutableList<GridItemViewModel> {
         val itemList: MutableList<GridItemViewModel> = ArrayList()
         products.forEach {
-            itemList.add(GridItemViewModel(it.id, it.name, it.priceFmt, it.priceOriginalFmt, it.appLink, it.coverURL, mutableListOf(), mutableListOf()))
+            itemList.add(
+                GridItemViewModel(
+                    it.id,
+                    it.name,
+                    it.priceFmt,
+                    it.priceOriginalFmt,
+                    it.appLink,
+                    it.coverURL,
+                    mutableListOf(),
+                    mutableListOf()
+                )
+            )
         }
         return itemList
     }
 
     private fun bindPublishedAt(publishedAt: String, subTitle: String) {
-        val avatarDate = TimeConverter.generateTimeNew(context, publishedAt)
+        val avatarDate = TimeConverter.generateTimeNew(context, publishedAt, 0)
         val spannableString: SpannableString =
-                if (subTitle.isNotEmpty()) {
-                    SpannableString(String.format(
-                            context.getString(R.string.feed_header_time_new),
-                            avatarDate))
-                } else {
-                    SpannableString(avatarDate)
-                }
+            if (subTitle.isNotEmpty()) {
+                SpannableString(
+                    String.format(
+                        context.getString(R.string.feed_header_time_new),
+                        avatarDate
+                    )
+                )
+            } else {
+                SpannableString(avatarDate)
+            }
         timestampText.text = spannableString
+    }
+
+    override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+        return false
+    }
+
+    override fun onDoubleTap(e: MotionEvent?): Boolean {
+        return true
+    }
+
+    override fun onDoubleTapEvent(e: MotionEvent?): Boolean {
+        Toaster.build(this, "lala lala lalal", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        return true
     }
 
 }

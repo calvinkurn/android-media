@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -43,5 +42,6 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
             onReport?.invoke()
             dismiss()
         }
+        not_interested?.setOnClickListener { }
     }
 }

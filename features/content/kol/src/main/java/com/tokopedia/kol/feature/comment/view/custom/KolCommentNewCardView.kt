@@ -27,6 +27,7 @@ import com.tokopedia.feedcomponent.bottomsheets.MenuOptionsBottomSheet
 import com.tokopedia.feedcomponent.bottomsheets.ReportBottomSheet
 import com.tokopedia.feedcomponent.util.MentionTextHelper
 import com.tokopedia.feedcomponent.util.TagConverter
+import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.custom.MentionEditText
 import com.tokopedia.feedcomponent.view.span.MentionSpan
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
@@ -41,10 +42,6 @@ import com.tokopedia.unifyprinciples.Typography
 import java.net.URLEncoder
 
 class KolCommentNewCardView : LinearLayout {
-
-    private companion object {
-        //const val SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-    }
 
     constructor(context: Context) : super(context)
 
@@ -91,13 +88,16 @@ class KolCommentNewCardView : LinearLayout {
 
     fun setModel(element: KolCommentNewModel, canComment: Boolean) {
         ImageHandler.loadImageCircle2(avatar.context, avatar, element.avatarUrl)
+        element.time?.let {
+            time.text = TimeConverter.generateTimeNew(context, it, 1)
+        }
         time.text = element.time
 
         avatar.setOnClickListener {
             val profileUrl = element.userUrl
             listener?.onAvatarClicked(
-                    if (!profileUrl.isNullOrEmpty()) profileUrl
-                    else constructProfileApplink(element.userId ?: "0")
+                if (!profileUrl.isNullOrEmpty()) profileUrl
+                else constructProfileApplink(element.userId ?: "0")
             )
         }
 

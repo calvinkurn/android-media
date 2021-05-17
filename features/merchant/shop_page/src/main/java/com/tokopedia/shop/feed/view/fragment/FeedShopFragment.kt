@@ -539,18 +539,28 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
+    override fun onMenuClick(
+        positionInFeed: Int,
+        postId: Int,
+        reportable: Boolean,
+        deletable: Boolean,
+        editable: Boolean,
+        isFollowed: Boolean,
+        id: String,
+        authorType: String
+    ) {
         context?.let {
-            val menus = createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
-                override fun onDeleteClicked() {
-                    createDeleteDialog(positionInFeed, postId)?.show()
-                }
+            val menus =
+                createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
+                    override fun onDeleteClicked() {
+                        createDeleteDialog(positionInFeed, postId)?.show()
+                    }
 
-                override fun onReportClick() {
-                    goToContentReport(postId)
-                }
+                    override fun onReportClick() {
+                        goToContentReport(postId)
+                    }
 
-                override fun onEditClick() {
+                    override fun onEditClick() {
                     goToEditPostShop(postId)
                 }
             })

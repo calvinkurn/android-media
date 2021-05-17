@@ -11,7 +11,6 @@ import com.tokopedia.kol.feature.comment.view.custom.KolCommentNewCardView;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel;
 import com.tokopedia.unifycomponents.ProgressBarUnify;
-import com.tokopedia.unifyprinciples.Typography;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,11 +21,10 @@ public class KolCommentHeaderNewViewHolder extends AbstractViewHolder<KolComment
 
     private final KolComment.View viewListener;
 
-    private KolCommentNewCardView commentView;
-    private Typography loadMore;
-    private ProgressBarUnify progressBar;
+    private final KolCommentNewCardView commentView;
+    private final ProgressBarUnify progressBar;
 
-    private KolCommentNewCardView.Listener commentViewListener = new KolCommentNewCardView.Listener() {
+    private final KolCommentNewCardView.Listener commentViewListener = new KolCommentNewCardView.Listener() {
 
 
         @Override
@@ -63,7 +61,6 @@ public class KolCommentHeaderNewViewHolder extends AbstractViewHolder<KolComment
         super(itemView);
         this.viewListener = viewListener;
         commentView = itemView.findViewById(R.id.kcv_comment);
-        loadMore = itemView.findViewById(R.id.btn_load_more);
         progressBar = itemView.findViewById(R.id.progress_bar);
     }
 
@@ -72,23 +69,10 @@ public class KolCommentHeaderNewViewHolder extends AbstractViewHolder<KolComment
         commentView.setListener(commentViewListener);
         commentView.setModel(element, true);
 
-        if (element.isCanLoadMore())
-            loadMore.setVisibility(View.VISIBLE);
-        else
-            loadMore.setVisibility(View.GONE);
-
         if (element.isLoading())
             progressBar.setVisibility(View.VISIBLE);
         else
             progressBar.setVisibility(View.GONE);
-
-        loadMore.setOnClickListener(v -> {
-            element.setCanLoadMore(false);
-            element.setLoading(true);
-            progressBar.setVisibility(View.VISIBLE);
-            loadMore.setVisibility(View.GONE);
-            viewListener.loadMoreComments();
-        });
     }
 
 }
