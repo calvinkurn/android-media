@@ -278,6 +278,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
                 val mapParam = rechargeSubmitCCViewModel.createMapParam("",
                         operatorId, productId, userSession.userId)
+                mapParam.remove(RechargeSubmitCCViewModel.PARAM_CLIENT_NUMBER)
                 mapParam[RechargeSubmitCCViewModel.PARAM_PCIDSS] = signature
                 mapParam[RechargeSubmitCCViewModel.PARAM_TOKEN] = identifier
 
