@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.text.TextPaint
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -17,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import kotlinx.android.synthetic.main.shc_item_table_column_html.view.*
+import timber.log.Timber
 
 /**
  * Created By @ilhamsuaib on 01/07/20
@@ -33,6 +35,8 @@ class TableColumnHtmlViewHolder(
 
         private const val SCHEME_EXTERNAL = "tokopedia"
         private const val SCHEME_SELLERAPP = "sellerapp"
+
+        private const val NUNITO_TYPOGRAPHY_FONT = "NunitoSansExtraBold.ttf"
     }
 
     private val deeplinkMatcher by lazy {
@@ -57,6 +61,9 @@ class TableColumnHtmlViewHolder(
                     applyCustomStyling = {
                         isUnderlineText = false
                         color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96)
+                        context?.let {
+                            applyTypographyFont(it)
+                        }
                     },
                     onUrlClicked = { url ->
                         listener.onHyperlinkClicked(url)
@@ -75,6 +82,14 @@ class TableColumnHtmlViewHolder(
 
     private fun isAppLink(uri: Uri): Boolean {
         return uri.scheme == SCHEME_EXTERNAL || uri.scheme == SCHEME_SELLERAPP
+    }
+
+    private fun TextPaint.applyTypographyFont(context: Context) {
+        try {
+            typeface = com.tokopedia.unifyprinciples.getTypeface(context, NUNITO_TYPOGRAPHY_FONT)
+        } catch (ex: Exception) {
+            Timber.e(ex)
+        }
     }
 
     /**
