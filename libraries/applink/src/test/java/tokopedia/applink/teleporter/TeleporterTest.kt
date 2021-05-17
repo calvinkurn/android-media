@@ -72,6 +72,12 @@ class TeleporterTest {
         val patternList = mutableListOf(
                 TeleporterPattern("tokopedia",
                         "product",
+                        "add",
+                        "",
+                        "",
+                        "tokopedia-android-internal://product-add"),
+                TeleporterPattern("tokopedia",
+                        "product",
                         "{id}",
                         "a=1",
                         "",
@@ -87,6 +93,8 @@ class TeleporterTest {
                 Teleporter.switchIfNeeded(patternList, Uri.parse("tokopedia://product/123?a=1")))
         Assert.assertEquals("tokopedia-android-internal://test/abc/123/",
                 Teleporter.switchIfNeeded(patternList, Uri.parse("tokopedia://product/123")))
+        Assert.assertEquals("tokopedia-android-internal://product-add",
+                Teleporter.switchIfNeeded(patternList, Uri.parse("tokopedia://product/add")))
     }
 
     @Test
