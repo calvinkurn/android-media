@@ -6,6 +6,7 @@
     android:layout_marginTop="@dimen/dp_3"
     android:layout_marginRight="@dimen/dp_16"
     android:layout_marginLeft="@dimen/dp_16"
+    android:id="@+id/cv_review_content"
     app:cardElevation="@dimen/dp_3"
     app:cardMaxElevation="@dimen/dp_6"
     app:cardCornerRadius="@dimen/dp_5">
