@@ -152,17 +152,7 @@ class HomeViewModelReviewUnitTest {
         homeViewModel.homeLiveData.observeForever(observerHome)
         Thread.sleep(300)
         homeViewModel.dismissReview()
-        // Expect Review widget will show on user screen
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.find { it is ReviewDataModel } != null
-            })
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.find { it is ReviewDataModel } == null
-            })
-        }
-        confirmVerified(observerHome)
+        assert(homeViewModel.homeDataModel.list.find { it is ReviewDataModel } == null)
     }
 
     @Test
