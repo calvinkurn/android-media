@@ -8,7 +8,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/bs_chat_desc"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/unify_space_8"
         app:layout_constraintBottom_toBottomOf="@+id/bs_chat_illustration"
