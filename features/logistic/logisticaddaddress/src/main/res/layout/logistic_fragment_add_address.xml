@@ -90,6 +90,8 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:maxLength="175"
+                    android:inputType="text"
+                    android:maxLines="1"
                     android:textSize="@dimen/sp_14" />
             </com.google.android.material.textfield.TextInputLayout>
 
