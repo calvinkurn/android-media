@@ -1,2 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.atc_common" />
+    package="com.tokopedia.minicart">
+
+    <application>
+        <activity
+            android:name="com.tokopedia.minicart.example.ExampleActivity"
+            android:label="Mini Cart Example"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_mini_cart_example"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+        </activity>
+
+    </application>
+
+</manifest>
