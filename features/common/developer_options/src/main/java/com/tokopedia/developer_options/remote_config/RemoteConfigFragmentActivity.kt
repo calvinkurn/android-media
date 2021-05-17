@@ -18,6 +18,7 @@ class RemoteConfigFragmentActivity : FragmentActivity(), RemoteConfigListener {
 
     companion object {
         const val ARGS_SELECTED_KEY = "selected_key"
+        const val ARGS_SELECTED_VALUE = "selected_value"
     }
 
     private lateinit var listAdapter: RemoteConfigListAdapter
@@ -39,6 +40,7 @@ class RemoteConfigFragmentActivity : FragmentActivity(), RemoteConfigListener {
     fun showEditRemoteConfigDialog(keyToEdit:String) {
         val fragmentBundle = Bundle()
         fragmentBundle.putString(ARGS_SELECTED_KEY, keyToEdit)
+        fragmentBundle.putString(ARGS_SELECTED_VALUE, remoteConfig?.getString(keyToEdit) ?: "")
 
         val dialog = RemoteConfigEditorDialog()
         dialog.arguments = fragmentBundle
