@@ -83,7 +83,6 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
     @Override
     public void onBarCodeScanComplete(String barcodeData) {
-        QRTracking.eventScanQRCode(userSession.getUserId());
         Uri uri = Uri.parse(barcodeData);
         String host = uri.getHost();
         boolean isOvoPayQrEnabled = getView().getRemoteConfigForOvoPay();
