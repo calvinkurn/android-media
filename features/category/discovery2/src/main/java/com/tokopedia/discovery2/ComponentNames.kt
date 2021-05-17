@@ -74,8 +74,10 @@ enum class ComponentNames(val componentName: String) {
     BannedView("banned_view"),
 
     //Play Widget View
-    DiscoPlayWidgetView("play_widget")
+    DiscoPlayWidgetView("play_widget"),
 
+    CarouselErrorLoad("carousel_error_load"),
+    ProductListErrorLoad("product_list_error_load"),
 
 
 }

@@ -3,10 +3,9 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
@@ -37,14 +36,27 @@ class ProductCardRevampViewModel(val application: Application, val components: C
         }
     }
 
+
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         launchCatchError(block = {
             this@ProductCardRevampViewModel.syncData.value = productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
         }, onError = {
-            it.printStackTrace()
+            getComponent(components.id, components.pageEndPoint)?.productListFailState = true
+            this@ProductCardRevampViewModel.syncData.value = true
         })
     }
+
+    // Remove
+//    override fun onAttachToViewHolder() {
+//        super.onAttachToViewHolder()
+//        launchCatchError(block = {
+//            throw Exception("Error message")
+//        }, onError = {
+//            getComponent(components.id, components.pageEndPoint)?.productListFailState = true
+//            this@ProductCardRevampViewModel.syncData.value = true
+//        })
+//    }
 
 
     fun getProductCarouselHeaderData():LiveData<ComponentsItem> = productCarouselHeaderData

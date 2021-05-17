@@ -24,7 +24,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 
-private const val PRODUCT_PER_PAGE = 10
+const val PRODUCT_PER_PAGE = 10
 private const val RESET_HEIGHT = 0
 
 class ProductCardCarouselViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
@@ -49,6 +49,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         super.onAttachToViewHolder()
         handleLihatSemuaHeader()
         fetchProductCarouselData()
+//        fetchProductCarouselData(false)
     }
 
     private fun handleLihatSemuaHeader() {
@@ -70,14 +71,6 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     fun fetchProductCarouselData() {
         launchCatchError(block = {
-//            if (reload) {
-//                productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
-//                setProductsList()
-//            } else {
-//                throw Exception("Error message")
-//            }
-//            throw Exception("Error message")
-
             productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
             setProductsList()
         }, onError = {
@@ -87,6 +80,23 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             it.printStackTrace()
         })
     }
+
+
+//    fun fetchProductCarouselData(reload : Boolean) {
+//        launchCatchError(block = {
+//            if (reload) {
+//                productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
+//                setProductsList()
+//            } else {
+//                throw Exception("Error message")
+//            }
+//        }, onError = {
+//            components.noOfPagesLoaded = 0
+//            components.pageLoadedCounter = 1
+//            productLoadError.value = true
+//            it.printStackTrace()
+//        })
+//    }
 
     private suspend fun setProductsList() {
         getProductList()?.let {
@@ -121,19 +131,39 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         maxHeightProductCard.value = productCardModelArray.getMaxHeightForGridView(application.applicationContext, Dispatchers.Default, productImageWidth)
     }
 
+//    fun fetchCarouselPaginatedProducts() {
+//        isLoading = true
+//        launchCatchError(block = {
+//            if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)) {
+//                getProductList()?.let {
+//                    isLoading = false
+//                    reSyncProductCardHeight(it)
+//                    productCarouselList.value = addLoadMore(it)
+//                    syncData.value = true
+//                }
+//            } else {
+//                paginatedErrorData()
+//            }
+//        }, onError = {
+//            paginatedErrorData()
+//        })
+//    }
+
     fun fetchCarouselPaginatedProducts() {
         isLoading = true
         launchCatchError(block = {
-            if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)) {
-                getProductList()?.let {
-                    isLoading = false
-                    reSyncProductCardHeight(it)
-                    productCarouselList.value = addLoadMore(it)
-                    syncData.value = true
-                }
-            } else {
-                paginatedErrorData()
-            }
+
+            throw Exception("Error message")
+//            if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)) {
+//                getProductList()?.let {
+//                    isLoading = false
+//                    reSyncProductCardHeight(it)
+//                    productCarouselList.value = addLoadMore(it)
+//                    syncData.value = true
+//                }
+//            } else {
+//                paginatedErrorData()
+//            }
         }, onError = {
             paginatedErrorData()
         })
@@ -142,7 +172,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     private fun paginatedErrorData() {
         getProductList()?.let {
             isLoading = false
-            productCarouselList.value = it
+            productCarouselList.value = addErrorReLoadView(it)
             syncData.value = true
         }
     }
@@ -160,6 +190,22 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             })
         }
         return productLoadState
+    }
+
+    private fun addErrorReLoadView(productDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
+        val productLoadState: ArrayList<ComponentsItem> = ArrayList()
+        productLoadState.addAll(productDataList)
+        productLoadState.add(ComponentsItem(name = ComponentNames.CarouselErrorLoad.componentName).apply {
+            pageEndPoint = components.pageEndPoint
+            parentComponentId = components.id
+            id = ComponentNames.CarouselErrorLoad.componentName
+            discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+        })
+        return productLoadState
+    }
+
+    private fun handleErrorReloadCTA(){
+        fetchCarouselPaginatedProducts()
     }
 
     fun isUserLoggedIn() = UserSession(application).isLoggedIn

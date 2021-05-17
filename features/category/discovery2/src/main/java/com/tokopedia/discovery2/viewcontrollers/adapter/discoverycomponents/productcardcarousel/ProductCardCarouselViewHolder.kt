@@ -15,9 +15,9 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
-import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.LocalLoad
 
 class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
@@ -27,7 +27,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mProductCarouselComponentViewModel: ProductCardCarouselViewModel
     private val carouselRecyclerViewDecorator = CarouselProductCardItemDecorator()
-    private var emptyState: EmptyStateUnify? = null
+    private var carouselEmptyState: LocalLoad? = null
 
     init {
         linearLayoutManager.initialPrefetchItemCount = 4
@@ -35,7 +35,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
         mDiscoveryRecycleAdapter.setHasStableIds(true)
         mProductCarouselRecyclerView.adapter = mDiscoveryRecycleAdapter
-        emptyState = itemView.findViewById(R.id.viewEmptyState)
+        carouselEmptyState = itemView.findViewById(R.id.viewEmptyState)
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -135,25 +135,22 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         if (mHeaderView.childCount > 0)
             mHeaderView.removeAllViews()
 
-        emptyState?.run {
-            setTitle(context?.getString(R.string.discovery_product_empty_state_title).orEmpty())
-            setDescription(context?.getString(R.string.discovery_product_empty_state_description).orEmpty())
-            setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500, null))
-            setSecondaryCTAText(context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty())
-            emptyStateCTAFullWidth = true
-            setOrientation(EmptyStateUnify.Orientation.HORIZONTAL)
-            setSecondaryCTAClickListener {
+        carouselEmptyState?.run {
+            title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
+            description?.text = context?.getString(R.string.discovery_product_empty_state_description).orEmpty()
+            refreshBtn?.setOnClickListener {
                 reloadComponent()
             }
-            emptyState?.visible()
+            carouselEmptyState?.visible()
             mProductCarouselRecyclerView.gone()
         }
     }
 
     private fun reloadComponent() {
         mProductCarouselRecyclerView.visible()
-        emptyState?.gone()
+        carouselEmptyState?.gone()
         mProductCarouselComponentViewModel.fetchProductCarouselData()
+//        mProductCarouselComponentViewModel.fetchProductCarouselData(true)
     }
 
     override fun getInnerRecycleView(): RecyclerView {

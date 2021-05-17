@@ -246,28 +246,41 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
 
     private fun parseProductVerticalList(component: ComponentsItem): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
-        if (component.getComponentsItem().isNullOrEmpty() && component.noOfPagesLoaded == 0) {
-            listComponents.add(component.copy().apply {
-                setComponentsItem(component.getComponentsItem(), component.tabName)
-            })
-            component.needPagination = true
-            component.userAddressData = localCacheModel
-            listComponents.addAll(List(10) { ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName).apply {
-                properties = component.properties
-            } })
-        } else {
+
+        if (component.productListFailState) {
             listComponents.add(component)
             component.getComponentsItem()?.let {
                 listComponents.addAll(getDiscoveryComponentList(it))
             }
-            if (component.getComponentsItem()?.size.isMoreThanZero() && component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0 && component.showVerticalLoader) {
-                listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
-            } else if (component.getComponentsItem()?.size == 0) {
-                listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))
+
+            listComponents.addAll(handleProductState(component, ComponentNames.ProductListErrorLoad.componentName, queryParameterMap))
+        } else {
+            if (component.getComponentsItem().isNullOrEmpty() && component.noOfPagesLoaded == 0 && !component.productListFailState) {
+                listComponents.add(component.copy().apply {
+                    setComponentsItem(component.getComponentsItem(), component.tabName)
+                })
+                component.needPagination = true
+                component.userAddressData = localCacheModel
+                listComponents.addAll(List(10) {
+                    ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName).apply {
+                        properties = component.properties
+                    }
+                })
+            } else {
+                listComponents.add(component)
+                component.getComponentsItem()?.let {
+                    listComponents.addAll(getDiscoveryComponentList(it))
+                }
+                if (component.getComponentsItem()?.size.isMoreThanZero() && component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0 && component.showVerticalLoader) {
+                    listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
+                } else if (component.getComponentsItem()?.size == 0) {
+                    listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))
+                }
             }
         }
         return listComponents
     }
+
 
     private fun handleProductState(component: ComponentsItem, componentName: String, queryParameterMap: Map<String, String?>? = null): ArrayList<ComponentsItem> {
         val productState: ArrayList<ComponentsItem> = ArrayList()

@@ -83,6 +83,7 @@ data class ComponentsItem(
         var isSticky : Boolean = false,
         var description : String? = "",
         var showFilterCount: Boolean = true,
+        var productListFailState: Boolean = false,
         var userAddressData: LocalCacheModel? = null,) {
 
     private var componentsItem: List<ComponentsItem>? = null

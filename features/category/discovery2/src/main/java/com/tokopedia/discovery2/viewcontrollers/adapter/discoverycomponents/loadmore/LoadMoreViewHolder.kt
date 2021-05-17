@@ -39,9 +39,16 @@ class LoadMoreViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            loadMoreViewModel.syncData.observe(lifecycleOwner, Observer {
+            loadMoreViewModel.getSyncPageLiveData().observe(lifecycleOwner, {
                 (fragment as DiscoveryFragment).reSync()
             })
+        }
+    }
+
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let {
+            loadMoreViewModel.getSyncPageLiveData().removeObservers(it)
         }
     }
 }

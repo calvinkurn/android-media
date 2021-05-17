@@ -28,12 +28,12 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         lifecycleOwner?.let {
-            mProductRevampComponentViewModel.getSyncPageLiveData().observe(it, Observer { needResync ->
+            mProductRevampComponentViewModel.getSyncPageLiveData().observe(it, { needResync ->
                 if (needResync) {
                     (fragment as DiscoveryFragment).reSync()
                 }
             })
-            mProductRevampComponentViewModel.getProductCarouselHeaderData().observe(it, Observer { component ->
+            mProductRevampComponentViewModel.getProductCarouselHeaderData().observe(it, { component ->
                 addCardHeader(component)
             })
         }
