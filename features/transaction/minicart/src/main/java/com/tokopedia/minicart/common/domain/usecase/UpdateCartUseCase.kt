@@ -17,19 +17,20 @@ import javax.inject.Inject
 class UpdateCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<UpdateCartV2Data>() {
 
-    // Todo : set params
-    var requestParams: RequestParams? = null
+    var updateCartRequestList = emptyList<UpdateCartRequest>()
+
+    fun setParams(updateCartRequestList: List<UpdateCartRequest>) {
+        this.updateCartRequestList = updateCartRequestList
+    }
 
     override suspend fun executeOnBackground(): UpdateCartV2Data {
-        if (requestParams == null) {
-            throw RuntimeException("Request Params has not been initialized!")
+        if (updateCartRequestList.isEmpty()) {
+            throw RuntimeException("Parameter is empty!")
         }
-
-        val paramUpdateList = requestParams?.getObject(PARAM_UPDATE_CART_REQUEST) as ArrayList<UpdateCartRequest>
 
         val params = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
-                PARAM_CARTS to paramUpdateList,
+                PARAM_CARTS to updateCartRequestList,
                 KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
         )
 
@@ -44,7 +45,6 @@ class UpdateCartUseCase @Inject constructor(private val graphqlRepository: Graph
     }
 
     companion object {
-        val PARAM_UPDATE_CART_REQUEST = "PARAM_UPDATE_CART_REQUEST"
         val PARAM_CARTS = "carts"
 
         private const val PARAM_KEY_LANG = "lang"

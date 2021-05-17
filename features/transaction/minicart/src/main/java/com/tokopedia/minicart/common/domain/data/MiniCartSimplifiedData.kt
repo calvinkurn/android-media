@@ -2,7 +2,8 @@ package com.tokopedia.minicart.common.domain.data
 
 data class MiniCartSimplifiedData(
         var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
-        var miniCartItems: List<MiniCartItem> = emptyList()
+        var miniCartItems: List<MiniCartItem> = emptyList(),
+        var isShowMiniCartWidget: Boolean = false
 )
 
 data class MiniCartWidgetData(

@@ -13,6 +13,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
         return MiniCartSimplifiedData().apply {
             miniCartWidgetData = mapMiniCartWidgetData(miniCartData.data)
             miniCartItems = mapMiniCartListData(miniCartData)
+            isShowMiniCartWidget = miniCartItems.isNotEmpty()
         }
     }
 
