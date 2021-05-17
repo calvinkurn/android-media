@@ -1,5 +1,6 @@
 package com.tokopedia.manageaddress
 
+import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
@@ -14,6 +15,10 @@ import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity
 import org.hamcrest.MatcherAssert.assertThat
 
 class ManageAddressRobot {
+
+    fun launchWithParam(activityRule: ActivityTestRule<ManageAddressActivity>, intent: Intent) {
+        activityRule.launchActivity(intent)
+    }
 
     fun selectItemAt(position: Int) {
         onView(withId(R.id.address_list))

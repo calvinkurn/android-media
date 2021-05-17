@@ -13,6 +13,8 @@ import com.tokopedia.manageaddress.di.DaggerTestAppComponent
 import com.tokopedia.manageaddress.di.FakeAppModule
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_IS_LOCALIZATION
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,16 +32,29 @@ class ManageAddressTest {
         val ctx = InstrumentationRegistry.getInstrumentation().targetContext
         val component = DaggerTestAppComponent.builder().fakeAppModule(FakeAppModule(ctx)).build()
         ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(component)
-        mActivityTestRule.launchActivity(Intent().apply { putExtra(EXTRA_IS_LOCALIZATION, true) })
     }
 
     @Test
     fun fromLocalizationWhenSelectingAddressThenHavingExpectedResultIntent() {
+        val i = Intent().apply { putExtra(EXTRA_IS_LOCALIZATION, true) }
         manageAddress {
+            launchWithParam(mActivityTestRule, i)
             selectItemAt(2)
             selectAddress()
         } submit {
             hasResultIntent(mActivityTestRule, RESULT_OK, EXTRA_SELECTED_ADDRESS_DATA)
+        }
+    }
+
+    @Test
+    fun fromCheckoutWhenSelectingAddressThenHavingExpectedResultIntent() {
+        val i = Intent().apply { putExtra(EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true) }
+        manageAddress {
+            launchWithParam(mActivityTestRule, i)
+            selectItemAt(2)
+            selectAddress()
+        } submit {
+            hasResultIntent(mActivityTestRule, RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS, EXTRA_SELECTED_ADDRESS_DATA)
         }
     }
 }
