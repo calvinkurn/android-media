@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Adapter
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokomart.R
@@ -28,16 +30,19 @@ class CategoryChooserBottomSheet(
     private fun initBottomSheet() {
         val dummySubCategory = listOf("Semua", "Susu Bubuk", "Susu UHT", "Susu Segar", "Kental Manis")
         showCloseIcon = true
-        setTitle("Kategory Dummy")
+        setTitle(getString(R.string.tokomart_category_bottom_sheet_title))
         setCloseClickListener { dismiss() }
 
         val childView = View.inflate(context, R.layout.bottom_sheet_tokomart_category_chooser, null)
+        val itemDivider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+                .apply { context?.let { ContextCompat.getDrawable(it, R.drawable.divider_category_chooser) } }
+
         rvSubcategory = childView.findViewById(R.id.rv_category_chooser)
         mAdapter = CategoryChooserAdapter(dummySubCategory, this)
-
         rvSubcategory.run {
             adapter = mAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            addItemDecoration(itemDivider)
         }
         setChild(childView)
     }
