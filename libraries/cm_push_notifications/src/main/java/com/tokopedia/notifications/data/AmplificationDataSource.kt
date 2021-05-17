@@ -77,7 +77,8 @@ object AmplificationDataSource {
 //        val it = "{\"id\":-1112,\"icon\":\"\",\"sound\":\"\",\"notificationId\":-1112,\"source\":\"toko-cm\",\"tribe\":\"toko-cm\",\"notificationType\":\"General\",\"notificationProductType\":\"\",\"priorityPreOreo\":0,\"subText\":\"\",\"startTime\":\"1620181990000\",\"endTime\":\"1621468390000\",\"userId\":\"76681493\",\"shopId\":\"\",\"transId\":\"LTM0MSM3NjY4MTQ5MyMxNjIwMTgxOTkwNzg4NjQyMjU5\$EPZ-VJMBQZYNWFLRWBDIH4:APA91BFFK_PLOJS3W5FSLGBDECXFQWUVZJISKLHHUKBOM_AGG6XBB8BDJ5M4B9L_JKSUBGDBXAXAIYZ4I6UZ_NBAV9EUG-HPN3HQJK7TXONIRLQ93EAJ0R0NWUVXDTDJKW3PHB9NXHEV\",\"userTransId\":\"LTM0MSM3NjY4MTQ5MyMxNjIwMTgxOTkwNzg4NjQyMjU5\",\"notifcenterBlastId\":\"\",\"channel\":\"\",\"isTest\":false,\"title\":\"Halo Toppers, selamat pagi nih! Ampli #1\",\"desc\":\"\",\"message\":\"Ayo cek Tokopedia yuk, banyak barang bagus yang bisa kamu beli\",\"appLink\":\"tokopedia://home\",\"ceid\":0,\"eeid\":0,\"webhook_params\":\"\",\"campaignUserToken\":\"LTM0MSM3NjY4MTQ5MyMxNjIwMTgxOTkwNzg4NjQyMjU5\$EPZ-VJMBQZYNWFLRWBDIH4:APA91BFFK_PLOJS3W5FSLGBDECXFQWUVZJISKLHHUKBOM_AGG6XBB8BDJ5M4B9L_JKSUBGDBXAXAIYZ4I6UZ_NBAV9EUG-HPN3HQJK7TXONIRLQ93EAJ0R0NWUVXDTDJKW3PHB9NXHEV\",\"campaignId\":-1112,\"parentId\":-1112,\"is_common_service\":true,\"is_last_batch\":true,\"event_time\":{\"request\":\"2021-05-05T09:33:10+07:00\",\"sent\":\"2021-05-05T09:33:11.051375509+07:00\"},\"mainappPriority\":1,\"sellerappPriority\":1,\"isAdvanceTarget\":true}"
                 PushController(application).handleNotificationAmplification(it)
             }
-        }
+        } else
+            Toast.makeText(application, "Push data empty", Toast.LENGTH_LONG).show()
     }
 
     private fun inAppData(application: Application, amplification: Amplification) {
@@ -111,7 +112,8 @@ object AmplificationDataSource {
                                     "data" to ""))
                 }
             }
-        }
+        } else
+            Toast.makeText(application, "Popup data empty", Toast.LENGTH_LONG).show()
     }
 
     private fun nextFetch(time: Long): Long {
