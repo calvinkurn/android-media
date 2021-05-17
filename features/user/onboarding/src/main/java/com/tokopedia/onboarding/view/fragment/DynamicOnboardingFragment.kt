@@ -236,7 +236,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             val page = RouteManager.getIntent(it, appLink)
             if (defferedDeeplinkPath.isEmpty()) {
                 if (appLink == ApplinkConst.REGISTER || appLink == ApplinkConst.LOGIN) {
-                    activity?.startActivityForResult(page, REQUEST_NEXT_PAGE)
+                    startActivityForResult(page, REQUEST_NEXT_PAGE)
                 } else if (appLink !=  ApplinkConst.HOME) {
                     val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
                     intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

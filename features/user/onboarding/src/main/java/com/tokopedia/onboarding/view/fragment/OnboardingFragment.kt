@@ -237,7 +237,7 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
                     block = {
                         finishOnBoarding()
                         val intent = getIntentforApplink(it, ApplinkConst.REGISTER)
-                        activity?.startActivityForResult(intent, REQUEST_REGISTER)
+                        startActivityForResult(intent, REQUEST_REGISTER)
                     },
                     onError = {
                     }
