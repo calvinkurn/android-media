@@ -29,7 +29,7 @@ data class HomeDataModel(
         evaluateChooseAddressData()
     }
 
-    fun addWidget(visitable: Visitable<*>, position: Int? = null, onListUpdated: () -> Unit) {
+    fun addWidgetModel(visitable: Visitable<*>, position: Int? = null, onListUpdated: () -> Unit) {
         logChannelUpdate("Update channel: (Add widget ${visitable.javaClass.simpleName})")
         //prevent duplicate home recommendation feed data model
         if (_list.find { it is HomeRecommendationFeedDataModel } != null &&
@@ -42,7 +42,7 @@ data class HomeDataModel(
         onListUpdated.invoke()
     }
 
-    fun deleteWidget(visitable: Visitable<*>? = null, position: Int, onListUpdated: () -> Unit) {
+    fun deleteWidgetModel(visitable: Visitable<*>? = null, position: Int, onListUpdated: () -> Unit) {
         findVisitable(
                 visitable = visitable,
                 position = position,

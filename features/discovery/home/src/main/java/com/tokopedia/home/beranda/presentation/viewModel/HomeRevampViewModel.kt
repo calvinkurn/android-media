@@ -47,7 +47,6 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelShop
 import com.tokopedia.home_component.model.ReminderEnum
-import com.tokopedia.home_component.util.HomeNetworkUtil
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -963,7 +962,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun addWidget(visitable: Visitable<*>, position: Int? = null) {
-        homeDataModel.addWidget(visitable, position) { _homeLiveData.postValue(homeDataModel) }
+        homeDataModel.addWidgetModel(visitable, position) { _homeLiveData.postValue(homeDataModel) }
     }
 
     private fun updateWidget(visitable: Visitable<*>, position: Int, visitableToChange: Visitable<*>? = null) {
@@ -971,7 +970,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun deleteWidget(visitable: Visitable<*>?, position: Int) {
-        homeDataModel.deleteWidget(visitable, position) { _homeLiveData.postValue(homeDataModel) }
+        homeDataModel.deleteWidgetModel(visitable, position) { _homeLiveData.postValue(homeDataModel) }
     }
 
     private fun updateHomeData(homeNewDataModel: HomeDataModel) {
