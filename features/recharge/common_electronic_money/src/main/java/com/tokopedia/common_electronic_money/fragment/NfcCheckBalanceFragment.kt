@@ -177,7 +177,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
                             isGlobalErrorShow: Boolean = false
     ) {
         statusCloseBtn = FAILED_CLOSE_BTN
-        emoneyAnalytics.onShowErrorTracking()
+        emoneyAnalytics.onShowErrorTracking(userSession.userId, irisSessionId)
 
         val updatedErrorMessage = if (errorMessage.contains(getString(R.string.emoney_nfc_grpc_timeout), true)) {
             getString(R.string.emoney_nfc_grpc_label_error)
@@ -201,6 +201,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     }
 
     protected fun showErrorDeviceUnsupported(errorMessage: String) {
+        emoneyAnalytics.onShowErrorTracking(userSession.userId, irisSessionId)
         statusCloseBtn = FAILED_CLOSE_BTN
         tapETollCardView.visibility = View.VISIBLE
         tapETollCardView.showErrorDeviceUnsupportedState(errorMessage)
@@ -214,7 +215,9 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         eTollUpdateBalanceResultView.showCardInfoFromApi(emoneyInquiry)
 
         statusCloseBtn = SUCCESS_CLOSE_BTN
-        emoneyAnalytics.onShowLastBalance()
+        emoneyAnalytics.onShowLastBalance(emoneyInquiry.attributesEmoneyInquiry?.cardNumber,
+                emoneyInquiry.attributesEmoneyInquiry?.lastBalance,
+                userSession.userId, irisSessionId)
         emoneyAnalytics.openScreenSuccessReadCardNFC(operatorName, userSession.userId, irisSessionId)
 
         emoneyInquiry.error?.let { eMoneyInquiryError ->
@@ -242,7 +245,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         } else {
             tapETollCardView.visibility = View.VISIBLE
             tapETollCardView.showLoading()
-            emoneyAnalytics.onTapEmoneyCardShowLoading()
+            emoneyAnalytics.onTapEmoneyCardShowLoading(userSession.userId, irisSessionId)
         }
     }
 
