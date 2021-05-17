@@ -21,7 +21,7 @@ class BannerComponentAdapter(itemList: List<BannerDataView>, private val bannerI
     private var itemList: List<BannerDataView> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerChannelImageViewHolder {
-        val layout = if (itemCount > 1) R.layout.layout_banner_component_item else R.layout.layout_banner_component_item_full
+        val layout = if (itemCount > 1) R.layout.item_tokomart_search_category_banner_card else R.layout.item_tokomart_search_category_banner_card_full
         return BannerChannelImageViewHolder(LayoutInflater.from(parent.context).inflate(layout, parent, false), bannerItemListener)
     }
 
