@@ -57,8 +57,8 @@ import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSe
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel.Companion.NULL_PRODUCT_ERROR
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
-import com.tokopedia.rechargegeneral.util.RechargeGeneralGqlQuery
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
+import com.tokopedia.rechargegeneral.util.RechargeGeneralGqlQuery
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -794,7 +794,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun getProductList(menuId: Int, operator: Int) {
         viewModel.getProductList(
-                com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery.rechargeCatalogProductInput,
+                com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery.rechargeCatalogDynamicProductInput,
                 viewModel.createProductListParams(menuId, operator),
                 recharge_general_swipe_refresh_layout.isRefreshing
         )

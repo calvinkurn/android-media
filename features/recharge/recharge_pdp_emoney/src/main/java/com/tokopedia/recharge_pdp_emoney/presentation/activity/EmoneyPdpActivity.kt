@@ -29,4 +29,9 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
     override fun getToolbarResourceID(): Int {
         return R.id.emoney_toolbar
     }
+
+    companion object {
+        const val EMONEY_MENU_ID = 267
+        const val EMONEY_CATEGORY_ID = 34
+    }
 }

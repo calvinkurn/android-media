@@ -26,7 +26,7 @@ class TopupBillsPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
     }
 
     fun resetPromoListSelected(promoId: Int) {
-        for (i in 0 until digitalPromoList.size) {
+        for (i in digitalPromoList.indices) {
             if (digitalPromoList[i].voucherCodeCopied && digitalPromoList[i].id != promoId) {
                 digitalPromoList[i].voucherCodeCopied = false
                 notifyItemChanged(i)
@@ -64,7 +64,7 @@ class TopupBillsPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
             }
 
             btnCopyPromo.setOnClickListener {
-                for (i in 0 until digitalPromoList.size) {
+                for (i in digitalPromoList.indices) {
                     if (digitalPromoList[i].voucherCodeCopied) {
                         digitalPromoList[i].voucherCodeCopied = false
                         notifyItemChanged(i)
