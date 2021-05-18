@@ -409,13 +409,14 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     private fun isChooseAddressRollenceActive(): Boolean {
-        return true
+        return ChooseAddressUtils.isRollOutUser(requireContext())
     }
 
     override fun onChooseAddressUpdated() {
         val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(requireContext())
         chooseAddressData.setLocalCacheModel(localCacheModel)
         chooseAddressWidgetInitialized = false
+        chooseAddressWidget?.updateWidget()
         fetchOSCategory()
     }
 
