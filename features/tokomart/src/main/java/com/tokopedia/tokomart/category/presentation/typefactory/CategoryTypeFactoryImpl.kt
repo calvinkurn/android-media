@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
 import com.tokopedia.tokomart.category.presentation.viewholder.CategoryIsleViewHolder
 import com.tokopedia.tokomart.common.base.listener.BannerComponentListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
@@ -16,11 +17,13 @@ class CategoryTypeFactoryImpl(
         titleListener: TitleListener,
         bannerListener: BannerComponentListener,
         quickFilterListener: QuickFilterListener,
+        categoryFilterListener: CategoryFilterListener,
 ): BaseSearchCategoryTypeFactoryImpl(
         chooseAddressListener,
         titleListener,
         bannerListener,
         quickFilterListener,
+        categoryFilterListener
 ), CategoryTypeFactory {
 
     override fun type(categoryIsleDataView: CategoryIsleDataView) = CategoryIsleViewHolder.LAYOUT
