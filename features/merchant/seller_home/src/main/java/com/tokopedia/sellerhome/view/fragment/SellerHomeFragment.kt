@@ -56,7 +56,7 @@ import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
-import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.PostFilterBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -614,15 +614,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {
         if (!isAdded || context == null) return
 
-        val postFilterBottomSheet = (childFragmentManager.findFragmentByTag(PostFilterBottomSheet.TAG) as? PostFilterBottomSheet)
-                ?: PostFilterBottomSheet.newInstance()
-        postFilterBottomSheet.init(requireContext(), element.postFilter) {
+        val postFilterBottomSheet = (childFragmentManager.findFragmentByTag(WidgetFilterBottomSheet.POST_FILTER_TAG) as? WidgetFilterBottomSheet)
+                ?: WidgetFilterBottomSheet.newInstance()
+        postFilterBottomSheet.init(requireContext(), com.tokopedia.sellerhomecommon.R.string.shc_select_category, element.postFilter) {
             recyclerView?.post {
                 val copiedWidget = element.copy().apply { data = null }
                 notifyWidgetChanged(copiedWidget)
                 getPostData(listOf(element))
             }
-        }.show(childFragmentManager)
+        }.show(childFragmentManager, WidgetFilterBottomSheet.POST_FILTER_TAG)
     }
 
     override fun onAnimationStarted() {

@@ -1399,7 +1399,7 @@ class SellerHomeViewModelTest {
                         isFromCache = false,
                         isNeedToBeRemoved = false,
                         emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                        postFilter = listOf(PostFilterUiModel("", "", true))),
+                        postFilter = listOf(WidgetFilterUiModel("", "", true))),
                 SectionWidgetUiModel(
                         id = "section_other2",
                         widgetType = WidgetType.SECTION,
@@ -1753,7 +1753,7 @@ class SellerHomeViewModelTest {
                         isFromCache = false,
                         isNeedToBeRemoved = false,
                         emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                        postFilter = listOf(PostFilterUiModel("", "", false)))
+                        postFilter = listOf(WidgetFilterUiModel("", "", false)))
         )
 
         val postData = PostListDataUiModel(DATA_KEY_POST_LIST, items = listOf(PostUiModel()), showWidget = true)

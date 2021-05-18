@@ -24,7 +24,7 @@ data class TableWidgetUiModel(
         override var isFromCache: Boolean,
         override var isNeedToBeRemoved: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel,
-        val tableFilters: List<TableFilterUiModel>
+        val tableFilters: List<WidgetFilterUiModel>
 ) : BaseWidgetUiModel<TableDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
