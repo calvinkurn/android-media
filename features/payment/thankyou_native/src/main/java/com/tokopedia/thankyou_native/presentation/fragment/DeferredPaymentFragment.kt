@@ -102,7 +102,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
         else
             tvTotalAmount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
 
-        icCopyAmount.tag = thanksPageData.amountStr
+        icCopyAmount.tag = thanksPageData.amount.toString()
         icCopyAmount.setOnClickListener {
             val amountStr: String? = icCopyAmount.tag?.toString()
             copyTotalAmountToClipboard(amountStr)
