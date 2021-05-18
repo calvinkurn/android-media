@@ -73,30 +73,51 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.fragment_template_chat, container, false)
-        loading = rootView.findViewById(R.id.loading_search)
-        content = rootView.findViewById(R.id.content)
-        recyclerView = rootView.findViewById(R.id.recycler_view)
-        info = rootView.findViewById(R.id.template_list_info)
-        switchTemplate = rootView.findViewById(R.id.switch_chat_template)
-        templateContainer = rootView.findViewById(R.id.template_container)
-        recyclerView?.setHasFixedSize(true)
+        return inflater.inflate(
+                R.layout.fragment_template_chat, container, false
+        ).also {
+            bindView(it)
+            setupPresenter()
+        }
+    }
+
+    private fun bindView(view: View) {
+        loading = view.findViewById(R.id.loading_search)
+        content = view.findViewById(R.id.content)
+        recyclerView = view.findViewById(R.id.recycler_view)
+        info = view.findViewById(R.id.template_list_info)
+        switchTemplate = view.findViewById(R.id.switch_chat_template)
+        templateContainer = view.findViewById(R.id.template_container)
+    }
+
+    private fun setupPresenter() {
         presenter?.attachView(this)
         presenter?.setMode(isSeller)
         presenter?.getTemplate()
-        return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showLoading()
+        setupRecyclerView()
+        setupSwitchTemplate()
+        setupInfo()
+    }
+
+    private fun setupRecyclerView() {
+        val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(adapter)
+        recyclerView?.setHasFixedSize(true)
         recyclerView?.adapter = adapter
         adapter.notifyDataSetChanged()
-        layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        layoutManager = LinearLayoutManager(
+                activity, LinearLayoutManager.VERTICAL, false
+        )
         recyclerView?.layoutManager = layoutManager
-        val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(adapter)
         mItemTouchHelper = ItemTouchHelper(callback)
         mItemTouchHelper?.attachToRecyclerView(recyclerView)
+    }
+
+    private fun setupSwitchTemplate() {
         switchTemplate?.setOnClickListener {
             val b = switchTemplate?.isChecked ?: false
             analytic?.trackOnCheckedChange(b)
@@ -107,6 +128,9 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
                 templateContainer?.visibility = View.GONE
             }
         }
+    }
+
+    private fun setupInfo() {
         info?.setOnClickListener {
             templateInfo.show(childFragmentManager, TemplateInfoBottomSheet::class.simpleName)
         }
