@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.pms.common.Constant;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel;
 
 /**
  * Created by zulfikarrahman on 6/25/18.
@@ -40,6 +41,11 @@ public class ChangeClickBcaActivity extends BaseSimpleActivity {
         intent.putExtra(Constant.TRANSACTION_ID, transactionId);
         intent.putExtra(Constant.MERCHANT_CODE, merchantCode);
         intent.putExtra(Constant.USER_ID_KLIK_BCA, userIdKlikBca);
+        return intent;
+    }
+
+    public static Intent createIntent(Context context, BasePaymentModel model){
+        Intent intent = new Intent(context, ChangeClickBcaActivity.class);
         return intent;
     }
 

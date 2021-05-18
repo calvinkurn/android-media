@@ -1,16 +1,21 @@
 package com.tokopedia.pms.paymentlist.presentation.activity
 
+import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.pms.bankaccount.view.ChangeBankAccountActivity
+import com.tokopedia.pms.clickbca.view.ChangeClickBcaActivity
 import com.tokopedia.pms.paymentlist.di.DaggerPaymentListComponent
 import com.tokopedia.pms.paymentlist.di.PaymentListComponent
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment
 import com.tokopedia.pms.paymentlist.presentation.listeners.PaymentListActionListener
+import com.tokopedia.pms.proof.view.UploadProofPaymentActivity
 
-class PaymentListActivity : BaseSimpleActivity(), HasComponent<PaymentListComponent>, PaymentListActionListener {
+class PaymentListActivity : BaseSimpleActivity(), HasComponent<PaymentListComponent>,
+    PaymentListActionListener {
 
     private lateinit var component: PaymentListComponent
 
@@ -29,10 +34,34 @@ class PaymentListActivity : BaseSimpleActivity(), HasComponent<PaymentListCompon
     }
 
     override fun cancelSingleTransaction(transactionId: String, merchantCode: String) {
-        (fragment as DeferredPaymentListFragment).invokeCancelSingleTransaction(transactionId, merchantCode)
+        (fragment as DeferredPaymentListFragment).invokeCancelSingleTransaction(
+            transactionId,
+            merchantCode
+        )
     }
 
     override fun cancelCombinedTransaction(model: BasePaymentModel) {
         (fragment as DeferredPaymentListFragment).showCombinedTransactionDetail(model)
+    }
+
+    override fun changeAccountDetail(model: BasePaymentModel) {
+        val intent = ChangeBankAccountActivity.createIntent(this, model)
+        startActivityForResult(intent, REQUEST_CODE_CHANGE_BANK_ACCOUNT)
+    }
+
+    override fun uploadPaymentProof(model: BasePaymentModel) {
+        val intent: Intent = UploadProofPaymentActivity.createIntent(this, model)
+        startActivityForResult(intent, REQUEST_CODE_UPLOAD_PROOF)
+    }
+
+    override fun changeBcaUserId(model: BasePaymentModel) {
+        val intent = ChangeClickBcaActivity.createIntent(this, model)
+        startActivityForResult(intent, REQUEST_CODE_CHANGE_BCA_ID)
+    }
+
+    companion object {
+        const val REQUEST_CODE_CHANGE_BANK_ACCOUNT = 1
+        const val REQUEST_CODE_UPLOAD_PROOF = 2
+        const val REQUEST_CODE_CHANGE_BCA_ID = 3
     }
 }

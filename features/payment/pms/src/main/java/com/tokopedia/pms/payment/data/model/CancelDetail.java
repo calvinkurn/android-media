@@ -21,6 +21,9 @@ public class CancelDetail {
     @SerializedName("refundMessage")
     @Expose
     private String refundMessage;
+    @SerializedName("combineMessage")
+    @Expose
+    String combineMessage;
 
     public boolean isSuccess() {
         return success;
@@ -61,5 +64,11 @@ public class CancelDetail {
     public void setRefundMessage(String refundMessage) {
         this.refundMessage = refundMessage;
     }
+
+    public String getCombineMessage() {
+        return combineMessage;
+    }
+
+    public void setCombineMessage(String combineMessage) { this.combineMessage = combineMessage; }
 
 }

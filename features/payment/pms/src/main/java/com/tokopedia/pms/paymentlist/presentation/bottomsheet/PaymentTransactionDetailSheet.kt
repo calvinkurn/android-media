@@ -5,11 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pms.R
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 import com.tokopedia.pms.paymentlist.domain.data.VaTransactionItem
 import com.tokopedia.pms.paymentlist.presentation.adapter.PaymentTransactionDetailAdapter
+import com.tokopedia.pms.paymentlist.presentation.listeners.PaymentListActionListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.pms_base_recycler_bottom_sheet.*
@@ -17,7 +20,6 @@ import kotlinx.android.synthetic.main.pms_base_recycler_bottom_sheet.*
 class PaymentTransactionDetailSheet : BottomSheetUnify() {
     private val childLayoutRes = R.layout.pms_base_recycler_bottom_sheet
     private var vaTransactionList: ArrayList<VaTransactionItem> = arrayListOf()
-    private lateinit var model: BasePaymentModel
     private var sheetTitle: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +30,10 @@ class PaymentTransactionDetailSheet : BottomSheetUnify() {
     }
 
     private fun getArgumentData() {
-
+        arguments?.let {
+            vaTransactionList = it.getParcelableArrayList(TRANSACTION_LIST) ?: arrayListOf()
+            sheetTitle = "Transaksi ${it.getString(GATEWAY_NAME) ?: ""}"
+        }
     }
 
     private fun setDefaultParams() {
@@ -54,15 +59,33 @@ class PaymentTransactionDetailSheet : BottomSheetUnify() {
     }
 
     private fun initAdapter() {
-        baseRecyclerView.adapter = PaymentTransactionDetailAdapter(arrayListOf())
+        baseRecyclerView.adapter = PaymentTransactionDetailAdapter(vaTransactionList) { action, model ->
+            when(action) {
+                OPEN_DETAIL -> showInvoiceDetail(model)
+                CANCEL_TRANSACTION -> cancelTransaction(model)
+            }
+        }
         baseRecyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    }
+
+    private fun showInvoiceDetail(model: VaTransactionItem) {
+        RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, model.invoiceUrl)
+    }
+
+    private fun cancelTransaction(model: VaTransactionItem) {
+        (activity as PaymentListActionListener).cancelSingleTransaction(model.transactionId, model.merchantCode)
+        dismiss()
     }
 
     companion object {
         const val TRANSACTION_LIST = "TransactionList"
         const val GATEWAY_NAME = "GatewayName"
-        const val TAG = "PaymentTransactionActionSheet"
+
+        const val OPEN_DETAIL = 1
+        const val CANCEL_TRANSACTION = 2
+
+        private const val TAG = "PaymentTransactionActionSheet"
         fun show(bundle: Bundle, childFragmentManager: FragmentManager) {
             val fragment = PaymentTransactionDetailSheet().apply {
                 arguments = bundle

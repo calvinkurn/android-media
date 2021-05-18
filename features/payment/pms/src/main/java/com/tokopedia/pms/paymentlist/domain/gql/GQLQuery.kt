@@ -52,6 +52,7 @@ const val GQL_GET_CANCEL_QUERY =
       refundCCAmount
       refundWalletAmount
       refundMessage
+      combineMessage
     }
 }
 """

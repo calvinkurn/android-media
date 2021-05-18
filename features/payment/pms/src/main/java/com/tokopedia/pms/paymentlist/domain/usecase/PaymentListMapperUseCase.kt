@@ -5,6 +5,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.pms.R
+import com.tokopedia.pms.payment.data.model.CancelPayment
 import com.tokopedia.pms.payment.data.model.PaymentListInside
 import com.tokopedia.pms.paymentlist.domain.data.*
 import com.tokopedia.usecase.RequestParams
@@ -234,41 +235,40 @@ class PaymentListMapperUseCase @Inject constructor(
 
     private fun getListOfAction(
         paymentListInside: PaymentListInside
-    ): List<TransactionActionModel> {
-        val listOfActions: MutableList<TransactionActionModel> = ArrayList()
+    ): List<TransactionActionType> {
+        val listOfActions: MutableList<TransactionActionType> = ArrayList()
         if (paymentListInside.isShowEditKlikbcaButton) {
-            listOfActions.add(
-                TransactionActionModel(
-                    context.getString(R.string.payment_label_change_bca_user_id),
-                    IconUnify.UPLOAD
-                )
-            )
+            val model: TransactionActionType = EditKlicBCA(EDIT_KLIC_BCA_USER_ID)
+            model.actionName = context.getString(R.string.payment_label_change_bca_user_id)
+            model.actionIcon = IconUnify.UPLOAD
+            listOfActions.add(model)
         }
         if (paymentListInside.isShowEditTransferButton) {
-            listOfActions.add(
-                TransactionActionModel(
-                    context.getString(R.string.payment_label_change_account_detail),
-                    IconUnify.EDIT
-                )
-            )
+            val model: TransactionActionType = EditBankTransfer(CHANGE_ACCOUNT_DETAIL)
+            model.actionName = context.getString(R.string.payment_label_change_account_detail)
+            model.actionIcon = IconUnify.EDIT
+            listOfActions.add(model)
         }
         if (paymentListInside.isShowUploadButton) {
-            listOfActions.add(
-                TransactionActionModel(
-                    context.getString(R.string.payment_label_upload_proof),
-                    IconUnify.UPLOAD
-                )
-            )
+            val model: TransactionActionType = UploadProof(UPLOAD_PAYMENT_PROOF)
+            model.actionName = context.getString(R.string.payment_label_upload_proof)
+            model.actionIcon = IconUnify.UPLOAD
+            listOfActions.add(model)
         }
         if (paymentListInside.isShowCancelButton) {
-            listOfActions.add(
-                TransactionActionModel(
-                    context.getString(R.string.payment_label_cancel_transaction),
-                    IconUnify.DELETE
-                )
-            )
+            val model: TransactionActionType = CancelTransaction(CANCEL_TRX)
+            model.actionName = context.getString(R.string.payment_label_cancel_transaction)
+            model.actionIcon = IconUnify.DELETE
+            listOfActions.add(model)
         }
         return listOfActions
+    }
+
+    companion object {
+        const val EDIT_KLIC_BCA_USER_ID = 1
+        const val CHANGE_ACCOUNT_DETAIL = 2
+        const val UPLOAD_PAYMENT_PROOF = 3
+        const val CANCEL_TRX = 4
     }
 
 }

@@ -33,8 +33,8 @@ class PaymentListViewModel @Inject constructor(
     private val _paymentListResultLiveData = MutableLiveData<Result<ArrayList<BasePaymentModel>>>()
     val paymentListResultLiveData: LiveData<Result<ArrayList<BasePaymentModel>>> =
         _paymentListResultLiveData
-    private val _cancelPaymentDetailLiveData = MutableLiveData<Result<String>>()
-    val cancelPaymentDetailLiveData: LiveData<Result<String>> = _cancelPaymentDetailLiveData
+    private val _cancelPaymentDetailLiveData = MutableLiveData<Result<CancelDetail>>()
+    val cancelPaymentDetailLiveData: LiveData<Result<CancelDetail>> = _cancelPaymentDetailLiveData
     private val _cancelPaymentLiveData = MutableLiveData<Result<CancelPayment>>()
     val cancelPaymentLiveData: LiveData<Result<CancelPayment>> = _cancelPaymentLiveData
 
@@ -70,7 +70,7 @@ class PaymentListViewModel @Inject constructor(
     }
 
     private fun onCancelPaymentDetailSuccess(cancelDetail: CancelDetail) {
-        _cancelPaymentDetailLiveData.postValue(Success(cancelDetail.refundMessage))
+        _cancelPaymentDetailLiveData.postValue(Success(cancelDetail))
     }
 
     private fun paymentCancelledSuccessful(cancelPayment: CancelPayment) {
