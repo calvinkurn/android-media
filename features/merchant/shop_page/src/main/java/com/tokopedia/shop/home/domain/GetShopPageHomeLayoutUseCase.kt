@@ -47,6 +47,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                 publishDate
                 widgets {
                   widgetID
+                  widgetMasterID
                   layoutOrder
                   name
                   type

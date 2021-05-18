@@ -289,6 +289,7 @@ object ShopPageTrackingConstant {
     const val VERTICAL_POSITION = "p%1d"
     const val HOME_TAB = "home"
     const val HOME_FEATURED_PRODUCT = "featured product"
+    const val ETALASE_WIDGET = "etalase widget"
     const val ALL_PRODUCT = "all product"
     const val WITH_CART = "with cart"
     const val WITHOUT_CART = "without cart"

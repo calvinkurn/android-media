@@ -396,7 +396,8 @@ object ShopPageHomeMapper {
                 header.ctaLink,
                 header.cover,
                 header.ratio,
-                header.isAtc
+                header.isAtc,
+                header.etalaseId
         )
     }
 

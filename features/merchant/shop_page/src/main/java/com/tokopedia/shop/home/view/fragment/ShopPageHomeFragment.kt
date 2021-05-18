@@ -1341,6 +1341,164 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
+    override fun onCarouselProductShowcaseItemClicked(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductUiModel: ShopHomeProductUiModel?
+    ) {
+        shopHomeProductUiModel?.let {
+            shopPageHomeTracking.clickCarouselProductShowcaseItem(
+                    isOwner,
+                    isLogin,
+                    shopHomeCarousellProductUiModel?.header?.etalaseId.orEmpty(),
+                    shopHomeProductUiModel.name ?: "",
+                    shopHomeProductUiModel.id ?: "",
+                    shopHomeProductUiModel.displayedPrice ?: "",
+                    shopName,
+                    parentPosition + 1,
+                    itemPosition + 1,
+                    shopHomeCarousellProductUiModel?.header?.title ?: "",
+                    userId,
+                    CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopHomeProductUiModel.id.orEmpty(),
+                            shopAttribution,
+                            shopRef,
+                            shopHomeProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopHomeProductUiModel.isShowFreeOngkir
+                    )
+            )
+            goToPDP(it.id ?: "")
+        }
+    }
+
+    override fun onCarouselProductShowcaseItemImpression(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductUiModel: ShopHomeProductUiModel?
+    ) {
+        shopHomeProductUiModel?.let {
+            shopPageHomeTracking.impressionCarouselProductShowcaseItem(
+                    isOwner,
+                    isLogin,
+                    shopHomeCarousellProductUiModel?.header?.etalaseId.orEmpty(),
+                    shopHomeProductUiModel.name ?: "",
+                    shopHomeProductUiModel.id ?: "",
+                    shopHomeProductUiModel.displayedPrice ?: "",
+                    shopName,
+                    parentPosition + 1,
+                    itemPosition + 1,
+                    shopHomeCarousellProductUiModel?.header?.title ?: "",
+                    userId,
+                    CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopHomeProductUiModel.id.orEmpty(),
+                            shopAttribution,
+                            shopRef,
+                            shopHomeProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopHomeProductUiModel.isShowFreeOngkir
+                    )
+            )
+        }
+    }
+
+    override fun onCarouselProductShowcaseItemClickAddToCart(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductUiModel: ShopHomeProductUiModel?
+    ) {
+        if (isLogin) {
+            shopHomeProductUiModel?.let { product ->
+                viewModel?.addProductToCart(
+                        product,
+                        shopId,
+                        {
+                            onCarouselProductShowcaseItemSuccessAddToCart(
+                                    it,
+                                    shopHomeProductUiModel,
+                                    parentPosition,
+                                    shopHomeCarousellProductUiModel
+                            )
+                        },
+                        {
+                            if (!ShopUtil.isExceptionIgnored(it)) {
+                                ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                        SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
+                                        ShopHomeViewModel::addProductToCart.name,
+                                        "",
+                                        userId,
+                                        shopId,
+                                        shopName,
+                                        ErrorHandler.getErrorMessage(context, it),
+                                        Log.getStackTraceString(it)
+                                )
+                            }
+                            onErrorAddToCart(it)
+                        }
+                )
+            }
+        } else {
+            redirectToLoginPage()
+        }
+    }
+
+    private fun onCarouselProductShowcaseItemSuccessAddToCart(
+            dataModelAtc: DataModel,
+            shopHomeProductUiModel: ShopHomeProductUiModel?,
+            parentPosition: Int,
+            shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?
+    ) {
+        shopHomeProductUiModel?.let {
+            shopPageHomeTracking.addToCartCarouselProductShowcaseItem(
+                    isOwner,
+                    isLogin,
+                    shopHomeCarouselProductUiModel?.header?.etalaseId.orEmpty(),
+                    shopHomeProductUiModel.name ?: "",
+                    shopHomeProductUiModel.id ?: "",
+                    shopHomeProductUiModel.displayedPrice ?: "",
+                    dataModelAtc.quantity,
+                    shopName,
+                    parentPosition + 1,
+                    shopHomeCarouselProductUiModel?.header?.title ?: "",
+                    userId,
+                    dataModelAtc.cartId,
+                    CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopHomeProductUiModel.id.orEmpty(),
+                            shopAttribution,
+                            shopRef,
+                            shopHomeProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopHomeProductUiModel.isShowFreeOngkir
+                    )
+            )
+        }
+        view?.let { view ->
+            NetworkErrorHelper.showGreenCloseSnackbar(view, dataModelAtc.message.first())
+        }
+    }
+
+    override fun onCarouselProductShowcaseCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?) {
+        shopPageHomeTracking.clickCtaCarouselProductShowcase(
+                etalaseId = shopHomeCarouselProductUiModel?.header?.etalaseId.orEmpty(),
+                appLink = shopHomeCarouselProductUiModel?.header?.ctaLink.toString(),
+                shopId = shopId,
+                shopType = customDimensionShopPage.shopType.orEmpty(),
+                isOwner = isOwner
+        )
+        context?.let {
+            RouteManager.route(it, shopHomeCarouselProductUiModel?.header?.ctaLink)
+        }
+    }
+
     private fun onSuccessRemoveWishList(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
             shopHomeProductViewModel: ShopHomeProductUiModel?
