@@ -1777,7 +1777,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun hideLoading() {
-
         refreshLayout.isRefreshing = false
         homeRecyclerView?.isEnabled = true
     }
@@ -2411,6 +2410,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
             feedViewHolder.showFeedTabShadow(show)
+            feedViewHolder.hidePmProCoachmark()
         }
     }
 

@@ -119,6 +119,13 @@ class HomeRecommendationFeedViewHolder(itemView: View,
         }
     }
 
+    fun hidePmProCoachmark() {
+        val fragment = homeFeedPagerAdapter?.getRegisteredFragment(
+                homeFeedsViewPager.currentItem
+        )
+        fragment?.hidePmProCoachmark()
+    }
+
     fun scrollByVelocity(velocity: Int) {
         val fragment = homeFeedPagerAdapter?.getRegisteredFragment(
                 homeFeedsViewPager.currentItem

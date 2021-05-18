@@ -101,6 +101,9 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private var component: BerandaComponent? = null
     private var pmProCoachmarkIsShowing = false
     private var coachmarkLocalCache: CoachMarkLocalCache? = null
+    private var pmProCoachmark: CoachMark2? = null
+    private var pmProCoachmarkItem: ArrayList<CoachMark2Item> = arrayListOf()
+    private var pmProProductPosition: Int = -1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.layout_home_feed_fragment, container, false)
@@ -324,16 +327,17 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, getLocationParamString())
     }
 
-    override fun onProductWithPmProImpressed(pmProView: View?) {
+    override fun onProductWithPmProImpressed(pmProView: View?, position: Int) {
         if (shouldShowPmProCoachmark()) {
             pmProView?.let {
-                showPMProCoachmark(pmProView)
+                setupPMProCoachmark(pmProView)
+                this.pmProProductPosition = position
             }
         }
     }
 
     private fun shouldShowPmProCoachmark(): Boolean {
-        return if (!pmProCoachmarkIsShowing) {
+        return if (pmProCoachmark == null) {
             coachmarkLocalCache?.shouldShowHomePMProCoachMark()?: false
         } else {
             false
@@ -351,6 +355,13 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
                 homeEggListener?.hideEggOnScroll()
                 if (homeTabFeedListener != null) {
                     homeTabFeedListener?.onFeedContentScrolled(dy, totalScrollY)
+                }
+
+                val viewsIds: IntArray = staggeredGridLayoutManager.findFirstVisibleItemPositions(null)
+                if (pmProProductPosition == viewsIds.getOrNull(0)?:-1 || pmProProductPosition == viewsIds.getOrNull(1)?:-1) {
+                    showPmProCoachmark()
+                } else {
+                    pmProCoachmark?.dismissCoachMark()
                 }
             }
 
@@ -404,29 +415,40 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         return false
     }
 
-    private fun showPMProCoachmark(pmProBadgeView: View) {
+    private fun setupPMProCoachmark(pmProBadgeView: View) {
         context?.let {
-            val pmProCoachmarkItem = arrayListOf(
+            pmProCoachmarkItem = arrayListOf(
                     CoachMark2Item(
                             title = getString(R.string.home_pmpro_coachmark_title),
                             description = getString(R.string.home_pmpro_coachmark_description),
                             anchorView = pmProBadgeView
                     )
             )
-            val pmProCoachmark = CoachMark2(it)
-            pmProCoachmark.let {
-                //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
-                //will be removed along the coachmark removal in the future
-                try {
-                    if (pmProCoachmarkItem.isNotEmpty() && isValidToShowCoachMark()) {
-                        pmProCoachmark.showCoachMark(step = pmProCoachmarkItem)
+            pmProCoachmark = CoachMark2(requireContext())
+            showPmProCoachmark()
+        }
+    }
+
+    private fun showPmProCoachmark() {
+        pmProCoachmark.let {
+            //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
+            //will be removed along the coachmark removal in the future
+            try {
+                if (pmProCoachmarkItem.isNotEmpty() && isValidToShowCoachMark()) {
+                    if (!pmProCoachmarkIsShowing) {
+                        pmProCoachmark?.showCoachMark(step = pmProCoachmarkItem)
                         pmProCoachmarkIsShowing = true
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
+    }
+
+    fun hidePmProCoachmark() {
+        pmProCoachmark?.hideCoachMark()
+        pmProCoachmarkIsShowing = false
     }
 
     fun scrollToTop() {
