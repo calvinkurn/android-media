@@ -1,12 +1,8 @@
 package com.tokopedia.core.gcm.domain;
 
 import com.tokopedia.core.gcm.data.entity.FCMTokenUpdateEntity;
-import com.tokopedia.core.gcm.domain.model.DiscussionPushNotification;
-import com.tokopedia.core.gcm.domain.model.MessagePushNotification;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
-
-import java.util.List;
 
 import rx.Observable;
 

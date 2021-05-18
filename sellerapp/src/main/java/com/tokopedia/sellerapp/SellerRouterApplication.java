@@ -32,8 +32,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
-import com.tokopedia.core.gcm.model.NotificationPass;
-import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.CoreNetworkRouter;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
@@ -220,16 +218,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
         if(cacheManager == null)
             cacheManager = new PersistentCacheManager(this);
         return cacheManager;
-    }
-
-    @Override
-    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
-        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(getInboxReputationIntent(this));
-        mNotificationPass.classParentStack = getHomeClass();
-        mNotificationPass.title = notifTitle;
-        mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-        mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-        return mNotificationPass;
     }
 
     private Intent getInboxReputationIntent(Context context) {

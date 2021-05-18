@@ -12,15 +12,10 @@ import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
  */
 
 public abstract class BaseAppNotificationReceiverUIBackground {
-    protected FCMCacheManager mFCMCacheManager;
     protected Context mContext;
-    protected ActivitiesLifecycleCallbacks mActivitiesLifecycleCallbacks;
 
     public BaseAppNotificationReceiverUIBackground(Application application) {
-        mFCMCacheManager = new FCMCacheManager(application.getBaseContext());
         mContext = application.getApplicationContext();
-        mActivitiesLifecycleCallbacks = new ActivitiesLifecycleCallbacks(application);
-
     }
 
     public abstract void notifyReceiverBackgroundMessage(Bundle bundle);

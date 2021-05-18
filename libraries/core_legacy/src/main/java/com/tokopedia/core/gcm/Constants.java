@@ -47,41 +47,6 @@ public interface Constants {
      */
     @Deprecated
     interface Applinks {
-        String HOME = "tokopedia://home";
-        String SHOP = "tokopedia://shop/{shop_id}";
-        String SHOP_ETALASE = "tokopedia://shop/{shop_id}/etalase/{etalase_id}";
-        String CART = "tokopedia://cart";
-        String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
-        String REPUTATION = "tokopedia://review";
-        String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
-        String WEBVIEW = "tokopedia://webview";
-        String DIGITAL = "tokopedia://digital";
-        String DIGITAL_CART = "tokopedia://digital/cart";
-        String DIGITAL_CATEGORY = "tokopedia://digital/category";
-        String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
-        String PROMO = "tokopedia://promo";
-        String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
-        String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
-        String DISCOVERY_CATEGORY = "tokopedia://category";
-        String DISCOVERY_CATEGORY_DETAIL = "tokopedia://category/{DEPARTMENT_ID}";
-        String DISCOVERY_SEARCH = "tokopedia://search";
-        String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
-        String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
-        String WISHLIST = "tokopedia://wishlist";
-        String LOGIN = "tokopedia://login";
-        String OFFICIAL_STORES = "tokopedia://official-stores";
-        String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
-        String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
-        String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
-        String PROMO_SALE = "tokopedia://sale/{slug}/";
-        String PROMO_SALE_NO_SLASH = "tokopedia://sale/{slug}";
-        String BRAND_LIST = "tokopedia://official-store/brand";
-        String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
-        String PROMO_SALE_TERMS = "tokopedia://promo-sale/promo-terms";
-        String SUB_PROMO = "tokopedia://sale/{slug}/{category_slug}";
-        String SUB_PROMO_WITH_SLASH = "tokopedia://sale/{slug}/{category_slug}/";
-        String BROWSER = "tokopedia://browser";
-
         interface SellerApp {
             String SALES = "sellerapp://sales";
             String TOPADS_CREDIT = "sellerapp://topads/buy";
@@ -105,14 +70,5 @@ public interface Constants {
     //NOTE: strings must be same with {@link pref_notification.xml}
     interface Settings {
         String NOTIFICATION_PROMO = "notification_receive_promo";
-        String NOTIFICATION_PM = "notification_receive_pm";
-        String NOTIFICATION_TALK = "notification_receive_talk";
-        String NOTIFICATION_REVIEW = "notification_receive_review";
-        String NOTIFICATION_REP = "notification_receive_reputation";
-        String NOTIFICATION_SALES = "notification_sales";
-        String NOTIFICATION_PURCHASE = "notification_purchase";
-        String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
-        String NOTIFICATION_SELLER_INFO = "notification_seller_info";
-        String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
     }
 }
