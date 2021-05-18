@@ -132,6 +132,10 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         super.onDestroy()
     }
 
+    override fun onResume() {
+        super.onResume()
+        conditionalViewModelRefresh()
+    }
 
     override fun onStop() {
         super.onStop()
@@ -424,8 +428,6 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(requireContext())
         chooseAddressData.setLocalCacheModel(localCacheModel)
         chooseAddressWidgetInitialized = false
-        chooseAddressWidget?.updateWidget()
-        fetchOSCategory()
     }
 
     override fun onChooseAddressServerDown() {
