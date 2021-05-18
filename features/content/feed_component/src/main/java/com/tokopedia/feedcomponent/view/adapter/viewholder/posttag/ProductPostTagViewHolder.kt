@@ -97,21 +97,6 @@ class ProductPostTagViewHolder(val mainView: View,
         if (item.feedType != DynamicPostViewHolder.SOURCE_DETAIL && item.needToResize) {
             container = itemView.findViewById(R.id.container)
             container.layoutParams.width = screenWidth * 3 / 4
-            if (itemView.context.isDarkMode()) {
-                container.setBackgroundColor(
-                        ContextCompat.getColor(
-                                itemView.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_NN50
-                        )
-                )
-            } else {
-                container.setBackgroundColor(
-                        ContextCompat.getColor(
-                                itemView.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_N0
-                        )
-                )
-            }
         }
 
         if (item.tags.isNotEmpty()) {
@@ -119,6 +104,22 @@ class ProductPostTagViewHolder(val mainView: View,
             renderTag(productTag, item.tags.first())
         } else {
             productTag.gone()
+        }
+
+        if (itemView.context.isDarkMode()) {
+            container.setBackgroundColor(
+                    ContextCompat.getColor(
+                            itemView.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN50
+                    )
+            )
+        } else {
+            container.setBackgroundColor(
+                    ContextCompat.getColor(
+                            itemView.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    )
+            )
         }
     }
 
