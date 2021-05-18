@@ -112,14 +112,14 @@ open class DynamicPostViewHolder(v: View,
 
         val cvDynamicPostFeed = itemView.findViewById<CardView>(R.id.cv_dynamic_post_feed)
         if (itemView.context.isDarkMode()) {
-            cvDynamicPostFeed.setCardBackgroundColor(
+            cvDynamicPostFeed.setBackgroundColor(
                     ContextCompat.getColor(
                             itemView.context,
                             com.tokopedia.unifyprinciples.R.color.Unify_N50
                     )
             )
         } else {
-            cvDynamicPostFeed.setCardBackgroundColor(
+            cvDynamicPostFeed.setBackgroundColor(
                     ContextCompat.getColor(
                             itemView.context,
                             com.tokopedia.unifyprinciples.R.color.Unify_N0
