@@ -294,12 +294,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
-    public void goToLoginByQr(String applink) {
-        Intent intent = RouteManager.getIntent(this, applink);
-        startActivity(intent);
-    }
-
-    @Override
     public QRComponent getComponent() {
         if (qrComponent == null) initInjector();
         return qrComponent;

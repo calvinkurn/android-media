@@ -3,8 +3,6 @@ package com.tokopedia.qrscanner;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
-import java.util.Map;
-
 public class QRTracking {
 
     public static void eventQRButtonClick() {
