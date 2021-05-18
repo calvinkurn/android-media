@@ -348,7 +348,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             }
 
             // return the first intent only (only if it is the only available browser)
-            return if (resolveInfos.size == 1) {
+            return if (resolveInfos.size >= 1) {
                 val resolveInfo = resolveInfos[0]
                 val browserIntent = Intent()
                 browserIntent.setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
