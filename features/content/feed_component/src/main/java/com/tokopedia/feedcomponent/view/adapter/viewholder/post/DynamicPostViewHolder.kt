@@ -115,7 +115,7 @@ open class DynamicPostViewHolder(v: View,
             cvDynamicPostFeed.setCardBackgroundColor(
                     ContextCompat.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N50
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN50
                     )
             )
         } else {

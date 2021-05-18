@@ -283,7 +283,7 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
             cvReviewContent.setCardBackgroundColor(
                     ContextCompat.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N50
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN50
                     )
             )
         } else {
