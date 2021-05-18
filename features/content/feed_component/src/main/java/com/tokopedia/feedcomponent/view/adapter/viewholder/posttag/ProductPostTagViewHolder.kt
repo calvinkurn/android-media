@@ -26,7 +26,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlin.math.min
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlin.math.roundToInt
 
 private const val RAD_20f = 20f
@@ -104,6 +104,22 @@ class ProductPostTagViewHolder(val mainView: View,
             renderTag(productTag, item.tags.first())
         } else {
             productTag.gone()
+        }
+
+        if (itemView.context.isDarkMode()) {
+            container.setBackgroundColor(
+                    ContextCompat.getColor(
+                            itemView.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN50
+                    )
+            )
+        } else {
+            container.setBackgroundColor(
+                    ContextCompat.getColor(
+                            itemView.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    )
+            )
         }
     }
 
