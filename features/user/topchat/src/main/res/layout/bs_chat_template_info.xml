@@ -23,6 +23,7 @@
         android:id="@+id/bs_chat_illustration"
         android:layout_width="@dimen/unify_space_64"
         android:layout_height="@dimen/unify_space_64"
+        android:contentDescription="@string/title_template_chat"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
