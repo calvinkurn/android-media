@@ -28,7 +28,7 @@
       "appsflyerId": ".*",
       "shopId": ".*",
       "screenName": "/seller broadcast - permission page - \\d+",
-      "userId": ".+",
+      "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
       "businessUnit": "play"
@@ -41,7 +41,7 @@
       "appsflyerId": ".*",
       "shopId": ".*",
       "screenName": "/seller broadcast - onboarding page - \\d+",
-      "userId": ".+",
+      "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
       "businessUnit": "play"
@@ -307,7 +307,7 @@
       "appsflyerId": ".*",
       "shopId": ".*",
       "screenName": "/seller broadcast - camera - \\d+",
-      "userId": ".+",
+      "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
       "businessUnit": "play"
@@ -408,7 +408,7 @@
       "appsflyerId": ".*",
       "shopId": ".*",
       "screenName": "/seller broadcast - preparation page - \\d+",
-      "userId": ".+",
+      "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
       "businessUnit": "play"
@@ -531,7 +531,7 @@
       "appsflyerId": ".*",
       "shopId": ".*",
       "screenName": "/seller broadcast - live room - \\d+ - \\d+",
-      "userId": ".+",
+      "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
       "businessUnit": "play"
@@ -665,7 +665,7 @@
       "appsflyerId": ".*",
       "shopId": ".*",
       "screenName": "/seller broadcast - report summary - \\d+ - \\d+",
-      "userId": ".+",
+      "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
       "businessUnit": "play"

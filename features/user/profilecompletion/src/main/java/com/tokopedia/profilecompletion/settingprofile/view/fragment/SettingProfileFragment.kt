@@ -80,6 +80,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private var chancesChangeName = "0"
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ColorUtils.setBackgroundColor(context, activity)

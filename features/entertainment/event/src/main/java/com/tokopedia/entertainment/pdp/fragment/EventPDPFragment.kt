@@ -482,8 +482,11 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     }
 
     fun share(productDetailData: ProductDetailData) {
-        activity?.run {
-            EventShare(this).shareEvent(productDetailData, { showShareLoading() }, { hideShareLoading() }, this.applicationContext)
+        activity?.let { activity ->
+            context?.let { context ->
+                val titleShare = getString(R.string.ent_pdp_share_title, productDetailData.title)
+                EventShare(activity).shareEvent(productDetailData, titleShare, { showShareLoading() }, { hideShareLoading() })
+            }
         }
     }
 

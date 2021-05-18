@@ -101,6 +101,7 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredent
 import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
+import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -352,6 +353,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             val phone = it.getString(PARAM_PHONE, "")
             val email = it.getString(PARAM_EMAIL, "")
             val method = it.getString(PARAM_LOGIN_METHOD, "")
+
+            isFromRegister = it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false)
 
             if (phone.isNotEmpty()) {
                 emailPhoneEditText?.setText(phone)
@@ -1006,7 +1009,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if (userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS) {
                 seamlessAnalytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
             } else {
-                analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister())
+                analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister)
             }
 
             setTrackingUserId(userSession.userId)
@@ -1110,14 +1113,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     fun onErrorLogin(errorMessage: String?) {
-        analytics.eventFailedLogin(userSession.loginMethod, errorMessage)
+        analytics.eventFailedLogin(userSession.loginMethod, errorMessage, isFromRegister)
 
         dismissLoadingLogin()
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
-    }
-
-    override fun isFromRegister(): Boolean {
-        return arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false) ?: false
     }
 
     override fun trackSuccessValidate() {
@@ -1429,7 +1428,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onSuccessActivateUser(activateUserData: ActivateUserData) {
         dismissLoadingLogin()
         userSession.clearToken()
-        userSession.setToken(activateUserData.accessToken, activateUserData.tokenType, activateUserData.refreshToken)
+        userSession.setToken(activateUserData.accessToken, activateUserData.tokenType, EncoderDecoder.Encrypt(activateUserData.refreshToken, userSession.refreshTokenIV))
         viewModel.getUserInfo()
     }
 

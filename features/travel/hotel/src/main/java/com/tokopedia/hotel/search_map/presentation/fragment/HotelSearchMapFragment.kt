@@ -109,6 +109,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var quickFilters: List<QuickFilter> = listOf()
     private var searchPropertiesMap: ArrayList<LatLng> = arrayListOf()
     private var isSearchByMap: Boolean = false
+    private var lastHorizontalTrackingPositionSent: Int = -1
 
     private var isViewFullMap: Boolean = false
 
@@ -144,6 +145,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             val selectedParam = it.getParcelable(ARG_FILTER_PARAM) ?: ParamFilterV2()
             if (selectedParam.name.isNotEmpty()) {
                 hotelSearchMapViewModel.addFilter(listOf(selectedParam), false)
+            }
+
+            val selectedSort = it.getString(ARG_SORT_PARAM) ?: ""
+            if (selectedSort.isNotEmpty()) {
+                hotelSearchMapViewModel.selectedSort = Sort(selectedSort)
             }
 
             hotelSearchModel = it.getParcelable(ARG_HOTEL_SEARCH_MODEL) ?: HotelSearchModel()
@@ -326,6 +332,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         halfExpandBottomSheet()
 
         ivHotelSearchMapNoResult.loadImage(getString(R.string.hotel_url_empty_search_map_result))
+
+        trackingHotelUtil.viewHotelSearchMap(context,
+                searchDestinationName,
+                searchDestinationType,
+                hotelSearchMapViewModel.searchParam,
+                SEARCH_SCREEN_NAME)
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -494,6 +506,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 changeSearchParameter()
             }
 
+            headerHotelSearchMap.headerView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             headerHotelSearchMap.addCustomRightContent(wrapper)
             headerHotelSearchMap.isShowBackButton = true
             headerHotelSearchMap.setNavigationOnClickListener {
@@ -528,7 +541,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         }
                     }
                     BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
+                        if (searchPropertiesMap.isNullOrEmpty()){
+                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
+                        }else{
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[0],
+                                    MAPS_ZOOM_OUT))
+                        }
                         setupContentMargin(false)
                         googleMap.uiSettings.setAllGesturesEnabled(false)
 
@@ -536,7 +554,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_IN))
                         setupContentMargin(false)
-                        googleMap.uiSettings.setAllGesturesEnabled(true)
+
+                        googleMap.uiSettings.isZoomGesturesEnabled = true
+                        googleMap.uiSettings.isRotateGesturesEnabled = false
+                        googleMap.uiSettings.isScrollGesturesEnabled = true
 
                         if (!isViewFullMap) {
                             trackingHotelUtil.searchViewFullMap(context,
@@ -681,6 +702,26 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     }
                 }
             }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val currentPosition = getCurrentItemCardList()
+                if (currentPosition != -1 &&
+                        currentPosition != lastHorizontalTrackingPositionSent &&
+                        adapterCardList.data[currentPosition] is Property) {
+
+                    lastHorizontalTrackingPositionSent = currentPosition
+                    trackingHotelUtil.hotelViewHotelListMapImpression(context,
+                            searchDestinationName,
+                            searchDestinationType,
+                            hotelSearchMapViewModel.searchParam,
+                            listOf(adapterCardList.data[currentPosition]),
+                            0,
+                            SEARCH_SCREEN_NAME)
+
+                }
+            }
         })
     }
 
@@ -693,7 +734,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             googleMap.uiSettings.isMapToolbarEnabled = true
             googleMap.uiSettings.isMyLocationButtonEnabled = false
             googleMap.uiSettings.isZoomGesturesEnabled = true
-            googleMap.uiSettings.isRotateGesturesEnabled = true
+            googleMap.uiSettings.isRotateGesturesEnabled = false
             googleMap.uiSettings.isScrollGesturesEnabled = true
 
             googleMap.setOnMarkerClickListener(this)
@@ -738,7 +779,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             val textView = Typography(it)
             textView.apply {
                 setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
-                setTextColor(ContextCompat.getColor(context, R.color.hotel_color_active_price_marker))
+                setTextColor(ContextCompat.getColor(context, R.color.hotel_dms_active_price_marker_color))
                 text = getString(R.string.hotel_search_map_around_here)
             }
             wrapper.addView(textView)
@@ -899,7 +940,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         showQuickFilterShimmering(false)
 
         val searchProperties = data.properties
-
         if (searchProperties.isNotEmpty()) {
             showCardListView()
             if (adapterCardList.itemCount <= MINIMUM_NUMBER_OF_RESULT_LOADED) {
@@ -1268,7 +1308,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             val textView = Typography(it)
             textView.apply {
                 setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
-                setTextColor(ContextCompat.getColor(context, R.color.hotel_color_active_price_marker))
+                setTextColor(ContextCompat.getColor(context, R.color.hotel_dms_active_price_marker_color))
                 text = getString(R.string.hotel_search_map_search_with_map)
             }
             wrapper.addView(textView)
@@ -1364,6 +1404,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         const val ARG_HOTEL_SEARCH_MODEL = "arg_hotel_search_model"
         private const val ARG_FILTER_PARAM = "arg_hotel_filter_param"
+        private const val ARG_SORT_PARAM = "arg_hotel_sort_param"
 
         const val SELECTED_POSITION_INIT = 0
         const val DELAY_BUTTON_RADIUS: Long = 1000L
@@ -1377,11 +1418,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val PREFERENCES_NAME = "hotel_search_map_preferences"
         private const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
 
-        fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchMapFragment =
+        fun createInstance(hotelSearchModel: HotelSearchModel,
+                           selectedParam: ParamFilterV2,
+                           selectedSort: String): HotelSearchMapFragment =
                 HotelSearchMapFragment().also {
                     it.arguments = Bundle().apply {
                         putParcelable(ARG_HOTEL_SEARCH_MODEL, hotelSearchModel)
                         putParcelable(ARG_FILTER_PARAM, selectedParam)
+                        putString(ARG_SORT_PARAM, selectedSort)
                     }
                 }
     }
