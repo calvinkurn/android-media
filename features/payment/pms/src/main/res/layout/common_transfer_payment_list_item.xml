@@ -73,7 +73,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tvTransactionExpireLabel"
             app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="small"
-            app:typographyWeight="bold  "
+            app:typographyWeight="bold"
             tools:text="11 Nov, 12:40" />
 
         <com.tokopedia.iconunify.IconUnify

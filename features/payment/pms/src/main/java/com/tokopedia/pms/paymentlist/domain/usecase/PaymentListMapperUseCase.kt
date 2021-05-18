@@ -3,12 +3,12 @@ package com.tokopedia.pms.paymentlist.domain.usecase
 import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.pms.R
 import com.tokopedia.pms.payment.data.model.PaymentListInside
 import com.tokopedia.pms.paymentlist.domain.data.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import kotlinx.coroutines.channels.ticker
 import javax.inject.Inject
 
 class PaymentListMapperUseCase @Inject constructor(
@@ -55,7 +55,8 @@ class PaymentListMapperUseCase @Inject constructor(
                         }
                     } else {
                         val vaListItem = getVirtualAccountTransactionItem(this)
-                        val vaPaymentModel = getVirtualAccountPaymentModel(this, arrayListOf(vaListItem))
+                        val vaPaymentModel =
+                            getVirtualAccountPaymentModel(this, arrayListOf(vaListItem))
                         // remember VA index in result result
                         indexMap[paymentCode] = arrayListOf(indexCount)
                         indexCount++
@@ -82,7 +83,7 @@ class PaymentListMapperUseCase @Inject constructor(
 
                 // will be null in case of Combined VA which is intentional
                 model?.let {
-                    model.paymentCode =  paymentCode
+                    model.paymentCode = paymentCode
                     model.gatewayImage = gatewayImg
                     model.gatewayName = gatewayName
                     model.productImage = productImg
@@ -233,19 +234,39 @@ class PaymentListMapperUseCase @Inject constructor(
 
     private fun getListOfAction(
         paymentListInside: PaymentListInside
-    ): List<String> {
-        val listOfActions: MutableList<String> = ArrayList()
+    ): List<TransactionActionModel> {
+        val listOfActions: MutableList<TransactionActionModel> = ArrayList()
         if (paymentListInside.isShowEditKlikbcaButton) {
-            listOfActions.add(context.getString(R.string.payment_label_change_bca_user_id))
+            listOfActions.add(
+                TransactionActionModel(
+                    context.getString(R.string.payment_label_change_bca_user_id),
+                    IconUnify.UPLOAD
+                )
+            )
         }
         if (paymentListInside.isShowEditTransferButton) {
-            listOfActions.add(context.getString(R.string.payment_label_change_account_detail))
+            listOfActions.add(
+                TransactionActionModel(
+                    context.getString(R.string.payment_label_change_account_detail),
+                    IconUnify.EDIT
+                )
+            )
         }
         if (paymentListInside.isShowUploadButton) {
-            listOfActions.add(context.getString(R.string.payment_label_upload_proof))
+            listOfActions.add(
+                TransactionActionModel(
+                    context.getString(R.string.payment_label_upload_proof),
+                    IconUnify.UPLOAD
+                )
+            )
         }
         if (paymentListInside.isShowCancelButton) {
-            listOfActions.add(context.getString(R.string.payment_label_cancel_transaction))
+            listOfActions.add(
+                TransactionActionModel(
+                    context.getString(R.string.payment_label_cancel_transaction),
+                    IconUnify.DELETE
+                )
+            )
         }
         return listOfActions
     }

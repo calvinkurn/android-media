@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTransactionTitle"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_N700_96"
+        android:text="Transaksi 1 - Belanja" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTransactionAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTransactionTitle"
+        app:typographyType="body_2"
+        android:textColor="@color/Unify_N700_68"
+        android:text="Rp1.300.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvCancelTransaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTransactionAmount"
+        app:typographyType="heading_6"
+        android:textColor="@color/Unify_G500"
+        android:text="Batalkan" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/goToHowToPay"
+        android:layout_width="@dimen/pms_dp_80"
+        android:layout_height="wrap_content"
+        android:text="Detail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unifyButtonSize="micro"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/itemDivider"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintTop_toBottomOf="@id/tvCancelTransaction"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

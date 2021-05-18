@@ -4,8 +4,8 @@
     <string name="payment_label_how_to_pay">Cara Pembayaran</string>
     <string name="payment_label_cancel_transaction">Batalkan Transaksi</string>
     <string name="payment_label_change_bca_user_id">Ubah KlikBCA User ID</string>
-    <string name="payment_label_change_account_detail">Ubah Akun Bank</string>
-    <string name="payment_label_upload_proof">Unggah Bukti Pembayaran</string>
+    <string name="payment_label_change_account_detail">Ubah Rekening Pengirim</string>
+    <string name="payment_label_upload_proof">Upload Bukti Pembayaran</string>
     <string name="payment_label_klikbcaid">KlikBCA ID</string>
     <string name="payment_label_payment_code">Kode Pembayaran</string>
     <string name="payment_label_virtual_account_number">Nomor Virtual Account</string>

@@ -1,12 +1,15 @@
 package com.tokopedia.pms.paymentlist.domain.data
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
 open class BasePaymentModel {
     var paymentCode:String = ""
     var gatewayName: String = ""
     var gatewayImage: String = ""
     var productImage: String = ""
     var howtoPayAppLink: String= ""
-    var actionList = ArrayList<String>()
+    var actionList = ArrayList<TransactionActionModel>()
     var invoiceDetailUrl: String = ""
     var shouldShowHowToPay: Boolean = false
 }
@@ -18,6 +21,7 @@ data class VirtualAccountPaymentModel(
     val transactionList: ArrayList<VaTransactionItem>,
 ): BasePaymentModel()
 
+@Parcelize
 data class VaTransactionItem(
     val transactionId: String,
     val merchantCode: String,
@@ -27,7 +31,7 @@ data class VaTransactionItem(
     val showCancelButton: Boolean,
     val invoiceUrl: String,
     val productName: String,
-)
+): Parcelable
 
 data class CreditCardPaymentModel(
     val label: String,
@@ -75,4 +79,10 @@ data class BankTransferPaymentModel(
 class BankInfo(
     val accountNumber : String?,
     val accountName: String?
+)
+
+
+class TransactionActionModel(
+    val actionString: String,
+    val actionIconType: Int
 )

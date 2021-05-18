@@ -7,15 +7,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.pms.R
 import com.tokopedia.pms.paymentlist.di.PaymentListComponent
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
-import com.tokopedia.pms.paymentlist.domain.data.CreditCardPaymentModel
 import com.tokopedia.pms.paymentlist.domain.data.VirtualAccountPaymentModel
 import com.tokopedia.pms.paymentlist.presentation.adapter.DeferredPaymentListAdapter
+import com.tokopedia.pms.paymentlist.presentation.bottomsheet.PaymentTransactionActionSheet
+import com.tokopedia.pms.paymentlist.presentation.bottomsheet.PaymentTransactionDetailSheet
 import com.tokopedia.pms.paymentlist.viewmodel.PaymentListViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -38,10 +37,12 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
 
     override fun initInjector() = getComponent(PaymentListComponent::class.java).inject(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view: View = inflater.inflate(R.layout.fragment_payment_list, container, false)
-        loadDeferredTransactions()
-        return view
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return inflater.inflate(R.layout.fragment_payment_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,6 +53,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
             }
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
+        loadInitialDeferredTransactions()
         observeViewModels()
     }
 
@@ -79,16 +81,13 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
             if (it.size > 1) {
                 Toaster.make(recycler_view, "Open list bottomsheet ${model.transactionList.size}", Toaster.LENGTH_LONG)
                 // open combined list bottom sheet
+                openTransactionDetailBottomSheet(model)
             } else openInvoiceDetail(model)
         }
     }
 
-    private fun openActionBottomSheet(model: BasePaymentModel) {
-        // open list of action bottom sheet
-        Toaster.make(recycler_view, "Open action list bottomsheet ${model.actionList.size}", Toaster.LENGTH_LONG)
-    }
-
-    private fun loadDeferredTransactions(cursor: String = "") {
+    private fun loadInitialDeferredTransactions(cursor: String = "") {
+        (recycler_view.adapter as DeferredPaymentListAdapter).clearAllElements()
         viewModel.getPaymentList(cursor)
     }
 
@@ -106,7 +105,29 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
     }
 
     private fun handlePaymentListError(throwable: Throwable) {
+        // show empty state
+    }
 
+    fun invokeCancelSingleTransaction(transactionId: String, merchantCode: String) {
+        viewModel.getCancelPaymentDetail(transactionId, merchantCode)
+    }
+
+    fun showCombinedTransactionDetail(model: BasePaymentModel) {
+    }
+
+    private fun openActionBottomSheet(model: BasePaymentModel) {
+        // open list of action bottom sheet
+        PaymentTransactionActionSheet.show(Bundle(), childFragmentManager)
+        Toaster.make(recycler_view, "Open action list bottomsheet ${model.actionList.size}", Toaster.LENGTH_LONG)
+    }
+
+    private fun openTransactionDetailBottomSheet(model: BasePaymentModel) {
+        (model as VirtualAccountPaymentModel).let {
+            val bundle = Bundle()
+            bundle.putParcelableArrayList(PaymentTransactionDetailSheet.TRANSACTION_LIST, model.transactionList)
+            bundle.putString(PaymentTransactionDetailSheet.GATEWAY_NAME, model.gatewayName)
+            PaymentTransactionDetailSheet.show(bundle, childFragmentManager)
+        }
     }
 
     companion object {
