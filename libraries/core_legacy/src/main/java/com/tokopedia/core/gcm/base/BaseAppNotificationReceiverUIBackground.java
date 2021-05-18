@@ -83,10 +83,6 @@ public abstract class BaseAppNotificationReceiverUIBackground {
     protected void resetNotificationStatus(Bundle data) {
     }
 
-    public abstract void handleDedicatedNotification(Bundle data);
-
-    public abstract void handlePromotionNotification(Bundle data);
-
     public abstract void notifyReceiverBackgroundMessage(Bundle bundle);
 
     protected Map<Integer, Visitable> getCommonDedicatedNotification() {

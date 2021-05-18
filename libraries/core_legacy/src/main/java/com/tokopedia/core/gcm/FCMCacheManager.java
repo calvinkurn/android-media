@@ -51,24 +51,6 @@ public class FCMCacheManager {
         context = ctx;
     }
 
-    public void setCache() {
-        if (cache == null)
-            cache = new LocalCacheHandler(context, TkpdCache.G_CODE);
-
-        cache.setExpire(1);
-        cache.applyEditor();
-    }
-
-    public void resetCache(Bundle data) {
-        if (Integer.parseInt(data.getString(NOTIFICATION_CODE)) > 600
-                && Integer.parseInt(data.getString(NOTIFICATION_CODE)) < 802) {
-            doResetCache(Integer.parseInt(data.getString(NOTIFICATION_CODE)));
-        }
-    }
-
-    private void doResetCache(int code) {
-    }
-
     public boolean isAllowToHandleNotif(Bundle data) {
         try {
             return (!cache.isExpired() || cache.getString(TkpdCache.Key.PREV_CODE) == null ||
