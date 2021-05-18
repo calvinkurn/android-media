@@ -1,4 +1,4 @@
-package com.tokopedia.flight.cancellation.view.adapter
+package com.tokopedia.flight.cancellationdetail.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.View

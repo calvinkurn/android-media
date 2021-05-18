@@ -1,4 +1,4 @@
-package com.tokopedia.flight.cancellation.view.fragment.customview
+package com.tokopedia.flight.cancellationV2.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.R
-import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationRefundAdapter
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationRefund
+import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationRefundAdapter
+import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationRefundModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import java.util.*
 
@@ -40,12 +40,12 @@ class FlightCancellationRefundBottomSheet : BottomSheetUnify() {
             val detailsRecyclerView = view.findViewById<RecyclerView>(R.id.rv_details)
             val titles = resources.getStringArray(R.array.flight_cancellation_refund_title)
             val subtitles = resources.getStringArray(R.array.flight_cancellation_refund_subtitle)
-            val descriptions: MutableList<FlightCancellationRefund> = ArrayList()
+            val descriptions: MutableList<FlightCancellationRefundModel> = ArrayList()
             for (i in titles.indices) {
-                val description = FlightCancellationRefund()
-                description.title = titles[i]
-                description.subtitle = subtitles[i]
-                descriptions.add(description)
+                descriptions.add(FlightCancellationRefundModel(
+                        title = titles[i],
+                        subtitle = subtitles[i]
+                ))
             }
             val adapter = FlightCancellationRefundAdapter()
             adapter.setDescriptions(descriptions)
