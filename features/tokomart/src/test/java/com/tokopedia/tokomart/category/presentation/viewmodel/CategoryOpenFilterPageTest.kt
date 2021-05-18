@@ -5,10 +5,16 @@ import org.junit.Test
 
 class CategoryOpenFilterPageTest: CategoryTestFixtures() {
 
-    private val openFilterPageTestHelper: OpenFilterPageTestHelper = OpenFilterPageTestHelper(
-            categoryViewModel,
-            getFilterUseCase,
-    )
+    private lateinit var openFilterPageTestHelper: OpenFilterPageTestHelper
+
+    override fun setUp() {
+        super.setUp()
+
+        openFilterPageTestHelper = OpenFilterPageTestHelper(
+                categoryViewModel,
+                getFilterUseCase,
+        )
+    }
 
     @Test
     fun `open filter page first time`() {

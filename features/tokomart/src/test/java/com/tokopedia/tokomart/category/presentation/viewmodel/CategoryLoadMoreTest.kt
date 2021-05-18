@@ -37,10 +37,6 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
         }
     }
 
-    private fun `Given view already created`() {
-        categoryViewModel.onViewCreated()
-    }
-
     private fun `When view load more`() {
         categoryViewModel.onLoadMore()
     }

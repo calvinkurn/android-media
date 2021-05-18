@@ -62,6 +62,17 @@ abstract class BaseSearchCategoryViewModel(
 
     abstract fun onViewCreated()
 
+    protected open fun createRequestParams(): RequestParams {
+        return RequestParams.create().also {
+            it.prependParams()
+            it.putAll(queryParam)
+        }
+    }
+
+    protected open fun RequestParams.prependParams() {
+
+    }
+
     protected fun onGetFirstPageSuccess(
             headerDataView: HeaderDataView,
             contentDataView: ContentDataView,

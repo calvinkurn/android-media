@@ -22,19 +22,16 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
     @Test
     fun `test first page is last page`() {
         val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
-        `Given get category first page use case will be successful`(categoryModel)
+        `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
 
         `When view created`()
 
         val visitableList = categoryViewModel.visitableListLiveData.value!!
 
+        // Then assert request params
         `Then assert first page visitables`(visitableList, categoryModel)
         `Then assert visitable list footer`(visitableList)
         `Then assert has next page value`(false)
-    }
-
-    private fun `When view created`() {
-        categoryViewModel.onViewCreated()
     }
 
     private fun `Then assert first page visitables`(visitableList: List<Visitable<*>>, categoryModel: CategoryModel) {
@@ -72,6 +69,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
 
         val visitableList = categoryViewModel.visitableListLiveData.value!!
 
+        // Then assert request params
         `Then assert first page visitables`(visitableList, categoryModel)
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)

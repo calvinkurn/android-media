@@ -5,7 +5,9 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
 import com.tokopedia.tokomart.category.utils.CATEGORY_FIRST_PAGE_USE_CASE
+import com.tokopedia.tokomart.category.utils.CATEGORY_ID
 import com.tokopedia.tokomart.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CASE
+import com.tokopedia.tokomart.category.utils.CATEGORY_QUERY_PARAM_MAP
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.usecase.RequestParams
@@ -15,6 +17,10 @@ import javax.inject.Named
 
 class CategoryViewModel @Inject constructor (
         baseDispatcher: CoroutineDispatchers,
+        @param:Named(CATEGORY_ID)
+        val categoryId: Int,
+        @Named(CATEGORY_QUERY_PARAM_MAP)
+        queryParamMap: Map<String, String>,
         @param:Named(CATEGORY_FIRST_PAGE_USE_CASE)
         private val getCategoryFirstPageUseCase: UseCase<CategoryModel>,
         @param:Named(CATEGORY_LOAD_MORE_PAGE_USE_CASE)
@@ -23,7 +29,7 @@ class CategoryViewModel @Inject constructor (
         chooseAddressWrapper: ChooseAddressWrapper,
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
-        mapOf(),
+        queryParamMap,
         getFilterUseCase,
         chooseAddressWrapper
 ) {
@@ -33,7 +39,7 @@ class CategoryViewModel @Inject constructor (
         getCategoryFirstPageUseCase.execute(
                 this::onGetCategoryFirstPageSuccess,
                 this::onGetCategoryFirstPageError,
-                RequestParams.create(),
+                createRequestParams(),
         )
     }
 
@@ -64,7 +70,7 @@ class CategoryViewModel @Inject constructor (
         getCategoryLoadMorePageUseCase.execute(
                 this::onGetCategoryLoadMorePageSuccess,
                 this::onGetCategoryLoadMorePageError,
-                RequestParams.create(),
+                createRequestParams(),
         )
     }
 

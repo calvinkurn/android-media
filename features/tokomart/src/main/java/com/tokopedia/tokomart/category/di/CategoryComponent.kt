@@ -6,7 +6,7 @@ import dagger.Component
 
 @CategoryScope
 @Component(
-        modules = [CategoryViewModelModule::class, CategoryContextModule::class],
+        modules = [CategoryViewModelModule::class, CategoryContextModule::class, CategoryParamModule::class],
         dependencies = [BaseAppComponent::class])
 interface CategoryComponent {
 
