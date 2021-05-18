@@ -504,13 +504,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
     }
-
 
     class MyWebViewClient extends WebViewClient {
         @Override
@@ -529,6 +527,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         activity.setWebViewTitle(title);
                         activity.updateTitle(title);
                     }
+                }
+                if (url.startsWith(BaseWebViewFragment.this.url)) {
+                    activity.setOnWebViewPageFinished();
+                } else {
+                    activity.enableBackButton();
                 }
             } else if (activityInstance != null && !activityInstance.isFinishing() && activityInstance instanceof BaseSimpleActivity) {
                 ActionBar actionBar = ((AppCompatActivity) activityInstance).getSupportActionBar();
@@ -601,6 +604,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             super.onReceivedError(view, errorCode, description, failingUrl);
             String webUrl = view.getUrl();
             onWebPageReceivedError(failingUrl, errorCode, description, webUrl);
+            enableBackButton();
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
@@ -610,6 +614,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             String webUrl = view.getUrl();
             onWebPageReceivedError(request.getUrl().toString(), error.getErrorCode(),
                     error.getDescription().toString(), webUrl);
+            enableBackButton();
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
@@ -619,6 +624,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             String webUrl = view.getUrl();
             Timber.w("P1#WEBVIEW_ERROR_RESPONSE#'%s';status_code=%s;reason='%s';web_url='%s'",
                     request.getUrl(), errorResponse.getStatusCode(), errorResponse.getReasonPhrase(), webUrl);
+            enableBackButton();
+        }
+    }
+
+    private void enableBackButton() {
+        Activity activityInstance = getActivity();
+        if (activityInstance instanceof BaseSimpleWebViewActivity) {
+            ((BaseSimpleWebViewActivity)activityInstance).enableBackButton();
         }
     }
 

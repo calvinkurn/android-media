@@ -182,7 +182,13 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     fun onNewIntent(uri: Uri?) {
         uri?.let {
             activity?.let { activity ->
-                pmShopScoreInterruptHelper.setShopScoreConsentStatus(activity, it)
+                pmShopScoreInterruptHelper.setShopScoreConsentStatus(activity, it) {
+                    if (it) {
+                        pmShopScoreInterruptHelper.showsShopScoreConsentToaster(view?.rootView)
+                    }
+                }
+
+                pmShopScoreInterruptHelper.showToasterPmProInterruptPage(it, view?.rootView)
             }
         }
     }

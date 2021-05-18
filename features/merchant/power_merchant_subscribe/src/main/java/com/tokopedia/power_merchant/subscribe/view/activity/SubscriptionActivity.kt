@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
@@ -18,8 +19,8 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscriptionFragment
-import com.tokopedia.power_merchant.subscribe.view_old.fragment.PowerMerchantSubscribeFragment
 import kotlinx.android.synthetic.main.activity_pm_subsription.*
+import java.net.URLEncoder
 
 /**
  * Created By @ilhamsuaib on 25/02/21
@@ -57,7 +58,9 @@ class SubscriptionActivity : BaseActivity(), SubscriptionActivityInterface, HasC
     }
 
     private fun openPowerMerchantWebView() {
-        RouteManager.route(this, PMConstant.Urls.POWER_MERCHANT_PAGE)
+        val encodedUrl = URLEncoder.encode(PMConstant.Urls.POWER_MERCHANT_PAGE, "UTF-8")
+        val applink = String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        RouteManager.route(this, applink)
         finish()
     }
 
