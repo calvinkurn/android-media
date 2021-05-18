@@ -235,8 +235,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     fun callbackPaymentCanceled() {
         hideProgressLoading()
+        var hasClearRedState = false
+        intent?.extras?.let {
+            hasClearRedState = it.getBoolean(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT)
+        }
         val intent = Intent()
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+        intent.putExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, hasClearRedState)
         setResult(PaymentConstant.PAYMENT_CANCELLED, intent)
         finish()
     }
@@ -251,8 +256,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     fun callbackPaymentFailed() {
         hideProgressLoading()
+        var hasClearRedState = false
+        intent?.extras?.let {
+            hasClearRedState = it.getBoolean(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT)
+        }
         val intent = Intent()
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+        intent.putExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, hasClearRedState)
         setResult(PaymentConstant.PAYMENT_FAILED, intent)
         finish()
     }

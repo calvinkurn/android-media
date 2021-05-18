@@ -1064,7 +1064,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         adapter = null
         homeRecyclerView?.layoutManager = null
         layoutManager = null
-        getHomeViewModel().onCloseChannel()
         unRegisterBroadcastReceiverTokoCash()
     }
 
@@ -1100,8 +1099,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observeRequestImagePlayBanner()
         observeViewModelInitialized()
         observeHomeRequestNetwork()
-        observeSalamWidget()
-        observeRechargeRecommendation()
         observeIsNeedRefresh()
         observeSearchHint()
         observePlayWidgetReminder()
@@ -1304,22 +1301,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 getHomeViewModel().clearPlayBanner()
                             }
                         })
-            })
-        }
-    }
-
-    private fun observeSalamWidget() {
-        context?.let {
-            getHomeViewModel().salamWidgetLiveData.observe(viewLifecycleOwner, Observer {
-                getHomeViewModel().insertSalamWidget(it.peekContent())
-            })
-        }
-    }
-
-    private fun observeRechargeRecommendation() {
-        context?.let {
-            getHomeViewModel().rechargeRecommendationLiveData.observe(viewLifecycleOwner, Observer {
-                getHomeViewModel().insertRechargeRecommendation(it.peekContent())
             })
         }
     }
@@ -1788,7 +1769,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun hideLoading() {
-
         refreshLayout.isRefreshing = false
         homeRecyclerView?.isEnabled = true
     }
@@ -1812,7 +1792,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         navAbTestCondition(ifNavRevamp = {
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
-        getHomeViewModel().showTicker()
         observeHomeNotif()
         pageLoadTimeCallback?.invalidate()
     }
@@ -2229,7 +2208,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels) {
-        getHomeViewModel().getPopularKeywordData()
+        getHomeViewModel().getPopularKeyword()
         PopularKeywordTracking.sendPopularKeywordClickReload(channel, getUserSession().userId)
     }
 

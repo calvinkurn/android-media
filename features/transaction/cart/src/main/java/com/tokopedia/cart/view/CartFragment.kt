@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
+import androidx.annotation.Keep
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -69,7 +70,6 @@ import com.tokopedia.cart.view.mapper.ViewHolderDataMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
-import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
@@ -137,6 +137,7 @@ import javax.inject.Inject
  * @author anggaprasetiyo on 18/01/18.
  */
 
+@Keep
 class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
         RefreshHandler.OnRefreshHandlerListener, CartToolbarListener,
         TickerAnnouncementActionListener, SellerCashbackListener {
@@ -406,21 +407,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
 
         when (resultCode) {
-            PaymentConstant.PAYMENT_CANCELLED -> {
-                showToastMessageRed(getString(R.string.alert_payment_canceled_or_failed_transaction_module))
-                refreshCartWithProgressDialog()
-            }
-            PaymentConstant.PAYMENT_SUCCESS -> {
-                showToastMessageGreen(getString(R.string.message_payment_success))
-                refreshCartWithProgressDialog()
-            }
-            PaymentConstant.PAYMENT_FAILED -> {
-                showToastMessageRed(getString(R.string.default_request_error_unknown))
-                refreshCartWithProgressDialog()
-            }
-            CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED -> {
-                refreshCartWithProgressDialog()
-            }
             CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED -> {
                 val message = data?.getStringExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE)
                 showToastMessageRed(message ?: "")
@@ -488,7 +474,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 refreshHandler = RefreshHandler(it, swipeRefreshLayout, this)
             }
             progressDialog = AlertDialog.Builder(it)
-                    .setView(R.layout.purchase_platform_progress_dialog_view)
+                    .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
                     .setCancelable(false)
                     .create()
         }
@@ -837,6 +823,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             binding?.navToolbar?.apply {
+                viewLifecycleOwner.lifecycle.addObserver(this)
                 setOnBackButtonClickListener(
                         disableDefaultGtmTracker = true,
                         backButtonClickListener = ::onBackPressed
@@ -1079,10 +1066,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         refreshCartWithSwipeToRefresh()
     }
 
-    override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
+    override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData?) {
         cartPageAnalytics.eventClickAtcCartClickTrashBin()
         val cartItemDatas = mutableListOf<CartItemData>()
-        cartItemHolderData.cartItemData?.let {
+        cartItemHolderData?.cartItemData?.let {
             cartItemDatas.add(it)
         }
         val allCartItemDataList = cartAdapter.allCartItemData
@@ -1095,22 +1082,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartItemQuantityPlusButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
+    override fun onCartItemQuantityPlusButtonClicked() {
         cartPageAnalytics.eventClickAtcCartClickButtonPlus()
     }
 
-    override fun onCartItemQuantityMinusButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
+    override fun onCartItemQuantityMinusButtonClicked() {
         cartPageAnalytics.eventClickAtcCartClickButtonMinus()
     }
 
-    override fun onCartItemQuantityReseted(position: Int, parentPosition: Int, needRefreshItemView: Boolean) {
+    override fun onCartItemQuantityReseted(position: Int, parentPosition: Int) {
         cartAdapter.resetQuantity(position, parentPosition)
     }
 
-    override fun onCartItemProductClicked(cartItemData: CartItemData) {
-        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName
+    override fun onCartItemProductClicked(cartItemData: CartItemData?) {
+        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData?.originData?.productName
                 ?: "")
-        cartItemData.originData?.productId?.let {
+        cartItemData?.originData?.productId?.let {
             routeToProductDetailPage(it)
         }
     }
@@ -1629,8 +1616,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartItemQuantityInputFormClicked(qty: String) {
-        cartPageAnalytics.eventClickAtcCartClickInputQuantity(qty)
+    override fun onCartItemQuantityInputFormClicked(qty: String?) {
+        qty?.let {
+            cartPageAnalytics.eventClickAtcCartClickInputQuantity(it)
+        }
     }
 
     override fun onCartItemLabelInputRemarkClicked() {
@@ -1680,12 +1669,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onWishlistCheckChanged(productId: String, cartId: Long, imageView: ImageView) {
-        cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId)
-        setProductImageAnimationData(imageView, false)
+    override fun onWishlistCheckChanged(productId: String?, cartId: Long?, imageView: ImageView?) {
+        cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId
+                ?: "")
+        imageView?.let {
+            setProductImageAnimationData(it, false)
+        }
 
         val isLastItem = cartAdapter.allCartItemData.size == 1
-        dPresenter.processAddCartToWishlist(productId, cartId.toString(), isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
+        dPresenter.processAddCartToWishlist(productId ?: "", cartId?.toString()
+                ?: "", isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
     }
 
     private fun setProductImageAnimationData(imageView: ImageView, isUnavailableItem: Boolean) {
@@ -2001,7 +1994,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         binding?.apply {
             promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.ACTIVE
             promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-            promoCheckoutBtnCart.title = getString(R.string.promo_funnel_label)
+            promoCheckoutBtnCart.title = getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
             promoCheckoutBtnCart.desc = ""
             promoCheckoutBtnCart.setOnClickListener {
                 dPresenter.doUpdateCartForPromo()
@@ -2015,7 +2008,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         binding?.apply {
             promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.ACTIVE
             promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-            promoCheckoutBtnCart.title = getString(R.string.promo_funnel_label)
+            promoCheckoutBtnCart.title = getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
             promoCheckoutBtnCart.desc = getString(R.string.promo_desc_no_selected_item)
             promoCheckoutBtnCart.setOnClickListener {
                 showToastMessageGreen(getString(R.string.promo_choose_item_cart))
@@ -2038,7 +2031,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 lastApplyData.defaultEmptyPromoMessage
             }
             else -> {
-                getString(R.string.promo_funnel_label)
+                getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
             }
         }
 
@@ -2227,7 +2220,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 if (isChecked) {
                     // ambil dari shopgroup
                     cartListData?.shopGroupAvailableDataList?.forEach { shopGroup ->
-                        if (cartShop.shopGroupAvailableData.cartString.equals(shopGroup.cartString)) {
+                        if (cartShop.shopGroupAvailableData?.cartString.equals(shopGroup.cartString)) {
                             shopGroup.promoCodes?.forEach {
                                 listPromoCodes.add(it)
                             }
@@ -2235,7 +2228,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
                 } else {
                     cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyVoucherOrders ->
-                        cartShop.shopGroupAvailableData.cartString?.let { cartString ->
+                        cartShop.shopGroupAvailableData?.cartString?.let { cartString ->
                             if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
                                 listPromoCodes.add(lastApplyVoucherOrders.code)
                             }
@@ -2244,15 +2237,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
 
                 var countItemList: Int
-                cartShop.shopGroupAvailableData.cartItemDataList?.let { listCartItemHolderData ->
-                    countItemList = listCartItemHolderData.size
-                    for (j in 0 until countItemList) {
-                        if (listCartItemHolderData[j].isSelected) {
-                            doAddToListProducts(cartShop.shopGroupAvailableData, j, listProductDetail)
+                cartShop.shopGroupAvailableData?.let { shopGroupAvailableData ->
+                    shopGroupAvailableData.cartItemDataList?.let { listCartItemHolderData ->
+                        countItemList = listCartItemHolderData.size
+                        for (j in 0 until countItemList) {
+                            if (listCartItemHolderData[j].isSelected) {
+                                doAddToListProducts(shopGroupAvailableData, j, listProductDetail)
+                            }
                         }
-                    }
-                    if (listProductDetail.isNotEmpty()) {
-                        doAddToOrderListRequest(cartShop.shopGroupAvailableData, listProductDetail, listPromoCodes, listOrder)
+                        if (listProductDetail.isNotEmpty()) {
+                            doAddToOrderListRequest(shopGroupAvailableData, listProductDetail, listPromoCodes, listOrder)
+                        }
                     }
                 }
             }
@@ -2361,7 +2356,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartItemHolderData.shopId?.toLong()?.let { shopId ->
             cartItemHolderData.cartString?.let { cartString ->
                 val order = OrdersItem(
-                        shopId = shopId.toInt(),
+                        shopId = shopId,
                         uniqueId = cartString,
                         productDetails = listProductDetail,
                         codes = listPromoCodes)
@@ -2582,6 +2577,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun refreshErrorPage() {
+        setTopLayoutVisibility(false)
         binding?.layoutGlobalError?.gone()
         binding?.rlContent?.show()
         refreshHandler?.isRefreshing = true
@@ -2806,7 +2802,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, actionText, tmpCtaClickListener)
                         .show()
             } else {
-                Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, it.resources.getString(R.string.checkout_flow_toaster_action_ok), tmpCtaClickListener)
+                Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, it.resources.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok), tmpCtaClickListener)
                         .show()
             }
         }
@@ -2839,7 +2835,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 Toaster.build(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, actionText, tmpCtaClickListener)
                         .show()
             } else {
-                Toaster.build(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, v.resources.getString(R.string.checkout_flow_toaster_action_ok), tmpCtaClickListener)
+                Toaster.build(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, v.resources.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok), tmpCtaClickListener)
                         .show()
             }
         }
@@ -3361,8 +3357,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         binding?.apply {
             promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.INACTIVE
             promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-            promoCheckoutBtnCart.title = getString(R.string.promo_checkout_inactive_label)
-            promoCheckoutBtnCart.desc = getString(R.string.promo_checkout_inactive_desc)
+            promoCheckoutBtnCart.title = getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_label)
+            promoCheckoutBtnCart.desc = getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_desc)
             promoCheckoutBtnCart.setOnClickListener {
                 renderPromoCheckoutLoading()
                 dPresenter.doValidateUse(generateParamValidateUsePromoRevamp(false, -1, -1, true))
@@ -3483,12 +3479,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartListData?.shoppingSummaryData?.sellerCashbackValue = amount
     }
 
-    override fun onCartItemShowRemainingQty(productId: String) {
-        cartPageAnalytics.eventViewRemainingStockInfo(userSession.userId, productId)
+    override fun onCartItemShowRemainingQty(productId: String?) {
+        cartPageAnalytics.eventViewRemainingStockInfo(userSession.userId, productId ?: "")
     }
 
-    override fun onCartItemShowInformationLabel(productId: String, informationLabel: String) {
-        cartPageAnalytics.eventViewInformationLabelInProductCard(userSession.userId, productId, informationLabel)
+    override fun onCartItemShowInformationLabel(productId: String?, informationLabel: String?) {
+        cartPageAnalytics.eventViewInformationLabelInProductCard(userSession.userId, productId
+                ?: "", informationLabel ?: "")
     }
 
     override fun reCollapseExpandedDeletedUnavailableItems() {

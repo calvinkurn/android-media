@@ -10,7 +10,7 @@
             android:name="com.tokopedia.cart.view.CartActivity"
             android:label="@string/checkout_module_title_activity_cart"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
