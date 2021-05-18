@@ -581,7 +581,7 @@ class StatisticViewModelTest {
 
     @Test
     fun `should success when get table widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(Pair("x", "x"))
         val result = listOf(TableDataUiModel(), TableDataUiModel())
 
         getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -605,7 +605,7 @@ class StatisticViewModelTest {
 
     @Test
     fun `should failed when get table widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(Pair("x", "x"))
 
         getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 

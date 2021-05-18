@@ -42,15 +42,17 @@ class GetTableDataUseCase(
 
     companion object {
         private const val DATA_KEYS = "dataKeys"
+        private const val DEFAULT_POST_LIMIT = 3
 
         fun getRequestParams(
-                dataKey: List<String>,
-                dynamicParameter: DynamicParameterModel
+                dataKey: List<Pair<String, String>>,
+                dynamicParameter: DynamicParameterModel,
+                limit: Int = DEFAULT_POST_LIMIT
         ): RequestParams {
             val dataKeys = dataKey.map {
                 DataKeyModel(
-                        key = it,
-                        jsonParams = dynamicParameter.toJsonString()
+                        key = it.first,
+                        jsonParams = dynamicParameter.copy(limit = limit, postFilter = it.second).toJsonString()
                 )
             }
             return RequestParams.create().apply {
