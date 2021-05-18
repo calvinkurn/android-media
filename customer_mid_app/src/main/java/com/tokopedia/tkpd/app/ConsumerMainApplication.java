@@ -511,8 +511,10 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
          * then, put all of push_data into local storage.
          * */
 
+        System.out.println("Amplification API before remote config");
         if (getAmplificationRemoteConfig()) {
             try {
+                System.out.println("Amplification API after remote config");
                 AmplificationDataSource.invoke(ConsumerMainApplication.this);
             } catch (Exception e) {
                 Map<String, String> messageMap = new HashMap<>();
