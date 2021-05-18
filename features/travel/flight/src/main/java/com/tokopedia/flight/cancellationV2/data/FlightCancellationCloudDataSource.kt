@@ -12,7 +12,7 @@ class FlightCancellationCloudDataSource @Inject constructor(private val flightAp
 
     suspend fun uploadCancellationAttachmentCoroutine(params: Map<String, RequestBody>, file: MultipartBody.Part): CancellationAttachmentUploadEntity =
             flightApi.uploadCancellationAttachmentCoroutine(params, file).let {
-                it.body()!!.data
+                it.body()?.data ?: CancellationAttachmentUploadEntity()
             }
 
 }
