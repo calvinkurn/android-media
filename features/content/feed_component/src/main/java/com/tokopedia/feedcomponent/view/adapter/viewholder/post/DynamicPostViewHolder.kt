@@ -7,7 +7,6 @@ import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.annotation.LayoutRes
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -47,7 +46,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 import kotlinx.android.synthetic.main.item_posttag.view.*
 import java.net.URLEncoder
@@ -109,23 +107,6 @@ open class DynamicPostViewHolder(v: View,
         bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType, element.header.followCta.authorType)
         bindFooter(element.id, element.footer, element.template.cardpost.footer, isPostTagAvailable(element.postTag))
         bindTracking(element.impressHolder, element.tracking)
-
-        val cvDynamicPostFeed = itemView.findViewById<CardView>(R.id.cv_dynamic_post_feed)
-        if (itemView.context.isDarkMode()) {
-            cvDynamicPostFeed.setBackgroundColor(
-                    ContextCompat.getColor(
-                            itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N50
-                    )
-            )
-        } else {
-            cvDynamicPostFeed.setBackgroundColor(
-                    ContextCompat.getColor(
-                            itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N0
-                    )
-            )
-        }
     }
 
     override fun bind(element: DynamicPostViewModel?, payloads: MutableList<Any>) {

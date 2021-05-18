@@ -50,7 +50,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.videoplayer)
     implementation project(rootProject.ext.libraries.youtubeutil)
-    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
     implementation project(rootProject.ext.features.topAdsSdk)
