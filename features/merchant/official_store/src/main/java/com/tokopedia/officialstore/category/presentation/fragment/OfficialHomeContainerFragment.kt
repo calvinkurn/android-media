@@ -445,7 +445,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private fun conditionalViewModelRefresh() {
         chooseAddressAbTestCondition(
                 ifChooseAddressActive = {
-                    if (!validateChooseAddressWidget()) {
+                    if (isAddressDataChanged() && chooseAddressWidgetInitialized) {
+                        chooseAddressWidget?.updateWidget()
                         fetchOSCategory()
                     }
                 },
@@ -454,7 +455,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         )
     }
 
-    private fun validateChooseAddressWidget(): Boolean {
+    private fun isAddressDataChanged(): Boolean {
         var isAddressChanged = false
         chooseAddressData.toLocalCacheModel().let {
             isAddressChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)

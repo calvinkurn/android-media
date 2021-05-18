@@ -31,7 +31,6 @@ class OfficialStoreCategoryViewModel @Inject constructor(
         officialStoreCategoriesResult.removeObservers(lifecyclerOwner)
     }
 
-
     fun getOfficialStoreCategories(doQueryHashing : Boolean) {
         launchCatchError(block = {
             val cacheResponse = withContext(dispatchers.io) {
