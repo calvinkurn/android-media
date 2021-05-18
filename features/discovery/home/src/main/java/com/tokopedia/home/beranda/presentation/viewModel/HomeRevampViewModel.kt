@@ -288,7 +288,7 @@ open class HomeRevampViewModel @Inject constructor(
                     val dataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
                     updateWidget(dataModel.copy(
                             id = bestSellerDataModel.id,
-                            pageName = bestSellerDataModel.pageName,
+                            pageName = dataModel.pageName,
                             widgetParam = bestSellerDataModel.widgetParam
                     ), index)
                 } else {
