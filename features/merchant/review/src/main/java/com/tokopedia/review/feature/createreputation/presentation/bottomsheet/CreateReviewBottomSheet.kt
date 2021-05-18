@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -21,6 +23,7 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
@@ -40,6 +43,7 @@ import com.tokopedia.review.feature.createreputation.presentation.listener.Revie
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.*
+import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
@@ -126,6 +130,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             getForm()
             getIncentiveOvoData()
         }
+        observeSubmitReview()
         observeTemplates()
         observeButtonState()
         observeProgressBarState()
@@ -182,7 +187,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     override fun onClickCloseThankYouBottomSheet() {
-        dismiss()
+        finishIfRoot(true)
     }
 
     override fun onClickReviewAnother() {
@@ -241,6 +246,16 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     override fun onTemplateSelected(template: String) {
         textArea?.append(context?.getString(R.string.review_form_templates_formatting, template)
                 ?: template)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dialog?.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                handleDismiss()
+                true
+            } else false
+        }
     }
 
     private fun initInjector() {
@@ -355,7 +370,17 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun observeSubmitReview() {
         createReviewViewModel.submitReviewResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is com.tokopedia.review.common.data.Success -> {
+                    onSuccessSubmitReview()
+                }
+                is com.tokopedia.review.common.data.Fail -> {
+                    onFailSubmitReview(it.fail)
+                }
+                is com.tokopedia.review.common.data.LoadingView -> {
 
+                }
+            }
         })
     }
 
@@ -375,11 +400,11 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         with(data.productrevGetForm) {
             when {
                 !validToReview -> {
-                    dismiss()
+                    finishIfRoot(false, getString(R.string.review_pending_invalid_to_review))
                     return
                 }
                 productData.productStatus == 0 -> {
-                    dismiss()
+                    finishIfRoot(false, getString(R.string.review_pending_deleted_product_error_toaster))
                     return
                 }
             }
@@ -415,10 +440,11 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun onSuccessSubmitReview() {
         dismiss()
+        activity?.setResult(Activity.RESULT_OK)
     }
 
-    private fun onFailSubmitReview() {
-
+    private fun onFailSubmitReview(throwable: Throwable) {
+        logToCrashlytics(throwable)
     }
 
     private fun onSuccessGetTemplate(templates: List<String>) {
@@ -673,5 +699,33 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             return
         }
         showReviewUnsavedWarningDialog()
+    }
+
+    private fun finishIfRoot(success: Boolean = false, errorMessage: String = "", feedbackId: String =  "") {
+        activity?.run {
+            if (isTaskRoot) {
+                val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+                if (success) {
+                    setResult(Activity.RESULT_OK, intent)
+                }
+                startActivity(intent)
+            } else {
+                val intent = Intent()
+                if (success) {
+                    intent.putExtra(ReputationCommonConstants.ARGS_FEEDBACK_ID, feedbackId)
+                    intent.putExtra(ReputationCommonConstants.ARGS_RATING, rating)
+                    intent.putExtra(ReputationCommonConstants.ARGS_PRODUCT_ID, productId)
+                    intent.putExtra(ReputationCommonConstants.ARGS_REPUTATION_ID, reputationId)
+                    intent.putExtra(ReputationCommonConstants.ARGS_REVIEW_STATE, ReputationCommonConstants.REVIEWED)
+                    setResult(Activity.RESULT_OK, intent)
+                } else {
+                    intent.putExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE, errorMessage)
+                    intent.putExtra(ReputationCommonConstants.ARGS_REVIEW_STATE, ReputationCommonConstants.INVALID_TO_REVIEW)
+                    setResult(Activity.RESULT_FIRST_USER, intent)
+                }
+            }
+            dismiss()
+            finish()
+        }
     }
 }
