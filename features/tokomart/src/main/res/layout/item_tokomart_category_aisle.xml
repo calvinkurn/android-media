@@ -1,16 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/dp_11"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="@dimen/dp_16">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_category_aisle"
+    <View
+        android:id="@+id/divider_aisle_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/tokomart_divider_grey"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-</LinearLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_header_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:text="@string/tokomart_category_aisle_header"
+        app:typographyType="heading_4"
+        app:layout_constraintTop_toBottomOf="@id/divider_aisle_top"/>
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_tokonow_category_left"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:card_type="shadow"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_header_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/card_tokonow_category_right"
+        app:layout_constraintHorizontal_weight="1">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_120">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/img_category_left"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:src="@drawable/ic_delete_soon_18"
+                app:unify_image_corner_radius="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/txt_category_name_left"
+                app:layout_constraintVertical_weight="7"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/txt_category_name_left"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:typographyType="body_3"
+                android:padding="@dimen/dp_8"
+                app:layout_constraintTop_toBottomOf="@id/img_category_left"
+                app:layout_constraintStart_toEndOf="@id/img_category_left"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_weight="3"
+                tools:text="Kategori"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/card_tokonow_category_right"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:card_type="shadow"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:layout_constraintTop_toBottomOf="@id/txt_header_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/card_tokonow_category_left"
+        app:layout_constraintHorizontal_weight="1">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_120">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/img_category_right"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:src="@drawable/ic_delete_soon_18"
+                app:unify_image_corner_radius="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/txt_category_name_right"
+                app:layout_constraintVertical_weight="7"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/txt_category_name_right"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:typographyType="body_3"
+                android:padding="@dimen/dp_8"
+                app:layout_constraintTop_toBottomOf="@id/img_category_right"
+                app:layout_constraintStart_toEndOf="@id/img_category_right"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_weight="3"
+                tools:text="Kategori"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+</androidx.constraintlayout.widget.ConstraintLayout>

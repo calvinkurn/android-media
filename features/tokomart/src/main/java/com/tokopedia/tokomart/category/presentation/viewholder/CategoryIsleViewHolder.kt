@@ -2,13 +2,9 @@ package com.tokopedia.tokomart.category.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
-import com.tokopedia.tokomart.category.presentation.view.CategoryIsleAdapter
 import kotlinx.android.synthetic.main.item_tokomart_category_aisle.view.*
 
 class CategoryIsleViewHolder(itemView: View): AbstractViewHolder<CategoryIsleDataView>(itemView) {
@@ -23,9 +19,12 @@ class CategoryIsleViewHolder(itemView: View): AbstractViewHolder<CategoryIsleDat
                 CategoryIsleDataView("Daging & Seafood"),
                 CategoryIsleDataView("Makanan Kering")
         )
-        val adapter = CategoryIsleAdapter(dummyData.subList(0, 2))
-        itemView.rv_category_aisle.setHasFixedSize(true)
-        itemView.rv_category_aisle.layoutManager = GridLayoutManager(itemView.context, 2)
-        itemView.rv_category_aisle.adapter = adapter
+
+        itemView.run {
+            txt_category_name_left.text = dummyData[0].name
+            txt_category_name_right.text = dummyData[1].name
+            img_category_left.setImageUrl("https://thefatkidinside.com/wp-content/uploads/2019/08/jakarta-header-716x375.jpg")
+            img_category_right.setImageUrl("https://thefatkidinside.com/wp-content/uploads/2019/08/jakarta-header-716x375.jpg")
+        }
     }
 }
