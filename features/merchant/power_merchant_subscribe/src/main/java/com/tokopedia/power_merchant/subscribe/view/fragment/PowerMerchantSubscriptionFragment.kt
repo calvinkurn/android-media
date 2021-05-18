@@ -107,8 +107,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         observePowerMerchantBasicInfo()
         observePmActiveState()
         observePmRegistrationPage()
-        observePmActivationStatus()
-        observePmCancelDeactivationSubmission()
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel?) {}
@@ -126,6 +124,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     override fun cancelPmDeactivationSubmission(position: Int) {
         cancelPmDeactivationWidgetPosition = position
+        observePmCancelDeactivationSubmission()
         mViewModel.cancelPmDeactivationSubmission()
     }
 
@@ -237,7 +236,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             when (it) {
                 is Success -> {
                     showCancelDeactivationToaster()
-                    fetchPowerMerchantBasicInfo()
+                    sharedViewModel.getPowerMerchantBasicInfo()
                 }
                 is Fail -> {
                     cancelPmDeactivationWidgetPosition?.let { position ->
@@ -256,8 +255,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         view?.run {
             val message = getString(R.string.pm_cancel_pm_deactivation_success)
             val actionText = getString(R.string.power_merchant_ok_label)
-            Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelSize(R.dimen.layout_lvl2)
-            Toaster.build(rvPmRegistration, message, Toaster.LENGTH_LONG,
+            Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelSize(R.dimen.layout_lvl5)
+            Toaster.build(rootView, message, Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL, actionText)
                     .show()
         }
@@ -280,7 +279,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun fetchPowerMerchantBasicInfo() {
-        (activity as? SubscriptionActivityInterface)?.fetchPowerMerchantBasicInfo()
+        sharedViewModel.getPowerMerchantBasicInfo()
     }
 
     private fun showErrorState() {
@@ -320,6 +319,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             } else {
                 renderRegularPmRegistrationWidget(registrationHeaderWidget)
             }
+
+            recyclerView?.post {
+                recyclerView?.smoothScrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT)
+            }
         }
     }
 
@@ -357,6 +360,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun setOnPmActivationSuccess() {
         view?.rootView?.let {
+            sharedViewModel.getPowerMerchantBasicInfo()
+
             val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
             val message = if (isPmPro) {
                 getString(R.string.pm_pro_registration_success_message)
@@ -365,10 +370,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             }
             val actionText = getString(R.string.oke)
 
-            Toaster.toasterCustomBottomHeight = it.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
-            Toaster.build(it, message, Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL, actionText)
-                    .show()
+            it.post {
+                Toaster.toasterCustomBottomHeight = it.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
+                Toaster.build(it, message, Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL, actionText)
+                        .show()
+            }
         }
     }
 
@@ -494,6 +501,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
         showActivationProgress()
         val shopTireType = getShopTireByPmTire(currentPmTireType)
+
+        observePmActivationStatus()
         mViewModel.submitPMActivation(shopTireType)
     }
 
@@ -559,6 +568,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         recyclerView?.visible()
         adapter.clearAllElements()
         renderList(widgets, false)
+        recyclerView?.post {
+            recyclerView?.smoothScrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT)
+        }
     }
 
     private fun observePmRegistrationPage() {
