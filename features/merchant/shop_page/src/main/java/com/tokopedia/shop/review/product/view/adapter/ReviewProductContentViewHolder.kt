@@ -280,14 +280,14 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
         containerLike = itemView.findViewById(R.id.container_like)
         val cvReviewContent = itemView.findViewById<CardView>(R.id.cv_review_content)
         if (context.isDarkMode()) {
-            cvReviewContent.setBackgroundColor(
+            cvReviewContent.setCardBackgroundColor(
                     ContextCompat.getColor(
                             context,
                             com.tokopedia.unifyprinciples.R.color.Unify_N50
                     )
             )
         } else {
-            cvReviewContent.setBackgroundColor(
+            cvReviewContent.setCardBackgroundColor(
                     ContextCompat.getColor(
                             context,
                             com.tokopedia.unifyprinciples.R.color.Unify_N0
