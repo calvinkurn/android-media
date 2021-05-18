@@ -1,6 +1,8 @@
 package com.tokopedia.sellerorder.detail.presentation.bottomsheet
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.gone
@@ -12,6 +14,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
+import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
 
 class SomBottomSheetCourierProblem(
         context: Context,
@@ -26,6 +29,17 @@ class SomBottomSheetCourierProblem(
 
     private var somBottomSheetCourierProblemsAdapter: SomBottomSheetCourierProblemsAdapter = SomBottomSheetCourierProblemsAdapter(this)
     private var reasonCourierProblemText: String = ""
+    private val cancelReasonTextWatcher by lazy {
+        object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                childViews?.btn_primary?.isEnabled = !s.isNullOrBlank()
+            }
+        }
+    }
 
     override fun setupChildView() {
         childViews?.run {
@@ -38,7 +52,7 @@ class SomBottomSheetCourierProblem(
             setupTicker()
 
             fl_btn_primary?.show()
-            fl_btn_primary?.setOnClickListener {
+            btn_primary?.setOnClickListener {
                 dismiss()
                 val orderRejectRequest = SomRejectRequestParam()
                 orderRejectRequest.orderId = orderId
@@ -70,8 +84,12 @@ class SomBottomSheetCourierProblem(
                 tf_extra_notes?.visible()
                 tf_extra_notes?.setLabelStatic(true)
                 tf_extra_notes?.setPlaceholder(context.getString(R.string.placeholder_reject_reason))
+                tf_extra_notes?.textFieldInput?.addTextChangedListener(cancelReasonTextWatcher)
                 childViews?.btn_primary?.isEnabled = !tf_extra_notes?.textFieldInput?.text.isNullOrBlank()
             } else {
+                if (tf_extra_notes?.visibility == View.VISIBLE) {
+                    tf_extra_notes?.textFieldInput?.removeTextChangedListener(cancelReasonTextWatcher)
+                }
                 reasonCourierProblemText = optionCourierProblem.reasonText
                 tf_extra_notes?.gone()
                 childViews?.btn_primary?.isEnabled = true

@@ -40,7 +40,7 @@ class SomBottomSheetBuyerOtherReason(
                 }
             })
             fl_btn_primary?.visible()
-            fl_btn_primary?.setOnClickListener {
+            btn_primary?.setOnClickListener {
                 dismiss()
                 val orderRejectRequest = SomRejectRequestParam().apply {
                     orderId = this@SomBottomSheetBuyerOtherReason.orderId

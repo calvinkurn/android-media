@@ -39,7 +39,7 @@ class SomBottomSheetProductEmpty(
             tf_extra_notes?.setPlaceholder(context.getString(R.string.empty_stock_extra_placeholder))
 
             fl_btn_primary?.show()
-            fl_btn_primary?.setOnClickListener {
+            btn_primary?.setOnClickListener {
                 dismiss()
                 val orderRejectRequest = SomRejectRequestParam()
                 orderRejectRequest.orderId = orderId
