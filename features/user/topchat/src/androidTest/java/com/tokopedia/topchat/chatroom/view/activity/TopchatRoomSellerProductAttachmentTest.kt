@@ -505,7 +505,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     }
 
     @Test
-    fun should_has_empty_stock_if_variant_result_is_inactive_with_parent_id() {
+    fun should_has_empty_stock_with_parent_id() {
         // Given
         val productName = "Sepatu"
         val productId = "1830243767"
@@ -523,6 +523,44 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         chatAttachmentUseCase.response = sellerProductVariantAttachmentWithParentId
         createSuccessUpdateStockIntentResult(
                 parentId, 55, ProductStatus.ACTIVE, productName, variantMapResult
+        )
+        inflateTestFragment()
+
+        // When
+        clickChangeStockBtn(R.id.recycler_view, 1)
+
+        // Then
+        assertStockCountBtnVisibilityAt(
+                R.id.recycler_view, 1, isDisplayed()
+        )
+        assertStockCountVisibilityAt(
+                R.id.recycler_view, 1, isDisplayed()
+        )
+        assertStockCountValueAt(
+                R.id.recycler_view, 1, 0
+        )
+        assertEmptyStockLabelOnProductCard(R.id.recycler_view, 1)
+    }
+
+    @Test
+    fun should_show_deactivate_product_variant_from_update_stock_without_changing_stock_with_parent_id() {
+        // Given
+        val productName = "Sepatu"
+        val productId = "1830243767"
+        val parentId = "1830243756"
+        val originalVariantStock = 5
+        val variantName = "Biru"
+        val variantResult = UpdateCampaignVariantResult(
+                ProductStatus.INACTIVE, originalVariantStock, variantName
+        )
+        val variantMapResult = hashMapOf(
+                productId to variantResult
+        )
+        setupChatRoomActivity()
+        getChatUseCase.response = sellerProductVariantChatReplies
+        chatAttachmentUseCase.response = sellerProductVariantAttachmentWithParentId
+        createSuccessUpdateStockIntentResult(
+                parentId, 5, ProductStatus.ACTIVE, productName, variantMapResult
         )
         inflateTestFragment()
 
