@@ -84,13 +84,14 @@ class PaymentTransactionActionSheet : BottomSheetUnify() {
                     if (it.transactionList.size > 1) listener.cancelCombinedTransaction(model)
                     else listener.cancelSingleTransaction(
                         it.transactionList.getOrNull(0)?.transactionId ?: "",
-                        it.transactionList.getOrNull(0)?.merchantCode ?: ""
+                        it.transactionList.getOrNull(0)?.merchantCode ?: "",
+                        null
                     )
                 }
             }
             else -> listener.cancelSingleTransaction(
                 model.extractValues().first,
-                model.extractValues().second
+                model.extractValues().second, null
             )
         }
         dismiss()

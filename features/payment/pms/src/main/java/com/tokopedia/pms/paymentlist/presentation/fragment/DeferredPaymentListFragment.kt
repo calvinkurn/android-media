@@ -8,12 +8,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pms.R
 import com.tokopedia.pms.payment.data.model.CancelDetail
 import com.tokopedia.pms.paymentlist.di.PaymentListComponent
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
+import com.tokopedia.pms.paymentlist.domain.data.CancelDetailWrapper
 import com.tokopedia.pms.paymentlist.domain.data.VirtualAccountPaymentModel
 import com.tokopedia.pms.paymentlist.presentation.adapter.DeferredPaymentListAdapter
 import com.tokopedia.pms.paymentlist.presentation.bottomsheet.PaymentTransactionActionSheet
@@ -24,6 +30,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_payment_list.*
 import timber.log.Timber
+import java.lang.NullPointerException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 
@@ -57,34 +66,9 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
         observeViewModels()
     }
 
-    private fun handleActionRedirection(actionItem: Int, model: BasePaymentModel) {
-        when(actionItem) {
-            ACTION_HOW_TO_PAY_REDIRECTION -> redirectToHowToPay(model)
-            ACTION_INVOICE_PAGE_REDIRECTION -> openInvoiceDetail(model)
-            ACTION_INVOICE_PAGE_REDIRECTION_COMBINED_VA -> checkAndOpenInvoiceDetail(model)
-            ACTION_CHEVRON_ACTIONS -> openActionBottomSheet(model)
-        }
-    }
-
-    private fun openInvoiceDetail(model: BasePaymentModel) {
-        Toaster.make(recycler_view, model.invoiceDetailUrl, Toaster.LENGTH_LONG)
-        RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, model.invoiceDetailUrl)
-    }
-
-    private fun redirectToHowToPay(model: BasePaymentModel) {
-        Toaster.make(recycler_view, model.howtoPayAppLink, Toaster.LENGTH_LONG)
-        //RouteManager.route(context, model.howtoPayAppLink)
-    }
-
-    private fun checkAndOpenInvoiceDetail(model: BasePaymentModel) {
-        (model as VirtualAccountPaymentModel).transactionList.let {
-            if (it.size > 1) showCombinedTransactionDetail(model) else openInvoiceDetail(model)
-        }
-    }
-
-    private fun loadInitialDeferredTransactions(cursor: String = "") {
+    private fun loadInitialDeferredTransactions() {
         (recycler_view.adapter as DeferredPaymentListAdapter).clearAllElements()
-        viewModel.getPaymentList(cursor)
+        viewModel.getPaymentList()
     }
 
     private fun observeViewModels() {
@@ -102,14 +86,33 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
         })
         viewModel.cancelPaymentLiveData.observe(viewLifecycleOwner, {
             when(it) {
-                is Success -> Timber.d(it.data.message)
+                is Success -> Toaster.make(recycler_view, it.data.message, Toaster.LENGTH_LONG)
                 is Fail ->  Timber.d(it.throwable)
             }
         })
     }
 
-    private fun showCancelDetailMessage(data: CancelDetail) {
-        // showDialog here
+    // showDialog here
+    private fun showCancelDetailMessage(data: CancelDetailWrapper) {
+        val description = if (data.cancelDetailData.combineMessage.isNullOrBlank()) {
+            data.cancelDetailData.refundMessage ?: ""
+        } else data.cancelDetailData.combineMessage +"\n" + data.cancelDetailData.refundMessage
+        context?.let {
+            val title = if (data.productName == null) it.getString(R.string.payment_cancel_title_default)
+            else "Yakin ingin batalkan ${data.productName}"
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(title)
+            dialog.setDescription(description)
+            dialog.setPrimaryCTAText(getString(R.string.payment_cancel_yes))
+            dialog.setPrimaryCTAClickListener {
+                viewModel.cancelPayment(data.transactionId, data.merchantCode)
+            }
+            dialog.setSecondaryCTAText(getString(R.string.payment_cancel_back))
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
+        }
     }
 
     private fun handlePaymentListSuccess(data: ArrayList<BasePaymentModel>) {
@@ -117,15 +120,59 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
     }
 
     private fun handlePaymentListError(throwable: Throwable) {
-        // show empty state
+        when(throwable) {
+            is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
+            is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
+            is NullPointerException -> showEmptyState()
+            else -> setGlobalErrors(GlobalError.SERVER_ERROR)
+        }
     }
 
-    fun invokeCancelSingleTransaction(transactionId: String, merchantCode: String) {
-        viewModel.getCancelPaymentDetail(transactionId, merchantCode)
+    private fun showEmptyState() {
+        noPendingTransactionEmptyState.visible()
+        noPendingTransactionEmptyState.setPrimaryCTAClickListener { RouteManager.route(context, ApplinkConst.HOME) }
+    }
+
+    private fun setGlobalErrors(errorType: Int) {
+        paymentListGlobalError.setType(errorType)
+        paymentListGlobalError.visible()
+        paymentListGlobalError.setActionClickListener {
+            paymentListGlobalError.gone()
+            recycler_view.visible()
+            viewModel.getPaymentList()
+        }
+    }
+
+    private fun handleActionRedirection(actionItem: Int, model: BasePaymentModel) {
+        when(actionItem) {
+            ACTION_HOW_TO_PAY_REDIRECTION -> redirectToHowToPay(model)
+            ACTION_INVOICE_PAGE_REDIRECTION -> openInvoiceDetail(model)
+            ACTION_INVOICE_PAGE_REDIRECTION_COMBINED_VA -> checkAndOpenInvoiceDetail(model)
+            ACTION_CHEVRON_ACTIONS -> openActionBottomSheet(model)
+        }
+    }
+
+    private fun openInvoiceDetail(model: BasePaymentModel) {
+        Toaster.make(recycler_view, model.invoiceDetailUrl, Toaster.LENGTH_LONG)
+        RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, model.invoiceDetailUrl)
+    }
+
+    private fun redirectToHowToPay(model: BasePaymentModel) {
+        Toaster.make(recycler_view, model.howtoPayAppLink, Toaster.LENGTH_LONG)
+        RouteManager.route(context, model.howtoPayAppLink)
+    }
+
+    private fun checkAndOpenInvoiceDetail(model: BasePaymentModel) {
+        (model as VirtualAccountPaymentModel).transactionList.let {
+            if (it.size > 1) showCombinedTransactionDetail(model) else openInvoiceDetail(model)
+        }
+    }
+
+    fun invokeCancelSingleTransaction(transactionId: String, merchantCode: String, productName: String?) {
+        viewModel.getCancelPaymentDetail(transactionId, merchantCode, productName)
     }
 
     private fun openActionBottomSheet(model: BasePaymentModel) {
-        // open list of action bottom sheet
         val bundle = Bundle()
         bundle.putParcelable(PaymentTransactionActionSheet.PAYMENT_MODEL, model)
         PaymentTransactionActionSheet.show(bundle, childFragmentManager)

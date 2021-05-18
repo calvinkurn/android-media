@@ -12,8 +12,9 @@
     <string name="payment_label_total">Total</string>
     <string name="payment_label_method_payment">Metode Pembayaran</string>
     <string name="payment_label_close">Tutup</string>
-    <string name="payment_title_yes">Ya</string>
-    <string name="payment_label_no">Tidak</string>
+    <string name="payment_cancel_yes">Ya, Batalkan</string>
+    <string name="payment_cancel_back">Kembali</string>
+    <string name="payment_cancel_title_default">Yakin ingin batalkan transaksi?</string>
     <string name="payment_label_helper_change_click_bca">User ID KlikBCA Anda saat ini adalah %1$s</string>
     <string name="payment_label_hint_click_bca_user_id">KlikBCA User ID</string>
     <string name="payment_label_use">Terapkan</string>
@@ -73,6 +74,11 @@
     <string name="pms_deferred_payment_card_title">Belanja</string>
     <string name="pms_deferred_payment_expire_title">Bayar Sebelum</string>
     <string name="pms_deferred_payment_waiting_label">Menunggu verifikasi</string>
+
+    <string name="pms_deferred_payment_empty_title">Belum ada transaksi</string>
+    <string name="pms_deferred_payment_empty_subtitle">Yuk, mulai belanja dan penuhi berbagai kebutuhanmu di Tokopedia.</string>
+    <string name="pms_deferred_payment_empty_action">Mulai Belanja</string>
+
     <string-array name="payment_list_bank_name">
         <item>BCA</item>
         <item>MANDIRI</item>

@@ -59,10 +59,10 @@ class PaymentTransactionDetailSheet : BottomSheetUnify() {
     }
 
     private fun initAdapter() {
-        baseRecyclerView.adapter = PaymentTransactionDetailAdapter(vaTransactionList) { action, model ->
+        baseRecyclerView.adapter = PaymentTransactionDetailAdapter(vaTransactionList) { action, trxName, model ->
             when(action) {
                 OPEN_DETAIL -> showInvoiceDetail(model)
-                CANCEL_TRANSACTION -> cancelTransaction(model)
+                CANCEL_TRANSACTION -> cancelTransaction(model, trxName)
             }
         }
         baseRecyclerView.layoutManager =
@@ -73,8 +73,8 @@ class PaymentTransactionDetailSheet : BottomSheetUnify() {
         RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, model.invoiceUrl)
     }
 
-    private fun cancelTransaction(model: VaTransactionItem) {
-        (activity as PaymentListActionListener).cancelSingleTransaction(model.transactionId, model.merchantCode)
+    private fun cancelTransaction(model: VaTransactionItem, transactionName: String?) {
+        (activity as PaymentListActionListener).cancelSingleTransaction(model.transactionId, model.merchantCode, transactionName)
         dismiss()
     }
 

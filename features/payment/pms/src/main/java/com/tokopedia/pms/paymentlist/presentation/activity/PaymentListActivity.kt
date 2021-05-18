@@ -33,10 +33,10 @@ class PaymentListActivity : BaseSimpleActivity(), HasComponent<PaymentListCompon
         return component
     }
 
-    override fun cancelSingleTransaction(transactionId: String, merchantCode: String) {
+    override fun cancelSingleTransaction(transactionId: String, merchantCode: String, productName: String?) {
         (fragment as DeferredPaymentListFragment).invokeCancelSingleTransaction(
             transactionId,
-            merchantCode
+            merchantCode, productName
         )
     }
 

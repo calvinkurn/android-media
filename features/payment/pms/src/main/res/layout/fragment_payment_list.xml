@@ -1,19 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-</RelativeLayout>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/paymentListGlobalError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingTop="@dimen/unify_space_16"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifycomponents.EmptyState
+        android:id="@+id/noPendingTransactionEmptyState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unifyEmptyStateCTAFullWidth="true"
+        app:unifyEmptyStateImageDrawable="@drawable/unify_globalerrors_maintenance"
+        app:unifyEmptyStateDescription="@string/pms_deferred_payment_empty_subtitle"
+        app:unifyEmptyStatePrimaryCTAText="@string/pms_deferred_payment_empty_action"
+        app:unifyEmptyStateTitle="@string/pms_deferred_payment_empty_title"
+        app:unifyEmptyStateType="page"
+        android:paddingTop="@dimen/unify_space_16"
+        android:visibility="gone" />
+</androidx.constraintlayout.widget.ConstraintLayout>

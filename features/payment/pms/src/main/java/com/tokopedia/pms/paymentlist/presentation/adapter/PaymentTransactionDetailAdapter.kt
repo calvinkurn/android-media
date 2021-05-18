@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.item_transaction_detail_item.view.*
 
 class PaymentTransactionDetailAdapter(
     private var transactionList: ArrayList<VaTransactionItem>,
-    private val clickListener: (Int, VaTransactionItem) -> Unit
+    private val clickListener: (Int, String?, VaTransactionItem) -> Unit
 ) :
     RecyclerView.Adapter<PaymentTransactionDetailAdapter.PaymentTransactionDetailViewHolder>() {
 
@@ -34,7 +34,7 @@ class PaymentTransactionDetailAdapter(
 
     class PaymentTransactionDetailViewHolder(
         val view: View,
-        val clickListener: (Int, VaTransactionItem) -> Unit
+        val clickListener: (Int, String?, VaTransactionItem) -> Unit
     ) :
         RecyclerView.ViewHolder(view) {
         fun bind(vaTransactionItem: VaTransactionItem, position: Int) {
@@ -44,11 +44,13 @@ class PaymentTransactionDetailAdapter(
                     vaTransactionItem.amount, false)
                 tvCancelTransaction.setOnClickListener { clickListener(
                         PaymentTransactionDetailSheet.CANCEL_TRANSACTION,
+                        "Trasaksi ${position+1}- ${vaTransactionItem.productName}",
                         vaTransactionItem
                     )
                 }
                 goToHowToPay.setOnClickListener { clickListener(
                         PaymentTransactionDetailSheet.OPEN_DETAIL,
+                        null,
                         vaTransactionItem
                     )
                 }

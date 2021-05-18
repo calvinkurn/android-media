@@ -104,13 +104,13 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
         alertDialog.setTitle(getString(R.string.payment_label_cancel_transaction));
         alertDialog.setMessage(refundMessage);
-        alertDialog.setPositiveButton(getString(R.string.payment_title_yes), new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 paymentListPresenter.cancelPayment(getResources(), transactionID, merchantCode);
             }
         });
-        alertDialog.setNegativeButton(getString(R.string.payment_label_no), null);
+        //alertDialog.setNegativeButton(getString(R.string.payment_label_no), null);
         alertDialog.show();
     }
 
