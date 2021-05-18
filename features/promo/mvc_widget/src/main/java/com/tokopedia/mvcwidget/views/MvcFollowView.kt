@@ -11,7 +11,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.mvcwidget.*
 import com.tokopedia.promoui.common.dpToPx
@@ -67,6 +69,17 @@ class MvcFollowViewContainer @JvmOverloads constructor(
                             widgetImpression.sentJadiMemberImpression = true
                         }
                     }
+                    FollowWidgetType.MEMBERSHIP_CLOSE -> {
+                        twoActionView.visibility = View.VISIBLE
+                        oneActionView.visibility = View.GONE
+                        twoActionView.setData(followWidget, shopId, source)
+                        divider.visibility = View.VISIBLE
+
+                        if (!widgetImpression.sentJadiMemberImpression) {
+                            Tracker.viewWidgetImpression(FollowWidgetType.MEMBERSHIP_CLOSE, shopId, UserSession(context).userId, source)
+                            widgetImpression.sentJadiMemberImpression = true
+                        }
+                    }
                 }
             }
         }
@@ -111,7 +124,11 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
     private var tvTitle: Typography
     private var icon: AppCompatImageView
     private var btnFirst: UnifyButton
+    private var collapsableContainer : LinearLayout
+    var tvList : Typography
+    private var tvSubTitle : Typography
     var btnSecond: UnifyButton
+    var containerContent : ConstraintLayout
 
     init {
         View.inflate(context, layout, this)
@@ -121,19 +138,38 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         icon = findViewById(R.id.image_icon)
         btnFirst = findViewById(R.id.btnFirst)
         btnSecond = findViewById(R.id.btnSecond)
+        collapsableContainer = findViewById(R.id.container_collapsable)
+        tvList = findViewById(R.id.tvList)
+        tvSubTitle = findViewById(R.id.tvSubTitle)
+        containerContent = findViewById(R.id.container_content)
+
         radius = dpToPx(8)
         type = TYPE_LARGE
     }
 
     fun setData(followWidget: FollowWidget, shopId: String, @MvcSource mvcSource: Int) {
         val t = followWidget.content ?: ""
+        val st = followWidget.contentDetails ?: ""
+
         followWidget.content?.let {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                tvTitle.text = HtmlUtil.fromHtml(t).trim()
-            } else {
-                tvTitle.text = Html.fromHtml(t).trim()
+            tvTitle.text = returnTextFromHtml(t)
+        }
+
+        followWidget.contentDetails?.let {
+            tvSubTitle.text = returnTextFromHtml(st)
+        }
+
+        when (followWidget.type) {
+            FollowWidgetType.MEMBERSHIP_OPEN -> {
+                collapsableContainer.visibility = View.GONE
+                containerContent.visibility = View.VISIBLE
+            }
+            FollowWidgetType.MEMBERSHIP_CLOSE -> {
+                collapsableContainer.visibility = View.VISIBLE
+                containerContent.visibility = View.GONE
             }
         }
+
         if (!followWidget.iconURL.isNullOrEmpty()) {
             Glide.with(icon)
                     .load(followWidget.iconURL)
@@ -197,5 +233,13 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         }
         bottomsheet.show(activity.supportFragmentManager, "btm_mvc_tokomember")
 
+    }
+
+    private fun returnTextFromHtml(t: String) : CharSequence{
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            HtmlUtil.fromHtml(t).trim()
+        } else {
+            Html.fromHtml(t).trim()
+        }
     }
 }

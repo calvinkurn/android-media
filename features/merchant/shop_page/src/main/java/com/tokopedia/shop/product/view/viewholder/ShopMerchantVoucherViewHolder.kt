@@ -28,7 +28,8 @@ class ShopMerchantVoucherViewHolder(itemView: View) : AbstractViewHolder<ShopMer
             merchantVoucherWidget?.setData(MvcData(
                     title = titles?.firstOrNull()?.text ?: "",
                     subTitle = model.data.subTitle ?: "",
-                    imageUrl = model.data.imageURL ?: ""
+                    imageUrl = model.data.imageURL ?: "",
+                    animatedInfos = model.data.animatedInfos ?: listOf()
             ),
                     shopId = model.data.shopId ?: "0",
                     isMainContainerSetFitsSystemWindows = false,

@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class ProductMerchantVoucherSummaryDataModel(
@@ -11,7 +12,8 @@ data class ProductMerchantVoucherSummaryDataModel(
         var subTitle: String = "",
         var imageURL: String = "",
         var isShown: Boolean = false,
-        var shopId: String = ""
+        var shopId: String = "",
+        var animatedInfos: List<AnimatedInfos> = listOf()
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()

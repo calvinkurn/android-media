@@ -1,7 +1,6 @@
 package com.tokopedia.mvcwidget.views
 
 import android.content.Context
-import android.content.res.Resources
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -9,7 +8,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
@@ -24,9 +22,7 @@ import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.mvc_layout_bottomsheet_button.view.*
 import javax.inject.Inject
 
 class MvcDetailView @JvmOverloads constructor(
@@ -266,6 +262,10 @@ class MvcDetailView @JvmOverloads constructor(
 
     override fun handleJadiMemberButtonClick() {
         viewModel.registerMembership()
+    }
+
+    override fun handleCollapseExpand(adapterPosition: Int) {
+       adapter?.notifyItemChanged(adapterPosition)
     }
 
     private fun setToastBottomMargin() {

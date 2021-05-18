@@ -14,6 +14,7 @@
             android:id="@+id/fm_image"
             android:layout_width="74dp"
             android:layout_height="match_parent">
+
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_52"
                 android:layout_height="@dimen/dp_52"
@@ -29,12 +30,12 @@
                 android:layout_gravity="center" />
         </FrameLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:layout_marginTop="@dimen/dp_16"
-            tools:background="@color/Unify_Y200">
+            android:orientation="vertical">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTitle"
@@ -42,45 +43,98 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_9"
                 android:layout_marginEnd="@dimen/dp_16"
+                android:textColor="@color/Unify_N700"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"
-                android:textColor="@color/Unify_N700"
-                tools:text="Jadi member toko untuk dapat kupon:
+                tools:text="Jadi member toko untuk dapat kupon" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvSubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_9"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    android:textColor="@color/Unify_N700"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler"
+                    tools:text="Jadi member toko untuk dapat kupon:
                 \n•  Cashback 10% hingga Rp500.000
                 \n•  Cashback 10% hingga Rp500.000
                 \n•  Cashback 10% hingga Rp500.000
                 " />
 
+                <LinearLayout
+                    android:id="@+id/ll_buttons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_9"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginEnd="18dp"
+                    android:layout_marginBottom="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvSubTitle">
+
+                    <com.tokopedia.unifycomponents.UnifyButton
+                        android:id="@+id/btnFirst"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp_32"
+                        android:layout_marginEnd="@dimen/dp_4"
+                        android:layout_weight="1"
+                        android:text="@string/mvc_cek_info"
+                        app:unifyButtonSize="small"
+                        app:unifyButtonVariant="ghost" />
+
+                    <com.tokopedia.unifycomponents.UnifyButton
+                        android:id="@+id/btnSecond"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp_32"
+                        android:layout_marginStart="@dimen/dp_4"
+                        android:layout_weight="1"
+                        android:text="@string/mvc_jadi_member"
+                        app:unifyButtonSize="small" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <LinearLayout
-                android:id="@+id/ll_buttons"
+                android:id="@+id/container_collapsable"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tvTitle"
-                android:layout_marginStart="@dimen/dp_9"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginEnd="18dp"
-                android:layout_marginBottom="16dp">
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
 
-                <com.tokopedia.unifycomponents.UnifyButton
-                    android:id="@+id/btnFirst"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_32"
-                    android:layout_marginEnd="@dimen/dp_4"
-                    android:layout_weight="1"
-                    android:text="@string/mvc_cek_info"
-                    app:unifyButtonSize="small"
-                    app:unifyButtonVariant="ghost" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@drawable/mvc_bg_shadow" />
 
-                <com.tokopedia.unifycomponents.UnifyButton
-                    android:id="@+id/btnSecond"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_32"
-                    android:layout_marginStart="@dimen/dp_4"
-                    android:layout_weight="1"
-                    android:text="@string/mvc_jadi_member"
-                    app:unifyButtonSize="small" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawableEnd="@drawable/ic_arrow_down_grey"
+                    android:drawablePadding="@dimen/dp_8"
+                    android:textColor="@color/Unify_N700"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler"
+                    tools:text="Lihat Selengkapnya" />
+
             </LinearLayout>
-        </RelativeLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 

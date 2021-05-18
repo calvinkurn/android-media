@@ -3,6 +3,8 @@ package com.tokopedia.mvcwidget
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.Transformation
 import androidx.core.view.ViewCompat
 
 
@@ -43,6 +45,52 @@ inline fun View.doOnNextLayout(crossinline action: (view: View) -> Unit) {
             action(view)
         }
     })
+}
+
+fun expand(v: View) {
+    val matchParentMeasureSpec =
+        View.MeasureSpec.makeMeasureSpec((v.parent as View).width, View.MeasureSpec.EXACTLY)
+    val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+    v.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
+    val targetHeight = v.measuredHeight
+
+    v.layoutParams.height = 1
+    v.visibility = View.VISIBLE
+    val a: Animation = object : Animation() {
+         override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+            v.layoutParams.height =
+                if (interpolatedTime == 1f) ViewGroup.LayoutParams.WRAP_CONTENT else (targetHeight * interpolatedTime).toInt()
+            v.requestLayout()
+        }
+
+        override fun willChangeBounds(): Boolean {
+            return true
+        }
+    }
+
+    a.duration = (targetHeight / v.context.resources.displayMetrics.density).toLong()
+    v.startAnimation(a)
+}
+
+fun collapse(v: View) {
+    val initialHeight = v.measuredHeight
+    val a: Animation = object : Animation() {
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+            if (interpolatedTime == 1f) {
+                v.visibility = View.GONE
+            } else {
+                v.layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
+                v.requestLayout()
+            }
+        }
+
+        override fun willChangeBounds(): Boolean {
+            return true
+        }
+    }
+
+    a.duration = ((initialHeight / v.context.resources.displayMetrics.density).toLong())
+    v.startAnimation(a)
 }
 
 data class MvcTokomemberBmViewData(val imageUrls: List<String>, val messages: List<String>, val buttonText: String)

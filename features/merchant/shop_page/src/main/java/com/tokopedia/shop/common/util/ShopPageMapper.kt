@@ -21,7 +21,8 @@ object ShopPageMapper {
                     isShown = data.isShown,
                     subTitle = data.subTitle,
                     imageURL = data.imageURL,
-                    shopId = shopId
+                    shopId = shopId,
+                    animatedInfos = data.animatedInfos
             )
         }
         return null

@@ -7,5 +7,6 @@ interface MvcDetailViewContract {
     fun handleJadiMemberButtonClick()
     fun getWidgetImpression():WidgetImpression
     fun getShopId():String
+    fun handleCollapseExpand(adapterPosition: Int)
     @MvcSource fun getMvcSource():Int
 }

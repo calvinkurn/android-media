@@ -3,8 +3,8 @@ package com.tokopedia.mvcwidget
 const val IO = "IO"
 
 const val TOKOPOINTS_CATALOG_MVC_SUMMARY_QUERY = """
-query mvcCatalogSummaryQuery(${'$'}shopID: String!,${'$'}limit: Int!){
-    tokopointsCatalogMVCSummary(shopID: ${'$'}shopID,limit: ${'$'}limit) {
+query mvcCatalogSummaryQuery(${'$'}shopID: String!,${'$'}limit: Int! , ${'$'}apiVersion : String!){
+    tokopointsCatalogMVCSummary(shopID: ${'$'}shopID,limit: ${'$'}limit , apiVersion: ${'$'}apiVersion) {
        resultStatus {
           code
           status
@@ -17,6 +17,11 @@ query mvcCatalogSummaryQuery(${'$'}shopID: String!,${'$'}limit: Int!){
         }
         subTitle
         imageURL
+        animatedInfos {
+          title
+          subTitle
+          iconURL
+        }
     }
 }
 """
@@ -33,12 +38,15 @@ const val TP_CATALOG_MVC_LIST_QUERY = """
       isShown
       type
       content
+      contentDetails
       iconURL
       membershipHowTo {
         imageURL
         description
       }
       membershipCardID
+      membershipMinimumTransaction
+      membershipMinimumTransactionLabel
     }
     shopName
     catalogList {
@@ -46,6 +54,8 @@ const val TP_CATALOG_MVC_LIST_QUERY = """
       slug
       baseCode
       promoID
+      catalogType
+      promoType
       title
       maximumBenefitAmount
       minimumUsageAmount

@@ -205,6 +205,9 @@ object Tracker {
             FollowWidgetType.MEMBERSHIP_OPEN -> {
                 map[Constants.EVENT_ACTION] = Action.VIEW_MEMBERSHIP_WIDGET
             }
+            FollowWidgetType.MEMBERSHIP_CLOSE -> {
+                map[Constants.EVENT_ACTION] = Action.VIEW_MEMBERSHIP_WIDGET
+            }
         }
         fillCommonItems(map, userId)
         getTracker().sendGeneralEvent(map)

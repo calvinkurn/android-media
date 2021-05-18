@@ -16,6 +16,7 @@ import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.htmltags.HtmlUtil
+import kotlinx.coroutines.Runnable
 
 /*
 * 1. It has internal Padding of 6dp to render its shadows
@@ -31,6 +32,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     var isMainContainerSetFitsSystemWindows = false
     @MvcSource
     var source: Int = MvcSource.SHOP
+    var iconListRunnable: Runnable? = null
 
     init {
         View.inflate(context, R.layout.mvc_entry_view, this)
@@ -65,10 +67,48 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         tvSubTitle.text = mvcData.subTitle
         this.shopId = shopId
 
+        val iconList = mvcData.animatedInfos
+
         Glide.with(imageCoupon)
-                .load(mvcData.imageUrl)
-                .dontAnimate()
-                .into(imageCoupon)
+            .load(mvcData.imageUrl)
+            .dontAnimate()
+            .into(imageCoupon)
+
+        iconListRunnable = object : Runnable {
+            var currentIndex = 0
+            var updateInterval = 3000L
+
+            override fun run() {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    tvTitle.text = HtmlUtil.fromHtml(iconList[currentIndex].title?:"").trim()
+                } else {
+                    tvTitle.text = Html.fromHtml(iconList[currentIndex].title?:"").trim()
+                }
+
+                tvSubTitle.text = iconList[currentIndex].subTitle
+
+                Glide.with(imageCoupon)
+                    .load(iconList[currentIndex].iconURL)
+                    .dontAnimate()
+                    .into(imageCoupon)
+
+
+                currentIndex += 1
+                if (currentIndex == iconList.size) {
+                    currentIndex = 0
+                }
+
+                imageCoupon.postDelayed(this, updateInterval)
+            }
+        }
+
+        iconListRunnable?.run()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        handler.removeCallbacksAndMessages(iconListRunnable)
     }
 
 }

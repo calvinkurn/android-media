@@ -27,6 +27,17 @@ class FollowViewHolder (itemView: View,val mvcDetailViewContract: MvcDetailViewC
             mvcDetailViewContract.handleJadiMemberButtonClick()
             Tracker.clickJadiMemberButton(shopId,UserSession(itemView.context).userId,mvcSource)
         }
+
+        mvcFollowContainer.twoActionView.tvList.setOnClickListener {
+            if (followWidget.isCollapsed) {
+                mvcFollowContainer.twoActionView.containerContent.visibility = View.VISIBLE
+                followWidget.isCollapsed = !followWidget.isCollapsed
+            } else {
+                mvcFollowContainer.twoActionView.containerContent.visibility = View.GONE
+                followWidget.isCollapsed = !followWidget.isCollapsed
+            }
+            mvcDetailViewContract.handleCollapseExpand(adapterPosition)
+        }
     }
 
 }
