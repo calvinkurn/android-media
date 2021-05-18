@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.ApplinkConst.Inbox.*
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.inbox.R
@@ -43,7 +44,50 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
+/**
+ * How to go to this page
+ * Applink: [com.tokopedia.applink.ApplinkConst.INBOX]
+ *
+ * This page accept 2 optional query parameters:
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_PAGE]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_ROLE]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_SOURCE]
+ * the value you can use are as follows
+ * param page:
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_PAGE_NOTIFICATION]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_PAGE_CHAT]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_PAGE_TALK]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_PAGE_REVIEW]
+ * param role:
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_ROLE_BUYER]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_ROLE_SELLER]
+ * param source:
+ * - you can put any value to this param
+ * If the query parameters is not provided it will use recent/last opened page & role
+ *
+ * example form of applinks:
+ * - tokopedia://inbox
+ * - tokopedia://inbox?page=notification&role=buyer
+ * - tokopedia://inbox?page=notification
+ * - tokopedia://inbox?role=buyer
+ * - tokopedia://inbox?source=uoh
+ *
+ * How to construct the applink with query parameters:
+ * ```
+ * val applinkUri = Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
+ *      appendQueryParameter(
+ *          ApplinkConst.Inbox.PARAM_PAGE,
+ *          ApplinkConst.Inbox.VALUE_PAGE_CHAT
+ *      )
+ * }
+ * ```
+ *
+ * note: Do not hardcode applink.
+ * use variables provided in [com.tokopedia.applink.ApplinkConst]
+ */
 class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentContainer {
+
+    private var source = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -80,6 +124,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         setContentView(R.layout.activity_inbox)
         setupInjector()
         setupLastPreviousState()
+        setupStateFromAppLink()
         trackOpenInbox()
         setupView()
         setupConfig()
@@ -112,11 +157,36 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         InboxConfig.page = cacheState.initialPage
     }
 
-    private fun trackOpenInbox() {
-        if (!viewModel.hasBeenVisited()) {
-            analytic.trackOpenInbox(InboxConfig.page, InboxConfig.role)
-            viewModel.markAsVisited()
+    private fun setupStateFromAppLink() {
+        val data = intent?.data
+        val page = data?.getQueryParameter(PARAM_PAGE)
+        val role = data?.getQueryParameter(PARAM_ROLE)
+        val source = data?.getQueryParameter(PARAM_SOURCE)
+        val pageInt = when (page) {
+            VALUE_PAGE_NOTIFICATION -> InboxFragmentType.NOTIFICATION
+            VALUE_PAGE_CHAT -> InboxFragmentType.CHAT
+            VALUE_PAGE_TALK -> InboxFragmentType.DISCUSSION
+            VALUE_PAGE_REVIEW -> InboxFragmentType.REVIEW
+            else -> null
         }
+        val roleInt = when (role) {
+            VALUE_ROLE_BUYER -> RoleType.BUYER
+            VALUE_ROLE_SELLER -> RoleType.SELLER
+            else -> null
+        }
+        pageInt?.let {
+            InboxConfig.page = it
+        }
+        roleInt?.let {
+            InboxConfig.setRole(it)
+        }
+        source?.let {
+            this.source = it
+        }
+    }
+
+    private fun trackOpenInbox() {
+        analytic.trackOpenInbox(InboxConfig.page, InboxConfig.role)
     }
 
     override fun clearNotificationCounter() {
@@ -155,7 +225,29 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole.talkInt)
     }
 
+    override fun decreaseReviewUnreviewedCounter() {
+        val notificationRole = InboxConfig.inboxCounter.getByRole(
+                InboxConfig.role
+        ) ?: return
+        notificationRole.reviewInt -= 1
+        bottomNav?.setBadgeCount(InboxFragmentType.REVIEW, notificationRole.reviewInt)
+    }
+
+    override fun hideReviewCounter() {
+        bottomNav?.setBadgeCount(InboxFragmentType.REVIEW, 0)
+    }
+
+    override fun showReviewCounter() {
+        val notificationRole = InboxConfig.inboxCounter.getByRole(RoleType.BUYER) ?: return
+        bottomNav?.setBadgeCount(InboxFragmentType.REVIEW, notificationRole.reviewInt)
+    }
+
+    override fun getPageSource(): String {
+        return source
+    }
+
     private fun setupToolbar() {
+        toolbar?.let { this.lifecycle.addObserver(it) }
         toolbar?.switchToLightToolbar()
         val view = View.inflate(
                 this, R.layout.partial_inbox_nav_content_view, null
@@ -390,6 +482,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, notificationRole.notifcenterInt)
         bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole.chatInt)
         bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole.talkInt)
+        bottomNav?.setBadgeCount(InboxFragmentType.REVIEW, notificationRole.reviewInt)
         toolbar?.setBadgeCounter(IconList.ID_CART, InboxConfig.notifications.totalCart)
         oppositeRole?.let {
             navHeader.setBadgeCount(oppositeRole.totalInt)
@@ -420,6 +513,12 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
                         updateToolbarIcon()
                         InboxConfig.page = InboxFragmentType.DISCUSSION
                     }
+                    R.id.menu_inbox_review -> {
+                        cacheState.saveInitialPageCache(InboxFragmentType.REVIEW)
+                        onBottomNavSelected(InboxFragmentType.REVIEW)
+                        updateToolbarIcon()
+                        InboxConfig.page = InboxFragmentType.REVIEW
+                    }
                 }
                 analytic.trackOpenInboxPage(InboxConfig.page, InboxConfig.role)
                 analytic.trackClickBottomNaveMenu(InboxConfig.page, InboxConfig.role)
@@ -442,5 +541,4 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private fun onBottomNavSelected(@InboxFragmentType page: Int) {
         navigator?.onPageSelected(page)
     }
-
 }

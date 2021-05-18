@@ -27,7 +27,7 @@ public class ShipmentCartItemModel implements Parcelable {
     private List<ShopShipment> shopShipmentList;
 
     // Shop data
-    private int shopId;
+    private long shopId;
     private String shopName;
     private boolean isGoldMerchant;
     private boolean isOfficialStore;
@@ -76,7 +76,7 @@ public class ShipmentCartItemModel implements Parcelable {
 
     private boolean isFulfillment;
     private String fulfillmentBadgeUrl;
-    private int fulfillmentId;
+    private long fulfillmentId;
 
     // promo stacking
     private boolean hasPromoList;
@@ -108,7 +108,7 @@ public class ShipmentCartItemModel implements Parcelable {
         selectedShipmentDetailData = in.readParcelable(ShipmentDetailData.class.getClassLoader());
         shopShipmentList = in.createTypedArrayList(ShopShipment.CREATOR);
         orderNumber = in.readInt();
-        shopId = in.readInt();
+        shopId = in.readLong();
         shopName = in.readString();
         preOrderInfo = in.readString();
         isFreeShippingExtra = in.readByte() != 0;
@@ -145,7 +145,7 @@ public class ShipmentCartItemModel implements Parcelable {
         blackboxInfo = in.readString();
         isFulfillment = in.readByte() != 0;
         fulfillmentBadgeUrl = in.readString();
-        fulfillmentId = in.readInt();
+        fulfillmentId = in.readLong();
         hasPromoList = in.readByte() != 0;
         voucherLogisticItemUiModel = in.readParcelable(VoucherLogisticItemUiModel.class.getClassLoader());
         isLeasingProduct = in.readByte() != 0;
@@ -164,7 +164,7 @@ public class ShipmentCartItemModel implements Parcelable {
         dest.writeParcelable(selectedShipmentDetailData, flags);
         dest.writeTypedList(shopShipmentList);
         dest.writeInt(orderNumber);
-        dest.writeInt(shopId);
+        dest.writeLong(shopId);
         dest.writeString(shopName);
         dest.writeString(preOrderInfo);
         dest.writeByte((byte) (isFreeShippingExtra ? 1 : 0));
@@ -201,7 +201,7 @@ public class ShipmentCartItemModel implements Parcelable {
         dest.writeString(blackboxInfo);
         dest.writeByte((byte) (isFulfillment ? 1 : 0));
         dest.writeString(fulfillmentBadgeUrl);
-        dest.writeInt(fulfillmentId);
+        dest.writeLong(fulfillmentId);
         dest.writeByte((byte) (hasPromoList ? 1 : 0));
         dest.writeParcelable(voucherLogisticItemUiModel, flags);
         dest.writeByte((byte) (isLeasingProduct ? 1 : 0));
@@ -306,11 +306,11 @@ public class ShipmentCartItemModel implements Parcelable {
         this.errorDescription = errorDescription;
     }
 
-    public int getShopId() {
+    public long getShopId() {
         return shopId;
     }
 
-    public void setShopId(int shopId) {
+    public void setShopId(long shopId) {
         this.shopId = shopId;
     }
 
@@ -562,11 +562,11 @@ public class ShipmentCartItemModel implements Parcelable {
         this.fulfillmentBadgeUrl = fulfillmentBadgeUrl;
     }
 
-    public int getFulfillmentId() {
+    public long getFulfillmentId() {
         return fulfillmentId;
     }
 
-    public void setFulfillmentId(int fulfillmentId) {
+    public void setFulfillmentId(long fulfillmentId) {
         this.fulfillmentId = fulfillmentId;
     }
 

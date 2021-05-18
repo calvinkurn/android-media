@@ -30,8 +30,9 @@ object ApplinkConstInternalContent {
     const val AFFILIATE_BYME_TRACKING = "$INTERNAL_AFFILIATE/tracking/"
     const val PROFILE_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://people/{user_id}/"
 
-    const val TOKOPEDIA_BYME_HTTP = "${DeeplinkConstant.SCHEME_HTTP}://tokopedia.by/"
-    const val TOKOPEDIA_BYME_HTTPS = "${DeeplinkConstant.SCHEME_HTTPS}://tokopedia.by/"
+    const val TOKOPEDIA_BYME = "tokopedia.by"
+    const val TOKOPEDIA_BYME_HTTP = "${DeeplinkConstant.SCHEME_HTTP}://${TOKOPEDIA_BYME}/"
+    const val TOKOPEDIA_BYME_HTTPS = "${DeeplinkConstant.SCHEME_HTTPS}://${TOKOPEDIA_BYME}/"
 
     const val HOST_PLAY = "play"
     const val INTERNAL_PLAY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY"
@@ -39,8 +40,6 @@ object ApplinkConstInternalContent {
 
     const val HOST_PLAY_BROADCASTER = "play-broadcaster"
     const val INTERNAL_PLAY_BROADCASTER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY_BROADCASTER"
-
-    const val INTERNAL_VIDEO_PICKER = "${DeeplinkConstant.SCHEME_INTERNAL}://global/video-picker"
 
     private const val ARGS_FROM_APPLINK = "isFromApplink"
     private const val ARGS_FROM_APPLINK_VALUE = "true"

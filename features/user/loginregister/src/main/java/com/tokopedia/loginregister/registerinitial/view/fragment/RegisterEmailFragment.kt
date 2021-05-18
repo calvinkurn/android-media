@@ -39,6 +39,7 @@ import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialCompo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -152,7 +153,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             if (registerRequestDataResult is Success) {
                 val data = (registerRequestDataResult).data
                 userSession?.clearToken()
-                userSession?.setToken(data.accessToken, data.tokenType, data.refreshToken)
+                userSession?.setToken(data.accessToken, data.tokenType, EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV))
                 onSuccessRegister()
                 if (activity != null) {
                     val intent = Intent()

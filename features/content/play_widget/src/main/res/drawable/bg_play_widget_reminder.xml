@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval"
+    >
+    <size
+        android:width="@dimen/layout_lvl4"
+        android:height="@dimen/layout_lvl4"
+        />
+    <solid
+        android:color="@color/play_widget_dms_reminder_background"
+        />
+</shape>

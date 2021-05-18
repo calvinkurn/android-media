@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/transparent"
     android:paddingTop="@dimen/hotel_12dp">
 
     <include layout="@layout/item_property_search_shimmering"/>

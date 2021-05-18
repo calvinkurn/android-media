@@ -494,6 +494,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             it.setIcon(IconBuilder(
                     IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_ACCOUNT)
             ).addIcon(iconId = IconList.ID_NAV_GLOBAL) {})
+            viewLifecycleOwner.lifecycle.addObserver(it)
         }
 
         setupStatusBar()

@@ -17,12 +17,12 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
+import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
 import com.tokopedia.searchbar.navigation_component.NavConstant
-import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import org.hamcrest.BaseMatcher
@@ -54,11 +54,35 @@ private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM_CLOSE
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE = "tracker/home/reminder_widget_recharge.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM = "tracker/home/reminder_widget_salam.json"
 
+private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
+private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
+
 /**
  * Created by yfsx on 2/9/21.
  */
 
 fun disableCoachMark(context: Context){
+    disableOnboarding(context)
+    disableChooseAddressCoachmark(context)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK, true)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_NAV, true)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_INBOX, true)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS, true)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_BALANCE, true)
+}
+
+fun setCoachmarkSharedPrefValue(context: Context, key: String, value: Boolean) {
+    val sharedPrefs = context.getSharedPreferences(PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
+    sharedPrefs.edit().putBoolean(key, value).apply()
+}
+
+fun disableChooseAddressCoachmark(context: Context) {
+    val sharedPrefs = context.getSharedPreferences(CHOOSE_ADDRESS_PREFERENCE_NAME, Context.MODE_PRIVATE)
+    sharedPrefs.edit().putBoolean(
+            CHOOSE_ADDRESS_EXTRA_IS_COACHMARK, false).apply()
+}
+
+fun disableOnboarding(context: Context) {
     val sharedPrefs = context.getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
     sharedPrefs.edit().putBoolean(
             NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
@@ -78,6 +102,8 @@ fun waitForLoadCassavaAssert() {
 fun addDebugEnd() {
     Thread.sleep(2000)
 }
+
+fun String.name(loggedIn: Boolean, darkMode: Boolean = false) = this + (if (loggedIn) "-login" else "-nonlogin") + (if (darkMode) "-dark" else "-light")
 
 
 //==================================== item action =============================================

@@ -309,7 +309,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
-    fun `Checkout On Invalid Profile Id`() {
+    fun `Checkout On Invalid Address Id`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(), isValid = true)
