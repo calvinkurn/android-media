@@ -35,4 +35,6 @@
     <color name="font_black_primary_70">#B3000000</color>
     <color name="font_black_secondary_54">#8a000000</color>
     <color name="font_black_disabled_38">#61000000</color>
+
+    <color name="cardview_background_color">@color/Unify_N0</color>
 </resources>

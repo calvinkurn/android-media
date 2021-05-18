@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +16,6 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.review.shop.view.uimodel.ImageAttachmentUiModel
 import com.tokopedia.shop.review.shop.view.uimodel.ImageUpload
 import com.tokopedia.shop.review.util.TimeUtil
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import java.util.*
 
 /**
@@ -278,21 +276,5 @@ open class ReviewProductContentViewHolder(itemView: View, private val viewListen
         counterLike = itemView.findViewById(R.id.text_counter_like)
         containerReplyView = itemView.findViewById(R.id.container_reply_view)
         containerLike = itemView.findViewById(R.id.container_like)
-        val cvReviewContent = itemView.findViewById<CardView>(R.id.cv_review_content)
-        if (context.isDarkMode()) {
-            cvReviewContent.setBackgroundColor(
-                    ContextCompat.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N50
-                    )
-            )
-        } else {
-            cvReviewContent.setBackgroundColor(
-                    ContextCompat.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N0
-                    )
-            )
-        }
     }
 }
