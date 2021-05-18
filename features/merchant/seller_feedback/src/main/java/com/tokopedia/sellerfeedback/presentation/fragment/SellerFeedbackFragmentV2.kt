@@ -11,9 +11,12 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.annotation.ColorRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -24,7 +27,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.sellerfeedback.R
+import com.tokopedia.sellerfeedback.SellerFeedbackTracking
 import com.tokopedia.sellerfeedback.di.component.DaggerSellerFeedbackComponent
+import com.tokopedia.sellerfeedback.presentation.SellerFeedback
 import com.tokopedia.sellerfeedback.presentation.adapter.ImageFeedbackAdapter
 import com.tokopedia.sellerfeedback.presentation.bottomsheet.SellerFeedbackPageChooserBottomSheet
 import com.tokopedia.sellerfeedback.presentation.uimodel.BaseImageFeedbackUiModel
@@ -58,7 +63,6 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val requiredPermissions = listOf(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
@@ -67,6 +71,9 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
     private val imageFeedbackAdapter by lazy { ImageFeedbackAdapter(this) }
     private val imagePickerBuilder by lazy { buildImagePicker() }
     private val imagePickerMultipleSelectionBuilder by lazy { buildImagePickerMultipleSelectionBuilder() }
+    private val scoreBad by lazy { Score.Bad() }
+    private val scoreNeutral by lazy { Score.Neutral() }
+    private val scoreGood by lazy { Score.Good() }
 
     private var viewModel: SellerFeedbackViewModel? = null
     private var backgroundHeader: FrameLayout? = null
@@ -82,6 +89,8 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
 
     private var isValidFeedbackPage = false
     private var isValidFeedbackDetail = false
+    private var activeScore: Score? = null
+    private var feedbackTypeChips: List<ChipsUnify>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,6 +114,9 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
         buttonSend = view.findViewById(R.id.button_send)
         rvImageFeedback = view.findViewById(R.id.rv_image_feedback)
 
+        val showBottomUp = AnimationUtils.loadAnimation(activity, R.anim.show_bottom_up)
+        view.findViewById<ConstraintLayout>(R.id.layout_questions).animation = showBottomUp
+
         if (!allPermissionsGranted()) {
             requestPermissions(requiredPermissions.toTypedArray(), 5111)
         }
@@ -126,17 +138,20 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
     }
 
     private fun setupViewInteraction() {
-        buttonFeedbackBad?.setOnClickListener { onClickFeedbackBtn(com.tokopedia.unifyprinciples.R.color.Unify_Y500) }
-        buttonFeedbackNeutral?.setOnClickListener { onClickFeedbackBtn(com.tokopedia.unifyprinciples.R.color.Unify_Y400) }
-        buttonFeedbackGood?.setOnClickListener { onClickFeedbackBtn(com.tokopedia.unifyprinciples.R.color.Unify_G500) }
+        buttonFeedbackBad?.setOnClickListener { onClickFeedbackBtn(scoreBad) }
+        buttonFeedbackNeutral?.setOnClickListener { onClickFeedbackBtn(scoreNeutral) }
+        buttonFeedbackGood?.setOnClickListener { onClickFeedbackBtn(scoreGood) }
 
-        val chips = listOfNotNull(chipFeedback, chipReportError)
-        chips.forEach { chip ->
-            chip.setOnClickListener {
-                chip.chipType = ChipsUnify.TYPE_SELECTED
-                toggleChipsToNormal(chips - chip)
+        feedbackTypeChips = listOfNotNull(chipFeedback, chipReportError)
+        feedbackTypeChips?.let { chips ->
+            chips.forEach { chip ->
+                chip.setOnClickListener {
+                    chip.chipType = ChipsUnify.TYPE_SELECTED
+                    toggleChipsToNormal(chips - chip)
+                }
             }
         }
+
 
         textFieldFeedbackPage?.setOnClickListener {
             val currentValue = textFieldFeedbackPage?.text.toString()
@@ -152,9 +167,54 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
         textAreaFeedbackDetail?.textAreaInput?.addTextChangedListener(feedbackDetailTextWatcher)
 
         rvImageFeedback?.adapter = imageFeedbackAdapter
+
+        buttonSend?.setOnClickListener {
+            SellerFeedbackTracking.Click.eventClickSubmit()
+            val sellerFeedback = SellerFeedback(
+                    feedbackScore = getFeedbackScore(),
+                    feedbackType = getFeedbackType(),
+                    feedbackPage = getFeedbackPage(),
+                    feedbackDetail = getFeedbackDetail()
+            )
+            viewModel?.submitFeedback(sellerFeedback)
+            Toast.makeText(context?.applicationContext, "Feedback-mu berhasil dikirim. Terima kasih, ya!", Toast.LENGTH_LONG).show()
+            activity?.finish()
+        }
     }
 
-    private fun onClickFeedbackBtn(@ColorRes colorId: Int) {
+    private fun onClickFeedbackBtn(score: Score) {
+        activeScore?.let { toggleScoreToInactive(it) }
+        toggleScoreToActive(score)
+        changeHeaderColor(score.colorId)
+        activeScore = score
+        checkButtonSend()
+    }
+
+    private fun toggleScoreToActive(score: Score) {
+        val button = when (score) {
+            is Score.Bad -> buttonFeedbackBad
+            is Score.Neutral -> buttonFeedbackNeutral
+            is Score.Good -> buttonFeedbackGood
+        }
+        button?.apply {
+            setCompoundDrawablesWithIntrinsicBounds(0, score.drawableActiveId, 0, 0)
+            setWeight(Typography.BOLD)
+        }
+    }
+
+    private fun toggleScoreToInactive(score: Score) {
+        val button = when (score) {
+            is Score.Bad -> buttonFeedbackBad
+            is Score.Neutral -> buttonFeedbackNeutral
+            is Score.Good -> buttonFeedbackGood
+        }
+        button?.apply {
+            setCompoundDrawablesWithIntrinsicBounds(0, score.drawableInactiveId, 0, 0)
+            setWeight(Typography.REGULAR)
+        }
+    }
+
+    private fun changeHeaderColor(@ColorRes colorId: Int) {
         backgroundHeader?.apply {
             val color = ContextCompat.getColor(requireContext(), colorId)
             setBackgroundColor(color)
@@ -180,7 +240,7 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
             override fun afterTextChanged(p0: Editable?) {
                 val text = p0?.toString() ?: ""
                 if (text.isBlank()) {
-                    textAreaFeedbackDetail?.textAreaMessage = "Wajib diisi"
+                    textAreaFeedbackDetail?.textAreaMessage = getString(R.string.feedback_form_detail_error_empty)
                     textAreaFeedbackDetail?.isError = true
                 } else if (text.length == MAX_CHAR) {
                     textAreaFeedbackDetail?.textAreaMessage = ""
@@ -196,7 +256,27 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
     }
 
     private fun checkButtonSend() {
-        buttonSend?.isEnabled = isValidFeedbackPage && isValidFeedbackDetail
+        buttonSend?.isEnabled = isValidFeedbackPage &&
+                isValidFeedbackDetail &&
+                activeScore != null &&
+                imageFeedbackAdapter.itemCount > 1
+    }
+
+    private fun getFeedbackScore(): String {
+        return activeScore?.let { getString(it.value) } ?: ""
+    }
+
+    private fun getFeedbackType(): String {
+        val selectedChip = feedbackTypeChips?.first { it.chipType == ChipsUnify.TYPE_SELECTED }
+        return selectedChip?.chipText ?: ""
+    }
+
+    private fun getFeedbackPage(): String {
+        return textFieldFeedbackPage?.text.toString()
+    }
+
+    private fun getFeedbackDetail(): String {
+        return textAreaFeedbackDetail?.textAreaInput?.text.toString()
     }
 
     private fun observeViewModel() {
@@ -206,8 +286,8 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
     }
 
     private val observerFeedbackImages = Observer<List<ImageFeedbackUiModel>> {
-
         imageFeedbackAdapter.setImageFeedbackData(it)
+        checkButtonSend()
     }
 
     private fun initData() {
@@ -238,7 +318,7 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
 
     private fun buildImagePicker(): ImagePickerBuilder {
         return ImagePickerBuilder(
-                title = "Foto",
+                title = getString(R.string.feedback_form_gallery_picker_title),
                 galleryType = GalleryType.IMAGE_ONLY,
                 imagePickerTab = arrayOf(ImagePickerTab.TYPE_GALLERY)
         )
@@ -251,10 +331,12 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
     }
 
     override fun onClickRemoveImage(item: BaseImageFeedbackUiModel) {
+        SellerFeedbackTracking.Click.eventClickRemoveAttachment()
         imageFeedbackAdapter.removeImage(item)
     }
 
     override fun onClickAddImage() {
+        SellerFeedbackTracking.Click.eventClickPutAttachment()
         val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
         val currentSelectedImages = getSelectedImageUrl(imageFeedbackAdapter.getImageFeedbackData())
         imagePickerMultipleSelectionBuilder.initialSelectedImagePathList = currentSelectedImages
@@ -285,6 +367,34 @@ class SellerFeedbackFragmentV2 : BaseDaggerFragment(), BaseImageFeedbackViewHold
     private fun getSelectedImageUrl(imageFeedbackDataList: List<BaseImageFeedbackUiModel>): ArrayList<String> {
         return imageFeedbackDataList.filterIsInstance(ImageFeedbackUiModel::class.java)
                 .map { it.imageUrl } as ArrayList<String>
+    }
+
+    sealed class Score {
+        abstract val value: Int
+        abstract val colorId: Int
+        abstract val drawableActiveId: Int
+        abstract val drawableInactiveId: Int
+
+        data class Bad(
+                override val value: Int = R.string.feedback_form_score_bad,
+                override val colorId: Int = com.tokopedia.unifyprinciples.R.color.Unify_Y500,
+                override val drawableActiveId: Int = R.drawable.ic_smiley_bad_active,
+                override val drawableInactiveId: Int = R.drawable.ic_smiley_bad_inactive
+        ) : Score()
+
+        data class Neutral(
+                override val value: Int = R.string.feedback_form_score_neutral,
+                override val colorId: Int = com.tokopedia.unifyprinciples.R.color.Unify_Y400,
+                override val drawableActiveId: Int = R.drawable.ic_smiley_neutral_active,
+                override val drawableInactiveId: Int = R.drawable.ic_smiley_neutral_inactive
+        ) : Score()
+
+        data class Good(
+                override val value: Int = R.string.feedback_form_score_good,
+                override val colorId: Int = com.tokopedia.unifyprinciples.R.color.Unify_G500,
+                override val drawableActiveId: Int = R.drawable.ic_smiley_good_active,
+                override val drawableInactiveId: Int = R.drawable.ic_smiley_good_inactive
+        ) : Score()
     }
 
 

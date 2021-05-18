@@ -18,5 +18,5 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:enabled="false"
-        android:text="Kirim" />
+        android:text="@string/feedback_form_button_send" />
 </LinearLayout>
