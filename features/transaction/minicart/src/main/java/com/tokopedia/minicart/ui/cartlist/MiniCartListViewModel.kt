@@ -8,8 +8,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartWidgetDataUseCase
 import javax.inject.Inject
 
-class MiniCartListBottomsheetViewModel @Inject constructor(private val executorDispatchers: CoroutineDispatchers,
-                                                           private val getMiniCartWidgetDataUseCase: GetMiniCartWidgetDataUseCase) : BaseViewModel(executorDispatchers.main) {
+class MiniCartListViewModel @Inject constructor(private val executorDispatchers: CoroutineDispatchers,
+                                                private val getMiniCartWidgetDataUseCase: GetMiniCartWidgetDataUseCase) : BaseViewModel(executorDispatchers.main) {
 
     // Cart List UI Model
     private val _cartListUiModel = MutableLiveData<MutableList<Visitable<*>>>()

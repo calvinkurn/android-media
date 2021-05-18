@@ -33,6 +33,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.explore_promo
     implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.total_amount
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

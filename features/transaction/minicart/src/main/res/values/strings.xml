@@ -1,1 +1,4 @@
-<resources></resources>
+<resources>
+    <string name="mini_cart_widget_label_total_price">Total Harga</string>
+    <string name="mini_cart_widget_label_buy">Beli (%d)</string>
+</resources>
