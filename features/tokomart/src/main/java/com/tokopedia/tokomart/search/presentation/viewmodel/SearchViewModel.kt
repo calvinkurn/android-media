@@ -6,6 +6,7 @@ import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_QUERY_PARAM_MAP
+import com.tokopedia.tokomart.searchcategory.domain.model.FilterModel
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.usecase.RequestParams
@@ -15,14 +16,15 @@ import javax.inject.Named
 
 class SearchViewModel @Inject constructor (
         baseDispatcher: CoroutineDispatchers,
-        @param:Named(SEARCH_QUERY_PARAM_MAP)
-        private val queryParamMap: Map<String, String>,
+        @Named(SEARCH_QUERY_PARAM_MAP)
+        queryParamMap: Map<String, String>,
         @param:Named(SEARCH_FIRST_PAGE_USE_CASE)
         private val getSearchFirstPageUseCase: UseCase<SearchModel>,
         @param:Named(SEARCH_LOAD_MORE_PAGE_USE_CASE)
         private val getSearchLoadMorePageUseCase: UseCase<SearchModel>,
+        getFilterUseCase: UseCase<FilterModel>,
         chooseAddressWrapper: ChooseAddressWrapper,
-): BaseSearchCategoryViewModel(baseDispatcher, chooseAddressWrapper) {
+): BaseSearchCategoryViewModel(baseDispatcher, queryParamMap, getFilterUseCase, chooseAddressWrapper) {
 
     val query = queryParamMap[SearchApiConst.Q] ?: ""
 
@@ -40,7 +42,7 @@ class SearchViewModel @Inject constructor (
         it.putBoolean(SearchApiConst.USE_PAGE, true)
         it.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
         it.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
-        it.putAll(queryParamMap)
+        it.putAll(queryParamMap as Map<String, String>)
     }
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {
@@ -48,6 +50,7 @@ class SearchViewModel @Inject constructor (
                 title = "",
                 hasSeeAllCategoryButton = false,
                 aceSearchProductHeader = searchModel.searchProduct.header,
+                quickFilterDataValue = searchModel.quickFilter,
         )
 
         val contentDataView = ContentDataView(

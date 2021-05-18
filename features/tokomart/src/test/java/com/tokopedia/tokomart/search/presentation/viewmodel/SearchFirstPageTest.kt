@@ -1,7 +1,6 @@
 package com.tokopedia.tokomart.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.assertBannerDataView
 import com.tokopedia.tokomart.searchcategory.assertChooseAddressDataView
@@ -24,6 +23,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
         val visitableList = searchViewModel.visitableListLiveData.value!!
 
+        `Then assert request params map`(createFirstPageMandatoryParams(1))
         `Then assert first page visitables`(visitableList, searchModel)
         `Then assert visitable list does not end with loading more model`(visitableList)
         `Then assert has next page value`(false)
@@ -34,7 +34,6 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
     }
 
     private fun `Then assert first page visitables`(visitableList: List<Visitable<*>>, searchModel: SearchModel) {
-        `Then assert request params map`(createFirstPageMandatoryParams(1))
         `Then assert visitable list header`(visitableList, searchModel)
         `Then assert visitable list contents`(visitableList, searchModel)
     }
@@ -46,7 +45,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         visitableList[0].assertChooseAddressDataView()
         visitableList[1].assertBannerDataView()
         visitableList[2].assertTitleDataView(title = "", hasSeeAllCategoryButton = false)
-        visitableList[3].assertQuickFilterDataView()
+        visitableList[3].assertQuickFilterDataView(searchModel.quickFilter)
         visitableList[4].assertProductCountDataView(searchModel.searchProduct.header.totalDataText)
     }
 
@@ -69,6 +68,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
         val visitableList = searchViewModel.visitableListLiveData.value!!
 
+        `Then assert request params map`(createFirstPageMandatoryParams(1))
         `Then assert first page visitables`(visitableList, searchModel)
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)

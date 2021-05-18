@@ -2,6 +2,7 @@ package com.tokopedia.tokomart.searchcategory
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
@@ -30,9 +31,6 @@ inline fun <reified T> String.jsonToObject(): T {
 
 fun Visitable<*>.assertChooseAddressDataView() {
     assertThat(this, instanceOf(ChooseAddressDataView::class.java))
-
-    //TODO: assert choose address data here
-    val chooseAddressDataView = this as ChooseAddressDataView
 }
 
 fun Visitable<*>.assertBannerDataView() {
@@ -50,12 +48,22 @@ fun Visitable<*>.assertTitleDataView(title: String, hasSeeAllCategoryButton: Boo
     assertThat(titleDataView.hasSeeAllCategoryButton, shouldBe(hasSeeAllCategoryButton))
 }
 
-fun Visitable<*>.assertQuickFilterDataView() {
+fun Visitable<*>.assertQuickFilterDataView(quickFilterDataValue: DataValue) {
     assertThat(this, instanceOf(QuickFilterDataView::class.java))
 
-    //TODO: assert quick filter data here
     val quickFilterDataView = this as QuickFilterDataView
 
+    val quickFilterItemList = quickFilterDataView.quickFilterItemList
+    val expectedQuickFilter = quickFilterDataValue.filter
+    assertThat(quickFilterItemList.size, shouldBe(expectedQuickFilter.size))
+
+    expectedQuickFilter.forEachIndexed { index, quickFilter ->
+        val sortFilterItemDataView = quickFilterItemList[index]
+
+        assertThat(sortFilterItemDataView.option, shouldBe(quickFilter.options[0]))
+        assertThat(sortFilterItemDataView.sortFilterItem.title.toString(), shouldBe(quickFilter.title))
+        assertThat(sortFilterItemDataView.sortFilterItem.typeUpdated, shouldBe(false))
+    }
 }
 
 fun Visitable<*>.assertProductCountDataView(productCountText: String) {

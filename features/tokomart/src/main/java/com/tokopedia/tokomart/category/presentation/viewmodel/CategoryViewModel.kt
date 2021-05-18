@@ -5,6 +5,7 @@ import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
 import com.tokopedia.tokomart.category.utils.CATEGORY_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokomart.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CASE
+import com.tokopedia.tokomart.searchcategory.domain.model.FilterModel
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.usecase.RequestParams
@@ -18,8 +19,9 @@ class CategoryViewModel @Inject constructor (
         private val getCategoryFirstPageUseCase: UseCase<CategoryModel>,
         @param:Named(CATEGORY_LOAD_MORE_PAGE_USE_CASE)
         private val getCategoryLoadMorePageUseCase: UseCase<CategoryModel>,
+        getFilterUseCase: UseCase<FilterModel>,
         chooseAddressWrapper: ChooseAddressWrapper,
-): BaseSearchCategoryViewModel(baseDispatcher, chooseAddressWrapper) {
+): BaseSearchCategoryViewModel(baseDispatcher, mapOf(), chooseAddressWrapper) {
 
     override fun onViewCreated() {
         getCategoryFirstPageUseCase.cancelJobs()
@@ -35,6 +37,7 @@ class CategoryViewModel @Inject constructor (
                 title = "Category_Title",
                 hasSeeAllCategoryButton = true,
                 aceSearchProductHeader = categoryModel.searchProduct.header,
+                quickFilterDataValue = categoryModel.quickFilter,
         )
 
         val contentDataView = ContentDataView(

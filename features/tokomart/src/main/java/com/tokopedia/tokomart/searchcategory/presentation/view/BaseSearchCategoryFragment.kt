@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -23,6 +25,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCa
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.unifycomponents.Toaster
 
@@ -30,14 +33,16 @@ abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
         ChooseAddressListener,
         BannerComponentListener,
-        TitleListener {
+        TitleListener,
+        QuickFilterListener, SortFilterBottomSheet.Callback {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
     }
 
-    private var searchCategoryAdapter: SearchCategoryAdapter? = null
-    private var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
+    protected var searchCategoryAdapter: SearchCategoryAdapter? = null
+    protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
+    protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
 
     protected var navToolbar: NavToolbar? = null
     protected var recyclerView: RecyclerView? = null
@@ -133,8 +138,7 @@ abstract class BaseSearchCategoryFragment:
     abstract fun getViewModel(): BaseSearchCategoryViewModel
 
     protected open fun submitList(visitableList: List<Visitable<*>>) {
-        if (visitableList.isNotEmpty())
-            searchCategoryAdapter?.submitList(visitableList)
+        searchCategoryAdapter?.submitList(visitableList)
     }
 
     protected open fun updateEndlessScrollListener(hasNextPage: Boolean) {
@@ -159,5 +163,32 @@ abstract class BaseSearchCategoryFragment:
     override fun onBannerClick(applink: String) {
         // TODO: Route to applink
         Toaster.build(requireView(), "Navigate to Applink", Toaster.TYPE_NORMAL, Toaster.LENGTH_SHORT)
+    }
+
+    override fun openFilterPage() {
+
+    }
+
+    private fun openBottomSheetFilter(mapParameter: Map<String, String>, dynamicFilterModel: DynamicFilterModel?) {
+        sortFilterBottomSheet = SortFilterBottomSheet().also {
+            it.show(
+                    parentFragmentManager,
+                    mapParameter,
+                    dynamicFilterModel,
+                    this
+            )
+
+            it.setOnDismissListener {
+                sortFilterBottomSheet = null
+            }
+        }
+    }
+
+    override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+
+    }
+
+    override fun getResultCount(mapParameter: Map<String, String>) {
+
     }
 }
