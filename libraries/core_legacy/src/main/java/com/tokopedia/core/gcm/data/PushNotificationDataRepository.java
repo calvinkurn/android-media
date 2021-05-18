@@ -87,16 +87,6 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     }
 
     @Override
-    public Observable<String> storePushNotification(String category, String response, String customIndex, String serverId) {
-        Map<String, String> messageMap = new HashMap<>();
-        messageMap.put("type", "storePushNotification");
-        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
-        return mPushNotificationDataStoreFactory
-                .createDiskPushNotificationDataStore()
-                .savePushNotification(category, response, customIndex, serverId);
-    }
-
-    @Override
     public Observable<List<DiscussionPushNotification>> getSavedDiscussionPushNotification() {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "getSavedDiscussionPushNotification");

@@ -23,8 +23,6 @@ public interface PushNotificationRepository {
 
     Observable<List<MessagePushNotification>> getSavedMessagePushNotification();
 
-    Observable<String> storePushNotification(String category, String response, String customIndex, String serverId);
-
     Observable<List<DiscussionPushNotification>> getSavedDiscussionPushNotification();
 
     Observable<Boolean> clearPushNotificationStorage();

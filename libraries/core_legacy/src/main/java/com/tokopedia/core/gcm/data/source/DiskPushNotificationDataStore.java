@@ -79,20 +79,4 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
             return true;
         }).onErrorReturn(throwable -> false);
     }
-
-    @Override
-    public Observable<String> savePushNotification(String category, String response, String customIndex, String serverId) {
-        DbPushNotification dbPushNotification = new DbPushNotification();
-        dbPushNotification.setCategory(category);
-        dbPushNotification.setResponse(response);
-        dbPushNotification.setCustomIndex(customIndex);
-        dbPushNotification.setServerId(serverId);
-        return Observable
-                .just(dbPushNotification)
-                .map(dbPushNotification1 -> {
-                    pushNotificationDao.insert(dbPushNotification1);
-                    return dbPushNotification1.getCategory();
-                })
-                .onErrorReturn(throwable -> null);
-    }
 }

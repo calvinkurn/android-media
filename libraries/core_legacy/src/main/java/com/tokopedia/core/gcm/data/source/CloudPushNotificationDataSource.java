@@ -111,9 +111,4 @@ public class CloudPushNotificationDataSource implements PushNotificationDataStor
     public Observable<Boolean> deleteSavedPushNotification() {
         return null;
     }
-
-    @Override
-    public Observable<String> savePushNotification(String category, String response, String customIndex, String serverId) {
-        return null;
-    }
 }
