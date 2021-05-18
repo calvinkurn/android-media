@@ -98,7 +98,7 @@ public class TopAdsGtmTracker {
                     "eventAction", "impression - product - topads",
                     "eventLabel", keyword,
                     "userId", userId,
-                    "businessUnit", "TopAds",
+                    "businessUnit", "Ads Solution",
                     "currentSite", "tokopediamarketplace",
                     "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
                             "impressions", DataLayer.listOf(
@@ -296,7 +296,7 @@ public class TopAdsGtmTracker {
                     "eventAction", "click - product - topads",
                     "eventLabel", keyword,
                     "userId", userId,
-                    "businessUnit", "TopAds",
+                    "businessUnit", "Ads Solution",
                     "currentSite", "tokopediamarketplace",
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/searchproduct - topads productlist"),

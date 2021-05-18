@@ -23,7 +23,7 @@
       "eventLabel": ".+",
       "item_list": "/searchproduct - topads productlist",
       "sessionIris": ".+",
-      "businessUnit": "TopAds",
+      "businessUnit": "Ads Solution",
       "currentSite": "tokopediamarketplace",
       "userId": ".+",
       "items": [
@@ -78,7 +78,7 @@
       "eventLabel": ".+",
       "item_list": "/searchproduct - topads productlist",
       "sessionIris": ".+",
-      "businessUnit": "TopAds",
+      "businessUnit": "Ads Solution",
       "currentSite": "tokopediamarketplace",
       "userId": ".+",
       "items": [
