@@ -28,7 +28,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl2"
-        android:textColor="@color/Neutral_N150"
+        android:textColor="@color/play_dms_N150"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -2,6 +2,8 @@ package com.tokopedia.atc_common.domain.usecase
 
 import com.tokopedia.atc_common.AtcConstant.ATC_ERROR_GLOBAL
 import com.tokopedia.atc_common.AtcConstant.MUTATION_ATC_EXTERNAL
+import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
+import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper.Companion.PARAM_KEY_CHOSEN_ADDRESS
 import com.tokopedia.atc_common.data.model.response.atcexternal.AddToCartExternalGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics
@@ -19,16 +21,24 @@ import javax.inject.Named
 class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL) private val queryString: String,
                                                    private val graphqlUseCase: GraphqlUseCase,
                                                    private val addToCartDataMapper: AddToCartExternalDataMapper,
-                                                   private val analytics: AddToCartExternalAnalytics) : UseCase<AddToCartExternalModel>() {
+                                                   private val analytics: AddToCartExternalAnalytics,
+                                                   private val chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper) : UseCase<AddToCartExternalModel>() {
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
         const val PARAM_USER_ID = "userID"
     }
 
+    private fun getParams(productId: Long): Map<String, Any?> {
+        return mapOf(
+                PARAM_PRODUCT_ID to productId,
+                PARAM_KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
+        )
+    }
+
     override fun createObservable(requestParams: RequestParams): Observable<AddToCartExternalModel> {
         val productId = requestParams.getLong(PARAM_PRODUCT_ID, 0)
-        val graphqlRequest = GraphqlRequest(queryString, AddToCartExternalGqlResponse::class.java, mapOf(PARAM_PRODUCT_ID to productId))
+        val graphqlRequest = GraphqlRequest(queryString, AddToCartExternalGqlResponse::class.java, getParams(productId))
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {

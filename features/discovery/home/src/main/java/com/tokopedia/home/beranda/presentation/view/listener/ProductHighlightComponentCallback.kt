@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.listener
 
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking
+import com.tokopedia.home.analytics.v2.hasLabelGroupFulfillment
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.ProductHighlightListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -16,7 +17,8 @@ class ProductHighlightComponentCallback(val homeCategoryListener: HomeCategoryLi
                 campaignCode = channel.trackingAttributionModel.campaignCode,
                 persoType = channel.trackingAttributionModel.persoType,
                 categoryId = channel.trackingAttributionModel.categoryId,
-                gridFreeOngkirIsActive = channelGrid.isFreeOngkirActive,
+                gridFreeOngkirIsActive = channelGrid.isFreeOngkirActive && !channelGrid.labelGroup.hasLabelGroupFulfillment(),
+                gridFreeOngkirExtraIsActive = channelGrid.isFreeOngkirActive && channelGrid.labelGroup.hasLabelGroupFulfillment(),
                 gridId = channelGrid.id,
                 gridName = channelGrid.name,
                 gridPrice = channelGrid.price,

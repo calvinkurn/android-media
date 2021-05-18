@@ -14,19 +14,20 @@ open class AidlApi(
 ) {
 
     private var stubService: AidlServiceConnection? = null
+    private var receiver: BroadcastReceiver? = null
 
-    private fun broadcastReceiver(_context: Context): BroadcastReceiver {
+    private fun broadcastReceiver(): BroadcastReceiver {
         return object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 // only receive the data in both of customerApp and sellerApp
                 if (intent?.action == tagDefault()) {
                     intent.action?.let {
                         onAidlReceive(it, intent.extras)
-
-                        // every data has received, unregister it
-                        _context.unregisterReceiver(this)
                     }
                 }
+
+                // indicate the receiver on `onReceive()`
+                receiver = this
             }
         }
     }
@@ -34,7 +35,7 @@ open class AidlApi(
     fun bindService(context: Context, tag: String = tagDefault(), serviceName: String) {
         // the serviceView is serviceConnection to register the receiver in activity and send the data
         stubService = AidlServiceConnection { service ->
-            context.registerReceiver(broadcastReceiver(context), IntentFilter().apply { addAction(tag) })
+            context.registerReceiver(broadcastReceiver(), IntentFilter().apply { addAction(tag) })
 
             // send the data once the serviceConnection is connected
             service?.send(tag)
@@ -56,6 +57,7 @@ open class AidlApi(
 
     fun unbindService(context: Context) {
         stubService?.let { context.unbindService(it) }
+        receiver?.let { context.unregisterReceiver(it) }
     }
 
 }

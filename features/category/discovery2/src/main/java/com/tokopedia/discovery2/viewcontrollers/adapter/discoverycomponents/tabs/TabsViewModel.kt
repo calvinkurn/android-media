@@ -115,4 +115,6 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
         dynamicTabsUseCase.updateTargetProductComponent(components.id, components.pageEndPoint)
     }
 
+    fun getArrowVisibilityStatus() = components.properties?.categoryDetail ?: false
+
 }

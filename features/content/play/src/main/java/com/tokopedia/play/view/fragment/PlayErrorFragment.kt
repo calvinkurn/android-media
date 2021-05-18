@@ -14,10 +14,10 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.play.ERR_STATE_GLOBAL
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
@@ -47,7 +47,11 @@ class PlayErrorFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayParentViewModel::class.java)
+
+        val theActivity = requireActivity()
+        if (theActivity is PlayActivity) {
+            parentViewModel = ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -84,10 +88,10 @@ class PlayErrorFragment @Inject constructor(
         imgBack.setOnClickListener { activity?.onBackPressed() }
 
         globalError.errorTitle.setTextColor(
-                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0)
+                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
         )
         globalError.errorDescription.setTextColor(
-                MethodChecker.getColor(requireContext(), R.color.play_error_text_color)
+                MethodChecker.getColor(requireContext(), R.color.play_dms_error_text_color)
         )
     }
 
@@ -123,7 +127,7 @@ class PlayErrorFragment @Inject constructor(
         if (throwable is MessageErrorException) handleKnownServerError(throwable)
         else handleUnknownError(throwable)
 
-        analytic.errorState("$ERR_STATE_GLOBAL: ${globalError.errorDescription.text}")
+        analytic.trackGlobalError(globalError.errorDescription.text.toString())
         container.show()
     }
 

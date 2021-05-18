@@ -30,7 +30,7 @@ class CountDrawable(context: Context) : Drawable() {
     }
 
     private fun createTextPaint(context: Context) {
-        textPaint.color = Color.WHITE
+        textPaint.color = ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0)
         textPaint.typeface = Typeface.DEFAULT
         textPaint.textSize = context.resources.getDimension(R.dimen.sp_8)
         textPaint.isAntiAlias = true

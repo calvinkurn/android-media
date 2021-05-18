@@ -2,6 +2,7 @@ package com.tokopedia.play.widget.ui.mapper
 
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import kotlin.random.Random
 
 
@@ -82,7 +83,7 @@ object PlayWidgetUiMock {
             startTime = "",
             totalView = "10,0 rb",
             totalViewVisible = true,
-            hasPromo = cardItemTypeRandom.nextBoolean(),
+            promoType = PlayWidgetPromoType.NoPromo,
             video = getVideoUiModel(channelType)
     )
 
@@ -108,8 +109,8 @@ object PlayWidgetUiMock {
             startTime = "",
             totalView = "10,0 rb",
             totalViewVisible = true,
-            hasPromo = cardItemTypeRandom.nextBoolean(),
-            reminderType = PlayWidgetReminderType.UnRemind,
+            promoType = PlayWidgetPromoType.LiveOnly("Diskon 50%"),
+            reminderType = PlayWidgetReminderType.Reminded,
             partner = PlayWidgetPartnerUiModel("123", "Google"),
             video = getVideoUiModel(channelType),
             hasAction = true,
@@ -142,7 +143,7 @@ object PlayWidgetUiMock {
             overlayImageUrl = "https://ecs7.tokopedia.net/stessayalp/KV-Left-Widget-September.png",
             overlayImageAppLink = "tokopedia://webview?titlebar=false&url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
             overlayImageWebLink = "www.tokopedia.com/play/channels",
-            gradientColors = listOf( "#57E9FF", "#009ad6"),
+            gradientColors = listOf(),
             backgroundUrl = ""
     )
 }

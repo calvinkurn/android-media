@@ -23,9 +23,6 @@
 -dontwarn com.viewpagerindicator.LinePageIndicator
 -dontwarn sun.misc.Unsafe
 
-#https://github.com/facebook/react-native/issues/25679
--keep class com.facebook.hermes.unicode.** { *; }
-
 -keep class id.co.veritrans.android.api.**{ *;}
 -keepclassmembers class id.co.veritrans.android.api.**{
  @id.co.veritrans.android.api.** *;
@@ -228,6 +225,10 @@
 #agerestriction
 -keep class com.tokopedia.age_restriction.viewmodel.** { *; }
 
+#topads
+-keep class com.tokopedia.topads.dashboard.view.fragment.** extends androidx.fragment.app.Fragment{}
+
+
 #dontwarn com.tokopedia
 -dontwarn com.tokopedia.topads.dashboard.view.sheet.**
 -dontwarn com.tokopedia.tkpd.analytics.**
@@ -263,3 +264,7 @@
 -keep class **.HanselDialog.*{*;}
 -keep class * implements io.hansel.**.* {*;}
 -keep class * extends io.hansel.**.* {*;}
+
+-keep class com.newrelic.** { *; }
+-dontwarn com.newrelic.**
+-keepattributes Exceptions, Signature, InnerClasses, LineNumberTable, SourceFile, EnclosingMethod

@@ -6,19 +6,22 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.inboxcommon.RoleType.Companion.BUYER
 import com.tokopedia.inboxcommon.RoleType.Companion.SELLER
 import com.tokopedia.inboxcommon.util.FileUtil
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.every
-import io.mockk.invoke
-import io.mockk.mockk
-import io.mockk.verify
+import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertEquals
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,6 +39,8 @@ class ChatItemListViewModelTest {
     private val pinChatUseCase: MutationPinChatUseCase = mockk(relaxed = true)
     private val unpinChatUseCase: MutationUnpinChatUseCase = mockk(relaxed = true)
     private val getChatListUseCase: GetChatListMessageUseCase = mockk(relaxed = true)
+    private val authorizeAccessUseCase: AuthorizeAccessUseCase = mockk(relaxed = true)
+    private val userSession: UserSessionInterface = mockk(relaxed = true)
 
     private val mutateChatListObserver: Observer<Result<ChatListPojo>> = mockk(relaxed = true)
     private val deleteChatObserver: Observer<Result<ChatDelete>> = mockk(relaxed = true)
@@ -43,6 +48,7 @@ class ChatItemListViewModelTest {
     private val broadCastButtonUrlObserver: Observer<String> = mockk(relaxed = true)
     private val chatBannedSellerStatusObserver: Observer<Result<Boolean>> = mockk(relaxed = true)
     private val isWhitelistTopBotObserver: Observer<Boolean> = mockk(relaxed = true)
+    private val isChatAdminEligibleObserver: Observer<Result<Boolean>> = mockk(relaxed = true)
 
     private val viewModel = ChatItemListViewModel(
             repository,
@@ -52,6 +58,8 @@ class ChatItemListViewModelTest {
             pinChatUseCase,
             unpinChatUseCase,
             getChatListUseCase,
+            authorizeAccessUseCase,
+            userSession,
             Dispatchers.Unconfined
     )
 
@@ -62,6 +70,7 @@ class ChatItemListViewModelTest {
         viewModel.broadCastButtonUrl.observeForever(broadCastButtonUrlObserver)
         viewModel.chatBannedSellerStatus.observeForever(chatBannedSellerStatusObserver)
         viewModel.isWhitelistTopBot.observeForever(isWhitelistTopBotObserver)
+        viewModel.isChatAdminEligible.observeForever(isChatAdminEligibleObserver)
     }
 
     @Test fun `getChatListMessage should return chat list of messages`() {
@@ -77,7 +86,7 @@ class ChatItemListViewModelTest {
         }
 
         // when
-        viewModel.getChatListMessage(0, 0, "")
+        viewModel.getChatListMessage(0, 0, PARAM_TAB_USER)
 
         // then
         verify(exactly = 1) {
@@ -119,8 +128,14 @@ class ChatItemListViewModelTest {
             val onSuccess = lambda<(ChatListPojo, List<String>, List<String>) -> Unit>()
             onSuccess.invoke(getChatList, listOf(), listOf())
         }
+        coEvery {
+            userSession.isShopOwner
+        } answers {
+            true
+        }
 
         // when
+        viewModel.getChatListMessage(0, SELLER)
         viewModel.getChatListMessage(0, SELLER)
 
         // then
@@ -165,7 +180,7 @@ class ChatItemListViewModelTest {
         }
 
         // when
-        viewModel.getChatListMessage(0, 0, "")
+        viewModel.getChatListMessage(0, 0, PARAM_TAB_USER)
 
         // then
         verify(exactly = 1) { mutateChatListObserver.onChanged(Fail(expectedValue)) }
@@ -177,7 +192,108 @@ class ChatItemListViewModelTest {
 
     }
 
-    //@Test fun ``() {}
+    @Test fun `buyer tab should be eligible to get chat list message`() {
+        // when
+        viewModel.filter = PARAM_FILTER_ALL
+        viewModel.getChatListMessage(0, 0, PARAM_TAB_USER)
+
+        // then
+        verify(exactly = 0) {
+            isChatAdminEligibleObserver.onChanged(any())
+        }
+        verify(exactly = 1) {
+            getChatListUseCase.getChatList(any(), viewModel.filter, any(), any(), any())
+        }
+    }
+
+    @Test fun `buyer role should be eligible to get chat list message`() {
+        // when
+        viewModel.filter = PARAM_FILTER_ALL
+        viewModel.getChatListMessage(0, BUYER)
+
+        // then
+        verify(exactly = 0) {
+            isChatAdminEligibleObserver.onChanged(any())
+        }
+        verify(exactly = 1) {
+            getChatListUseCase.getChatList(any(), viewModel.filter, any(), any(), any())
+        }
+    }
+
+    @Test fun `shop owner seller role should be eligible to get chat list message`() {
+        // given
+        val expectedResult = Success(true)
+
+        every {
+            userSession.isShopOwner
+        } answers {
+            true
+        }
+
+        // when
+        viewModel.getChatListMessage(0, SELLER)
+
+        // then
+        verify(exactly = 1) {
+            isChatAdminEligibleObserver.onChanged(expectedResult)
+        }
+        assertThat(viewModel.isChatAdminEligible.value, equalTo(expectedResult))
+    }
+
+    @Test fun `non-owner shop admin seller role should success check for eligibility first`() {
+        // given
+        val expectedEligiblity = true
+        val expectedResult = Success(expectedEligiblity)
+        every {
+            userSession.isShopOwner
+        } answers {
+            false
+        }
+        every {
+            userSession.isShopAdmin
+        } answers {
+            true
+        }
+        coEvery {
+            authorizeAccessUseCase.execute(any())
+        } answers {
+            expectedEligiblity
+        }
+
+        // when
+        viewModel.getChatListMessage(0, SELLER)
+
+        // then
+        verify(exactly = 1) {
+            isChatAdminEligibleObserver.onChanged(expectedResult)
+        }
+        assertThat(viewModel.isChatAdminEligible.value, equalTo(expectedResult))
+    }
+
+    @Test fun `non-owner shop admin seller role should fail check for eligibility first`() {
+        // given
+        val expectedThrowable = MessageErrorException()
+        val expectedResult = Fail(expectedThrowable)
+        every {
+            userSession.isShopOwner
+        } answers {
+            false
+        }
+        every {
+            userSession.isShopAdmin
+        } answers {
+            true
+        }
+        coEvery {
+            authorizeAccessUseCase.execute(any())
+        } throws expectedThrowable
+
+        // when
+        viewModel.getChatListMessage(0, SELLER)
+
+        // then
+        assert(viewModel.isChatAdminEligible.value is Fail)
+    }
 
     companion object {
         private val getChatList: ChatListPojo = FileUtil.parse(

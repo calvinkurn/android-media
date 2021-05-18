@@ -6,6 +6,7 @@ import com.tokopedia.sellerhomecommon.domain.mapper.LineGraphMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetLineGraphDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -38,7 +39,7 @@ class GetLineGraphDataUseCaseTest {
     @RelaxedMockK
     lateinit var mapper: LineGraphMapper
     private val getLineGraphDataUseCase by lazy {
-        GetLineGraphDataUseCase(gqlRepository, mapper)
+        GetLineGraphDataUseCase(gqlRepository, mapper, CoroutineTestDispatchersProvider)
     }
 
     private val params = GetLineGraphDataUseCase.getRequestParams(

@@ -7,7 +7,8 @@ data class ProductReviewUiModel(
         var productImageUrl: String? = "",
         var productName: String? = "",
         var rating: Float? = 0.0F,
-        var reviewCount: Int? = 0
+        var reviewCount: Int? = 0,
+        var isKejarUlasan: Boolean = false
 ): BaseReviewProduct {
     override fun type(typeFactory: SellerReviewListTypeFactory): Int {
         return typeFactory.type(this)

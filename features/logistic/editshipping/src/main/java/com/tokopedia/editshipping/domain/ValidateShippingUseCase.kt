@@ -1,11 +1,10 @@
 package com.tokopedia.editshipping.domain
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.ValidateShippingModel
 import com.tokopedia.editshipping.domain.response.ValidateShippingResponse
-import com.tokopedia.editshipping.util.PARAM_VALIDATE_SHIPPING
+import com.tokopedia.editshipping.util.EditShippingConstant.PARAM_VALIDATE_SHIPPING
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException

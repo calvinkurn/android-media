@@ -13,6 +13,7 @@
 /features/discovery/topadssdk/                      	@tokopedia/android-gatekeeperanalytic-dev
 /features/discovery/home/                           	@tokopedia/android-miniondave-dev
 /features/discovery/home_component/                    	@tokopedia/android-miniondave-dev
+/features/discovery/home_nav/                           @tokopedia/android-miniondave-dev
 /features/discovery/home_recom/                     	@tokopedia/android-miniondave-dev
 /features/discovery/home_wishlist/                     	@tokopedia/android-miniondave-dev
 /features/discovery/recentview/                     	@tokopedia/android-miniondave-dev
@@ -158,7 +159,12 @@
 /features/logistic/manageaddress/                		@tokopedia/android-minionbob-dev
 /features/logistic/editshipping/                        @tokopedia/android-minionbob-dev
 /features/logistic/activation/                          @tokopedia/android-minionbob-dev
+/features/logistic/localizationchooseaddress/           @tokopedia/android-minionbob-dev
 /features/ordermanagement/snapshot/                     @tokopedia/android-minionbob-dev
+
+/features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
+/features/media/media-common/			                @tokopedia/android-minionkevin-dev
+/features/media/medialoader/                            @tokopedia/android-minionkevin-dev
 
 /features/user/chatbot/                         		@tokopedia/android-minionskywalker-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
@@ -211,6 +217,7 @@
 /features/fintech/common_wallet         				@tokopedia/android-minionyoda-dev
 /features/fintech/instant_loan          				@tokopedia/android-minionyoda-dev
 /features/fintech/layanan_finansial                     @tokopedia/android-minionyoda-dev
+/features/fintech/paylater                              @tokopedia/android-minionyoda-dev
 /features/fintech/ovo_pay_with_qr       				@tokopedia/android-minionyoda-dev
 /features/fintech/saldo_details         				@tokopedia/android-minionyoda-dev
 /features/fintech/home_credit           				@tokopedia/android-minionyoda-dev
@@ -290,13 +297,11 @@
 /libraries/logger/										@tokopedia/android-core-dev
 /libraries/keys/										@tokopedia/android-core-dev
 /libraries/mapviewer/								    @tokopedia/android-core-dev
-/libraries/mediauploader/			                    @tokopedia/android-core-dev
 /libraries/oms/											@tokopedia/android-core-dev
 /libraries/pre_release_inspector/			            @tokopedia/android-core-dev
 /libraries/pre_release_inspector_no_op/					@tokopedia/android-core-dev
 /libraries/product_photo_adapter/                       @tokopedia/android-minionken-dev
 /libraries/push_notification/							@tokopedia/android-core-dev
-/libraries/react_native/								@tokopedia/android-core-dev
 /libraries/remote_config/								@tokopedia/android-core-dev
 /libraries/remoteresourcerequest/						@tokopedia/android-core-dev
 /libraries/shake_detect/					            @tokopedia/android-core-dev
@@ -308,7 +313,6 @@
 /libraries/twitter_share/								@tokopedia/android-core-dev
 /libraries/unit_test                                    @tokopedia/android-core-dev
 /libraries/utils                                        @tokopedia/android-core-dev
-/libraries/video_recorder/								@tokopedia/android-core-dev
 /libraries/videoplayer/									@tokopedia/android-core-dev
 /libraries/videouploader/								@tokopedia/android-core-dev
 /libraries/weaver/									    @tokopedia/android-core-dev

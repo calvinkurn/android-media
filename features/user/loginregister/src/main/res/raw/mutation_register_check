@@ -7,6 +7,7 @@ mutation register_check ($id: String!){
         registerType
         userID
         view
+        uh
         errors
     }
 }

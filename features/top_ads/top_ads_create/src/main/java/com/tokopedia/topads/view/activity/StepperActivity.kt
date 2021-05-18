@@ -7,7 +7,9 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.di.DaggerCreateAdsComponent
-import com.tokopedia.topads.view.fragment.*
+import com.tokopedia.topads.view.fragment.BudgetingAdsFragment
+import com.tokopedia.topads.view.fragment.ProductAdsListFragment
+import com.tokopedia.topads.view.fragment.SummaryAdsFragment
 
 /**
  * Author errysuprayogi on 29,October,2019
@@ -19,9 +21,8 @@ class StepperActivity : BaseStepperActivity(), HasComponent<CreateAdsComponent> 
     private var fragmentList: MutableList<Fragment>? = null
 
     override fun getListFragment(): MutableList<Fragment> {
-        fragmentList = fragmentList ?: mutableListOf(CreateGroupAdsFragment.createInstance(),
+        fragmentList = fragmentList ?: mutableListOf(
                 ProductAdsListFragment.createInstance(),
-                KeywordAdsListFragment.createInstance(),
                 BudgetingAdsFragment.createInstance(),
                 SummaryAdsFragment.createInstance())
         return fragmentList!!
@@ -38,4 +39,5 @@ class StepperActivity : BaseStepperActivity(), HasComponent<CreateAdsComponent> 
         }
         super.onBackEvent()
     }
+
 }

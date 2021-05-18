@@ -5,5 +5,4 @@ import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuTypeFactory
 
 interface SettingUiModel: Visitable<OtherMenuTypeFactory> {
     val onClickApplink: String?
-    val settingUiType: SettingUiType
 }

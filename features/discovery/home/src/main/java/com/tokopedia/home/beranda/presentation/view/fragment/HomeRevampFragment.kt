@@ -50,6 +50,11 @@ import com.tokopedia.applink.internal.*
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
@@ -58,6 +63,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBann
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
 import com.tokopedia.home.analytics.v2.*
+import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -77,23 +83,27 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderOvoViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
 import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
+import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
@@ -104,6 +114,9 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
@@ -126,6 +139,12 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_EXP
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_OLD
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_VARIANT
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_LEGO4BANNER_EXP
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_LEGO4BANNER_OLD
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_LEGO4BANNER_VARIANT
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION
@@ -159,6 +178,7 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
+import kotlinx.android.synthetic.main.home_header_ovo.view.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
 import rx.Observable
 import rx.schedulers.Schedulers
@@ -303,33 +323,38 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var lastSendScreenTimeMillis: Long = 0
-    private var isLightThemeStatusBar = true
+    private var isLightThemeStatusBar = false
     private val impressionScrollListeners: MutableMap<String, RecyclerView.OnScrollListener> = HashMap()
     private var mLastClickTime = System.currentTimeMillis()
     private val fragmentFramePerformanceIndexMonitoring = FragmentFramePerformanceIndexMonitoring()
     private var pageLoadTimeCallback: PageLoadTimePerformanceInterface? = null
     private var isOnRecyclerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
+    private var recommendationWishlistItem: RecommendationItem? = null
     private var shouldPausePlay = true
     private var lock = Object()
     private var autoRefreshFlag = HomeFlag()
     private var autoRefreshHandler = Handler()
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
+    private var bottomSheetIsShowing = false
     private var coachMarkIsShowing = false
     private var useNewInbox = false
-    private val bannerCarouselCallback = BannerComponentCallback(context, this)
+    private var coachmark: CoachMark2? = null
+    private var bannerCarouselCallback: BannerComponentCallback? = null
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
+    private var chooseAddressWidgetInitialized: Boolean = false
 
     private fun isNavRevamp(): Boolean {
         return try {
-            getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_REVAMP
+            return (context as? MainParentStateListener)?.isNavigationRevamp?:false
         } catch (e: Exception) {
             e.printStackTrace()
             false
         }
     }
+
     private fun isNavOld(): Boolean {
         return try {
             getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_OLD
@@ -339,11 +364,26 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun navAbTestCondition(ifNavRevamp: ()-> Unit = {}, ifNavOld: ()-> Unit = {}) {
+    private fun isChooseAddressRollenceActive(): Boolean {
+        return ChooseAddressUtils.isRollOutUser(requireContext())
+    }
+
+    private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
         if (isNavRevamp()) {
             ifNavRevamp.invoke()
         } else if (isNavOld()) {
             ifNavOld.invoke()
+        }
+    }
+
+    private fun chooseAddressAbTestCondition(
+            ifChooseAddressActive: () -> Unit = {},
+            ifChooseAddressNotActive: () -> Unit = {}) {
+        val isActive = isChooseAddressRollenceActive()
+        if (isActive) {
+            ifChooseAddressActive.invoke()
+        } else {
+            ifChooseAddressNotActive.invoke()
         }
     }
 
@@ -352,32 +392,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         createDaggerComponent()
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
-        requestStatusBarDark()
     }
 
-    private fun createDaggerComponent(){
+    private fun createDaggerComponent() {
         val enableAsyncDaggerCompInit = getRemoteConfig().getBoolean(ENABLE_ASYNC_HOME_DAGGER, false)
-        if(enableAsyncDaggerCompInit) {
+        if (enableAsyncDaggerCompInit) {
             val homeDaggerWeave = object : WeaveInterface {
                 override fun execute(): Any {
                     return initHomePageFlows()
                 }
             }
             Weaver.executeWeaveCoRoutineNow(homeDaggerWeave)
-        }
-        else{
+        } else {
             initHomePageFlows()
         }
-    }
-
-    private fun requestStatusBarDark() {
-        isLightThemeStatusBar = false
-        mainParentStatusBarListener?.requestStatusBarDark()
-    }
-
-    private fun requestStatusBarLight() {
-        isLightThemeStatusBar = true
-        mainParentStatusBarListener?.requestStatusBarLight()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -390,18 +418,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     fun callSubordinateTasks() {
         injectCouponTimeBased()
-        setGeolocationPermission()
-        needToShowGeolocationComponent()
     }
 
 
-    protected open fun initHomePageFlows():Boolean{
+    protected open fun initHomePageFlows(): Boolean {
         initInjectorHome()
         return true
     }
 
-    private fun getUserSession() : UserSessionInterface{
-        if(!::userSession.isInitialized){
+    private fun getUserSession(): UserSessionInterface {
+        if (!::userSession.isInitialized) {
             activity?.let {
                 userSession = UserSession(it)
             }
@@ -409,8 +435,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return userSession
     }
 
-    private fun getIrisAnalytics() : Iris{
-        if(!::irisAnalytics.isInitialized){
+    private fun getIrisAnalytics(): Iris {
+        if (!::irisAnalytics.isInitialized) {
             activity?.let {
                 irisAnalytics = getInstance(it)
             }
@@ -418,8 +444,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return irisAnalytics
     }
 
-    private fun getIrisSession() : IrisSession{
-        if(!::irisSession.isInitialized){
+    private fun getIrisSession(): IrisSession {
+        if (!::irisSession.isInitialized) {
             activity?.let {
                 irisSession = IrisSession(it)
             }
@@ -427,8 +453,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return irisSession
     }
 
-    private fun getRemoteConfig() : RemoteConfig{
-        if(!::remoteConfig.isInitialized){
+    private fun getRemoteConfig(): RemoteConfig {
+        if (!::remoteConfig.isInitialized) {
             activity?.let {
                 remoteConfig = FirebaseRemoteConfigImpl(it)
             }
@@ -443,8 +469,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return remoteConfigInstance.abTestPlatform
     }
 
-    override fun getTrackingQueueObj() : TrackingQueue?{
-        if(trackingQueue == null){
+    override fun getTrackingQueueObj(): TrackingQueue? {
+        if (trackingQueue == null) {
             activity?.let {
                 trackingQueue = TrackingQueue(it)
             }
@@ -513,6 +539,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView?.setHasFixedSize(true)
         homeRecyclerView?.itemAnimator?.moveDuration = 150
         initInboxAbTest()
+        HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         navAbTestCondition(
                 ifNavOld = {
                     oldToolbar?.setAfterInflationCallable(afterInflationCallable)
@@ -529,7 +556,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 navToolbar = it,
                                 startTransitionPixel = homeMainToolbarHeight,
                                 toolbarTransitionRangePixel = searchBarTransitionRange,
-                                navScrollCallback = object: NavRecyclerViewScrollListener.NavScrollCallback {
+                                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
                                     override fun onAlphaChanged(offsetAlpha: Float) {
 
                                     }
@@ -554,7 +581,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         ))
                         val icons = IconBuilder(
                                 IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
-                        ).addIcon(IconList.ID_MESSAGE) {}
+                        ).addIcon(getInboxIcon()) {}
                         if (!useNewInbox) {
                             icons.addIcon(IconList.ID_NOTIFICATION) {}
                         }
@@ -564,6 +591,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         }
                         it.setIcon(icons)
                     }
+                }
+        )
+
+        chooseAddressAbTestCondition(
+                ifChooseAddressActive = {
+                    onChooseAddressUpdated()
+                },
+                ifChooseAddressNotActive = {
+                    getHomeViewModel().getAddressData().isActive = false
                 }
         )
 
@@ -588,62 +624,166 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         ) == AbTestPlatform.VARIANT_NEW_INBOX && isNavRevamp()
     }
 
+    private fun getInboxIcon(): Int {
+        return if (useNewInbox) {
+            IconList.ID_INBOX
+        } else {
+            IconList.ID_MESSAGE
+        }
+    }
+
     private fun showNavigationOnboarding() {
         activity?.let {
-            val bottomSheet = BottomSheetUnify()
-            val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
-            onboardingView.onboarding_button.setOnClickListener {
-                bottomSheet.dismiss()
-                showCoachMark()
-            }
+            if (!bottomSheetIsShowing) {
+                val bottomSheet = BottomSheetUnify()
+                val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
+                onboardingView.onboarding_button.setOnClickListener {
+                    bottomSheet.dismiss()
+                    if (!coachMarkIsShowing) showCoachMark()
+                }
 
-            bottomSheet.setOnDismissListener {
-                if (!coachMarkIsShowing) showCoachMark()
-            }
+                bottomSheet.setOnDismissListener {
+                    if (!coachMarkIsShowing) showCoachMark()
+                }
 
-            bottomSheet.setTitle("")
-            bottomSheet.setChild(onboardingView)
-            bottomSheet.clearAction()
-            bottomSheet.setCloseClickListener {
-                bottomSheet.dismiss()
+                bottomSheet.setTitle("")
+                bottomSheet.setChild(onboardingView)
+                bottomSheet.clearAction()
+                bottomSheet.setCloseClickListener {
+                    bottomSheet.dismiss()
+                }
+                childFragmentManager.run {
+                    bottomSheet.show(this, "onboarding navigation")
+                    bottomSheetIsShowing = true
+                }
+                saveFirstViewNavigationFalse()
             }
-            childFragmentManager.run {
-                bottomSheet.show(this, "onboarding navigation")
+        }
+    }
+
+    private fun ArrayList<CoachMark2Item>.buildHomeCoachmark() {
+        //add navigation
+        if (!isNavigationCoachmarkShown(requireContext())) {
+            val globalNavIcon = navToolbar?.getGlobalNavIconView()
+            globalNavIcon?.let {
+                this.add(
+                        CoachMark2Item(
+                                globalNavIcon,
+                                getString(R.string.onboarding_coachmark_title),
+                                getString(R.string.onboarding_coachmark_description)
+                        )
+                )
             }
-            saveFirstViewNavigationFalse()
+        }
+
+        //inbox
+        if (!isInboxCoachmarkShown(requireContext())) {
+            val inboxIcon = navToolbar?.getInboxIconView()
+            inboxIcon?.let {
+                this.add(
+                        CoachMark2Item(
+                                inboxIcon,
+                                getString(R.string.onboarding_coachmark_inbox_title),
+                                getString(R.string.onboarding_coachmark_inbox_description)
+                        )
+                )
+            }
+        }
+
+        //add location
+        if (isLocalizingAddressNeedShowCoachMark(requireContext())) {
+            val chooseLocationWidget = getLocationWidgetView()
+            chooseLocationWidget?.let {
+                if (it.isVisible) {
+                    this.add(
+                            ChooseAddressUtils.coachMark2Item(requireContext(), chooseLocationWidget)
+                    )
+                }
+            }
+        }
+        //add balance widget
+        //uncomment this to activate balance widget coachmark
+
+        if (!isBalanceWidgetCoachmarkShown(requireContext())) {
+            val balanceWidget = getBalanceWidgetView()
+            balanceWidget?.let {
+                this.add(
+                        CoachMark2Item(
+                                balanceWidget,
+                                getString(R.string.onboarding_coachmark_wallet_title),
+                                getString(R.string.onboarding_coachmark_wallet_description)
+                        )
+                )
+            }
         }
     }
 
     private fun showCoachMark() {
-        coachMarkIsShowing = true
-        val coachMarkItem = ArrayList<CoachMark2Item>()
-        val coachMark = CoachMark2(requireContext())
+        context?.let {
+            coachMarkIsShowing = true
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            coachmark = CoachMark2(it)
 
-        val globalNavIcon = navToolbar?.getGlobalNavIconView()
-        globalNavIcon?.let {
-            coachMarkItem.add(
-                    CoachMark2Item(
-                            globalNavIcon,
-                            getString(R.string.onboarding_coachmark_title),
-                            getString(R.string.onboarding_coachmark_description)
-                    )
-            )
-        }
-        coachMark.container?.setOnClickListener {
-            val navigationBundle = Bundle()
-            navigationBundle.putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, ApplinkConsInternalNavigation.SOURCE_HOME)
-            RouteManager.route(context, navigationBundle, ApplinkConst.HOME_NAVIGATION, null)
-            coachMark.dismissCoachMark()
-        }
-        //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
-        //will be removed along the coachmark removal in the future
-        try {
-            if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
-                coachMark.showCoachMark(step = coachMarkItem, index = 0)
+            coachMarkItem.buildHomeCoachmark()
+            coachmark?.let {
+                it.setStepListener(object : CoachMark2.OnStepListener {
+                    override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                        coachMarkItem.setCoachmarkShownPref()
+                    }
+                })
+                //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
+                //will be removed along the coachmark removal in the future
+                try {
+                    if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
+                        it.showCoachMark(step = coachMarkItem, index = 0)
+                        coachMarkItem[0].setCoachmarkShownPref()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
+    }
+
+
+    private fun CoachMark2Item.setCoachmarkShownPref() {
+        when {
+            this.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true) -> {
+                setChooseAddressCoachmarkShown(requireContext())
+            }
+            this.title.toString().equals(getString(R.string.onboarding_coachmark_title), ignoreCase = true) -> {
+                setNavigationCoachmarkShown(requireContext())
+            }
+            this.title.toString().equals(getString(R.string.onboarding_coachmark_inbox_title), ignoreCase = true) -> {
+                setInboxCoachmarkShown(requireContext())
+            }
+            this.title.toString().equals(getString(R.string.onboarding_coachmark_wallet_title), ignoreCase = true) -> {
+                setBalanceWidgetCoachmarkShown(requireContext())
+            }
+        }
+    }
+
+    private fun getLocationWidgetView(): View? {
+        val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
+        (view as? HomeHeaderOvoViewHolder)?.let {
+            val locationView = it.itemView.widget_choose_address
+            if (locationView.isVisible)
+                return locationView.findViewById(R.id.text_chosen_address)
+        }
+        return null
+    }
+
+    private fun getBalanceWidgetView(): View? {
+        val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
+        (view as? HomeHeaderOvoViewHolder)?.let {
+            if (it.itemView.view_balance_widget.isVisible)
+                return getBalanceWidgetViewTokoPointsOnly(it.itemView.view_balance_widget)
+        }
+        return null
+    }
+
+    private fun getBalanceWidgetViewTokoPointsOnly(balanceWidgetView: BalanceWidgetView): View? {
+        return balanceWidgetView.getTokopointsView()
     }
 
     private fun isValidToShowCoachMark(): Boolean {
@@ -712,7 +852,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             oldToolbar?.showShadow()
                         }
                     }, ifNavRevamp = {
-                        navToolbar?.showShadow(lineShadow = true)
+                navToolbar?.showShadow(lineShadow = true)
             })
             showFeedSectionViewHolderShadow(false)
             homeRecyclerView?.setNestedCanScroll(false)
@@ -722,7 +862,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.hideShadow()
                         }
-                    } , ifNavRevamp = {
+                    }, ifNavRevamp = {
                 navToolbar?.hideShadow(lineShadow = true)
             }
             )
@@ -764,6 +904,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     AbTestPlatform.NAVIGATION_VARIANT_OLD
                 }
         )
+
+        //TODO: Register remote config to turn off and on new balance widget
+        getHomeViewModel().setNewBalanceWidget(remoteConfigIsNewBalanceWidget())
 
         if (isSuccessReset()) showSuccessResetPasswordDialog()
     }
@@ -816,7 +959,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         createAndCallSendScreen()
-        if(!shouldPausePlay) adapter?.onResumePlayWidget()
+        if (!shouldPausePlay) adapter?.onResumePlayWidget()
         adapter?.onResumeBanner()
         conditionalViewModelRefresh()
         if (activityStateListener != null) {
@@ -832,10 +975,36 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
     }
 
-    private fun conditionalViewModelRefresh(){
-        if(!fragmentCreatedForFirstTime) {
-            getHomeViewModel().refresh(isFirstInstall())
+    private fun conditionalViewModelRefresh() {
+        if (!fragmentCreatedForFirstTime) {
+            chooseAddressAbTestCondition(
+                    ifChooseAddressActive = {
+                        if (!validateChooseAddressWidget()) {
+                            getHomeViewModel().refresh(isFirstInstall())
+                        }
+                    },
+                    ifChooseAddressNotActive = {
+                        getHomeViewModel().refresh(isFirstInstall())
+                    }
+            )
+
         }
+    }
+
+    private fun validateChooseAddressWidget(): Boolean {
+        var isAddressChanged = false
+        getHomeViewModel().getAddressData().toLocalCacheModel().let {
+            isAddressChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
+        }
+
+        if (isAddressChanged) {
+            val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+            val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
+                    .setLocalCacheModel(localChooseAddressData)
+            viewModel.get().updateChooseAddressData(updatedChooseAddressData)
+        }
+
+        return isAddressChanged
     }
 
     private fun adjustStatusBarColor() {
@@ -871,9 +1040,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (isEnableToAutoRefresh(autoRefreshFlag)) {
             stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
         }
-        navAbTestCondition (
+        navAbTestCondition(
                 ifNavOld = { oldToolbar?.stopHintAnimation() }
         )
+    }
+
+    override fun onStop() {
+        super.onStop()
+        chooseAddressWidgetInitialized = false
     }
 
     override fun onDestroyView() {
@@ -890,7 +1064,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         adapter = null
         homeRecyclerView?.layoutManager = null
         layoutManager = null
-        getHomeViewModel().onCloseChannel()
         unRegisterBroadcastReceiverTokoCash()
     }
 
@@ -926,8 +1099,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observeRequestImagePlayBanner()
         observeViewModelInitialized()
         observeHomeRequestNetwork()
-        observeSalamWidget()
-        observeRechargeRecommendation()
         observeIsNeedRefresh()
         observeSearchHint()
         observePlayWidgetReminder()
@@ -939,7 +1110,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().isNeedRefresh.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
             val isNeedRefresh = data.peekContent()
             if (isNeedRefresh) {
-                bannerCarouselCallback.resetImpression()
+                bannerCarouselCallback?.resetImpression()
             }
         })
         getHomeViewModel().setRollanceNavigationType(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
@@ -962,7 +1133,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             val isViewModelInitialized = data.peekContent()
             if (isViewModelInitialized) {
                 callSubordinateTasks()
-                if(getPageLoadTimeCallback() != null) {
+                if (getPageLoadTimeCallback() != null) {
                     getPageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
                 }
             }
@@ -975,8 +1146,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun observeHomeData() {
         getHomeViewModel().homeLiveData.observe(viewLifecycleOwner, Observer { data: HomeDataModel? ->
-            if (data != null) {
-                if (data.list.size > 0) {
+            data?.let {
+                if (data.list.isNotEmpty()) {
                     configureHomeFlag(data.homeFlag)
                     setData(data.list, data.isCache, data.isProcessingAtf)
                 }
@@ -1001,7 +1172,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 showNetworkError(getString(R.string.home_error_connection))
                 adapter?.resetChannelErrorState()
                 adapter?.resetAtfErrorState()
-            } else if(status == Result.Status.ERROR_GENERAL) {
+            } else if (status == Result.Status.ERROR_GENERAL) {
                 showNetworkError(getString(R.string.home_error_connection))
                 NetworkErrorHelper.showEmptyState(activity, root, getString(R.string.home_error_connection)) { onRefresh() }
                 onPageLoadTimeEnd()
@@ -1036,10 +1207,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else {
                 val dataMap = data as Map<*, *>
                 sendEETracking(RecommendationListTracking.getAddToCartOnDynamicListCarousel(
-                        (dataMap[HomeViewModel.CHANNEL] as DynamicHomeChannel.Channels?)!!,
-                        (dataMap[HomeViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
-                        dataMap[HomeViewModel.POSITION] as Int,
-                        (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        (dataMap[HomeRevampViewModel.CHANNEL] as DynamicHomeChannel.Channels?)!!,
+                        (dataMap[HomeRevampViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
+                        dataMap[HomeRevampViewModel.POSITION] as Int,
+                        (dataMap[HomeRevampViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
                         "0",
                         viewModel.get().getUserId()
                 ) as HashMap<String, Any>)
@@ -1054,10 +1225,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else {
                 val dataMap = data as Map<*, *>
                 sendEETracking(RecommendationListTracking.getAddToCartOnDynamicListCarouselHomeComponent(
-                        (dataMap[HomeViewModel.CHANNEL] as ChannelModel),
-                        (dataMap[HomeViewModel.GRID] as ChannelGrid),
-                        dataMap[HomeViewModel.POSITION] as Int,
-                        (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        (dataMap[HomeRevampViewModel.CHANNEL] as ChannelModel),
+                        (dataMap[HomeRevampViewModel.GRID] as ChannelGrid),
+                        dataMap[HomeRevampViewModel.POSITION] as Int,
+                        (dataMap[HomeRevampViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
                         "0",
                         getHomeViewModel().getUserId()
                 ) as HashMap<String, Any>)
@@ -1078,6 +1249,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } else {
             BACKGROUND_LIGHT_1
         }
+
+        val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(requireContext())
+        if (isChooseAddressShow) {
+            val layoutParams = backgroundViewImage.layoutParams
+            layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
+            backgroundViewImage.layoutParams = layoutParams
+        } else {
+            val layoutParams = backgroundViewImage.layoutParams
+            layoutParams.height = resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
+            backgroundViewImage.layoutParams = layoutParams
+        }
+
         Glide.with(requireContext())
                 .load(backgroundUrl)
                 .fitCenter()
@@ -1122,22 +1305,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun observeSalamWidget(){
-        context?.let{
-            getHomeViewModel().salamWidgetLiveData.observe(viewLifecycleOwner, Observer {
-                getHomeViewModel().insertSalamWidget(it.peekContent())
-            })
-        }
-    }
-
-    private fun observeRechargeRecommendation(){
-        context?.let {
-            getHomeViewModel().rechargeRecommendationLiveData.observe(viewLifecycleOwner, Observer {
-                getHomeViewModel().insertRechargeRecommendation(it.peekContent())
-            })
-        }
-    }
-
     private fun observeRechargeBUWidget() {
         context?.let {
             getHomeViewModel().rechargeBUWidgetLiveData.observe(viewLifecycleOwner, Observer {
@@ -1152,20 +1319,34 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 if (!useNewInbox) {
                     navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, it.notifCount)
                 }
-                navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, it.messageCount)
+                navToolbar?.setBadgeCounter(getInboxIcon(), it.messageCount)
                 navToolbar?.setBadgeCounter(IconList.ID_CART, it.cartCount)
             })
         }
     }
 
     private fun setData(data: List<Visitable<*>>, isCache: Boolean, isProcessingAtf: Boolean) {
-        if(data.isNotEmpty()) {
+        if (data.isNotEmpty()) {
             if (needToPerformanceMonitoring(isProcessingAtf) && getPageLoadTimeCallback() != null) {
                 setOnRecyclerViewLayoutReady(isCache)
             }
             adapter?.submitList(data)
+            (data.firstOrNull { it is HomeHeaderOvoDataModel } as? HomeHeaderOvoDataModel)?.let {
+                val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
+                        ?: false
+                if (isBalanceWidgetNotEmpty) {
+                    val isTokopointsOrOvoFailed = it.headerDataModel?.homeBalanceModel?.isTokopointsOrOvoFailed ?: false
+                    if (!isTokopointsOrOvoFailed) {
+                        Handler().postDelayed({
+                            if (!coachMarkIsShowing && !bottomSheetIsShowing)
+                                showCoachMark()
+                        }, 3000)
+                    }
+                }
+            }
         }
     }
+
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
         val instance = list.filterIsInstance(type)
@@ -1193,11 +1374,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             when (fixedIconColor) {
                 FixedTheme.TOOLBAR_DARK_TYPE -> oldToolbar?.switchToDarkToolbar()
                 FixedTheme.TOOLBAR_LIGHT_TYPE -> oldToolbar?.switchToLightToolbar()
-            }
-            if (offsetAlpha >= 150) {
-                if (isLightThemeStatusBar) requestStatusBarDark()
-            } else {
-                if (!isLightThemeStatusBar) requestStatusBarLight()
             }
         }
         if (offsetAlpha >= 255) {
@@ -1260,19 +1436,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         layoutManager = LinearLayoutManager(context)
         homeRecyclerView?.layoutManager = layoutManager
         setupPlayWidgetCoordinator()
+        bannerCarouselCallback = BannerComponentCallback(context, this)
         val adapterFactory = HomeAdapterFactory(
                 this,
                 this,
                 this,
-                homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
+                homeRecyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool(),
                 this,
                 HomeComponentCallback(this),
                 DynamicLegoBannerComponentCallback(context, this),
                 RecommendationListCarouselComponentCallback(this),
                 MixLeftComponentCallback(this),
                 MixTopComponentCallback(this),
-                HomeReminderWidgetCallback(RechargeRecommendationCallback(context,this),
-                        SalamWidgetCallback(context,this, getUserSession())),
+                HomeReminderWidgetCallback(RechargeRecommendationCallback(context, this),
+                        SalamWidgetCallback(context, this, getUserSession())),
                 ProductHighlightComponentCallback(this),
                 Lego4AutoBannerComponentCallback(context, this),
                 FeaturedShopComponentCallback(context, this),
@@ -1321,7 +1498,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         autoRefreshHandler = Handler()
     }
 
-    private fun setAutoRefreshOnHome(autoRefreshFlag: HomeFlag)  {
+    private fun setAutoRefreshOnHome(autoRefreshFlag: HomeFlag) {
         initAutoRefreshHandler()
         val expiredTime = DateHelper.getExpiredTime(autoRefreshFlag.eventTime)
         autoRefreshRunnable = getAutoRefreshRunnableThread(serverOffsetTime, expiredTime, autoRefreshHandler, this)
@@ -1491,7 +1668,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             REQUEST_CODE_REVIEW -> {
                 adapter?.notifyDataSetChanged()
                 if (resultCode == Activity.RESULT_OK) {
-                    if(shouldShowToaster()) {
+                    if (shouldShowToaster()) {
                         showToasterReviewSuccess()
                     }
                     getHomeViewModel().onRemoveSuggestedReview()
@@ -1507,12 +1684,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 val lastEvent = getHomeViewModel().playWidgetReminderEvent?.value
                 if (lastEvent != null) getHomeViewModel().shouldUpdatePlayWidgetToggleReminder(lastEvent.first, lastEvent.second)
             }
+            PRODUCT_CARD_OPTIONS_REQUEST_CODE -> {
+                handleProductCardOptionsActivityResult(requestCode, resultCode, data,
+                        object : ProductCardOptionsWishlistCallback {
+                            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                                handleWishlistAction(productCardOptionsModel)
+                            }
+                        })
+            }
         }
     }
 
     override fun onRefresh() { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
-        bannerCarouselCallback.resetImpression()
+        bannerCarouselCallback?.resetImpression()
         resetFeedState()
         removeNetworkError()
         if (this::viewModel.isInitialized) {
@@ -1527,13 +1712,40 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
 
+    override fun onChooseAddressUpdated() {
+        val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+        getHomeViewModel().updateChooseAddressData(
+                HomeChooseAddressData(isActive = true)
+                        .setLocalCacheModel(localCacheModel)
+        )
+        chooseAddressWidgetInitialized = false
+    }
+
+    override fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean) {
+        if (!chooseAddressWidgetInitialized) {
+            chooseAddressWidget.bindChooseAddress(ChooseAddressWidgetCallback(context, this, this))
+            chooseAddressWidget.run {
+                visibility = if (needToShowChooseAddress) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+            }
+            chooseAddressWidgetInitialized = true
+        }
+    }
+
+    override fun onChooseAddressServerDown() {
+        getHomeViewModel().removeChooseAddressWidget()
+    }
+
     private fun onNetworkRetry(forceRefresh: Boolean = false) { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
 //        homeRecyclerView?.itemAnimator = null
         resetFeedState()
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
-        if(::viewModel.isInitialized) {
+        if (::viewModel.isInitialized) {
             getHomeViewModel().refresh(isFirstInstall(), forceRefresh)
         }
         if (activity is RefreshNotificationListener) {
@@ -1553,11 +1765,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun injectCouponTimeBased() {
-        if(getUserSession().isLoggedIn) getHomeViewModel().injectCouponTimeBased()
+        if (getUserSession().isLoggedIn) getHomeViewModel().injectCouponTimeBased()
     }
 
     private fun hideLoading() {
-
         refreshLayout.isRefreshing = false
         homeRecyclerView?.isEnabled = true
     }
@@ -1568,7 +1779,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache)
             homePerformanceMonitoringListener = null
             fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
-            if(fragmentCreatedForFirstTime){
+            if (fragmentCreatedForFirstTime) {
                 fragmentCreatedForFirstTime = false
                 conditionalViewModelRefresh()
             }
@@ -1581,7 +1792,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         navAbTestCondition(ifNavRevamp = {
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
-        getHomeViewModel().showTicker()
         observeHomeNotif()
         pageLoadTimeCallback?.invalidate()
     }
@@ -1590,61 +1800,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_ONBOARDING_NAVIGATION, true)
     }
 
-    private fun needToShowGeolocationComponent() {
-        val firebaseShowGeolocationComponent = getRemoteConfig().getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT, true)
-        if (!firebaseShowGeolocationComponent) {
-            getHomeViewModel().setNeedToShowGeolocationComponent(false)
-            return
-        }
-        var needToShowGeolocationComponent = true
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity?.let {
-                val userHasDeniedPermissionBefore = ActivityCompat
-                        .shouldShowRequestPermissionRationale(it,
-                                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)
-                if (userHasDeniedPermissionBefore) {
-                    getHomeViewModel().setNeedToShowGeolocationComponent(false)
-                    return
-                }
-            }
-        }
-        if (activity != null) {
-            if (getHomeViewModel().hasGeolocationPermission()) {
-                needToShowGeolocationComponent = false
-            }
-        }
-        if (needToShowGeolocationComponent && HIDE_GEO) {
-            getHomeViewModel().setNeedToShowGeolocationComponent(false)
-            return
-        }
-        getHomeViewModel().setNeedToShowGeolocationComponent(needToShowGeolocationComponent)
-    }
-
-    private fun setGeolocationPermission() {
-        if (activity == null) getHomeViewModel().setGeolocationPermission(false)
-        else getHomeViewModel().setGeolocationPermission(permissionCheckerHelper.get().hasPermission(
-                requireActivity(),
-                arrayOf(PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)))
-    }
-
-    private fun promptGeolocationPermission() {
-        permissionCheckerHelper.get().checkPermission(this,
-                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
-                object : PermissionCheckerHelper.PermissionCheckListener {
-                    override fun onPermissionDenied(permissionText: String) {
-                        HomePageTracking.eventClickNotAllowGeolocation()
-                        getHomeViewModel().onCloseGeolocation()
-                        showNotAllowedGeolocationSnackbar()
-                    }
-
-                    override fun onNeverAskAgain(permissionText: String) {}
-                    override fun onPermissionGranted() {
-                        HomePageTracking.eventClickAllowGeolocation()
-                        detectAndSendLocation()
-                        getHomeViewModel().onCloseGeolocation()
-                        showAllowedGeolocationSnackbar()
-                    }
-                }, "")
+    private fun remoteConfigIsNewBalanceWidget(): Boolean {
+        return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_NEW_BALANCE_WIDGET, true)
     }
 
     private fun detectAndSendLocation() {
@@ -1665,7 +1822,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun onGetLocation(): Function1<DeviceLocation, Unit> {
         return { (latitude, longitude) ->
             saveLocation(activity, latitude, longitude)
-            getHomeViewModel().sendGeolocationData()
         }
     }
 
@@ -1716,7 +1872,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun isFirstInstall(): Boolean {
         context?.let {
             if (!getUserSession().isLoggedIn &&
-                    isShowFirstInstallSearch ) {
+                    isShowFirstInstallSearch) {
                 sharedPrefs = it.getSharedPreferences(
                         ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
                 var firstInstallCacheValue = sharedPrefs.getLong(
@@ -1758,7 +1914,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     },
                     ifNavRevamp = {
                         navToolbar?.setupSearchbar(
-                                hints = listOf(HintData(data.placeholder ?: "", data.keyword ?: "")),
+                                hints = listOf(HintData(data.placeholder ?: "", data.keyword
+                                        ?: "")),
                                 applink = if (data.keyword?.isEmpty() != false) {
                                     ApplinkConstInternalDiscovery.AUTOCOMPLETE
                                 } else PARAM_APPLINK_AUTOCOMPLETE,
@@ -1811,7 +1968,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun showNetworkError(message: String) {
         if (isAdded && activity != null && adapter != null) {
-            if (adapter?.itemCount?:0 > 0) {
+            if (adapter?.itemCount ?: 0 > 0) {
                 showToaster(message, TYPE_ERROR)
             } else {
                 NetworkErrorHelper.showEmptyState(activity, root, message) { onRefresh() }
@@ -1886,6 +2043,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onDynamicChannelRetryClicked() {
         getHomeViewModel().onDynamicChannelRetryClicked()
+    }
+
+    override fun isNewNavigation(): Boolean {
+        return isNavRevamp()
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {
@@ -1984,11 +2145,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser
         )
+        manageCoachmarkOnFragmentVisible(isVisibleToUser)
     }
 
-    private fun resetAutoPlay(isVisibleToUser: Boolean){
+    private fun manageCoachmarkOnFragmentVisible(isVisibleToUser: Boolean) {
+        when (isVisibleToUser) {
+            false -> if (coachMarkIsShowing) {
+                coachmark?.hideCoachMark()
+            }
+        }
+    }
+
+    private fun resetAutoPlay(isVisibleToUser: Boolean) {
         shouldPausePlay = !isVisibleToUser
-        if(isVisibleToUser) adapter?.onResumePlayWidget()
+        if (isVisibleToUser) adapter?.onResumePlayWidget()
         else adapter?.onPausePlayWidget(shouldPausePlay)
     }
 
@@ -2010,7 +2180,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         get() = userVisibleHint
 
     override val parentPool: RecyclerView.RecycledViewPool
-        get() = homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool()
+        get() = homeRecyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
     override val isHomeFragment: Boolean
         get() {
@@ -2038,17 +2208,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels) {
-        getHomeViewModel().getPopularKeywordData()
-        PopularKeywordTracking.sendPopularKeywordClickReload(channel)
+        getHomeViewModel().getPopularKeyword()
+        PopularKeywordTracking.sendPopularKeywordClickReload(channel, getUserSession().userId)
     }
 
-    override fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) {
-        getTrackingQueueObj()?.putEETracking(PopularKeywordTracking.getPopularKeywordImpressionItem(channel, position, keyword, positionInWidget) as HashMap<String, Any>)
+    override fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, popularKeywordDataModel: PopularKeywordDataModel, positionInWidget: Int) {
+        getTrackingQueueObj()?.putEETracking(PopularKeywordTracking.getPopularKeywordImpressionItem(channel, position, popularKeywordDataModel, positionInWidget, getUserSession().userId) as HashMap<String, Any>)
     }
 
-    override fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) {
+    override fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, popularKeywordDataModel: PopularKeywordDataModel, positionInWidget: Int) {
         RouteManager.route(context, applink)
-        PopularKeywordTracking.sendPopularKeywordClickItem(channel, position, keyword, positionInWidget)
+        PopularKeywordTracking.sendPopularKeywordClickItem(channel, position, popularKeywordDataModel, positionInWidget, getUserSession().userId)
     }
 
     override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
@@ -2058,6 +2228,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
         trackingQueue?.putEETracking(BestSellerWidgetTracker.getImpressionTracker(recommendationItem, bestSellerDataModel.id, bestSellerDataModel.title, bestSellerDataModel.pageName, userId, widgetPosition) as HashMap<String, Any>)
+    }
+
+    override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+        recommendationWishlistItem = recommendationItem
+        showProductCardOptions(
+                this,
+                recommendationItem.createProductCardOptionsModel(widgetPosition))
     }
 
     override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int) {
@@ -2105,6 +2282,33 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onRetryLoadFeeds() {
         getHomeViewModel().getFeedTabData()
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
+        if (productCardOptionsModel == null) return
+
+        val wishlistResult = productCardOptionsModel.wishlistResult
+        if (wishlistResult.isUserLoggedIn) {
+            if (wishlistResult.isSuccess) {
+                recommendationWishlistItem?.isWishlist = !(recommendationWishlistItem?.isWishlist
+                        ?: false)
+                showToasterWithAction(
+                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
+                        typeToaster = TYPE_NORMAL,
+                        actionText = getString(R.string.go_to_wishlist),
+                        clickListener = View.OnClickListener {
+                            RouteManager.route(context, ApplinkConst.WISHLIST)
+                        }
+                )
+            } else {
+                showToaster(
+                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist),
+                        typeToaster = TYPE_ERROR
+                )
+            }
+        } else {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
     }
 
     private val isUserLoggedIn: Boolean
@@ -2172,7 +2376,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             context?.let {
                 if (isNavOld()) {
                     if (oldToolbar != null) {
-                        height = oldToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+                        height = oldToolbar?.height
+                                ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
                         oldToolbar?.let {
                             if (!it.isShadowApplied()) {
                                 height += resources.getDimensionPixelSize(R.dimen.dp_8)
@@ -2181,7 +2386,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     }
                 } else if (isNavRevamp()) {
                     navToolbar?.let {
-                        height = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+                        height = navToolbar?.height
+                                ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
                         height += resources.getDimensionPixelSize(R.dimen.dp_8)
                     }
                 }
@@ -2209,15 +2415,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 refreshLayout.setCanChildScrollUp(false)
             }
         })
-    }
-
-    override fun launchPermissionChecker() {
-        promptGeolocationPermission()
-    }
-
-    override fun onCloseGeolocationView() {
-        HIDE_GEO = true
-        getHomeViewModel().onCloseGeolocation()
     }
 
     private fun getSnackBar(text: String, duration: Int): Snackbar {
@@ -2390,12 +2587,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
                     HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(RecommendationListTracking.getRecommendationListImpression(channel, true, viewModel.get().getUserId(), position) as HashMap<String, Any>)
-            DynamicChannelViewHolder.TYPE_CATEGORY_WIDGET -> putEEToIris(CategoryWidgetTracking.getCategoryWidgetBannerImpression(
-                    channel.grids.toList(),
-                    getHomeViewModel().getUserId(),
-                    true,
-                    channel
-            ) as HashMap<String, Any>)
         }
     }
 
@@ -2411,7 +2602,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun getPageLoadTimeCallback(): PageLoadTimePerformanceInterface? {
         if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface != null) {
-            pageLoadTimeCallback =  homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface
+            pageLoadTimeCallback = homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface
         }
         return pageLoadTimeCallback
     }
@@ -2421,14 +2612,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onDetach() {
-        if(this::viewModel.isInitialized){
+        if (this::viewModel.isInitialized) {
             this.viewModel.get().onCleared()
         }
         super.onDetach()
     }
 
-    fun getHomeViewModel(): HomeRevampViewModel{
-        if(!this::viewModel.isInitialized){
+    fun getHomeViewModel(): HomeRevampViewModel {
+        if (!this::viewModel.isInitialized) {
             initInjectorHome()
         }
         return viewModel.get()
@@ -2474,10 +2665,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             when (it.status) {
                 Result.Status.SUCCESS -> if (it.data != null) showToaster(
                         if (it.data.reminded) getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
-                        else getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
-                        , TYPE_NORMAL)
+                        else getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder), TYPE_NORMAL)
                 Result.Status.ERROR -> showToaster(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder), TYPE_ERROR)
-                else -> {}
+                else -> {
+                }
             }
         })
     }
@@ -2510,9 +2701,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun String?.safeEncodeUtf8(): String {
         return try {
-            this?.encodeToUtf8()?:""
-        }
-        catch(throwable: Throwable) {
+            this?.encodeToUtf8() ?: ""
+        } catch (throwable: Throwable) {
             ""
         }
     }
@@ -2561,5 +2751,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 saveStateReset(false)
             }
         }).show()
+    }
+
+    private fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {
+        val productCardOptionsModel = ProductCardOptionsModel()
+        productCardOptionsModel.hasWishlist = true
+        productCardOptionsModel.isWishlisted = isWishlist
+        productCardOptionsModel.productId = productId.toString()
+        productCardOptionsModel.isTopAds = isTopAds
+        productCardOptionsModel.topAdsWishlistUrl = wishlistUrl
+        productCardOptionsModel.productPosition = position
+        productCardOptionsModel.screenName = header
+        return productCardOptionsModel
     }
 }

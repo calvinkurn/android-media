@@ -25,6 +25,7 @@ import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
+import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -36,7 +37,7 @@ import com.tokopedia.utils.time.TimeHelper
 /**
  * @author : Steven 2019-08-07
  */
-class ChatItemListViewHolder(
+class ChatItemListViewHolder constructor(
         itemView: View,
         var listener: ChatListItemListener
 ) : AbstractViewHolder<ItemChatListPojo>(itemView) {
@@ -84,6 +85,7 @@ class ChatItemListViewHolder(
         bindLabel(element)
         bindPin(element)
         bindSmartReplyIndicator(element)
+        ImageUtil.setTypingAnimation(typingImage)
     }
 
     private fun bindSmartReplyIndicator(element: ItemChatListPojo) {
@@ -273,13 +275,9 @@ class ChatItemListViewHolder(
 
     private fun bindTypingState() {
         typingImage.show()
-        MethodChecker.animateVectorDrawable(true, typingImage.drawable, itemView.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
-        setMessageTyping()
-    }
-
-    private fun setMessageTyping() {
         message.hide()
         typingText.show()
+        ImageUtil.startAVDTypingAnimation(typingImage)
     }
 
     private fun bindMessageState(chat: ItemChatListPojo) {
@@ -302,7 +300,7 @@ class ChatItemListViewHolder(
         message.show()
         typingImage.hide()
         typingText.hide()
-        MethodChecker.animateVectorDrawable(false, typingImage.drawable, itemView.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
+        ImageUtil.stopAVDTypingAnimation(typingImage)
     }
 
     private fun createLabelSpan(chat: ItemChatListPojo): SpannableString {

@@ -4,7 +4,7 @@
     <solid android:color="@android:color/transparent" />
     <stroke
         android:width="2dp"
-        android:color="#DBDEE2" />
+        android:color="@color/Unify_N75" />
     <size
         android:width="12dp"
         android:height="12dp" />

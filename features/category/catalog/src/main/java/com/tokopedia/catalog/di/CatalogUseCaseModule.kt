@@ -2,8 +2,10 @@ package com.tokopedia.catalog.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.common_category.usecase.*
-import com.tokopedia.catalog.usecase.GetProductCatalogOneUseCase
+import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.catalog.repository.catalogdetail.CatalogDetailRepository
+import com.tokopedia.catalog.usecase.detail.CatalogDetailUseCase
+import com.tokopedia.catalog.usecase.listing.*
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -28,30 +30,45 @@ class CatalogUseCaseModule {
 
     @CatalogScope
     @Provides
-    fun getProductCatalogOneUseCase(graphqlUseCase: GraphqlUseCase): GetProductCatalogOneUseCase {
-        return GetProductCatalogOneUseCase(graphqlUseCase)
-    }
-
-    @CatalogScope
-    @Named("topAdsProductListing")
-    @Provides
-    fun provideTopAdsUseCase(): TopAdsProductsUseCase {
-        return TopAdsProductsUseCase()
+    fun provideBaseRepository(): BaseRepository {
+        return BaseRepository()
     }
 
     @CatalogScope
     @Provides
-    fun provideCategoryProductUseCase(graphqlUseCase: GraphqlUseCase): CategoryProductUseCase {
-        return CategoryProductUseCase(graphqlUseCase)
+    fun provideCatalogDetailRepository(): CatalogDetailRepository {
+        return CatalogDetailRepository()
     }
 
     @CatalogScope
     @Provides
-    fun getProductListUseCase(categoryProductUseCase: CategoryProductUseCase
-                              , @Named("topAdsProductListing") topAdsProductsUseCase
-                              : TopAdsProductsUseCase)
-            : GetProductListUseCase {
-        return GetProductListUseCase(categoryProductUseCase, topAdsProductsUseCase)
+    fun getProductCatalogOneUseCase(catalogDetailRepository: CatalogDetailRepository): CatalogDetailUseCase {
+        return CatalogDetailUseCase(catalogDetailRepository)
+    }
+
+    @CatalogScope
+    @Provides
+    fun provideCatalogCategoryProductUseCase(graphqlUseCase: GraphqlUseCase): CatalogCategoryProductUseCase {
+        return CatalogCategoryProductUseCase(graphqlUseCase)
+    }
+
+    @CatalogScope
+    @Provides
+    fun providesCatalogGetProductListUseCase(catalogCategoryProductUseCase: CatalogCategoryProductUseCase)
+            : CatalogGetProductListUseCase {
+        return CatalogGetProductListUseCase(catalogCategoryProductUseCase)
+    }
+
+    @CatalogScope
+    @Provides
+    fun provideCatalogDynamicFilterUseCase(): CatalogDynamicFilterUseCase {
+        return CatalogDynamicFilterUseCase()
+    }
+
+    @CatalogScope
+    @Provides
+    fun provideCatalogQuickFilterUseCase(): CatalogQuickFilterUseCase {
+        return CatalogQuickFilterUseCase()
     }
 
     @CatalogScope

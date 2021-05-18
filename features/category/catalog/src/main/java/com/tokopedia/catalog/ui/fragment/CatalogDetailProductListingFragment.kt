@@ -8,8 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -22,32 +20,40 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.analytics.CatalogDetailPageAnalytics
+import com.tokopedia.catalog.adapter.CatalogProductNavListAdapter
+import com.tokopedia.catalog.adapter.factory.CatalogTypeFactory
+import com.tokopedia.catalog.adapter.factory.CatalogTypeFactoryImpl
+import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.di.CatalogComponent
 import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.listener.CatalogProductCardListener
+import com.tokopedia.catalog.model.raw.CatalogProductItem
+import com.tokopedia.catalog.model.util.CatalogConstant
+import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
-import com.tokopedia.common_category.adapter.ProductNavListAdapter
-import com.tokopedia.common_category.adapter.QuickFilterAdapter
 import com.tokopedia.common_category.constants.CategoryNavConstants
-import com.tokopedia.common_category.factory.ProductTypeFactory
-import com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl
 import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
-import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
-import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.core.gcm.GCMHandler
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.sortfilter.SortFilter
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -57,8 +63,9 @@ import javax.inject.Inject
 class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         BaseCategoryAdapter.OnItemChangeView,
         QuickFilterListener,
-        ProductCardListener,
-        WishListActionListener {
+        CatalogProductCardListener,
+        WishListActionListener,
+        SortFilterBottomSheet.Callback{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -68,48 +75,39 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     @Inject
     lateinit var removeWishlistActionUseCase: RemoveWishListUseCase
-
     @Inject
     lateinit var addWishlistActionUseCase: AddWishListUseCase
 
     private lateinit var catalogComponent: CatalogComponent
+
     private var catalogId: String = ""
-    private var catalogName: String = ""
+    private var catalogUrl: String = ""
     private var departmentId: String = ""
-    private var departmentName: String = ""
 
-    var productNavListAdapter: ProductNavListAdapter? = null
-    private lateinit var quickFilterAdapter: QuickFilterAdapter
+    var productNavListAdapter: CatalogProductNavListAdapter? = null
+    private var sortFilterBottomSheet: SortFilterBottomSheet? = null
 
-    var pageCount = 0
-    var isPagingAllowed: Boolean = true
+    private var pagingRowCount = 20
 
-    var list: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
-    var quickFilterList = ArrayList<Filter>()
+    private lateinit var catalogTypeFactory: CatalogTypeFactory
 
-    private lateinit var productTypeFactory: ProductTypeFactory
-
-    lateinit var userSession: UserSession
+    private lateinit var userSession: UserSession
     private lateinit var gcmHandler: GCMHandler
-    private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
+    private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
-        private const val ARG_EXTRA_CATALOG_NAME = "ARG_EXTRA_CATALOG_NAME"
-        private const val ARG_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
-        private const val ARG_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
+        private const val ARG_EXTRA_CATALOG_URL = "ARG_EXTRA_CATALOG_URL"
 
-        private val REQUEST_ACTIVITY_SORT_PRODUCT = 102
-        private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
+        private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
+        private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 
         @JvmStatic
-        fun newInstance(catalogId: String, catalogName: String, departmentid: String?, departmentName: String?): BaseCategorySectionFragment {
+        fun newInstance(catalogId: String, catalogUrl : String?): BaseCategorySectionFragment {
             val fragment = CatalogDetailProductListingFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
-            bundle.putString(ARG_EXTRA_CATALOG_NAME, catalogName)
-            bundle.putString(ARG_CATEGORY_DEPARTMENT_ID, departmentid)
-            bundle.putString(ARG_CATEGORY_DEPARTMENT_NAME, departmentName)
+            bundle.putString(ARG_EXTRA_CATALOG_URL, catalogUrl)
             fragment.arguments = bundle
             return fragment
         }
@@ -127,64 +125,55 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         arguments?.let {
             if (it.containsKey(ARG_EXTRA_CATALOG_ID)) {
                 catalogId = it.getString(ARG_EXTRA_CATALOG_ID, "")
-                catalogName = it.getString(ARG_EXTRA_CATALOG_NAME, "")
-                departmentId = it.getString(ARG_CATEGORY_DEPARTMENT_ID, "")
-                departmentName = it.getString(ARG_CATEGORY_DEPARTMENT_NAME, "")
+                catalogUrl = it.getString(ARG_EXTRA_CATALOG_URL, "")
             }
         }
         initView()
         observeData()
         setUpAdapter()
+        setupRecyclerView()
         setUpNavigation()
-        if (userVisibleHint) {
-            setUpVisibleFragmentListener()
-        }
+        setUpVisibleFragmentListener()
+        initSearchQuickSortFilter(view)
+        sortFilterBottomSheet = SortFilterBottomSheet()
     }
 
     private fun initView() {
-
         userSession = UserSession(activity)
         gcmHandler = GCMHandler(activity)
 
         activity?.let { observer ->
-            val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
             viewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
-            fetchProductData(getProductListParamMap(getPage()))
+            fetchProductData(getProductListParams(getPage()))
             viewModel.fetchQuickFilters(getQuickFilterParams())
+            viewModel.catalogUrl = catalogUrl
         }
     }
 
-    private fun getQuickFilterParams(): RequestParams {
-        val quickFilterParam = RequestParams()
-        val daFilterQueryType = DAFilterQueryType()
-        daFilterQueryType.sc = departmentId
-        quickFilterParam.putObject(CategoryNavConstants.FILTER, daFilterQueryType)
-        quickFilterParam.putString(CategoryNavConstants.SOURCE, "quick_filter")
-        return quickFilterParam
-    }
-
     private fun setUpAdapter() {
-        productTypeFactory = ProductTypeFactoryImpl(this)
-        productNavListAdapter = ProductNavListAdapter(productTypeFactory, list, this)
-        product_recyclerview.adapter = productNavListAdapter
-        product_recyclerview.layoutManager = getStaggeredGridLayoutManager()
-        productNavListAdapter?.addShimmer()
+        catalogTypeFactory = CatalogTypeFactoryImpl(this)
+        productNavListAdapter = CatalogProductNavListAdapter(catalogTypeFactory, viewModel.list, this,this)
+        productNavListAdapter?.changeListView()
+        if(viewModel.list.size == 0)
+            productNavListAdapter?.addShimmer()
 
         attachScrollListener()
     }
 
-    private fun setQuickFilterAdapter(productCount: String) {
-        quickFilterAdapter = QuickFilterAdapter(quickFilterList, this, productCount)
-        quickfilter_recyclerview.adapter = quickFilterAdapter
-        quickfilter_recyclerview.layoutManager = LinearLayoutManager(activity,
-                RecyclerView.HORIZONTAL, false)
+    private fun setupRecyclerView() {
+        product_recyclerview.apply {
+            layoutManager = getLinearLayoutManager()
+            setHasFixedSize(true)
+            adapter = productNavListAdapter
+        }
     }
 
     private fun attachScrollListener() {
-        getStaggeredGridLayoutManager()?.let {
-            staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(it)
+        getLinearLayoutManager()?.let {
+            loadMoreTriggerListener = getEndlessRecyclerViewListener(it)
         }
-        staggeredGridLayoutLoadMoreTriggerListener?.let {
+        loadMoreTriggerListener?.let {
             product_recyclerview.addOnScrollListener(it)
         }
     }
@@ -192,14 +181,31 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                fetchProductData(getProductListParamMap(page))
+                fetchProductData(getProductListParams(viewModel.pageCount))
                 productNavListAdapter?.addLoading()
             }
         }
     }
 
     private fun observeData() {
-        viewModel.mProductList.observe(this, Observer {
+
+        viewModel.sortFilterItems.observe(viewLifecycleOwner, Observer {
+            if (it.isNotEmpty()) {
+                setQuickFilter(it)
+            }
+        })
+
+        viewModel.selectedSortIndicatorCount.observe(viewLifecycleOwner, Observer {
+            searchSortFilter?.indicatorCounter = it
+        })
+
+        viewModel.dynamicFilterModel.observe(viewLifecycleOwner, Observer {
+            it?.let { dm ->
+                setDynamicFilter(dm)
+            }
+        })
+
+        viewModel.mProductList.observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
@@ -209,48 +215,44 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
                     if (it.data.isNotEmpty()) {
                         showNoDataScreen(false)
-                        list.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
                         productNavListAdapter?.removeLoading()
                         product_recyclerview.adapter?.notifyDataSetChanged()
-                        staggeredGridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
-                        isPagingAllowed = true
+                        loadMoreTriggerListener?.updateStateAfterGetData()
+                        viewModel.isPagingAllowed = true
                     } else {
-                        if (list.isEmpty()) {
+                        productNavListAdapter?.removeLoading()
+                        if (viewModel.list.isEmpty()) {
                             showNoDataScreen(true)
                         }
                     }
+                    sortFilterBottomSheet = SortFilterBottomSheet()
                     hideRefreshLayout()
-                    reloadFilter(createFilterParam())
+                    reloadFilter(getDynamicFilterParams())
                 }
 
                 is Fail -> {
                     productNavListAdapter?.removeLoading()
                     hideRefreshLayout()
-                    if (list.isEmpty()) {
+                    if (viewModel.list.isEmpty()) {
                         showNoDataScreen(true)
                     }
-                    isPagingAllowed = true
+                    viewModel.isPagingAllowed = true
                 }
 
             }
         })
 
-        viewModel.mProductCount.observe(this, Observer {
+        viewModel.mProductCount.observe(viewLifecycleOwner, Observer {
             it?.let {
-                setTotalSearchResultCount(it)
-                if (!TextUtils.isEmpty(it)) {
-                    setQuickFilterAdapter(getString(R.string.catalog_result_count_template_text, it))
-                } else {
-                    setQuickFilterAdapter("")
-                }
+                setHeaderCount(it)
             }
         })
 
-        viewModel.getDynamicFilterData().observe(this, Observer {
+        viewModel.getDynamicFilterData().observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
-                    renderDynamicFilter(it.data.data)
+                    viewModel.dynamicFilterModel.value = it.data
                 }
 
                 is Fail -> {
@@ -258,15 +260,15 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             }
         })
 
-
-        viewModel.mQuickFilterModel.observe(this, Observer {
+        viewModel.mQuickFilterModel.observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
-                    initQuickFilter(it.data as ArrayList)
+                    startFilter(it.data.data)
                 }
 
                 is Fail -> {
+                    search_product_quick_sort_filter.hide()
                 }
             }
 
@@ -274,15 +276,13 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     }
 
-    private fun createFilterParam(): RequestParams {
-        val paramMap = RequestParams()
-        val daFilterQueryType = DAFilterQueryType()
-        daFilterQueryType.sc = departmentId
-        paramMap.putString(CategoryNavConstants.SOURCE, "search_product")
-        paramMap.putObject(CategoryNavConstants.FILTER, daFilterQueryType)
-        paramMap.putString(CategoryNavConstants.Q, "")
-        paramMap.putString(CategoryNavConstants.SOURCE, "directory")
-        return paramMap
+    private fun setHeaderCount(totalProductsCount : String){
+        if(CatalogConstant.ZERO_VALUE == totalProductsCount) {
+            headerTitle.text = getString(R.string.catalog_search_product_zero_count_text)
+            showNoDataScreen(true)
+        }
+        else
+            headerTitle.text = getString(R.string.catalog_search_product_count_text,totalProductsCount)
     }
 
     private fun reloadFilter(param: RequestParams) {
@@ -292,16 +292,11 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
             layout_no_data.show()
+            product_recyclerview.hide()
         } else {
-            layout_no_data.visibility = View.GONE
+            layout_no_data.hide()
+            product_recyclerview.show()
         }
-    }
-
-    private fun initQuickFilter(list: ArrayList<Filter>) {
-        quickFilterList.clear()
-        quickFilterList.addAll(list)
-        quickfilter_recyclerview.adapter?.notifyDataSetChanged()
-
     }
 
     override fun getAdapter(): BaseCategoryAdapter? {
@@ -314,12 +309,16 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         }
         showRefreshLayout()
         productNavListAdapter?.clearData()
-        productNavListAdapter?.addShimmer()
+        viewModel.list.clear()
+        if(viewModel.list.size == 0)
+            productNavListAdapter?.addShimmer()
+        layout_no_data?.hide()
         resetPage()
-        staggeredGridLayoutLoadMoreTriggerListener?.resetState()
-        fetchProductData(getProductListParamMap(getPage()))
-
+        loadMoreTriggerListener?.resetState()
+        viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
+        fetchProductData(getProductListParams(getPage()))
         viewModel.fetchQuickFilters(getQuickFilterParams())
+        setSortFilterIndicatorCounter()
     }
 
     override fun getDepartMentId(): String {
@@ -345,47 +344,54 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun resetPage() {
-        isPagingAllowed = true
-        pageCount = 0
+        viewModel.isPagingAllowed = true
+        viewModel.pageCount = 0
     }
 
     private fun fetchProductData(paramMap: RequestParams) {
         viewModel.fetchProductListing(paramMap)
     }
 
-    private fun getProductListParamMap(start: Int): RequestParams {
-
+    private fun getQuickFilterParams(): RequestParams {
         val param = RequestParams.create()
+        val searchFilterParams = RequestParams.create()
+        searchFilterParams.apply {
+            putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
+            putString(CategoryNavConstants.Q,"")
+            putString(CategoryNavConstants.SOURCE, CatalogConstant.QUICK_FILTER_SOURCE)
+        }
+        param.putString(CatalogConstant.QUICK_FILTER_PARAMS, createParametersForQuery(searchFilterParams.parameters))
+        return param
+    }
 
+    private fun getDynamicFilterParams(): RequestParams {
+        val paramMap = RequestParams()
+        val daFilterQueryType = DAFilterQueryType()
+        daFilterQueryType.sc = departmentId
+        paramMap.apply {
+            putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
+            putString(CategoryNavConstants.SOURCE, CatalogConstant.SEARCH_PRODUCT_SOURCE)
+            putObject(CategoryNavConstants.FILTER, daFilterQueryType)
+            putString(CategoryNavConstants.Q, "")
+        }
+        return paramMap
+    }
 
+    private fun getProductListParams(start: Int): RequestParams {
+        val param = RequestParams.create()
         val searchProductRequestParams = RequestParams.create()
-        searchProductRequestParams.putString(CategoryNavConstants.START, (start * 10).toString())
-        searchProductRequestParams.putString(CategoryNavConstants.SC, departmentId)
-        searchProductRequestParams.putString(CategoryNavConstants.DEVICE, "android")
-        searchProductRequestParams.putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
-        searchProductRequestParams.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
-        searchProductRequestParams.putString(CategoryNavConstants.ROWS, "10")
-        searchProductRequestParams.putString(CategoryNavConstants.SOURCE, "search_product")
-        searchProductRequestParams.putString(CategoryNavConstants.CTG_ID, catalogId)
-        searchProductRequestParams.putAllString(getSelectedSort())
-        searchProductRequestParams.putAllString(getSelectedFilter())
-        param.putString("product_params", createParametersForQuery(searchProductRequestParams.parameters))
-
-
-        val topAdsRequestParam = RequestParams.create()
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
-        topAdsRequestParam.putString(CategoryNavConstants.DEVICE, "android")
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_SRC, "directory")
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_PAGE, start.toString())
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_EP, "product")
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_ITEM, "2")
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_F_SHOP, "1")
-        topAdsRequestParam.putString(CategoryNavConstants.KEY_DEPT_ID, departmentId)
-        topAdsRequestParam.putString(CategoryNavConstants.CTG_ID, catalogId)
-
-        topAdsRequestParam.putAllString(getSelectedSort())
-
-        param.putString("top_params", createParametersForQuery(topAdsRequestParam.parameters))
+        searchProductRequestParams.apply {
+            putString(CategoryNavConstants.START, (start * pagingRowCount).toString())
+            putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
+            putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
+            putString(CategoryNavConstants.ROWS, pagingRowCount.toString())
+            putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
+            putString(CategoryNavConstants.CTG_ID, catalogId)
+            viewModel.searchParametersMap.value?.let { safeSearchParams ->
+                putAllString(safeSearchParams)
+            }
+        }
+        param.putString(CatalogConstant.PRODUCT_PARAMS, createParametersForQuery(searchProductRequestParams.parameters))
         return param
     }
 
@@ -401,7 +407,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun getPage(): Int {
-        return pageCount
+        return viewModel.pageCount
     }
 
     private fun getProductIntent(productId: String, warehouseId: String): Intent? {
@@ -416,56 +422,69 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         }
     }
 
-    override fun onItemClicked(item: ProductsItem, adapterPosition: Int) {
-        val intent = getProductIntent(item.id.toString(), item.categoryID.toString())
+    override fun onItemClicked(item: CatalogProductItem, adapterPosition: Int) {
+        val intent = getProductIntent(item.id, "")
 
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
             startActivityForResult(intent, 1002)
+            CatalogDetailAnalytics.trackProductCardClick(catalogId,viewModel.catalogUrl,userSession.userId,
+                    item,(adapterPosition + 1).toString(),viewModel.searchParametersMap.value)
         }
-
-        CatalogDetailPageAnalytics.eventProductListClick(
-                item.name,
-                item.id.toString(),
-                CurrencyFormatHelper.convertRupiahToInt(item.price),
-                adapterPosition,
-                "catalog/$catalogName - $catalogId",
-                item.categoryBreadcrumb ?: "",
-                item.isTopAds)
     }
 
-    override fun onLongClick(item: ProductsItem, adapterPosition: Int) {
+    override fun onProductImpressed(item: CatalogProductItem, adapterPosition: Int) {
+        CatalogDetailAnalytics.trackEventImpressionProductCard(catalogId,viewModel.catalogUrl,userSession.userId,
+                item,(adapterPosition + 1).toString(),viewModel.searchParametersMap.value)
     }
 
-    override fun onWishlistButtonClicked(productItem: ProductsItem, position: Int) {
+    override fun onLongClick(item: CatalogProductItem, adapterPosition: Int) {
+
+    }
+
+    /*********************************   WishList  ******************************/
+
+    override fun onWishlistButtonClicked(productItem: CatalogProductItem, position: Int) {
         if (userSession.isLoggedIn) {
-            disableWishlistButton(productItem.id.toString())
+            disableWishListButton(productItem.id)
             if (productItem.wishlist) {
-                removeWishlist(productItem.id.toString(), userSession.userId, position)
+                removeWishList(productItem.id, userSession.userId, position)
             } else {
-                addWishlist(productItem.id.toString(), userSession.userId, position)
+                addWishList(productItem.id, userSession.userId, position)
             }
         } else {
-            launchLoginActivity(productItem.id.toString())
+            launchLoginActivity(productItem.id)
         }
     }
 
-    fun enableWishlistButton(productId: String) {
-        productNavListAdapter?.setWishlistButtonEnabled(productId?.toInt() ?: 0, true)
+    override fun onThreeDotsClicked(productItem: CatalogProductItem, position: Int) {
+        onWishlistButtonClicked(productItem,position)
     }
 
-    fun disableWishlistButton(productId: String) {
-        productNavListAdapter?.setWishlistButtonEnabled(productId?.toInt() ?: 0, false)
+    private fun enableWishListButton(productId: String) {
+        productNavListAdapter?.setWishlistButtonEnabled(productId.toInt(), true)
     }
 
-    private fun removeWishlist(productId: String, userId: String, adapterPosition: Int) {
-        CatalogDetailPageAnalytics.trackEventWishlist(false, productId)
+    private fun disableWishListButton(productId: String) {
+        productNavListAdapter?.setWishlistButtonEnabled(productId.toInt(), false)
+    }
+
+    private fun removeWishList(productId: String, userId: String, adapterPosition: Int) {
+        CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
+                "$catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_REMOVE_WISHLIST}",userSession.userId)
         removeWishlistActionUseCase.createObservable(productId,
                 userId, this)
     }
 
-    private fun addWishlist(productId: String, userId: String, adapterPosition: Int) {
-        CatalogDetailPageAnalytics.trackEventWishlist(true, productId)
+    private fun addWishList(productId: String, userId: String, adapterPosition: Int) {
+        CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
+                "$catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_ADD_WISHLIST}",userSession.userId)
         addWishlistActionUseCase.createObservable(productId, userId,
                 this)
     }
@@ -474,8 +493,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
-    override fun onProductImpressed(item: ProductsItem, adapterPosition: Int) {}
-
     override fun onQuickFilterSelected(option: Option) {
         if (!isQuickFilterSelected(option)) {
             val filter = getSelectedFilter()
@@ -483,14 +500,18 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             applyFilterToSearchParameter(filter)
             setSelectedFilter(filter)
             reloadData()
-            CatalogDetailPageAnalytics.trackEvenClickQuickFilter(option, true)
+            CatalogDetailAnalytics.sendEvent(
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                    CatalogDetailAnalytics.ActionKeys.CLICK_QUICK_FILTER,
+                    "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
+                    userSession.userId)
         } else {
             val filter = getSelectedFilter()
             filter.remove(option.key)
             applyFilterToSearchParameter(filter)
             setSelectedFilter(filter)
             reloadData()
-            CatalogDetailPageAnalytics.trackEvenClickQuickFilter(option, false)
         }
     }
 
@@ -511,44 +532,35 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun onErrorAddWishList(errorMessage: String?, productId: String) {
-        enableWishlistButton(productId)
+        enableWishListButton(productId)
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
     override fun onSuccessAddWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
-        enableWishlistButton(productId)
+        enableWishListButton(productId)
         NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
     }
 
     override fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
-        enableWishlistButton(productId)
+        enableWishListButton(productId)
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
     override fun onSuccessRemoveWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId.toInt(), false)
-        enableWishlistButton(productId)
+        enableWishListButton(productId)
         NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
     }
 
     override fun onDetach() {
         super.onDetach()
+        sortFilterBottomSheet = null
         viewModel.onDetach()
     }
 
     override fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>, viewedTopAdsList: List<Visitable<Any>>) {
-        if (viewedProductList.isNotEmpty()) {
-            CatalogDetailPageAnalytics.eventProductListImpression(
-                    "catalog/$catalogName - $catalogId",
-                    viewedProductList, false)
-        }
 
-        if (viewedTopAdsList.isNotEmpty()) {
-            CatalogDetailPageAnalytics.eventProductListImpression(
-                    "catalog/$catalogName - $catalogId",
-                    viewedTopAdsList, true)
-        }
     }
 
     override fun onPause() {
@@ -556,8 +568,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         productNavListAdapter?.onPause()
     }
 
+    override fun hasThreeDots() = true
+
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
-        CatalogDetailPageAnalytics.trackEvenSortApplied(selectedSortName, sortValue)
+
     }
 
     override fun wishListEnabledTracker(wishListTrackerUrl: String) {
@@ -571,5 +585,142 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun getSwipeRefreshLayout(): SwipeRefreshLayout? {
         return view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)
+    }
+
+    /*********************************   Sort Filter ******************************/
+
+    private var searchSortFilter: SortFilter? = null
+
+    private fun initSearchQuickSortFilter(rootView: View) {
+        searchSortFilter = rootView.findViewById(R.id.search_product_quick_sort_filter)
+        if(viewModel.searchParametersMap.value == null) {
+            viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
+            addDefaultSelectedSort()
+        }
+    }
+
+    private fun startFilter(quickFilterData : DataValue){
+        processQuickFilter(quickFilterData)
+    }
+
+    private fun processQuickFilter(quickFilterData: DataValue) {
+        if (viewModel.dynamicFilterModel == null) initFilterControllerForQuickFilter(quickFilterData.filter)
+        val sortFilterItems = arrayListOf<SortFilterItem>()
+        viewModel.quickFilterOptionList = arrayListOf()
+        for (filter in quickFilterData.filter) {
+            val options = filter.options
+            (viewModel.quickFilterOptionList as java.util.ArrayList<Option>).addAll(options)
+            convertToSortFilterItem(filter.title, options)?.let {
+                sortFilterItems.addAll(it)
+                viewModel.sortFilterItems.value = sortFilterItems
+            }
+        }
+    }
+
+    private fun initFilterControllerForQuickFilter(quickFilterList : List<Filter>) {
+        filterController?.initFilterController(searchParameter.getSearchParameterHashMap(), quickFilterList)
+    }
+
+    private fun setSortFilterIndicatorCounter() {
+        viewModel.selectedSortIndicatorCount.value = CatalogUtil.getSortFilterCount(searchParameter.getSearchParameterMap())
+    }
+
+    private fun addDefaultSelectedSort() {
+        if (searchParameter.get(SearchApiConst.OB).isEmpty()) {
+            searchParameter.set(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
+        }
+        viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
+    }
+
+    private fun setQuickFilter(items : List<SortFilterItem> ) {
+        searchSortFilter?.apply {
+            sortFilterItems.removeAllViews()
+            visibility = View.VISIBLE
+            sortFilterHorizontalScrollView.scrollX = 0
+            addItem(items as ArrayList<SortFilterItem>)
+            textView?.text = getString(R.string.catalog_filter_text)
+        }
+        searchSortFilter?.parentListener = { this.openBottomSheetFilterRevamp() }
+        setSortFilterNewNotification(items)
+    }
+
+    private fun setSortFilterNewNotification(items: List<SortFilterItem>) {
+        val quickFilterOptionList: List<Option> = viewModel.quickFilterOptionList
+        for (i in items.indices) {
+            if (i >= quickFilterOptionList.size) break
+            val item = items[i]
+            val quickFilterOption = quickFilterOptionList[i]
+            sortFilterItemShowNew(item, quickFilterOption.isNew)
+        }
+    }
+
+    private fun sortFilterItemShowNew(item: SortFilterItem, isNew: Boolean) {
+        item.refChipUnify?.showNewNotification = isNew
+    }
+
+
+    private fun convertToSortFilterItem(title: String, options: List<Option>): List<SortFilterItem>? {
+        val list: MutableList<SortFilterItem> = java.util.ArrayList()
+        for (option in options) {
+            list.add(createSortFilterItem(title, option))
+        }
+        return list
+    }
+
+    private fun createSortFilterItem(title: String, option: Option): SortFilterItem {
+        val item = SortFilterItem(title) {}
+        setSortFilterItemListener(item, option)
+        setSortFilterItemState(item, option)
+        return item
+    }
+
+    private fun setSortFilterItemListener(item: SortFilterItem, option: Option) {
+        item.listener = {
+            onQuickFilterSelected(option)
+        }
+    }
+
+    private fun setSortFilterItemState(item: SortFilterItem, option: Option) {
+        if (isQuickFilterSelected(option)) {
+            item.type = ChipsUnify.TYPE_SELECTED
+            item.typeUpdated = false
+        }
+    }
+
+    /*******************************  Bottom Sheet Filter **************************/
+
+    private fun openBottomSheetFilterRevamp(){
+        activity?.supportFragmentManager?.let{
+            CatalogDetailAnalytics.sendEvent(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_DYNAMIC_FILTER,
+                    "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
+                    userSession.userId)
+            sortFilterBottomSheet?.show(
+                    it,
+                    viewModel.searchParametersMap.value,
+                    viewModel.dynamicFilterModel.value,
+                    this
+            )
+        }
+    }
+
+    private fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel){
+        filterController?.appendFilterList(searchParameter.getSearchParameterHashMap(), dynamicFilterModel.data.filter)
+        sortFilterBottomSheet?.setDynamicFilterModel(dynamicFilterModel)
+        renderDynamicFilter(dynamicFilterModel.data)
+    }
+
+    override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        filterController?.refreshMapParameter(applySortFilterModel.mapParameter)
+        searchParameter.getSearchParameterHashMap().clear()
+        searchParameter.getSearchParameterHashMap().putAll(applySortFilterModel.mapParameter)
+        viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
+        reloadData()
+    }
+
+    override fun getResultCount(mapParameter: Map<String, String>) {
+        sortFilterBottomSheet?.setResultCountText(getString(R.string.catalog_apply_filter))
     }
 }

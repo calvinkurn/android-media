@@ -23,12 +23,16 @@
     <string name="button_change_email">Ubah Email</string>
     <string name="change_email_error_condition">change email</string>
     <string name="success_resend_activation">Kode aktivasi telah dikirim ulang</string>
-    <string name="validation_resend_email">Tidak menerima kode? Kirim ulang </string>
-    <string name="validation_resend_email_or_with_other_method">Tidak menerima kode? Kirim ulang atau \ngunakan metode verifikasi lain.</string>
+    <string name="validation_resend">Tidak menerima kode? Kirim ulang </string>
+    <string name="validation_resend_or_with_other_method">Tidak menerima kode? Kirim ulang atau \ngunakan metode verifikasi lain.</string>
     <string name="with_other_method">gunakan metode verifikasi lain.</string>
     <string name="resend_otp">Kirim ulang</string>
     <string name="verification_coundown_text"><![CDATA[Mohon tunggu dalam %d detik untuk kirim ulang.]]></string>
     <string name="forgot_pin">Lupa PIN Tokopedia</string>
+    <string name="cellphone_number_has_changed">Nomor HP Sudah Berubah</string>
+    <string name="change_inactive_phone_number">Nomor HP kamu tidak aktif lagi? Ubah Nomor HP</string>
+    <string name="change_phone_number">Ubah Nomor HP</string>
+    <string name="change_inactive_phone_number_html"><![CDATA[Nomor HP kamu tidak aktif lagi? <a href="(%1$s)">Ubah Nomor HP</a>.]]></string>
 
     <string name="title_push_notif_receiver">Ada perangkat baru yang ingin mengakses akunmu</string>
     <string name="subtitle_push_notif_receiver">Jangan berikan akses ke perangkat orang lain, agar akun &amp; data pribadimu tetap aman.</string>

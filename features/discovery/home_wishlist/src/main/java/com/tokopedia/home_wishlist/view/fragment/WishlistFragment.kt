@@ -55,11 +55,14 @@ import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.wishlist.common.request.WishlistAdditionalParamRequest
+import com.tokopedia.wishlist.common.toEmptyStringIfZero
 import kotlinx.android.synthetic.main.fragment_new_home_wishlist.*
 import javax.inject.Inject
 
@@ -111,6 +114,8 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
     private val itemDecorationBottom by lazy { SpaceBottomItemDecoration() }
     private lateinit var toolbarElevation: ToolbarElevationOffsetListener
     private val dialogUnify by lazy { DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
+
+    private var additionalParamRequest: WishlistAdditionalParamRequest? = null
 
     companion object {
         private const val SPAN_COUNT = 2
@@ -166,7 +171,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         initCartLocalCacheHandler()
         hideSearchView()
         observeData()
-        viewModel.getWishlistData(shouldShowInitialPage = true)
+        viewModel.getWishlistData(additionalParams = generateWishlistAdditionalParamRequest(), shouldShowInitialPage = true)
         WishlistTracking.openWishlistPage(viewModel.getUserId())
         showOnBoarding()
     }
@@ -262,7 +267,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         swipeToRefresh?.setOnRefreshListener {
             updateBottomMargin()
             endlessRecyclerViewScrollListener?.resetState()
-            viewModel.getWishlistData(searchView?.getSearchText() ?: "")
+            viewModel.getWishlistData(searchView?.getSearchText() ?: "", generateWishlistAdditionalParamRequest())
         }
     }
 
@@ -275,7 +280,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
 
             override fun onSearchTextChanged(text: String?) {
                 updateScrollFlagForSearchView(text?.isNotEmpty() ?: false)
-                viewModel.getWishlistData(text ?: "")
+                viewModel.getWishlistData(text ?: "", generateWishlistAdditionalParamRequest())
             }
 
             override fun onManageDeleteWishlistClicked() {
@@ -345,7 +350,9 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
                         updateBottomMargin()
                         viewModel.getRecommendationOnEmptyWishlist(page + 1)
                     } else {
-                        viewModel.getNextPageWishlistData()
+                        if (!state.isDone()) {
+                            viewModel.getNextPageWishlistData()
+                        }
                     }
                 }
             }
@@ -634,7 +641,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
     }
 
     override fun onTryAgainClick() {
-        viewModel.getWishlistData(shouldShowInitialPage = true)
+        viewModel.getWishlistData(additionalParams = generateWishlistAdditionalParamRequest(), shouldShowInitialPage = true)
     }
 
     private fun onBulkDelete() {
@@ -718,5 +725,21 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
     private fun updateBottomMargin() {
         recyclerView?.removeItemDecoration(itemDecorationBottom)
         recyclerView?.addItemDecoration(itemDecorationBottom)
+    }
+
+    private fun generateWishlistAdditionalParamRequest(): WishlistAdditionalParamRequest {
+        if (additionalParamRequest != null) {
+            return additionalParamRequest!!
+        }
+        context?.also {
+            ChooseAddressUtils.getLocalizingAddressData(it.applicationContext)?.run {
+                val wishlistAdditionalParamRequest = WishlistAdditionalParamRequest(district_id.toEmptyStringIfZero(), city_id.toEmptyStringIfZero(),
+                        lat.toEmptyStringIfZero(), long.toEmptyStringIfZero(),
+                        postal_code.toEmptyStringIfZero(), address_id.toEmptyStringIfZero())
+                additionalParamRequest = wishlistAdditionalParamRequest
+                return wishlistAdditionalParamRequest
+            }
+        }
+        return WishlistAdditionalParamRequest()
     }
 }

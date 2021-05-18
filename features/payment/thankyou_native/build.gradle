@@ -72,8 +72,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation project(rootProject.ext.libraries.linker)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.features.promotionsTarget)
 
+
+    implementation project(rootProject.ext.features.localizationchooseaddress)
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting

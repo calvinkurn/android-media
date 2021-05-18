@@ -1,18 +1,17 @@
 package com.tokopedia.cart.view.viewholder
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.ItemSelectAllBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartSelectAllHolderData
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
-import kotlinx.android.synthetic.main.item_select_all.view.*
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 
-class CartSelectAllViewHolder(val view: View, val listener: ActionListener?, val compositeSubscription: CompositeSubscription) : RecyclerView.ViewHolder(view) {
+class CartSelectAllViewHolder(private val binding: ItemSelectAllBinding, val listener: ActionListener?, val compositeSubscription: CompositeSubscription) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_select_all
@@ -24,7 +23,7 @@ class CartSelectAllViewHolder(val view: View, val listener: ActionListener?, val
     }
 
     private fun renderDeleteAction(data: CartSelectAllHolderData) {
-        itemView.text_action_delete?.let {
+        binding.textActionDelete.let {
             it.setOnClickListener {
                 listener?.onGlobalDeleteClicked()
             }
@@ -38,7 +37,7 @@ class CartSelectAllViewHolder(val view: View, val listener: ActionListener?, val
     }
 
     private fun renderCheckbox(data: CartSelectAllHolderData) {
-        itemView.checkbox_global?.let {
+        binding.checkboxGlobal.let {
             compositeSubscription.add(
                     rxCompoundButtonCheckDebounce(it).subscribe(object : Subscriber<Boolean>() {
                         override fun onNext(isChecked: Boolean) {

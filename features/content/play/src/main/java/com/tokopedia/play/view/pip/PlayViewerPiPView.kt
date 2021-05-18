@@ -2,6 +2,7 @@ package com.tokopedia.play.view.pip
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -22,6 +23,7 @@ import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.type.PlaySource
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
+import com.tokopedia.play_common.player.state.ExoPlayerStateProcessorImpl
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSession
@@ -70,6 +72,8 @@ class PlayViewerPiPView : ConstraintLayout {
 
     private var mPauseOnDetached: Boolean = true
 
+    private val playerStateProcessor = ExoPlayerStateProcessorImpl()
+
     init {
         val view = View.inflate(context, R.layout.view_play_viewer_pip, this)
 
@@ -83,15 +87,30 @@ class PlayViewerPiPView : ConstraintLayout {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+        mVideoPlayer.addListener(videoListener)
 
-        mVideoPlayer.resume()
-        mVideoPlayer.mute(false)
+        val pipInfo = mPiPInfo
+        if (pipInfo != null) {
+            mVideoPlayer.playUri(
+                    uri = Uri.parse(pipInfo.videoPlayer.params.videoUrl),
+                    bufferControl = pipInfo.videoPlayer.params.buffer
+            )
+            mVideoPlayer.mute(false)
+        }
 
         timePipAttached = System.currentTimeMillis()
+
+        videoListener.onPlayerStateChanged(
+                playerStateProcessor.processState(
+                        playWhenReady = mVideoPlayer.videoPlayer.playWhenReady,
+                        playbackState = mVideoPlayer.videoPlayer.playbackState,
+                )
+        )
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
+        pvVideo.player = null
         mVideoPlayer.removeListener(videoListener)
 
         if (mPiPInfo?.stopOnClose == true) {
@@ -111,13 +130,13 @@ class PlayViewerPiPView : ConstraintLayout {
     fun setPiPInfo(pipInfo: PiPInfoUiModel) {
         mPiPInfo = pipInfo
 
-        pvVideo.resizeMode = if (!pipInfo.videoOrientation.isHorizontal) {
+        pvVideo.resizeMode = if (!pipInfo.videoStream.orientation.isHorizontal) {
             AspectRatioFrameLayout.RESIZE_MODE_ZOOM
         } else AspectRatioFrameLayout.RESIZE_MODE_FIT
 
         setBackgroundColor(
                 MethodChecker.getColor(rootView.context,
-                        if (pipInfo.videoOrientation.isHorizontal) com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                        if (pipInfo.videoStream.orientation.isHorizontal) R.color.play_dms_background
                         else R.color.transparent
                 )
         )
@@ -130,7 +149,6 @@ class PlayViewerPiPView : ConstraintLayout {
     }
 
     private fun setupView() {
-        mVideoPlayer.addListener(videoListener)
         flCloseArea.setOnClickListener {
             removePiP()
         }
@@ -147,6 +165,7 @@ class PlayViewerPiPView : ConstraintLayout {
                         pipInfo.channelId
                 ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         .putExtra(EXTRA_PLAY_START_VOD_MILLIS, mVideoPlayer.getCurrentPosition())
+                        .putExtra(EXTRA_PLAY_IS_FROM_PIP, true)
 
                 context.startActivity(intent)
             }
@@ -202,5 +221,6 @@ class PlayViewerPiPView : ConstraintLayout {
     companion object {
 
         private const val EXTRA_PLAY_START_VOD_MILLIS = "start_vod_millis"
+        private const val EXTRA_PLAY_IS_FROM_PIP = "is_from_pip"
     }
 }

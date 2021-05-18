@@ -2,21 +2,13 @@ package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.helper.ClassBuilder
-import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.andThen
 import com.tokopedia.play.robot.play.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.thenVerify
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfoUiModel
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -28,32 +20,14 @@ class PlayViewModelUpdatePageTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
-
-    private val pinnedBuilder = PlayPinnedModelBuilder()
-    private val channelInfoBuilder = PlayChannelInfoModelBuilder()
-    private val shareInfoBuilder = PlayShareInfoModelBuilder()
-    private val quickReplyBuilder = PlayQuickReplyModelBuilder()
     private val cartInfoBuilder = PlayCartInfoModelBuilder()
     private val partnerInfoBuilder = PlayPartnerInfoModelBuilder()
-    private val totalViewBuilder = PlayTotalViewModelBuilder()
     private val likeBuilder = PlayLikeModelBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
-    private val videoModelBuilder = PlayVideoModelBuilder()
 
     private val responseBuilder = PlayResponseBuilder()
     private val classBuilder = ClassBuilder()
     private val uiModelMapper = classBuilder.getPlayUiModelMapper()
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(dispatchers.main)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
 
     @Test
     fun `given channel data is set, when page is focused, then like info should be updated accordingly`() {

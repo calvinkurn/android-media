@@ -7,6 +7,8 @@ import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_MERCHANT_CODE
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_PAYMENT_ID
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
@@ -36,6 +38,13 @@ class ThankYouPageAnalytics @Inject constructor(
 
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
+
+    fun sendScreenAuthenticatedEvent(paymentId: String?, merchantCode: String?, screenName: String) {
+        val customDimension: MutableMap<String, String> = mutableMapOf()
+        customDimension[KEY_PAYMENT_ID] = paymentId ?: ""
+        customDimension[KEY_MERCHANT_CODE] = merchantCode ?: ""
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
+    }
 
 
     fun postThankYouPageLoadedEvent(thanksPageData: ThanksPageData) {
@@ -356,6 +365,7 @@ object ParentTrackingKey {
     val KEY_EVENT_ACTION = "eventAction"
     val KEY_EVENT_LABEL = "eventLabel"
     val KEY_PAYMENT_ID = "payment_id"
+    val KEY_MERCHANT_CODE = "merchantCode"
     val KEY_PAYMENT_STATUS = "payment_status"
     val KEY_PAYMENT_TYPE = "payment_type"
 

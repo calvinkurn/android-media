@@ -53,7 +53,7 @@ class PlayYouTubeFragment @Inject constructor(
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
     private val orientationListener: PlayOrientationListener
-        get() = requireParentFragment() as PlayOrientationListener
+        get() = requireActivity() as PlayOrientationListener
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
@@ -96,7 +96,7 @@ class PlayYouTubeFragment @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        if (isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic()
+        if (isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(channelId)
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {

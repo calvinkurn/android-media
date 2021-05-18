@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/play_product_featured_placeholder_width"
+    android:layout_height="@dimen/play_product_featured_height"
+    android:background="@drawable/bg_play_product_featured"
+    android:padding="@dimen/spacing_lvl4"
+    >
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="@dimen/play_product_grid_more_action_size"
+        android:layout_height="@dimen/play_product_grid_more_action_size"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_play_arrow_up"
+        tools:ignore="RtlSymmetry"
+        />
+
+</FrameLayout>

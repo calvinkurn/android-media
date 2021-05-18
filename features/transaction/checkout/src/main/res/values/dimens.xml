@@ -2,4 +2,5 @@
 <resources>
     <dimen name="dp_84">84dp</dimen>
     <dimen name="dp_3">3dp</dimen>
+    <dimen name="max_cashback_desc_width">115dp</dimen>
 </resources>

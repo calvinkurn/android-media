@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -15,6 +16,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_add_edit_multi_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:tickerType="announcement"
+                app:tickerShapeType="full"
+                app:titleText="@string/ticker_add_product_main_location_title"
+                app:descriptionText="@string/ticker_add_product_main_location_desc"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_add_edit_product_limitation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:tickerType="announcement"
+                app:tickerShapeType="full"
+                app:descriptionText="@string/label_product_limitation_ticker"
+                app:layout_constraintTop_toBottomOf="@+id/ticker_add_edit_multi_location"/>
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_add_edit_product_step_sub"
                 android:layout_width="wrap_content"
@@ -24,7 +48,7 @@
                 android:text="@string/product_subtitle_product_information"
                 android:textColor="@color/Unify_N700"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ticker_add_edit_product_limitation"
                 app:typographyType="heading_4"
                 app:typographyWeight="bold" />
 
@@ -107,6 +131,7 @@
                 layout="@layout/add_edit_product_no_variant_preview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl3"
                 android:layout_marginBottom="@dimen/dp_24"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -148,6 +173,24 @@
             app:srcCompat="@drawable/ic_loading_indeterminate" />
 
     </androidx.constraintlayout.motion.widget.MotionLayout>
+
+    <!-- admin no permission error view. Need to be contained in frame layout to make it centered -->
+
+    <FrameLayout
+        android:id="@+id/add_edit_error_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
+        android:visibility="gone">
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/add_edit_admin_global_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:globalerrors_type="PAGE_NOT_FOUND"/>
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -10,11 +10,14 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.tooltip.adapter.TooltipTypeFactory
 import com.tokopedia.product.addedit.tooltip.model.TooltipModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.bottom_sheet_list.*
 import kotlinx.android.synthetic.main.bottom_sheet_list.view.*
 
 class TooltipBottomSheet : BottomSheetUnify() {
@@ -22,6 +25,7 @@ class TooltipBottomSheet : BottomSheetUnify() {
     private var contentView: View? = null
     private var isDividerVisible: Boolean = false
     private var listAdapter: BaseListAdapter<TooltipModel, TooltipTypeFactory>? = null
+    private var urlImage: String? = null
 
     init {
         listAdapter = BaseListAdapter(TooltipTypeFactory())
@@ -41,6 +45,14 @@ class TooltipBottomSheet : BottomSheetUnify() {
         changeCloseButtonSize()
         removeContainerPadding()
         addMarginCloseButton()
+        setupBannerImage()
+    }
+
+    private fun setupBannerImage() {
+        urlImage?.apply {
+            bannerTooltip.loadImage(this)
+            bannerTooltip.show()
+        }
     }
 
     private fun changeCloseButtonSize() {
@@ -103,4 +115,9 @@ class TooltipBottomSheet : BottomSheetUnify() {
     fun setDividerVisible(visible: Boolean) {
         isDividerVisible = visible
     }
+
+    fun setBannerImage(url: String) {
+        urlImage = url
+    }
+
 }

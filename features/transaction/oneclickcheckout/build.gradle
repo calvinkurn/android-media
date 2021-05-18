@@ -20,7 +20,9 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
 
-        testInstrumentationRunnerArguments clearPackageData: 'true'
+        testInstrumentationRunnerArguments clearPackageData: 'true',
+                // Leak Canary Listener, if do not want to use, just comment the code below
+                'listener': 'leakcanary.FailTestOnLeakRunListener'
     }
 
     testOptions {
@@ -57,12 +59,12 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
 
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.webview)
 
@@ -72,16 +74,19 @@ dependencies {
     implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticCommon)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.leakCanaryInstrument
     androidTestImplementation rootProject.ext.testDependencies.testCore
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)

@@ -58,6 +58,8 @@ public class AddressConstants {
     public static final String EXTRA_ADDRESS_MODEL = "EXTRA_ADDRESS_MODEL";
     public static final String EXTRA_IS_LOGISTIC_LABEL = "EXTRA_IS_LOGISTIC_LABEL";
     public static final String EXTRA_IS_CIRCUIT_BREAKER = "EXTRA_IS_CIRCUIT_BREAKER";
+    public static final String EXTRA_WAREHOUSE_DATA = "EXTRA_WAREHOUSE_DATA";
+    public static final String EXTRA_IS_EDIT_WAREHOUSE = "EXTRA_IS_EDIT_WAREHOUSE";
 
     public static final int CIRCUIT_BREAKER_ON_CODE = 101;
 

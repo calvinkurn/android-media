@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.purchase_platform.common.utils.Utils;
@@ -47,7 +48,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvDurationOrPrice;
     private TextView tvPriceOrDuration;
     private TextView tvTextDesc;
-    private ImageView imgCheck;
+    private IconUnify imgCheck;
     private ImageView imgMvc;
     private Typography tvMvc;
     private RelativeLayout rlContent;
@@ -101,14 +102,14 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (!TextUtils.isEmpty(shippingDurationUiModel.getErrorMessage())) {
-            tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_20));
+            tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
             tvPriceOrDuration.setVisibility(View.GONE);
             tvTextDesc.setVisibility(View.GONE);
             tvOrderPrioritas.setVisibility(View.GONE);
             tvError.setText(shippingDurationUiModel.getErrorMessage());
             tvError.setVisibility(View.VISIBLE);
         } else {
-            tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+            tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
             tvError.setVisibility(View.GONE);
             tvPriceOrDuration.setVisibility(View.VISIBLE);
 

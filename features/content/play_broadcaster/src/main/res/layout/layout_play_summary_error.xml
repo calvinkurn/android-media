@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    tools:background="@color/play_dms_broadcaster_background">
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
@@ -10,7 +12,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:gravity="center"
         android:text="@string/play_summary_error_title"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@id/tv_error_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/play_summary_error_desc"
-        android:textColor="@color/dark_N700_68"
+        android:textColor="@color/play_dms_white_68"
         app:layout_constraintBottom_toTopOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -42,7 +44,7 @@
         android:layout_marginTop="@dimen/spacing_lvl5"
         android:gravity="center"
         android:text="@string/play_broadcast_try_again"
-        android:textColor="@color/dark_G500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guideline"

@@ -5,12 +5,9 @@ package com.tokopedia.home_account.data.model
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-data class ProfileDataView (
+data class ProfileDataView(
         val name: String = "",
         val phone: String = "",
         val email: String = "",
-        val avatar: String = "",
-        val members: MemberDataView? = MemberDataView(),
-        val financial: SettingDataView? = SettingDataView(),
-        val backdrop: String = ""
+        val avatar: String = ""
 )

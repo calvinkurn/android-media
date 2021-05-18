@@ -5,15 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.domain.model.*
 import com.tokopedia.sellerorder.common.domain.usecase.*
-import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
+import com.tokopedia.shop.common.constant.AccessId
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 
 abstract class SomOrderBaseViewModel(
         dispatcher: CoroutineDispatchers,
@@ -22,7 +23,9 @@ abstract class SomOrderBaseViewModel(
         private val somRejectOrderUseCase: SomRejectOrderUseCase,
         private val somEditRefNumUseCase: SomEditRefNumUseCase,
         private val somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
-        private val getUserRoleUseCase: SomGetUserRoleUseCase): BaseViewModel(dispatcher.io) {
+        private val somValidateOrderUseCase: SomValidateOrderUseCase,
+        private val firstAuthorizeAccessUseCase: AuthorizeAccessUseCase,
+        private val secondAuthorizeAccessUseCase: AuthorizeAccessUseCase): BaseViewModel(dispatcher.io) {
 
     private val _acceptOrderResult = MutableLiveData<Result<SomAcceptOrderResponse.Data>>()
     val acceptOrderResult: LiveData<Result<SomAcceptOrderResponse.Data>>
@@ -36,15 +39,13 @@ abstract class SomOrderBaseViewModel(
     val editRefNumResult: LiveData<Result<SomEditRefNumResponse.Data>>
         get() = _editRefNumResult
 
-    protected val _userRoleResult = MutableLiveData<Result<SomGetUserRoleUiModel>>()
-    val userRoleResult: LiveData<Result<SomGetUserRoleUiModel>>
-        get() = _userRoleResult
-
     private val _rejectCancelOrderResult = MutableLiveData<Result<SomRejectCancelOrderResponse.Data>>()
     val rejectCancelOrderResult: LiveData<Result<SomRejectCancelOrderResponse.Data>>
         get() = _rejectCancelOrderResult
 
-    private var userRolesJob: Job? = null
+    private val _validateOrderResult = MutableLiveData<Result<Boolean>>()
+    val validateOrderResult: LiveData<Result<Boolean>>
+        get() = _validateOrderResult
 
     protected open suspend fun doAcceptOrder(orderId: String, invoice: String) {
         somAcceptOrderUseCase.setParams(orderId, userSession.shopId ?: "0")
@@ -94,24 +95,34 @@ abstract class SomOrderBaseViewModel(
         }, onError = { _rejectCancelOrderResult.postValue(Fail(it)) })
     }
 
-    fun getUserRoles() {
-        if (getUserRolesJob()?.isCompleted != false) {
-            setUserRolesJob(launchCatchError(block = {
-                getUserRoleUseCase.setUserId(userSession.userId.toIntOrZero())
-                _userRoleResult.postValue(Success(getUserRoleUseCase.execute()))
-            }, onError = {
-                _userRoleResult.postValue(Fail(it))
-            }))
+    fun validateOrders(orderIds: List<String>) {
+        launchCatchError(block = {
+            val params = SomValidateOrderRequest(orderIds)
+            val result = somValidateOrderUseCase.execute(params)
+            _validateOrderResult.postValue(Success(result))
+        }, onError = {
+            _validateOrderResult.postValue(Fail(it))
+        })
+    }
+
+    protected suspend fun getAdminAccessEligibilityPair(@AccessId firstAccessId: Int,
+                                                        @AccessId secondAccessId: Int): Result<Pair<Boolean, Boolean>> {
+        return if (userSession.isShopOwner) {
+            Success(true to true)
+        } else {
+            userSession.shopId.toLongOrZero().let { shopId ->
+                val firstEligibilityDeferred = async {
+                    AuthorizeAccessUseCase.createRequestParams(shopId, firstAccessId).let { requestParam ->
+                        firstAuthorizeAccessUseCase.execute(requestParam)
+                    }
+                }
+                val secondEligibilityDeferred = async {
+                    AuthorizeAccessUseCase.createRequestParams(shopId, secondAccessId).let { requestParam ->
+                        secondAuthorizeAccessUseCase.execute(requestParam)
+                    }
+                }
+                Success(firstEligibilityDeferred.await() to secondEligibilityDeferred.await())
+            }
         }
-    }
-
-    fun setUserRoles(userRoles: SomGetUserRoleUiModel) {
-        _userRoleResult.postValue(Success(userRoles))
-    }
-
-    fun getUserRolesJob() = userRolesJob
-
-    fun setUserRolesJob(job: Job) {
-        userRolesJob = job
     }
 }

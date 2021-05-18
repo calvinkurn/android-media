@@ -7,10 +7,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.decoration.BannerChannelDecoration
+import com.tokopedia.home_component.decoration.BannerChannelSingleItemDecoration
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.removeAllItemDecoration
 import com.tokopedia.home_component.viewholders.adapter.BannerChannelAdapter
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
 import com.tokopedia.home_component.viewholders.adapter.BannerItemModel
@@ -36,7 +38,7 @@ class BannerComponentViewHolder(itemView: View,
         BannerItemListener, CoroutineScope {
     private var isCache = true
     private val rvBanner: RecyclerView = itemView.findViewById(R.id.rv_banner)
-    private val layoutManager = PeekingLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+    private var layoutManager = LinearLayoutManager(itemView.context)
 
     private val masterJob = Job()
     override val coroutineContext: CoroutineContext
@@ -107,9 +109,13 @@ class BannerComponentViewHolder(itemView: View,
         bind(element)
     }
 
+    fun scrollTo(position: Int) {
+        rvBanner.smoothScrollToPosition(position)
+    }
+
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
         if (isAutoScroll) {
-            rvBanner.smoothScrollToPosition(currentPagePosition)
+            scrollTo(currentPagePosition)
 
             channelModel?.let {
                 val size = channelModel?.channelGrids?.size?:0
@@ -136,15 +142,25 @@ class BannerComponentViewHolder(itemView: View,
         }
     }
 
+    private fun getLayoutManager(list: List<BannerItemModel>): LinearLayoutManager {
+        layoutManager = if (list.size == 1) {
+            LinearLayoutManager(itemView.context)
+        } else PeekingLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        return layoutManager
+    }
+
     private fun initBanner(list: List<BannerItemModel>){
         rvBanner.clearOnScrollListeners()
 
         val snapHelper: SnapHelper = PagerSnapHelper()
         rvBanner.onFlingListener = null
         snapHelper.attachToRecyclerView(rvBanner)
-        rvBanner.layoutManager = layoutManager
+        rvBanner.layoutManager = getLayoutManager(list)
+        rvBanner.removeAllItemDecoration()
         if (rvBanner.itemDecorationCount == 0) {
-            rvBanner.addItemDecoration(BannerChannelDecoration())
+            if (list.size == 1) {
+                rvBanner.addItemDecoration(BannerChannelSingleItemDecoration())
+            } else rvBanner.addItemDecoration(BannerChannelDecoration())
         }
         val adapter = BannerChannelAdapter(list, this)
         rvBanner.adapter = adapter
@@ -203,7 +219,7 @@ class BannerComponentViewHolder(itemView: View,
             element.channelModel.let {
                 itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
                     override fun onSeeAllClick(link: String) {
-                        bannerListener?.onPromoAllClick(link)
+                        bannerListener?.onPromoAllClick(element.channelModel)
                     }
 
                     override fun onChannelExpired(channelModel: ChannelModel) {

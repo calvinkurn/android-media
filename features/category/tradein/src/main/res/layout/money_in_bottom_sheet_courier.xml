@@ -6,39 +6,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_margin="@dimen/dp_16"
         android:id="@+id/exchange_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="4sp"
-        android:textColor="@color/clr_f531353b"
-        android:textSize="12sp"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_6"
         app:layout_constraintTop_toTopOf="parent"
         android:text="@string/exchange_default_text" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shipper_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:textColor="@color/clr_ae31353b"
-        android:textSize="14sp"
-        android:textStyle="bold"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/exchange_text"
         tools:text="Laku6 Express" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/price"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/clr_ae31353b"
-        android:textSize="14sp"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="heading_5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shipper_name"
         tools:text="Rp 30.000" />
@@ -49,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_margin="@dimen/dp_16"
-        android:background="@color/grey_200"
+        android:background="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/price"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

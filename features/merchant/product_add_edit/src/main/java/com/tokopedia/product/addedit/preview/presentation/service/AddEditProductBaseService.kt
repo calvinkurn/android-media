@@ -8,6 +8,8 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.network.utils.ErrorHandler
@@ -29,11 +31,12 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
+import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
+import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import timber.log.Timber
 import java.io.File
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -56,6 +59,10 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     lateinit var saveProductDraftUseCase: SaveProductDraftUseCase
     @Inject
     lateinit var deleteProductDraftUseCase: DeleteProductDraftUseCase
+    @Inject
+    lateinit var getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase
+    @Inject
+    lateinit var updateProductStockWarehouseUseCase: UpdateProductStockWarehouseUseCase
     @Inject
     lateinit var resourceProvider: ResourceProvider
     @Inject
@@ -143,7 +150,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         val exception = AddEditProductUploadException(errorMessage, throwable)
 
         AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
-        Timber.w("P2#PRODUCT_UPLOAD#%s", errorMessage)
+        ServerLogger.log(Priority.P2, "PRODUCT_UPLOAD", mapOf("type" to errorMessage))
     }
 
     protected fun logError(title: String, throwable: Throwable) {
@@ -155,7 +162,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         val exception = AddEditProductUploadException(errorMessage, throwable)
 
         AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
-        Timber.w("P2#PRODUCT_UPLOAD#%s", errorMessage)
+        ServerLogger.log(Priority.P2, "PRODUCT_UPLOAD", mapOf("type" to errorMessage))
     }
 
     private fun initInjector() {
@@ -216,12 +223,6 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             sourceId = IMAGE_SOURCE_ID,
             filePath = filePath
         )
-
-        // check picture availability
-        if (!filePath.exists()) {
-            val message = UploaderUseCase.FILE_NOT_FOUND
-            throw Exception(message)
-        }
 
         when (val result = uploaderUseCase(params)) {
             is UploadResult.Success -> {

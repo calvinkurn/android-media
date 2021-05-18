@@ -19,6 +19,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl3">
 
             <ImageView
+                android:id="@+id/iv_seller_card_icon"
                 android:layout_width="@dimen/account_home_ic_seller_shop_size"
                 android:layout_height="@dimen/account_home_ic_seller_shop_size"
                 android:layout_gravity="center"

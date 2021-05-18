@@ -2,6 +2,7 @@ package com.tokopedia.digital_checkout.data.response.getcart
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
 
 /**
  * @author by jessica on 08/01/21
@@ -11,6 +12,10 @@ data class RechargeGetCart(
         @SerializedName("id")
         @Expose
         val id: String = "",
+
+        @SerializedName("product_id")
+        @Expose
+        val productId: String = "",
 
         @SerializedName("user_id")
         @Expose

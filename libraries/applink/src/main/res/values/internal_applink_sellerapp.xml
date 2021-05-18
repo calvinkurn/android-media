@@ -30,4 +30,6 @@
     <string name="path_voucher_detail" translatable="false">/voucher-detail</string>
     <string name="path_seller_menu" translatable="false">/seller-menu</string>
     <string name="path_seller_action" translatable="false">/seller-action</string>
+    <string name="path_seller_settings" translatable="false">/seller-settings</string>
+    <string name="path_admin_authorize" translatable="false">/admin-authorize/.*\\/</string>
 </resources>

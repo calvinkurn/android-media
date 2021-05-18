@@ -17,6 +17,8 @@ data class Product (
     @Expose
     @SerializedName("isPrimary")
     val isPrimary: Boolean,
+    @SerializedName("isCampaign")
+    val isCampaign: Boolean,
     @Expose
     @SerializedName("price")
     val price: Int,

@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.domain.model
 
+import com.tokopedia.logisticCommon.data.entity.address.PageInfoDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 
@@ -9,4 +10,5 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 data class AddressListModel(
         var token: Token? = null,
         var hasNext: Boolean? = null,
-        var listAddress: List<RecipientAddressModel> = emptyList())
+        var listAddress: List<RecipientAddressModel> = emptyList(),
+        var pageInfo: PageInfoDataModel? = null)

@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.view.listener
 
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel
+import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
 
 interface InspirationCardListener {
-    fun onInspirationCardOptionClicked(option: InspirationCardOptionViewModel)
+    fun onInspirationCardOptionClicked(optionData: InspirationCardOptionDataView)
 }

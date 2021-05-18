@@ -8,13 +8,11 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.S
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.shop.presentation.listener.ShopListener
-import com.tokopedia.search.result.shop.presentation.model.*
-import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopRecommendationTitleViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopSuggestionViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
-import com.tokopedia.search.result.shop.presentation.viewholder.*
+import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
+import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchDataView
+import com.tokopedia.search.result.shop.presentation.model.ShopRecommendationTitleDataView
+import com.tokopedia.search.result.shop.presentation.model.ShopSuggestionDataView
+import com.tokopedia.search.result.shop.presentation.model.ShopDataView
 import com.tokopedia.search.result.shop.presentation.viewholder.ShopCpmViewHolder
 import com.tokopedia.search.result.shop.presentation.viewholder.ShopEmptySearchViewHolder
 import com.tokopedia.search.result.shop.presentation.viewholder.ShopItemViewHolder
@@ -27,23 +25,23 @@ internal class ShopListTypeFactoryImpl(
         private val bannerAdsListener: BannerAdsListener
 ) : BaseAdapterTypeFactory(), ShopListTypeFactory {
 
-    override fun type(shopCpmViewModel: ShopCpmViewModel): Int {
+    override fun type(shopCpmDataView: ShopCpmDataView): Int {
         return ShopCpmViewHolder.LAYOUT
     }
 
-    override fun type(shopItem: ShopViewModel.ShopItem): Int {
+    override fun type(shopDataItem: ShopDataView.ShopItem): Int {
         return ShopItemViewHolder.LAYOUT
     }
 
-    override fun type(shopEmptySearchViewModel: ShopEmptySearchViewModel): Int {
+    override fun type(shopEmptySearchDataView: ShopEmptySearchDataView): Int {
         return ShopEmptySearchViewHolder.LAYOUT
     }
 
-    override fun type(shopRecommendationTitleViewModel: ShopRecommendationTitleViewModel): Int {
+    override fun type(shopRecommendationTitleDataView: ShopRecommendationTitleDataView): Int {
         return ShopRecommendationTitleViewHolder.LAYOUT
     }
 
-    override fun type(shopSuggestionViewModel: ShopSuggestionViewModel): Int {
+    override fun type(shopSuggestionDataView: ShopSuggestionDataView): Int {
         return ShopSuggestionViewHolder.LAYOUT
     }
 

@@ -6,7 +6,6 @@ import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoClickTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiType
 
 open class MenuItemUiModel(
     open val title: String = "",
@@ -16,11 +15,10 @@ open class MenuItemUiModel(
     settingTypeInfix: String = "",
     open val trackingAlias: String? = null,
     open val iconUnify: Int? = null,
+    open var notificationCount: Int = 0,
+    val isNewItem: Boolean = false,
     open val clickAction: () -> Unit = {}
 ) : SettingUiModel, SettingShopInfoImpressionTrackable, SettingShopInfoClickTrackable {
-
-    override val settingUiType: SettingUiType
-        get() = SettingUiType.MENU_ITEM
 
     override val onClickApplink: String?
         get() = clickApplink

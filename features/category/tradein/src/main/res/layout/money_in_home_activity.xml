@@ -6,7 +6,7 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/Unify_N0">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white">
+            android:background="@color/Unify_N0">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -30,7 +30,7 @@
                 app:subtitleTextAppearance="@style/SubTitleTextAppearance"
                 app:titleTextAppearance="@style/TitleTextAppearance" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_price_elligible"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -39,15 +39,13 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:background="@drawable/button_border_yellow"
                 android:lineSpacingExtra="@dimen/sp_4"
-                android:paddingStart="@dimen/dp_16"
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingTop="@dimen/dp_12"
-                android:paddingEnd="@dimen/dp_24"
-                android:paddingRight="@dimen/dp_24"
+                android:paddingRight="@dimen/dp_16"
                 android:paddingBottom="@dimen/dp_12"
                 android:text="@string/tradein_not_elligible_price_high"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_11"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="heading_6"
                 android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -60,8 +58,9 @@
                 android:layout_height="@dimen/dp_12"
                 android:layout_margin="@dimen/dp_8"
                 android:src="@drawable/ic_action_x"
-                android:tint="@color/bg_corner_yellow"
+                android:tint="@color/Unify_Y300"
                 android:visibility="gone"
+                android:contentDescription="@null"
                 app:layout_constraintRight_toRightOf="@+id/tv_price_elligible"
                 app:layout_constraintTop_toTopOf="@+id/tv_price_elligible"
                 tools:visibility="gone" />
@@ -77,10 +76,11 @@
                 app:layout_constraintDimensionRatio="H,3:4"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
+                android:contentDescription="@null"
                 app:layout_constraintTop_toBottomOf="@+id/tv_price_elligible"
                 app:srcCompat="@drawable/ic_mobile_image" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_model_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -89,15 +89,15 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="@dimen/sp_6"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_18"
-                android:textStyle="bold"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="heading_3"
+                app:typographyWeight="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iv_mobile"
                 tools:text="Samsung Galaxy A3" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_header_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -106,13 +106,14 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="@dimen/sp_4"
+                app:typographyType="heading_5"
                 android:text="@string/header_section_price"
-                android:textColor="@color/black_54"
+                android:textColor="@color/Unify_N700_44"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_model_name" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_initial_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -122,15 +123,15 @@
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="@dimen/sp_4"
                 android:text="@string/model_not_found"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_18"
-                android:textStyle="bold"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="heading_3"
+                app:typographyWeight="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_header_price"
                 app:layout_constraintWidth_default="wrap" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_indicative"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -139,8 +140,9 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="@dimen/sp_4"
+                app:typographyType="heading_5"
                 android:text="@string/depends_on_test"
-                android:textColor="@color/black_54"
+                android:textColor="@color/Unify_N700_44"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_initial_price"
@@ -166,14 +168,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/no_imei"
-                    android:textColor="@color/tradein_black"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3" />
 
                 <EditText
                     android:id="@+id/edit_text_imei"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
+                    android:background="@color/Unify_N0"
                     android:gravity="top"
                     android:cursorVisible="true"
                     android:imeOptions="actionDone"
@@ -186,7 +188,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:background="@color/dividerColor"
+                    android:background="@color/Unify_N75"
                     app:layout_constraintEnd_toEndOf="@+id/iv_arrow_down" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -195,7 +197,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_8"
                     android:text="@string/enter_the_imei_number_text"
-                    android:textColor="@color/tradein_black"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -204,12 +206,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_8"
                     android:text="@string/how_to_check_imei"
-                    android:textColor="@color/green_tradein_button"
+                    android:textColor="@color/Unify_G500"
                     app:typographyType="heading_6" />
             </LinearLayout>
 
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_not_upto"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -222,8 +224,9 @@
                 android:lineHeight="@dimen/sp_20"
                 android:lineSpacingExtra="@dimen/sp_6"
                 android:text="@string/moneyin_text_not_upto_15min"
-                android:textColor="@color/black_54"
+                android:textColor="@color/Unify_N700_44"
                 android:visibility="gone"
+                app:typographyType="heading_5"
                 app:layout_constraintBottom_toTopOf="@+id/tv_go_to_product_details"
                 app:layout_constraintHeight_default="wrap"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -232,7 +235,7 @@
                 app:layout_constraintVertical_bias="1"
                 tools:visibility="visible" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_go_to_product_details"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -244,14 +247,15 @@
                 android:lineSpacingExtra="@dimen/sp_6"
                 android:paddingTop="@dimen/dp_12"
                 android:paddingBottom="@dimen/dp_12"
+                app:typographyType="heading_5"
                 android:text="@string/go_to_product_details"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_N0"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent" />
 
-            <ProgressBar
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/progress_bar_layout"
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_50"

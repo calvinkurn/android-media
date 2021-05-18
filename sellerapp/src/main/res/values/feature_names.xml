@@ -137,6 +137,7 @@
     <string name="survey_layanan">Survey Layanan</string>
     <string name="detail_kendala">Detail Kendala</string>
     <string name="contact_us_inbox">Pesan Bantuan</string>
+    <string name="contact_us_title_clear_cache">Bersihkan Cache</string>
 
     <string name="instant_loan_app_name">Dana Instan</string>
 
@@ -264,12 +265,22 @@
     <!-- Dynamic feature Statistic -->
     <string name="title_statistic">Statistic</string>
 
+    <!-- Logistic -->
     <string name="title_layanan">Layanan</string>
+    <string name="label_manage_address">Daftar Alamat</string>
+    <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
+    <string name="title_activity_search_address">Kota atau kecamatan</string>
 
     <!-- Seller Menu -->
     <string name="title_seller_menu">Toko Saya</string>
     <string name="title_seller_settings">Pengaturan Toko</string>
+    <string name="admin_authorize_title">Admin Role Access Authorize</string>
     
     <!-- Dynamic feature seller action -->
     <string name="path_seller_action">/seller-action</string>
+
+    <!-- image picker -->
+    <string name="vidpick_app_name">Video Recorder</string>
+    <string name="album">Album</string>
+    <string name="edit_image">Edit Gambar</string>
 </resources>

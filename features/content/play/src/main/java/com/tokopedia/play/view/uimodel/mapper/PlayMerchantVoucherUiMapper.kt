@@ -12,14 +12,10 @@ class PlayMerchantVoucherUiMapper @Inject constructor() {
 
     fun mapMerchantVoucher(input: Voucher): MerchantVoucherUiModel {
         return MerchantVoucherUiModel(
+                id = input.id,
                 title = input.title,
                 description = input.subtitle,
-                type = when(input.voucherType) {
-                    /**
-                     * 1 -> Free Ongkir
-                     * 2 -> **Not Used**
-                     * 3 -> Cashback
-                     */
+                type = if (input.isPrivate) MerchantVoucherType.Private else when(input.voucherType) {
                     /**
                      * 1 -> Free Ongkir
                      * 2 -> **Not Used**
@@ -28,7 +24,10 @@ class PlayMerchantVoucherUiMapper @Inject constructor() {
                     1 -> MerchantVoucherType.Shipping
                     2,3 -> MerchantVoucherType.Discount
                     else -> MerchantVoucherType.Unknown
-                }
+                },
+                code = input.code,
+                copyable = input.isCopyable,
+                highlighted = input.isHighlighted
         )
     }
 }

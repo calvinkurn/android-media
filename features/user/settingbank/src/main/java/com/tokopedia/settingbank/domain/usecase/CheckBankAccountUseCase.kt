@@ -73,7 +73,7 @@ class CheckBankAccountUseCase @Inject constructor(graphqlRepository: GraphqlRepo
                             false,
                             checkAccountData.message))
                 }
-            } else if (checkAccountData.successCode == 400) {
+            } else {
                 onSuccess(AccountNameCheckError(checkAccountData.accountHolderName ?: "",
                         checkAccountData.message))
             }

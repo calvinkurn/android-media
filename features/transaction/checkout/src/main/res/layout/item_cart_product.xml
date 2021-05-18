@@ -34,16 +34,16 @@
         tools:ignore="UselessParent"
         tools:visbility="visible">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_error_shipment_item_title"
-            style="@style/TextSmallMediumBlack54"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/checkout_module_message_cart_error"
             android:visibility="gone"
+            app:typographyType="body_3"
             tools:visibility="visible" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_error_shipment_item_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,6 +53,7 @@
             android:textColor="@color/Unify_N700_44"
             android:textSize="@dimen/sp_10"
             android:visibility="gone"
+            app:typographyType="small"
             tools:visibility="visible" />
 
     </LinearLayout>

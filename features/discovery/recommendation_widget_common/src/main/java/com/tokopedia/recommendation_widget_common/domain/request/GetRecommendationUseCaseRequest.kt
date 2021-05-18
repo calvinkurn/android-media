@@ -9,6 +9,7 @@ internal class GetRecommendationUseCaseRequest {
                       tID
                       source
                       title
+                      subtitle
                       foreignTitle
                       widgetUrl
                       pageName
@@ -53,6 +54,7 @@ internal class GetRecommendationUseCaseRequest {
                             position
                             title
                             type
+                            url
                         }
                         badges {
                           title
@@ -74,6 +76,10 @@ internal class GetRecommendationUseCaseRequest {
                         recommendationType
                         stock
                         isTopads
+                        specificationLabels {
+                            key
+                            value
+                        }
                       }
                     }
                   }
@@ -110,6 +116,9 @@ internal class GetRecommendationUseCaseRequest {
                            relatedProductUrlLink
                            price
                            priceInt
+                           discountPercentage
+                           slashedPrice
+                           slashedPriceInt
                            shop {
                                id
                                name
@@ -119,6 +128,12 @@ internal class GetRecommendationUseCaseRequest {
                           labels {
                               title
                               color
+                          }
+                          labelgroup{
+                            position
+                            title
+                            type
+                            url
                           }
                           badges {
                               title
@@ -130,12 +145,20 @@ internal class GetRecommendationUseCaseRequest {
                               quantityMin
                               priceString
                           }
+                          freeOngkir{
+                            isActive
+                            imageUrl
+                          }
                           rating
                           ratingAverage
                           countReview
                           recommendationType
                           stock
                           isTopads
+                          specificationLabels {
+                            key
+                            value
+                        }
                        }
                    }
                  }

@@ -3,88 +3,98 @@
   "mode": "exact",
   "query": [
     {
-      "event": "add_to_cart",
-      "eventCategory": "digital - native",
-      "eventAction": "click beli",
-      "eventLabel": "{{.+ - .+}}",
-      "currentSite": "tokopediadigital",
-      "sessionIris": "{{.+}}",
-      "businessUnit": "recharge",
-      "userId": "{{.+}}",
-      "items": [
-        {
-          "cart_id": "{{.+}}",
-          "quantity": "{{\\d*.\\d*}}",
-          "category_id": "{{.*}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+}}",
-          "item_brand": "{{.+}}",
-          "item_variant": "{{.+}}",
-          "item_category": "{{.+}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-          "shop_id": "{{.+}}",
-          "shop_name": "{{.+}}",
-          "shop_type": "{{.+}}"
-        }
-      ]
-    },
-    {
       "event": "begin_checkout",
       "eventCategory": "digital - checkout",
       "eventAction": "view checkout",
-      "eventLabel": "{{.+ - .+}}",
+      "eventLabel": ".+ - .+",
       "checkout_step": "1",
       "checkout_option": "cart page loaded",
-      "currentSite": "tokopediadigital",
-      "sessionIris": "{{.+}}",
+      "currentSite": "tokopediadigitalRecharge",
+      "sessionIris": ".+",
       "businessUnit": "recharge",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "items": [
         {
-          "cart_id": "{{.+}}",
-          "quantity": "{{\\d*.\\d*}}",
-          "category_id": "{{.*}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+}}",
-          "item_brand": "{{.+}}",
-          "item_variant": "{{.+}}",
-          "item_category": "{{.+}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-          "shop_id": "{{.+}}",
-          "shop_name": "{{.+}}",
-          "shop_type": "{{.+}}"
+          "cart_id": ".+",
+          "quantity": "\\d*.\\d*",
+          "category_id": ".+",
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_brand": ".+",
+          "item_variant": ".+",
+          "item_category": ".+",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "shop_id": ".+",
+          "shop_name": ".+",
+          "shop_type": ".+"
         }
       ]
     },
     {
-      "event":"clickCheckout",
-      "eventCategory":"digital - checkout page",
-      "eventAction":"tick protection",
-      "eventLabel":"{{.+ - .+}}",
-      "businessUnit":"recharge",
-      "currentSite":"tokopediadigital",
-      "sessionIris": "{{.+}}",
-      "userId":"{{.+}}"
+      "event": "view_item_list",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "impression crossell icon",
+      "eventLabel": "",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "item_list": "/checkout - .+ - crossell icon",
+      "sessionIris": ".+",
+      "items": [
+        {
+          "index": ".+",
+          "item_brand": ".+",
+          "item_category": ".+",
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_variant": ".+",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "dimension40": "/checkout - .+ - crossell icon"
+        }
+      ],
+      "userId": ".+"
     },
     {
-      "event":"clickCheckout",
-      "eventCategory":"digital - checkout page",
-      "eventAction":"untick protection",
-      "eventLabel":"{{.+ - .+}}",
-      "businessUnit":"recharge",
-      "currentSite":"tokopediadigital",
-      "userId":"{{.+}}",
-      "sessionIris": "{{.+}}"
+      "event": "select_content",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "click crossell ticker",
+      "eventLabel": ".+ - .+",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "item_list": "/checkout - .+ - crossell icon",
+      "sessionIris": ".+",
+      "items": [
+        {
+          "index": ".+",
+          "item_brand": ".+",
+          "item_category": ".+",
+          "item_id": ".+",
+          "item_name": ".+",
+          "dimension40": "/checkout - .+ - crossell icon",
+          "item_variant": ".+",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d"
+        }
+      ],
+      "userId": ".+"
+    },
+    {
+      "event": "clickCheckout",
+      "eventCategory": "digital - checkout page",
+      "eventAction": "uncheck crossell ticker",
+      "eventLabel": ".+ - .+",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigital",
+      "userId": ".+",
+      "sessionIris": ".+"
     },
     {
       "event":"clickCheckout",
       "eventCategory":"digital - checkout page",
       "eventAction":"click promo button",
-      "eventLabel":"{{.+ - .+}}",
+      "eventLabel":".+ - .+",
       "businessUnit":"recharge",
       "currentSite":"tokopediadigital",
-      "userId":"{{.+}}",
-      "sessionIris": "{{.+}}"
+      "userId":".+",
+      "sessionIris": ".+"
     }
   ]
 }

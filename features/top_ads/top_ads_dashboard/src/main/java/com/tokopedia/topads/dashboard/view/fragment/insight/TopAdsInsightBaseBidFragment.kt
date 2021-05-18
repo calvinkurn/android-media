@@ -23,6 +23,7 @@ import com.tokopedia.topads.dashboard.data.model.DataBudget
 import com.tokopedia.topads.dashboard.data.model.TopadsGetDailyBudgetRecommendation
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopadsDailyBudgetRecomAdapter
+import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment.Companion.BUDGET_RECOM
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
@@ -34,17 +35,27 @@ import javax.inject.Inject
  * Created by Pika on 20/7/20.
  */
 
-class TopAdsInsightBaseBidFragment(private val dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendation?) : BaseDaggerFragment() {
+class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
+    private var dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendation? = null
     private lateinit var adapter: TopadsDailyBudgetRecomAdapter
     private var currentPosition = 0
+    @Inject
+    lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
+
+
+    companion object {
+        fun createInstance(bundle: Bundle): TopAdsInsightBaseBidFragment {
+            val fragment = TopAdsInsightBaseBidFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
 
     override fun getScreenName(): String {
         return TopAdsInsightBaseBidFragment::class.java.name
     }
 
-    @Inject
-    lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
 
     override fun initInjector() {
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
@@ -62,19 +73,22 @@ class TopAdsInsightBaseBidFragment(private val dailyBudgetRecommendData: TopadsG
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getArgumentData()
         swipeRefreshLayout?.setOnRefreshListener {
             loadData()
         }
         if (dailyBudgetRecommendData?.data?.isEmpty() == true)
             setEmptyState()
         else {
-            if (dailyBudgetRecommendData != null) {
-                setAdapterData(dailyBudgetRecommendData)
-            }
+            dailyBudgetRecommendData?.let { setAdapterData(it) }
         }
         rvDailyBudget?.adapter = adapter
         rvDailyBudget?.layoutManager = LinearLayoutManager(context)
         rvDailyBudget?.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+    }
+
+    private fun getArgumentData() {
+        dailyBudgetRecommendData = arguments?.getParcelable(BUDGET_RECOM)
     }
 
     private fun setEmptyState() {

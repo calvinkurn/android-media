@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="image_picker_bottom_navigation_height">64dp</dimen>
     <dimen name="image_picker_tab_min_width">50dp</dimen>
-    <dimen name="image_picker_img_thumb_holder">72dp</dimen>
-    <dimen name="image_picker_img_thumb_m">50dp</dimen>
-    <dimen name="image_picker_media_grid_spacing">2dp</dimen>
     <dimen name="image_picker_thumbnail_inner_width">72dp</dimen>
     <dimen name="image_picker_thumbnail_outer_width">80dp</dimen>
 
     <dimen name="image_editor_main_height">64dp</dimen>
-    <dimen name="image_editor_footer_height">150dp</dimen>
     <dimen name="image_editor_thumbnail_width">72dp</dimen>
     <dimen name="image_editor_control_height">80dp</dimen>
     <dimen name="image_editor_widget_item_width">64dp</dimen>
 
     <dimen name="sp_16">16sp</dimen>
     <dimen name="sp_20">20sp</dimen>
+
+    <dimen name="dp_24">24dp</dimen>
+    <dimen name="image_picker_media_grid_spacing">2dp</dimen>
 </resources>

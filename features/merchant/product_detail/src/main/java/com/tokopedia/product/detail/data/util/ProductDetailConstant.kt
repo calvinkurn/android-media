@@ -59,7 +59,7 @@ object ProductDetailConstant {
 
     //PAYLOADS
     const val PAYLOAD_WISHLIST = 1
-    const val PAYLOAD_TRADEIN = 421321
+    const val PAYLOAD_TRADEIN_AND_BOE = 421321
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
     const val PAYLOAD_UPDATE_IMAGE = 5
@@ -85,16 +85,14 @@ object ProductDetailConstant {
 
     //Mapper
     const val MINI_SOCIAL_PROOF = "social_proof_mini"
-    const val SHOP_INFO = "shop_info"
-    const val MINI_SHOP_INFO = "shop_info_mini"
     const val PRODUCT_INFO = "product_info"
     const val PRODUCT_DETAIL = "product_detail"
     const val DISCUSSION_FAQ = "discussion_faq"
-    const val MOST_HELPFUL_REVIEW = "most_helpful_review"
     const val REVIEW = "review"
     const val TRADE_IN = "tradein"
     const val INFO = "info"
     const val SHOP_VOUCHER = "shop_voucher"
+    const val SHIPMENT = "shipment"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
     const val TICKER_INFO = "ticker_info"
@@ -107,6 +105,7 @@ object ProductDetailConstant {
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
     const val PRODUCT_CUSTOM_INFO = "custom_info"
     const val PRODUCT_INSTALLMENT_INFO = "installment"
+    const val PRODUCT_INSTALLMENT_PAYLATER_INFO = "installment_paylater"
     const val PRODUCT_SHIPPING_INFO = "shipping"
     const val ORDER_PRIORITY = "order_prio"
     const val PRODUCT_FULLFILMENT = "fulfillment"
@@ -185,4 +184,28 @@ object ProductDetailConstant {
     const val LAYOUT_FLOATING = "floating"
     const val PARAMS_PAGE = "page"
     const val PARAMS_PAGE_PDP = "pdp"
+
+    const val KEY_PRODUCT_DETAIL = "product detail"
+
+    //bo type
+    const val NO_BEBAS_ONGKIR = 0
+    const val BEBAS_ONGKIR_NORMAL = 1
+    const val BEBAS_ONGKIR_EXTRA = 2
+
+    //shipping error code
+    const val SHIPPING_ERROR_WEIGHT = 50503
+
+    const val ELIGIBLE_TRADE_IN = 1
+
+    const val BS_SHIPMENT_ERROR_TAG = "BS_SHIPMENT_ERROR_TAG"
+
+    // Log keys
+    const val PRODUCT_ID_KEY = "product_id"
+    const val DEVICE_ID_KEY = "device_id"
+    const val SESSION_KEY = "param_session"
+    const val MESSAGE_KEY = "message"
+    const val STACK_TRACE_KEY = "stacktrace"
+    const val ERROR_TYPE_KEY = "error_type"
+    const val EXTRAS_KEY = "extras"
+    const val PDP_LOG_TAG = "BUYER_FLOW_PDP"
 }

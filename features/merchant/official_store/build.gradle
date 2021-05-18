@@ -47,6 +47,7 @@ dependencies {
     implementation project(rootProject.ext.features.carouselProductCard)
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.homeComponent)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -61,7 +62,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.miscDependencies.reactNative
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -69,6 +69,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -81,7 +82,6 @@ dependencies {
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.playServicesDependencies.analytics
-
 }
 
 project.ext {

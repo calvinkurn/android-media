@@ -4,6 +4,8 @@ import android.app.Activity
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
@@ -26,8 +28,11 @@ class CmDialogHandler {
             // set flag if has dialog showing
             cmDialogHandlerCallback.onShow(activity)
         } catch (e: Exception) {
-            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${data.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception",
+                            "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to data.toString().take(CMConstant.TimberTags.MAX_LIMIT)
+                    ))
             cmDialogHandlerCallback.onException(e, data)
         }
     }

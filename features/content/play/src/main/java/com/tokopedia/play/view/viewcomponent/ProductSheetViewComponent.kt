@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -18,13 +20,15 @@ import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
 import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.ui.productsheet.itemdecoration.MerchantVoucherItemDecoration
 import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
+import com.tokopedia.play.ui.productsheet.viewholder.MerchantVoucherViewHolder
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
-import com.tokopedia.play.view.uimodel.ProductPlaceholderUiModel
+import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsBasicInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -49,21 +53,53 @@ class ProductSheetViewComponent(
     private val btnProductEmpty: UnifyButton = findViewById(R.id.btn_action_product_empty)
 
     private val productLineAdapter = ProductLineAdapter(object : ProductLineViewHolder.Listener {
-        override fun onBuyProduct(product: ProductLineUiModel) {
+        override fun onBuyProduct(product: PlayProductUiModel.Product) {
             listener.onBuyButtonClicked(this@ProductSheetViewComponent, product)
 
         }
-        override fun onAtcProduct(product: ProductLineUiModel) {
+
+        override fun onAtcProduct(product: PlayProductUiModel.Product) {
             listener.onAtcButtonClicked(this@ProductSheetViewComponent, product)
         }
 
-        override fun onClickProductCard(product: ProductLineUiModel, position: Int) {
+        override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
             listener.onProductCardClicked(this@ProductSheetViewComponent, product, position)
         }
     })
-    private val voucherAdapter = MerchantVoucherAdapter()
+    private val voucherAdapter = MerchantVoucherAdapter(object : MerchantVoucherViewHolder.Listener {
+        override fun onCopyVoucherCode(voucher: MerchantVoucherUiModel) {
+            listener.onCopyVoucherCodeClicked(this@ProductSheetViewComponent, voucher)
+        }
+    })
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
+
+    private val voucherScrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            val layoutManager = recyclerView.layoutManager
+            if (newState == RecyclerView.SCROLL_STATE_SETTLING &&
+                    layoutManager is LinearLayoutManager) {
+                listener.onVoucherScrolled(this@ProductSheetViewComponent, layoutManager.findLastVisibleItemPosition())
+            }
+        }
+    }
+
+    private val productScrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                listener.onProductsImpressed(this@ProductSheetViewComponent, getVisibleProducts())
+            }
+        }
+    }
+
+    private val layoutManagerProductList = object : LinearLayoutManager(rvProductList.context, RecyclerView.VERTICAL, false) {
+        override fun onLayoutCompleted(state: RecyclerView.State?) {
+            super.onLayoutCompleted(state)
+            listener.onProductsImpressed(this@ProductSheetViewComponent, getVisibleProducts())
+        }
+    }
+
+    private var isProductsInitialized = false
 
     init {
         findViewById<ImageView>(R.id.iv_sheet_close)
@@ -72,7 +108,7 @@ class ProductSheetViewComponent(
                 }
 
         rvProductList.apply {
-            layoutManager = LinearLayoutManager(rvProductList.context, RecyclerView.VERTICAL, false)
+            layoutManager = layoutManagerProductList
             adapter = productLineAdapter
             addItemDecoration(ProductLineItemDecoration(rvProductList.context))
             addOnScrollListener(StopFlingScrollListener())
@@ -84,17 +120,8 @@ class ProductSheetViewComponent(
             addItemDecoration(MerchantVoucherItemDecoration(rvVoucherList.context))
         }
 
-        rvVoucherList.apply {
-            addOnScrollListener(object: RecyclerView.OnScrollListener(){
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if (newState == RecyclerView.SCROLL_STATE_SETTLING &&
-                            layoutManager is LinearLayoutManager) {
-                        val llManager = layoutManager as LinearLayoutManager
-                        listener.onVoucherScrolled(this@ProductSheetViewComponent, llManager.findLastVisibleItemPosition())
-                    }
-                }
-            })
-        }
+        rvProductList.addOnScrollListener(productScrollListener)
+        rvVoucherList.addOnScrollListener(voucherScrollListener)
 
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
 
@@ -123,6 +150,7 @@ class ProductSheetViewComponent(
         }
 
         show()
+        sendImpression()
     }
 
     fun setProductSheet(model: PlayProductTagsUiModel.Complete) {
@@ -183,15 +211,16 @@ class ProductSheetViewComponent(
     private fun getPlaceholderModel() = PlayProductTagsUiModel.Complete(
             basicInfo = PlayProductTagsBasicInfoUiModel(
                     bottomSheetTitle = "",
-                    partnerId = 0L
+                    partnerId = 0L,
+                    maxFeaturedProducts = 0
             ),
             voucherList = List(PLACEHOLDER_COUNT) { VoucherPlaceholderUiModel },
-            productList = List(PLACEHOLDER_COUNT) { ProductPlaceholderUiModel }
+            productList = List(PLACEHOLDER_COUNT) { PlayProductUiModel.Placeholder }
     )
 
     private fun isProductDecreased(productSize: Int): Boolean {
         return productLineAdapter.getItems().isNotEmpty() &&
-                productLineAdapter.getItems().first() is ProductLineUiModel &&
+                productLineAdapter.getItems().first() is PlayProductUiModel.Product &&
                 productLineAdapter.itemCount > productSize
     }
 
@@ -203,16 +232,59 @@ class ProductSheetViewComponent(
         ).show()
     }
 
+    private fun sendImpression() {
+        if (isProductsInitialized) {
+            listener.onProductsImpressed(
+                    this@ProductSheetViewComponent,
+                    getVisibleProducts()
+            )
+        }
+        else isProductsInitialized = true
+    }
+
+    /**
+     * Lifecycle Event
+     */
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        rootView.requestApplyInsetsWhenAttached()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        rvVoucherList.removeOnScrollListener(voucherScrollListener)
+        rvProductList.removeOnScrollListener(productScrollListener)
+    }
+
+    /**
+     * Analytic Helper
+     */
+    fun getVisibleProducts(): List<Pair<PlayProductUiModel.Product, Int>> {
+        val products = productLineAdapter.getItems()
+        if (products.isNotEmpty()) {
+            val startPosition = layoutManagerProductList.findFirstCompletelyVisibleItemPosition()
+            val endPosition = layoutManagerProductList.findLastCompletelyVisibleItemPosition()
+            if (startPosition > -1 && endPosition < products.size) return products.slice(startPosition..endPosition)
+                    .filterIsInstance<PlayProductUiModel.Product>()
+                    .mapIndexed { index, item ->
+                        Pair(item, startPosition + index)
+                    }
+        }
+        return emptyList()
+    }
+
     companion object {
         private const val PLACEHOLDER_COUNT = 5
     }
 
     interface Listener {
         fun onCloseButtonClicked(view: ProductSheetViewComponent)
-        fun onBuyButtonClicked(view: ProductSheetViewComponent, product: ProductLineUiModel)
-        fun onAtcButtonClicked(view: ProductSheetViewComponent, product: ProductLineUiModel)
-        fun onProductCardClicked(view: ProductSheetViewComponent, product: ProductLineUiModel, position: Int)
+        fun onBuyButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product)
+        fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product)
+        fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, position: Int)
         fun onVoucherScrolled(view: ProductSheetViewComponent, lastPositionViewed: Int)
         fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long)
+        fun onCopyVoucherCodeClicked(view: ProductSheetViewComponent, voucher: MerchantVoucherUiModel)
+        fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.home_recom.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -60,6 +61,7 @@ object SimilarProductRecommendationTracking {
     private const val VALUE_IDR = "IDR"
     private const val VALUE_EMPTY = ""
     private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+    private const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
 
     private const val BUSINESS_UNIT = "businessUnit"
     private const val BU_HOME_AND_BROWSE = "Home & Browse"
@@ -91,7 +93,7 @@ object SimilarProductRecommendationTracking {
                         FIELD_PRODUCT_POSITION, position,
                         FIELD_ATTRIBUTE, VALUE_EMPTY,
                         FIELD_DIMENSION_61, item.dimension61,
-                        FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
+                        FIELD_DIMENSION_83, getBebasOngkirValue(item),
                         FIELD_DIMENSION_90, internalRef
                 )
         )
@@ -111,10 +113,17 @@ object SimilarProductRecommendationTracking {
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                 FIELD_PRODUCT_LIST, list,
                 FIELD_PRODUCT_POSITION, position,
-                FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
+                FIELD_DIMENSION_83, getBebasOngkirValue(item),
                 FIELD_DIMENSION_90, internalRef,
                 FIELD_DIMENSION_61, item.dimension61
         )
+    }
+
+    private fun getBebasOngkirValue(item: RecommendationItem): String{
+        val hasFulfillment = item.labelGroupList.hasLabelGroupFulfillment()
+        return if(item.isFreeOngkirActive && hasFulfillment) VALUE_BEBAS_ONGKIR_EXTRA
+        else if(item.isFreeOngkirActive && !hasFulfillment) VALUE_BEBAS_ONGKIR
+        else VALUE_NONE_OTHER
     }
 
     fun eventImpression(

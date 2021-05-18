@@ -8,12 +8,12 @@ import android.widget.LinearLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.coachmark.CoachMark2
@@ -27,6 +27,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_OPERATOR_ID
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -79,6 +80,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private var traceStop = false
     private var showProducts = false
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
+
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,8 +140,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             if (it) {
                 telcoClientNumberWidget.setVisibleResultNumber(false)
                 hideDynamicSpacer()
-            }
-            else {
+            } else {
                 telcoClientNumberWidget.setVisibleResultNumber(true)
                 if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) showDynamicSpacer() else hideDynamicSpacer()
             }
@@ -148,7 +150,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private fun showDynamicSpacer() {
         val defaultSpaceHeight = 81
         dynamicSpacer.layoutParams.height =
-                context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space) ?: defaultSpaceHeight
+                context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space)
+                        ?: defaultSpaceHeight
         dynamicSpacer.requestLayout()
     }
 
@@ -181,7 +184,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         initViewPager()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
-        if(rechargeProductFromSlice.isNotEmpty()) {
+        if (rechargeProductFromSlice.isNotEmpty()) {
             rechargeAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
             rechargeAnalytics.onOpenPageFromSlice(TITLE_PAGE)
         }
@@ -329,6 +332,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
                     categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                    sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
                 }
                 if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
                     menuId = digitalTelcoExtraParam.menuId.toInt()
@@ -353,6 +357,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun getCheckoutView(): TopupBillsCheckoutWidget? {
         return telco_buy_widget
+    }
+
+    override fun initAddToCartViewModel() {
+        addToCartViewModel = viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java)
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
@@ -409,6 +417,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
+    override fun onLoadingAtc(showLoading: Boolean) {
+        buyWidget.onBuyButtonLoading(showLoading)
+    }
+
     private val clientNumberCallback = object : DigitalClientNumberWidget.ActionListener {
         override fun onNavigateToContact() {
             inputNumberActionType = InputNumberActionType.CONTACT
@@ -456,7 +468,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun getProductListData() {
         if (operatorId.isNotEmpty()) {
-            sharedModelPrepaid.getCatalogProductList(DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, null)
+            sharedModelPrepaid.getCatalogProductList(DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, null,
+                    productId)
         }
     }
 
@@ -597,7 +610,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 topupBillsRecommendation.productId.toString())
 
         if (userSession.isLoggedIn) {
-            navigateToCart()
+            addToCart()
         } else {
             navigateToLoginPage()
         }

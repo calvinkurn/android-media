@@ -18,15 +18,16 @@
             android:id="@+id/layout_mvc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
-            android:layout_marginBottom="@dimen/dp_4">
+            android:layout_marginBottom="@dimen/dp_4"
+            android:visibility="visible">
 
             <ImageView
                 android:id="@+id/img_mvc"
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_mvc_text"
@@ -36,12 +37,12 @@
                 android:layout_toEndOf="@id/img_mvc"
                 android:lineSpacingExtra="@dimen/sp_4"
                 android:textColor="@color/Unify_G500"
-                app:typographyType="body_3"
-                app:typographyWeight="bold"
-                tools:text="@string/tv_mvc_text"
+                app:layout_constraintBottom_toBottomOf="@id/img_mvc"
                 app:layout_constraintStart_toEndOf="@id/img_mvc"
                 app:layout_constraintTop_toTopOf="@id/img_mvc"
-                app:layout_constraintBottom_toBottomOf="@id/img_mvc"/>
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                tools:text="@string/tv_mvc_text" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -49,16 +50,17 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_courier"
-        style="@style/TextMidMediumBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fl_container"
-        android:lineSpacingExtra="@dimen/sp_4"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
         tools:text="@string/tv_courier" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_promo_potency"
-        style="@style/TextSmallNormal"
+        app:typographyType="body_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/tv_courier"
@@ -78,10 +80,10 @@
         android:id="@+id/lbl_cod_available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignTop="@id/tv_courier"
+        android:layout_alignBottom="@id/tv_courier"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_toEndOf="@+id/tv_courier"
-        android:layout_alignBottom="@id/tv_courier"
-        android:layout_alignTop="@id/tv_courier"
         android:text="@string/tersedia_bayar_di_tempat"
         android:visibility="gone"
         app:labelType="general_light_green" />
@@ -91,19 +93,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_courier"
-        android:text="@string/tersedia_bayar_di_tempat"
         android:layout_marginTop="@dimen/dp_4"
-        app:labelType="general_light_green"
-        android:visibility="gone"/>
+        android:text="@string/tersedia_bayar_di_tempat"
+        android:visibility="gone"
+        app:labelType="general_light_green" />
 
     <!--price in old view, duration in ETA-->
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_price_or_duration"
-        style="@style/TextSmallNormalBlack54"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/lbl_cod_available_eta"
         android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="@string/tv_price" />
@@ -115,8 +117,8 @@
         android:layout_below="@+id/tv_price_or_duration"
         android:layout_marginTop="@dimen/dp_4"
         android:text="@string/label_shipping_information"
-        app:typographyType="small"
         android:visibility="gone"
+        app:typographyType="small"
         app:typographyWeight="reguler" />
 
 
@@ -125,19 +127,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_mvc_error"
-        android:text="@string/jaminan_tepat_waktu"
         android:layout_marginTop="@dimen/dp_4"
+        android:text="@string/jaminan_tepat_waktu"
         app:labelType="general_light_green" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/img_check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        app:srcCompat="@drawable/ic_check"
-        android:contentDescription="@string/content_img_check"/>
+        android:contentDescription="@string/content_img_check"
+        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_color_night_enable="@color/Unify_G500"
+        app:icon_enable_state="true"
+        app:icon_name="CHECK_BIG" />
 
     <View
         android:id="@+id/separator"

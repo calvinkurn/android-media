@@ -82,6 +82,8 @@ object ReviewConstants {
     const val HAS_FILTER_AND_SORT = "hasFilterAndSort"
     const val HAS_OVERALL_RATING_PRODUCT = "hasOverallRatingProduct"
     const val HAS_TICKER_INBOX_REVIEW = "hasTickerInboxReview"
+    const val HAS_TICKER_REVIEW_REMINDER = "hasTickerReviewReminder"
+    const val HAS_COACHMARK_REMINDER_MESSAGE = "hasCoachmarkReminderMessage"
 
     const val ARGS_REPUTATION_ID = "ARGS_REPUTATION_ID"
     const val ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID"

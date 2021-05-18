@@ -231,7 +231,7 @@
             app:layout_constraintLeft_toLeftOf="@id/usr_badge"
             app:layout_constraintTop_toBottomOf="@id/usr_ovo_badge"
             app:layout_goneMarginStart="@dimen/dp_10"
-            app:typographyType="body_3"
+            app:typographyType="body_2"
             tools:visibility="visible" />
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/usr_shop_info"
@@ -246,17 +246,17 @@
             tools:visibility="visible"
             tools:text="toko kamu"/>
 
-        <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.unifycomponents.NotificationUnify
             android:id="@+id/usr_shop_notif"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:background="@drawable/notification_big_bg"
+            android:layout_marginStart="@dimen/user_shop_notif_margin_start"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="@id/usr_shop_info"
             app:layout_constraintLeft_toRightOf="@id/usr_shop_info"
-            tools:visibility="visible"
-            tools:text=" 5 "/>
+            app:layout_constraintTop_toTopOf="@id/usr_shop_info"
+            app:layout_constraintBottom_toBottomOf="@id/usr_shop_info"
+            app:notificationColor="color_primary"
+            app:notificationType="counter_type" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/shimmer_shop_info"

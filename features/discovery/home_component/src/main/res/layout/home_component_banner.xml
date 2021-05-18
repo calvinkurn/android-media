@@ -18,11 +18,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_banner"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:layout_height="100dp"
         app:autoScroll="true"
         app:isInfinite="true"
-        android:layout_marginTop="@dimen/dp_16"
         app:layout_goneMarginTop="@dimen/dp_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

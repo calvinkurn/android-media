@@ -25,9 +25,9 @@
         android:id="@+id/tickerSomList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:enableAutoSlide="true"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="parent"
         app:tickerType="announcement" />
 
     <com.tokopedia.unifycomponents.SearchBarUnify
@@ -238,5 +238,18 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
+
+    <!-- admin no permission error view -->
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/somAdminPermissionView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        app:globalerrors_type="PAGE_NOT_FOUND"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

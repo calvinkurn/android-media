@@ -16,6 +16,16 @@ buildscript {
     }
 }
 
+android {
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+}
+
 dependencies {
     implementation project(rootProject.ext.features.attachcommon)
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -52,6 +62,16 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.libraries.unitTest)
+
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {

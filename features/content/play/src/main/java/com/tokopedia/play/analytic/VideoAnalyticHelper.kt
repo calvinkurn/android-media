@@ -2,7 +2,6 @@ package com.tokopedia.play.analytic
 
 import android.content.Context
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.play.ERR_STATE_VIDEO
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import kotlin.math.abs
 
@@ -82,7 +81,9 @@ class VideoAnalyticHelper(
     /**
      * Send Analytic
      */
-    fun sendLeaveRoomAnalytic() {
+    fun sendLeaveRoomAnalytic(channelId: String) {
+        if (channelId != analytic.channelId) return
+
         val currentWatchDuration = watchDurationModel.watchTime?.let { abs(System.currentTimeMillis() - it) }.orZero()
         val totalDuration = watchDurationModel.cumulationDuration + currentWatchDuration
         analytic.clickLeaveRoom(totalDuration)
@@ -96,6 +97,6 @@ class VideoAnalyticHelper(
     }
 
     private fun sendErrorStateVideoAnalytic(errorMessage: String) {
-        analytic.errorState("$ERR_STATE_VIDEO: $errorMessage")
+        analytic.trackVideoError(errorMessage)
     }
 }

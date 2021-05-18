@@ -17,7 +17,7 @@
             android:id="@+id/btn_alamat_utama"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Jadikan Alamat Utama"
+            android:text="@string/set_default_address"
             android:textStyle="bold"
             android:textSize="@dimen/sp_14"
             android:layout_marginTop="@dimen/dp_18"
@@ -32,11 +32,36 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/layout_utama_choose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/btn_alamat_utama_choose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/set_default_choose_address"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_14"
+            android:layout_marginTop="@dimen/dp_18"
+            android:textColor="@color/Unify_N700"/>
+
+        <View
+            android:id="@+id/divider_utama_choose"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/Unify_N75"
+            android:layout_marginTop="@dimen/dp_16" />
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/btn_hapus_alamat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hapus Alamat"
+        android:text="@string/delete_address"
         android:textStyle="bold"
         android:textSize="@dimen/sp_14"
         android:textColor="@color/Unify_N700"

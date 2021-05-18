@@ -19,13 +19,18 @@ import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON
 import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import dagger.Lazy
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import retrofit2.Response
 import rx.Observable
 import javax.inject.Inject
@@ -158,18 +163,27 @@ class HomeRevampRepositoryImpl @Inject constructor(
              * 4. Get above the fold content
              */
             if (homeData.atfData?.dataList?.isNotEmpty() == true) {
+                var nonTickerResponseFinished = false
+
                 homeData.atfData?.dataList?.map { atfData ->
                     when(atfData.component) {
                         TYPE_TICKER -> {
                             val job = async {
                                 try {
-                                    val ticker = homeRemoteDataSource.getHomeTickerUseCase()
+                                    val ticker = homeRemoteDataSource.getHomeTickerUseCase(
+                                            locationParams = applicationContext?.let {
+                                                ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: "")
                                     ticker?.let {
                                         atfData.content = gson.toJson(ticker.ticker)
                                         atfData.status = AtfKey.STATUS_SUCCESS
                                     }
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
+                                }
+                                if (nonTickerResponseFinished) {
+                                    cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                                        saveToDatabase(homeData)
+                                    })
                                 }
                                 atfData
                             }
@@ -178,7 +192,11 @@ class HomeRevampRepositoryImpl @Inject constructor(
                         TYPE_CHANNEL -> {
                             val job = async {
                                 try {
-                                    val dynamicChannel = homeRemoteDataSource.getDynamicChannelData(params = atfData.param)
+                                    val dynamicChannel = homeRemoteDataSource.getDynamicChannelData(
+                                            params = atfData.param,
+                                            locationParams = applicationContext?.let {
+                                                ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
+                                    )
                                     dynamicChannel.let {
                                         val channelFromResponse = it.dynamicHomeChannel
                                         atfData.content = gson.toJson(channelFromResponse)
@@ -192,6 +210,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                 cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
                                     saveToDatabase(homeData)
                                 })
+                                nonTickerResponseFinished = true
                                 atfData
                             }
                             jobList.add(job)
@@ -199,8 +218,11 @@ class HomeRevampRepositoryImpl @Inject constructor(
                         TYPE_ICON -> {
                             val job = async {
                                 try {
-                                    val dynamicIcon = homeRemoteDataSource.getHomeIconUseCase(atfData.param)
-                                    dynamicIcon?.let {
+                                    val dynamicIcon = homeRemoteDataSource.getHomeIconUseCase(
+                                            param = atfData.param,
+                                            locationParams = applicationContext?.let {
+                                                ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: "")
+                                    dynamicIcon.let {
                                         atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon.copy(type=if(atfData.param.contains(TYPE_ATF_1)) 1 else 2))
                                         atfData.status = AtfKey.STATUS_SUCCESS
                                     }
@@ -211,6 +233,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                 cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
                                     saveToDatabase(homeData)
                                 })
+                                nonTickerResponseFinished = true
                                 atfData
                             }
                             jobList.add(job)
@@ -226,7 +249,10 @@ class HomeRevampRepositoryImpl @Inject constructor(
              * 6. Get dynamic channel data
              */
             val dynamicChannelResponseValue = try {
-                val dynamicChannelResponse = homeRemoteDataSource.getDynamicChannelData(numOfChannel = CHANNEL_LIMIT_FOR_PAGINATION)
+                val dynamicChannelResponse = homeRemoteDataSource.getDynamicChannelData(
+                        numOfChannel = CHANNEL_LIMIT_FOR_PAGINATION,
+                        locationParams = applicationContext?.let {
+                            ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: "")
                 if (!isAtfSuccess) {
                     homeData.atfData = null
                 }
@@ -281,7 +307,9 @@ class HomeRevampRepositoryImpl @Inject constructor(
             if ((!isCacheExistForProcess && currentToken.isNotEmpty()) ||
                     isCacheExistForProcess) {
                 try {
-                    homeData = processFullPageDynamicChannel(homeData)?: HomeData()
+                    homeData = processFullPageDynamicChannel(
+                            homeDataResponse = homeData)
+                            ?: HomeData()
                     homeData.dynamicHomeChannel.channels.forEach {
                         it.timestamp = currentTimeMillisString
                     }
@@ -329,7 +357,10 @@ class HomeRevampRepositoryImpl @Inject constructor(
     }
 
     override suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>> {
-        val dynamicChannelResponse = homeRemoteDataSource.getDynamicChannelData(groupIds = groupId)
+        val dynamicChannelResponse = homeRemoteDataSource.getDynamicChannelData(
+                groupIds = groupId,
+                locationParams = applicationContext?.let {
+                    ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: "")
         val homeChannelData = HomeChannelData(dynamicChannelResponse.dynamicHomeChannel)
 
         return homeDynamicChannelDataMapper.mapToDynamicChannelDataModel(
@@ -340,7 +371,11 @@ class HomeRevampRepositoryImpl @Inject constructor(
     }
 
     private suspend fun processFullPageDynamicChannel(homeDataResponse: HomeData?): HomeData? {
-        var dynamicChannelCompleteResponse = homeRemoteDataSource.getDynamicChannelData(numOfChannel = 0, token = homeDataResponse?.token?:"")
+        var dynamicChannelCompleteResponse = homeRemoteDataSource.getDynamicChannelData(
+                numOfChannel = 0,
+                token = homeDataResponse?.token?:"",
+                locationParams = applicationContext?.let {
+                    ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: "")
         val currentChannelList = homeDataResponse?.dynamicHomeChannel?.channels?.toMutableList()?: mutableListOf()
         currentChannelList.addAll(dynamicChannelCompleteResponse.dynamicHomeChannel.channels)
 

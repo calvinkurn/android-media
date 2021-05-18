@@ -4,7 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatlist.domain.mapper.GetChatListMessageMapper
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -12,13 +12,13 @@ import kotlin.coroutines.CoroutineContext
 open class GetChatListMessageUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatListPojo>,
         private val mapper: GetChatListMessageMapper,
-        private var dispatchers: TopchatCoroutineContextProvider
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
     var hasNext = false
     var job: Job? = null
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     open fun getChatList(
             page: Int,
@@ -27,7 +27,7 @@ open class GetChatListMessageUseCase @Inject constructor(
             onSuccess: (ChatListPojo, List<String>, List<String>) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        job = launchCatchError(dispatchers.IO,
+        job = launchCatchError(dispatchers.io,
                 {
                     val params = generateParams(page, filter, tab)
                     val response = gqlUseCase.apply {
@@ -39,12 +39,12 @@ open class GetChatListMessageUseCase @Inject constructor(
                     mapper.convertStrTimestampToLong(response)
                     val pinnedChatMsgId = mapper.mapPinChat(response, page)
                     val unPinnedChatMsgId = mapper.mapUnpinChat(response)
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onSuccess(response, pinnedChatMsgId, unPinnedChatMsgId)
                     }
                 },
                 {
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onError(it)
                     }
                 }

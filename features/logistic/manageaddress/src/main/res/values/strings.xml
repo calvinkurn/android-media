@@ -3,7 +3,9 @@
 
     <!--Manage Address-->
     <string name="address_name">Rumah</string>
+    <string name="image_desc">imageDesc</string>
     <string name="address_label">Alamat Utama</string>
+    <string name="address_label_new">Utama</string>
     <string name="receiver_name">Nama</string>
     <string name="receiver_number">0821112233445</string>
     <string name="address_detail">Detail Alamat</string>
@@ -14,6 +16,7 @@
     <string name="label_manage_address">Daftar Alamat</string>
     <string name="daftar_alamat">Daftar Alamat</string>
     <string name="tambah_alamat">Tambah Alamat</string>
+    <string name="pilih_alamat">Pilih Alamat</string>
 
     <string name="title_empty_address">Belum ada alamat yang terdaftar</string>
     <string name="text_empty_address">Tambah alamat untuk pengiriman pesananmu. Bisa daftarkan lebih dari satu alamat, lho.</string>
@@ -23,6 +26,10 @@
 
     <string name="tokopedia_note_delimeter">[Tokopedia Note:</string>
     <string name="ubah_alamat">Ubah Alamat</string>
+
+    <string name="set_default_address">Jadikan Alamat Utama</string>
+    <string name="set_default_choose_address">Jadikan Alamat Utama &amp; Pilih</string>
+    <string name="delete_address">Hapus Alamat</string>
 
     <!--Checkout Address-->
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
@@ -39,5 +46,80 @@
     <string name="content_desc_button_tkpd_corner">button tokopedia corner</string>
     <string name="content_desc_tv_button_add_new_address">button tambah alamat</string>
 
+    <!--Shop Location-->
+    <string name="shop_name">Kopi Kenangan Official</string>
+    <string name="shop_address_detail">Jalan jalan cakep</string>
+    <string name="shop_address_city">Jakarta Selatan</string>
+    <string name="shop_address_zipcode">14045</string>
+    <string name="shop_label">Aktif</string>
+    <string name="title_main_address">Lokasi utama tidak bisa dinonaktifkan</string>
+    <string name="main_address_info">Lokasi utama tokomu akan jadi acuan ongkir bagi pembeli yang belum mengatur alamat, sehingga tidak bisa dinonaktifkan.</string>
+    <string name="title_deactivate_location">Nonaktifkan lokasi toko blabla?</string>
+    <string name="deactivate_location">Nonaktifkan Lokasi</string>
+    <string name="activate_location">Aktifkan Lokasi</string>
+    <string name="text_deactivate_success">Lokasi %1$s dinonaktifkan</string>
+    <string name="text_activate_success">Lokasi %1$s berhasil diaktifkan</string>
+    <string name="shop_active">Aktif</string>
+    <string name="shop_inactive">Tidak Aktif</string>
+    <string name="deactivate_info_one">Stok di lokasi ini tidak akan ditampilkan ke pembeli atau dinonaktifkan sementara</string>
+    <string name="deactivate_info_two">Pesanan yang sudah masukke lokasi ini akan tetap diproses</string>
+    <string name="ticker_main_info">Jika ingin nonaktifkan semua lokasi toko, kamu bisa atur jadwal buka-tutup toko di tab informasi</string>
+    <string name="text_deactivate_confirmation">Nonaktifkan lokasi toko %1$s?</string>
+    <string name="general_ticker_link">&lt;a href="#"&gt; Selengkapnya&lt;/a&gt;</string>
+
+    <string name="ticker_info_selengkapnya">
+        <![CDATA[
+        <html>
+        <body>
+        <a href=""><span style="color: green;">#ticker_label</span></a>
+        </body>
+        </html>
+        ]]>
+    </string>
+
+    <!--Shop Location Old-->
+    <string name="shop_settings_manage_address">Lokasi</string>
+    <string name="shop_settings_add_address">Tambah Lokasi</string>
+    <string name="shop_address_line_2_placeholder">%1$s, %2$s, %3$s, %4$d</string>
+    <string name="shop_settings_edit_address">Ubah Lokasi</string>
+    <string name="title_shop_settings_empty_address">Toko Anda belum memiliki Lokasi</string>
+    <string name="content_shop_settings_empty_address">Tambah Alamat Kontak agar toko lebih terpercaya &amp; mudah dihubungi</string>
+    <string name="button_shop_settings_empty_address">Tambah Lokasi</string>
+    <string name="success_delete_shop_address">Lokasi berhasil dihapus</string>
+    <string name="error_max_shop_address">Anda hanya dapat menambahkan sampai 3 alamat</string>
+    <string name="title_dialog_delete_shop_address">Hapus Lokasi</string>
+    <string name="desc_dialog_delete_shop_address">Hapus lokasi “%1$s”?</string>
+    <string name="action_delete">Hapus</string>
+    <string name="action_cancel">Batal</string>
+    <string name="success_add_address">Berhasil menambahkan Lokasi</string>
+    <string name="success_edit_address">Lokasi berhasil diperbaharui</string>
+    <string name="shop_address_name_required">Label Lokasi harus diisi</string>
+    <string name="shop_address_name_max_length_error">Label Lokasi maks 128 kata</string>
+    <string name="shop_address_required">Alamat Toko harus diisi</string>
+    <string name="shop_district_required">Kota/Kecamatan harus diisi</string>
+    <string name="shop_postal_code_required">Tulis Kode Pos</string>
+    <string name="shop_email_invalid">Format Email invalid</string>
+    <string name="header_list_postal_code">Silakan ketik kode pos Anda jika tidak tercantum di sini</string>
+    <string name="title_retry">Ulangi</string>
+    <string name="shop_address_label_name">Label Lokasi</string>
+    <string name="shop_address_name_placeholder">Nama Toko Fisik</string>
+    <string name="shop_address_label_address">Alamat Toko</string>
+    <string name="shop_address_placeholder">Tulis nama perumahan/komplek/gedung, jalan, blok, dan nomor</string>
+    <string name="shop_address_label_district">Kota atau Kecamatan</string>
+    <string name="shop_address_district_placeholder">Tulis kota/kecamatan toko</string>
+    <string name="shop_address_label_postal_code">Kode Pos</string>
+    <string name="shop_address_postal_code_placeholder">5 digit kode pos</string>
+    <string name="shop_address_label_phone">No. Telepon</string>
+    <string name="shop_address_phone_placeholder">Contoh: 081234567890</string>
+    <string name="shop_address_label_email">Email</string>
+    <string name="shop_address_email_placeholder">Tulis email toko</string>
+    <string name="shop_address_label_fax">Fax</string>
+    <string name="shop_address_fax_placeholder">Tulis fax toko</string>
+    <string name="title_action_add_address">Tambah Alamat</string>
+    <string name="txt_error_no_access">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
+    <string name="ubah_detail_lokasi">Ubah Detail Lokasi</string>
+    <string name="btn_mengerti">Mengerti</string>
+    <string name="btn_kembali">Kembali</string>
+    <string name="btn_nonaktifkan">Nonaktifkan</string>
 
 </resources>

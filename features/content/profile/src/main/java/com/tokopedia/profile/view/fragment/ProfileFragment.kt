@@ -67,7 +67,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -96,10 +96,6 @@ import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.showcase.ShowCaseBuilder
-import com.tokopedia.showcase.ShowCaseContentPosition
-import com.tokopedia.showcase.ShowCaseDialog
-import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -298,7 +294,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onStart() {
         super.onStart()
-        profileAnalytics.sendScreen(activity!!, screenName)
+        profileAnalytics.sendScreen(requireActivity(), screenName)
     }
 
     override fun onResume() {
@@ -355,11 +351,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
-        return view!!.findViewById(R.id.recyclerView)
+        return requireView().findViewById(R.id.recyclerView)
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-        return view!!.findViewById(R.id.swipeToRefresh)
+        return requireView().findViewById(R.id.swipeToRefresh)
     }
 
     override fun onSwipeRefresh() {
@@ -592,17 +588,17 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
             if (activity != null &&
                     arguments != null &&
-                    arguments!!.getInt(PARAM_POST_ID, -1) == model.id) {
+                    requireArguments().getInt(PARAM_POST_ID, -1) == model.id) {
 
                 if (resultIntent == null) {
                     resultIntent = Intent()
-                    resultIntent!!.putExtras(arguments!!)
+                    resultIntent!!.putExtras(requireArguments())
                 }
                 resultIntent!!.putExtra(
                         PARAM_IS_LIKED,
                         if (like.isChecked) IS_LIKE_TRUE else IS_LIKE_FALSE)
                 resultIntent!!.putExtra(PARAM_TOTAL_LIKES, like.value)
-                activity!!.setResult(Activity.RESULT_OK, resultIntent)
+                requireActivity().setResult(Activity.RESULT_OK, resultIntent)
             }
         }
     }
@@ -707,7 +703,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
             if (it.isFollowed) {
-                Toaster.make(view!!, getString(R.string.follow_success_toast),
+                Toaster.make(requireView(), getString(R.string.follow_success_toast),
                         Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.follow_success_check_now), followSuccessOnClickListener(it))
             }
 
@@ -715,14 +711,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             if (activity != null && arguments != null) {
                 if (resultIntent == null) {
                     resultIntent = Intent()
-                    resultIntent!!.putExtras(arguments!!)
+                    resultIntent!!.putExtras(requireArguments())
                 }
                 resultIntent!!.putExtra(
                         ProfileActivity.PARAM_IS_FOLLOWING,
                         if (it.isFollowed) ProfileActivity.IS_FOLLOWING_TRUE
                         else ProfileActivity.IS_FOLLOWING_FALSE
                 )
-                activity!!.setResult(Activity.RESULT_OK, resultIntent)
+                requireActivity().setResult(Activity.RESULT_OK, resultIntent)
             }
         }
         if (!isOwner && footerOthers.isVisible) showFooterOthers()
@@ -739,7 +735,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             bindCurationQuota(it)
         }
 
-        Toaster.make(view!!, getString(R.string.profile_post_deleted), Snackbar.LENGTH_LONG,
+        Toaster.make(requireView(), getString(R.string.profile_post_deleted), Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL, getString(com.tokopedia.affiliatecommon.R.string.af_title_ok), View.OnClickListener {  })
         if (adapter.data.isEmpty()) {
             onSwipeRefresh()
@@ -916,8 +912,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
-        if (adapter.list[positionInFeed] is TopadsShopViewModel) {
-            val (_, dataList, _, _) = adapter.list[positionInFeed] as TopadsShopViewModel
+        if (adapter.list[positionInFeed] is TopadsShopUiModel) {
+            val (_, dataList, _, _) = adapter.list[positionInFeed] as TopadsShopUiModel
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 presenter.doTopAdsTracker(dataList[adapterPosition].shopClickUrl, shop.id, shop.name, dataList[adapterPosition].shop.imageShop.xsEcs, true)
             }
@@ -1135,7 +1131,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             userId = savedInstanceState.getInt(ProfileActivity.EXTRA_PARAM_USER_ID, 0)
         } else if (arguments != null) {
             try {
-                userId = arguments!!
+                userId = requireArguments()
                         .getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO)
                         .toInt()
             } catch (e: java.lang.NumberFormatException) {
@@ -1143,15 +1139,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
             afterPost = TextUtils.equals(
-                    arguments!!.getString(ProfileActivity.EXTRA_PARAM_AFTER_POST, ""),
+                    requireArguments().getString(ProfileActivity.EXTRA_PARAM_AFTER_POST, ""),
                     ProfileActivity.TRUE
             )
             afterEdit = TextUtils.equals(
-                    arguments!!.getString(ProfileActivity.EXTRA_PARAM_AFTER_EDIT, ""),
+                    requireArguments().getString(ProfileActivity.EXTRA_PARAM_AFTER_EDIT, ""),
                     ProfileActivity.TRUE
             )
             successPost = TextUtils.equals(
-                    arguments!!.getString(ProfileActivity.EXTRA_PARAM_SUCCESS_POST, ""),
+                    requireArguments().getString(ProfileActivity.EXTRA_PARAM_SUCCESS_POST, ""),
                     ProfileActivity.TRUE
             )
         }
@@ -1533,33 +1529,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    private fun showShowCaseDialog(view: View?) {
-        val showCaseTag = this::class.java.simpleName
-        val showCaseDialog = createShowCaseDialog()
-        val showcases = ArrayList<ShowCaseObject>()
-        showcases.add(ShowCaseObject(
-                view,
-                getString(R.string.profile_showcase_title),
-                getString(R.string.profile_showcase_description),
-                ShowCaseContentPosition.UNDEFINED))
-        showCaseDialog.show(this.activity, showCaseTag, showcases)
-    }
-
-    private fun createShowCaseDialog(): ShowCaseDialog {
-        return ShowCaseBuilder()
-                .backgroundContentColorRes(R.color.profile_showcase_black)
-                .shadowColorRes(R.color.profile_showcase_shadow)
-                .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
-                .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                .textSizeRes(com.tokopedia.design.R.dimen.sp_14)
-                .nextStringRes(com.tokopedia.affiliatecommon.R.string.af_title_ok)
-                .finishStringRes(com.tokopedia.affiliatecommon.R.string.af_title_ok)
-                .clickable(true)
-                .useArrow(true)
-                .build()
-    }
-
     private fun checkShouldChangeUsername(link: String, doIfNotChange: () -> Unit) {
         if (shouldChangeUsername()) {
             presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
@@ -1671,7 +1640,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun showError(message: String, listener: View.OnClickListener?) {
         listener?.let {
-            Toaster.make(view!!, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), it)
+            Toaster.make(requireView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), it)
         }
     }
 
@@ -1706,14 +1675,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun onSuccessReportContent() {
-        Toaster.make(view!!,
+        Toaster.make(requireView(),
                         getString(R.string.profile_feed_content_reported),
                         Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.label_close), View.OnClickListener {  })
     }
 
     private fun onErrorReportContent(errorMsg: String?) {
         errorMsg?.let {
-            Toaster.make(view!!, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+            Toaster.make(requireView(), errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.design.R.string.label_close), View.OnClickListener { })
         }
     }

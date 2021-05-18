@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.config.GlobalConfig;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -18,8 +19,8 @@ import java.util.concurrent.TimeUnit;
 
 public class FirebaseRemoteConfigImpl implements RemoteConfig {
     private static final String CACHE_NAME = "RemoteConfigDebugCache";
-    private static final long THREE_HOURS = TimeUnit.HOURS.toSeconds(3);
-    private static final long CONFIG_CACHE_EXPIRATION = THREE_HOURS;
+    private static final long THIRTY_MINUTES = TimeUnit.MINUTES.toSeconds(30);
+    private static final long CONFIG_CACHE_EXPIRATION = THIRTY_MINUTES;
 
     private FirebaseRemoteConfig firebaseRemoteConfig;
     private SharedPreferences sharedPrefs;
@@ -41,7 +42,17 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     @Override
     public Set<String> getKeysByPrefix(String prefix) {
         if (firebaseRemoteConfig != null) {
-            return firebaseRemoteConfig.getKeysByPrefix(prefix);
+            Set<String> set = firebaseRemoteConfig.getKeysByPrefix(prefix);
+            if (isDebug()) {
+                Map<String, ?> map = sharedPrefs.getAll();
+                String key = "";
+                for (Map.Entry<String,?> entry : map.entrySet())
+                    key = entry.getKey();
+                    if (key.startsWith(prefix)){
+                        set.add(key);
+                    }
+            }
+            return set;
         }
 
         return null;
@@ -94,6 +105,14 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
     @Override
     public double getDouble(String key, double defaultValue) {
+        if (isDebug()) {
+            String cachedValue = sharedPrefs.getString(key, null);
+
+            if (cachedValue != null) {
+                return Double.parseDouble(cachedValue);
+            }
+        }
+
         if (firebaseRemoteConfig != null) {
             return firebaseRemoteConfig.getDouble(key);
         }

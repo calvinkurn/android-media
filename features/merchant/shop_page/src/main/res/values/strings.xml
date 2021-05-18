@@ -1,6 +1,7 @@
 <resources>
 
     <string name="shop_page_label_authorized">Authorized</string>
+    <string name="shop_page_label_new_icon_tab">BARU</string>
 
     <string name="shop_page_label_reputation">Reputasi</string>
     <string name="shop_page_label_product_quality">Kualitas Produk</string>
@@ -55,6 +56,7 @@
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_title_tab_product">Produk</string>
     <string name="new_shop_info_title_tab_product">Product</string>
+    <string name="shop_info_title_tab_showcase">Etalase</string>
     <string name="shop_info_title_tab_home">Home</string>
     <string name="shop_info_title_tab_info">Info</string>
     <string name="shop_info_title_tab_review">Review</string>
@@ -215,6 +217,9 @@
     <string name="new_shop_page_header_shop_close_title_seller">Toko Anda Sedang Tutup</string>
     <string name="new_shop_page_header_shop_close_description_buyer_clickable_text">Help Center</string>
     <string name="new_shop_page_header_shop_close_description_seller_clickable_text">Buka Toko</string>
+    <string name="shop_page_choose_address_widget_coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
+    <string name="shop_page_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
+
 
     <!-- shop new info -->
     <string name="shop_page_setting_title">Toko Kamu</string>
@@ -240,7 +245,7 @@
     <string name="shop_page_setting_action_get_tips">Dapatkan tips berjualan dan informasi penting</string>
     <!-- shipping -->
     <string name="shop_page_setting_shipping">Lokasi dan Pengiriman</string>
-    <string name="shop_page_setting_action_edit_location">Tambah dan ubah lokasi toko</string>
+    <string name="shop_page_setting_action_edit_location">Lokasi toko</string>
     <string name="shop_page_setting_action_manage_shipping_service">Atur layanan pengiriman</string>
     <string name="video_component_tag">video_container</string>
     <string name="close_youtube">Close</string>
@@ -275,6 +280,7 @@
     <string name="menu_delete">Hapus</string>
     <string name="close_reply">Tutup Balasan</string>
     <string name="menu_report">Laporkan</string>
+    <string name="shop_page_setting_no_access_error">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
 
     <string name="shop_home_npl_remind_me">Ingatkan</string>
     <string name="shop_home_npl_campaign_follow">Follow Toko</string>
@@ -290,6 +296,13 @@
     <string name="follow_button_label">Follow</string>
     <string name="follow_button_label_npl">Follow Toko</string>
 
+    <!-- Shop Operational Hour -->
+    <string name="shop_ops_hour_bottomsheet_title">Jam Operasional</string>
+    <string name="shop_ops_hour_bottomsheet_description">Pesanan yang lewat dari jam operasional akan diproses saat toko beroperasi kembali.</string>
+    <string name="shop_ops_hour_datetime_format_text">Jam %1$s - %2$s WIB</string>
+    <string name="shop_ops_hour_datetime_format_24_hours_text">Buka 24 Jam</string>
+    <string name="shop_ops_hour_datetime_format_holiday_text">Libur</string>
+
     <!-- shop share -->
     <string name="shop_page_share_to_social_media_text">Bagikan ke media sosial</string>
     <string name="shop_page_share_copy_link">Copy Link</string>
@@ -302,6 +315,7 @@
     <string name="shop_page_share_action_more">Lainnya</string>
     <string name="shop_page_share_action_copy_success">Teks berhasil disalin</string>
     <string name="shop_page_share_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
+    <string name="label_close">Tutup</string>
 
     <!-- content description shop page -->
     <string name="content_desc_shop_page_main_profile_image">image gambar toko</string>
@@ -314,5 +328,11 @@
     <string name="content_desc_tvSeeAll">text lihat semua</string>
     <string name="content_desc_button_chat">button chat</string>
     <string name="content_desc_shop_home_get_failed_reload_image">Reload Image</string>
+    <string name="content_desc_icon_chevron">Icon Chevron</string>
+
+    <!-- shop page showcase tab -->
+    <string name="shop_page_showcase_featured_text">Etalase Unggulan</string>
+    <string name="shop_page_showcase_all_text">Semua Etalase</string>
+    <string name="shop_page_showcase_featured_product_count_text">%1$s Produk</string>
 
 </resources>

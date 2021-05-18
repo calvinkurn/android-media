@@ -27,6 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.libraries.screenRecorder)
+    implementation project(rootProject.ext.libraries.deviceFingerprint)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)

@@ -26,6 +26,7 @@
         android:layout="@layout/view_stub_dc_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_1"
         android:layout_marginStart="@dimen/home_component_margin_default"
         android:layout_marginLeft="@dimen/home_component_margin_default"
         android:visibility="gone"

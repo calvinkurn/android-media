@@ -1,6 +1,8 @@
 package com.tokopedia.atc_common.domain.usecase
 
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
+import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper.Companion.PARAM_KEY_CHOSEN_ADDRESS
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
@@ -19,7 +21,8 @@ import javax.inject.Named
 
 class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val queryString: String,
                                            private val graphqlUseCase: GraphqlUseCase,
-                                           private val addToCartDataMapper: AddToCartDataMapper) : UseCase<AddToCartDataModel>() {
+                                           private val addToCartDataMapper: AddToCartDataMapper,
+                                           private val chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper) : UseCase<AddToCartDataModel>() {
 
     companion object {
         const val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST"
@@ -61,7 +64,7 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         }
     }
 
-    private fun getParams(addToCartRequestParams: AddToCartRequestParams): Map<String, Any> {
+    private fun getParams(addToCartRequestParams: AddToCartRequestParams): Map<String, Any?> {
         return mapOf(
                 PARAM_ATC to mapOf(
                         PARAM_PRODUCT_ID to addToCartRequestParams.productId,
@@ -74,7 +77,8 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
                         PARAM_UC_PARAMS to addToCartRequestParams.ucParams,
                         PARAM_WAREHOUSE_ID to addToCartRequestParams.warehouseId,
                         PARAM_ATC_FROM_EXTERNAL_SOURCE to addToCartRequestParams.atcFromExternalSource,
-                        PARAM_IS_SCP to addToCartRequestParams.isSCP
+                        PARAM_IS_SCP to addToCartRequestParams.isSCP,
+                        PARAM_KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
                 )
         )
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.home_wishlist.model.entity
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
@@ -63,7 +64,8 @@ data class WishlistItem(
     val imageUrl: String = "",
     @SerializedName("raw_price")
     @Expose
-    val rawPrice: Int = -1,
+    @SuppressLint("Invalid Data Type")
+    val rawPrice: String = "",
     @SerializedName("condition")
     @Expose
     val condition: String = "",
@@ -75,6 +77,7 @@ data class WishlistItem(
     val status: Boolean = false,
     @SerializedName("price")
     @Expose
+    @SuppressLint("Invalid Data Type")
     val price: String  = "",
     @SerializedName("category_breadcrumb")
     @Expose
@@ -93,10 +96,8 @@ data class WishlistItem(
     val discountPercentage: Int = 0,
     @SerializedName("slash_price")
     @Expose
+    @SuppressLint("Invalid Data Type")
     val slashPrice: String = "",
-    @SerializedName("wholesale_price")
-    @Expose
-    val wholesalePrice: List<WholesalePrice> = listOf(),
     @SerializedName("shop")
     @Expose
     val shop: Shop = Shop(),
@@ -111,14 +112,17 @@ data class WishlistItem(
     val labels: List<LabelGroup> = listOf(),
     @SerializedName("free_ongkir")
     @Expose
-    val freeOngkir: FreeOngkir = FreeOngkir()
+    val freeOngkir: FreeOngkir = FreeOngkir(),
+    @SerializedName("free_ongkir_extra")
+    @Expose
+    val freeOngkirExtra: FreeOngkir = FreeOngkir()
 ) : ImpressHolder(){
     override fun equals(other: Any?): Boolean {
         return other is WishlistItem &&
                 id == other.id && name == other.name && imageUrl == other.imageUrl && url == other.url && rawPrice == other.rawPrice &&
                 condition == other.condition && available == other.available && status == other.status && price == other.price &&
-                minimumOrder == other.minimumOrder && wholesalePrice == other.wholesalePrice && shop == other.shop && preorder == other.preorder &&
-                badges.count() == badges.count() && labels.count() == labels.count() && freeOngkir == freeOngkir
+                minimumOrder == other.minimumOrder && shop == other.shop && preorder == other.preorder &&
+                badges.count() == badges.count() && labels.count() == labels.count() && freeOngkir == freeOngkir && freeOngkirExtra == freeOngkirExtra
     }
 
     override fun hashCode(): Int {
@@ -126,18 +130,18 @@ data class WishlistItem(
         result = HASH_CODE * result + name.hashCode()
         result = HASH_CODE * result + url.hashCode()
         result = HASH_CODE * result + imageUrl.hashCode()
-        result = HASH_CODE * result + rawPrice
+        result = HASH_CODE * result + rawPrice.hashCode()
         result = HASH_CODE * result + condition.hashCode()
         result = HASH_CODE * result + available.hashCode()
         result = HASH_CODE * result + status.hashCode()
         result = HASH_CODE * result + price.hashCode()
         result = HASH_CODE * result + minimumOrder
-        result = HASH_CODE * result + wholesalePrice.hashCode()
         result = HASH_CODE * result + shop.hashCode()
         result = HASH_CODE * result + preorder.hashCode()
         result = HASH_CODE * result + badges.hashCode()
         result = HASH_CODE * result + labels.hashCode()
         result = HASH_CODE * result + freeOngkir.hashCode()
+        result = HASH_CODE * result + freeOngkirExtra.hashCode()
         return result
     }
 
@@ -187,18 +191,6 @@ data class Shop (
                 location == other.location
     }
 }
-
-data class WholesalePrice (
-    @SerializedName("minimum")
-    @Expose
-    val minimum: Integer,
-    @SerializedName("maximum")
-    @Expose
-    val maximum: Integer,
-    @SerializedName("price")
-    @Expose
-    val price: Integer
-)
 
 data class Wishlist (
     @SerializedName("has_next_page")

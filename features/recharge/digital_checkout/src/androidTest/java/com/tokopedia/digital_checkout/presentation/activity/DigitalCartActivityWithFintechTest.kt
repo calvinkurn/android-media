@@ -6,7 +6,9 @@ import android.content.Intent
 import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -20,6 +22,9 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_checkout.R
 import com.tokopedia.digital_checkout.utils.CustomActionUtils
+import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
+import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -57,6 +62,7 @@ class DigitalCartActivityWithFintechTest {
         validateCartInfoOnUi()
         validateSubscriptionWidgetUi()
         validateFintechWidgetOnUi()
+        validateCheckoutSummaryOnUi()
         validateOnClickPromoView()
         validatePaymentPrice()
 
@@ -82,6 +88,7 @@ class DigitalCartActivityWithFintechTest {
             passData.operatorId = "5"
             passData.productId = "30"
             passData.isPromo = "0"
+            passData.isFromPDP = true
             passData.needGetCart = true
             passData.instantCheckout = "0"
             passData.idemPotencyKey = "17211378_d44feedc9f7138c1fd91015d5bd88810"
@@ -185,10 +192,44 @@ class DigitalCartActivityWithFintechTest {
 
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(not(isChecked())))
-        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 12.500")))
+
+        onView(withId(R.id.contentCheckout)).perform(ViewActions.swipeUp())
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp12.500")))
         Thread.sleep(1000)
+    }
+
+    private fun validateCheckoutSummaryOnUi() {
+        onView(withId(R.id.tvCheckoutSummaryTitle)).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("Subtotal Tagihan"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("emoney"))).check(doesNotExist())
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp12.500"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp500"))).check(doesNotExist())
+
+        // check fintech product
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).perform(click())
         onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 1)).check(matches(isChecked()))
+
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).check(matches(isChecked()))
+
+        onView(withId(R.id.contentCheckout)).perform(ViewActions.swipeUp())
+
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("egold"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp500"))).check(matches(isDisplayed()))
+
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailLabel), withText("emoney"))).check(matches(isDisplayed()))
+        onView(AllOf.allOf(withId(R.id.tvCheckoutSummaryDetailValue), withText("Rp1.000"))).check(matches(isDisplayed()))
+
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp14.000")))
+
+        //untick and tick tebus murah
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).check(matches(isNotChecked()))
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp13.000")))
+
+        Thread.sleep(1000)
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).perform(click())
+        onView(getElementFromMatchAtPosition(withId(R.id.checkBoxCheckoutMyBills), 2)).check(matches(isChecked()))
     }
 
     @After
@@ -201,15 +242,34 @@ class DigitalCartActivityWithFintechTest {
         //click use promo
         Thread.sleep(1000)
 
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        val dummyPromoDescription = "dummyDescription"
+        val dummyPromoTitle = "Promo Code dummy"
+        val mockIntentData = Intent().apply {
+            putExtra(EXTRA_PROMO_DATA, PromoData(state = TickerCheckoutView.State.ACTIVE,
+                    amount = 1000, promoCode = "dummyPromoCode", description = dummyPromoDescription,
+                    title = dummyPromoTitle))
+        }
+
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, mockIntentData))
         onView(AllOf.allOf(withId(R.id.digitalPromoBtnView))).perform(click())
+        Thread.sleep(1000)
+
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp13.000")))
+
+        onView(withId(R.id.tv_promo_checkout_title)).check(matches(isDisplayed()))
+        onView(withId(R.id.tv_promo_checkout_title)).check(matches(withText(dummyPromoTitle)))
+        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(isDisplayed()))
+        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(withText(dummyPromoDescription)))
+
+        onView(withId(R.id.iv_promo_checkout_right)).perform(click())
+        Thread.sleep(1000)
     }
 
     private fun validatePaymentPrice() {
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(isDisplayed()))
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(withText("Total Tagihan")))
         onView(withId(R.id.tvTotalPayment)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp 13.000")))
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp14.000")))
     }
 
     companion object {

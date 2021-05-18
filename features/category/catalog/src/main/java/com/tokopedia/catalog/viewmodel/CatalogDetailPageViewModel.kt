@@ -2,37 +2,30 @@ package com.tokopedia.catalog.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.catalog.model.ProductCatalogResponse
-import com.tokopedia.catalog.usecase.GetProductCatalogOneUseCase
+import androidx.lifecycle.viewModelScope
+import com.tokopedia.catalog.model.datamodel.CatalogDetailDataModel
+import com.tokopedia.catalog.usecase.detail.CatalogDetailUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import rx.Subscriber
 import javax.inject.Inject
 
-class CatalogDetailPageViewModel @Inject constructor(var getProductCatalogOneUseCase: GetProductCatalogOneUseCase) : ViewModel() {
+class CatalogDetailPageViewModel @Inject constructor(private var catalogDetailUseCase: CatalogDetailUseCase) : ViewModel() {
 
-    private val productCatalogResponse = MutableLiveData<Result<ProductCatalogResponse>>()
+    private val catalogDetailDataModel = MutableLiveData<Result<CatalogDetailDataModel>>()
 
     fun getProductCatalog(catalogId: String) {
-        getProductCatalogOneUseCase.execute(getProductCatalogOneUseCase.createRequestParams(catalogId), object : Subscriber<ProductCatalogResponse>() {
-            override fun onNext(t: ProductCatalogResponse?) {
-                productCatalogResponse.value = Success((t as ProductCatalogResponse))
-            }
-
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable) {
-                productCatalogResponse.value = Fail(e)
-            }
-
-        })
-
+        viewModelScope.launchCatchError(
+                block = {
+                    catalogDetailUseCase.getCatalogDetail(catalogId,catalogDetailDataModel)
+                },
+                onError = {
+                    catalogDetailDataModel.value = Fail(it)
+                }
+        )
     }
 
-    fun getProductCatalogResponse(): MutableLiveData<Result<ProductCatalogResponse>> {
-        return productCatalogResponse
+    fun getCatalogResponseData(): MutableLiveData<Result<CatalogDetailDataModel>> {
+        return catalogDetailDataModel
     }
-
 }

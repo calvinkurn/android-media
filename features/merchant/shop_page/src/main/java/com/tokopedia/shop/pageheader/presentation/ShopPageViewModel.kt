@@ -13,10 +13,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.UserNotLoginException
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -40,7 +39,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
+import com.tokopedia.shop.common.domain.GetShopReputationUseCase
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
@@ -86,13 +85,8 @@ class ShopPageViewModel @Inject constructor(
         private val shopRequestUnmoderateUseCase: Lazy<ShopRequestUnmoderateUseCase>,
         private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
         private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
-        private val firebaseRemoteConfig: RemoteConfig,
         private val dispatcherProvider: CoroutineDispatchers)
     : BaseViewModel(dispatcherProvider.main) {
-
-    companion object {
-        private const val DATA_NOT_FOUND = "Data not found"
-    }
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 
@@ -146,7 +140,8 @@ class ShopPageViewModel @Inject constructor(
             shopProductFilterParameter: ShopProductFilterParameter,
             keyword: String,
             etalaseId: String,
-            isRefresh: Boolean
+            isRefresh: Boolean,
+            widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
@@ -172,7 +167,7 @@ class ShopPageViewModel @Inject constructor(
                                 shopProductFilterParameter,
                                 keyword,
                                 etalaseId,
-                                isRefresh
+                                widgetUserAddressLocalData
                         )
                     },
                     onError = {
@@ -205,15 +200,9 @@ class ShopPageViewModel @Inject constructor(
             shopProductFilterParameter: ShopProductFilterParameter,
             keyword: String,
             etalaseId: String,
-            isRefresh: Boolean
+            widgetUserAddressLocalData: LocalCacheModel
     ): ShopProduct.GetShopProduct {
         val useCase = getShopProductListUseCase.get()
-        val isDisableProductListCache = firebaseRemoteConfig.getBoolean(
-                DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST,
-                false
-        )
-        useCase.isFromCacheFirst = (!isRefresh).takeIf { !isDisableProductListCache } ?: false
-        useCase.cacheTime = TEN_MINUTE_MS
         useCase.params = GqlGetShopProductUseCase.createParams(
                 shopId,
                 ShopProductFilterInput().apply {
@@ -225,6 +214,10 @@ class ShopPageViewModel @Inject constructor(
                     rating = shopProductFilterParameter.getRating()
                     pmax = shopProductFilterParameter.getPmax()
                     pmin = shopProductFilterParameter.getPmin()
+                    userDistrictId = widgetUserAddressLocalData.district_id
+                    userCityId = widgetUserAddressLocalData.city_id
+                    userLat = widgetUserAddressLocalData.lat
+                    userLong = widgetUserAddressLocalData.long
                 }
         )
         return useCase.executeOnBackground()

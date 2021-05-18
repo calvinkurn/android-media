@@ -15,14 +15,38 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class GqlGetIsShopPmUseCase @Inject constructor(
-        @Named(GQLQueryNamedConstant.GET_IS_POWER_MERCHANT)
-        private var gqlQuery: String,
         private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<GetIsShopPowerMerchant>() {
 
     companion object {
         private const val PARAM_SHOP_ID = "shopID"
         private const val PARAM_INCLUDE_OS = "includeOS"
+        const val QUERY = """
+              query goldGetPMOSStatus(${'$'}shopID: Int!, ${'$'}includeOS: Boolean!){
+                  goldGetPMOSStatus(
+                    shopID: ${'$'}shopID,
+                    includeOS: ${'$'}includeOS){
+                    header{
+                      process_time
+                      messages
+                      reason
+                      error_code
+                    }
+                    data{
+                      shopID
+                      power_merchant {
+                        status
+                        auto_extend{
+                          status
+                          tkpd_product_id
+                        }
+                        expired_time
+                        shop_popup
+                      }
+                    }
+                  }
+                }
+        """
         @JvmStatic
         fun createParams(shopId: Int): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_ID, shopId)
@@ -33,7 +57,7 @@ class GqlGetIsShopPmUseCase @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
     var isFromCacheFirst: Boolean = true
     val request by lazy {
-        GraphqlRequest(gqlQuery, GetIsShopPowerMerchant.Response::class.java, params.parameters)
+        GraphqlRequest(QUERY, GetIsShopPowerMerchant.Response::class.java, params.parameters)
     }
 
     override suspend fun executeOnBackground(): GetIsShopPowerMerchant {

@@ -7,32 +7,38 @@ package com.tokopedia.digital_checkout.utils.analytics
 object DigitalCheckoutTrackingConst {
     object Event {
         const val CLICK_COUPON = "clickCoupon"
-        const val ADD_TO_CART = "addToCart"
         const val CHECKOUT = "checkout"
         const val CLICK_CHECKOUT = "clickCheckout"
+        const val PRODUCT_VIEW = "productView"
+        const val PRODUCT_CLICK = "productClick"
+        const val DIGITAL_GENERAL_EVENT = "digitalGeneralEvent"
     }
 
     object Category {
         const val DIGITAL_CHECKOUT = "digital - checkout"
         const val DIGITAL_CHECKOUT_PAGE = "digital - checkout page"
-        const val DIGITAL_NATIVE = "digital - native"
-        const val HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget"
     }
 
     object Action {
         const val CLICK_CANCEL_APPLY_COUPON = "click x on ticker"
-        const val CLICK_BELI = "click beli"
         const val VIEW_CHECKOUT = "view checkout"
         const val CLICK_PROCEED_PAYMENT = "click proceed to payment"
+        const val CLICK_PROCEED_PAYMENT_CROSSELL = "click proceed to payment crossell"
+        const val CLICK_PROCEED_PAYMENT_TEBUS_MURAH = "click proceed to payment - tebus murah"
         const val CLICK_PROMO = "click promo button"
         const val CLICK_USE_COUPON = "click gunakan kode promo atau kupon"
 
         const val TICK_AUTODEBIT = "tick auto debit"
-        const val TICK_CROSSSELL = "tick cross sell"
-        const val TICK_PROTECTION = "tick protection"
+        const val TICK_CROSSSELL = "click crossell ticker"
+        const val UNTICK_CROSSSELL = "uncheck crossell ticker"
         const val UNTICK_AUTODEBIT = "untick auto debit"
-        const val UNTICK_CROSSSELL = "untick cross sell"
-        const val UNTICK_PROTECTION = "untick protection"
+
+        const val IMPRESSION_TEBUS_MURAH_ICON = "impression tebus murah icon"
+        const val CLICK_TEBUS_MURAH_ICON = "click tebus murah icon"
+        const val UNCHECK_TEBUS_MURAH_ICON = "uncheck tebus murah icon"
+
+
+        const val IMPRESSION_CROSSELL_ICON = "impression crossell icon"
     }
 
     object Label {
@@ -42,27 +48,29 @@ object DigitalCheckoutTrackingConst {
         const val PRODUCTS = "products"
         const val CURRENTSITE = "currentSite"
         const val BUSINESS_UNIT = "businessUnit"
-        const val ADD = "add"
 
         const val USER_ID = "userId"
+        const val IMPRESSIONS = "impressions"
+        const val CLICK = "click"
     }
 
     object Value {
         const val RECHARGE_BU = "recharge"
         const val SITE = "tokopediadigital"
+        const val RECHARGE_SITE = "tokopediadigitalRecharge"
 
         const val NO_PROMO = "no promo"
         const val PROMO = "no promo"
 
-        const val INSTANT = "instant"
-        const val NON_INSTANT = "non instant"
-
         const val NONE = "none"
+        const val CROSSELL_CARD_TYPE = "crossell icon"
     }
 
     object Misc {
         const val ACTION_FIELD_STEP1 = "cart page loaded"
         const val ACTION_FIELD_STEP2 = "click payment option button"
+
+        const val ACTION_FIELD_STEP2_TEBUS_MURAH = "click proceed to payment"
     }
 
     object CurrencyCode {
@@ -73,8 +81,10 @@ object DigitalCheckoutTrackingConst {
     object Product {
         const val KEY_NAME = "name"
         const val KEY_ID = "id"
+        const val KEY_LIST = "list"
         const val KEY_PRICE = "price"
         const val KEY_BRAND = "brand"
+        const val KEY_POSITION = "position"
         const val KEY_CATEGORY = "category"
         const val KEY_VARIANT = "variant"
         const val KEY_QUANTITY = "quantity"

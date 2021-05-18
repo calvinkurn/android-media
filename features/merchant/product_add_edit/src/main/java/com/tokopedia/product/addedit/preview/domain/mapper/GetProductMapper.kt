@@ -61,6 +61,7 @@ class GetProductMapper @Inject constructor() {
     private fun mapProductVariants(products: List<ProductVariant>): ArrayList<ProductVariantInputModel> {
         val variantCombination = products.map {
             ProductVariantInputModel(
+                    it.id,
                     it.combination,
                     mapVariantPictureInputModel(it.pictures),
                     it.price,

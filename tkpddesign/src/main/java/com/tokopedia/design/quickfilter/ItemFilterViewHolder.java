@@ -48,13 +48,13 @@ public class ItemFilterViewHolder extends BaseItemFilterViewHolder {
         GradientDrawable drawableInside = (GradientDrawable) layoutInside.getBackground().getCurrent().mutate();
         GradientDrawable drawableBorder = (GradientDrawable) layoutBorder.getBackground().getCurrent().mutate();
         if (selected) {
-            drawableBorder.setColor(ContextCompat.getColor(layoutBorder.getContext(), R.color.tkpd_main_green));
-            drawableInside.setColor(ContextCompat.getColor(layoutInside.getContext(), R.color.light_green));
-            filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), R.color.tkpd_main_green));
+            drawableBorder.setColor(ContextCompat.getColor(layoutBorder.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500));
+            drawableInside.setColor(ContextCompat.getColor(layoutInside.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G100));
+            filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500));
         } else {
-            drawableBorder.setColor(ContextCompat.getColor(layoutBorder.getContext(), R.color.grey_300));
+            drawableBorder.setColor(ContextCompat.getColor(layoutBorder.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N100));
             drawableInside.setColor(ContextCompat.getColor(layoutInside.getContext(), R.color.Unify_N0));
-            filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), R.color.font_black_primary_70));
+            filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         }
     }
 }

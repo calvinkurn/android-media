@@ -22,6 +22,7 @@ data class AnnouncementWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
+        override var isNeedToBeRemoved: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<AnnouncementDataUiModel> {
 
@@ -30,6 +31,10 @@ data class AnnouncementWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<AnnouncementDataUiModel> {
-        return AnnouncementWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+        return AnnouncementWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+    }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<AnnouncementDataUiModel>): Boolean {
+        return dataKey != other.dataKey
     }
 }

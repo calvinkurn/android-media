@@ -13,6 +13,8 @@ import android.util.DisplayMetrics
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
+import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,7 +36,7 @@ const val LABEL_PRODUCT_STATUS = "status"
 const val LABEL_PRICE = "price"
 const val PDP_APPLINK = "tokopedia://product/"
 const val TIME_DISPLAY_FORMAT = "%1$02d"
-const val DEFAULT_TIME_DATA : Long = 0
+const val DEFAULT_TIME_DATA: Long = 0
 
 class Utils {
 
@@ -46,6 +48,8 @@ class Utils {
         const val DEFAULT_BANNER_HEIGHT = 150
         const val BANNER_SUBSCRIPTION_DEFAULT_STATUS = -1
         const val SEARCH_DEEPLINK = "tokopedia://search-autocomplete"
+        const val CART_CACHE_NAME = "CART"
+        const val CART_TOTAL_CACHE_KEY = "CACHE_TOTAL_CART"
         private const val SERIBU = 1000
         private const val SEJUTA = 1000000
         private const val SEMILIAR = 1000000000
@@ -67,7 +71,21 @@ class Utils {
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
             val uri = Uri.parse(url)
-            return uri?.getQueryParameter(dimension)?.toInt()
+
+            try {
+                return uri?.getQueryParameter(dimension)?.toInt()
+            } catch (e: Exception) {
+                //Added temp fix for disco to handled in invlaid url from backend
+
+                try {
+                    val newUrl = uri?.getQueryParameter(dimension)?.replace("[^-?0-9]+".toRegex(), " ")?.replace("?", "")
+                    val parts = newUrl?.trim()?.split(" ")
+                    return parts?.get(0)?.toInt()
+                } catch (e: Exception) {
+                }
+            }
+
+            return 1;
         }
 
         fun shareData(context: Context?, shareTxt: String?, productUri: String?) {
@@ -105,6 +123,8 @@ class Utils {
                         userId: String? = "0",
                         addCountFilters: Boolean = false): Map<String, Any> {
             val queryParameterMap = mutableMapOf<String, Any>()
+            val component = getComponent(componentId, pageIdentifier)
+
             queryParameterMap[IDENTIFIER] = pageIdentifier
             queryParameterMap[DEVICE] = DEVICE_VALUE
             queryParameterMap[COMPONENT_ID] = componentId
@@ -112,6 +132,9 @@ class Utils {
             val filtersMasterMapParam = mutableMapOf<String, String?>()
             discoComponentQuery?.let {
                 filtersMasterMapParam.putAll(it)
+            }
+            component?.let {
+                filtersMasterMapParam.putAll(addAddressQueryMap(it.userAddressData))
             }
             if (addCountFilters && selectedFilterMapParameter != null) {
                 val filtersMap = selectedFilterMapParameter as MutableMap<String, String?>
@@ -136,6 +159,19 @@ class Utils {
             if (queryString.isNotEmpty()) queryParameterMap[FILTERS] = queryString.toString()
 
             return queryParameterMap
+        }
+
+        fun addAddressQueryMap(userAddressData: LocalCacheModel?): MutableMap<String, String> {
+            val addressQueryParameterMap = mutableMapOf<String, String>()
+            userAddressData?.let {
+                if (it.address_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_ADDRESS_ID] = it.address_id
+                if (it.city_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_CITY_ID] = it.city_id
+                if (it.district_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_DISTRICT_ID] = it.district_id
+                if (it.lat.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LAT] = it.lat
+                if (it.long.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LONG] = it.long
+                if (it.postal_code.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_POST_CODE] = it.postal_code
+            }
+            return addressQueryParameterMap
         }
 
         fun isFutureSale(saleStartDate: String): Boolean {
@@ -241,9 +277,11 @@ class Utils {
                 }
             }
 
-            if(url.isNullOrEmpty()) return ""
+            if (url.isNullOrEmpty()) return ""
 
-            return if(isAllKeyNullOrEmpty) url else {"$url?$queryString"}
+            return if (isAllKeyNullOrEmpty) url else {
+                "$url?$queryString"
+            }
         }
 
 

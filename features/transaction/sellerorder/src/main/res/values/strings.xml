@@ -43,7 +43,10 @@
     <string name="detail_product">Detail Produk</string>
     <string name="see_invoice">Lihat Invoice</string>
     <string name="awb_label">awb</string>
-    <string name="resi_tersalin">Nomor resi sudah tersalin</string>
+    <string name="readable_awb_label">Nomor resi</string>
+    <string name="booking_code_label">bookingcode</string>
+    <string name="readable_booking_code_label">Kode booking</string>
+    <string name="message_success_copy">%1$s sudah tersalin</string>
     <string name="invoice_label">invoice</string>
     <string name="sudah_dicetak">Sudah dicetak</string>
     <string name="invoice_tersalin">Invoice sudah tersalin</string>
@@ -154,9 +157,6 @@
     <string name="dialog_receiver_name">Nama Penerima</string>
     <string name="et_empty_error">Tidak Boleh Kosong</string>
     <string name="default_confirm_shipping_success">Terima kasih telah melakukan pengiriman.</string>
-    <string name="dialog_title_cannot_access_page">Kamu tidak memiliki akses ke halaman ini</string>
-    <string name="dialog_description_cannot_access_page">Akses ke halaman penjualan hanya dapat diberikan oleh pemilik toko</string>
-    <string name="button_understand">Ya, saya mengerti</string>
 
     <!--  instant cancel  -->
     <string name="som_error_message_no_internet_connection">Oops, koneksi internetmu terganggu. Silahkan cek koneksi internet dan coba lagi, ya.</string>
@@ -261,4 +261,8 @@
     <string name="som_detail_ticker_description">%1$s &lt;a href="#"&gt;%2$s&lt;/a&gt;</string>
     <string name="som_list_failed_refresh_order">Gagal memperbarui informasi pesanan!</string>
     <string name="content_description_ic_load_more_product_drop_down_indicator">Load More Product Button</string>
+
+    <string name="som_error_dialog_title_order_has_cancellation_request">Pembeli baru saja mengajukan pembatalan pesanan ini</string>
+    <string name="som_error_dialog_subtitle_order_has_cancellation_request">Lanjut memproses pesanan tanpa konfirmasi pembeli dapat berujung dengan pengajuan komplain, lho.</string>
+    <string name="som_error_validate_order">Gagal memeriksa status pesanan, silahkan coba lagi</string>
 </resources>

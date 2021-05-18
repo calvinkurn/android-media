@@ -5,8 +5,8 @@ import com.tokopedia.discovery.common.constants.SearchConstant.TopAdsComponent.B
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel
-import com.tokopedia.search.result.presentation.model.BroadMatchViewModel
+import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
@@ -52,36 +52,36 @@ internal class SearchProductHandleBroadMatchImpression: ProductListPresenterTest
         productListPresenter.loadData(mapOf())
     }
 
-    private fun findBroadMatchItemFromVisitableList(isTopAds: Boolean): BroadMatchItemViewModel {
+    private fun findBroadMatchItemFromVisitableList(isTopAds: Boolean): BroadMatchItemDataView {
         val visitableList = visitableListSlot.captured
 
-        val broadMatchViewModel = visitableList.find { it is BroadMatchViewModel } as BroadMatchViewModel
+        val broadMatchViewModel = visitableList.find { it is BroadMatchDataView } as BroadMatchDataView
 
-        return broadMatchViewModel.broadMatchItemViewModelList.find { it.isOrganicAds == isTopAds }!!
+        return broadMatchViewModel.broadMatchItemDataViewList.find { it.isOrganicAds == isTopAds }!!
     }
 
-    private fun `When broad match product impressed`(broadMatchAds: BroadMatchItemViewModel) {
-        productListPresenter.onBroadMatchItemImpressed(broadMatchAds)
+    private fun `When broad match product impressed`(broadMatchAdsData: BroadMatchItemDataView) {
+        productListPresenter.onBroadMatchItemImpressed(broadMatchAdsData)
     }
 
-    private fun `Then verify broad match top ads impressed`(broadMatchAds: BroadMatchItemViewModel) {
+    private fun `Then verify broad match top ads impressed`(broadMatchAdsData: BroadMatchItemDataView) {
         verify {
             productListView.className
 
             topAdsUrlHitter.hitImpressionUrl(
                     className,
-                    broadMatchAds.topAdsViewUrl,
-                    broadMatchAds.id,
-                    broadMatchAds.name,
-                    broadMatchAds.imageUrl,
+                    broadMatchAdsData.topAdsViewUrl,
+                    broadMatchAdsData.id,
+                    broadMatchAdsData.name,
+                    broadMatchAdsData.imageUrl,
                     BROAD_MATCH_ADS
             )
         }
     }
 
-    private fun `Then verify interaction for Broad Match Item impression`(item: BroadMatchItemViewModel) {
+    private fun `Then verify interaction for Broad Match Item impression`(itemData: BroadMatchItemDataView) {
         verify {
-            productListView.trackBroadMatchImpression(item)
+            productListView.trackBroadMatchImpression(itemData)
         }
     }
 

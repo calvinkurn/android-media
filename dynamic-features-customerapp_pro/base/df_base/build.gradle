@@ -57,7 +57,6 @@ dependencies {
     implementation project(rootProject.ext.features.catalog)
     implementation project(rootProject.ext.features.kategori)
     implementation project(rootProject.ext.features.categoryLevels)
-    implementation project(rootProject.ext.features.hotlist)
     implementation project(rootProject.ext.features.findNative)
     //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
 
@@ -78,6 +77,7 @@ dependencies {
     implementation project(rootProject.ext.features.digitalEmoney)
     implementation project(rootProject.ext.features.digitalBrizzi)
     implementation project(rootProject.ext.features.smartBills)
+    implementation project(rootProject.ext.features.digitalCheckout)
 
     //Discovery
     implementation project(rootProject.ext.features.similarSearch)
@@ -142,8 +142,14 @@ dependencies {
     implementation project(rootProject.ext.features.inbox)
 
     //Transaction
+    implementation project(rootProject.ext.features.cart)
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.oneclickcheckout)
     implementation project(rootProject.ext.features.promoCheckoutMarketplace)
     implementation project(rootProject.ext.features.buyerorder)
+
+    //Order Management
+    implementation project(rootProject.ext.features.ordermanagementhistory)
+
+    implementation project(rootProject.ext.libraries.imagePicker)
 }

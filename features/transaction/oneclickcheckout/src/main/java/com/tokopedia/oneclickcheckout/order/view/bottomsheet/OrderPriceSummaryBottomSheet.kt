@@ -109,8 +109,9 @@ class OrderPriceSummaryBottomSheet {
             llCashback.removeAllViews()
             for (cashback in orderCost.cashbacks) {
                 val view = View.inflate(child.context, R.layout.item_cashback_detail, null)
-                view.findViewById<Typography>(R.id.tv_total_cashback_label).text = cashback.first
-                view.findViewById<Typography>(R.id.tv_total_cashback_value).text = cashback.second
+                view.findViewById<Typography>(R.id.tv_total_cashback_label).text = cashback.description
+                view.findViewById<Typography>(R.id.tv_total_cashback_value).text = cashback.amountStr
+                view.findViewById<Typography>(R.id.tv_total_cashback_currency_info).text = cashback.currencyDetailStr
                 llCashback.addView(view)
                 llCashback.visible()
                 divider2.visible()

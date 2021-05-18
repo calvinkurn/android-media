@@ -30,6 +30,9 @@ data class CardDataModel(
         @SerializedName("errorMsg")
         val errorMsg: String?,
         @Expose
+        @SerializedName("showWidget")
+        val showWidget: Boolean?,
+        @Expose
         @SerializedName("state")
         val state: String?,
         @Expose

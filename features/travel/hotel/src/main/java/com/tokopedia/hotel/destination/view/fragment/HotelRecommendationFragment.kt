@@ -18,14 +18,15 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
@@ -38,6 +39,7 @@ import com.tokopedia.hotel.destination.view.adapter.PopularSearchTypeFactory
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchAdapter
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchListener
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -85,7 +87,6 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         }
 
         permissionCheckerHelper = PermissionCheckerHelper()
-        destinationViewModel.setPermissionChecker(permissionCheckerHelper)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -132,7 +133,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
         currentLocationLayout = view.findViewById(R.id.current_location_layout)
         currentLocationLayout.setOnClickListener {
-            destinationViewModel.getCurrentLocation(activity as HotelBaseActivity, fusedLocationProviderClient)
+           getCurrentLocation()
         }
     }
 
@@ -222,12 +223,12 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
     override fun onDeleteRecentSearchItem(uuid: String) {
         if (recentSearchAdapter.itemCount == 0) recentSearchLayout.visibility = View.GONE
-        destinationViewModel.deleteRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_delete_recent_search_mutation), uuid)
+        destinationViewModel.deleteRecentSearch(HotelGqlMutation.DELETE_RECENT_SEARCH_UUID, uuid)
     }
 
     override fun onDeleteAllRecentSearch() {
         recentSearchLayout.visibility = View.GONE
-        destinationViewModel.deleteRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_delete_recent_search_mutation), "")
+        destinationViewModel.deleteRecentSearch(HotelGqlMutation.DELETE_RECENT_SEARCH_UUID, "")
     }
 
     override fun onItemClicked(recentSearch: RecentSearch) {
@@ -263,7 +264,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         } else {
             if (gpsRetryCounter < GPS_MAX_RETRY) {
                 gpsRetryCounter++
-                destinationViewModel.getCurrentLocation(activity as HotelBaseActivity, fusedLocationProviderClient)
+                getCurrentLocation()
             } else {
                 destinationViewModel.getLocationFromUpdates(fusedLocationProviderClient)
                 gpsRetryCounter = 0
@@ -296,12 +297,40 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         }
     }
 
+    private fun getCurrentLocation() {
+        val locationDetectorHelper = LocationDetectorHelper(
+                permissionCheckerHelper,
+                fusedLocationProviderClient,
+                requireActivity().applicationContext)
+
+        activity?.let {
+            permissionCheckerHelper.checkPermission(it,
+                    PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                        }
+
+                        override fun onPermissionGranted() {
+                            locationDetectorHelper.getLocation(destinationViewModel.onGetLocation(), requireActivity(),
+                                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                                    requireActivity().getString(R.string.hotel_destination_need_permission))
+                        }
+
+                    }, getString(R.string.hotel_destination_need_permission))
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         when (requestCode) {
             REQUEST_CODE_GPS -> {
-                destinationViewModel.getCurrentLocation(activity as HotelBaseActivity, fusedLocationProviderClient)
+               getCurrentLocation()
             }
         }
     }

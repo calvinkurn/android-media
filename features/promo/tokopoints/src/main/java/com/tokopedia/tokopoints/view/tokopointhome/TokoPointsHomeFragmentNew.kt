@@ -51,10 +51,12 @@ import com.tokopedia.tokopoints.view.tokopointhome.column.SectionVerticalColumnV
 import com.tokopedia.tokopoints.view.tokopointhome.coupon.SectionHorizontalViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionVH
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.merchantvoucher.MerchantVoucherViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 import javax.inject.Inject
 
@@ -67,6 +69,7 @@ typealias SectionItemBinder = SectionItemViewBinder<Any, RecyclerView.ViewHolder
 class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener, TopSectionVH.CardRuntimeHeightListener {
     private var mContainerMain: ViewFlipper? = null
     private var mPagerPromos: RecyclerView? = null
+    private var persistentAdsData: PersistentAdsData? = null
 
     @Inject
     lateinit var viewFactory: ViewModelFactory
@@ -86,9 +89,12 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private val viewBinders = mutableMapOf<String, SectionItemBinder>()
     private val sectionList: ArrayList<Any> = ArrayList()
     lateinit var sectionListViewBinder: SectionHorizontalViewBinder
+    lateinit var mUsersession: UserSession
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
+        mUsersession = UserSession(context)
+        persistentAdsData = context?.let { PersistentAdsData(it) }
         super.onCreate(savedInstanceState)
     }
 
@@ -132,10 +138,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         layoutParams.topMargin = statusBarHeight
         tokoPointToolbar!!.layoutParams = layoutParams
         val imageEggLp = view?.findViewById<AppCompatImageView>(R.id.img_egg)?.layoutParams as? RelativeLayout.LayoutParams
-        imageEggLp?.topMargin = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_top_margin_big_image)).toInt()
+        imageEggLp?.topMargin = (statusBarHeight + requireActivity().resources.getDimension(R.dimen.tp_top_margin_big_image)).toInt()
         view?.findViewById<AppCompatImageView>(R.id.img_egg)?.layoutParams = imageEggLp
         val imageBigLp = view?.findViewById<ImageView>(R.id.img_bg_header)?.layoutParams as? RelativeLayout.LayoutParams
-        imageBigLp?.height = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_home_top_bg_height) + cardheight).toInt()
+        imageBigLp?.height = (statusBarHeight + requireActivity().resources.getDimension(R.dimen.tp_home_top_bg_height) + cardheight).toInt()
         view?.findViewById<ImageView>(R.id.img_bg_header)?.layoutParams = imageBigLp
     }
 
@@ -154,7 +160,9 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             if (flags != null) {
                 coordinatorLayout?.systemUiVisibility = flags
             }
-            activity?.window?.statusBarColor = Color.WHITE
+            if (context != null) {
+                activity?.window?.statusBarColor = androidx.core.content.ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            }
         }
         if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
             setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true)
@@ -260,7 +268,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         if (data != null && data.resultStatus?.code == "200") {
             val bundle = Bundle()
             bundle.putParcelable(RewardIntroFragment.INTRO_KEY, data)
-            startActivity(RewardIntroActivity.getCallingIntent(context!!, bundle))
+            startActivity(RewardIntroActivity.getCallingIntent(requireContext(), bundle))
             activity?.finish()
         } else
             return
@@ -358,6 +366,16 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         sectionList.add(sectionContent)
 
                     }
+                    if (sectionContent.layoutMerchantCouponAttr != null && !sectionContent.layoutMerchantCouponAttr.catalogMVCWithProductsList.isNullOrEmpty()) {
+
+                        val merchantVoucherViewBinder = MerchantVoucherViewBinder()
+                        @Suppress("UNCHECKED_CAST")
+                        viewBinders.put(
+                                sectionContent.layoutType,
+                                merchantVoucherViewBinder as SectionItemBinder)
+                        sectionList.add(sectionContent)
+                    }
+
                     when (sectionContent.layoutBannerAttr.bannerType) {
                         CommonConstant.BannerType.BANNER_2_1 -> {
                             val verticalImagesViewBinder = SectionVerticalBanner21ViewBinder()
@@ -428,6 +446,13 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 mPagerPromos?.adapter = adapter
             }
         }
+
+        AnalyticsTrackerUtil.sendEvent(mUsersession.userId,
+                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT_IRIS,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                AnalyticsTrackerUtil.ActionKeys.VIEW_HOMEPAGE,
+                "", AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
+                AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE)
     }
 
     override fun onResume() {
@@ -441,6 +466,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         mPagerPromos?.adapter = null
         mPagerPromos?.layoutManager = null
         adapter = null
+        persistentAdsData?.deletePreference()
+        persistentAdsData = null
     }
 
     override fun showLoading() {
@@ -452,11 +479,11 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     override fun getAppContext(): Context {
-        return activity!!
+        return requireActivity()
     }
 
     override fun getActivityContext(): Context {
-        return activity!!
+        return requireActivity()
     }
 
     override fun onAttach(context: Context) {

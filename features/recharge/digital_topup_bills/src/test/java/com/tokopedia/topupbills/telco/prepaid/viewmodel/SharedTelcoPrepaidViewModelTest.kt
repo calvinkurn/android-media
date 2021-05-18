@@ -141,6 +141,7 @@ class SharedTelcoPrepaidViewModelTest {
     fun getCatalogProductList_DataValid_SuccessGetData() {
         //given
         val multiTab = gson.fromJson(gson.JsonToString("multitab.json"), TelcoCatalogProductInputMultiTab::class.java)
+        val autoSelectProductId = 9
 
         val result = HashMap<Type, Any>()
         result[TelcoCatalogProductInputMultiTab::class.java] = multiTab
@@ -148,7 +149,7 @@ class SharedTelcoPrepaidViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList())
+        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(), autoSelectProductId)
 
         //then
         val actualData = sharedTelcoPrepaidViewModel.productList.value
@@ -157,6 +158,7 @@ class SharedTelcoPrepaidViewModelTest {
         val labelPulsa = (actualData as Success).data[0].label
         assertEquals(false, sharedTelcoPrepaidViewModel.loadingProductList.value)
         assertEquals(multiTab.rechargeCatalogProductDataData.productInputList[0].label, labelPulsa)
+        assertEquals(autoSelectProductId.toString(), (sharedTelcoPrepaidViewModel.favNumberSelected.value as TopupBillsFavNumberItem).productId)
     }
 
     @Test
@@ -171,7 +173,7 @@ class SharedTelcoPrepaidViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList())
+        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(), 9)
 
         //then
         val actualData = sharedTelcoPrepaidViewModel.productList.value
@@ -179,6 +181,7 @@ class SharedTelcoPrepaidViewModelTest {
         assert(actualData is Fail)
         val error = (actualData as Fail).throwable
         assertEquals(false, sharedTelcoPrepaidViewModel.loadingProductList.value)
+        assertEquals(null, sharedTelcoPrepaidViewModel.favNumberSelected.value)
         assertEquals(errorGql.message, error.message)
     }
 }

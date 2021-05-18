@@ -7,7 +7,7 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.error
-import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel
+import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.usecase.RequestParams
@@ -109,7 +109,7 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
     private fun `Then verify visitable list for set empty recommendation page 1`(localSearchRecommendationModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
 
-        visitableList.first().shouldBeInstanceOf<SearchProductTitleViewModel>()
+        visitableList.first().shouldBeInstanceOf<SearchProductTitleDataView>()
         visitableList.first().assertSearchProductTitle()
 
         localSearchRecommendationModel.searchProduct.data.productList.forEachIndexed { index, product ->
@@ -118,7 +118,9 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
     }
 
     private fun Visitable<*>.assertSearchProductTitle() {
-        (this as SearchProductTitleViewModel).title shouldBe searchProductPageTitle
+        val searchProductTitleViewModel = this as SearchProductTitleDataView
+        searchProductTitleViewModel.title shouldBe searchProductPageTitle
+        searchProductTitleViewModel.isRecommendationTitle shouldBe true
     }
 
     private fun `Then verify has next page`(expectedHasNextPage: Boolean) {

@@ -4,30 +4,30 @@
   "query": [
     {
       "eventCategory": "wishlist page",
-      "item_list": "{{.*}}",
+      "item_list": ".*",
       "event": "view_item_list",
       "eventAction": "product impressions",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "items": [{
-        "dimension83": "{{bebas ongkir|none / other}}",
-        "item_id": "{{.*}}",
-        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-        "dimension40": "{{.*}}",
-        "index": "{{\\d*.\\d*}}",
-        "item_name": "{{.*}}",
-        "item_brand": "{{.*}}",
-        "item_variant": "{{.*}}",
-        "item_category": "{{.*}}"
+        "dimension83": "bebas ongkir|bebas ongkir extra|none / other",
+        "item_id": ".*",
+        "price": "\\d*.\\d*|\\d.\\d+E\\d",
+        "dimension40": ".*",
+        "index": "\\d*.\\d*",
+        "item_name": ".*",
+        "item_brand": ".*",
+        "item_variant": ".*",
+        "item_category": ".*"
       }],
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     },
     {
       "eventCategory": "wishlist page",
       "ecommerce": "",
       "event": "productClick",
       "eventAction": "click product",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     }
   ]
 }

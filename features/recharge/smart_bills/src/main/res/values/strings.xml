@@ -34,4 +34,10 @@
     <string name="smart_bills_onboarding_description_2">Klik kotak pada beberapa kotak tertentu yang kamu pilih untuk dibayar sekaligus.</string>
     <string name="smart_bills_onboarding_title_3">Langsung bisa bayar sekaligus</string>
     <string name="smart_bills_onboarding_description_3">Klik di sini untuk lanjut bayar sekaligus tagihan-tagihan produk yang sudah kamu pilih.</string>
+
+    <string name="smart_bills_tooltip_title">Yuk, bayar sekaligus tagihanmu!</string>
+    <string name="smart_bills_tooltip_desc_1">Bayar sekaligus tagihanmu dengan cepat dan mudah</string>
+    <string name="smart_bills_tooltip_desc_2">Tagihan yang bisa dibayar sekaligus didapatkan dari riwayat transaksimu sebelumnya</string>
+    <string name="smart_bills_tooltip_button">Pelajari Selengkapnya</string>
+    <string name="smart_bills_tooltip_bullet">\u2022</string>
 </resources>

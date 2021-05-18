@@ -11,7 +11,8 @@ import com.tokopedia.homenav.mainnav.data.mapper.BuListMapper
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.order.UohData
 import com.tokopedia.homenav.mainnav.data.pojo.payment.Payment
-import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
+import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.*
@@ -78,7 +79,7 @@ class MainNavUseCaseModule {
     @MainNavScope
     @Provides
     fun provideShopInfoUseCase(graphqlRepository: GraphqlRepository) : GetShopInfoUseCase {
-        val useCase = GraphqlUseCase<ShopInfoPojo.Response>(graphqlRepository)
+        val useCase = GraphqlUseCase<ShopData>(graphqlRepository)
         return GetShopInfoUseCase(useCase)
     }
 
@@ -118,12 +119,20 @@ class MainNavUseCaseModule {
 
     @MainNavScope
     @Provides
+    fun provideGetTokopointStatusFiltered(graphqlRepository: GraphqlRepository): GetTokopointStatusFiltered{
+        val usecase = GraphqlUseCase<TokopointsStatusFilteredPojo>(graphqlRepository)
+        return GetTokopointStatusFiltered(graphqlUseCase = usecase)
+    }
+
+    @MainNavScope
+    @Provides
     fun provideGetProfileDataUseCase(
             accountHeaderMapper: AccountHeaderMapper,
             userInfoUseCase: GetUserInfoUseCase,
             getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase,
             getSaldoUseCase: GetSaldoUseCase,
             getUserMembershipUseCase: GetUserMembershipUseCase,
+            getTokopointStatusFiltered: GetTokopointStatusFiltered,
             getShopInfoUseCase: GetShopInfoUseCase,
             userSession: UserSessionInterface,
             @ApplicationContext context: Context
@@ -134,6 +143,7 @@ class MainNavUseCaseModule {
                 getOvoUseCase = getWalletBalanceUseCase,
                 getSaldoUseCase = getSaldoUseCase,
                 getUserMembershipUseCase = getUserMembershipUseCase,
+                getTokopointStatusFiltered = getTokopointStatusFiltered,
                 getShopInfoUseCase = getShopInfoUseCase,
                 userSession = userSession,
                 context = context

@@ -6,17 +6,31 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 object CacheManager {
 
     private const val PREF_PN_TROUBLESHOOT = "Push_Notification_Troubleshoot"
-    private const val KEY_PREF_DATE = "Date"
 
-    fun saveLastCheckedDate(context: Context?) {
+    const val KEY_PREF_DATE = "Date"
+    const val KEY_ONBOARDING = "Onboarding"
+
+    fun getCacheLong(context: Context?, key: String): Long {
         val cache = LocalCacheHandler(context, PREF_PN_TROUBLESHOOT)
-        cache.putLong(KEY_PREF_DATE, System.currentTimeMillis())
+        return cache.getLong(key)
+    }
+
+    fun saveCacheBoolean(
+            context: Context?,
+            key: String,
+            value: Boolean
+    ) {
+        val cache = LocalCacheHandler(context, PREF_PN_TROUBLESHOOT)
+        cache.putBoolean(key, value)
         cache.applyEditor()
     }
 
-    fun getLastCheckedDate(context: Context?): Long {
+    fun getCacheBoolean(
+            context: Context?,
+            key: String
+    ): Boolean {
         val cache = LocalCacheHandler(context, PREF_PN_TROUBLESHOOT)
-        return cache.getLong(KEY_PREF_DATE)
+        return cache.getBoolean(key)
     }
 
 }

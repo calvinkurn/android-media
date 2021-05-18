@@ -111,6 +111,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     private var chatBannedSellerTicker: Ticker? = null
     private var rv: RecyclerView? = null
     private var emptyUiModel: Visitable<*>? = null
+    private var menu: Menu? = null
     private lateinit var broadCastButton: FloatingActionButton
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
@@ -144,11 +145,14 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
+
         if (GlobalConfig.isSellerApp()) {
             inflater.inflate(R.menu.chat_options_menu_sellerapp, menu)
         } else {
             inflater.inflate(R.menu.chat_options_menu, menu)
         }
+        setChatMenuItem()
+        this.menu = menu
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -232,13 +236,9 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     }
 
     private fun setupSellerBroadcast() {
-        if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
+        if (!isTabSeller()) return
         setupSellerBroadcastButton()
         chatItemListViewModel.loadChatBlastSellerMetaData()
-    }
-
-    private fun isSellerBroadcastRemoteConfigOn(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.TOPCHAT_SELLER_BROADCAST)
     }
 
     private fun setupSellerBroadcastButton() {
@@ -250,24 +250,25 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                 false -> broadCastButton.hide()
             }
         })
-        chatItemListViewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { url ->
-            if (url.isNullOrEmpty()) return@Observer
+        chatItemListViewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { applink ->
+            if (applink.isNullOrEmpty()) return@Observer
             broadCastButton.setOnClickListener {
                 if(isSellerMigrationEnabled(context)) {
                     val screenName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT
-                    val webViewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
                     val intent = context?.let { context ->
                         SellerMigrationActivity.createIntent(
                                 context = context,
                                 featureName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT,
                                 screenName = screenName,
-                                appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, webViewUrl)
+                                appLinks = arrayListOf(
+                                        ApplinkConstInternalSellerapp.SELLER_HOME_CHAT, applink
+                                )
                         )
                     }
                     startActivity(intent)
                 } else {
                     chatListAnalytics.eventClickBroadcastButton()
-                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
+                    RouteManager.route(context, applink)
                 }
             }
         })
@@ -288,11 +289,13 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
 
     private fun setUpRecyclerView(view: View) {
         val recyclerView = super.getRecyclerView(view)
-        recyclerView.setHasFixedSize(true)
-        for (i in 0 until recyclerView.itemDecorationCount) {
-            recyclerView.removeItemDecorationAt(i)
+        recyclerView?.let {
+            it.setHasFixedSize(true)
+            for (i in 0 until it.itemDecorationCount) {
+                it.removeItemDecorationAt(i)
+            }
+            it.addItemDecoration(ChatListItemDecoration(context))
         }
-        recyclerView.addItemDecoration(ChatListItemDecoration(context))
     }
 
     private fun setObserver() {
@@ -314,6 +317,24 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                 }
             }
         })
+
+        chatItemListViewModel.isChatAdminEligible.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    result.data.let { isEligible ->
+                        if (isEligible) {
+                            showOrHideChatMenuItem(true)
+                            loadInitialData()
+                        } else {
+                            onChatAdminNoAccess()
+                        }
+                    }
+                }
+                is Fail -> {
+                    showGetListError(result.throwable)
+                }
+            }
+        }
     }
 
     fun processIncomingMessage(newChat: IncomingChatWebSocketModel) {
@@ -385,8 +406,8 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     }
 
     private fun animateWhenOnTop() {
-        if ((getRecyclerView(view).layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0) {
-            getRecyclerView(view).smoothScrollToPosition(0)
+        if ((getRecyclerView(view)?.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() == 0) {
+            getRecyclerView(view)?.smoothScrollToPosition(0)
         }
     }
 
@@ -409,7 +430,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     private fun isFirstPage(): Boolean = currentPage == 1
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view).layoutManager) {
+        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 if (totalItemsCount > 1) {
@@ -565,6 +586,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         chatItemListViewModel.broadCastButtonVisibility.removeObservers(this)
         chatItemListViewModel.broadCastButtonUrl.removeObservers(this)
         chatItemListViewModel.chatBannedSellerStatus.removeObservers(this)
+        chatItemListViewModel.isChatAdminEligible.removeObservers(this)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -687,6 +709,12 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         )
     }
 
+    override fun returnToSellerHome() {
+        if (GlobalConfig.isSellerApp()) {
+            RouteManager.route(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+        }
+    }
+
     private fun onSuccessUnpinChat(element: ItemChatListPojo, position: Int) {
         adapter?.unpinChatItem(
                 element,
@@ -731,6 +759,33 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
             val errorMsg = ErrorHandler.getErrorMessage(it.context, throwable)
             Toaster.make(it, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
+    }
+
+    private fun onChatAdminNoAccess() {
+        swipeToRefresh?.isEnabled = false
+        adapter?.showNoAccessView()
+        if (GlobalConfig.isSellerApp()) {
+            showOrHideChatMenuItem(false)
+        }
+    }
+
+    /**
+     * Hide chat menu item only if Sellerapp and no access
+     */
+    private fun setChatMenuItem() {
+        if (chatItemListViewModel.isChatAdminEligible.value != null) {
+            if (!chatItemListViewModel.isAdminHasAccess && GlobalConfig.isSellerApp()) {
+                showOrHideChatMenuItem(false)
+            } else {
+                showOrHideChatMenuItem(true)
+            }
+        }
+    }
+
+    private fun showOrHideChatMenuItem(isShow: Boolean) {
+        menu?.findItem(R.id.menu_chat_search)?.isVisible = isShow
+        menu?.findItem(R.id.menu_chat_filter)?.isVisible = isShow
+        menu?.findItem(R.id.menu_chat_setting)?.isVisible = isShow
     }
 
     companion object {

@@ -120,7 +120,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
                     layoutParams.width = (int) event.getX();
                     mTouchView.setLayoutParams(layoutParams);
                     if (event.getX() > getMaxSwipeWidth() * .3) {
-                        mTextSwipeTitle.setTextColor(Color.WHITE);
+                        mTextSwipeTitle.setTextColor(androidx.core.content.ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
                         mSwipeIcon.setVisibility(GONE);
                     }
                 }
@@ -163,7 +163,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
 
                         anim.setDuration(DELAY_BACK_MS);
                         anim.start();
-                        mTextSwipeTitle.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.black_38));
+                        mTextSwipeTitle.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
                         mSwipeIcon.setVisibility(VISIBLE);
 
                         if (mOnSwipeListener != null) {
@@ -209,7 +209,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
 
         anim.setDuration(DELAY_BACK_MS);
         anim.start();
-        mTextSwipeTitle.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.black_38));
+        mTextSwipeTitle.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
 
         mCouponContainer.postDelayed(new Runnable() {
             @Override

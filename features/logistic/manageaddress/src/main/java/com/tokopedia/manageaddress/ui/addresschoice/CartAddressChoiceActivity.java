@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
@@ -38,18 +40,16 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
 
     private int typeRequest;
     private Token token;
+    private int prevState;
+    private LocalCacheModel localChosenAddr;
     private String PARAM_ADDRESS_MODEL = "EDIT_PARAM";
     private CheckoutAnalyticsChangeAddress mAnalytics = new CheckoutAnalyticsChangeAddress();
-
-    @Override
-    protected void initInjector() {
-
-    }
 
     @Override
     protected void setupBundlePass(Bundle extras) {
         this.typeRequest = extras.getInt(CheckoutConstant.EXTRA_TYPE_REQUEST);
         this.token = extras.getParcelable(CheckoutConstant.EXTRA_DISTRICT_RECOMMENDATION_TOKEN);
+        this.prevState = extras.getInt(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS);
     }
 
     @Override
@@ -141,14 +141,14 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         RecipientAddressModel currentAddress = getIntent().getParcelableExtra(CheckoutConstant.EXTRA_CURRENT_ADDRESS);
         switch (typeRequest) {
             case CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
-                return ShipmentAddressListFragment.newInstance(currentAddress);
+                return ShipmentAddressListFragment.newInstance(currentAddress, prevState);
             case CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN:
                 return ShipmentAddressListFragment.newInstance(currentAddress, CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN);
             case CheckoutConstant.TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT:
             case CheckoutConstant.TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS:
-                return ShipmentAddressListFragment.newInstanceFromMultipleAddressForm(currentAddress);
+                return ShipmentAddressListFragment.newInstanceFromMultipleAddressForm(currentAddress, prevState);
             default:
-                return ShipmentAddressListFragment.newInstance(currentAddress);
+                return ShipmentAddressListFragment.newInstance(currentAddress, prevState);
         }
     }
 

@@ -74,5 +74,7 @@ data class AccountDataModel(
         @Expose
         var uohOrderCount: UohCounterDataModel = UohCounterDataModel(),
 
-        var shortcutResponse: ShortcutResponse = ShortcutResponse()
+        var shortcutResponse: ShortcutResponse = ShortcutResponse(),
+
+        var adminTypeText: String? = null
 )

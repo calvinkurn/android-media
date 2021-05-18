@@ -34,11 +34,6 @@ import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealL
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealNatigationListener;
 import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartDealsPresenter;
-import com.tokopedia.showcase.ShowCaseBuilder;
-import com.tokopedia.showcase.ShowCaseContentPosition;
-import com.tokopedia.showcase.ShowCaseDialog;
-import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.ArrayList;
@@ -268,81 +263,11 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     }
 
     @Override
-    public boolean isOnboardAlreadyShown() {
-        return ShowCasePreference.hasShown(getActivity(), DigitalCartDealsFragment.class.getName());
-    }
-
-    @Override
     public void notifyCheckoutPageToStartAnimation() {
         Fragment checkoutFragment = getChildFragmentManager().findFragmentByTag(TAG_DIGITAL_CHECKOUT);
         if (checkoutFragment instanceof DigitalDealCheckoutFragment) {
             ((DigitalDealCheckoutFragment) checkoutFragment).startAutomaticCollapse();
         }
-    }
-
-    @Override
-    public void renderOnboarding() {
-        ShowCaseDialog showCaseDialog = createShowCaseDialog();
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                buildAndShowShowCase(showCaseDialog);
-            }
-        }, DEFAULT_DELAY_ONBOARD);
-
-    }
-
-    private void buildAndShowShowCase(ShowCaseDialog showCaseDialog) {
-        Fragment checkoutFragment = getChildFragmentManager().findFragmentByTag(TAG_DIGITAL_CHECKOUT);
-        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
-        if (checkoutFragment instanceof DigitalDealCheckoutFragment) {
-            ShowCaseObject priceShowCase = new ShowCaseObject(
-                    checkoutFragment.getView(), getString(R.string.digital_cart_deals_showcase_product_detail),
-                    getString(R.string.digital_cart_deals_showcase_product_detail_detail),
-                    ShowCaseContentPosition.TOP);
-            showCaseObjectList.add(priceShowCase);
-        }
-
-        ShowCaseObject dealShowCase = new ShowCaseObject(
-                dealTabLayout, getString(R.string.digital_cart_deals_showcase_special),
-                getString(R.string.digital_cart_deals_showcase_special_detail),
-                ShowCaseContentPosition.BOTTOM
-        );
-
-        showCaseObjectList.add(dealShowCase);
-        if (getActivity().getFragmentManager() != null)
-            getActivity().getFragmentManager().executePendingTransactions();
-        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
-            @Override
-            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
-                if (previousStep == 0) {
-                    notifyCheckoutPageToStartAnimation();
-                }
-                return false;
-            }
-        });
-        showCaseDialog.show(
-                getActivity(),
-                DigitalCartDealsFragment.class.getName(),
-                showCaseObjectList
-        );
-    }
-
-    private ShowCaseDialog createShowCaseDialog() {
-        return new ShowCaseBuilder()
-                .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-                .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
-                .textSizeRes(com.tokopedia.unifyprinciples.R.dimen.unify_font_12)
-                .titleTextSizeRes(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl4)
-                .nextStringRes(com.tokopedia.showcase.R.string.next)
-                .prevStringRes(com.tokopedia.showcase.R.string.previous)
-                .useCircleIndicator(true)
-                .clickable(true)
-                .useArrow(true)
-                .build();
     }
 
     @Override
@@ -427,11 +352,6 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
         if (percentage == 0.0) {
             checkoutDim.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public boolean isAlreadyShowOnBoard() {
-        return isOnboardAlreadyShown();
     }
 
     @Override

@@ -91,11 +91,13 @@ class OvoVh(itemView: View) : CouponListVHDaily(itemView) {
                     TextViewCompat.getTextMetricsParams(tvTitle),
                      null))
 
-            Glide.with(imageView)
-                    .load(R.drawable.gf_glowing_ovo)
-                    .dontAnimate()
-                    .dontTransform()
-                    .into(imageView)
+            if(!data.imageUrl.isNullOrEmpty()){
+                Glide.with(imageView)
+                        .load(data.imageUrl)
+                        .dontAnimate()
+                        .dontTransform()
+                        .into(imageView)
+            }
         }
     }
 }

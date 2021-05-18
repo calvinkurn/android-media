@@ -91,7 +91,7 @@ internal class FloatingWindowService : Service() {
             setWhen(System.currentTimeMillis())
             setContentIntent(exitPendingIntent)
             setSmallIcon(
-                    if (GlobalConfig.isSellerApp()) com.tokopedia.pushnotif.R.mipmap.ic_statusbar_notif_seller
+                    if (GlobalConfig.isSellerApp()) com.tokopedia.notification.common.R.mipmap.ic_statusbar_notif_seller
                     else com.tokopedia.pushnotif.R.mipmap.ic_statusbar_notif_customer
             )
             priority = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) NotificationManager.IMPORTANCE_DEFAULT else Notification.PRIORITY_DEFAULT

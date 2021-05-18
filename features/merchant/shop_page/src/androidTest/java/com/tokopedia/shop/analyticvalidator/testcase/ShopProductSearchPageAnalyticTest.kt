@@ -1,5 +1,6 @@
 package com.tokopedia.shop.analyticvalidator.testcase
 
+import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso
@@ -33,9 +34,7 @@ import org.junit.Test
 class ShopProductSearchPageAnalyticTest {
 
     companion object {
-        private const val SHOP_PAGE_SEARCH_PRODUCT_CLICK_DI_ETALASE_TOKO_INI_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_search_product_click_di_etalase_toko_ini_tracker.json"
         private const val SHOP_PAGE_SEARCH_PRODUCT_CLICK_DI_TOKOPEDIA_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_search_product_click_di_tokopedia_tracker.json"
-        private const val SHOP_PAGE_SEARCH_PRODUCT_SUBMIT_SEARCH_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_search_product_submit_search_tracker.json"
 
         private const val KEY_SHOP_ID = "SHOP_ID"
         private const val SAMPLE_SHOP_ID = "3418893"
@@ -60,17 +59,6 @@ class ShopProductSearchPageAnalyticTest {
     }
 
     @Test
-    fun testClickOnDiEtalaseTokoIni() {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(0, null))
-        Espresso.onView(CommonMatcher.firstView(withId(R.id.editTextSearchProduct))).perform(ViewActions.typeText(SAMPLE_KEYWORD))
-        waitForData(5000)
-        Espresso.onView(CommonMatcher.firstView(withId(R.id.recycler_view))).perform(
-                RecyclerViewActions.actionOnItemAtPosition<ShopSearchProductFixResultViewHolder>(0, ViewActions.click())
-        )
-        doAnalyticDebuggerTest(SHOP_PAGE_SEARCH_PRODUCT_CLICK_DI_ETALASE_TOKO_INI_TRACKER_MATCHER_PATH)
-    }
-
-    @Test
     fun testClickDiTokopedia() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(0, null))
         Espresso.onView(CommonMatcher.firstView(withId(R.id.editTextSearchProduct))).perform(ViewActions.typeText(SAMPLE_KEYWORD))
@@ -79,15 +67,6 @@ class ShopProductSearchPageAnalyticTest {
                 RecyclerViewActions.actionOnItemAtPosition<ShopSearchProductFixResultViewHolder>(1, ViewActions.click())
         )
         doAnalyticDebuggerTest(SHOP_PAGE_SEARCH_PRODUCT_CLICK_DI_TOKOPEDIA_TRACKER_MATCHER_PATH)
-    }
-
-    @Test
-    fun testSubmitSearch() {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(0, null))
-        Espresso.onView(CommonMatcher.firstView(withId(R.id.editTextSearchProduct))).perform(ViewActions.typeText(SAMPLE_KEYWORD))
-        waitForData(5000)
-        Espresso.onView(CommonMatcher.firstView(withId(R.id.editTextSearchProduct))).perform(ViewActions.pressImeActionButton())
-        doAnalyticDebuggerTest(SHOP_PAGE_SEARCH_PRODUCT_SUBMIT_SEARCH_TRACKER_MATCHER_PATH)
     }
 
     @After

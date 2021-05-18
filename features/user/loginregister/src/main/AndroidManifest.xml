@@ -17,7 +17,19 @@
             android:label="@string/login"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden">
+          <intent-filter android:autoVerify="true">
+            <action android:name="com.tokopedia.internal.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+    
+            <data
+              android:scheme="@string/internal_scheme"
+              android:host="@string/host_global"
+              android:pathPattern="@string/path_user_login" />
+          </intent-filter>
+          
+        </activity>
         <activity
             android:name=".registerinitial.view.activity.RegisterInitialActivity"
             android:label="@string/title_register"
@@ -86,7 +98,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="adjustResize">
-            <intent-filter >
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -117,12 +129,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".welcomepage.WelcomePageActivity"
-            android:label="@string/title_verify"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".login.view.activity.SellerSeamlessLoginActivity"
             android:label=""
@@ -254,6 +260,11 @@
         </service>
         <service
             android:name=".login.service.RegisterPushNotifService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service
+            android:name=".login.service.GetDefaultChosenAddressService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>

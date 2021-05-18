@@ -123,6 +123,7 @@ data class ShopLayoutWidget(
                 val recommendationType: String = "",
                 @SerializedName("minimumOrder")
                 val minimumOrder: Int? = 1
+
         ) {
             data class Banner(
                     @SerializedName("imageID")

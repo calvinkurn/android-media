@@ -6,6 +6,7 @@ include "features:category:tradein"
 include "features:common:developer_options"
 include "features:common:developer_options_noop"
 include "features:common:nps"
+include "features:common:internal_review"
 include "features:common:resources_common"
 include "features:category:common_tradein"
 
@@ -55,6 +56,12 @@ include "features:logistic:logisticorder"
 include "features:logistic:logisticcart"
 include "features:logistic:editshipping"
 include "features:logistic:activation"
+include "features:logistic:manageaddress"
+include "features:logistic:localizationchooseaddress"
+
+include "features:media:mediauploader"
+include "features:media:media-common"
+include "features:media:medialoader"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:power_merchant_subscribe"
@@ -125,6 +132,7 @@ include "features:transaction:atc_common"
 include "features:transaction:purchase_platform_common"
 include "features:transaction:sellerorder"
 include "features:ordermanagement:snapshot"
+include "features:ordermanagement:orderhistory"
 
 include "features:communication:push-notification-common"
 include "features:im:moengage_wrapper"
@@ -140,6 +148,8 @@ include "features:user:loginregister"
 include "features:user:loginphone"
 include "features:user:logout"
 include "features:user:managepassword"
+include 'features:user:media-common'
+include "features:user:medialoader"
 include "features:user:notifcenter"
 include "features:user:otp"
 include "features:user:phoneverification"
@@ -167,7 +177,6 @@ include "features:fintech:merchant_lending_widget"
 
 include 'tkpdcore'
 include 'tkpddesign'
-include 'tkpdseller'
 include 'tkpdabstraction'
 
 include 'sellerapp'

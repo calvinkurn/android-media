@@ -1,7 +1,7 @@
 package com.tokopedia.digital_checkout.data.model
 
 import android.os.Parcelable
-import com.tokopedia.digital_checkout.data.response.getcart.FintechProduct
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

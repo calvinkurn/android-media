@@ -68,4 +68,8 @@
 
 <!--    default toolbar height + default status bar height + 16 margin-->
     <dimen name="default_toolbar_status_height">96dp</dimen>
+
+    <dimen name="home_background_no_choose_address">130dp</dimen>
+    <dimen name="home_background_with_choose_address">160dp</dimen>
+
 </resources>

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -20,6 +19,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.customview.ShopReputa
 import com.tokopedia.review.feature.inbox.buyerreview.view.customview.UserReputationView;
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailHeaderUiModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 
 /**
@@ -36,19 +36,19 @@ public class InboxReputationDetailHeaderViewHolder extends
     private final ReputationAdapter.ReputationListener reputationListener;
 
     ImageView userAvatar;
-    TextView name;
+    Typography name;
     UserReputationView userReputationView;
     ShopReputationView shopReputationView;
     View deadlineLayout;
-    TextView deadline;
+    Typography deadline;
     View lockedLayout;
-    TextView lockedText;
-    TextView promptMessage;
+    Typography lockedText;
+    Typography promptMessage;
     View favoriteButton;
-    TextView favoriteText;
-    TextView changeButton;
+    Typography favoriteText;
+    Typography changeButton;
     RecyclerView smiley;
-    TextView opponentSmileyText;
+    Typography opponentSmileyText;
     ImageView opponentSmiley;
     ReputationAdapter adapter;
     GridLayoutManager gridLayout;
@@ -64,19 +64,19 @@ public class InboxReputationDetailHeaderViewHolder extends
         this.reputationListener = reputationListener;
         this.context = itemView.getContext();
         userAvatar = itemView.findViewById(R.id.user_avatar);
-        name = (TextView) itemView.findViewById(R.id.name);
+        name = (Typography) itemView.findViewById(R.id.name);
         userReputationView =  itemView.findViewById(R.id.user_reputation);
         shopReputationView = itemView.findViewById(R.id.shop_reputation);
-        deadline = (TextView) itemView.findViewById(R.id.deadline_text);
+        deadline = (Typography) itemView.findViewById(R.id.deadline_text);
         deadlineLayout = itemView.findViewById(R.id.deadline);
         lockedLayout = itemView.findViewById(R.id.locked);
-        lockedText = (TextView) itemView.findViewById(R.id.locked_text);
-        promptMessage = (TextView) itemView.findViewById(R.id.prompt_text);
+        lockedText = (Typography) itemView.findViewById(R.id.locked_text);
+        promptMessage = (Typography) itemView.findViewById(R.id.prompt_text);
         favoriteButton = itemView.findViewById(R.id.favorite_button);
-        favoriteText = (TextView) itemView.findViewById(R.id.favorite_text);
-        changeButton = (TextView) itemView.findViewById(R.id.change_button);
+        favoriteText = (Typography) itemView.findViewById(R.id.favorite_text);
+        changeButton = (Typography) itemView.findViewById(R.id.change_button);
         smiley = (RecyclerView) itemView.findViewById(R.id.smiley);
-        opponentSmileyText = (TextView) itemView.findViewById(R.id.opponent_smiley_text);
+        opponentSmileyText = (Typography) itemView.findViewById(R.id.opponent_smiley_text);
         opponentSmiley = (ImageView) itemView.findViewById(R.id.opponent_smiley);
         adapter = ReputationAdapter.createInstance(itemView.getContext(), reputationListener);
         gridLayout = new GridLayoutManager(itemView.getContext(), 3,

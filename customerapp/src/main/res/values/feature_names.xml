@@ -31,6 +31,7 @@
     <string name="flight_cancellation_reason_title">Pilih Alasan Pembatalan</string>
     <string name="flight_insurance_webview_toolbar_title">Asuransi Perjalanan</string>
     <string name="flight_order_invoice_toolbar_title">Tokopedia</string>
+    <string name="hotel_pay_at_hotel_promo_header_title">Pakai Promo</string>
 
     <!--Travel Slice -->
     <string name="travel_slice_host_name">travelslice</string>
@@ -161,6 +162,7 @@
     <string name="survey_layanan">Survey Layanan</string>
     <string name="detail_kendala">Detail Kendala</string>
     <string name="contact_us_inbox">Pesan Bantuan</string>
+    <string name="contact_us_title_clear_cache">Bersihkan Cache</string>
 
     <string name="instant_loan_app_name">Dana Instan</string>
 
@@ -193,7 +195,10 @@
     <string name="label_manage_address">Daftar Alamat</string>
 
     <string name="title_activity_add_address">Tambah Alamat</string>
-    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
+    <string name="title_activity_search_address">Kota atau kecamatan</string>
+    <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
+
+    <string name="title_shipping_editor">Pengiriman</string>
 
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
@@ -306,6 +311,9 @@
     <string name="title_one_click_checkout_top_up_ovo">Top-up OVO</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
 
+    <!-- Dynamic feature for cart -->
+    <string name="checkout_module_title_activity_cart">Keranjang</string>
+
     <!-- Dynamic feature for buyerorder-->
     <string name="df_title_buyer_order">Daftar Transaksi</string>
     <string name="title_activity_people_reason">Ajukan Pembatalan</string>
@@ -349,7 +357,13 @@
     <!-- Seller Menu -->
     <string name="title_seller_menu">Toko Saya</string>
     <string name="title_seller_settings">Pengaturan Toko</string>
+    <string name="admin_authorize_title">Admin Role Access Authorize</string>
 
     <!--Dynamic feature for profile-->
     <string name="title_profile_df">Profile</string>
+
+    <!--Dynamic feature for lib image picker-->
+    <string name="vidpick_app_name">Video Recorder</string>
+    <string name="album">Album</string>
+    <string name="edit_image">Edit Gambar</string>
 </resources>

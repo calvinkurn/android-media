@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">tkpdseller</string>
+    <string name="next">Selanjutnya</string>
+    <string name="top_ads_label_stepper">%1$d dari %2$d step</string>
+    <string name="transaction_title_activity_order_history">Detail Status</string>
+    <string name="order_management_history_order_status">Status Pemesanan</string>
+</resources>

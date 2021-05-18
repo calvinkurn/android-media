@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
 
 buildscript {
     repositories {
@@ -14,8 +16,8 @@ buildscript {
 project.ext {
     artifactId = 'user_session'
     groupId = 'com.tokopedia.user.session'
-    versionName = "1.0.26"
-    artifactName = "user_session-release"
+    versionName = "1.0.38"
+    artifactName = "user_session-debug"
 }
 
 dependencies {

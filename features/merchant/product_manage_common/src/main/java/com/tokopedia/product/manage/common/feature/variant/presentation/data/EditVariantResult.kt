@@ -6,11 +6,13 @@ import com.tokopedia.product.manage.common.feature.variant.data.model.Selection
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 data class EditVariantResult(
-        val productId: String,
-        val productName: String,
-        val variants: List<ProductVariant>,
-        val selections: List<Selection>,
-        val sizeCharts: List<Picture>
+        val productId: String = "",
+        val productName: String = "",
+        val variants: List<ProductVariant> = emptyList(),
+        val selections: List<Selection> = emptyList(),
+        val sizeCharts: List<Picture> = emptyList(),
+        val editStock: Boolean = false,
+        val editStatus: Boolean = false
 ) {
 
     fun countVariantStock(): Int = variants.sumBy { it.stock }

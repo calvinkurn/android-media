@@ -36,6 +36,20 @@ fun String?.toZeroStringIfNull(): String {
     return this ?: "0"
 }
 
+fun String?.toZeroStringIfNullOrBlank(): String {
+    return when {
+        this == null -> {
+            this.toZeroStringIfNull()
+        }
+        this.isBlank() -> {
+            "0"
+        }
+        else -> {
+            this
+        }
+    }
+}
+
 fun CharSequence?.hasValue(): Boolean {
     return !this.isNullOrBlank()
 }

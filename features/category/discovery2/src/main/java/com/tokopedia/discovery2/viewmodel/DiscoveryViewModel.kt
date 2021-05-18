@@ -34,6 +34,7 @@ import com.tokopedia.discovery2.viewmodel.livestate.DiscoveryLiveState
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -65,7 +66,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     var pageType: String = ""
     var pagePath: String = ""
     var campaignCode: String = ""
-    var bottomTabNavDataComponent : ComponentsItem?  = null
+    var chooseAddressVisibilityLiveData = MutableLiveData<Boolean>()
+    private var bottomTabNavDataComponent : ComponentsItem?  = null
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
@@ -80,12 +82,12 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         get() = Dispatchers.Main + SupervisorJob()
 
 
-    fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>) {
+    fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>, userAddressData: LocalCacheModel?) {
         launchCatchError(
                 block = {
                     pageLoadTimePerformanceInterface?.stopPreparePagePerformanceMonitoring()
                     pageLoadTimePerformanceInterface?.startNetworkRequestPerformanceMonitoring()
-                    val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier, queryParameterMap)
+                    val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier, queryParameterMap, userAddressData)
                     pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
                     pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
@@ -116,6 +118,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         discoPageData?.pageInfo?.let { pageInfoData ->
             pageType = if(pageInfoData.type.isNullOrEmpty()) DISCOVERY_DEFAULT_PAGE_TYPE else pageInfoData.type
             pagePath = pageInfoData.path ?: ""
+            chooseAddressVisibilityLiveData.value = pageInfoData.showChooseAddress
             pageInfoData.additionalInfo = discoPageData.additionalInfo
             campaignCode = pageInfoData.campaignCode ?: ""
             discoveryPageInfo.value = Success(pageInfoData)
@@ -252,7 +255,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         WishListManager.onWishListUpdated(productCardOptionsModel,this.pageIdentifier)
     }
 
-    fun getWishListLiveData() = wishlistUpdateLiveData
+    fun checkAddressVisibility() = chooseAddressVisibilityLiveData
+    fun getAddressVisibilityValue() = chooseAddressVisibilityLiveData.value ?: false
 
     fun sendCouponInjectDataForLoggedInUsers() {
         launchCatchError(

@@ -1,11 +1,22 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
 
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
 project.ext {
     artifactId = 'cachemanager'
     groupId = 'com.tokopedia.cachemanager'
-    versionName = "2.24"
-    artifactName = "cache_manager"
+    versionName = "2.24.5"
+    artifactName = "cache_manager-debug"
 }
 
 

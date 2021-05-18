@@ -21,7 +21,6 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.remoteconfig.RemoteConfig
-import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 
 /**
@@ -102,7 +101,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
                 it.isEnabled = false
             }
             base_btn_action?.gone()
-            ticker_occ_layout?.gone()
         }
     }
 

@@ -10,7 +10,9 @@ data class ProductTagging(
         @SerializedName("products")
         val listOfProducts: List<Product> = emptyList(),
         @SerializedName("vouchers")
-        val listOfVouchers: List<Voucher> = emptyList()
+        val listOfVouchers: List<Voucher> = emptyList(),
+        @SerializedName("config")
+        val config: Config = Config()
 ) {
         data class Response(
                 @SerializedName("playGetTagsItem")
@@ -28,4 +30,9 @@ data class ProductTag(
 data class MerchantVoucher(
         @SerializedName("vouchers")
         val listOfVouchers: List<Voucher> = emptyList()
+)
+
+data class Config(
+        @SerializedName("peek_product_count")
+        val peekProductCount: Int = 0
 )

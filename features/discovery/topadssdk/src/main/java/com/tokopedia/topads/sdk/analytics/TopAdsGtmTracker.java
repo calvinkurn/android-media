@@ -2,23 +2,25 @@ package com.tokopedia.topads.sdk.analytics;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.iris.util.ConstantKt;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.LabelGroup;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.topads.sdk.domain.model.CpmData;
-import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.tokopedia.iris.util.ConstantKt;
+
+import kotlin.collections.CollectionsKt;
 
 /**
  * Author errysuprayogi on 24,January,2019
@@ -116,7 +118,7 @@ public class TopAdsGtmTracker {
                 "category", getCategoryBreadcrumb(item),
                 "list", "/searchproduct - topads productlist",
                 "position", position,
-                "dimension83", isFreeOngkirActive(item) ? "bebas ongkir" : "none / other"));
+                "dimension83", setFreeOngkirDataLayer(item)));
 
         //GTMv5
         Bundle product = new Bundle();
@@ -300,7 +302,7 @@ public class TopAdsGtmTracker {
                                             "category", getCategoryBreadcrumb(item),
                                             "variant", "none/other",
                                             "position", position,
-                                            "dimension83", isFreeOngkirActive(item) ? "bebas ongkir" : "none / other"))))
+                                            "dimension83", setFreeOngkirDataLayer(item)))))
             );
             IrisSession irisSession = new IrisSession(context);
             if(!TextUtils.isEmpty(irisSession.getSessionId()))
@@ -309,10 +311,29 @@ public class TopAdsGtmTracker {
         }
     }
 
+    private static String setFreeOngkirDataLayer(Product item) {
+        boolean isFreeOngkirActive = isFreeOngkirActive(item);
+        boolean hasLabelGroupFulfillment = hasLabelGroupFulfillment(item.getLabelGroupList());
+
+        if (isFreeOngkirActive && hasLabelGroupFulfillment) {
+            return "bebas ongkir extra";
+        }
+        else if (isFreeOngkirActive && !hasLabelGroupFulfillment) {
+            return "bebas ongkir";
+        }
+        else {
+            return "none / other";
+        }
+    }
+
     private static boolean isFreeOngkirActive(Product product) {
         return product != null
                 && product.getFreeOngkir() != null
                 && product.getFreeOngkir().isActive();
+    }
+
+    private static boolean hasLabelGroupFulfillment(List<LabelGroup> labelGroupList) {
+        return CollectionsKt.any(labelGroupList, labelGroup -> labelGroup.getPosition().equals("fulfillment"));
     }
 
     public void eventInboxProductClick(Context context, Product product, int position, String recommendationType) {

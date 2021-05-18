@@ -1,10 +1,9 @@
 package com.tokopedia.sellerorder.list.presentation.viewmodels
 
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerorder.common.SomOrderBaseViewModelTest
-import com.tokopedia.sellerorder.common.domain.usecase.*
-import com.tokopedia.sellerorder.common.presenter.model.Roles
-import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.usecases.*
@@ -12,12 +11,13 @@ import com.tokopedia.sellerorder.list.presentation.models.*
 import com.tokopedia.sellerorder.util.observeAwaitValue
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -25,8 +25,6 @@ import org.junit.Test
 import java.lang.reflect.Field
 
 class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
-    @RelaxedMockK
-    lateinit var getUserRoleUseCase: SomGetUserRoleUseCase
 
     @RelaxedMockK
     lateinit var somListGetTickerUseCase: SomListGetTickerUseCase
@@ -49,21 +47,27 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     @RelaxedMockK
     lateinit var bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase
 
-    private lateinit var somGetOrderListJobField: Field
+    @RelaxedMockK
+    lateinit var authorizeAccessUseCase: AuthorizeAccessUseCase
 
+    @RelaxedMockK
+    lateinit var authorizeMultiAcceptAccessUseCase: AuthorizeAccessUseCase
+
+    private lateinit var somGetOrderListJobField: Field
     private lateinit var somGetFiltersJobField: Field
     private lateinit var somRefreshOrderJobField: Field
+    private lateinit var somCanShowOrderDataField: Field
 
     private val dispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
     @Before
     override fun setUp() {
         super.setUp()
-        viewModel = spyk(SomListViewModel(getUserRoleUseCase, somAcceptOrderUseCase,
-                somRejectOrderUseCase, somRejectCancelOrderUseCase, somEditRefNumUseCase, userSessionInterface,
-                dispatcher, somListGetTickerUseCase, somListGetFilterListUseCase, somListGetWaitingPaymentUseCase,
-                somListGetOrderListUseCase, somListGetTopAdsCategoryUseCase, bulkAcceptOrderStatusUseCase,
-                bulkAcceptOrderUseCase))
+        viewModel = spyk(SomListViewModel(somAcceptOrderUseCase,
+                somRejectOrderUseCase, somRejectCancelOrderUseCase, somEditRefNumUseCase, somValidateOrderUseCase,
+                userSessionInterface, dispatcher, somListGetTickerUseCase, somListGetFilterListUseCase,
+                somListGetWaitingPaymentUseCase, somListGetOrderListUseCase, somListGetTopAdsCategoryUseCase,
+                bulkAcceptOrderStatusUseCase, bulkAcceptOrderUseCase, authorizeAccessUseCase, authorizeMultiAcceptAccessUseCase))
 
         somGetOrderListJobField = viewModel::class.java.getDeclaredField("getOrderListJob").apply {
             isAccessible = true
@@ -72,6 +76,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             isAccessible = true
         }
         somRefreshOrderJobField = viewModel::class.java.getDeclaredField("refreshOrderJobs").apply {
+            isAccessible = true
+        }
+        somCanShowOrderDataField = viewModel::class.java.getDeclaredField("_canShowOrderData").apply {
             isAccessible = true
         }
     }
@@ -558,6 +565,23 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
+    fun getFilters_shouldNotSuccess_whenCannotShowOrderData() {
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(any())
+        } returns SomListFilterUiModel(fromCache = false)
+
+        somCanShowOrderDataField.set(viewModel, MediatorLiveData<Boolean>().apply { value = false })
+
+        viewModel.getFilters(false)
+
+        coVerify(exactly = 0) {
+            somListGetFilterListUseCase.executeOnBackground(any())
+        }
+
+        assertFalse(viewModel.filterResult.observeAwaitValue() is Fail)
+    }
+
+    @Test
     fun getWaitingPaymentCounter_shouldSuccess() {
         val waitingPaymentCounterData = WaitingPaymentCounter()
         coEvery {
@@ -588,6 +612,22 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         assert(viewModel.waitingPaymentCounterResult.observeAwaitValue() is Fail)
     }
 
+    @Test
+    fun getWaitingPaymentCounter_shouldNotSuccess_whenCannotShowOrderData() {
+        coEvery {
+            somListGetWaitingPaymentUseCase.executeOnBackground(any())
+        } returns WaitingPaymentCounter()
+
+        somCanShowOrderDataField.set(viewModel, MediatorLiveData<Boolean>().apply { value = false })
+
+        viewModel.getWaitingPaymentCounter()
+
+        coVerify(exactly = 0) {
+            somListGetWaitingPaymentUseCase.executeOnBackground(any())
+        }
+
+        assertFalse(viewModel.waitingPaymentCounterResult.observeAwaitValue() is Success)
+    }
     @Test
     fun getOrderList_shouldSuccessAndClearAllFailedRefreshOrder() {
         val orderId = "1234567890"
@@ -678,6 +718,23 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         assert(viewModel.orderListResult.observeAwaitValue() is Fail)
         assert(viewModel.isLoadingOrder.observeAwaitValue() == false)
+    }
+
+    @Test
+    fun getOrderList_shouldNotSuccess_whenCannotShowOrderData() {
+        coEvery {
+            somListGetOrderListUseCase.executeOnBackground(any())
+        } returns ("0" to listOf())
+
+        somCanShowOrderDataField.set(viewModel, MediatorLiveData<Boolean>().apply { value = false })
+
+        viewModel.getOrderList()
+
+        coVerify(exactly = 0) {
+            somListGetOrderListUseCase.executeOnBackground(any())
+        }
+
+        assertFalse(viewModel.orderListResult.observeAwaitValue() is Success)
     }
 
     @Test
@@ -811,76 +868,78 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getUserRoles_shouldSuccess() {
+    fun getAdminPermission_shouldSuccess() {
         coEvery {
-            getUserRoleUseCase.execute()
-        } returns SomGetUserRoleUiModel()
-
-        viewModel.getUserRoles()
-
-        coVerify { getUserRoleUseCase.execute() }
-
-        assert(viewModel.userRoleResult.observeAwaitValue() is Success)
-    }
-
-    @Test
-    fun getUserRoles_shouldFailed() {
+            authorizeAccessUseCase.execute(any())
+        } returns true
         coEvery {
-            getUserRoleUseCase.execute()
-        } throws Throwable()
-
-        viewModel.getUserRoles()
-
-        coVerify { getUserRoleUseCase.execute() }
-
-        assert(viewModel.userRoleResult.observeAwaitValue() is Fail)
-    }
-
-    @Test
-    fun loadUserRoles_shouldNeverSendRequestWhenAnotherLoadUserRolesRequestIsOnProgress() = runBlocking {
-        val getUserRolesJob = mockk<Job>()
-
-        every {
-            getUserRolesJob.isCompleted
+            authorizeMultiAcceptAccessUseCase.execute(any())
+        } returns true
+        coEvery {
+            userSessionInterface.isShopOwner
         } returns false
-
-        viewModel.setUserRolesJob(getUserRolesJob)
-        viewModel.getUserRoles()
-
-        coVerify(inverse = true) {
-            getUserRoleUseCase.execute()
-        }
-
-        assert(viewModel.userRoleResult.observeAwaitValue() == null)
-    }
-
-    @Test
-    fun loadUserRoles_shouldSuccessWhenAnotherLoadUserRolesRequestIsCompleted() = runBlocking {
-        val getUserRolesJob = mockk<Job>()
         coEvery {
-            getUserRoleUseCase.execute()
-        } returns SomGetUserRoleUiModel()
-
-        every {
-            getUserRolesJob.isCompleted
+            userSessionInterface.isShopAdmin
         } returns true
 
-        viewModel.setUserRolesJob(getUserRolesJob)
-        viewModel.getUserRoles()
+        viewModel.getAdminPermission()
 
         coVerify {
-            getUserRoleUseCase.execute()
+            authorizeAccessUseCase.execute(any())
         }
 
-        assert(viewModel.userRoleResult.observeAwaitValue() is Success)
+        assert(viewModel.isOrderManageEligible.observeAwaitValue() is Success)
     }
 
     @Test
-    fun getUserRolesTest() {
-        val newUserRolesValue = SomGetUserRoleUiModel(listOf(Roles.MANAGE_SHOPSTATS))
-        viewModel.setUserRoles(newUserRolesValue)
-        val userRolesValue = viewModel.userRoleResult.observeAwaitValue()
-        assert(userRolesValue is Success && userRolesValue.data == newUserRolesValue)
+    fun getAdminPermission_shouldFail() {
+        coEvery {
+            authorizeAccessUseCase.execute(any())
+        } throws Throwable()
+        coEvery {
+            userSessionInterface.isShopOwner
+        } returns false
+        coEvery {
+            userSessionInterface.isShopAdmin
+        } returns true
+
+        viewModel.getAdminPermission()
+
+        coVerify {
+            authorizeAccessUseCase.execute(any())
+        }
+
+        assert(viewModel.isOrderManageEligible.observeAwaitValue() is Fail)
+    }
+
+    @Test
+    fun getAdminPermission_whenIsShopOwner_shouldNotRunAndUserShouldEligible() {
+        coEvery {
+            userSessionInterface.isShopOwner
+        } returns true
+
+        viewModel.getAdminPermission()
+
+        coVerify(exactly = 0) {
+            authorizeAccessUseCase.execute(any())
+        }
+        assert((viewModel.isOrderManageEligible.value as? Success)?.data?.first == true)
+    }
+
+    @Test
+    fun getAdminPermission_whenIsNotShopOwnerButIsShopAdmin_shouldRun() {
+        coEvery {
+            userSessionInterface.isShopOwner
+        } returns false
+        coEvery {
+            userSessionInterface.isShopAdmin
+        } returns true
+
+        viewModel.getAdminPermission()
+
+        coVerify {
+            authorizeAccessUseCase.execute(any())
+        }
     }
 
     @Test
@@ -921,13 +980,6 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         doGetTopAdsCategory_shouldSuccess(4)
 
         assert(viewModel.isTopAdsActive())
-    }
-
-    @Test
-    fun clearUserRolesTest() {
-        viewModel.clearUserRoles()
-
-        assert(viewModel.userRoleResult.observeAwaitValue() == null)
     }
 
     @Test

@@ -31,7 +31,10 @@ data class PostDataModel(
         val cta: PostCtaDataModel? = PostCtaDataModel(),
         @SerializedName("errorMsg")
         @Expose
-        val error: String?
+        val error: String?,
+        @SerializedName("showWidget")
+        @Expose
+        val showWidget: Boolean?
 )
 
 data class PostItemDataModel(

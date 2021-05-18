@@ -32,20 +32,21 @@
         android:paddingLeft="@dimen/dynamic_filter_item_padding"
         android:paddingRight="@dimen/dynamic_filter_item_padding">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/wholesale_title"
-            style="@style/TextView.Title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            app:typographyType="body_1"
+            app:typographyWeight="reguler"
             />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/wholesale_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:thumbTint="@color/switch_thumb_color_state"
-            app:trackTint="@color/switch_track_color_state"/>
+            app:thumbTint="@color/filter_dms_switch_thumb_color_state"
+            app:trackTint="@color/filter_dms_switch_track_color_state"/>
 
     </LinearLayout>
 
