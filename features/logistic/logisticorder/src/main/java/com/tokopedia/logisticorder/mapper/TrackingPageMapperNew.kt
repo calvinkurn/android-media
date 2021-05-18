@@ -65,12 +65,14 @@ class TrackingPageMapperNew @Inject constructor() {
         }
     }
 
-    private fun mapAdditionalInfo(additionalInfo: AdditionalInfo): AdditionalInfoModel {
-        return AdditionalInfoModel().apply {
-            title = additionalInfo.title
-            notes = additionalInfo.notes
-            urlDetail = additionalInfo.urlDetail
-            urlText = additionalInfo.urlText
+    private fun mapAdditionalInfo(additionalInfo: List<AdditionalInfo>): List<AdditionalInfoModel> {
+        return additionalInfo.map {
+            AdditionalInfoModel(
+                    it.title,
+                    it.notes,
+                    it.urlDetail,
+                    it.urlText
+            )
         }
     }
 

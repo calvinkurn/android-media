@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.adapter.EmptyTrackingNotesAdapter
 import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
@@ -32,7 +34,7 @@ import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity.Compan
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.*
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -270,11 +272,41 @@ class TrackingPageFragmentKotlin: BaseDaggerFragment() {
     }
 
     private fun setTicketInfoCourier(page: PageModel) {
-       if (page.additionalInfo.title.isEmpty()) {
-           tickerInfoCourier?.visibility = View.GONE
+       if (page.additionalInfo.isEmpty()) {
+           tickerInfoLayout?.visibility = View.GONE
        } else {
-           tickerInfoCourier?.visibility = View.VISIBLE
-           //set info ticker here
+           tickerInfoLayout?.visibility = View.VISIBLE
+           if (page.additionalInfo.size > 1) {
+               val message = ArrayList<TickerData>()
+               for (item in page.additionalInfo) {
+                   val formattedDes = formatTitleHtml(item.notes, item.urlDetail, item.urlText)
+                   message.add(TickerData(item.title, formattedDes, Ticker.TYPE_ANNOUNCEMENT, true))
+               }
+               val tickerPageAdapter = TickerPagerAdapter(context, message)
+               tickerPageAdapter?.setPagerDescriptionClickEvent(object: TickerPagerCallback {
+                   override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                       RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                   }
+
+               })
+               tickerInfoCourier?.addPagerView(tickerPageAdapter, message)
+           } else {
+               val formattedDesc = formatTitleHtml(page.additionalInfo[0].notes, page.additionalInfo[0].urlDetail, page.additionalInfo[0].urlText)
+               tickerInfoCourier?.setHtmlDescription(formattedDesc)
+               tickerInfoCourier?.tickerTitle = page.additionalInfo[0].title
+               tickerInfoCourier?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+               tickerInfoCourier?.tickerShape = Ticker.SHAPE_LOOSE
+               tickerInfoCourier?.setDescriptionClickEvent(object: TickerCallback {
+                   override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                       RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                   }
+
+                   override fun onDismiss() {
+                       //no-op
+                   }
+
+               })
+           }
        }
     }
 
@@ -316,7 +348,7 @@ class TrackingPageFragmentKotlin: BaseDaggerFragment() {
         startActivityForResult(intent, LIVE_TRACKING_VIEW_REQ)
     }
 
-    private fun formatTitleHtml(desc: String, urlText: String, url: String): String? {
+    private fun formatTitleHtml(desc: String, urlText: String, url: String): String {
         return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url)
     }
 

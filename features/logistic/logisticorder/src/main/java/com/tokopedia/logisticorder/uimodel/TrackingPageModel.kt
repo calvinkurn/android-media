@@ -50,7 +50,7 @@ data class TrackHistoryModel(
 )
 
 data class PageModel(
-        var additionalInfo: AdditionalInfoModel = AdditionalInfoModel()
+        var additionalInfo: List<AdditionalInfoModel> = listOf()
 )
 
 data class AdditionalInfoModel(

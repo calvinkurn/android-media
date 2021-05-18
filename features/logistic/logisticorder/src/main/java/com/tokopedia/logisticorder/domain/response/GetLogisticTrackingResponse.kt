@@ -85,7 +85,7 @@ data class TrackHistory(
 
 data class Page(
         @SerializedName("additional_info")
-        val additionalInfo: AdditionalInfo = AdditionalInfo()
+        val additionalInfo: List<AdditionalInfo> = listOf()
 )
 
 data class AdditionalInfo(
