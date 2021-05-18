@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
@@ -13,12 +12,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.common.base.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
@@ -26,10 +27,12 @@ import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.Product
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
+import com.tokopedia.unifycomponents.Toaster
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
         ChooseAddressListener,
+        BannerComponentListener,
         TitleListener,
         QuickFilterListener, SortFilterBottomSheet.Callback {
 
@@ -155,6 +158,11 @@ abstract class BaseSearchCategoryFragment:
 
     override fun onSeeAllCategoryClicked() {
 
+    }
+
+    override fun onBannerClick(applink: String) {
+        // TODO: Route to applink
+        Toaster.build(requireView(), "Navigate to Applink", Toaster.TYPE_NORMAL, Toaster.LENGTH_SHORT)
     }
 
     override fun openFilterPage() {

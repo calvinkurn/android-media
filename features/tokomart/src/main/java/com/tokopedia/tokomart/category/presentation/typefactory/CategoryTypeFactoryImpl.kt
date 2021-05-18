@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
 import com.tokopedia.tokomart.category.presentation.viewholder.CategoryIsleViewHolder
+import com.tokopedia.tokomart.common.base.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
@@ -13,10 +14,12 @@ import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearch
 class CategoryTypeFactoryImpl(
         chooseAddressListener: ChooseAddressListener,
         titleListener: TitleListener,
+        bannerListener: BannerComponentListener,
         quickFilterListener: QuickFilterListener,
 ): BaseSearchCategoryTypeFactoryImpl(
         chooseAddressListener,
         titleListener,
+        bannerListener,
         quickFilterListener,
 ), CategoryTypeFactory {
 

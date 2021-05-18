@@ -23,6 +23,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataV
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.util.DummyDataViewGenerator
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.UseCase
@@ -79,7 +80,7 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun createHeaderVisitableList(headerDataView: HeaderDataView) = listOf(
             ChooseAddressDataView(),
-            BannerDataView(),
+            DummyDataViewGenerator.generateBannerDataView(),
             TitleDataView(headerDataView.title, headerDataView.hasSeeAllCategoryButton),
             QuickFilterDataView(createQuickFilterItemList(headerDataView)),
             ProductCountDataView(headerDataView.aceSearchProductHeader.totalDataText),
