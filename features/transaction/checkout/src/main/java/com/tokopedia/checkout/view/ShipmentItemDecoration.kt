@@ -55,6 +55,9 @@ class ShipmentItemDecoration : RecyclerView.ItemDecoration() {
                     outRect.top = verticalSpaceHeight
                     outRect.bottom = it.resources.getDimension(R.dimen.dp_0).toInt()
                 }
+                viewHolder is ShipmentTickerAnnouncementViewHolder -> {
+                    outRect.bottom = if (viewHolder.isEmptyTicker()) it.resources.getDimension(R.dimen.dp_0).toInt() else verticalSpaceHeight
+                }
                 else -> {
                     outRect.bottom = verticalSpaceHeight
                 }

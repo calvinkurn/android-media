@@ -152,7 +152,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final ExecutorSchedulers executorSchedulers;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
-    private TickerAnnouncementHolderData tickerAnnouncementHolderData;
+    private TickerAnnouncementHolderData tickerAnnouncementHolderData = new TickerAnnouncementHolderData();
     private RecipientAddressModel recipientAddressModel;
     private ShipmentCostModel shipmentCostModel;
     private EgoldAttributeModel egoldAttributeModel;
@@ -555,7 +555,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             );
             analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
         } else {
-            setTickerAnnouncementHolderData(null);
+            setTickerAnnouncementHolderData(new TickerAnnouncementHolderData());
         }
 
         RecipientAddressModel newAddress = shipmentDataConverter
@@ -1039,6 +1039,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         setCouponStateChanged(true);
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
+        getView().setStateLoadingCourierStateAtIndex(cartPosition, true);
 
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
@@ -1052,6 +1053,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onError(Throwable e) {
+                                getView().setStateLoadingCourierStateAtIndex(cartPosition, false);
                                 Timber.d(e);
                                 if (getView() != null) {
                                     mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.getMessage());
@@ -1070,6 +1072,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+                                getView().setStateLoadingCourierStateAtIndex(cartPosition, false);
                                 ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
                                 if (getView() != null) {
                                     updateTickerAnnouncementData(validateUsePromoRevampUiModel);

@@ -27,6 +27,7 @@ import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
+import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHolder;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -163,7 +164,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             return new ShipmentButtonPaymentViewHolder(view, shipmentAdapterActionListener, compositeSubscription);
         } else if (viewType == TickerAnnouncementViewHolder.Companion.getLAYOUT()) {
-            return new TickerAnnouncementViewHolder(view, null);
+            return new ShipmentTickerAnnouncementViewHolder(view, null);
         } else if (viewType == ShippingCompletionTickerViewHolder.Companion.getITEM_VIEW_TICKER_SHIPPING_COMPLETION()) {
             return new ShippingCompletionTickerViewHolder(view, shipmentAdapterActionListener);
         }

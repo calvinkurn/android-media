@@ -152,6 +152,8 @@ public interface ShipmentContract {
         void updateLocalCacheAddressData(UserAddress userAddress);
 
         void resetAllCourier();
+
+        void setStateLoadingCourierStateAtIndex(int index, boolean isLoading);
     }
 
     interface AnalyticsActionListener {

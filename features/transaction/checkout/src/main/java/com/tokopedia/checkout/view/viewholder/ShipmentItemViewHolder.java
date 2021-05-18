@@ -682,6 +682,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
 
         if (selectedCourierItemData != null) {
+            if (shipmentCartItemModel.isStateLoadingCourierState()) {
+                // Has select shipping, but still loading
+                renderLoadingCourierState();
+                return;
+            }
             // Has select shipping
             renderSelectedCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         } else {
