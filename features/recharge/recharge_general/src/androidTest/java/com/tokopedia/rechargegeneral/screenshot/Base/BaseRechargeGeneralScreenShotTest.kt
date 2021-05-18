@@ -73,7 +73,7 @@ abstract class BaseRechargeGeneralScreenShotTest {
                 R.id.rv_digital_product,
                 0,
                 getRecyclerViewItemCount(R.id.rv_digital_product),
-                "rv_digital_product")
+                "${filePrefix()}-rv_digital_product")
 
         run_specific_product_test()
         see_promo()
