@@ -2,6 +2,7 @@ package com.tokopedia.webview
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.ParseException
 import android.net.Uri
 import android.os.Bundle
@@ -277,7 +278,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         const val SELLERAPP_PACKAGE = "com.tokopedia.sellerapp"
         const val CUSTOMERAPP_PACKAGE = "com.tokopedia.tkpd"
         const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
-        const val CHROME_PACKAGE = "com.android.chrome"
 
         @DeepLink(ApplinkConst.WEBVIEW_PARENT_HOME)
         @JvmStatic
@@ -350,8 +350,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
             // return when the device has a browser app
             return if (resolveInfos.size >= 1) {
-                // open chrome app by default
-                val resolveInfo = resolveInfos.find { it.resolvePackageName == CHROME_PACKAGE }?: resolveInfos[0]
+                // open preferred default browser
+                val resolveInfo = context.packageManager.resolveActivity(destinationIntent, PackageManager.MATCH_DEFAULT_ONLY)?: resolveInfos.first()
                 val browserIntent = Intent()
                 browserIntent.setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
                 browserIntent.data = uriData
