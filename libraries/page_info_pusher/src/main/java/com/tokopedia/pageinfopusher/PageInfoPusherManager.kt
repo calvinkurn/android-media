@@ -94,9 +94,9 @@ class PageInfoPusherManager(val activity: Activity) {
             if (isHitTimber) {
                 ServerLogger.log(Priority.P2, "DISPLAY_GENERAL_INFO",
                         mapOf(
-                                "type" to className,
-                                "id" to id,
-                                "dev" to GlobalConfig.isAllowDebuggingTools()
+                                "type" to (className ?: ""),
+                                "id" to (id ?: ""),
+                                "dev" to GlobalConfig.isAllowDebuggingTools().toString()
                         )
                 )
             }
