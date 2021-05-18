@@ -164,19 +164,19 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             } else if (registerRequestDataResult is Fail) {
                 val throwable = registerRequestDataResult.throwable
                 dismissLoadingProgress()
+                val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                 if(throwable is MessageErrorException){
                     throwable.message?.run {
                         if(this.contains(ALREADY_REGISTERED)){
                             showInfo()
                         } else {
-                            onErrorRegister(throwable.message)
+                            onErrorRegister(errorMessage)
                         }
                     }
                 } else {
                     if (context != null) {
                         val forbiddenMessage = context?.getString(
                                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
-                        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                         if (errorMessage == forbiddenMessage) {
                             onForbidden()
                         } else {

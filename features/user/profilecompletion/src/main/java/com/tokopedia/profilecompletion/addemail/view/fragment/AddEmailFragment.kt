@@ -1,27 +1,27 @@
 package com.tokopedia.profilecompletion.addemail.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
+import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.sessioncommon.SessionMessageErrorException
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -199,7 +199,7 @@ class AddEmailFragment : BaseDaggerFragment() {
                 val email = et_email.textFieldInput.text.toString().trim()
                 viewModel.mutateAddEmail(context!!, email, otpCode)
             } else {
-                onErrorShowSnackbar(MessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
+                onErrorShowSnackbar(SessionMessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                         ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))
             }
         }
