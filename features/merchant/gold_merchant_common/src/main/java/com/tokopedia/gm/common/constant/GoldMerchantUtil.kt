@@ -8,8 +8,8 @@ import kotlin.math.abs
 
 object GoldMerchantUtil {
 
-    fun isNewSeller(dateString: String, days: Int): Boolean {
-        return totalDays(dateString) < days
+    fun isNewSeller(dateString: String): Boolean {
+        return totalDays(dateString) < NEW_SELLER_DAYS
     }
     fun totalDays(dateString: String): Int {
         return try {
