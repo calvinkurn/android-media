@@ -27,7 +27,7 @@
     <string name="menu_home_back_to_home">Kembali ke Home</string>
 
     <string name="menu_user_menu_wishlist">Wishlist</string>
-    <string name="menu_user_menu_favorite_shop">Toko Favorit</string>
+    <string name="menu_user_menu_favorite_shop">Toko yang Di-follow</string>
     <string name="menu_user_menu_recent_view">Terakhir Dilihat</string>
     <string name="menu_user_menu_subscription">Langganan</string>
     <string name="menu_user_menu_complain">Pesanan Dikomplain</string>
