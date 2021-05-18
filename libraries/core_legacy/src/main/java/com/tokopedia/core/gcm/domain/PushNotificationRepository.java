@@ -21,9 +21,5 @@ public interface PushNotificationRepository {
 
     Observable<Boolean> saveRegistrationDevice(String registration);
 
-    Observable<List<MessagePushNotification>> getSavedMessagePushNotification();
-
-    Observable<List<DiscussionPushNotification>> getSavedDiscussionPushNotification();
-
     Observable<Boolean> clearPushNotificationStorage();
 }

@@ -77,26 +77,6 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     }
 
     @Override
-    public Observable<List<MessagePushNotification>> getSavedMessagePushNotification() {
-        Map<String, String> messageMap = new HashMap<>();
-        messageMap.put("type", "getSavedMessagePushNotification");
-        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
-        return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
-                .getPushSavedPushNotificationWithOrderBy(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE, true)
-                .map(mPushNotificationMapper::transformMessage);
-    }
-
-    @Override
-    public Observable<List<DiscussionPushNotification>> getSavedDiscussionPushNotification() {
-        Map<String, String> messageMap = new HashMap<>();
-        messageMap.put("type", "getSavedDiscussionPushNotification");
-        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
-        return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
-                .getPushSavedPushNotificationWithOrderBy(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION, true)
-                .map(mPushNotificationMapper::transformDiscussion);
-    }
-
-    @Override
     public Observable<Boolean> clearPushNotificationStorage() {
         return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
                 .deleteSavedPushNotification();
