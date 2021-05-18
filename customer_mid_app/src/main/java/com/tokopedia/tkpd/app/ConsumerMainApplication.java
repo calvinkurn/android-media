@@ -420,7 +420,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
-        getAmplificationPushData();
         return true;
     }
 
@@ -501,34 +500,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
             }
         });
-    }
-
-    private void getAmplificationPushData() {
-        /*
-         * Amplification of push notification.
-         * fetch all of cm_push_notification's
-         * push notification data that aren't rendered yet.
-         * then, put all of push_data into local storage.
-         * */
-
-        System.out.println("Amplification API before remote config");
-        if (getAmplificationRemoteConfig()) {
-            try {
-                System.out.println("Amplification API after remote config");
-                AmplificationDataSource.invoke(ConsumerMainApplication.this);
-            } catch (Exception e) {
-                Map<String, String> messageMap = new HashMap<>();
-                messageMap.put("type", "exception");
-                messageMap.put("err", Log.getStackTraceString
-                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
-                messageMap.put("data", "");
-                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-            }
-        }
-    }
-
-    private Boolean getAmplificationRemoteConfig() {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_AMPLIFICATION, false);
     }
 
     private void openShakeDetectCampaignPage(boolean isLongShake) {
