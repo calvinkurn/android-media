@@ -273,13 +273,22 @@ open class HomeRevampViewModel @Inject constructor(
                         queryParam = bestSellerDataModel.widgetParam
                 )
                 recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground().filterChip)
-
-                val recomData = getRecommendationUseCase.get().getData(
-                        GetRecommendationRequestParam(
-                                pageName = bestSellerDataModel.pageName,
-                                queryParam = bestSellerDataModel.widgetParam
-                        )
-                )
+                val activatedChip = recomFilterList.find { it.isActivated }
+                val recomData = if (activatedChip == null) {
+                    getRecommendationUseCase.get().getData(
+                            GetRecommendationRequestParam(
+                                    pageName = bestSellerDataModel.pageName,
+                                    queryParam = bestSellerDataModel.widgetParam
+                            )
+                    )
+                } else {
+                    getRecommendationUseCase.get().getData(
+                            GetRecommendationRequestParam(
+                                    pageName = bestSellerDataModel.pageName,
+                                    queryParam = if(activatedChip.isActivated) activatedChip.value else ""
+                            )
+                    )
+                }
 
                 if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
                     val recomWidget = recomData.first().copy(
