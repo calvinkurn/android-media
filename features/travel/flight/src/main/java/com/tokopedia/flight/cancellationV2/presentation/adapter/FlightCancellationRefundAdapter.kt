@@ -12,10 +12,10 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.flight.R
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationRefund
+import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationRefundModel
 
 class FlightCancellationRefundAdapter : RecyclerView.Adapter<FlightCancellationRefundAdapter.ViewHolder>() {
-    private var descriptions: List<FlightCancellationRefund> = arrayListOf()
+    private var descriptions: List<FlightCancellationRefundModel> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_flight_cancellation_refund, parent, false)
@@ -28,7 +28,7 @@ class FlightCancellationRefundAdapter : RecyclerView.Adapter<FlightCancellationR
 
     override fun getItemCount(): Int = descriptions.size
 
-    fun setDescriptions(descriptions: List<FlightCancellationRefund>) {
+    fun setDescriptions(descriptions: List<FlightCancellationRefundModel>) {
         this.descriptions = descriptions
     }
 
@@ -36,7 +36,7 @@ class FlightCancellationRefundAdapter : RecyclerView.Adapter<FlightCancellationR
 
         private val descriptionTextView: AppCompatTextView = itemView.findViewById(R.id.tv_description)
 
-        fun bind(description: FlightCancellationRefund) {
+        fun bind(description: FlightCancellationRefundModel) {
             val color = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
             val fullText = description.title + ", " + description.subtitle
             val startIndex = fullText.indexOf(description.subtitle)
