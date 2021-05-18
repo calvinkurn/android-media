@@ -130,6 +130,9 @@
     <string name="review_form_neutral_helper">Kasih tahu apa yang kurang dan yang perlu ditingkatkan.</string>
     <string name="review_form_bad_helper">Kasih tahu apa yang tidak memuaskan dan perlu ditingkatkan.</string>
     <string name="review_form_worst_helper">Kasih tahu apa yang mengecewakan dan perlu ditingkatkan.</string>
+    <string name="review_form_incentives_exit_dialog_title">Yakin mau keluar? 😢</string>
+    <string name="review_form_incentives_exit_dialog_body">Tinggal sedikit lagi buat dapat TokoPoints. Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini.</string>
+    <string name="review_form_incentives_incomplete_dialog_body">Dengan ulasan lengkap, kamu bisa dapat hadiah TokoPoints, lho!</string>
 
     <string name="review_date">• %s</string>
     <string name="review_refresh">Refresh</string>

@@ -453,7 +453,11 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun setSubmitButtonOnClickListener() {
         submitButton?.setOnClickListener {
-            submitNewReview()
+            if(!isReviewComplete() && createReviewViewModel.isUserEligible()) {
+                showReviewIncompleteDialog()
+            } else {
+                submitNewReview()
+            }
         }
     }
 
@@ -552,12 +556,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun showReviewIncompleteDialog() {
         val title = getString(R.string.review_create_incomplete_title)
-        showDialog(title, getString(R.string.review_create_incomplete_subtitle), getString(R.string.review_create_incomplete_cancel), {
-            dismiss()
+        showDialog(title, getString(R.string.review_form_incentives_incomplete_dialog_body), getString(R.string.review_create_incomplete_cancel), {
             CreateReviewTracking.eventClickCompleteReviewFirst(title)
         }, getString(R.string.review_create_incomplete_send_anyways), {
             isReviewIncomplete = true
-            dismiss()
             submitNewReview()
             CreateReviewTracking.eventClickSendNow(title)
         })
@@ -566,13 +568,16 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun showSendRatingOnlyDialog() {
         showDialog(getString(R.string.review_form_send_rating_only_dialog_title), getString(R.string.review_form_send_rating_only_body), getString(R.string.review_form_send_rating_only_exit), { dismiss() }, getString(R.string.review_form_send_rating_only), {
-            dismiss()
             submitNewReview()
         })
     }
 
     private fun showReviewUnsavedWarningDialog() {
         showDialog(getString(R.string.review_form_dismiss_form_dialog_title), getString(R.string.review_form_dismiss_form_dialog_body), getString(R.string.review_edit_dialog_exit), { dismiss() }, getString(R.string.review_form_dismiss_form_dialog_stay), {})
+    }
+
+    private fun showIncentivesExitWarningDialog() {
+        showDialog(getString(R.string.review_form_incentives_exit_dialog_title), getString(R.string.review_form_incentives_exit_dialog_body), getString(R.string.review_edit_dialog_exit), { dismiss() }, getString(R.string.review_form_dismiss_form_dialog_stay), {})
     }
 
     private fun showDialog(title: String, description: String, primaryCtaText: String, primaryCtaAction: () -> Unit, secondaryCtaText: String, secondaryCtaAction: () -> Unit) {
@@ -659,6 +664,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun handleDismiss() {
+        if (createReviewViewModel.isUserEligible()) {
+            showIncentivesExitWarningDialog()
+            return
+        }
         if (isGoodRating() && textArea?.isEmpty() == true) {
             showSendRatingOnlyDialog()
             return
