@@ -12,9 +12,9 @@ abstract class SomBaseRejectOrderBottomSheet(
         bottomSheetTitle: String
 ) : SomBottomSheet(childViewsLayoutResourceId, true, true, false, bottomSheetTitle, context, true) {
 
-    protected fun checkReasonRejectIsNotEmpty(reason: String): Boolean {
+    protected fun checkReasonRejectIsNotEmpty(reason: String?): Boolean {
         var isNotEmpty = true
-        if (reason.isEmpty()) isNotEmpty = false
+        if (reason.isNullOrEmpty()) isNotEmpty = false
         return isNotEmpty
     }
 

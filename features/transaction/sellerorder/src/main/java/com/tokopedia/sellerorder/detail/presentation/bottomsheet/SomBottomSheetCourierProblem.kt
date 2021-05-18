@@ -45,8 +45,8 @@ class SomBottomSheetCourierProblem(
                 orderRejectRequest.rCode = rejectReason.reasonCode.toString()
 
                 if (tf_extra_notes?.visibility == View.VISIBLE) {
-                    orderRejectRequest.reason = tf_extra_notes?.textFieldInput?.text.toString()
-                    if (checkReasonRejectIsNotEmpty(tf_extra_notes?.textFieldInput?.text.toString())) {
+                    orderRejectRequest.reason = tf_extra_notes?.textFieldInput?.text?.toString().orEmpty()
+                    if (checkReasonRejectIsNotEmpty(tf_extra_notes?.textFieldInput?.text?.toString())) {
                         listener.onDoRejectOrder(orderRejectRequest)
                     } else {
                         showToasterError(context.getString(R.string.cancel_order_notes_empty_warning))

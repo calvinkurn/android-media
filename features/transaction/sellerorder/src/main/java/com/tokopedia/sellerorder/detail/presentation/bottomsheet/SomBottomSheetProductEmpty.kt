@@ -54,11 +54,7 @@ class SomBottomSheetProductEmpty(
                 }
                 orderRejectRequest.listPrd = strListPrd
                 orderRejectRequest.reason = tf_extra_notes?.textFieldInput?.text.toString()
-                if (checkReasonRejectIsNotEmpty(tf_cancel_notes?.textFieldInput?.text.toString())) {
-                    listener.onDoRejectOrder(orderRejectRequest)
-                } else {
-                    showToasterError(context.getString(R.string.cancel_order_notes_empty_warning))
-                }
+                listener.onDoRejectOrder(orderRejectRequest)
             }
         }
     }

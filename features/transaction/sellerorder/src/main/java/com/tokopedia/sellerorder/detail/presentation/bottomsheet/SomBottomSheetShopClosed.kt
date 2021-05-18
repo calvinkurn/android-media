@@ -60,7 +60,7 @@ class SomBottomSheetShopClosed(
                         closedNote = tf_shop_closed_notes?.textFieldInput?.text.toString(),
                         closeEnd = tf_end_shop_closed?.textFieldInput?.text.toString()
                 )
-                if (checkReasonRejectIsNotEmpty(tf_cancel_notes?.textFieldInput?.text.toString())) {
+                if (checkReasonRejectIsNotEmpty(tf_shop_closed_notes?.textFieldInput?.text?.toString())) {
                     listener.onDoRejectOrder(orderRejectRequest)
                 } else {
                     showToasterError(context.getString(R.string.cancel_order_notes_empty_warning))
