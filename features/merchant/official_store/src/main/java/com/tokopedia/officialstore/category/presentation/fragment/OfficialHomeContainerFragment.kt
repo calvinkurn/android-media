@@ -132,6 +132,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         super.onDestroy()
     }
 
+
     override fun onStop() {
         super.onStop()
         chooseAddressWidgetInitialized = false
@@ -184,6 +185,11 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         conditionalViewModelRefresh()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        userVisibleHint = !hidden
     }
 
     private fun fetchOSCategory() {
