@@ -1,6 +1,7 @@
 package com.tokopedia.tokomart.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
 import com.tokopedia.tokomart.category.utils.CATEGORY_FIRST_PAGE_USE_CASE
@@ -18,8 +19,14 @@ class CategoryViewModel @Inject constructor (
         private val getCategoryFirstPageUseCase: UseCase<CategoryModel>,
         @param:Named(CATEGORY_LOAD_MORE_PAGE_USE_CASE)
         private val getCategoryLoadMorePageUseCase: UseCase<CategoryModel>,
+        getFilterUseCase: UseCase<DynamicFilterModel>,
         chooseAddressWrapper: ChooseAddressWrapper,
-): BaseSearchCategoryViewModel(baseDispatcher, chooseAddressWrapper) {
+): BaseSearchCategoryViewModel(
+        baseDispatcher,
+        mapOf(),
+        getFilterUseCase,
+        chooseAddressWrapper
+) {
 
     override fun onViewCreated() {
         getCategoryFirstPageUseCase.cancelJobs()

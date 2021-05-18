@@ -4,37 +4,45 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.common.base.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
+import com.tokopedia.unifycomponents.Toaster
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
         ChooseAddressListener,
-        TitleListener {
+        BannerComponentListener,
+        TitleListener,
+        QuickFilterListener, SortFilterBottomSheet.Callback {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
     }
 
-    private var searchCategoryAdapter: SearchCategoryAdapter? = null
-    private var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
+    protected var searchCategoryAdapter: SearchCategoryAdapter? = null
+    protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
+    protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
 
     protected var navToolbar: NavToolbar? = null
     protected var recyclerView: RecyclerView? = null
@@ -125,13 +133,15 @@ abstract class BaseSearchCategoryFragment:
     protected open fun observeViewModel() {
         getViewModel().visitableListLiveData.observe(viewLifecycleOwner, this::submitList)
         getViewModel().hasNextPageLiveData.observe(viewLifecycleOwner, this::updateEndlessScrollListener)
+        getViewModel().isFilterPageOpenLiveData.observe(viewLifecycleOwner, this::openBottomSheetFilter)
+        getViewModel().dynamicFilterModelLiveData.observe(
+                viewLifecycleOwner, this::onDynamicFilterModelChanged)
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
 
     protected open fun submitList(visitableList: List<Visitable<*>>) {
-        if (visitableList.isNotEmpty())
-            searchCategoryAdapter?.submitList(visitableList)
+        searchCategoryAdapter?.submitList(visitableList)
     }
 
     protected open fun updateEndlessScrollListener(hasNextPage: Boolean) {
@@ -151,5 +161,52 @@ abstract class BaseSearchCategoryFragment:
 
     override fun onSeeAllCategoryClicked() {
 
+    }
+
+    override fun onBannerClick(applink: String) {
+        // TODO: Route to applink
+        Toaster.build(requireView(),
+                "Navigate to Applink",
+                Toaster.TYPE_NORMAL,
+                Toaster.LENGTH_SHORT)
+    }
+
+    override fun openFilterPage() {
+        getViewModel().onViewOpenFilterPage()
+    }
+
+    private fun openBottomSheetFilter(isFilterPageOpen: Boolean) {
+        if (!isFilterPageOpen) return
+
+        val mapParameter = getViewModel().queryParam
+        val dynamicFilterModel = getViewModel().dynamicFilterModelLiveData.value
+
+        sortFilterBottomSheet = SortFilterBottomSheet().also {
+            it.show(
+                    parentFragmentManager,
+                    mapParameter,
+                    dynamicFilterModel,
+                    this
+            )
+
+            it.setOnDismissListener {
+                sortFilterBottomSheet = null
+                getViewModel().onViewDismissFilterPage()
+            }
+        }
+    }
+
+    override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+
+    }
+
+    override fun getResultCount(mapParameter: Map<String, String>) {
+
+    }
+
+    private fun onDynamicFilterModelChanged(dynamicFilterModel: DynamicFilterModel?) {
+        dynamicFilterModel?.let { it ->
+            sortFilterBottomSheet?.setDynamicFilterModel(it)
+        }
     }
 }
