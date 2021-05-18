@@ -77,7 +77,7 @@ public class BottomNavigation extends BottomNavigationView {
     }
 
     private void setDefaultStyle() {
-        this.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bottomnav_bg));
+        this.setBackgroundColor(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
         this.enableAnimation(false);
         this.enableShiftingMode(false);
         this.enableItemShiftingMode(false);

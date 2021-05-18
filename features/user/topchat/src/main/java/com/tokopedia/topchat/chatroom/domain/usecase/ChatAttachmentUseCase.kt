@@ -3,6 +3,8 @@ package com.tokopedia.topchat.chatroom.domain.usecase
 import androidx.collection.ArrayMap
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
@@ -19,9 +21,6 @@ open class ChatAttachmentUseCase @Inject constructor(
 
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
-    private val paramMsgId = "msgId"
-    private val paramLimit = "AttachmentIDs"
-
     fun safeCancel() {
         if (coroutineContext.isActive) {
             gqlUseCase.cancelJobs()
@@ -32,12 +31,13 @@ open class ChatAttachmentUseCase @Inject constructor(
     fun getAttachments(
             msgId: Long,
             attachmentId: String,
+            userLocation: LocalCacheModel,
             onSuccess: (ArrayMap<String, Attachment>) -> Unit,
             onError: (Throwable, ArrayMap<String, Attachment>) -> Unit
     ) {
         launchCatchError(dispatchers.io,
                 {
-                    val params = generateParams(msgId, attachmentId)
+                    val params = generateParams(msgId, attachmentId, userLocation)
                     val response = gqlUseCase.apply {
                         setTypeClass(ChatAttachmentResponse::class.java)
                         setRequestParams(params)
@@ -59,17 +59,36 @@ open class ChatAttachmentUseCase @Inject constructor(
 
     private fun generateParams(
             msgId: Long,
-            attachmentId: String
+            attachmentId: String,
+            userLocation: LocalCacheModel
     ): Map<String, Any> {
+        val addressId = userLocation.address_id.toLongOrZero()
+        val districtId = userLocation.district_id.toLongOrZero()
+        val postalCode = userLocation.postal_code
+        val latlon = if (userLocation.lat.isEmpty() || userLocation.long.isEmpty()) {
+            ""
+        } else {
+            "${userLocation.lat},${userLocation.long}"
+        }
         return mapOf(
                 paramMsgId to msgId,
-                paramLimit to attachmentId
+                paramLimit to attachmentId,
+                paramAddressId to addressId,
+                paramDistrictId to districtId,
+                paramPostalCode to postalCode,
+                paramLatLon to latlon,
         )
     }
 
     val query = """
-        query chatAttachments($$paramMsgId: Int!, $$paramLimit: String) {
-          chatAttachments(msgId: $$paramMsgId, AttachmentIDs: $$paramLimit) {
+        query chatAttachments(
+            $$paramMsgId: Int!, $$paramLimit: String, $$paramAddressId: Int,
+            $$paramDistrictId: Int, $$paramPostalCode: String, $$paramLatLon: String
+        ) {
+          chatAttachments(
+            msgId: $$paramMsgId, AttachmentIDs: $$paramLimit, addressID: $$paramAddressId,
+            districtID: $$paramDistrictId, postalCode: $$paramPostalCode, latlon: $$paramLatLon
+          ) {
             list {
              id
               type
@@ -83,4 +102,13 @@ open class ChatAttachmentUseCase @Inject constructor(
           }
         }
     """.trimIndent()
+
+    companion object {
+        private val paramMsgId = "msgId"
+        private val paramLimit = "AttachmentIDs"
+        private val paramAddressId = "addressID"
+        private val paramDistrictId = "districtID"
+        private val paramPostalCode = "postalCode"
+        private val paramLatLon = "latlon"
+    }
 }

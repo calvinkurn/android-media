@@ -197,7 +197,6 @@ public class RemoteConfigKey {
     public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
     public static final String ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK = "app_enable_branch_utm_only_branch_link";
-    public static final String ENABLE_SKIP_DEEPLINK_FRON_NON_BRANCH_LINK = "app_enable_skip_deeplink_from_non_branch_link";
 
     public static final String ENABLE_REVAMP_EVENT = "android_mainapp_enable_event_revamp";
     public static final String ENABLE_REVAMP_PDP_EVENT = "android_mainapp_enable_pdp_event";
@@ -229,6 +228,8 @@ public class RemoteConfigKey {
 
     public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
     public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
+
+    public static final String NAVIGATION_ENABLE_NOTIF = "android_customer_navigation_enable_notif";
 
     public static final String ENABLE_UOH = "android_enable_uoh";
 

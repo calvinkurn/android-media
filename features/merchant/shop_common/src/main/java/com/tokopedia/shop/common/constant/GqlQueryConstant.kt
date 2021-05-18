@@ -208,45 +208,6 @@ object GqlQueryConstant {
             "    }\n" +
             "}"
 
-    const val QUERY_GET_IS_OFFICIAL = """
-      query getIsOfficial(${'$'}shop_id: Int!){
-        getIsOfficial(shop_id: ${'$'}shop_id){
-          data{
-            is_official
-            expired_date
-          }
-          message_error
-        }
-      }
-    """
-
-    const val QUERY_GET_IS_POWER_MERCHANT = """
-          query goldGetPMOSStatus(${'$'}shopID: Int!, ${'$'}includeOS: Boolean!){
-              goldGetPMOSStatus(
-                shopID: ${'$'}shopID,
-                includeOS: ${'$'}includeOS){
-                header{
-                  process_time
-                  messages
-                  reason
-                  error_code
-                }
-                data{
-                  shopID
-                  power_merchant {
-                    status
-                    auto_extend{
-                      status
-                      tkpd_product_id
-                    }
-                    expired_time
-                    shop_popup
-                  }
-                }
-              }
-            }
-    """
-
     fun getShopInfoQuery(requestQuery: String, queryName: String = DEFAULT_SHOP_INFO_QUERY_NAME): String {
         return String.format(SHOP_INFO_BASE_QUERY_STRING, queryName, requestQuery)
     }

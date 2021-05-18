@@ -82,7 +82,7 @@ class ShopHomeCarousellProductViewHolder(
                 productCardModelList = shopHomeProductViewModelList.map {
                     ShopPageHomeMapper.mapToProductCardModel(
                             isHasAtc(),
-                            !isHasAtc(),
+                            false,
                             it,
                             false
                     )

@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ChatBackgroundUseCase @Inject constructor(
+open class ChatBackgroundUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatBackgroundResponse>,
         private val cacheManager: TopchatCacheManager,
         private var dispatchers: CoroutineDispatchers
