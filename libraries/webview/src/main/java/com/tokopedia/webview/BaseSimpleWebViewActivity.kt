@@ -277,6 +277,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         const val SELLERAPP_PACKAGE = "com.tokopedia.sellerapp"
         const val CUSTOMERAPP_PACKAGE = "com.tokopedia.tkpd"
         const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
+        const val CHROME_PACKAGE = "com.android.chrome"
 
         @DeepLink(ApplinkConst.WEBVIEW_PARENT_HOME)
         @JvmStatic
@@ -347,9 +348,10 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 }
             }
 
-            // return the first intent only (only if it is the only available browser)
+            // return when the device has a browser app
             return if (resolveInfos.size >= 1) {
-                val resolveInfo = resolveInfos[0]
+                // open chrome app by default
+                val resolveInfo = resolveInfos.find { it.resolvePackageName == CHROME_PACKAGE }?: resolveInfos[0]
                 val browserIntent = Intent()
                 browserIntent.setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
                 browserIntent.data = uriData
