@@ -8,8 +8,8 @@ import com.tokopedia.loginfingerprint.data.model.ValidateFingerprintResult
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.domain.usecase.ValidateFingerprintUseCase
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.sessioncommon.SessionMessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
@@ -63,7 +63,7 @@ class ScanFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatch
             if (errorMessage.isBlank() && isSuccess) {
                 loginToken(it.validateToken)
             } else if (!errorMessage.isBlank()) {
-                mutableLoginFingerprintResult.value = Fail(SessionMessageErrorException(errorMessage,
+                mutableLoginFingerprintResult.value = Fail(MessageErrorException(errorMessage,
                         ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
             } else {
                 mutableLoginFingerprintResult.value = Fail(RuntimeException())

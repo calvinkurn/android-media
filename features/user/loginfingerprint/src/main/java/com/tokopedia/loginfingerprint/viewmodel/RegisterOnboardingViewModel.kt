@@ -9,8 +9,8 @@ import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.sessioncommon.SessionMessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -51,7 +51,7 @@ class RegisterOnboardingViewModel @Inject constructor(dispatcher: CoroutineDispa
                 fingerprintSetting.registerFingerprint()
                 fingerprintSetting.saveUserId(userSession.userId)
             } else if (!errorMessage.isBlank()) {
-                mutableRegisterFingerprintResult.value = Fail(SessionMessageErrorException(errorMessage,
+                mutableRegisterFingerprintResult.value = Fail(MessageErrorException(errorMessage,
                         ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
             } else {
                 mutableRegisterFingerprintResult.value = Fail(RuntimeException())

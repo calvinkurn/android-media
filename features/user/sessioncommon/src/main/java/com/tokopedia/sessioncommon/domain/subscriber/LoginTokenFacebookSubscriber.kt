@@ -1,9 +1,9 @@
 package com.tokopedia.sessioncommon.domain.subscriber
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.sessioncommon.SessionMessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -33,10 +33,10 @@ class LoginTokenFacebookSubscriber(val userSession: UserSessionInterface,
                 pojo.loginToken.popupError.action.isNotEmpty()) {
             onShowPopupError(pojo)
         } else if (pojo.loginToken.errors.isNotEmpty()) {
-            onErrorLoginToken(SessionMessageErrorException(pojo.loginToken.errors[0].message,
+            onErrorLoginToken(MessageErrorException(pojo.loginToken.errors[0].message,
                     ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
         } else if (errors.isNotEmpty()) {
-            onErrorLoginToken(SessionMessageErrorException(errors[0].message,
+            onErrorLoginToken(MessageErrorException(errors[0].message,
                     ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
         } else {
             onErrorLoginToken(Throwable())

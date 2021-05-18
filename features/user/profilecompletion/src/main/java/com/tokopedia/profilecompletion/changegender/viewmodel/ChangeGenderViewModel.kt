@@ -5,12 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.changegender.data.ChangeGenderPojo
 import com.tokopedia.profilecompletion.changegender.data.ChangeGenderResult
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_GENDER
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.sessioncommon.SessionMessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -55,7 +55,7 @@ class ChangeGenderViewModel @Inject constructor(private val graphqlUseCase:  Gra
             if (errorMessage.isBlank() && isSuccess) {
                 mutateChangeGenderResponse.value = Success(ChangeGenderResult(it.data, gender))
             } else if (!errorMessage.isBlank()) {
-                mutateChangeGenderResponse.value = Fail(SessionMessageErrorException(errorMessage,
+                mutateChangeGenderResponse.value = Fail(MessageErrorException(errorMessage,
                         ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
             } else {
                 mutateChangeGenderResponse.value = Fail(RuntimeException())

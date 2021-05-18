@@ -16,12 +16,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
 import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.sessioncommon.SessionMessageErrorException
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -199,7 +199,7 @@ class AddEmailFragment : BaseDaggerFragment() {
                 val email = et_email.textFieldInput.text.toString().trim()
                 viewModel.mutateAddEmail(context!!, email, otpCode)
             } else {
-                onErrorShowSnackbar(SessionMessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
+                onErrorShowSnackbar(MessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                         ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))
             }
         }

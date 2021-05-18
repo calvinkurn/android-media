@@ -54,13 +54,10 @@ public class ErrorHandlerSession extends ErrorHandler {
     public static String getErrorMessage(Throwable e, final Context context, boolean
             showErrorCode) {
 
-        if (e instanceof SessionMessageErrorException
+        if (e instanceof MessageErrorException
                 && !TextUtils.isEmpty(e.getLocalizedMessage())) {
-            return showErrorCode ? formatString(e.getLocalizedMessage(), ((SessionMessageErrorException)
+            return showErrorCode ? formatString(e.getLocalizedMessage(), ((MessageErrorException)
                     e).getErrorCode()) : e.getLocalizedMessage();
-        } else if (e instanceof MessageErrorException
-                && !TextUtils.isEmpty(e.getLocalizedMessage())) {
-            return  e.getLocalizedMessage();
         } else {
             return ErrorHandler.getErrorMessage(context, e);
         }
