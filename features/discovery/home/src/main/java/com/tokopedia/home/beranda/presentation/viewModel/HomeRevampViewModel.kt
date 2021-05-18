@@ -300,9 +300,8 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendationWidget(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel){
-        val data = _homeLiveData.value?.list?.toMutableList()
-        data?.withIndex()?.find { it.value is BestSellerDataModel && (it.value as BestSellerDataModel).id == bestSellerDataModel.id }?.let {
+    fun getRecommendationWidget(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, selectedChipsPosition: Int){
+        findWidget<BestSellerDataModel> { currentDataModel, index ->
             launchCatchError(coroutineContext, block = {
                 val recomData = getRecommendationUseCase.get().getData(
                         GetRecommendationRequestParam(
@@ -315,7 +314,7 @@ open class HomeRevampViewModel @Inject constructor(
                             recommendationFilterChips = bestSellerDataModel.filterChip
                     )
                     val newBestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
-                    val newModel = (it.value as BestSellerDataModel).copy(
+                    val newModel = currentDataModel.copy(
                             seeMoreAppLink = newBestSellerDataModel.seeMoreAppLink,
                             recommendationItemList = newBestSellerDataModel.recommendationItemList,
                             productCardModelList = newBestSellerDataModel.productCardModelList,
@@ -323,16 +322,17 @@ open class HomeRevampViewModel @Inject constructor(
                             filterChip = newBestSellerDataModel.filterChip.map{
                                 it.copy(isActivated = filterChip.name == it.name
                                         && filterChip.isActivated)
-                            }
+                            },
+                            chipsPosition = (selectedChipsPosition+1)
                     )
-                    updateWidget(newModel, it.index)
+                    updateWidget(newModel, index)
                 } else {
                     updateWidget(bestSellerDataModel.copy(
                             filterChip = bestSellerDataModel.filterChip.map{
                                 it.copy(isActivated = filterChip.name == it.name
                                         && !filterChip.isActivated)
                             }
-                    ), it.index)
+                    ), index)
                 }
             }){ _ ->
                 updateWidget(bestSellerDataModel.copy(
@@ -340,7 +340,7 @@ open class HomeRevampViewModel @Inject constructor(
                             it.copy(isActivated = filterChip.name == it.name
                                     && !filterChip.isActivated)
                         }
-                ), it.index)
+                ), index)
             }
         }
     }
