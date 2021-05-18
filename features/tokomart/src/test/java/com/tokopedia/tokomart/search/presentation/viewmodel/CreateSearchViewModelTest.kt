@@ -16,7 +16,7 @@ class CreateSearchViewModelTest: SearchTestFixtures() {
     }
 
     private fun `When create view model`() {
-        setUpViewModel(defaultQueryParamMap)
+        `Given search view model`(defaultQueryParamMap)
     }
 
     private fun `Then assert keyword from parameter`() {

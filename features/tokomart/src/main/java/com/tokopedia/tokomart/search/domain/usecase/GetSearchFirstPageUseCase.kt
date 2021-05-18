@@ -7,7 +7,7 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.data.mapper.getSearchProduct
-import com.tokopedia.tokomart.searchcategory.domain.model.QuickFilterModel
+import com.tokopedia.tokomart.searchcategory.domain.model.FilterModel
 import com.tokopedia.usecase.coroutines.UseCase
 
 class GetSearchFirstPageUseCase(
@@ -26,7 +26,7 @@ class GetSearchFirstPageUseCase(
 
         return SearchModel(
                 searchProduct = getSearchProduct(graphqlResponse),
-                quickFilter = graphqlResponse.getData<QuickFilterModel?>(QuickFilterModel::class.java)?.filterSortProduct?.data ?: DataValue()
+                quickFilter = graphqlResponse.getData<FilterModel?>(FilterModel::class.java)?.filterSortProduct?.data ?: DataValue()
         )
     }
 
