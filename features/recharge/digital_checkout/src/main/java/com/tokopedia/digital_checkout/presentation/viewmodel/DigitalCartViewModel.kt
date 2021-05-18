@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
@@ -33,10 +32,8 @@ import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper.getRequestBody
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.network.exception.ResponseDataNullException
-import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -47,9 +44,6 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -70,9 +64,9 @@ class DigitalCartViewModel @Inject constructor(
     val cartDigitalInfoData: LiveData<CartDigitalInfoData>
         get() = _cartDigitalInfoData
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String>
-        get() = _errorMessage
+    private val _errorThrowable = MutableLiveData<Throwable>()
+    val errorThrowable: LiveData<Throwable>
+        get() = _errorThrowable
 
     private val _isNeedOtp = MutableLiveData<String>()
     val isNeedOtp: LiveData<String>
@@ -113,7 +107,7 @@ class DigitalCartViewModel @Inject constructor(
     fun getCart(categoryId: String,
                 errorNotLoginMessage: String = "") {
         if (!userSession.isLoggedIn) {
-            _errorMessage.postValue(errorNotLoginMessage)
+            _errorThrowable.postValue(MessageErrorException(errorNotLoginMessage))
         } else {
             _showContentCheckout.postValue(false)
             _showLoading.postValue(true)
@@ -147,7 +141,8 @@ class DigitalCartViewModel @Inject constructor(
             }
 
         }) {
-            handleError(it)
+            _showLoading.postValue(false)
+            _errorThrowable.postValue(it)
         }
     }
 
@@ -160,7 +155,8 @@ class DigitalCartViewModel @Inject constructor(
 
     private fun onErrorGetCart(): (Throwable) -> Unit {
         return {
-            handleError(it)
+            _showLoading.postValue(false)
+            _errorThrowable.postValue(it)
         }
     }
 
@@ -190,23 +186,6 @@ class DigitalCartViewModel @Inject constructor(
             _showContentCheckout.postValue(true)
             _showLoading.postValue(false)
         }
-    }
-
-    fun handleError(e: Throwable) {
-        if (e is UnknownHostException) {
-            _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)
-        } else if (e is SocketTimeoutException || e is ConnectException) {
-            _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
-        } else if (e is ResponseErrorException) {
-            _errorMessage.postValue(e.message)
-        } else if (e is ResponseDataNullException) {
-            _errorMessage.postValue(e.message)
-        } else if (e is HttpErrorException) {
-            _errorMessage.postValue(e.message)
-        } else {
-            _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
-        }
-        _showLoading.postValue(false)
     }
 
     fun cancelVoucherCart() {
@@ -336,7 +315,8 @@ class DigitalCartViewModel @Inject constructor(
                     }
 
                 }) {
-                    handleError(it)
+                    _showLoading.postValue(false)
+                    _errorThrowable.postValue(it)
                 }
             }
         }

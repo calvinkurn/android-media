@@ -17,13 +17,15 @@ import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.PictureResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.rechargeocr.analytics.RechargeCameraAnalytics
 import com.tokopedia.rechargeocr.di.RechargeCameraInstance
 import com.tokopedia.rechargeocr.util.RechargeOcrGqlQuery
 import com.tokopedia.rechargeocr.viewmodel.RechargeUploadImageViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_recharge_camera.*
@@ -68,21 +70,27 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
 
         uploadImageviewModel.resultDataOcr.observe(viewLifecycleOwner, Observer { ocrData ->
-            hideLoading()
-            rechargeCameraAnalytics.scanIdCard(VALUE_TRACKING_OCR_SUCCESS)
-            activity?.let {
-                val intentReturn = Intent()
-                intentReturn.putExtra(EXTRA_NUMBER_FROM_CAMERA_OCR, ocrData)
-                it.setResult(Activity.RESULT_OK, intentReturn)
-                it.finish()
-            }
-        })
+            when (ocrData) {
+                is Success -> {
+                    hideLoading()
+                    rechargeCameraAnalytics.scanIdCard(VALUE_TRACKING_OCR_SUCCESS)
+                    activity?.let {
+                        val intentReturn = Intent()
+                        intentReturn.putExtra(EXTRA_NUMBER_FROM_CAMERA_OCR, ocrData.data)
+                        it.setResult(Activity.RESULT_OK, intentReturn)
+                        it.finish()
+                    }
+                }
 
-        uploadImageviewModel.errorActionOcr.observe(viewLifecycleOwner, Observer {
-            hideLoading()
-            showCameraView()
-            rechargeCameraAnalytics.scanIdCard(it)
-            Toaster.build(layout_container, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                is Fail -> {
+                    hideLoading()
+                    showCameraView()
+                    val throwableMessage = ErrorHandler.getErrorMessage(requireContext(), ocrData.throwable)
+                    rechargeCameraAnalytics.scanIdCard(throwableMessage)
+                    Toaster.build(layout_container, throwableMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                }
+            }
+
         })
     }
 

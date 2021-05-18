@@ -39,6 +39,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -211,14 +212,22 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     val defaultOperatorId = getDefaultOperatorId()
                     if (previousOperatorId != defaultOperatorId) {
                         operatorId = defaultOperatorId
-                        val defaultOperatorName = getOperatorData(operatorId)?.attributes?.name ?: ""
+                        val defaultOperatorName = getOperatorData(operatorId)?.attributes?.name
+                                ?: ""
                         operator_select.setInputText(defaultOperatorName, false)
                         getProductList(menuId, operatorId)
                     } else {
                         hideLoading()
                     }
+
+                    val throwableMessage = if (it.throwable.message == NULL_PRODUCT_ERROR) {
+                        getString(R.string.selection_null_product_error)
+                    } else {
+                        ErrorHandler.getErrorMessage(requireContext(), it.throwable)
+                    }
+
                     view?.let { v ->
-                        Toaster.build(v, getString(R.string.selection_null_product_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        Toaster.build(v, throwableMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
                 }

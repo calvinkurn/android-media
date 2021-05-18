@@ -37,6 +37,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -397,7 +398,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     private fun showErrorMessage(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message
+            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error)
                     ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }

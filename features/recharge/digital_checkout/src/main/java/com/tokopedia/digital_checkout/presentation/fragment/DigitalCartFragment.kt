@@ -167,7 +167,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> viewModel.getCart(it.data)
-                is Fail -> closeViewWithMessageAlert(it.throwable.message ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                is Fail -> closeViewWithMessageAlert(ErrorHandler.getErrorMessage(requireContext(), it.throwable))
             }
         })
 
@@ -176,8 +176,11 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             renderCartBasedOnParamState()
         })
 
-        viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
-            closeViewWithMessageAlert(it ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+        viewModel.errorThrowable.observe(viewLifecycleOwner, Observer {
+            val throwableMessage = if (!ErrorHandler.getErrorMessage(requireContext(), it).isNullOrEmpty()) {
+                ErrorHandler.getErrorMessage(requireContext(), it)
+            } else ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+            closeViewWithMessageAlert(throwableMessage)
         })
 
         viewModel.isSuccessCancelVoucherCart.observe(viewLifecycleOwner, Observer {
@@ -361,7 +364,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun onFailedCancelVoucher(throwable: Throwable) {
-        var message: String = ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+        var message: String = getString(R.string.digital_checkout_error_remove_coupon_message)
         if (!throwable.message.isNullOrEmpty()) {
             message = ErrorHandler.getErrorMessage(activity, throwable)
         }

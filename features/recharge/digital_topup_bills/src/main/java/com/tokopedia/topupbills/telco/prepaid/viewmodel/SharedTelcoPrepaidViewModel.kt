@@ -68,7 +68,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         get() = _loadingProductList
 
     private val _positionScrollItem = MutableLiveData<Int>()
-    val positionScrollItem : LiveData<Int>
+    val positionScrollItem: LiveData<Int>
         get() = _positionScrollItem
 
     fun setProductCatalogSelected(productCatalogItem: TelcoProduct) {

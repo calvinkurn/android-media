@@ -12,11 +12,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
@@ -34,7 +35,6 @@ import com.tokopedia.topupbills.telco.prepaid.model.TelcoFilterData
 import com.tokopedia.topupbills.telco.prepaid.viewmodel.SharedTelcoPrepaidViewModel
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalTelcoProductWidget
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -112,7 +112,10 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 if (telcoFilterData.isFilterSelected()) titleFilterResult.show() else titleFilterResult.hide()
                 when (it) {
                     is Success -> onSuccessProductList()
-                    is Fail -> onErrorProductList()
+                    is Fail -> {
+                        if (it.throwable.message.isNullOrEmpty()) onErrorProductList()
+                        else onErrorProductList(it.throwable)
+                    }
                 }
             })
 
@@ -296,6 +299,11 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         titleEmptyState.text = getString(R.string.title_telco_product_empty_state, titleProduct)
         descEmptyState.text = getString(R.string.desc_telco_product_empty_state, titleProduct)
         emptyStateProductView.show()
+        telcoTelcoProductView.hide()
+    }
+
+    private fun onErrorProductList(throwable: Throwable) {
+        NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessage(requireContext(), throwable))
         telcoTelcoProductView.hide()
     }
 
