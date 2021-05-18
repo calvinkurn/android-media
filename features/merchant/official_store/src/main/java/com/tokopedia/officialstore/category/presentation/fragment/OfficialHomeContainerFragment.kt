@@ -455,7 +455,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private fun conditionalViewModelRefresh() {
         chooseAddressAbTestCondition(
                 ifChooseAddressActive = {
-                    if (!validateChooseAddressWidget() && chooseAddressWidgetInitialized) {
+                    if (!validateChooseAddressWidget()) {
                         chooseAddressWidget?.updateWidget()
                         fetchOSCategory()
                     }
