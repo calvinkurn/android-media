@@ -3,47 +3,12 @@ package com.tokopedia.core.gcm.base;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
-import android.text.TextUtils;
 
-import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.data.PushNotificationDataRepository;
 import com.tokopedia.core.gcm.domain.PushNotificationRepository;
 import com.tokopedia.core.gcm.domain.usecase.SavePushNotificationUseCase;
-import com.tokopedia.core.gcm.notification.dedicated.NewDiscussionNotification;
-import com.tokopedia.core.gcm.notification.dedicated.NewMessageNotification;
-import com.tokopedia.core.gcm.notification.dedicated.NewOrderNotification;
-import com.tokopedia.core.gcm.notification.dedicated.NewReviewNotification;
-import com.tokopedia.core.gcm.notification.dedicated.PurchaseDisputeNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToSellerEditNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToSellerNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ResCenterAdminSellerReplyNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ResCenterNewNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ResCenterSellerAgreeNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ResCenterSellerReplyNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ReviewEditedNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ReviewReplyNotification;
-import com.tokopedia.core.gcm.notification.dedicated.SellingAutoCancel2DNotification;
-import com.tokopedia.core.gcm.notification.dedicated.SellingAutoCancel4DNotification;
-import com.tokopedia.core.gcm.notification.dedicated.SellingInvalidResiNotification;
-import com.tokopedia.core.gcm.notification.dedicated.SellingOrderDeliveredNotification;
-import com.tokopedia.core.gcm.notification.dedicated.SellingOrderFinishedNotification;
-import com.tokopedia.core.gcm.notification.dedicated.TicketResponseNotification;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
-import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.usecase.RequestParams;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import rx.Subscriber;
 
 /**
  * Created by alvarisi on 1/18/17.
