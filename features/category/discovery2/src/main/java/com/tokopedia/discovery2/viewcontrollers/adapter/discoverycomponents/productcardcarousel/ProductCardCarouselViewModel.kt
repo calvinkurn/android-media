@@ -49,6 +49,8 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         super.onAttachToViewHolder()
         handleLihatSemuaHeader()
         fetchProductCarouselData()
+
+        // Remove
 //        fetchProductCarouselData(false)
     }
 
@@ -149,6 +151,8 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 //        })
 //    }
 
+
+    // Remove
     fun fetchCarouselPaginatedProducts() {
         isLoading = true
         launchCatchError(block = {

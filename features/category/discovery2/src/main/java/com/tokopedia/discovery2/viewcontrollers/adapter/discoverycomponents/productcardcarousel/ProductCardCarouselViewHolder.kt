@@ -150,6 +150,8 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         mProductCarouselRecyclerView.visible()
         carouselEmptyState?.gone()
         mProductCarouselComponentViewModel.fetchProductCarouselData()
+
+        // Remove
 //        mProductCarouselComponentViewModel.fetchProductCarouselData(true)
     }
 

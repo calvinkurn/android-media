@@ -32,10 +32,8 @@ class ErrorLoadViewHolder(itemView: View, private val fragment: Fragment) : Abst
             setTitle(context?.getString(R.string.discovery_product_empty_state_title).orEmpty())
             setDescription(context?.getString(R.string.discovery_product_empty_state_description).orEmpty())
             setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500, null))
-            setSecondaryCTAText(context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty())
-            emptyStateCTAFullWidth = true
-            setOrientation(EmptyStateUnify.Orientation.HORIZONTAL)
-            setSecondaryCTAClickListener {
+            setPrimaryCTAText(context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty())
+            setPrimaryCTAClickListener {
                 errorLoadViewModel.reloadComponentData()
             }
             emptyStateCTAID.buttonVariant = UnifyButton.Variant.GHOST
