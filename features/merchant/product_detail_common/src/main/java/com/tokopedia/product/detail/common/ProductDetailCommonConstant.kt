@@ -47,4 +47,36 @@ object ProductDetailCommonConstant{
     const val PARAM_APPLINK_SHOP_ID = "shop_id"
     const val PARAM_APPLINK_IS_VARIANT_SELECTED = "is_variant_selected"
     const val PARAM_APPLINK_AVAILABLE_VARIANT = "available variants"
+
+    const val KEY_NORMAL_BUTTON = "normal"
+    const val KEY_OCS_BUTTON = "ocs"
+    const val KEY_OCC_BUTTON = "occ"
+    const val KEY_CHAT = "chat"
+    const val KEY_BYME = "byme"
+    const val KEY_REMIND_ME = "remind_me"
+    const val KEY_CHECK_WISHLIST = "check_wishlist"
+    const val KEY_BUTTON_PRIMARY = "primary"
+    const val KEY_BUTTON_PRIMARY_GREEN = "primary_green"
+    const val KEY_BUTTON_SECONDARY_GREEN = "secondary_green"
+    const val KEY_BUTTON_DISABLE = "disabled"
+    const val KEY_BUTTON_SECONDARY = "secondary"
+    const val KEY_BUTTON_SECONDARY_GRAY = "secondary_gray"
+
+    //Button Action
+    const val BUY_BUTTON = 1
+    const val ATC_BUTTON = 2
+    const val OCS_BUTTON = 3
+    const val OCC_BUTTON = 4
+    const val LEASING_BUTTON = 5
+    const val TRADEIN_BUTTON = 6
+    const val TRADEIN_AFTER_DIAGNOSE = 7
+    const val REMIND_ME_BUTTON = 8
+    const val CHECK_WISHLIST_BUTTON = 9
+
+    const val REQUEST_CODE_CHECKOUT = 12382
+
+    //OVO
+    const val OVO_INACTIVE_STATUS = 1;
+    const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;
+
 }

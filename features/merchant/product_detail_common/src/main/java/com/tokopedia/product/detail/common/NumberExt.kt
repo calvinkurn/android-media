@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.data.util
+package com.tokopedia.product.detail.common
 
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols

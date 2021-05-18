@@ -1,19 +1,19 @@
-package com.tokopedia.product.detail.view.bottomsheet
+package com.tokopedia.product.detail.common.bottomsheet
 
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.OvoValidationDataModel
-import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
-import com.tokopedia.product.detail.data.util.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.product.detail.common.ProductTrackingCommon
+import com.tokopedia.product.detail.common.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 class OvoFlashDealsBottomSheet(val productId: String,
                                val userId: String,
-                               val ovoValidationDataModel: OvoValidationDataModel)
+                               private val ovoValidationDataModel: OvoValidationDataModel)
     : BottomSheetUnify() {
 
     private lateinit var childView: View
@@ -65,7 +65,7 @@ class OvoFlashDealsBottomSheet(val productId: String,
         btnTopupInstant.visibility = if (ovoInsufficientBalanceModel.buttons.topupButton.enable) View.VISIBLE else View.GONE
         btnTopupInstant.setOnClickListener {
             activity?.let {
-                DynamicProductDetailTracking.Click.eventTopupBottomSheetOvo(
+                ProductTrackingCommon.eventTopupBottomSheetOvo(
                         ovoInsufficientBalanceModel.title,
                         ovoInsufficientBalanceModel.buttons.topupButton.text,
                         productId,
@@ -79,7 +79,7 @@ class OvoFlashDealsBottomSheet(val productId: String,
         btnTopupOtherMethod.visibility = if (ovoInsufficientBalanceModel.buttons.otherMethodButton.enable) View.VISIBLE else View.GONE
         btnTopupOtherMethod.setOnClickListener {
             activity?.let {
-                DynamicProductDetailTracking.Click.eventTopupBottomSheetOvo(
+                ProductTrackingCommon.eventTopupBottomSheetOvo(
                         ovoInsufficientBalanceModel.title,
                         ovoInsufficientBalanceModel.buttons.otherMethodButton.text,
                         productId,
@@ -88,6 +88,6 @@ class OvoFlashDealsBottomSheet(val productId: String,
                 dismiss()
             }
         }
-        DynamicProductDetailTracking.Click.eventSeeBottomSheetOvo(ovoInsufficientBalanceModel.title, productId, userId)
+        ProductTrackingCommon.eventSeeBottomSheetOvo(ovoInsufficientBalanceModel.title, productId, userId)
     }
 }

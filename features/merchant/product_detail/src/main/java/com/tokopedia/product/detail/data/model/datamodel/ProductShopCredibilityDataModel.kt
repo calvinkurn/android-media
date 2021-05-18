@@ -6,7 +6,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.data.util.productThousandFormatted
+import com.tokopedia.product.detail.common.productThousandFormatted
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.product.detail.view.util.getIdLocale
 import com.tokopedia.product.detail.view.util.getRelativeDateByHours

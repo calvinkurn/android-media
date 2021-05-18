@@ -8,7 +8,7 @@ import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
-import com.tokopedia.product.detail.data.util.getCurrencyFormatted
+import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import kotlinx.android.synthetic.main.item_product_content.view.*

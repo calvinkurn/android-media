@@ -8,6 +8,7 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductStatusType
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
+import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.view.util.toDate
 
 /**

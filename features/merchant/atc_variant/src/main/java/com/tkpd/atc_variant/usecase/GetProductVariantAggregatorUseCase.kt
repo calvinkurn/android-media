@@ -9,6 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregator
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -17,7 +18,7 @@ import javax.inject.Inject
  * Created by Yehezkiel on 05/05/21
  */
 class GetProductVariantAggregatorUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository)
-    : UseCase<ProductVariantAggregator>() {
+    : UseCase<ProductVariantAggregatorUiData>() {
 
     companion object {
         val QUERY = """
@@ -140,12 +141,12 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
 
     private var requestParams: Map<String, Any?> = mapOf()
 
-    suspend fun executeOnBackground(requestParams: Map<String, Any?>): ProductVariantAggregator {
+    suspend fun executeOnBackground(requestParams: Map<String, Any?>): ProductVariantAggregatorUiData {
         this.requestParams = requestParams
         return executeOnBackground()
     }
 
-    override suspend fun executeOnBackground(): ProductVariantAggregator {
+    override suspend fun executeOnBackground(): ProductVariantAggregatorUiData {
         val request = GraphqlRequest(QUERY, ProductVariantAggregator::class.java, requestParams)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
                 .build()
@@ -162,6 +163,14 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
             throw NullPointerException("variant empty")
         }
 
-        return data
+        return mapToUiData(data)
+    }
+
+    fun mapToUiData(data: ProductVariantAggregator): ProductVariantAggregatorUiData {
+        return ProductVariantAggregatorUiData(
+                data.variantData,
+                data.cardRedirection.data.associateBy({ it.productId }, { it }),
+                data.nearestWarehouse.associateBy({ it.productId }, { it.warehouseInfo })
+        )
     }
 }

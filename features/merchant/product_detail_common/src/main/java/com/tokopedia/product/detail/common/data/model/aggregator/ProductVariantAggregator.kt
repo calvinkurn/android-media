@@ -13,7 +13,7 @@ import com.tokopedia.product.detail.common.data.model.warehouse.NearestWarehouse
 data class ProductVariantAggregator(
         @SerializedName("variantData")
         @Expose
-        var variantData: ProductVariant = ProductVariant(),
+        val variantData: ProductVariant = ProductVariant(),
 
         @SerializedName("cartRedirection")
         @Expose
@@ -22,8 +22,4 @@ data class ProductVariantAggregator(
         @SerializedName("warehouseInfo")
         @Expose
         val nearestWarehouse: List<NearestWarehouseResponse> = listOf()
-) {
-    fun isAggregatorEmpty(): Boolean {
-        return (!variantData.hasChildren && !variantData.hasVariant) || cardRedirection.data.isEmpty() || nearestWarehouse.isEmpty()
-    }
-}
+)

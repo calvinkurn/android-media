@@ -72,9 +72,9 @@ object ApplinkConstInternalMarketplace {
     // AtcVariantActivity
     @JvmField
     val ATC_VARIANT = "$INTERNAL_MARKETPLACE/atc-variant/{product_id}/" +
+            "?pageSource={pageSource}&" +
             "?isTokoNow={isTokoNow}&" +
-            "pageSource={pageSource}&" +
-            "parentId={parentId}&"
+            "?parentId={parentId}"
 
     // ProductManageActivity
     @JvmField

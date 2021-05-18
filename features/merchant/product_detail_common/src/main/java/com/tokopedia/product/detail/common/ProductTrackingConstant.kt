@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.data.util
+package com.tokopedia.product.detail.common
 
 object ProductTrackingConstant {
 

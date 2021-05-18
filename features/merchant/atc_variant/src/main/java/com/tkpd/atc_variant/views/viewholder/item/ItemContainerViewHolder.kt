@@ -9,7 +9,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.flexbox.*
+import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexboxItemDecoration
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.tkpd.atc_variant.R
 import com.tkpd.atc_variant.views.AtcVariantListener
 import com.tkpd.atc_variant.views.adapter.variantitem.AtcVariantOptionAdapter
@@ -55,8 +57,6 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
             } else {
                 rvVariant.layoutManager = FlexboxLayoutManager(context).apply {
                     alignItems = AlignItems.FLEX_START
-                    flexWrap = FlexWrap.WRAP
-                    flexDirection = FlexDirection.ROW
                 }
                 if (rvVariant.itemDecorationCount == 0) {
                     val itemDecoration = FlexboxItemDecoration(context).apply {

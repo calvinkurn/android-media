@@ -26,7 +26,7 @@ import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
-import com.tokopedia.product.detail.data.util.getCurrencyFormatted
+import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
 import com.tokopedia.product.detail.view.util.SpaceItemDecoration

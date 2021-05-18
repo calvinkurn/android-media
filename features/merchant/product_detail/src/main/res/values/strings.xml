@@ -17,11 +17,8 @@
     <string name="template_cashback">Cashback %1$s%%</string>
     <string name="template_price">%1$s%2$s</string>
     <string name="template_campaign_off">%1$s%%</string>
-    <string name="buy_now">Beli Sekarang</string>
-    <string name="add_product_to_cart">Tambah ke Keranjang</string>
     <string name="ticker_atc_done_some_store">Barang dikirim dari toko yang sama</string>
     <string name="ticker_atc_done_different_store">Barang dikirim dari toko yang berbeda</string>
-    <string name="plus_product_to_cart">+ Keranjang</string>
     <string name="apply_credit">Ajukan Kredit</string>
     <string name="buy">Beli</string>
     <string name="promote_topads">Iklankan Produk</string>
@@ -110,8 +107,6 @@
     <string name="banned_product_description">Barang ini tidak diperjual belikan \nkarena melanggar syarat dan ketentuan Tokopedia</string>
 
     //Variant section
-    <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>
-    <string name="add_to_cart_error_variant_builder">Oops, pilih %s dulu, ya</string>
     <string name="variant_failed_load">Varian gagal ditampilkan</string>
     <string name="variant_failed_load_description">Klik ikon di samping untuk coba lagi.</string>
     <string name="product_refresh">Refresh</string>
@@ -133,12 +128,6 @@
     <string name="notify_me_title">Kejar Diskon</string>
     <string name="notify_me_success_registered_message">Kamu berhasil menambah produk ke Diskon Yang Dikejar.</string>
     <string name="notify_me_success_unregistered_message">Kamu berhasil menghapus produk ini dari daftar Diskon Yang Dikejar</string>
-
-    <!-- OVO -->
-    <string name="product_detail_price__goods">Harga Barang</string>
-    <string name="product_detail_estimation_price_min">Estimasi Ongkir termurah</string>
-    <string name="product_detail_ovo_cash_points">OVO Cash + OVO Points</string>
-    <string name="product_detail_total_pay">OVO Kamu Kurang</string>
 
     <!--Social Proof-->
     <string name="bracket_formated">(%1s)</string>
@@ -226,8 +215,6 @@
     <string name="content_desc_txt_main_price">text harga %1d</string>
     <string name="content_desc_fab_detail_pdp">button wishlist</string>
     <string name="content_desc_product_name">text nama produk %1s</string>
-    <string name="content_desc_btn_buy_now">button beli</string>
-    <string name="content_desc_btn_add_to_cart">button tambah keranjang</string>
     <string name="content_desc_img_pdp_video">image produk</string>
 
     <string name="double_string_builder">%1s %2s</string>

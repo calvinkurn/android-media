@@ -11,7 +11,9 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCat
 data class VariantComponentDataModel(
         val position: Long = 0,
         var listOfVariantCategory: List<VariantCategory>? = null,
-        var mapOfSelectedVariant: MutableMap<String, String> = mutableMapOf()
+        var mapOfSelectedVariant: MutableMap<String, String> = mutableMapOf(),
+        var stockWording: String = "",
+        var tokoCabangWording: String = ""
 ) : AtcVariantVisitable {
 
     override fun uniqueId(): Long = position
@@ -19,7 +21,9 @@ data class VariantComponentDataModel(
     override fun isEqual(newData: AtcVariantVisitable): Boolean {
         return if (newData is VariantComponentDataModel) {
             mapOfSelectedVariant == newData.mapOfSelectedVariant &&
-                    listOfVariantCategory == newData.listOfVariantCategory
+                    listOfVariantCategory == newData.listOfVariantCategory &&
+                    stockWording == newData.stockWording &&
+                    tokoCabangWording == newData.tokoCabangWording
         } else {
             false
         }

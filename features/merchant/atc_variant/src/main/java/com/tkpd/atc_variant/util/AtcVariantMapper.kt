@@ -14,7 +14,6 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
  */
 
 object AtcVariantMapper {
-    var selectedOptionId = listOf<String>()
 
     fun isPartiallySelectedOptionId(selectedOptionIds: Map<String, String>?): Boolean {
         if (selectedOptionIds == null) return false
@@ -76,8 +75,6 @@ object AtcVariantMapper {
         }
         val isSelectedProductBuyable = selectedProductData?.isBuyable ?: false
         val isSelectedProductFlashSale = selectedProductData?.isFlashSale ?: false
-
-        selectedOptionId = updatedSelectedOptionsId
 
         for ((level, variant: Variant) in variantData.variants.withIndex()) {
             listOfVariant.add(convertVariantViewModel(variant, variantData, level, updatedSelectedOptionsId, (level + 1) == variantData.variants.size,

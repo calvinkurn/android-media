@@ -4,11 +4,12 @@ import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
-import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
@@ -147,29 +148,6 @@ object DynamicProductDetailMapper {
                 variants = networkData.variants,
                 children = networkData.children
         )
-    }
-
-    fun generateButtonAction(it: String, atcButton: Boolean, leasing: Boolean): Int {
-        return when {
-            atcButton -> ProductDetailConstant.ATC_BUTTON
-            leasing -> ProductDetailConstant.LEASING_BUTTON
-            it == ProductDetailConstant.KEY_NORMAL_BUTTON -> {
-                ProductDetailConstant.BUY_BUTTON
-            }
-            it == ProductDetailConstant.KEY_OCS_BUTTON -> {
-                ProductDetailConstant.OCS_BUTTON
-            }
-            it == ProductDetailConstant.KEY_OCC_BUTTON -> {
-                ProductDetailConstant.OCC_BUTTON
-            }
-            it == ProductDetailConstant.KEY_REMIND_ME -> {
-                ProductDetailConstant.REMIND_ME_BUTTON
-            }
-            it == ProductDetailConstant.KEY_CHECK_WISHLIST -> {
-                ProductDetailConstant.CHECK_WISHLIST_BUTTON
-            }
-            else -> ProductDetailConstant.BUY_BUTTON
-        }
     }
 
     fun mapToWholesale(data: List<Wholesale>?): List<com.tokopedia.product.detail.common.data.model.product.Wholesale>? {

@@ -1,5 +1,6 @@
 package com.tkpd.atc_variant.views.bottomsheet
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,30 +11,39 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tkpd.atc_variant.R
+import com.tkpd.atc_variant.data.uidata.PartialButtonDataModel
 import com.tkpd.atc_variant.di.AtcVariantComponent
 import com.tkpd.atc_variant.di.DaggerAtcVariantComponent
-import com.tkpd.atc_variant.views.AtcVariantListener
-import com.tkpd.atc_variant.views.AtcVariantSharedViewModel
-import com.tkpd.atc_variant.views.AtcVariantViewModel
+import com.tkpd.atc_variant.util.AtcVariantMapper
+import com.tkpd.atc_variant.views.*
 import com.tkpd.atc_variant.views.adapter.AtcVariantAdapter
 import com.tkpd.atc_variant.views.adapter.AtcVariantAdapterTypeFactoryImpl
 import com.tkpd.atc_variant.views.adapter.AtcVariantDiffutil
 import com.tkpd.atc_variant.views.adapter.AtcVariantVisitable
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.observeOnce
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.detail.common.ProductCartHelper
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * Created by Yehezkiel on 05/05/21
  */
-class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, HasComponent<AtcVariantComponent> {
+class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtcButtonListener, HasComponent<AtcVariantComponent> {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(AtcVariantViewModel::class.java)
@@ -43,6 +53,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, HasCompone
         ViewModelProvider(requireActivity()).get(AtcVariantSharedViewModel::class.java)
     }
 
+    private var loadingProgressDialog: ProgressDialog? = null
+
     private val adapterFactory by lazy { AtcVariantAdapterTypeFactoryImpl(this) }
     private val adapter by lazy {
         val asyncDifferConfig = AsyncDifferConfig.Builder(AtcVariantDiffutil())
@@ -50,6 +62,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, HasCompone
         AtcVariantAdapter(asyncDifferConfig, adapterFactory)
     }
 
+    private var viewContent: View? = null
+
+    private var baseAtcBtn: PartialAtcButtonView? = null
     private var currentData: List<AtcVariantVisitable> = listOf()
     private var listener: AtcVariantBottomSheetListener? = null
     private var rvVariantBottomSheet: RecyclerView? = null
@@ -95,10 +110,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, HasCompone
             listener?.onBottomSheetDismiss()
         }
 
-        val view = View.inflate(context, R.layout.bottomsheet_atc_variant, null)
-
-        setupRv(view)
-        setChild(view)
+        viewContent = View.inflate(context, R.layout.bottomsheet_atc_variant, null)
+        viewContent?.let {
+            baseAtcBtn = PartialAtcButtonView.build(it.findViewById(R.id.base_atc_btn), this)
+        }
+        setupRv(viewContent)
+        setChild(viewContent)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -106,13 +123,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, HasCompone
         observeData()
     }
 
-    private fun setupRv(view: View) {
-        rvVariantBottomSheet = view.findViewById(R.id.rv_atc_variant_bottomsheet)
+    private fun setupRv(view: View?) {
+        rvVariantBottomSheet = view?.findViewById(R.id.rv_atc_variant_bottomsheet)
         rvVariantBottomSheet?.adapter = adapter
     }
 
     private fun observeData() {
-        sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner,{
+        sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner, {
             viewModel.decideInitialValue(it)
         })
 
@@ -120,6 +137,14 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, HasCompone
             if (it is Success) {
                 currentData = it.data
                 adapter.submitList(it.data)
+            }
+        })
+
+        viewModel.buttonData.observe(viewLifecycleOwner, {
+            if (it is Success) {
+                renderButton(it.data)
+            } else {
+                baseAtcBtn?.visibility = false
             }
         })
     }
@@ -137,6 +162,81 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, HasCompone
 
     override fun getStockWording(): String {
         return ""
+    }
+
+    override fun addToCartClick(buttonText: String) {
+        doAtc(ProductDetailCommonConstant.ATC_BUTTON)
+    }
+
+    override fun buyNowClick(buttonText: String) {
+        doAtc(ProductDetailCommonConstant.BUY_BUTTON)
+    }
+
+    override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
+        val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton, false)
+        doAtc(atcKey)
+    }
+
+    private fun doAtc(buttonAction: Int) {
+        context?.let {
+            showProgressDialog {
+                loadingProgressDialog?.dismiss()
+            }
+
+            val isPartialySelected = AtcVariantMapper.isPartiallySelectedOptionId(viewModel.getSelectedOptionIds())
+
+            if (isPartialySelected) {
+                showErrorVariantUnselected()
+                return@let
+            }
+
+            val sharedData = sharedViewModel.aggregatorParams.value
+
+            viewModel.hitAtc(buttonAction,
+                    sharedData?.shopId?.toIntOrZero() ?: 0,
+                    sharedData?.categoryName ?: "",
+                    userSessionInterface.userId,
+                    sharedData?.isTradein ?: false,
+                    sharedData?.minimumShippingPrice ?: 0,
+                    sharedData?.trackerAttribution ?: "",
+                    sharedData?.trackerListNamePdp ?: ""
+            )
+        }
+    }
+
+    private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {
+        if (loadingProgressDialog == null) {
+            loadingProgressDialog = activity?.createDefaultProgressDialog(
+                    getString(com.tokopedia.abstraction.R.string.title_loading),
+                    cancelable = onCancelClicked != null,
+                    onCancelClicked = {
+                        onCancelClicked?.invoke()
+                    })
+        }
+        loadingProgressDialog?.run {
+            if (!isShowing) {
+                show()
+            }
+        }
+    }
+
+    private fun showErrorVariantUnselected() {
+        val variantErrorMessage = if (viewModel.aggregatorData.value?.variantData?.getVariantsIdentifier()?.isEmpty() == true) {
+            getString(com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant)
+        } else {
+            getString(com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant_builder, viewModel.aggregatorData.value?.variantData?.getVariantsIdentifier()
+                    ?: "")
+        }
+        viewContent?.showToasterError(variantErrorMessage, ctaText = getString(R.string.atc_variant_oke_label))
+    }
+
+
+    private fun renderButton(data: PartialButtonDataModel) {
+        baseAtcBtn?.renderButtonView(
+                data.isProductSelectedBuyable,
+                data.isShopOwner,
+                data.cartTypeData
+        )
     }
 }
 

@@ -1,7 +1,7 @@
 package com.tokopedia.product.estimasiongkir.data.model
 
 import com.tokopedia.product.detail.data.util.KG
-import com.tokopedia.product.detail.data.util.numberFormatted
+import com.tokopedia.product.detail.common.numberFormatted
 
 /**
  * Created by Yehezkiel on 25/01/21

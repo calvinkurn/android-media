@@ -56,5 +56,7 @@ data class ProductHeaderData(
         val productDiscountedPercentage: Int = 0,
         val productCampaignIdentifier: Int = 0,
         val productSlashPrice: String = "",
-        val productStockWording: String = ""
+        val productStockWording: String = "",
+        val isProductBuyable: Boolean = false,
+        val isShopOwner: Boolean = false
 )

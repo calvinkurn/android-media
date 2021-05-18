@@ -28,6 +28,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation project(rootProject.ext.features.medialoader)
     implementation rootProject.ext.miscDependencies.flexBoxLayout
+    implementation project(rootProject.ext.features.atc_common)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

@@ -60,6 +60,16 @@ data class VariantChild(
         @SerializedName("thematicCampaign")
         val thematicCampaign: ThematicCampaign? = null
 ){
+
+        val finalPrice: Long
+                get() {
+                        return if (campaign?.isActive == true) {
+                                campaign.discountedPrice?.toLong() ?: 0L
+                        } else {
+                                price.toLong()
+                        }
+                }
+
         fun getFinalMinOrder(): Int = if (campaign?.isActive == true) campaign.minOrder
                 ?: 0 else stock?.minimumOrder?.toIntOrNull() ?: 0
 

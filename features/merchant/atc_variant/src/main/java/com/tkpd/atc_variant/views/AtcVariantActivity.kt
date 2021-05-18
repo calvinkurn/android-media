@@ -7,6 +7,9 @@ import com.tkpd.atc_variant.R
 import com.tkpd.atc_variant.views.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atc_variant.views.bottomsheet.AtcVariantBottomSheetListener
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_CACHE_ID_KEY
+import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_PARCEL_KEY_RESPONSE
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import timber.log.Timber
 
@@ -19,10 +22,6 @@ class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
         const val PAGE_SOURCE_EXTRA = "pageSource"
         const val PARENT_ID_EXTRA = "parentId"
     }
-
-    private var isTokoNow = false
-    private var pageSource = ""
-    private var parentId = ""
 
     private val sharedViewModel by lazy {
         ViewModelProvider(this).get(AtcVariantSharedViewModel::class.java)
@@ -44,10 +43,22 @@ class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
             ""
         }
 
+        var paramsData = ProductVariantBottomSheetParams()
+
         if (bundle != null) {
-            isTokoNow = bundle.getString(TOKO_NOW_EXTRA, "false").toBoolean()
-            pageSource = bundle.getString(PAGE_SOURCE_EXTRA, "")
-            parentId = bundle.getString(PARENT_ID_EXTRA, "")
+            val cacheId = bundle.getString(PDP_CACHE_ID_KEY)
+
+            val cacheManager = SaveInstanceCacheManager(this, cacheId)
+            val data: ProductVariantBottomSheetParams? = cacheManager.get(PDP_PARCEL_KEY_RESPONSE, ProductVariantBottomSheetParams::class.java, null)
+
+            if (data == null) {
+                paramsData.isTokoNow = bundle.getString(TOKO_NOW_EXTRA, "false").toBoolean()
+                paramsData.pageSource = bundle.getString(PAGE_SOURCE_EXTRA, "")
+                paramsData.productParentId = bundle.getString(PARENT_ID_EXTRA, "")
+                paramsData.productId = productId
+            } else {
+                paramsData = data
+            }
         }
 
         super.onCreate(savedInstanceState)
@@ -58,7 +69,7 @@ class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
             Timber.e(th)
         }
 
-        sharedViewModel.setAtcBottomSheetParams(ProductVariantBottomSheetParams(productId, pageSource, parentId, isTokoNow))
+        sharedViewModel.setAtcBottomSheetParams(paramsData)
         AtcVariantBottomSheet().show(supportFragmentManager, "test", this)
     }
 

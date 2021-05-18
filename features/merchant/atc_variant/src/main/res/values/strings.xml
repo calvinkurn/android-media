@@ -10,6 +10,7 @@
     <string name="atc_variant_promo">PROMO</string>
 
     <string name="atc_variant_quantity_label">Jumlah barang: </string>
+    <string name="atc_variant_oke_label">Oke</string>
 
     <string name="atc_content_desc_txtChipVariant">text varian %1s</string>
 </resources>

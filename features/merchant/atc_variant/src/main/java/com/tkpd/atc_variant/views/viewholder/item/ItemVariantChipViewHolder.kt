@@ -26,9 +26,9 @@ class ItemVariantChipViewHolder(val view: View,
         val LAYOUT = R.layout.atc_variant_chip_viewholder
     }
 
-    val txtChipVariant = view.findViewById<Typography>(R.id.txt_chip_variant)
-    val promoChipVariant = view.findViewById<NotificationUnify>(R.id.promo_chip_variant)
-    val containerChipVariant = view.findViewById<LinearLayout>(R.id.container_chip_variant)
+    private val txtChipVariant = view.findViewById<Typography>(R.id.txt_chip_variant)
+    private val promoChipVariant = view.findViewById<NotificationUnify>(R.id.promo_chip_variant)
+    private val containerChipVariant = view.findViewById<LinearLayout>(R.id.container_chip_variant)
 
 
     override fun bind(element: VariantOptionWithAttribute, payload: Int) {

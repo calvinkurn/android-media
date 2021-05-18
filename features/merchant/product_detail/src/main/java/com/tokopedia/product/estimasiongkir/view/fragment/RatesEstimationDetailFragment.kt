@@ -21,7 +21,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.KG
 import com.tokopedia.product.detail.data.util.LABEL_GRAM
 import com.tokopedia.product.detail.data.util.LABEL_KG
-import com.tokopedia.product.detail.data.util.numberFormatted
+import com.tokopedia.product.detail.common.numberFormatted
 import com.tokopedia.product.estimasiongkir.data.constant.RatesEstimationConstant
 import com.tokopedia.product.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationComponent

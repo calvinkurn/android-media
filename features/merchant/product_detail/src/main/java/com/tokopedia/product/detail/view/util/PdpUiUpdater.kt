@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -22,7 +23,7 @@ import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.data.util.getCurrencyFormatted
+import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -93,7 +94,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         get() = mapOfData[ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY] as? ProductShopCredibilityDataModel
 
     val productByMeMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.KEY_BYME] as? ProductGeneralInfoDataModel
+        get() = mapOfData[ProductDetailCommonConstant.KEY_BYME] as? ProductGeneralInfoDataModel
 
     val topAdsImageData: TopAdsImageDataModel?
         get() = mapOfData[ProductDetailConstant.KEY_TOP_ADS] as? TopAdsImageDataModel
@@ -240,7 +241,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateByMeData(context: Context?) {
-        updateData(ProductDetailConstant.KEY_BYME) {
+        updateData(ProductDetailCommonConstant.KEY_BYME) {
             productByMeMap?.run {
                 subtitle = context?.getString(R.string.product_detail_by_me_subtitle)
                         ?: ""

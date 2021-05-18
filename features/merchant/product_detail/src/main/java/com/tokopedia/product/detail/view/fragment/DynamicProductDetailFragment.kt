@@ -83,10 +83,11 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.*
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_AVAILABLE_VARIANT
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_IS_VARIANT_SELECTED
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
+import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategoryTypeDef
@@ -97,6 +98,7 @@ import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
@@ -110,7 +112,6 @@ import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
-import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.view.activity.CourierActivity
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
@@ -119,7 +120,6 @@ import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtil
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
-import com.tokopedia.product.detail.view.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.view.bottomsheet.ShopStatusInfoBottomSheet
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -450,6 +450,13 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         if (activity != null) {
             activity?.let { AdultManager.handleActivityResult(it, requestCode, resultCode, data) }
         }
+
+        context?.let {
+            AtcVariantHelper.onActivityResultPdpAtcVariant(it, requestCode, data) {
+                updateVariantDataToExistingProductData(listOfVariantSelected)
+            }
+        }
+
         when (requestCode) {
             ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE,
             ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST -> {
@@ -466,7 +473,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                     buyAfterTradeinDiagnose(deviceId, phoneType, phonePrice)
                 }
             }
-            ProductDetailConstant.REQUEST_CODE_CHECKOUT -> {
+            ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT -> {
                 updateCartNotification()
             }
             ProductDetailConstant.REQUEST_CODE_ETALASE -> {
@@ -773,7 +780,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             }
             ProductDetailConstant.TRADE_IN -> {
                 DynamicProductDetailTracking.Click.trackTradein(viewModel.tradeInParams.usedPrice, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-                doAtc(ProductDetailConstant.TRADEIN_BUTTON)
+                doAtc(ProductDetailCommonConstant.TRADEIN_BUTTON)
             }
             ProductDetailConstant.PRODUCT_INSTALLMENT_INFO -> {
                 DynamicProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
@@ -1420,7 +1427,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         viewLifecycleOwner.observe(viewModel.p2Login) {
             topAdsGetProductManage = it.topAdsGetProductManage
             if (it.pdpAffiliate == null) {
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.KEY_BYME)
+                pdpUiUpdater?.removeComponent(ProductDetailCommonConstant.KEY_BYME)
             } else {
                 pdpUiUpdater?.updateByMeData(context)
             }
@@ -1587,7 +1594,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private fun onSuccessAtc(result: AddToCartDataModel) {
         val cartId = result.data.cartId
         when (buttonActionType) {
-            ProductDetailConstant.OCS_BUTTON -> {
+            ProductDetailCommonConstant.OCS_BUTTON -> {
                 if (result.data.success == 0) {
                     validateOvo(result)
                 } else {
@@ -1599,19 +1606,19 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                             .bundle)
                 }
             }
-            ProductDetailConstant.OCC_BUTTON -> {
+            ProductDetailCommonConstant.OCC_BUTTON -> {
                 sendTrackingATC(cartId)
                 goToOneClickCheckout()
             }
-            ProductDetailConstant.BUY_BUTTON -> {
+            ProductDetailCommonConstant.BUY_BUTTON -> {
                 sendTrackingATC(cartId)
                 goToCartCheckout(cartId)
             }
-            ProductDetailConstant.ATC_BUTTON -> {
+            ProductDetailCommonConstant.ATC_BUTTON -> {
                 sendTrackingATC(cartId)
                 showAddToCartDoneBottomSheet()
             }
-            ProductDetailConstant.TRADEIN_AFTER_DIAGNOSE -> {
+            ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE -> {
                 // Same with OCS but should send devideId
                 sendTrackingATC(cartId)
                 goToCheckout(ShipmentFormRequest.BundleBuilder()
@@ -1624,7 +1631,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     private fun goToOneClickCheckout() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
-        startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_CHECKOUT)
+        startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
     }
 
     private fun sendTrackingATC(cartId: String) {
@@ -1646,7 +1653,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         } else {
             activity?.let {
                 when (result.data.ovoValidationDataModel.status) {
-                    ProductDetailConstant.OVO_INACTIVE_STATUS -> {
+                    ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
                             viewModel.getDynamicProductInfoP1?.parentProductId
                                     ?: ""
@@ -1656,7 +1663,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                                 viewModel.userSessionInterface.userId)
                         RouteManager.route(it, applink)
                     }
-                    ProductDetailConstant.OVO_INSUFFICIENT_BALANCE_STATUS -> {
+                    ProductDetailCommonConstant.OVO_INSUFFICIENT_BALANCE_STATUS -> {
                         val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(
                                 viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
                                 viewModel.userSessionInterface.userId,
@@ -1674,14 +1681,14 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
         intent.putExtras(shipmentFormRequest)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_CHECKOUT)
+        startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
     }
 
     private fun goToCartCheckout(cartId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConst.CART)
         intent?.run {
             putExtra(ApplinkConst.Transaction.EXTRA_CART_ID, cartId)
-            startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_CHECKOUT)
+            startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
         }
     }
 
@@ -2662,7 +2669,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     override fun addToCartClick(buttonText: String) {
         viewModel.buttonActionText = buttonText
         viewModel.getDynamicProductInfoP1?.let {
-            doAtc(ProductDetailConstant.ATC_BUTTON)
+            doAtc(ProductDetailCommonConstant.ATC_BUTTON)
         }
     }
 
@@ -2670,14 +2677,14 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         viewModel.buttonActionText = buttonText
         // buy now / buy / preorder
         viewModel.getDynamicProductInfoP1?.let {
-            doAtc(ProductDetailConstant.BUY_BUTTON)
+            doAtc(ProductDetailCommonConstant.BUY_BUTTON)
         }
     }
 
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
         viewModel.buttonActionText = buttonText
         val isLeasing = viewModel.getDynamicProductInfoP1?.basic?.isLeasing ?: false
-        val atcKey = DynamicProductDetailMapper.generateButtonAction(cartType, isAtcButton, isLeasing)
+        val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton, isLeasing)
         doAtc(atcKey)
     }
 
@@ -2687,7 +2694,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     override fun leasingButtonClicked() {
-        doAtc(ProductDetailConstant.LEASING_BUTTON)
+        doAtc(ProductDetailCommonConstant.LEASING_BUTTON)
     }
 
     override fun editProductButtonClicked() {
@@ -2752,7 +2759,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
                     ?: false
 
-            if (buttonActionType == ProductDetailConstant.REMIND_ME_BUTTON || buttonActionType == ProductDetailConstant.CHECK_WISHLIST_BUTTON) {
+            if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON || buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {
                 DynamicProductDetailTracking.Click.eventClickOosButton(btn_buy_now.text.toString(), isVariant, viewModel.getDynamicProductInfoP1, viewModel.userId)
             }
 
@@ -2761,18 +2768,18 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 return@let
             }
 
-            if (buttonActionType == ProductDetailConstant.REMIND_ME_BUTTON) {
+            if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON) {
                 toasterWishlistText = getString(R.string.toaster_success_add_wishlist_from_button)
                 addWishList()
                 return@let
             }
 
-            if (buttonActionType == ProductDetailConstant.CHECK_WISHLIST_BUTTON) {
+            if (buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {
                 goToWishlist()
                 return@let
             }
 
-            if (buttonActionType == ProductDetailConstant.TRADEIN_BUTTON && viewModel.getDynamicProductInfoP1?.basic?.status == ProductStatusTypeDef.WAREHOUSE) {
+            if (buttonActionType == ProductDetailCommonConstant.TRADEIN_BUTTON && viewModel.getDynamicProductInfoP1?.basic?.status == ProductStatusTypeDef.WAREHOUSE) {
                 view?.showToasterError(getString(R.string.tradein_error_label), ctaText = getString(R.string.label_oke_pdp))
                 return@let
             }
@@ -2791,11 +2798,11 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             if (openShipmentBottomSheetWhenError()) return@let
 
             when (buttonActionType) {
-                ProductDetailConstant.LEASING_BUTTON -> {
+                ProductDetailCommonConstant.LEASING_BUTTON -> {
                     goToLeasing()
                     return@let
                 }
-                ProductDetailConstant.TRADEIN_BUTTON -> {
+                ProductDetailCommonConstant.TRADEIN_BUTTON -> {
                     goToTradein()
                     return@let
                 }
@@ -2833,9 +2840,9 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun buyAfterTradeinDiagnose(deviceId: String, phoneType: String, phonePrice: String) {
-        buttonActionType = ProductDetailConstant.TRADEIN_AFTER_DIAGNOSE
+        buttonActionType = ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE
         viewModel.tradeinDeviceId = deviceId
-        hitAtc(ProductDetailConstant.OCS_BUTTON)
+        hitAtc(ProductDetailCommonConstant.OCS_BUTTON)
     }
 
     private fun hitAtc(actionButton: Int) {
@@ -2844,7 +2851,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         viewModel.getDynamicProductInfoP1?.let { data ->
             showProgressDialog()
             when (actionButton) {
-                ProductDetailConstant.OCS_BUTTON -> {
+                ProductDetailCommonConstant.OCS_BUTTON -> {
                     val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
                         productId = data.basic.productID.toLongOrNull() ?: 0
                         shopId = data.basic.shopID.toIntOrZero()
@@ -2863,7 +2870,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
-                ProductDetailConstant.OCC_BUTTON -> {
+                ProductDetailCommonConstant.OCC_BUTTON -> {
                     addToCartOcc(data, selectedWarehouseId)
                 }
                 else -> {
@@ -2944,8 +2951,24 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 //                    ApplinkConst.SHOP, shopId),
 //                    ProductDetailConstant.REQUEST_CODE_SHOP_INFO)
 //        }
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, "true","pdp","")
-        startActivity(intent)
+
+        context?.let {
+            if (viewModel.getDynamicProductInfoP1 != null) {
+                AtcVariantHelper.pdpToAtcVariant(
+                        context = it,
+                        productInfoP1 = viewModel.getDynamicProductInfoP1!!,
+                        warehouseId = warehouseId ?: "",
+                        pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
+                        isTokoNow = false,
+                        isCheckImeiRemoteConfig = enableCheckImeiRemoteConfig,
+                        productVariant = viewModel.variantData ?: ProductVariant(),
+                        warehouseResponse = viewModel.p2Data.value?.nearestWarehouseInfo ?: mapOf(),
+                        cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf()
+                ) { data, code ->
+                    startActivityForResult(data, code)
+                }
+            }
+        }
     }
 
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {
@@ -3173,7 +3196,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         if (stickyLoginView?.isShowing() == true) {
             actionButtonView.setBackground(com.tokopedia.unifyprinciples.R.color.Unify_N0)
         } else {
-            val drawable = context?.let { _context -> ContextCompat.getDrawable(_context, R.drawable.bg_shadow_top) }
+            val drawable = context?.let { _context -> ContextCompat.getDrawable(_context, com.tokopedia.product.detail.common.R.drawable.bg_shadow_top) }
             drawable?.let { actionButtonView.setBackground(it) }
         }
     }
