@@ -23,6 +23,7 @@ import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
@@ -318,6 +319,24 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {}
+
+    override fun sendTableFilterClick(element: TableWidgetUiModel) {
+        // TODO: Send tracker
+    }
+
+    override fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {
+        if (!isAdded || context == null) return
+
+        val tableFilterBottomSheet = (childFragmentManager.findFragmentByTag(WidgetFilterBottomSheet.TABLE_FILTER_TAG) as? WidgetFilterBottomSheet)
+                ?: WidgetFilterBottomSheet.newInstance()
+        tableFilterBottomSheet.init(requireContext(), com.tokopedia.sellerhomecommon.R.string.shc_select_statistic_data, element.tableFilters) {
+            recyclerView?.post {
+                val copiedWidget = element.copy().apply { data = null }
+                notifyWidgetChanged(copiedWidget)
+                fetchTableData(listOf(element))
+            }
+        }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
+    }
 
     fun setSelectedWidget(widget: String) {
         this.selectedWidget = widget

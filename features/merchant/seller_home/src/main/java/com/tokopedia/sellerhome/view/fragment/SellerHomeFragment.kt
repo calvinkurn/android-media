@@ -577,6 +577,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendTableEmptyStateCtaClick(element, userSession.userId)
     }
 
+    override fun sendTableFilterClick(element: TableWidgetUiModel) {
+        SellerHomeTracking.sendTableFilterClick(element, userSession.userId)
+    }
+
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
         val position = adapter.data.indexOf(model)
         SellerHomeTracking.sendPieChartImpressionEvent(model, position)
@@ -623,6 +627,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 getPostData(listOf(element))
             }
         }.show(childFragmentManager, WidgetFilterBottomSheet.POST_FILTER_TAG)
+    }
+
+    override fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {
+        if (!isAdded || context == null) return
+
+        val tableFilterBottomSheet = (childFragmentManager.findFragmentByTag(WidgetFilterBottomSheet.TABLE_FILTER_TAG) as? WidgetFilterBottomSheet)
+                ?: WidgetFilterBottomSheet.newInstance()
+        tableFilterBottomSheet.init(requireContext(), com.tokopedia.sellerhomecommon.R.string.shc_select_statistic_data, element.tableFilters) {
+            recyclerView?.post {
+                val copiedWidget = element.copy().apply { data = null }
+                notifyWidgetChanged(copiedWidget)
+                getTableData(listOf(element))
+            }
+        }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
     }
 
     override fun onAnimationStarted() {

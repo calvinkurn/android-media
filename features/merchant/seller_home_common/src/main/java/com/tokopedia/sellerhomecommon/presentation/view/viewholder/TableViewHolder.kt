@@ -13,7 +13,9 @@ import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
+import kotlinx.android.synthetic.main.shc_partial_post_list_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_widget_table_loading.view.*
 import kotlinx.android.synthetic.main.shc_widget_table.view.*
 
@@ -30,6 +32,8 @@ class TableViewHolder(
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_widget_table
     }
+
+    private val tableFilter: Typography? = itemView?.findViewById(R.id.filterShcTable)
 
     override fun bind(element: TableWidgetUiModel) {
         itemView.tvTableWidgetTitle.text = element.title
@@ -56,6 +60,7 @@ class TableViewHolder(
 
             val dataSet = element.data?.dataSet.orEmpty()
             if (dataSet.isNotEmpty()) {
+                setupTableFilter(element)
                 if (dataSet[0].rows.isEmpty()) {
                     setOnTableEmpty(element)
                 } else {
@@ -161,6 +166,24 @@ class TableViewHolder(
         }
     }
 
+    private fun setupTableFilter(element: TableWidgetUiModel) {
+        val isFilterAvailable = element.tableFilters.isNotEmpty()
+        if (isFilterAvailable) {
+            val selectedFilter = element.tableFilters.find { it.isSelected }
+            tableFilter?.run {
+                visible()
+                text = selectedFilter?.name.orEmpty()
+                setUnifyDrawableEnd(IconUnify.CHEVRON_DOWN)
+                setOnClickListener {
+                    listener.showTableFilter(element, adapterPosition)
+                    listener.sendTableFilterClick(element)
+                }
+            }
+        } else {
+            tableFilter?.gone()
+        }
+    }
+
     private fun openAppLink(appLink: String, dataKey: String) {
         RouteManager.route(itemView.context, appLink)
     }
@@ -183,6 +206,8 @@ class TableViewHolder(
         fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, isSlideEmpty: Boolean) {}
         fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean)
         fun sendTableEmptyStateCtaClickEvent(element: TableWidgetUiModel) {}
+        fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {}
+        fun sendTableFilterClick(element: TableWidgetUiModel) {}
 
     }
 }
