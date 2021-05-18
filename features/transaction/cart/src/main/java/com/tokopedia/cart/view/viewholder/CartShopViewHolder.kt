@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemShopBinding
+import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
@@ -21,6 +22,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_INFORMATION
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
+import java.text.NumberFormat
+import java.util.*
 
 class CartShopViewHolder(private val binding: ItemShopBinding,
                          private val actionListener: ActionListener,
@@ -205,6 +208,21 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                     binding.llWarningAndError.tickerWarning.requestLayout()
                 }
                 layoutWarning.show()
+            } else if (data.shopGroupAvailableData?.shopTicker?.isNotEmpty() == true) {
+                tickerWarning.tickerTitle = null
+                tickerWarning.setTextDescription(data.shopGroupAvailableData?.shopTicker ?: "")
+                tickerWarning.tickerType = TYPE_INFORMATION
+                tickerWarning.tickerShape = SHAPE_LOOSE
+                tickerWarning.closeButtonVisibility = View.GONE
+                tickerWarning.show()
+                tickerWarning.post {
+                    binding.llWarningAndError.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                    binding.llWarningAndError.tickerWarning.requestLayout()
+                }
+                layoutError.gone()
+                layoutWarning.show()
+                root.show()
             } else {
                 tickerWarning.gone()
                 layoutWarning.gone()
@@ -288,12 +306,12 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             val currentWeight = cartShopHolderData.shopGroupAvailableData?.totalWeight ?: return
             val maximumWeight = cartShopHolderData.shopGroupAvailableData?.maximumShippingWeight
                     ?: return
-            val extraWeight = currentWeight - maximumWeight
-            if (extraWeight > 0) {
+            val extraWeight = (currentWeight - maximumWeight)
+            val descriptionText = cartShopHolderData.shopGroupAvailableData?.maximumWeightWording ?: ""
+            if (extraWeight > 0 && descriptionText.isNotEmpty()) {
                 with(binding.llWarningAndError) {
                     tickerWarning.tickerTitle = null
-                    tickerWarning.setTextDescription(cartShopHolderData.shopGroupAvailableData?.maximumWeightWording
-                            ?: "")
+                    tickerWarning.setTextDescription(descriptionText.replace(ShopGroupAvailableData.MAXIMUM_WEIGHT_WORDING_REPLACE_KEY, NumberFormat.getNumberInstance(Locale("in", "id")).format(extraWeight)))
                     tickerWarning.tickerType = TYPE_INFORMATION
                     tickerWarning.tickerShape = SHAPE_LOOSE
                     tickerWarning.closeButtonVisibility = View.GONE

@@ -55,5 +55,9 @@ data class ShopGroupAvailableData(
         get() = cartItemHolderDataList
 
     val shouldValidateWeight: Boolean
-        get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotBlank()
+        get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
+
+    companion object {
+        const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"
+    }
 }

@@ -534,6 +534,8 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             } else {
                 viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
             }
+        } else if (data.cartItemData?.shouldValidateWeight == true) {
+            viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
         } else {
             viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
         }
