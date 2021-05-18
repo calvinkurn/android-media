@@ -3,14 +3,11 @@ package com.tokopedia.sellerapp.fcm;
 import android.app.Application;
 import android.os.Bundle;
 
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
-import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,14 +33,8 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     public void notifyReceiverBackgroundMessage(Bundle data) {
         Map<String, String> messageMap = new HashMap<>();
         messageMap.put("type", "AppNotificationReceiverUIBackground_Seller");
-        messageMap.put("isSupported", String.valueOf(isSupportedApplinkNotification(data)));
-        messageMap.put("isDedicated", String.valueOf(isDedicatedNotification(data)));
+        messageMap.put("bundle", data.toString());
         ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
     }
 
-    private boolean isSupportedApplinkNotification(Bundle bundle) {
-        String applink = bundle.getString(Constants.ARG_NOTIFICATION_APPLINK, "");
-        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-        return deepLinkDelegate.supportsUri(applink);
-    }
 }

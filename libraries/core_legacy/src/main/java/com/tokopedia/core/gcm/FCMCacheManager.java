@@ -51,16 +51,6 @@ public class FCMCacheManager {
         context = ctx;
     }
 
-    public boolean isAllowToHandleNotif(Bundle data) {
-        try {
-            return (!cache.isExpired() || cache.getString(TkpdCache.Key.PREV_CODE) == null ||
-                    !data.isEmpty() || data.getString("g_id", "").equals(cache.getString(TkpdCache.Key.PREV_CODE)));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     public Boolean isAllowBell() {
         long prevTime = cache.getLong(TkpdCache.Key.PREV_TIME);
         long currTIme = System.currentTimeMillis();
@@ -77,61 +67,6 @@ public class FCMCacheManager {
     public Boolean isVibrate() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getBoolean(SETTING_NOTIFICATION_VIBRATE, false);
-    }
-
-    public boolean checkLocalNotificationAppSettings(int code) {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        switch (code) {
-            case TkpdState.GCMServiceState.GCM_MESSAGE:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_PM, true);
-            case TkpdState.GCMServiceState.GCM_TALK:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_TALK, true);
-
-            case TkpdState.GCMServiceState.GCM_REVIEW:
-            case TkpdState.GCMServiceState.GCM_REVIEW_EDIT:
-            case TkpdState.GCMServiceState.GCM_REVIEW_REPLY:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_REVIEW, true);
-
-            case TkpdState.GCMServiceState.GCM_PROMO:
-            case TkpdState.GCMServiceState.GCM_HOT_LIST:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
-
-            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
-            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
-            case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER:
-            case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
-
-            case TkpdState.GCMServiceState.GCM_NEWORDER:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_SALES, true);
-
-            case TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED:
-            case TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED:
-            case TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED:
-            case TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED:
-            case TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
-
-            case TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE:
-            case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY:
-            case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY:
-            case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE:
-            case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE:
-            case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY:
-            case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
-
-            case TkpdState.GCMServiceState.GCM_SELLER_INFO:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_SELLER_INFO, true);
-
-            case TkpdState.GCMServiceState.GCM_GROUP_CHAT:
-            case TkpdState.GCMServiceState.GCM_GROUP_CHAT_POINTS:
-            case TkpdState.GCMServiceState.GCM_GROUP_CHAT_LOYALTY:
-            case TkpdState.GCMServiceState.GCM_GROUP_CHAT_COUPON:
-                return settings.getBoolean(Constants.Settings.NOTIFICATION_GROUP_CHAT, false);
-            default:
-                return true;
-        }
     }
 
     public static void storeRegId(String id, Context context) {
