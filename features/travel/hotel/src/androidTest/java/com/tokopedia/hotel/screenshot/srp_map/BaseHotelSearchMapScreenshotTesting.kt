@@ -3,9 +3,8 @@ package com.tokopedia.hotel.screenshot.srp_map
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.Until
+import androidx.test.uiautomator.UiSelector
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.mock.HotelSearchMockResponseConfig
@@ -59,7 +58,9 @@ abstract class BaseHotelSearchMapScreenshotTesting {
 
     @Test
     fun screenShot(){
-        uiDevice.wait(Until.hasObject(By.desc("MAP READY")), 10000)
+        uiDevice.findObject(
+                UiSelector().description("MAP READY")
+        ).waitForExists(10000)
 
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             CommonActions.takeScreenShotVisibleViewInScreen(activityRule.activity.window.decorView, filePrefix(), "top")

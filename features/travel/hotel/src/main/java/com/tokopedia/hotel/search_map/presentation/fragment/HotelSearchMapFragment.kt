@@ -809,26 +809,30 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun addMyLocation(latLong: LatLng) {
-        googleMap.addMarker(MarkerOptions().position(latLong)
-                .icon(bitmapDescriptorFromVector(requireContext(), getPin(MY_LOCATION_PIN)))
-                .anchor(ANCHOR_MARKER_X, ANCHOR_MARKER_Y)
-                .draggable(false))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLong))
+        if(::googleMap.isInitialized){
+            googleMap.addMarker(MarkerOptions().position(latLong)
+                    .icon(bitmapDescriptorFromVector(requireContext(), getPin(MY_LOCATION_PIN)))
+                    .anchor(ANCHOR_MARKER_X, ANCHOR_MARKER_Y)
+                    .draggable(false))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLong))
 
-        removeAllMarker()
+            removeAllMarker()
+        }
     }
 
     private fun addMarker(latitude: Double, longitude: Double, price: String) {
         val latLng = LatLng(latitude, longitude)
 
-        context?.run {
-            val marker = googleMap.addMarker(MarkerOptions().position(latLng).icon(createCustomMarker(this, HOTEL_PRICE_INACTIVE_PIN, price))
-                    .title(price)
-                    .anchor(ANCHOR_MARKER_X, ANCHOR_MARKER_Y)
-                    .draggable(false))
-            marker.tag = markerCounter
-            allMarker.add(marker)
-            markerCounter++
+        if(::googleMap.isInitialized) {
+            context?.run {
+                val marker = googleMap.addMarker(MarkerOptions().position(latLng).icon(createCustomMarker(this, HOTEL_PRICE_INACTIVE_PIN, price))
+                        .title(price)
+                        .anchor(ANCHOR_MARKER_X, ANCHOR_MARKER_Y)
+                        .draggable(false))
+                marker.tag = markerCounter
+                allMarker.add(marker)
+                markerCounter++
+            }
         }
     }
 
