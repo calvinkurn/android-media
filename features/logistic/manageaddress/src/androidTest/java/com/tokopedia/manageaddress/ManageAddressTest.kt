@@ -74,4 +74,16 @@ class ManageAddressTest {
             globalErrorNoInternetConnectionShown()
         }
     }
+
+    @Test
+    fun interactionTest() {
+        val i = Intent().apply { putExtra(EXTRA_IS_LOCALIZATION, true) }
+        manageAddress {
+            launchWithParam(mActivityTestRule, i)
+            selectItemAt(4)
+        } submit {
+            checkedAtPosition(4)
+            Thread.sleep(2000)
+        }
+    }
 }

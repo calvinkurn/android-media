@@ -3,7 +3,6 @@ package com.tokopedia.manageaddress
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.ActivityResultMatchers.hasResultCode
@@ -12,7 +11,9 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.manageaddress.CustomMatchers.isCardUnifyChecked
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity
+import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import org.hamcrest.MatcherAssert.assertThat
 
 class ManageAddressRobot {
@@ -23,7 +24,7 @@ class ManageAddressRobot {
 
     fun selectItemAt(position: Int) {
         onView(withId(R.id.address_list))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, ViewActions.click()))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(position, click()))
     }
 
     fun selectAddress() {
@@ -44,6 +45,11 @@ class ResultRobot {
     fun globalErrorNoInternetConnectionShown() {
         onView(withId(R.id.global_error)).check(matches(isDisplayed()))
         onView(withText("Koneksi internetmu terganggu!")).check(matches(isDisplayed()))
+    }
+
+    fun checkedAtPosition(position: Int) {
+        onView(RecyclerViewMatcher(R.id.address_list).atPosition(position))
+                .check(matches(isCardUnifyChecked()))
     }
 }
 
