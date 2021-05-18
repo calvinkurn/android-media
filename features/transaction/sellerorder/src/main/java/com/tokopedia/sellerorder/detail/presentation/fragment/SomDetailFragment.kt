@@ -1466,8 +1466,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
         secondaryBottomSheet?.dismiss()
         orderRequestCancelBottomSheet?.dismiss()
-        somProductEmptyBottomSheet?.dismiss()
         somRejectReasonBottomSheet?.dismiss()
+        somProductEmptyBottomSheet?.dismiss()
+        somShopClosedBottomSheet?.dismiss()
+        bottomSheetCourierProblems?.dismiss()
+        bottomSheetBuyerNoResponse?.dismiss()
+        bottomSheetBuyerOtherReason?.dismiss()
     }
 
     protected fun showToasterError(message: String, view: View?) {
