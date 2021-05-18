@@ -50,27 +50,20 @@ ext {
     playCoreVersion = '1.8.0'
     playServiceGms = '16.0.0'
     playServiceBase = '17.5.0'
-    playServiceAppIndexing = '17.1.0'
     playServiceAnalytics = '17.0.0'
-    playServiceFirebaseMessaging = '20.2.3'
     playServiceLocation = '17.0.0'
     playServiceMaps = '17.0.0'
     playServiceAuth = '17.0.0'
     playServicePlace = '17.0.0'
     playServiceAuthApiPhone = '16.0.0'
     playServiceMapsUtil = '1.0.2'
-    playServiceFirebaseRemoteConfig = '19.2.0'
-    playServiceFirebasePerfMon = '19.0.8'
     playServiceFirebaseFirestore = '17.1.2'
-    firebaseCrashlyticsVersion = '17.2.1'
-    firebaseAnalyticsVersion = '17.5.0'
-    firebaseAuthVersion = '17.0.0'
     playServiceAds = '17.0.0'
-    playServiceFirebaseCore = '18.0.0'
     playServiceTagManager = '17.0.0'
     playServiceSafetyNet = '16.0.0'
     playServiceMeasurementBase = '18.0.0'
     playServiceMeasurementApi = '16.0.4'
+    bomVersion = '26.0.0'
 
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.1.1'
@@ -181,15 +174,16 @@ ext {
     ]
 
     firebase = [
-            core       : "com.google.firebase:firebase-core:${playServiceFirebaseCore}",
-            appIndexing: "com.google.firebase:firebase-appindexing:${playServiceAppIndexing}",
-            messaging  : "com.google.firebase:firebase-messaging:${playServiceFirebaseMessaging}",
-            config     : "com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}",
-            performance: "com.google.firebase:firebase-perf:${playServiceFirebasePerfMon}",
-            fireStore  : "com.google.firebase:firebase-firestore:21.5.0",
-            crashlytics: "com.google.firebase:firebase-crashlytics-ktx:${firebaseCrashlyticsVersion}",
-            analytics  : "com.google.firebase:firebase-analytics-ktx:${firebaseAnalyticsVersion}",
-            auth       : "com.google.firebase:firebase-auth:${firebaseAuthVersion}"
+            bom        : "com.google.firebase:firebase-bom:${bomVersion}",
+            core       : "com.google.firebase:firebase-core",
+            appIndexing: "com.google.firebase:firebase-appindexing",
+            messaging  : "com.google.firebase:firebase-messaging-ktx",
+            config     : "com.google.firebase:firebase-config-ktx",
+            performance: "com.google.firebase:firebase-perf-ktx",
+            fireStore  : "com.google.firebase:firebase-firestore",
+            crashlytics: "com.google.firebase:firebase-crashlytics-ktx",
+            analytics  : "com.google.firebase:firebase-analytics-ktx",
+            auth       : "com.google.firebase:firebase-auth-ktx"
     ]
 
     viewDependencies = [
