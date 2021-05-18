@@ -90,13 +90,16 @@ public class TopAdsGtmTracker {
         tracker.sendEnhanceEcommerceEvent(map);
     }
 
-    public void eventSearchResultProductView(TrackingQueue trackingQueue, String keyword, String screenName, String irisSessionId) {
+    public void eventSearchResultProductView(TrackingQueue trackingQueue, String keyword, String screenName, String irisSessionId, String userId) {
         if (!dataLayerList.isEmpty()) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
                     "eventCategory", "search result",
                     "eventAction", "impression - product - topads",
                     "eventLabel", keyword,
+                    "userId", userId,
+                    "businessUnit", "TopAds",
+                    "currentSite", "tokopediamarketplace",
                     "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
                             "impressions", DataLayer.listOf(
                                     dataLayerList.toArray(new Object[dataLayerList.size()])
@@ -284,7 +287,7 @@ public class TopAdsGtmTracker {
         tracker.sendEnhanceEcommerceEvent(map);
     }
 
-    public static void eventSearchResultProductClick(Context context, String keyword, Product item, int position, String screenName) {
+    public static void eventSearchResultProductClick(Context context, String keyword, Product item, int position, String screenName, String userId) {
         Analytics tracker = getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
@@ -292,6 +295,9 @@ public class TopAdsGtmTracker {
                     "eventCategory", "search result",
                     "eventAction", "click - product - topads",
                     "eventLabel", keyword,
+                    "userId", userId,
+                    "businessUnit", "TopAds",
+                    "currentSite", "tokopediamarketplace",
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/searchproduct - topads productlist"),
                                     "products", DataLayer.listOf(DataLayer.mapOf(

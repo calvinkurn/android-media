@@ -724,7 +724,8 @@ class ProductListFragment: BaseDaggerFragment(),
                 trackingQueue,
                 queryKey,
                 SCREEN_SEARCH_PAGE_PRODUCT_TAB,
-                irisSessionId
+                irisSessionId,
+                getUserId(),
         )
 
         trackingQueue?.sendAll()
@@ -805,7 +806,8 @@ class ProductListFragment: BaseDaggerFragment(),
                 queryKey,
                 product,
                 item.position,
-                SCREEN_SEARCH_PAGE_PRODUCT_TAB
+                SCREEN_SEARCH_PAGE_PRODUCT_TAB,
+                getUserId(),
         )
     }
 
