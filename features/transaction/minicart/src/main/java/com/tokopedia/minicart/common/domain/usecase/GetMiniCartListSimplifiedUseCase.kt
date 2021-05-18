@@ -30,9 +30,9 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(private val graphqlRe
     // Todo : set query
     companion object {
         val QUERY = """
-        query mini_cart(${'$'}shopId: String) {
+        query mini_cart(${'$'}lang: String, ${'$'}additional_params: CartRevampAdditionalParams, ${'$'}shop_ids : [String]) {
           status
-          mini_cart(shopId:${'$'}shopId) {
+          mini_cart(lang:${'$'}lang, additional_params:"${'$'}"additional_params, shop_ids:${'$'}shop_ids}) {
             error_message
             status
             data {
@@ -48,6 +48,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(private val graphqlRe
                       parent_id
                       product_id
                       product_quantity
+                      product_notes
                     }
                   }
                 }
@@ -60,6 +61,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(private val graphqlRe
                       parent_id
                       product_id
                       product_quantity
+                      product_notes                      
                     }
                   }
                 }
