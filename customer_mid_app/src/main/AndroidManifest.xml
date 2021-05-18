@@ -61,7 +61,7 @@
 
                 <data
                     android:host="staging.tokopedia.com"
-                    android:pathPattern=".*"
+                    android:pathPattern="qrcode-login"
                     android:scheme="https"/>
 
             </intent-filter>
