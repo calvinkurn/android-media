@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -1401,10 +1402,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeProductViewModel?.let {
-            showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
+            showToastSuccess(
+                    message = getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
+                    ctaText = getString(com.tokopedia.wishlist.common.R.string.lihat_label),
+                    ctaAction = {
+                        goToWishlist()
+                    }
+            )
             shopHomeAdapter.updateWishlistProduct(it.id ?: "", true)
             trackClickWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel, true)
         }
+    }
+
+    private fun goToWishlist() {
+        RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
     }
 
     private fun onErrorAddWishlist(errorMessage: String?) {
@@ -1470,6 +1481,25 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun showToastSuccess(message: String) {
         activity?.run {
             Toaster.build(findViewById(android.R.id.content), message).show()
+        }
+    }
+
+    private fun showToastSuccess(message: String, ctaText: String = "", ctaAction: View.OnClickListener? = null) {
+        activity?.run {
+            ctaAction?.let { ctaClickListener ->
+                Toaster.build(findViewById(android.R.id.content),
+                        message,
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        ctaText,
+                        ctaClickListener
+                ).show()
+            } ?: Toaster.build(findViewById(android.R.id.content),
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    ctaText
+            ).show()
         }
     }
 
@@ -1959,8 +1989,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> showToastSuccess(
                         when (it.data) {
-                            PlayWidgetReminderType.Remind -> getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
-                            PlayWidgetReminderType.UnRemind -> getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
+                            PlayWidgetReminderType.Reminded -> getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                            PlayWidgetReminderType.NotReminded -> getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
                         }
                 )
                 is Fail -> showErrorToast(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder))

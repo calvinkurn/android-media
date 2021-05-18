@@ -15,6 +15,7 @@ import com.tokopedia.play.widget.data.*
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.PMAX_PARAM_KEY
 import com.tokopedia.shop.common.constant.PMIN_PARAM_KEY
@@ -532,7 +533,7 @@ class ShopHomeViewModelTest {
         coEvery { playWidgetTools.updateToggleReminder(any(), any(), any()) } returns mockPlayWidgetReminder
         coEvery { playWidgetTools.mapWidgetToggleReminder(mockPlayWidgetReminder) } returns true
 
-        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Remind)
+        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Reminded)
 
         coVerify { playWidgetTools.updateToggleReminder(any(), any(), any()) }
 
@@ -546,7 +547,7 @@ class ShopHomeViewModelTest {
         coEvery { userSessionInterface.isLoggedIn } returns true
         coEvery { playWidgetTools.updateToggleReminder(any(), any(), any()) } throws Throwable()
 
-        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Remind)
+        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Reminded)
 
         coVerify { playWidgetTools.updateToggleReminder(any(), any(), any()) }
 
@@ -557,9 +558,9 @@ class ShopHomeViewModelTest {
     fun `check whether playWidgetReminderEvent value is not null when on login`() {
         val mockChannelId = "123"
         every { userSessionInterface.isLoggedIn } returns false
-        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Remind)
+        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Reminded)
         assert(viewModel.playWidgetReminderEvent.value?.first == mockChannelId)
-        assert(viewModel.playWidgetReminderEvent.value?.second == PlayWidgetReminderType.Remind)
+        assert(viewModel.playWidgetReminderEvent.value?.second == PlayWidgetReminderType.Reminded)
     }
 
     @Test
@@ -747,7 +748,7 @@ class ShopHomeViewModelTest {
                                 "",
                                 mockTotalView,
                                 true,
-                                true,
+                                PlayWidgetPromoType.Default(""),
                                 PlayWidgetVideoUiModel("", false, "", ""),
                                 PlayWidgetChannelType.Upcoming
                         )

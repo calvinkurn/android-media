@@ -5,9 +5,9 @@
     {
       "event": "viewSellerWidget",
       "eventCategory": "seller app - home",
-      "eventAction": "{{impression widget description - .{1,}}}",
+      "eventAction": "impression widget description - .{1,}",
       "eventLabel": "",
-      "sessionIris": "{{.{1,}}}"
+      "sessionIris": ".{1,}"
     }
   ]
 }

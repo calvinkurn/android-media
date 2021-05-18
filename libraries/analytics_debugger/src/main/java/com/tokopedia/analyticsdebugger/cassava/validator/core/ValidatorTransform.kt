@@ -6,7 +6,11 @@ import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 
+internal typealias JsonRegexPair = Pair<Int, Map<String, Any>>
+
 internal typealias JsonMap = Map<String, Any>
+
+fun JsonRegexPair.toDefaultValidator() = Validator(this.second, id = this.first)
 
 fun JsonMap.toDefaultValidator() = Validator(this)
 

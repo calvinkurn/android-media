@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.common.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.Menu
@@ -8,19 +9,19 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
+import com.tokopedia.common.travel.widget.TravelMenuBottomSheet
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.di.component.HotelComponent
-import com.tokopedia.hotel.common.presentation.widget.HotelMenuBottomSheets
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * @author by furqan on 25/03/19
  */
-abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.HotelMenuListener {
+abstract class HotelBaseActivity: BaseSimpleActivity(), TravelMenuBottomSheet.TravelMenuListener {
 
     private lateinit var hotelComponent: HotelComponent
 
@@ -91,7 +92,8 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
         if (userSessionInterface.isLoggedIn) {
             RouteManager.route(this, ApplinkConst.HOTEL_ORDER)
         } else {
-            RouteManager.route(this, ApplinkConst.LOGIN)
+            val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_CODE_LOGIN_HOTEl)
         }
     }
 
@@ -104,7 +106,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
     }
 
     private fun showBottomMenus() {
-        val hotelMenuBottomSheets = HotelMenuBottomSheets()
+        val hotelMenuBottomSheets = TravelMenuBottomSheet()
         hotelMenuBottomSheets.listener = this
         hotelMenuBottomSheets.show(supportFragmentManager, TAG_HOTEL_MENU)
     }
@@ -116,11 +118,21 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
         return hotelComponent as HotelComponent
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_LOGIN_HOTEl) {
+            RouteManager.route(this, ApplinkConst.HOTEL_ORDER)
+        }
+    }
+
     open fun shouldShowMenuWhite(): Boolean = false
 
     abstract fun shouldShowOptionMenu(): Boolean
 
     companion object {
         val TAG_HOTEL_MENU = "hotelMenu"
+
+        const val REQUEST_CODE_LOGIN_HOTEl = 100
     }
 }

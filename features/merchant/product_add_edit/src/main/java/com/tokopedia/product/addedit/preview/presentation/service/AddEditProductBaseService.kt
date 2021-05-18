@@ -224,12 +224,6 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             filePath = filePath
         )
 
-        // check picture availability
-        if (!filePath.exists()) {
-            val message = UploaderUseCase.FILE_NOT_FOUND
-            throw Exception(message)
-        }
-
         when (val result = uploaderUseCase(params)) {
             is UploadResult.Success -> {
                 return result.uploadId

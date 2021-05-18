@@ -22,6 +22,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -190,6 +191,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private var socmedButtonsContainer: LinearLayout? = null
     private var socmedBottomSheet: SocmedBottomSheet? = null
     private var socmedButton: UnifyButton? = null
+    private var parentContainer: ConstraintLayout? = null
 
     private var currentEmail = ""
     private var tempValidateToken = ""
@@ -344,6 +346,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             val phone = it.getString(PARAM_PHONE, "")
             val email = it.getString(PARAM_EMAIL, "")
             val method = it.getString(PARAM_LOGIN_METHOD, "")
+
+            isFromRegister = it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false)
 
             if (phone.isNotEmpty()) {
                 emailPhoneEditText?.setText(phone)
@@ -578,7 +582,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun prepareView() {
-
+        parentContainer = activity?.findViewById(R.id.parent_container)
+        parentContainer?.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         partialRegisterInputView?.showForgotPassword()
 
         socmedBottomSheet = SocmedBottomSheet(context)
@@ -1000,7 +1005,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if (userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS) {
                 seamlessAnalytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
             } else {
-                analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister())
+                analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister)
             }
 
             setTrackingUserId(userSession.userId)
@@ -1104,14 +1109,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     fun onErrorLogin(errorMessage: String?) {
-        analytics.eventFailedLogin(userSession.loginMethod, errorMessage)
+        analytics.eventFailedLogin(userSession.loginMethod, errorMessage, isFromRegister)
 
         dismissLoadingLogin()
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
-    }
-
-    override fun isFromRegister(): Boolean {
-        return arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false) ?: false
     }
 
     override fun trackSuccessValidate() {
