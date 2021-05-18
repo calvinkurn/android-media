@@ -75,12 +75,14 @@ class SomBottomSheetCourierProblem(
                 tf_extra_notes?.gone()
             }
         }
+        childViews?.fl_btn_primary?.isEnabled = true
     }
 
     private fun reset() {
         reasonCourierProblemText = ""
         childViews?.tf_extra_notes?.textFieldInput?.setText("")
         childViews?.tf_extra_notes?.gone()
+        childViews?.fl_btn_primary?.isEnabled = false
         somBottomSheetCourierProblemsAdapter.selectedRadio = -1
     }
 

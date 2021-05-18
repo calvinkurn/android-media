@@ -10,7 +10,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import com.tokopedia.unifycomponents.ticker.Ticker
-import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 
 class SomBottomSheetProductEmpty(
@@ -18,13 +17,13 @@ class SomBottomSheetProductEmpty(
         private var rejectReason: SomReasonRejectData.Data.SomRejectReason,
         private var orderId: String,
         private val listener: SomRejectOrderBottomSheetListener
-) : SomBaseRejectOrderBottomSheet(context, LAYOUT, SomConsts.TITLE_PILIH_PRODUK_KOSONG) {
+) : SomBaseRejectOrderBottomSheet(context, LAYOUT, SomConsts.TITLE_PILIH_PRODUK_KOSONG), SomBottomSheetStockEmptyAdapter.ProductCheckChangedListener {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_secondary
     }
 
-    private var somBottomSheetStockEmptyAdapter: SomBottomSheetStockEmptyAdapter = SomBottomSheetStockEmptyAdapter()
+    private var somBottomSheetStockEmptyAdapter: SomBottomSheetStockEmptyAdapter = SomBottomSheetStockEmptyAdapter(this)
 
     override fun setupChildView() {
         childViews?.run {
@@ -64,9 +63,14 @@ class SomBottomSheetProductEmpty(
         super.show()
     }
 
+    override fun onProductCheckChanged() {
+        childViews?.fl_btn_primary?.isEnabled = somBottomSheetStockEmptyAdapter.getListProductEmptied().isNotEmpty()
+    }
+
     private fun reset() {
         somBottomSheetStockEmptyAdapter.reset()
         childViews?.tf_extra_notes?.textFieldInput?.setText("")
+        childViews?.fl_btn_primary?.isEnabled = false
     }
 
     private fun setupTicker() {
