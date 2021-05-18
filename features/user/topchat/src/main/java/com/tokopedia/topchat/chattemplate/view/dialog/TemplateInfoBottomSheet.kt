@@ -12,10 +12,6 @@ class TemplateInfoBottomSheet : BottomSheetUnify() {
 
     private var desc: Typography? = null
 
-    init {
-        // set title
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
