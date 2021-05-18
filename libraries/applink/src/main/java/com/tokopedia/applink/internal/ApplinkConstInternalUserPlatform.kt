@@ -1,7 +1,6 @@
 package com.tokopedia.applink.internal
 
 import com.tokopedia.applink.constant.DeeplinkConstant
-import com.tokopedia.url.TokopediaUrl
 
 object ApplinkConstInternalUserPlatform {
 
@@ -13,12 +12,9 @@ object ApplinkConstInternalUserPlatform {
     const val METHOD_LOGIN_FACEBOOK = "facebook"
 
     //LoginActivity
-    @JvmField
-    val LOGIN = "$INTERNAL_USER/login"
-    @JvmField
-    val LOGIN_EMAIL = "${LOGIN}?method=$METHOD_LOGIN_EMAIL&e={email}&source={source}"
-    @JvmField
-    val LOGIN_PHONE = "${LOGIN}?method=$METHOD_LOGIN_PHONE&p={phone}&source={source}"
-    @JvmField
-    val LOGIN_THIRD_PARTY = "${LOGIN}?method={method}&source={source}"
+    const val LOGIN = "$INTERNAL_USER/login"
+    const val LOGIN_EMAIL = "${LOGIN}?method=$METHOD_LOGIN_EMAIL&e={email}&source={source}"
+    const val LOGIN_PHONE = "${LOGIN}?method=$METHOD_LOGIN_PHONE&p={phone}&source={source}"
+    const val LOGIN_THIRD_PARTY = "${LOGIN}?method={method}&source={source}"
+
 }

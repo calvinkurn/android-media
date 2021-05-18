@@ -105,7 +105,11 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
-        return settingItems.size();
+        if (settingItems != null) {
+            return settingItems.size();
+        } else {
+            return 0;
+        }
     }
 
     class GeneralSettingViewHolder extends RecyclerView.ViewHolder{
@@ -118,7 +122,9 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             itemView.setOnClickListener(view -> {
                 if (listener != null){
-                    listener.onItemClicked(settingItems.get(getAdapterPosition()).getId());
+                    if(getAdapterPosition()>=0 && getAdapterPosition() < settingItems.size()) {
+                        listener.onItemClicked(settingItems.get(getAdapterPosition()).getId());
+                    }
                 }
             });
         }
@@ -145,10 +151,6 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     .getContext()
                     .getResources()
                     .getString(R.string.title_notification_setting);
-            String preferenceTitle = itemView
-                    .getContext()
-                    .getResources()
-                    .getString(R.string.title_occ_preference_setting);
             String mediaTitle = itemView
                     .getContext()
                     .getResources()
@@ -157,7 +159,7 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             if (title.equals(notificationTitle)) {
                 boxColor = com.tokopedia.unifyprinciples.R.color.Unify_R400;
-            } else if (title.equals(preferenceTitle) || title.equals(mediaTitle)) {
+            } else if (title.equals(mediaTitle)) {
                 boxColor = com.tokopedia.unifyprinciples.R.color.Unify_R500;
             }
 

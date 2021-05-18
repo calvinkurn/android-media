@@ -6,9 +6,7 @@ import com.tokopedia.appaidl.AidlApi
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notification.common.data.TIMBER_MAX_CHAR_LIMIT
-import com.tokopedia.notification.common.data.TIMBER_TAG
 import com.tokopedia.notification.common.service.PushNotificationService
-import timber.log.Timber
 
 open class PushNotificationApi(
         onAidlReceive: (tag: String, bundle: Bundle?) -> Unit,

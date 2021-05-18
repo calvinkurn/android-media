@@ -6,8 +6,8 @@
       "event" : "clickAddProduct",
       "eventCategory" : "draft product page",
       "eventAction" : "click add product without draft",
-      "eventLabel" : "{{.*}}",
-      "shopId" : "{{.+}}"
+      "eventLabel" : ".*",
+      "shopId" : ".+"
     }
   ]
 }

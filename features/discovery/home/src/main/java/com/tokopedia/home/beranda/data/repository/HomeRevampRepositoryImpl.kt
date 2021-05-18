@@ -163,6 +163,8 @@ class HomeRevampRepositoryImpl @Inject constructor(
              * 4. Get above the fold content
              */
             if (homeData.atfData?.dataList?.isNotEmpty() == true) {
+                var nonTickerResponseFinished = false
+
                 homeData.atfData?.dataList?.map { atfData ->
                     when(atfData.component) {
                         TYPE_TICKER -> {
@@ -177,6 +179,11 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                     }
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
+                                }
+                                if (nonTickerResponseFinished) {
+                                    cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                                        saveToDatabase(homeData)
+                                    })
                                 }
                                 atfData
                             }
@@ -203,6 +210,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                 cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
                                     saveToDatabase(homeData)
                                 })
+                                nonTickerResponseFinished = true
                                 atfData
                             }
                             jobList.add(job)
@@ -225,6 +233,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                 cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
                                     saveToDatabase(homeData)
                                 })
+                                nonTickerResponseFinished = true
                                 atfData
                             }
                             jobList.add(job)

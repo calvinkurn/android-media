@@ -33,6 +33,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header_rounded"
         android:background="@color/Unify_N0"
-        tools:background="@color/colorPrimaryDark"
+        tools:background="@color/Unify_G500"
         tools:layout_height="@dimen/dp_40" />
 </androidx.constraintlayout.widget.ConstraintLayout>
