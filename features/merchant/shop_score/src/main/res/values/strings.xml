@@ -114,13 +114,13 @@
 
     <string name="desc_tips_success_order">Pastikan informasi produk dan jumlah stok produkmu sesuai untuk menghindari pembatalan pesanan.</string>
     <string name="desc_tips_speed_reply_chat">Berlaku untuk chat (60%) dan diskusi (40%) yang dibalas di jam operasional toko.
-        &lt;br /&gt;&lt;br /&gt;Setting awal jam operasional Tokopedia adalah 09.00 – 18.00 (termasuk weekend), namun jka toko sudah memiliki jam operasional, maka perhitungan akan mengikuti jam operasional toko.</string>
+        &lt;br /&gt;&lt;br /&gt;Untuk perhitungan chat, setting awal jam operasional Tokopedia adalah 09.00 - 18.00 (termasuk weekend), namun jka toko sudah memiliki jam operasional, maka perhitungan chat akan mengikuti jam operasional toko.</string>
     <string name="desc_tips_level_reply_chat">Pastikan Seller menjadi pihak terakhir yang membalas pesan, jika tidak, maka akan terhitung sebagai chat yang tidak dibalas.</string>
     <string name="desc_tips_speed_process_order">Jam operasional berdasarkan pengiriman:
-        &lt;br /&gt;Konvensional: 09.00 - 18.00
+        &lt;br /&gt;Konvensional: 09.00 - 18.00 (tidak termasuk weekend)
         &lt;br /&gt;Instan: 09.00 - 17.00
         &lt;br /&gt;
-        &lt;br /&gt;(tidak termasuk weekend)</string>
+        &lt;br /&gt;Tidak termasuk untuk produk pre-order, ya.</string>
     <string name="desc_tips_review_product">Pastikan pembeli memberikan ulasan produk setelah transaksi selesai, ya.</string>
     <string name="desc_tips_total_buyer">Gunakan fitur TopAds dan Broadcast Chat untuk menarik pembeli berbelanja.</string>
     <string name="desc_tips_open_seller_app">Dihitung per hari setiap Seller membuka Tokopedia Seller melalui Seller App (Android), Tokopedia App (iOS dan Android) atau website Tokopedia Seller. </string>
