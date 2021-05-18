@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context="com.tokopedia.minicart.example.ExampleActivity">
 
-    <com.tokopedia.totalamount.TotalAmount
-        android:id="@+id/mini_cart_total_amount"
+    <com.tokopedia.minicart.ui.widget.MiniCartWidget
+        android:id="@+id/mini_cart_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
