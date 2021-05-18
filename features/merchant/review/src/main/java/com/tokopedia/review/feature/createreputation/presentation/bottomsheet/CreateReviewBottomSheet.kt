@@ -116,7 +116,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews()
-        if(isEditMode) {
+        setOnTouchOutsideListener()
+        if (isEditMode) {
             observeReviewDetail()
             getReviewDetailData()
         } else {
@@ -238,7 +239,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     override fun onTemplateSelected(template: String) {
-        textArea?.append(context?.getString(R.string.review_form_templates_formatting, template) ?: template)
+        textArea?.append(context?.getString(R.string.review_form_templates_formatting, template)
+                ?: template)
     }
 
     private fun initInjector() {
@@ -274,7 +276,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 val isGoodRating = isGoodRating()
                 updateButtonState(isGoodRating, textArea?.isEmpty()?.not() ?: false)
                 createReviewViewModel.updateProgressBarFromRating(isGoodRating)
-                if(isGoodRating) {
+                if (isGoodRating) {
                     showTemplates()
                 } else {
                     hideTemplates()
@@ -328,7 +330,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun observeTemplates() {
         createReviewViewModel.reviewTemplates.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> onSuccessGetTemplate(it.data)
                 is Fail -> onFailGetTemplate(it.throwable)
             }
@@ -337,7 +339,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun observeReviewDetail() {
         createReviewViewModel.reviewDetails.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is com.tokopedia.review.common.data.Success -> {
 
                 }
@@ -549,42 +551,44 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun showReviewIncompleteDialog() {
-        context?.let {
-            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                val title = getString(R.string.review_create_incomplete_title)
-                setTitle(title)
-                setDescription(getString(R.string.review_create_incomplete_subtitle))
-                setPrimaryCTAText(getString(R.string.review_create_incomplete_cancel))
-                setPrimaryCTAClickListener {
-                    dismiss()
-                    CreateReviewTracking.eventClickCompleteReviewFirst(title)
-                }
-                setSecondaryCTAText(getString(R.string.review_create_incomplete_send_anyways))
-                setSecondaryCTAClickListener {
-                    isReviewIncomplete = true
-                    dismiss()
-                    submitNewReview()
-                    CreateReviewTracking.eventClickSendNow(title)
-                }
-                show()
-                CreateReviewTracking.eventViewDialog(title)
-            }
-        }
+        val title = getString(R.string.review_create_incomplete_title)
+        showDialog(title, getString(R.string.review_create_incomplete_subtitle), getString(R.string.review_create_incomplete_cancel), {
+            dismiss()
+            CreateReviewTracking.eventClickCompleteReviewFirst(title)
+        }, getString(R.string.review_create_incomplete_send_anyways), {
+            isReviewIncomplete = true
+            dismiss()
+            submitNewReview()
+            CreateReviewTracking.eventClickSendNow(title)
+        })
+        CreateReviewTracking.eventViewDialog(title)
     }
 
     private fun showSendRatingOnlyDialog() {
+        showDialog(getString(R.string.review_form_send_rating_only_dialog_title), getString(R.string.review_form_send_rating_only_body), getString(R.string.review_form_send_rating_only_exit), { dismiss() }, getString(R.string.review_form_send_rating_only), {
+            dismiss()
+            submitNewReview()
+        })
+    }
+
+    private fun showReviewUnsavedWarningDialog() {
+        showDialog(getString(R.string.review_form_dismiss_form_dialog_title), getString(R.string.review_form_dismiss_form_dialog_body), getString(R.string.review_edit_dialog_exit), { dismiss() }, getString(R.string.review_form_dismiss_form_dialog_stay), {})
+    }
+
+    private fun showDialog(title: String, description: String, primaryCtaText: String, primaryCtaAction: () -> Unit, secondaryCtaText: String, secondaryCtaAction: () -> Unit) {
         context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.review_form_send_rating_only_dialog_title))
-                setDescription(getString(R.string.review_form_send_rating_only_body))
-                setPrimaryCTAText(getString(R.string.review_form_send_rating_only_exit))
+                setTitle(title)
+                setDescription(description)
+                setPrimaryCTAText(primaryCtaText)
                 setPrimaryCTAClickListener {
-                    dismiss()
+                    this.dismiss()
+                    primaryCtaAction.invoke()
                 }
-                setSecondaryCTAText(getString(R.string.review_form_send_rating_only))
+                setSecondaryCTAText(secondaryCtaText)
                 setSecondaryCTAClickListener {
-                    dismiss()
-                    submitNewReview()
+                    this.dismiss()
+                    secondaryCtaAction.invoke()
                 }
                 show()
             }
@@ -624,6 +628,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 createReviewViewModel.isUserEligible() && isReviewComplete()
         )
     }
+
     private fun trackRatingChanged(position: Int) {
         CreateReviewTracking.reviewOnRatingChangedTracker(
                 getOrderId(),
@@ -636,10 +641,28 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun updateButtonState(isGoodRating: Boolean, isTextAreaNotEmpty: Boolean) {
-        if(isGoodRating) {
+        if (isGoodRating) {
             createReviewViewModel.updateButtonState(isGoodRating)
         } else {
             createReviewViewModel.updateButtonState(isTextAreaNotEmpty)
         }
+    }
+
+    private fun setOnTouchOutsideListener() {
+        setShowListener {
+            isCancelable = false
+            dialog?.setCanceledOnTouchOutside(false)
+            this.dialog?.window?.decorView?.findViewById<View>(com.google.android.material.R.id.touch_outside)?.setOnClickListener {
+                handleDismiss()
+            }
+        }
+    }
+
+    private fun handleDismiss() {
+        if (isGoodRating() && textArea?.isEmpty() == true) {
+            showSendRatingOnlyDialog()
+            return
+        }
+        showReviewUnsavedWarningDialog()
     }
 }
