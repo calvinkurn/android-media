@@ -44,6 +44,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                             productId = cartDetail.product.productId
                             parentProductId = cartDetail.product.parentId
                             quantity = cartDetail.product.productQuantity
+                            notes = cartDetail.product.productNotes
                         }
                 )
             }
@@ -65,6 +66,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                                 productId = cartDetail.product.productId
                                 parentProductId = cartDetail.product.parentId
                                 quantity = cartDetail.product.productQuantity
+                                notes = cartDetail.product.productNotes
                             }
                     )
                 }

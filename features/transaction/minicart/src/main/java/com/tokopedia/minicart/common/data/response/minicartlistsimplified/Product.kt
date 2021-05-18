@@ -8,5 +8,7 @@ data class Product(
         @SerializedName("product_id")
         val productId: String = "",
         @SerializedName("product_quantity")
-        val productQuantity: Int = 0
+        val productQuantity: Int = 0,
+        @SerializedName("product_notes")
+        val productNotes: String = ""
 )

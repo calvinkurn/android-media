@@ -9,7 +9,7 @@ data class MiniCartSimplifiedData(
 data class MiniCartWidgetData(
         var totalProductCount: Int = 0,
         var totalProductError: Int = 0,
-        var totalProductPrice: Long = 0,
+        var totalProductPrice: Long = 0
 )
 
 data class MiniCartItem(
@@ -17,5 +17,6 @@ data class MiniCartItem(
         var cartId: String = "",
         var productId: String = "",
         var parentProductId: String = "",
-        var quantity: Int = 0
+        var quantity: Int = 0,
+        var notes: String = ""
 )
