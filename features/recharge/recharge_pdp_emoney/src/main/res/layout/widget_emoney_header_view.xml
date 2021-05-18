@@ -18,6 +18,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:unifyButtonSize="small"
+            android:paddingHorizontal="@dimen/unify_space_12"
             tools:text="@string/recharge_pdp_emoney_check_saldo" />
 
         <LinearLayout
