@@ -19,6 +19,7 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        (fragment as? SellerMenuFragment)?.onNewIntent(intent?.data)
     }
 
     override fun onNewIntent(intent: Intent?) {
