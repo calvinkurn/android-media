@@ -1,5 +1,6 @@
 package com.tokopedia.officialstore.category.presentation.viewmodel
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -7,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
 import com.tokopedia.officialstore.category.domain.GetOfficialStoreCategoriesUseCase
+import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -24,6 +26,11 @@ class OfficialStoreCategoryViewModel @Inject constructor(
     private val _officialStoreCategoriesResult by lazy {
         MutableLiveData<Result<OfficialStoreCategories>>()
     }
+
+    fun removeObservers(lifecyclerOwner: LifecycleOwner) {
+        officialStoreCategoriesResult.removeObservers(lifecyclerOwner)
+    }
+
 
     fun getOfficialStoreCategories(doQueryHashing : Boolean) {
         launchCatchError(block = {

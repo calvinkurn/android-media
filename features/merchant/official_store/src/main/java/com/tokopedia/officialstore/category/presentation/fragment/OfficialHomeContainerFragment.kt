@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.officialstore.ApplinkConstant
@@ -29,9 +31,12 @@ import com.tokopedia.officialstore.category.di.DaggerOfficialStoreCategoryCompon
 import com.tokopedia.officialstore.category.di.OfficialStoreCategoryComponent
 import com.tokopedia.officialstore.category.di.OfficialStoreCategoryModule
 import com.tokopedia.officialstore.category.presentation.adapter.OfficialHomeContainerAdapter
+import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressData
+import com.tokopedia.officialstore.category.presentation.listener.OSContainerListener
 import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStoreCategoryViewModel
 import com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
+import com.tokopedia.officialstore.official.presentation.listener.OSChooseAddressWidgetCallback
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -50,7 +55,8 @@ import javax.inject.Inject
 
 class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<OfficialStoreCategoryComponent>,
         AllNotificationListener,
-        RecyclerViewScrollListener {
+        RecyclerViewScrollListener,
+        OSContainerListener{
 
     companion object {
         @JvmStatic
@@ -77,6 +83,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var badgeNumberCart: Int = 0
     private var keyCategory = "0"
     private var useNewInbox = false
+    private var chooseAddressWidget: ChooseAddressWidget? = null
+    private var chooseAddressData = OSChooseAddressData()
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var tracking: OfficialStoreTracking
@@ -85,6 +93,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     private lateinit var remoteConfig: RemoteConfig
     private val queryHashingKey = "android_do_query_hashing"
+
+    private var chooseAddressWidgetInitialized: Boolean = false
 
     private val tabAdapter: OfficialHomeContainerAdapter by lazy {
         OfficialHomeContainerAdapter(context, childFragmentManager)
@@ -104,7 +114,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_official_home, container, false)
+        val view = inflater.inflate(R.layout.fragment_official_home, container, false)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -113,12 +124,17 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         initInboxAbTest()
         init(view)
         observeOfficialCategoriesData()
-        viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false))
+        fetchOSCategory()
     }
 
     override fun onDestroy() {
-        viewModel.officialStoreCategoriesResult.removeObservers(this)
+        viewModel.removeObservers(this)
         super.onDestroy()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        chooseAddressWidgetInitialized = false
     }
 
     override fun getComponent(): OfficialStoreCategoryComponent? {
@@ -164,6 +180,16 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         component?.inject(this)
     }
 
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        conditionalViewModelRefresh()
+    }
+
+    private fun fetchOSCategory() {
+        viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false))
+    }
+
     private fun observeOfficialCategoriesData() {
         viewModel.officialStoreCategoriesResult.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -174,7 +200,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                 is Fail -> {
                     removeLoading()
                     NetworkErrorHelper.showEmptyState(context, official_home_motion) {
-                        viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false))
+                        fetchOSCategory()
                     }
                 }
             }
@@ -283,6 +309,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         viewPager = view.findViewById(R.id.viewpager)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
+        chooseAddressWidget = view.findViewById(R.id.widget_choose_address)
+        initializeChooseAddressWidget(isChooseAddressRollenceActive())
     }
 
     //status bar background compability
@@ -368,4 +396,75 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         officialStorePerformanceMonitoringListener?.startOfficialStorePerformanceMonitoring()
         officialStorePerformanceMonitoringListener = null
     }
+
+    private fun chooseAddressAbTestCondition(
+            ifChooseAddressActive: () -> Unit = {},
+            ifChooseAddressNotActive: () -> Unit = {}) {
+        val isActive = isChooseAddressRollenceActive()
+        if (isActive) {
+            ifChooseAddressActive.invoke()
+        } else {
+            ifChooseAddressNotActive.invoke()
+        }
+    }
+
+    private fun isChooseAddressRollenceActive(): Boolean {
+        return true
+    }
+
+    override fun onChooseAddressUpdated() {
+        val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+        chooseAddressData.setLocalCacheModel(localCacheModel)
+        chooseAddressWidgetInitialized = false
+        fetchOSCategory()
+    }
+
+    override fun onChooseAddressServerDown() {
+        removeChooseAddressWidget()
+    }
+
+    private fun removeChooseAddressWidget() {
+        chooseAddressWidget?.gone()
+    }
+
+    private fun initializeChooseAddressWidget(needToShowChooseAddress: Boolean) {
+        if (!chooseAddressWidgetInitialized) {
+            chooseAddressWidget?.bindChooseAddress(OSChooseAddressWidgetCallback(context, this, this))
+            chooseAddressWidget?.run {
+                visibility = if (needToShowChooseAddress) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+            }
+            chooseAddressWidgetInitialized = true
+        }
+    }
+
+    private fun conditionalViewModelRefresh() {
+        chooseAddressAbTestCondition(
+                ifChooseAddressActive = {
+                    if (!validateChooseAddressWidget()) {
+                        fetchOSCategory()
+                    }
+                },
+                ifChooseAddressNotActive = {
+                }
+        )
+    }
+
+    private fun validateChooseAddressWidget(): Boolean {
+        var isAddressChanged = false
+        chooseAddressData.toLocalCacheModel().let {
+            isAddressChanged = ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
+        }
+
+        if (isAddressChanged) {
+            val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+            chooseAddressData = OSChooseAddressData(isActive = true)
+                    .setLocalCacheModel(localChooseAddressData)
+        }
+        return isAddressChanged
+    }
+
 }
