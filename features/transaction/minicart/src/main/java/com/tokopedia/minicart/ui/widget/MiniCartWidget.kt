@@ -41,6 +41,9 @@ class MiniCartWidget @JvmOverloads constructor(
         totalAmount?.isTotalAmountLoading = true
     }
 
+    /*
+    * Function to initialize the widget if being used on activity
+    * */
     fun setup(activity: AppCompatActivity, listener: MiniCartWidgetListener) {
         val application = activity.application
         inject(application)
@@ -52,6 +55,9 @@ class MiniCartWidget @JvmOverloads constructor(
         })
     }
 
+    /*
+    * Function to initialize the widget if being used on fragment
+    * */
     fun setup(fragment: Fragment, listener: MiniCartWidgetListener) {
         fragment.activity?.let {
             val application = it.application
@@ -63,6 +69,27 @@ class MiniCartWidget @JvmOverloads constructor(
         viewModel.miniCartWidgetUiModel.observe(fragment, {
             renderWidget(it)
         })
+    }
+
+    /*
+    * Function to trigger update mini cart data
+    * This will trigger view model to fetch latest data from backend and update the UI
+    * */
+    fun updateData() {
+        viewModel.getLatestState()
+    }
+
+    /*
+    * Function to trigger update mini cart data
+    * This will trigger widget to update the UI with provided data
+    * */
+    fun updateData(miniCartWidgetData: MiniCartWidgetData) {
+        renderWidget(MiniCartWidgetUiModel(
+                state = MiniCartWidgetUiModel.STATE_NORMAL,
+                totalProductError = miniCartWidgetData.totalProductError,
+                totalProductPrice = miniCartWidgetData.totalProductPrice,
+                totalProductCount = miniCartWidgetData.totalProductCount
+        ))
     }
 
     private fun inject(baseAppComponent: Application?) {
@@ -77,24 +104,11 @@ class MiniCartWidget @JvmOverloads constructor(
     private fun renderWidget(miniCartWidgetUiModel: MiniCartWidgetUiModel) {
         totalAmount?.isTotalAmountLoading = false
         totalAmount?.apply {
-            setLabelTitle("Total Harga")
+            setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetUiModel.totalProductPrice, false))
-            setCtaText("Beli (${miniCartWidgetUiModel.totalProductCount})")
+            setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetUiModel.totalProductCount))
         }
         totalAmount?.isTotalAmountLoading = false
-    }
-
-    fun updateData() {
-        viewModel.getLatestState()
-    }
-
-    fun updateData(miniCartWidgetData: MiniCartWidgetData) {
-        renderWidget(MiniCartWidgetUiModel(
-                state = MiniCartWidgetUiModel.STATE_NORMAL,
-                totalProductError = miniCartWidgetData.totalProductError,
-                totalProductPrice = miniCartWidgetData.totalProductPrice,
-                totalProductCount = miniCartWidgetData.totalProductCount
-        ))
     }
 
 }
