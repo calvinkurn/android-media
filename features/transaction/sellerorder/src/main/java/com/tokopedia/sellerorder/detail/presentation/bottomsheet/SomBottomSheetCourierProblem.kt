@@ -70,19 +70,20 @@ class SomBottomSheetCourierProblem(
                 tf_extra_notes?.visible()
                 tf_extra_notes?.setLabelStatic(true)
                 tf_extra_notes?.setPlaceholder(context.getString(R.string.placeholder_reject_reason))
+                childViews?.btn_primary?.isEnabled = !tf_extra_notes?.textFieldInput?.text.isNullOrBlank()
             } else {
                 reasonCourierProblemText = optionCourierProblem.reasonText
                 tf_extra_notes?.gone()
+                childViews?.btn_primary?.isEnabled = true
             }
         }
-        childViews?.fl_btn_primary?.isEnabled = true
     }
 
     private fun reset() {
         reasonCourierProblemText = ""
         childViews?.tf_extra_notes?.textFieldInput?.setText("")
         childViews?.tf_extra_notes?.gone()
-        childViews?.fl_btn_primary?.isEnabled = false
+        childViews?.btn_primary?.isEnabled = false
         somBottomSheetCourierProblemsAdapter.selectedRadio = -1
     }
 

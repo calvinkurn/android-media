@@ -2,6 +2,8 @@ package com.tokopedia.sellerorder.detail.presentation.bottomsheet
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.convertFormatDate
@@ -17,6 +19,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
+import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
 import java.util.*
 
@@ -51,6 +54,15 @@ class SomBottomSheetShopClosed(
             tf_shop_closed_notes?.setLabelStatic(true)
             tf_shop_closed_notes?.textFiedlLabelText?.text = context.getString(R.string.shop_closed_note_label)
             tf_shop_closed_notes?.textFieldInput?.hint = context.getString(R.string.shop_closed_note_placeholder)
+            tf_shop_closed_notes?.textFieldInput?.addTextChangedListener(object: TextWatcher {
+                override fun afterTextChanged(s: Editable?) {}
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    childViews?.btn_reject_shop_closed?.isEnabled = !s.isNullOrBlank()
+                }
+            })
 
             btn_reject_shop_closed?.setOnClickListener {
                 dismiss()
@@ -80,6 +92,7 @@ class SomBottomSheetShopClosed(
         updateClosingEndDate("${now.time.toFormattedString("dd")} ${convertMonth(now.get(Calendar.MONTH))} ${now.time.toFormattedString("yyyy")}")
         childViews?.tf_shop_closed_notes?.textFieldInput?.setText("")
         childViews?.tf_end_shop_closed?.textFieldInput?.setText(defaultDateNow)
+        childViews?.btn_reject_shop_closed?.isEnabled = false
         setupStartDate()
     }
 

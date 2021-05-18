@@ -1,6 +1,8 @@
 package com.tokopedia.sellerorder.detail.presentation.bottomsheet
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerorder.R
@@ -28,6 +30,15 @@ class SomBottomSheetBuyerOtherReason(
             tf_extra_notes?.setLabelStatic(true)
             tf_extra_notes?.textFiedlLabelText?.text = context.getString(R.string.other_reason_resp_label)
             tf_extra_notes?.setPlaceholder(context.getString(R.string.other_reason_resp_placeholder))
+            tf_extra_notes?.textFieldInput?.addTextChangedListener(object: TextWatcher {
+                override fun afterTextChanged(s: Editable?) {}
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    childViews?.btn_primary?.isEnabled = !s.isNullOrBlank()
+                }
+            })
             fl_btn_primary?.visible()
             fl_btn_primary?.setOnClickListener {
                 dismiss()

@@ -64,13 +64,13 @@ class SomBottomSheetProductEmpty(
     }
 
     override fun onProductCheckChanged() {
-        childViews?.fl_btn_primary?.isEnabled = somBottomSheetStockEmptyAdapter.getListProductEmptied().isNotEmpty()
+        childViews?.btn_primary?.isEnabled = somBottomSheetStockEmptyAdapter.getListProductEmptied().isNotEmpty()
     }
 
     private fun reset() {
         somBottomSheetStockEmptyAdapter.reset()
         childViews?.tf_extra_notes?.textFieldInput?.setText("")
-        childViews?.fl_btn_primary?.isEnabled = false
+        childViews?.btn_primary?.isEnabled = false
     }
 
     private fun setupTicker() {
