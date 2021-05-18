@@ -133,6 +133,9 @@ abstract class BaseSearchCategoryFragment:
     protected open fun observeViewModel() {
         getViewModel().visitableListLiveData.observe(viewLifecycleOwner, this::submitList)
         getViewModel().hasNextPageLiveData.observe(viewLifecycleOwner, this::updateEndlessScrollListener)
+        getViewModel().isFilterPageOpenLiveData.observe(viewLifecycleOwner, this::openBottomSheetFilter)
+        getViewModel().dynamicFilterModelLiveData.observe(
+                viewLifecycleOwner, this::onDynamicFilterModelChanged)
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
@@ -162,14 +165,22 @@ abstract class BaseSearchCategoryFragment:
 
     override fun onBannerClick(applink: String) {
         // TODO: Route to applink
-        Toaster.build(requireView(), "Navigate to Applink", Toaster.TYPE_NORMAL, Toaster.LENGTH_SHORT)
+        Toaster.build(requireView(),
+                "Navigate to Applink",
+                Toaster.TYPE_NORMAL,
+                Toaster.LENGTH_SHORT)
     }
 
     override fun openFilterPage() {
-
+        getViewModel().onViewOpenFilterPage()
     }
 
-    private fun openBottomSheetFilter(mapParameter: Map<String, String>, dynamicFilterModel: DynamicFilterModel?) {
+    private fun openBottomSheetFilter(isFilterPageOpen: Boolean) {
+        if (!isFilterPageOpen) return
+
+        val mapParameter = getViewModel().queryParam
+        val dynamicFilterModel = getViewModel().dynamicFilterModelLiveData.value
+
         sortFilterBottomSheet = SortFilterBottomSheet().also {
             it.show(
                     parentFragmentManager,
@@ -180,6 +191,7 @@ abstract class BaseSearchCategoryFragment:
 
             it.setOnDismissListener {
                 sortFilterBottomSheet = null
+                getViewModel().onViewDismissFilterPage()
             }
         }
     }
@@ -190,5 +202,11 @@ abstract class BaseSearchCategoryFragment:
 
     override fun getResultCount(mapParameter: Map<String, String>) {
 
+    }
+
+    private fun onDynamicFilterModelChanged(dynamicFilterModel: DynamicFilterModel?) {
+        dynamicFilterModel?.let { it ->
+            sortFilterBottomSheet?.setDynamicFilterModel(it)
+        }
     }
 }

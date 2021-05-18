@@ -1,24 +1,18 @@
-package com.tokopedia.tokomart.search.presentation.viewmodel
+package com.tokopedia.tokomart.category.presentation.viewmodel
 
 import com.tokopedia.tokomart.searchcategory.OpenFilterPageTestHelper
 import org.junit.Test
 
-class SearchOpenFilterPageTest: SearchTestFixtures() {
+class CategoryOpenFilterPageTest: CategoryTestFixtures() {
 
-    private lateinit var openFilterPageTestHelper: OpenFilterPageTestHelper
-
-    override fun setUp() {
-        super.setUp()
-
-        openFilterPageTestHelper = OpenFilterPageTestHelper(
-                searchViewModel,
-                getFilterUseCase,
-        )
-    }
+    private val openFilterPageTestHelper: OpenFilterPageTestHelper = OpenFilterPageTestHelper(
+            categoryViewModel,
+            getFilterUseCase,
+    )
 
     @Test
     fun `open filter page first time`() {
-        openFilterPageTestHelper.`test open filter page first time`(defaultQueryParamMap)
+        openFilterPageTestHelper.`test open filter page first time`(mapOf())
     }
 
     @Test

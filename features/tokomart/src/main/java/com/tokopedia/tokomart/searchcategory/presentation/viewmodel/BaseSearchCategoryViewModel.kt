@@ -6,15 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
-import com.tokopedia.tokomart.searchcategory.domain.model.FilterModel
-import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupVariantDataView
@@ -25,26 +25,36 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.SortFilterItemDa
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.util.DummyDataViewGenerator
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
+import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
 abstract class BaseSearchCategoryViewModel(
         baseDispatcher: CoroutineDispatchers,
         queryParamMap: Map<String, String>,
-        protected val getFilterUseCase: UseCase<FilterModel>,
+        protected val getFilterUseCase: UseCase<DynamicFilterModel>,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
 ): BaseViewModel(baseDispatcher.io) {
 
-    protected val queryParamMap = queryParamMap.toMutableMap()
     protected val filterController = FilterController()
     protected val loadingMoreModel = LoadingMoreModel()
     protected val visitableList = mutableListOf<Visitable<*>>()
+
+    protected val queryParamMutable = queryParamMap.toMutableMap()
+    val queryParam: Map<String, String> = queryParamMutable
 
     protected val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
     val visitableListLiveData: LiveData<List<Visitable<*>>> = visitableListMutableLiveData
 
     protected val hasNextPageMutableLiveData = MutableLiveData(false)
     val hasNextPageLiveData: LiveData<Boolean> = hasNextPageMutableLiveData
+
+    protected val isFilterPageOpenMutableLiveData = MutableLiveData(false)
+    val isFilterPageOpenLiveData: LiveData<Boolean> = isFilterPageOpenMutableLiveData
+
+    protected val dynamicFilterModelMutableLiveData = MutableLiveData<DynamicFilterModel?>(null)
+    val dynamicFilterModelLiveData: LiveData<DynamicFilterModel?> = dynamicFilterModelMutableLiveData
 
     protected var totalData = 0
     protected var totalFetchedData = 0
@@ -59,7 +69,10 @@ abstract class BaseSearchCategoryViewModel(
         totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.productList.size
 
-        filterController.initFilterController(queryParamMap, headerDataView.quickFilterDataValue.filter)
+        filterController.initFilterController(
+                queryParamMutable,
+                headerDataView.quickFilterDataValue.filter
+        )
 
         createVisitableListFirstPage(headerDataView, contentDataView)
         clearVisitableListLiveData()
@@ -116,8 +129,8 @@ abstract class BaseSearchCategoryViewModel(
                 isCleanUpExistingFilterWithSameKey = option.isCategoryOption,
         )
 
-        queryParamMap.clear()
-        queryParamMap.putAll(filterController.getParameter())
+        queryParamMutable.clear()
+        queryParamMutable.putAll(filterController.getParameter())
 
         onViewReloadPage()
     }
@@ -178,7 +191,7 @@ abstract class BaseSearchCategoryViewModel(
         visitableListMutableLiveData.value = visitableList
     }
 
-    private fun updateNextPageData() {
+    protected open fun updateNextPageData() {
         val hasNextPage = totalData > totalFetchedData
 
         hasNextPageMutableLiveData.value = hasNextPage
@@ -192,7 +205,7 @@ abstract class BaseSearchCategoryViewModel(
         executeLoadMore()
     }
 
-    private fun hasLoadedAllData() = totalData <= totalFetchedData
+    protected open fun hasLoadedAllData() = totalData <= totalFetchedData
 
     abstract fun executeLoadMore()
 
@@ -204,10 +217,43 @@ abstract class BaseSearchCategoryViewModel(
         updateNextPageData()
     }
 
-    private fun updateVisitableListForNextPage(contentDataView: ContentDataView) {
+    protected open fun updateVisitableListForNextPage(contentDataView: ContentDataView) {
         visitableList.remove(loadingMoreModel)
         visitableList.addAll(createContentVisitableList(contentDataView))
         visitableList.addFooter()
+    }
+
+    open fun onViewOpenFilterPage() {
+        if (isFilterPageOpenLiveData.value == true) return
+
+        isFilterPageOpenMutableLiveData.value = true
+
+        if (dynamicFilterModelLiveData.value != null) return
+
+        getFilterUseCase.execute(
+                this::onGetFilterSuccess,
+                this::onGetFilterFailed,
+                createGetFilterRequestParams()
+        )
+    }
+
+    protected open fun onGetFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
+        dynamicFilterModelMutableLiveData.value = dynamicFilterModel
+    }
+
+    protected open fun onGetFilterFailed(throwable: Throwable) {
+
+    }
+
+    protected open fun createGetFilterRequestParams(): RequestParams =
+        RequestParams.create().also {
+            it.putAll(queryParamMutable as Map<String, String>)
+//            it.putString(SearchApiConst.SOURCE, "search") // Temporary, source should be tokonow
+            it.putString(SearchApiConst.SOURCE, TOKONOW)
+        }
+
+    open fun onViewDismissFilterPage() {
+        isFilterPageOpenMutableLiveData.value = false
     }
 
     protected data class HeaderDataView(

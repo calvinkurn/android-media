@@ -6,11 +6,15 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokomart.category.domain.usecase.GetCategoryUseCaseModule
 import com.tokopedia.tokomart.category.presentation.viewmodel.CategoryViewModel
+import com.tokopedia.tokomart.searchcategory.domain.usecase.GetFilterUseCaseModule
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@Module(includes = [GetCategoryUseCaseModule::class])
+@Module(includes = [
+    GetCategoryUseCaseModule::class,
+    GetFilterUseCaseModule::class,
+])
 abstract class CategoryViewModelModule {
 
     @CategoryScope
