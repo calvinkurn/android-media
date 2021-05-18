@@ -58,6 +58,7 @@ class SearchFragment: BaseSearchCategoryFragment() {
     override fun createTypeFactory() = SearchTypeFactoryImpl(
             chooseAddressListener = this,
             titleListener = this,
+            quickFilterListener = this,
     )
 
     override fun getViewModel() = searchViewModel

@@ -3,7 +3,7 @@ package com.tokopedia.tokomart.search.domain.usecase
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel
-import com.tokopedia.tokomart.searchcategory.domain.model.QuickFilterModel
+import com.tokopedia.tokomart.searchcategory.domain.model.FilterModel
 
 internal fun createAceSearchProductRequest(params: String) = GraphqlRequest(
         ACE_SEARCH_PRODUCT_QUERY,
@@ -47,7 +47,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
 
 internal fun createQuickFilterRequest(params: String) = GraphqlRequest(
         QUICK_FILTER_QUERY,
-        QuickFilterModel::class.java,
+        FilterModel::class.java,
         mapOf(KEY_PARAMS to params)
 )
 

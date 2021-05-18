@@ -7,12 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
-import com.tokopedia.tokomart.searchcategory.domain.model.QuickFilterModel
+import com.tokopedia.tokomart.searchcategory.domain.model.FilterModel
 import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupDataView
@@ -23,12 +24,18 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataV
 import com.tokopedia.tokomart.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
+import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.usecase.coroutines.UseCase
 
 abstract class BaseSearchCategoryViewModel(
         baseDispatcher: CoroutineDispatchers,
+        queryParamMap: Map<String, String>,
+        protected val getFilterUseCase: UseCase<FilterModel>,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
 ): BaseViewModel(baseDispatcher.io) {
 
+    protected val queryParamMap = queryParamMap.toMutableMap()
+    protected val filterController = FilterController()
     protected val loadingMoreModel = LoadingMoreModel()
     protected val visitableList = mutableListOf<Visitable<*>>()
 
@@ -51,7 +58,10 @@ abstract class BaseSearchCategoryViewModel(
         totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.productList.size
 
+        filterController.initFilterController(queryParamMap, headerDataView.quickFilterDataValue.filter)
+
         createVisitableListFirstPage(headerDataView, contentDataView)
+        clearVisitableListLiveData()
         updateVisitableListLiveData()
         updateNextPageData()
     }
@@ -71,20 +81,53 @@ abstract class BaseSearchCategoryViewModel(
             ChooseAddressDataView(),
             BannerDataView(),
             TitleDataView(headerDataView.title, headerDataView.hasSeeAllCategoryButton),
-            QuickFilterDataView(
-                    quickFilterItemList = headerDataView.quickFilterDataValue.filter.map {
-                        SortFilterItemDataView(
-                                option = it.options.getOrNull(0) ?: Option(),
-                                sortFilterItem = SortFilterItem(it.title) {
-
-                                }.also { sortFilterItem ->
-                                    sortFilterItem.typeUpdated = false
-                                }
-                        )
-                    }
-            ),
+            QuickFilterDataView(createQuickFilterItemList(headerDataView)),
             ProductCountDataView(headerDataView.aceSearchProductHeader.totalDataText),
     )
+
+    private fun createQuickFilterItemList(headerDataView: HeaderDataView) =
+            headerDataView.quickFilterDataValue.filter.map {
+                val option = it.options.getOrNull(0) ?: Option()
+                val isSelected = filterController.getFilterViewState(option)
+                SortFilterItemDataView(
+                        option = option,
+                        sortFilterItem = createSortFilterItem(it, isSelected, option)
+                )
+            }
+
+    private fun createSortFilterItem(it: Filter, isSelected: Boolean, option: Option) =
+            SortFilterItem(it.title, getSortFilterItemType(isSelected)) {
+                onQuickFilterSelected(option, isSelected)
+            }.also { sortFilterItem ->
+                sortFilterItem.typeUpdated = false
+            }
+
+    private fun getSortFilterItemType(isSelected: Boolean) =
+            if (isSelected)
+                ChipsUnify.TYPE_SELECTED
+            else
+                ChipsUnify.TYPE_NORMAL
+
+    private fun onQuickFilterSelected(option: Option, isSelected: Boolean) {
+        filterController.setFilter(
+                option = option,
+                isFilterApplied = !isSelected,
+                isCleanUpExistingFilterWithSameKey = option.isCategoryOption,
+        )
+
+        queryParamMap.clear()
+        queryParamMap.putAll(filterController.getParameter())
+
+        onViewReloadPage()
+    }
+
+    open fun onViewReloadPage() {
+        totalData = 0
+        totalFetchedData = 0
+        nextPage = 1
+
+        onViewCreated()
+    }
 
     protected open fun createContentVisitableList(contentDataView: ContentDataView) =
             contentDataView.productList.map { product ->
@@ -125,6 +168,10 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun isLastPage() = totalFetchedData >= totalData
 
     protected open fun createFooterVisitableList() = listOf<Visitable<*>>()
+
+    private fun clearVisitableListLiveData() {
+        visitableListMutableLiveData.value = listOf()
+    }
 
     protected fun updateVisitableListLiveData() {
         visitableListMutableLiveData.value = visitableList
