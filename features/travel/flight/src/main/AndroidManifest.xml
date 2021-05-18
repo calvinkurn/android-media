@@ -86,7 +86,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".cancellation.view.activity.FlightCancellationTermsAndConditionsActivity"
+            android:name=".cancellationV2.presentation.activity.FlightCancellationTermsAndConditionsActivity"
             android:label="@string/flight_cancellation_terms_and_condition_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
