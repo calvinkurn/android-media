@@ -14,8 +14,11 @@ import timber.log.Timber
 
 class FakeGraphqlUseCase(private val context: Context) : GraphqlUseCaseInterface {
 
-    var gqlRequest: GraphqlRequest? = null
+    private var gqlRequest: GraphqlRequest? = null
     private var e: Exception? = null
+    val data: GetPeopleAddressResponse by lazy {
+        Gson().fromJson(getRawString(context, R.raw.address), GetPeopleAddressResponse::class.java)
+    }
 
     override fun clearRequest() {
         gqlRequest = null
@@ -33,8 +36,7 @@ class FakeGraphqlUseCase(private val context: Context) : GraphqlUseCaseInterface
         if (gqlRequest == null) throw Exception("gql request is null")
         when {
             gqlRequest!!.query.contains("keroAddressCorner") -> return Observable.just(GraphqlResponse(
-                    mapOf(GetPeopleAddressResponse::class.java to
-                            Gson().fromJson(getRawString(context, R.raw.address), GetPeopleAddressResponse::class.java)
+                    mapOf(GetPeopleAddressResponse::class.java to data
                     ), mapOf(), false))
         }
         return Observable.error(Throwable("unrecognized query"))
