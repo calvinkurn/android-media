@@ -4,9 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
-
 /**
  * Created by alvarisi on 1/18/17.
  */

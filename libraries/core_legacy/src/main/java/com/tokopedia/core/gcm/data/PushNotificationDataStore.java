@@ -20,7 +20,5 @@ public interface PushNotificationDataStore {
 
     Observable<Boolean> saveRegistrationDevice(String registrationDevice);
 
-    Observable<List<PushNotification>> getPushSavedPushNotificationWithOrderBy(String category, boolean ascendant);
-
     Observable<Boolean> deleteSavedPushNotification();
 }

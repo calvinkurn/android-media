@@ -1,32 +1,13 @@
 package com.tokopedia.core.gcm;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.deprecated.LocalCacheHandler;
-import com.tokopedia.core.gcm.data.entity.NotificationEntity;
-import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.logger.ServerLogger;
-import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.user.session.UserSession;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import timber.log.Timber;
 
 /**
  * @author by Herdi_WORK on 13.12.16.

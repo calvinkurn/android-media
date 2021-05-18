@@ -98,11 +98,6 @@ public class CloudPushNotificationDataSource implements PushNotificationDataStor
     }
 
     @Override
-    public Observable<List<PushNotification>> getPushSavedPushNotificationWithOrderBy(String category, boolean ascendant) {
-        return null;
-    }
-
-    @Override
     public Observable<Boolean> saveRegistrationDevice(String registrationDevice) {
         return null;
     }
