@@ -184,7 +184,9 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        conditionalViewModelRefresh()
+        if (isVisibleToUser) {
+            conditionalViewModelRefresh()
+        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
