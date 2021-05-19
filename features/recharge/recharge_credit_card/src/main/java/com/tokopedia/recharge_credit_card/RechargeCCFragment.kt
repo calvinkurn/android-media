@@ -22,6 +22,7 @@ import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_CLIENT_NUMBER
 import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_IDENTIFIER
 import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_OPERATOR_ID
 import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_PRODUCT_ID
@@ -275,13 +276,10 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 val operatorId = it.getString(PARAM_OPERATOR_ID) ?: ""
                 val productId = it.getString(PARAM_PRODUCT_ID) ?: ""
                 val identifier = it.getString(PARAM_IDENTIFIER) ?: ""
+                val clientNumber = it.getString(PARAM_CLIENT_NUMBER) ?: ""
 
-                val mapParam = rechargeSubmitCCViewModel.createMapParam("",
-                        operatorId, productId, userSession.userId)
-                mapParam.remove(RechargeSubmitCCViewModel.PARAM_CLIENT_NUMBER)
-                mapParam[RechargeSubmitCCViewModel.PARAM_PCIDSS] = signature
-                mapParam[RechargeSubmitCCViewModel.PARAM_TOKEN] = identifier
-
+                val mapParam = rechargeSubmitCCViewModel.createPcidssParamFromApplink(clientNumber, operatorId,
+                        productId, userSession.userId, signature, identifier)
                 rechargeSubmitCCViewModel.submitCreditCard(mapParam)
             }
         } else {
@@ -384,7 +382,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_LOGIN_INSTANT_CHECKOUT = 1020
 
         fun newInstance(categoryId: String, menuId: String, operatorId: String, productId: String,
-                        signature: String, identifier: String): Fragment {
+                        signature: String, identifier: String, clientNumber: String): Fragment {
             val fragment = RechargeCCFragment()
             val bundle = Bundle()
             bundle.putString(CATEGORY_ID, categoryId)
@@ -393,6 +391,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
             bundle.putString(PARAM_PRODUCT_ID, productId)
             bundle.putString(PARAM_SIGNATURE, signature)
             bundle.putString(PARAM_IDENTIFIER, identifier)
+            bundle.putString(PARAM_CLIENT_NUMBER, clientNumber)
             fragment.arguments = bundle
             return fragment
         }

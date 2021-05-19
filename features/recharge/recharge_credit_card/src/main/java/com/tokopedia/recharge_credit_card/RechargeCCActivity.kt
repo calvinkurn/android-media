@@ -21,11 +21,13 @@ class RechargeCCActivity : BaseSimpleActivity() {
         val categoryId = bundle?.getString(PARAM_CATEGORY_ID, CATEGORY_ID_DEFAULT)
                 ?: CATEGORY_ID_DEFAULT
         val menuId = bundle?.getString(PARAM_MENU_ID, MENU_ID_DEFAULT) ?: MENU_ID_DEFAULT
+
         val operatorId = bundle?.getString(PARAM_OPERATOR_ID, "") ?: ""
         val productId = bundle?.getString(PARAM_PRODUCT_ID, "") ?: ""
         val signature = bundle?.getString(PARAM_SIGNATURE, "") ?: ""
         val identifier = bundle?.getString(PARAM_IDENTIFIER, "") ?: ""
-        return RechargeCCFragment.newInstance(categoryId, menuId, operatorId, productId, signature, identifier)
+        val clientNumber = bundle?.getString(PARAM_CLIENT_NUMBER, "") ?: ""
+        return RechargeCCFragment.newInstance(categoryId, menuId, operatorId, productId, signature, identifier, clientNumber)
     }
 
     override fun getLayoutRes(): Int {
@@ -59,6 +61,7 @@ class RechargeCCActivity : BaseSimpleActivity() {
         const val PARAM_PRODUCT_ID = "product_id"
         const val PARAM_SIGNATURE = "signature"
         const val PARAM_IDENTIFIER = "identifier"
+        const val PARAM_CLIENT_NUMBER = "client_number"
 
         private const val CATEGORY_ID_DEFAULT = "26"
         private const val MENU_ID_DEFAULT = "169"
