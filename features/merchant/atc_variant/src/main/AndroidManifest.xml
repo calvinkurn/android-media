@@ -11,9 +11,9 @@
 
         <activity
             android:name=".views.AtcVariantActivity"
-            android:label="@string/title_atc_variant"
-            android:theme="@style/Theme.AppCompat.DayNight.Translucent"
-            android:screenOrientation="portrait">
+            android:label="@string/title_atc_variant_activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.DayNight.Translucent">
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
