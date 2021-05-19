@@ -136,7 +136,7 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
         tvContent.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         tvContent.text = MethodChecker.fromHtml(content)
         context?.let {
-            tvContent.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
+            tvContent.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         }
         accordion?.addGroup(AccordionDataUnify(
                 model.title ?: "",
