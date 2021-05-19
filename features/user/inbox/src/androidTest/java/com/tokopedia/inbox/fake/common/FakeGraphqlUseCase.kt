@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
-class GraphqlUseCaseStub<T : Any> @Inject constructor(
+class FakeGraphqlUseCase<T : Any> @Inject constructor(
         graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<T>(graphqlRepository) {
 

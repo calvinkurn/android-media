@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inbox.di.InboxScope
 import com.tokopedia.inbox.domain.data.notification.InboxNotificationResponse
 import com.tokopedia.inbox.domain.usecase.InboxNotificationUseCase
-import com.tokopedia.inbox.fake.common.GraphqlUseCaseStub
+import com.tokopedia.inbox.fake.common.FakeGraphqlUseCase
 import com.tokopedia.inbox.fake.domain.usecase.FakeInboxNotificationUseCase
 import dagger.Module
 import dagger.Provides
@@ -21,7 +21,7 @@ class FakeInboxModule {
     @Provides
     @InboxScope
     fun provideFakeInboxNotificationUseCase(
-            gqlUseCase: GraphqlUseCaseStub<InboxNotificationResponse>,
+            gqlUseCase: FakeGraphqlUseCase<InboxNotificationResponse>,
             dispatchers: CoroutineDispatchers
     ): FakeInboxNotificationUseCase {
         return FakeInboxNotificationUseCase(gqlUseCase, dispatchers)
