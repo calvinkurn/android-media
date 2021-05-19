@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,17 +24,17 @@ import com.tokopedia.logisticorder.adapter.EmptyTrackingNotesAdapter
 import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
-import com.tokopedia.logisticorder.domain.response.TrackingData
 import com.tokopedia.logisticorder.uimodel.PageModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
-import com.tokopedia.logisticorder.uimodel.TrackingUiModel
 import com.tokopedia.logisticorder.utils.DateUtil
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity.Companion.createIntent
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -42,7 +42,7 @@ import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class TrackingPageFragmentKotlin: BaseDaggerFragment() {
+class TrackingPageFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -110,6 +110,13 @@ class TrackingPageFragmentKotlin: BaseDaggerFragment() {
         fetchData()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (mCountDownTimer != null) {
+            mCountDownTimer?.cancel()
+        }
+    }
+
     private fun initView() {
         loadingScreen = view?.findViewById(R.id.main_progress_bar)
 
@@ -138,14 +145,53 @@ class TrackingPageFragmentKotlin: BaseDaggerFragment() {
     }
 
     private fun initObserver() {
+        viewModel.trackingData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    hideLoading()
+                    populateView(it.data)
+                }
+                is Fail -> {
+                    hideLoading()
+                    showError(it.throwable)
+                }
+                else -> showLoading()
+            }
+        })
 
+        viewModel.retryAvailability.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    val avail =  it.data.retryAvailability
+                    val deadline = avail.deadlineRetryUnixtime.toLong()
+                    if (avail.showRetryButton && avail.availabilityRetry) {
+                        setRetryButton(true, 0L)
+                    } else if (!avail.availabilityRetry) {
+                        setRetryButton(false, deadline)
+                    } else {
+                        setRetryButton(false, 0L)
+                    }
+                }
+                is Fail -> {
+                    if (view != null) {
+                        showSoftError(it.throwable)
+                    }
+                }
+            }
+        })
+
+        viewModel.retryBooking.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> startSuccessCountdown()
+                is Fail -> showError(it.throwable)
+            }
+        })
     }
 
     private fun fetchData() {
         mOrderId?.let { viewModel.getTrackingData(it) }
-        if (mTrackingUrl != null && !mTrackingUrl!!.isEmpty()
-                && mCaller != null && mCaller.equals("seller", ignoreCase = true)) {
-            //viewmodel getRetryAvailable
+        if (mTrackingUrl != null && mCaller != null && mCaller.equals("seller", ignoreCase = true)) {
+            mOrderId?.let { viewModel.retryAvailability(it) }
         }
     }
 
@@ -359,14 +405,14 @@ class TrackingPageFragmentKotlin: BaseDaggerFragment() {
         private const val ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL"
         private const val ARGUMENTS_CALLER = "ARGUMENTS_CALLER"
 
-        fun createFragment(orderId: String, liveTrackingUrl: String, caller: String): Fragment {
-            val fragment = TrackingPageFragmentKotlin()
-            val bundle = Bundle()
-            bundle.putString(ARGUMENTS_ORDER_ID, orderId)
-            bundle.putString(ARGUMENTS_TRACKING_URL, liveTrackingUrl)
-            bundle.putString(ARGUMENTS_CALLER, caller)
-            fragment.arguments = bundle
-            return fragment
+        fun createFragment(orderId: String?, liveTrackingUrl: String?, caller: String?): TrackingPageFragment {
+            return TrackingPageFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARGUMENTS_ORDER_ID, orderId)
+                    putString(ARGUMENTS_TRACKING_URL, liveTrackingUrl)
+                    putString(ARGUMENTS_CALLER, caller)
+                }
+            }
         }
     }
 

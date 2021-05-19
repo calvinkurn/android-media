@@ -2,8 +2,8 @@ package com.tokopedia.logisticorder.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.logisticorder.di.RawQueryConstant
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.logisticorder.usecase.entity.RetryBookingResponse
 import com.tokopedia.logisticorder.usecase.executor.SchedulerProvider
 import rx.Observable

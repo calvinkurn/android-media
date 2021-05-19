@@ -33,8 +33,7 @@ data class DetailModel(
         var sendTime: String = "",
         var receiverName: String = "",
         var serviceCode: String = "",
-        var trackingUrl: String = "",
-        var proof: ProofModel = ProofModel()
+        var trackingUrl: String = ""
 )
 
 data class ProofModel(
@@ -46,7 +45,8 @@ data class TrackHistoryModel(
         var date: String = "",
         var status: String = "",
         var city: String = "",
-        var time: String = ""
+        var time: String = "",
+        var proof: ProofModel = ProofModel()
 )
 
 data class PageModel(

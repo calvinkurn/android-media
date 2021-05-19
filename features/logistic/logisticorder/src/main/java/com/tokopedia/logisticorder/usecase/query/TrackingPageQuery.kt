@@ -3,8 +3,8 @@ package com.tokopedia.logisticorder.usecase.query
 object TrackingPageQuery {
 
     val getTrackingPage = """
-        query logistic_tracking (${'$'}orderId: String!, ${'$'}from: String!) {
-          logistic_tracking(input: {order_id: ${'$'}orderId, from: ${'$'}from}) {
+        query logistic_tracking (${'$'}input: MpLogisticTrackingInputParams!) {
+          logistic_tracking(input: ${'$'}input) {
             message_error
             status
             data {
@@ -60,6 +60,20 @@ object TrackingPageQuery {
             awbnum
             shipper_id
             shipper_product_id
+          }
+        }
+    """.trimIndent()
+
+    val retryAvailability = """
+        query RetryAvailability(${'$'}id: String!){
+          retryAvailability(orderID:${'$'}id){
+            awbnum
+            order_id
+            order_tx_id
+            deadline_retry
+            deadline_retry_unixtime
+            show_retry_button
+            availability_retry
           }
         }
     """.trimIndent()

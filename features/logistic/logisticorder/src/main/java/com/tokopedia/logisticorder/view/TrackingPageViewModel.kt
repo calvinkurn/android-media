@@ -8,6 +8,7 @@ import com.tokopedia.logisticorder.domain.response.TrackOrder
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.usecase.TrackingPageRepository
+import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
 import com.tokopedia.logisticorder.usecase.entity.RetryBookingResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -27,9 +28,13 @@ class TrackingPageViewModel @Inject constructor(
     val retryBooking: LiveData<Result<RetryBookingResponse>>
         get() = _retryBooking
 
+    private val _retryAvailability = MutableLiveData<Result<RetryAvailabilityResponse>>()
+    val retryAvailability: LiveData<Result<RetryAvailabilityResponse>>
+        get() = _retryAvailability
+
     fun getTrackingData(orderId: String) {
         viewModelScope.launch(onErrorGetTrackingData) {
-            val getTrackingData = repo.getTrackingPage(orderId, "")
+            val getTrackingData = repo.getTrackingPage(orderId, " ")
             _trackingData.value = Success(mapper.mapTrackingData(getTrackingData))
         }
     }
@@ -41,6 +46,14 @@ class TrackingPageViewModel @Inject constructor(
         }
     }
 
+    fun retryAvailability(orderId: String) {
+        viewModelScope.launch(onErrorRetryAvailability) {
+            val retryAvailability = repo.retryAvailability(orderId)
+            _retryAvailability.value = Success(retryAvailability)
+        }
+    }
+
+
 
     private val onErrorGetTrackingData = CoroutineExceptionHandler { _, throwable ->
         _trackingData.value = Fail(throwable)
@@ -48,5 +61,9 @@ class TrackingPageViewModel @Inject constructor(
 
     private val onErrorRetryBooking = CoroutineExceptionHandler { _, throwable ->
         _retryBooking.value = Fail(throwable)
+    }
+
+    private val onErrorRetryAvailability = CoroutineExceptionHandler { _, throwable ->
+        _retryAvailability.value = Fail(throwable)
     }
 }

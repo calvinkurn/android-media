@@ -39,7 +39,6 @@ class TrackingPageMapperNew @Inject constructor() {
             receiverName = detail.receiverName
             serviceCode = detail.serviceCode
             trackingUrl = detail.trackingUrl
-            proof = mapProofOrder(detail.proof)
         }
     }
 
@@ -54,7 +53,8 @@ class TrackingPageMapperNew @Inject constructor() {
                     it.date,
                     it.status,
                     it.city,
-                    it.time
+                    it.time,
+                    mapProofOrder(it.proof)
             )
         }
     }

@@ -9,7 +9,7 @@ data class GetLogisticTrackingResponse(
 
 data class LogisticTrackingResponse(
         @SerializedName("message_error")
-        val messageError: String = "",
+        val messageError: List<Any?>? = null,
         @SerializedName("data")
         val data: TrackingData = TrackingData()
 )
@@ -36,7 +36,7 @@ data class TrackOrder(
         val noHistory: Int = -1,
         @SerializedName("receiver_name")
         val receiverName: String = "",
-        @SerializedName("shippinf_ref_num")
+        @SerializedName("shipping_ref_num")
         val shippingRefNum: String = "",
         @SerializedName("invalid")
         val invalid: Int = -1
@@ -60,9 +60,8 @@ data class Detail(
         @SerializedName("service_code")
         val serviceCode: String = "",
         @SerializedName("tracking_url")
-        val trackingUrl: String = "",
-        @SerializedName("proof")
-        val proof: Proof = Proof()
+        val trackingUrl: String = ""
+
 )
 
 data class Proof(
@@ -80,7 +79,9 @@ data class TrackHistory(
         @SerializedName("city")
         val city: String = "",
         @SerializedName("time")
-        val time: String = ""
+        val time: String = "",
+        @SerializedName("proof")
+        val proof: Proof = Proof()
 )
 
 data class Page(

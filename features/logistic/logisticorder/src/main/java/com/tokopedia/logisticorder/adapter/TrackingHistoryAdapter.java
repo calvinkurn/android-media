@@ -51,22 +51,19 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
         holder.comment.setVisibility(View.GONE);
         holder.description.setText(!TextUtils.isEmpty(trackingHistoryData.get(position).getStatus()) ?
                 Html.fromHtml(trackingHistoryData.get(position).getStatus()) : "");
-//        holder.dot.setColorFilter(Color.parseColor(trackingHistoryData.get(position).getColor()));
         if (position == trackingHistoryData.size() - 1) {
-            holder.dot.setColorFilter(holder.context.getResources().getColor(R.color.label_color));
+            holder.dot.setColorFilter(holder.context.getResources().getColor(R.color.tracking_secondary_color));
             holder.dotTrail.setVisibility(View.GONE);
         } else {
-            holder.dot.setColorFilter(holder.context.getResources().getColor(R.color.label_color));
+            holder.dot.setColorFilter(holder.context.getResources().getColor(R.color.tracking_primary_color));
             holder.dotTrail.setVisibility(View.VISIBLE);
-            holder.dotTrail.setBackgroundColor(holder.context.getResources().getColor(R.color.label_color));
+            holder.dotTrail.setBackgroundColor(holder.context.getResources().getColor(R.color.tracking_primary_color));
         }
     }
 
     private void setTitleColor(TrackingHistoryViewHolder holder, int position) {
         if (position == 0) {
-            holder.title.setTextColor((Color.parseColor(
-                    trackingHistoryData.get(position).getColor()
-            )));
+            holder.title.setTextColor(holder.context.getResources().getColor(R.color.tracking_primary_color));
         } else {
             holder.title.setTextColor(
                     holder.context.getResources().getColor(com.tokopedia.design.R.color.black_70));
