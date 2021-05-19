@@ -104,7 +104,9 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addAwbInfoSection(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel) {
-        add(awbInfoUiModel)
+        if (awbInfoUiModel.awbNumber.isNotBlank()) {
+            add(awbInfoUiModel)
+        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addReceiverAddressInfoSection(receiverAddressInfoUiModel: ShipmentInfoUiModel.ReceiverAddressInfoUiModel) {

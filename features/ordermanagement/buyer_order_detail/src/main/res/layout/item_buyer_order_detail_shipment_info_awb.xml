@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/spacing_lvl4"
-    android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
+    android:layout_marginTop="@dimen/spacing_lvl3"
     android:layout_marginEnd="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography

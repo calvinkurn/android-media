@@ -12,9 +12,18 @@ data class ActionButtonsUiModel(
             val url: String
     ) {
         data class PopUp(
-                val actionButton: List<ActionButton> = listOf(),
-                val body: String = "",
-                val title: String = ""
-        )
+                val actionButton: List<PopUpButton> = listOf(),
+                val body: String,
+                val title: String
+        ) {
+            data class PopUpButton(
+                    val key: String,
+                    val displayName: String,
+                    val color: String,
+                    val type: String,
+                    val uriType: String,
+                    val uri: String
+            )
+        }
     }
 }

@@ -1,14 +1,12 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.item_buyer_order_detail_shipment_info_awb.view.*
 
-class AwbInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUiModel.AwbInfoUiModel>(itemView) {
+class AwbInfoViewHolder(itemView: View?) : BaseToasterViewHolder<ShipmentInfoUiModel.AwbInfoUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_shipment_info_awb
@@ -40,14 +38,6 @@ class AwbInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUiMode
             Utils.copyText(itemView.context, LABEL_AWB, it.awbNumber)
             showToaster(itemView.context.getString(R.string.message_invoice_copied))
         }
-    }
-
-    private fun showToaster(message: String) {
-        Toaster.build(
-                itemView.rootView,
-                message,
-                Toaster.LENGTH_SHORT,
-                Toaster.TYPE_NORMAL).show()
     }
 
     private fun setupAwbNumber(awbNumber: String) {

@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
 import com.tokopedia.buyerorderdetail.common.Utils
 import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
@@ -48,25 +49,33 @@ class ReceiveConfirmationBottomSheet(
         text = actionButton.popUp.body
     }
 
-    private fun UnifyButton.setupButton(button: ActionButtonsUiModel.ActionButton?) {
+    private fun UnifyButton.setupButton(button: ActionButtonsUiModel.ActionButton.PopUp.PopUpButton?) {
         button?.let {
-            text = button.label
-            buttonType = Utils.mapButtonVariant(button.style)
+            text = button.displayName
+            buttonType = Utils.mapButtonVariant(button.type)
             setOnClickListener(this@ReceiveConfirmationBottomSheet)
         }
     }
 
     private fun onPrimaryButtonClicked() {
         actionButton.popUp.actionButton.firstOrNull()?.let {
-            disableDismiss()
-            actionButtonClickListener.onActionButtonClicked(it)
+            if (it.key == BuyerOrderDetailConst.ACTION_BUTTON_KEY_BACK) {
+                dismiss()
+            } else {
+                disableDismiss()
+                actionButtonClickListener.onPopUpActionButtonClicked(it)
+            }
         }
     }
 
     private fun onSecondaryButtonClicked() {
         actionButton.popUp.actionButton.lastOrNull()?.let {
-            disableDismiss()
-            actionButtonClickListener.onActionButtonClicked(it)
+            if (it.key == BuyerOrderDetailConst.ACTION_BUTTON_KEY_BACK) {
+                dismiss()
+            } else {
+                disableDismiss()
+                actionButtonClickListener.onPopUpActionButtonClicked(it)
+            }
         }
     }
 

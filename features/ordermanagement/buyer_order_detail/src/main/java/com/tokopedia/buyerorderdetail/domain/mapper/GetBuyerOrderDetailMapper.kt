@@ -56,7 +56,7 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
                 courierInfoUiModel = mapCourierInfoUiModel(shipment),
                 headerUiModel = mapPlainHeader(BuyerOrderDetailConst.SECTION_HEADER_SHIPMENT_INFO),
                 receiverAddressInfoUiModel = mapReceiverAddressInfoUiModel(shipment.receiver),
-                ticker = mapShipmentTickerUiModel(shipment.shippingInfo)
+                ticker = mapTicker(shipment.shippingInfo)
         )
     }
 
@@ -80,8 +80,8 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         return ActionButtonsUiModel.ActionButton(
                 key = button.key,
                 label = button.displayName,
-                popUp = mapButtonPopUp(button.popup),
-                style = button.style,
+                popUp = mapPopUp(button.popup),
+                style = button.variant,
                 url = button.url
         )
     }
@@ -92,11 +92,28 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         }
     }
 
-    private fun mapButtonPopUp(popup: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button.Popup): ActionButtonsUiModel.ActionButton.PopUp {
+    private fun mapPopUp(popup: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button.Popup): ActionButtonsUiModel.ActionButton.PopUp {
         return ActionButtonsUiModel.ActionButton.PopUp(
-                actionButton = mapActionButtons(popup.actionButton),
+                actionButton = mapPopUpButtons(popup.actionButton),
                 body = popup.body,
                 title = popup.title
+        )
+    }
+
+    private fun mapPopUpButtons(popUpButtons: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button.Popup.PopUpButton>): List<ActionButtonsUiModel.ActionButton.PopUp.PopUpButton> {
+        return popUpButtons.map {
+            mapPopUpButton(it)
+        }
+    }
+
+    private fun mapPopUpButton(popUpButton: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button.Popup.PopUpButton): ActionButtonsUiModel.ActionButton.PopUp.PopUpButton {
+        return ActionButtonsUiModel.ActionButton.PopUp.PopUpButton(
+                key = popUpButton.key,
+                displayName = popUpButton.displayName,
+                color = popUpButton.color,
+                type = popUpButton.type,
+                uriType = popUpButton.uriType,
+                uri = popUpButton.uri
         )
     }
 
@@ -105,7 +122,7 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
             ActionButtonsUiModel.ActionButton(
                     key = it.key,
                     label = it.displayName,
-                    popUp = mapButtonPopUp(it.popup),
+                    popUp = mapPopUp(it.popup),
                     style = "",
                     url = it.url
             )
@@ -216,16 +233,6 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         )
     }
 
-    private fun mapShipmentTickerUiModel(shippingInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.ShippingInfo): TickerUiModel {
-        return TickerUiModel(
-                actionKey = "",
-                actionText = shippingInfo.urlText,
-                actionUrl = shippingInfo.urlDetail,
-                description = composeTickerDescription(shippingInfo.title, shippingInfo.notes),
-                type = ""
-        )
-    }
-
     private fun mapCourierInfoUiModel(shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment): ShipmentInfoUiModel.CourierInfoUiModel {
         return ShipmentInfoUiModel.CourierInfoUiModel(
                 arrivalEstimation = shipment.eta,
@@ -252,7 +259,7 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
     private fun mapReceiverAddressInfoUiModel(receiver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Receiver): ShipmentInfoUiModel.ReceiverAddressInfoUiModel {
         return ShipmentInfoUiModel.ReceiverAddressInfoUiModel(
                 receiverAddress = composeReceiverAddress(receiver.street, receiver.district, receiver.city, receiver.province, receiver.postal),
-                receiverAddressNote = "Lantai 29", //TODO: replace with the one from backend
+                receiverAddressNote = "Lantai 29", //TODO: remove this
                 receiverName = receiver.name,
                 receiverPhoneNumber = receiver.phone
         )

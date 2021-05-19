@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.fragment
 
 import android.animation.LayoutTransition
+import android.content.Intent
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailActi
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.ReceiveConfirmationBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SecondaryActionButtonBottomSheet
+import com.tokopedia.buyerorderdetail.presentation.dialog.RequestCancelResultDialog
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
@@ -56,6 +58,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
         const val REQUEST_CODE_REQUEST_CANCEL_ORDER = 101
         const val REQUEST_CODE_CREATE_RESOLUTION = 102
+
+        const val RESULT_CODE_INSTANT_CANCEL_BUYER_REQUEST = 100
+        const val RESULT_CODE_CANCEL_ORDER_DISABLE = 102
 
         private const val CONTENT_CHANGING_ANIMATION_DURATION = 300L
         private const val CONTENT_CHANGING_ANIMATION_DELAY = 45L
@@ -90,6 +95,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private val secondaryActionButtonClickListener: View.OnClickListener by lazy {
         createSecondaryActionButtonClickListener()
     }
+    private val requestCancelResultDialog: RequestCancelResultDialog by lazy {
+        RequestCancelResultDialog()
+    }
 
     override fun getScreenName() = BuyerOrderDetailFragment::class.java.simpleName
 
@@ -108,6 +116,12 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         observeReceiveConfirmation()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_CODE_REQUEST_CANCEL_ORDER -> handleRequestCancelResult(resultCode, data)
+        }
+    }
+
     override fun onBuyAgainButtonClicked() {
         //TODO: Implement ATC after backend provide contract
     }
@@ -121,6 +135,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION -> onReceiveConfirmationActionButtonClicked(button)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_DO_RECEIVE_CONFIRMATION -> onDoReceiveConfirmationActionButtonClicked(button)
         }
+    }
+
+    override fun onPopUpActionButtonClicked(button: ActionButtonsUiModel.ActionButton.PopUp.PopUpButton) {
+        TODO("Not yet implemented")
     }
 
     private fun onSecondaryActionButtonClicked() {
@@ -293,7 +311,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private fun setupActionButtons(actionButtonsUiModel: ActionButtonsUiModel) {
         if (actionButtonsUiModel.primaryActionButton.key.isNotBlank()) {
             setupPrimaryButton(actionButtonsUiModel.primaryActionButton)
-            setupSecondaryButton()
+            setupSecondaryButton(actionButtonsUiModel.secondaryActionButtons)
             actionButtonAnimator.showActionButtons()
         } else {
             actionButtonAnimator.hideActionButtons()
@@ -305,16 +323,21 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         btnBuyerOrderDetailPrimaryActions.setOnClickListener(primaryActionButtonClickListener)
     }
 
-    private fun setupSecondaryButton() {
-        btnBuyerOrderDetailSecondaryActions?.apply {
-            background = GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                setColor(ContextCompat.getColor(context, android.R.color.transparent))
-                cornerRadius = resources.getDimension(com.tokopedia.unifycomponents.R.dimen.button_corner_radius)
-                setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.buttonunify_alternate_stroke_color))
+    private fun setupSecondaryButton(secondaryActionButtons: List<ActionButtonsUiModel.ActionButton>) {
+        if (secondaryActionButtons.isNotEmpty()) {
+            btnBuyerOrderDetailSecondaryActions?.apply {
+                background = GradientDrawable().apply {
+                    shape = GradientDrawable.RECTANGLE
+                    setColor(ContextCompat.getColor(context, android.R.color.transparent))
+                    cornerRadius = resources.getDimension(com.tokopedia.unifycomponents.R.dimen.button_corner_radius)
+                    setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.buttonunify_alternate_stroke_color))
+                }
+                setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
+                setOnClickListener(secondaryActionButtonClickListener)
+                show()
             }
-            setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
-            setOnClickListener(secondaryActionButtonClickListener)
+        } else {
+            btnBuyerOrderDetailSecondaryActions?.gone()
         }
     }
 
@@ -379,5 +402,40 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             ErrorHandler.getErrorMessage(it, this)
         } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
         showErrorToaster(errorMessage)
+    }
+
+    private fun dismissBottomSheets() {
+        secondaryActionButtonBottomSheet.dismiss()
+        bottomSheetReceiveConfirmation?.dismiss()
+    }
+
+    private fun handleRequestCancelResult(resultCode: Int, data: Intent?) {
+        if (resultCode == RESULT_CODE_INSTANT_CANCEL_BUYER_REQUEST) {
+            val resultMessage = data?.getStringExtra(BuyerOrderDetailConst.RESULT_MSG_INSTANT_CANCEL).orEmpty()
+            val result = data?.getIntExtra(BuyerOrderDetailConst.RESULT_CODE_INSTANT_CANCEL, 1) ?: 1
+            if (result == 1) {
+                if (resultMessage.isNotBlank()) {
+                    showCommonToaster(resultMessage)
+                }
+            } else if (result == 3) {
+                val popupTitle = data?.getStringExtra(BuyerOrderDetailConst.RESULT_POPUP_TITLE_INSTANT_CANCEL).orEmpty()
+                val popupBody = data?.getStringExtra(BuyerOrderDetailConst.RESULT_POPUP_BODY_INSTANT_CANCEL).orEmpty()
+                if (popupTitle.isNotBlank() && popupBody.isNotBlank()) {
+                    context?.let { context ->
+                        requestCancelResultDialog.apply {
+                            setTitle(popupTitle)
+                            setBody(popupBody)
+                            show(context)
+                        }
+                    }
+                }
+            }
+            if (result != 0) {
+                loadBuyerOrderDetail()
+            }
+        } else if (resultCode == RESULT_CODE_CANCEL_ORDER_DISABLE) {
+            loadBuyerOrderDetail()
+        }
+        dismissBottomSheets()
     }
 }

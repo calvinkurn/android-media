@@ -2,18 +2,14 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.graphics.Color
 import android.view.View
-import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.item_buyer_order_detail_status_info.view.*
-import java.util.*
 
-class OrderStatusInfoViewHolder(itemView: View?) : AbstractViewHolder<OrderStatusUiModel.OrderStatusInfoUiModel>(itemView), View.OnClickListener {
+class OrderStatusInfoViewHolder(itemView: View?) : BaseToasterViewHolder<OrderStatusUiModel.OrderStatusInfoUiModel>(itemView), View.OnClickListener {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_status_info
@@ -72,11 +68,7 @@ class OrderStatusInfoViewHolder(itemView: View?) : AbstractViewHolder<OrderStatu
     private fun copyInvoice() {
         element?.let {
             Utils.copyText(itemView.context, LABEL_INVOICE, it.invoice.invoice)
-            Toaster.build(
-                    itemView.rootView,
-                    itemView.context.getString(R.string.message_invoice_copied),
-                    Toaster.LENGTH_SHORT,
-                    Toaster.TYPE_NORMAL).show()
+            showToaster(itemView.context.getString(R.string.message_invoice_copied))
         }
     }
 

@@ -8,7 +8,7 @@ data class GetBuyerOrderDetailResponse(
         val data: Data = Data()
 ) {
     data class Data(
-            @SerializedName("mpBOMDetail")
+            @SerializedName("mp_bom_detail")
             val buyerOrderDetail: BuyerOrderDetail = BuyerOrderDetail()
     ) {
         data class BuyerOrderDetail(
@@ -18,7 +18,7 @@ data class GetBuyerOrderDetailResponse(
                 val cashbackInfo: String = "",
                 @SerializedName("deadline")
                 val deadline: Deadline = Deadline(),
-                @SerializedName("dot_menu")
+                @SerializedName("dot_menus")
                 val dotMenu: List<DotMenu> = listOf(),
                 @SerializedName("invoice")
                 val invoice: String = "",
@@ -50,19 +50,36 @@ data class GetBuyerOrderDetailResponse(
                     val key: String = "",
                     @SerializedName("popup")
                     val popup: Popup = Popup(),
-                    @SerializedName("style")
-                    val style: String = "",
+                    @SerializedName("variant")
+                    val variant: String = "",
+                    @SerializedName("type")
+                    val type: String = "",
                     @SerializedName("url")
                     val url: String = ""
             ) {
                 data class Popup(
                         @SerializedName("action_button")
-                        val actionButton: List<Button> = listOf(),
+                        val actionButton: List<PopUpButton> = listOf(),
                         @SerializedName("body")
                         val body: String = "",
                         @SerializedName("title")
                         val title: String = ""
-                )
+                ) {
+                    data class PopUpButton(
+                            @SerializedName("key")
+                            val key: String = "",
+                            @SerializedName("display_name")
+                            val displayName: String = "",
+                            @SerializedName("color")
+                            val color: String = "",
+                            @SerializedName("type")
+                            val type: String = "",
+                            @SerializedName("uri_type")
+                            val uriType: String = "",
+                            @SerializedName("uri")
+                            val uri: String = ""
+                    )
+                }
             }
 
             data class Deadline(
@@ -89,7 +106,11 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("is_os")
                     val isOs: Boolean = false,
                     @SerializedName("is_pm")
-                    val isPm: Boolean = false
+                    val isPm: Boolean = false,
+                    @SerializedName("is_bebas_ongkir")
+                    val isBebasOngkir: Boolean = false,
+                    @SerializedName("bo_image_url")
+                    val boImageUrl: String = "false"
             )
 
             data class OrderStatus(
@@ -170,7 +191,7 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("shipping_display_name")
                     val shippingDisplayName: String = "",
                     @SerializedName("shipping_info")
-                    val shippingInfo: ShippingInfo = ShippingInfo(),
+                    val shippingInfo: TickerInfo = TickerInfo(),
                     @SerializedName("shipping_ref_num")
                     val shippingRefNum: String = ""
             ) {

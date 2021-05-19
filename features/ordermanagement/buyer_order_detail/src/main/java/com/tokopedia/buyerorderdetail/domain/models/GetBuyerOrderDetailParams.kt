@@ -8,5 +8,5 @@ data class GetBuyerOrderDetailParams(
         @SerializedName("order_id")
         val orderId: String = "0",
         @SerializedName("payment_id")
-        val paymentId: String = "0"
+        val paymentId: String = ""
 )

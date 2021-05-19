@@ -7,6 +7,7 @@ object BuyerOrderDetailConst {
     const val ACTION_BUTTON_KEY_COMPLAINT = "complaint"
     const val ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION = "receive_confirmation"
     const val ACTION_BUTTON_KEY_DO_RECEIVE_CONFIRMATION = "do_receive_confirmation"
+    const val ACTION_BUTTON_KEY_BACK = "back"
 
     const val SECTION_HEADER_PRODUCT_LIST = "Daftar Produk"
     const val SECTION_HEADER_SHIPMENT_INFO = "Info Pengiriman"
@@ -30,4 +31,11 @@ object BuyerOrderDetailConst {
     const val TICKER_TYPE_INFO = "info"
 
     const val ACTION_FINISH_ORDER = "event_dialog_deliver_finish"
+
+    const val RESULT_MSG_INSTANT_CANCEL = "result_msg_instant"
+    const val RESULT_CODE_INSTANT_CANCEL = "result_code_instant"
+    const val RESULT_POPUP_TITLE_INSTANT_CANCEL = "result_popup_title_instant_cancel"
+    const val RESULT_POPUP_BODY_INSTANT_CANCEL = "result_popup_body_instant_cancel"
+
+    const val PATH_TOKOPEDIA_CARE = "help"
 }
