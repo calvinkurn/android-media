@@ -5,7 +5,7 @@ object Resources {
     val Unify_N0 = com.tokopedia.unifyprinciples.R.color.Unify_N0
     val Green_G100 = com.tokopedia.unifyprinciples.R.color.Unify_G100
     val Green_G200 = com.tokopedia.unifyprinciples.R.color.Unify_G200
-    val Green_G500 = com.tokopedia.unifyprinciples.R.color.Unify_G500
+    val Green_G600 = com.tokopedia.unifyprinciples.R.color.Unify_G600
     val Neutral_N50 = com.tokopedia.unifyprinciples.R.color.Unify_N50
     val Neutral_N200 = com.tokopedia.unifyprinciples.R.color.Unify_N200
 
