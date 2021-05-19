@@ -680,7 +680,7 @@ public class FeedAnalytics {
     }
 
 
-    public void sendFeedTopAdsHeadlineProductClick(String eventAction, String eventLabel, List<Product> products, String userId) {
+    public void sendFeedTopAdsHeadlineProductClick(String eventAction, String eventLabel, List<Product> products, int position, String userId) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT_NAME, PRODUCT_CLICK,
@@ -718,9 +718,9 @@ public class FeedAnalytics {
             HashMap<String, Object> productItem = new HashMap<>();
             productItem.put("name", items.get(i).getName());
             productItem.put("id", items.get(i).getId());
-            productItem.put("position", position++);
+            productItem.put("position", ++position);
             productItem.put("list", "/feed - topads");
-            productItem.put("price", items.get(i).getPriceFormat());
+            productItem.put("price", items.get(i).getPriceFormat().replaceAll("[^0-9]", ""));
             productItem.put("variant", "");
             productItem.put("brand", "");
             productItem.put("category", "");

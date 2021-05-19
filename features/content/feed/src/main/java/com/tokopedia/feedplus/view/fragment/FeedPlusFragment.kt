@@ -2123,17 +2123,29 @@ class FeedPlusFragment : BaseDaggerFragment(),
         RouteManager.route(context, applink)
 
         var eventAction = ""
-        var eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
+        var eventLabel = ""
 
         if(applink?.contains("shop") == true && position == 0){
             eventAction = "click - cek sekarang - topads"
+            eventLabel = "${cpmData.cpm.cpmShop.id}"
             analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
         } else if(applink?.contains("shop") == true && position == 1){
             eventAction = "click - shop - topads"
+            eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
             analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
         } else {
+            var productId = applink?.substring(applink.lastIndexOf("/") + 1)
             eventAction = " click - product - topads"
-            analytics.sendFeedTopAdsHeadlineProductClick(eventAction, eventLabel, cpmData.cpm.cpmShop.products, userSession.userId)
+            eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
+            var clickedProducts : MutableList<Product> = mutableListOf()
+            for((index, productItem) in cpmData.cpm.cpmShop.products.withIndex()) {
+                if(productId.equals(productItem.id)) {
+                    clickedProducts.clear()
+                    clickedProducts.add(productItem)
+                    analytics.sendFeedTopAdsHeadlineProductClick(eventAction, eventLabel, clickedProducts, index, userSession.userId)
+                }
+            }
+
         }
     }
 
