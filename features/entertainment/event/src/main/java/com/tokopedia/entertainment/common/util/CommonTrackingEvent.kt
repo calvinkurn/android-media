@@ -7,6 +7,7 @@ import com.tokopedia.entertainment.common.util.CommonTrackingEvent.Misc.CATEGORY
 import com.tokopedia.entertainment.common.util.CommonTrackingEvent.Misc.CURRENTSITE
 import com.tokopedia.entertainment.common.util.CommonTrackingEvent.Misc.CURRENTSITE_VALUE
 import com.tokopedia.entertainment.common.util.CommonTrackingEvent.Misc.EVENT_VALUE_ATC
+import com.tokopedia.entertainment.common.util.CommonTrackingEvent.Misc.EVENT_VALUE_CHECKOUT_PROGRESS
 import com.tokopedia.entertainment.common.util.CommonTrackingEvent.Misc.EVENT_VALUE_CLICK
 import com.tokopedia.entertainment.common.util.CommonTrackingEvent.Misc.EVENT_VALUE_SELECT_CONTENT
 import com.tokopedia.entertainment.common.util.CommonTrackingEvent.Misc.EVENT_VALUE_VIEW_ITEM
@@ -17,16 +18,17 @@ import com.tokopedia.track.TrackAppUtils
 object CommonTrackingEvent{
 
      object Misc {
-        const val BUSINESSUNIT = "businessUnit"
-        const val CURRENTSITE = "currentSite"
-        const val BUSINESSUNIT_VALUE = "travel & entertainment"
-        const val CURRENTSITE_VALUE = "tokopediadigitalEvent"
-        const val CATEGORY_VALUE = "digital - event"
-        const val EVENT_VALUE_CLICK = "clickDigitalEvent"
-        const val EVENT_VALUE_VIEW_ITEM = "view_item"
-        const val EVENT_VALUE_SELECT_CONTENT = "select_content"
-        const val EVENT_VALUE_ATC = "add_to_cart"
-        const val USER_ID = "userId"
+         const val BUSINESSUNIT = "businessUnit"
+         const val CURRENTSITE = "currentSite"
+         const val BUSINESSUNIT_VALUE = "travel & entertainment"
+         const val CURRENTSITE_VALUE = "tokopediadigitalEvent"
+         const val CATEGORY_VALUE = "digital - event"
+         const val EVENT_VALUE_CLICK = "clickDigitalEvent"
+         const val EVENT_VALUE_VIEW_ITEM = "view_item"
+         const val EVENT_VALUE_SELECT_CONTENT = "select_content"
+         const val EVENT_VALUE_ATC = "add_to_cart"
+         const val EVENT_VALUE_CHECKOUT_PROGRESS = "checkout_progress"
+         const val USER_ID = "userId"
 
          const val ITEMS = "items"
          const val ITEM_ID = "item_id"
@@ -39,8 +41,9 @@ object CommonTrackingEvent{
          const val SHOP_ID = "shop_id"
          const val SHOP_NAME = "shop_name"
          const val SHOP_TYPE = "shop_type"
-
          const val CATEGORY_ID = "category_id"
+         const val CHECKOUT_OPTION = "checkout_option"
+         const val CHECKOUT_STEP = "checkout_step"
 
     }
 
@@ -72,6 +75,14 @@ object CommonTrackingEvent{
 
     fun Bundle.addGeneralATCBundle(userId: String): Bundle {
         this.putString(TrackAppUtils.EVENT, EVENT_VALUE_ATC)
+        this.putString(TrackAppUtils.EVENT_CATEGORY, CATEGORY_VALUE)
+        this.putString(CURRENTSITE, CURRENTSITE_VALUE)
+        this.putString(BUSINESSUNIT, BUSINESSUNIT_VALUE)
+        this.putString(USER_ID, userId)
+        return this
+    }
+    fun Bundle.addGeneralCheckoutProgress(userId: String): Bundle {
+        this.putString(TrackAppUtils.EVENT, EVENT_VALUE_CHECKOUT_PROGRESS)
         this.putString(TrackAppUtils.EVENT_CATEGORY, CATEGORY_VALUE)
         this.putString(CURRENTSITE, CURRENTSITE_VALUE)
         this.putString(BUSINESSUNIT, BUSINESSUNIT_VALUE)
