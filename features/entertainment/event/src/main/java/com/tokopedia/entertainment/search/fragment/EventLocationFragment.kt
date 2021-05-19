@@ -16,13 +16,17 @@ import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery.eventQueryFullLocation
 import com.tokopedia.entertainment.search.adapter.SearchEventAdapter
 import com.tokopedia.entertainment.search.adapter.factory.SearchTypeFactoryImp
+import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
+import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
 import com.tokopedia.entertainment.search.di.EventSearchComponent
 import com.tokopedia.entertainment.search.viewmodel.EventLocationViewModel
 import com.tokopedia.entertainment.search.viewmodel.factory.EventLocationViewModelFactory
 import kotlinx.android.synthetic.main.ent_search_fragment.*
 import javax.inject.Inject
 
-class EventLocationFragment : BaseDaggerFragment() {
+class EventLocationFragment : BaseDaggerFragment(),
+        SearchEventListViewHolder.SearchEventListListener,
+        SearchLocationListViewHolder.SearchLocationListener {
 
     lateinit var searchadapter: SearchEventAdapter
     @Inject
@@ -54,7 +58,8 @@ class EventLocationFragment : BaseDaggerFragment() {
         observeSearchList()
         getLocationData()
 
-        searchadapter = SearchEventAdapter(SearchTypeFactoryImp())
+        searchadapter = SearchEventAdapter(SearchTypeFactoryImp(searchEventListener = this,
+                searchLocationListener = this))
 
         recycler_viewParent.apply {
             setHasFixedSize(true)
@@ -77,6 +82,22 @@ class EventLocationFragment : BaseDaggerFragment() {
 
     private fun getLocationData(){
         viewModel.getFullLocationData(eventQueryFullLocation())
+    }
+
+    override fun clickEventSearchSuggestion(event: SearchEventListViewHolder.KegiatanSuggestion, listsEvent: List<SearchEventListViewHolder.KegiatanSuggestion>, position: Int) {
+        // do nothing
+    }
+
+    override fun clickLocationEvent(location: SearchLocationListViewHolder.LocationSuggestion, listsLocation: SearchLocationListViewHolder.LocationSuggestion, position: Int) {
+        // do nothing
+    }
+
+    override fun impressionEventSearchSuggestion(listsEvent: SearchEventListViewHolder.KegiatanSuggestion, position: Int) {
+        // do nothing
+    }
+
+    override fun impressionLocationEvent(listsCity: SearchLocationListViewHolder.LocationSuggestion, position: Int) {
+        // do nothing
     }
 
     companion object{

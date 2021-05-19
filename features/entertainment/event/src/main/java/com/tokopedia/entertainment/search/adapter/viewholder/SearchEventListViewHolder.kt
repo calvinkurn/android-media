@@ -18,9 +18,11 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.android.synthetic.main.ent_search_event_list_item.view.*
 import kotlinx.android.synthetic.main.ent_search_event_suggestion.view.*
 
-class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEventModel>(view) {
+class SearchEventListViewHolder(val view: View,
+                                val listener: SearchEventListListener
+) : SearchEventViewHolder<SearchEventModel>(view) {
 
-    val eventListAdapter = KegiatanAdapter()
+    val eventListAdapter = KegiatanAdapter(listener)
 
     init {
         with(itemView){
@@ -51,7 +53,7 @@ class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEv
             val sales_price:String
     ) : ImpressHolder()
 
-    class KegiatanAdapter : RecyclerView.Adapter<KegiatanHolder>(){
+    class KegiatanAdapter(val listener: SearchEventListListener) : RecyclerView.Adapter<KegiatanHolder>(){
 
         lateinit var listKegiatan : List<KegiatanSuggestion>
         lateinit var resources: Resources
@@ -73,13 +75,12 @@ class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEv
             holder.view.txtJudulEvent.text = element.nama_kegiatan
 
             holder.view.addOnImpressionListener(element, {
-                EventSearchPageTracking.getInstance().impressionEventSearchSuggestion(listKegiatan.get(position), position)
+                listener.impressionEventSearchSuggestion(listKegiatan.get(position), position)
             })
 
             holder.view.setOnClickListener {
+                listener.clickEventSearchSuggestion(element, listKegiatan, position+1)
                 RouteManager.route(holder.view.context, element.app_url)
-                //Tracking
-                EventSearchPageTracking.getInstance().onClickedEventSearchSuggestion(element, listKegiatan, position+1)
             }
 
             if(element.tanggal_kegiatan.isBlank() || element.tanggal_kegiatan.equals("0") || element.category.equals("3")){
@@ -100,5 +101,12 @@ class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEv
 
     companion object{
         val LAYOUT = R.layout.ent_search_event_suggestion
+    }
+
+    interface SearchEventListListener{
+        fun impressionEventSearchSuggestion(listsEvent: SearchEventListViewHolder.KegiatanSuggestion, position: Int)
+        fun clickEventSearchSuggestion(event: SearchEventListViewHolder.KegiatanSuggestion,
+                                       listsEvent: List<SearchEventListViewHolder.KegiatanSuggestion>,
+                                       position : Int)
     }
 }

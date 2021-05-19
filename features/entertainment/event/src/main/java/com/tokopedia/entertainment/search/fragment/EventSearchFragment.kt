@@ -21,11 +21,14 @@ import com.tokopedia.entertainment.common.util.EventQuery.getEventHistory
 import com.tokopedia.entertainment.common.util.EventQuery.getEventSearchLocation
 import com.tokopedia.entertainment.search.adapter.SearchEventAdapter
 import com.tokopedia.entertainment.search.adapter.factory.SearchTypeFactoryImp
+import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
+import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
 import com.tokopedia.entertainment.search.analytics.EventSearchPageTracking
 import com.tokopedia.entertainment.search.di.EventSearchComponent
 import com.tokopedia.entertainment.search.viewmodel.EventSearchViewModel
 import com.tokopedia.entertainment.search.viewmodel.factory.EventSearchViewModelFactory
 import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_search_activity.*
 import kotlinx.android.synthetic.main.ent_search_fragment.*
 import kotlinx.coroutines.launch
@@ -37,13 +40,19 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
+class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
+        SearchEventListViewHolder.SearchEventListListener,
+        SearchLocationListViewHolder.SearchLocationListener
+{
 
     lateinit var searchadapter:SearchEventAdapter
     @Inject
     lateinit var factory : EventSearchViewModelFactory
     lateinit var viewModel : EventSearchViewModel
     lateinit var performanceMonitoring: PerformanceMonitoring
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     var job: Job = Job()
 
@@ -93,7 +102,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun setupAdapter(){
-        searchadapter = SearchEventAdapter(SearchTypeFactoryImp(::allLocation))
+        searchadapter = SearchEventAdapter(SearchTypeFactoryImp(::allLocation, this, this))
 
         recycler_viewParent.apply {
             setHasFixedSize(true)
@@ -152,6 +161,23 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + Job()
+
+    override fun clickEventSearchSuggestion(event: SearchEventListViewHolder.KegiatanSuggestion, listsEvent: List<SearchEventListViewHolder.KegiatanSuggestion>, position: Int) {
+        EventSearchPageTracking.getInstance().onClickedEventSearchSuggestion(event, listsEvent, position+1, userSession.userId)
+    }
+
+    override fun impressionEventSearchSuggestion(listsEvent: SearchEventListViewHolder.KegiatanSuggestion, position: Int) {
+        EventSearchPageTracking.getInstance().impressionEventSearchSuggestion(listsEvent, position, userSession.userId)
+    }
+
+    override fun impressionLocationEvent(listsCity: SearchLocationListViewHolder.LocationSuggestion, position: Int) {
+        EventSearchPageTracking.getInstance().impressionCitySearchSuggestion(listsCity, position, userSession.userId)
+    }
+
+    override fun clickLocationEvent(location: SearchLocationListViewHolder.LocationSuggestion, listsLocation: SearchLocationListViewHolder.LocationSuggestion, position: Int) {
+        EventSearchPageTracking.getInstance().onClickLocationSuggestion(location,
+                listsLocation, position, userSession.userId)
+    }
 
     companion object{
         fun newInstance() = EventSearchFragment()

@@ -1,9 +1,15 @@
 package com.tokopedia.entertainment.search.analytics
 
+import android.os.Bundle
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.entertainment.common.util.CommonTrackingEvent
+import com.tokopedia.entertainment.common.util.CommonTrackingEvent.addGeneralClick
+import com.tokopedia.entertainment.common.util.CommonTrackingEvent.addGeneralClickedBundle
+import com.tokopedia.entertainment.common.util.CommonTrackingEvent.addGeneralImpression
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
 
 class EventSearchPageTracking {
@@ -74,19 +80,25 @@ class EventSearchPageTracking {
         val CATEGORYDATA = "events"
     }
 
-    fun impressionCitySearchSuggestion(listsCity: SearchLocationListViewHolder.LocationSuggestion, position: Int){
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                Event.KEY, "promoView",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, "impression city result",
-                Event.LABEL, "",
-                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
-                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
-                Misc.CATEGORY, Misc.CATEGORYDATA,
-                Misc.SCREENNAME, "",
-                Ecommerce.KEY, DataLayer.mapOf(
-                Promo.KEY_IMPRESSION, DataLayer.mapOf(
-                Promo.PROMOTION, getPromoLocationSuggestion(listsCity, position)))))
+    fun impressionCitySearchSuggestion(listsCity: SearchLocationListViewHolder.LocationSuggestion,
+                                       position: Int,
+                                       userId: String
+    ){
+        val itemBundle = Bundle().apply {
+            putString(CommonTrackingEvent.Misc.CREATIVE_NAME, listsCity.city)
+            putString(CommonTrackingEvent.Misc.CREATIVE_SLOT, "$position")
+            putString(CommonTrackingEvent.Misc.CREATIVE_URL, listsCity.imageUrl)
+            putString(CommonTrackingEvent.Misc.ITEM_ID, "${listsCity.id_city}")
+            putString(CommonTrackingEvent.Misc.ITEM_NAME, listsCity.city)
+        }
+
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "impression city result")
+            putString(TrackAppUtils.EVENT_LABEL, "")
+            putParcelableArrayList(CommonTrackingEvent.Misc.PROMOTION, arrayListOf(itemBundle))
+        }
+        eventDataLayer.addGeneralImpression(userId)
+        getTracker().sendEnhanceEcommerceEvent(CommonTrackingEvent.Misc.EVENT_VALUE_VIEW_ITEM, eventDataLayer)
     }
 
     private fun getPromoLocationSuggestion(listsCity: SearchLocationListViewHolder.LocationSuggestion, position: Int) : Any{
@@ -105,107 +117,86 @@ class EventSearchPageTracking {
 
     fun onClickLocationSuggestion(location: SearchLocationListViewHolder.LocationSuggestion,
                                   listsLocation: SearchLocationListViewHolder.LocationSuggestion,
-                                  position: Int){
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                Event.KEY, "promoClick",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, "click city result",
-                Event.LABEL, String.format("%s - %s", location.city, position.toString()),
-                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
-                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
-                Misc.CATEGORY, Misc.CATEGORYDATA,
-                Misc.SCREENNAME, "",
-                Ecommerce.KEY, DataLayer.mapOf(
-                Promo.KEY_CLICK, DataLayer.mapOf(
-                Promo.PROMOTION, getPromoLocationSuggestion(listsLocation, position)))))
+                                  position: Int,
+                                  userId: String
+    ){
+        val itemBundle = Bundle().apply {
+            putString(CommonTrackingEvent.Misc.CREATIVE_NAME, location.city)
+            putString(CommonTrackingEvent.Misc.CREATIVE_SLOT, "$position")
+            putString(CommonTrackingEvent.Misc.CREATIVE_URL, location.imageUrl)
+            putString(CommonTrackingEvent.Misc.ITEM_ID, "${location.id_city}")
+            putString(CommonTrackingEvent.Misc.ITEM_NAME, location.city)
+        }
+
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "click product result")
+            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", location.city, position.toString()))
+            putParcelableArrayList(CommonTrackingEvent.Misc.PROMOTION, arrayListOf(itemBundle))
+        }
+        eventDataLayer.addGeneralClickedBundle(userId)
+        getTracker().sendEnhanceEcommerceEvent(CommonTrackingEvent.Misc.EVENT_VALUE_SELECT_CONTENT, eventDataLayer)
     }
 
-    fun impressionEventSearchSuggestion(listsEvent: SearchEventListViewHolder.KegiatanSuggestion, position: Int){
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                Event.KEY, "productView",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, "impression product result",
-                Event.LABEL, "",
-                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
-                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
-                Misc.CATEGORY, Misc.CATEGORYDATA,
-                Misc.SCREENNAME, "",
-                Ecommerce.KEY, DataLayer.mapOf(
-                Ecommerce.CURRENCY_CODE, "IDR",
-                Impression.KEY, getImpressionEventSearchList(listsEvent, position))))
-    }
+    fun impressionEventSearchSuggestion(listsEvent: SearchEventListViewHolder.KegiatanSuggestion,
+                                        position: Int,
+                                        userId: String
+    ){
+        val itemBundle = Bundle().apply {
+            putString(CommonTrackingEvent.Misc.CREATIVE_NAME, listsEvent.nama_kegiatan)
+            putString(CommonTrackingEvent.Misc.CREATIVE_SLOT, "$position")
+            putString(CommonTrackingEvent.Misc.CREATIVE_URL, listsEvent.image_url)
+            putString(CommonTrackingEvent.Misc.ITEM_ID, "${listsEvent.id}")
+            putString(CommonTrackingEvent.Misc.ITEM_NAME, listsEvent.nama_kegiatan)
+        }
 
-    private fun getImpressionEventSearchList(listsEvent: SearchEventListViewHolder.KegiatanSuggestion, position: Int) : Any?{
-        val list = mutableListOf<Any>()
-            list.add(DataLayer.mapOf(
-                    Impression.NAME, listsEvent.nama_kegiatan,
-                    Impression.ID, listsEvent.id,
-                    Impression.PRICE, listsEvent.sales_price,
-                    Impression.BRAND, "",
-                    Impression.CATEGORY, "",
-                    Impression.VARIANT, "",
-                    Impression.LIST, listsEvent.nama_kegiatan,
-                    Impression.POSITION, position + 1
-            ))
-        return list
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "impression product result")
+            putString(TrackAppUtils.EVENT_LABEL, "")
+            putParcelableArrayList(CommonTrackingEvent.Misc.PROMOTION, arrayListOf(itemBundle))
+        }
+        eventDataLayer.addGeneralImpression(userId)
+        getTracker().sendEnhanceEcommerceEvent(CommonTrackingEvent.Misc.EVENT_VALUE_VIEW_ITEM, eventDataLayer)
     }
 
     fun onClickedEventSearchSuggestion(event: SearchEventListViewHolder.KegiatanSuggestion,
                                        listsEvent: List<SearchEventListViewHolder.KegiatanSuggestion>,
-                                       position : Int){
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                Event.KEY, "productClick",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, "click product result",
-                Event.LABEL, String.format("%s - %s", event.nama_kegiatan, position.toString()),
-                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
-                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
-                Misc.CATEGORY, Misc.CATEGORYDATA,
-                Misc.SCREENNAME, "",
-                Ecommerce.KEY, DataLayer.mapOf(
-                Click.KEY, DataLayer.mapOf(
-                Click.ACTION_FIELD, DataLayer.mapOf("list", event.nama_kegiatan),
-                Product.KEY, DataLayer.listOf(
-                DataLayer.mapOf(
-                        Product.NAME, event.nama_kegiatan,
-                        Product.ID, event.id,
-                        Product.PRICE, event.price,
-                        Product.BRAND, "",
-                        Product.CATEGORY, "",
-                        Product.VARIANT, "",
-                        Product.LIST, event.nama_kegiatan,
-                        Product.POSITION, position
-                )
-        )))))
+                                       position : Int,
+                                       userId: String
+    ){
+        val itemBundle = Bundle().apply {
+            putString(CommonTrackingEvent.Misc.CREATIVE_NAME, event.nama_kegiatan)
+            putString(CommonTrackingEvent.Misc.CREATIVE_SLOT, "$position")
+            putString(CommonTrackingEvent.Misc.CREATIVE_URL, event.image_url)
+            putString(CommonTrackingEvent.Misc.ITEM_ID, "${event.id}")
+            putString(CommonTrackingEvent.Misc.ITEM_NAME, event.nama_kegiatan)
+        }
+
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "click product result")
+            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", event.nama_kegiatan, position.toString()))
+            putParcelableArrayList(CommonTrackingEvent.Misc.PROMOTION, arrayListOf(itemBundle))
+        }
+        eventDataLayer.addGeneralClickedBundle(userId)
+        getTracker().sendEnhanceEcommerceEvent(CommonTrackingEvent.Misc.EVENT_VALUE_SELECT_CONTENT, eventDataLayer)
     }
 
-    fun clickSearchBarOnSearchActivity() : Boolean{
-        getTracker().sendGeneralEvent(DataLayer.mapOf(
-                Event.KEY,"clickEvent",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, "click search box",
-                Event.LABEL, "",
-                Misc.SCREENNAME, "digital/event/search",
-                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
-                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
-                Misc.CATEGORY, Misc.CATEGORYDATA
-        ))
-        return true
+    fun clickSearchBarOnSearchActivity(){
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click search box",
+                TrackAppUtils.EVENT_LABEL, ""
+        )
+        data.addGeneralClick()
+        getTracker().sendGeneralEvent(data)
     }
 
 
-    fun clickSearchBarOnKeyWordSearchActivity(keyword: String) : Boolean{
-        getTracker().sendGeneralEvent(DataLayer.mapOf(
-                Event.KEY,"clickEvent",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, "click search",
-                Event.LABEL, keyword,
-                Misc.SCREENNAME, "",
-                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
-                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
-                Misc.CATEGORY, Misc.CATEGORYDATA
-        ))
-        return true
+    fun clickSearchBarOnKeyWordSearchActivity(keyword: String){
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click search",
+                TrackAppUtils.EVENT_LABEL, keyword
+        )
+        data.addGeneralClick()
+        getTracker().sendGeneralEvent(data)
     }
 
     private fun getTracker() : Analytics{
