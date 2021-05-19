@@ -11,10 +11,7 @@ import com.tokopedia.deals.home.listener.DealsBannerActionListener
 import com.tokopedia.deals.home.listener.DealsCategoryListener
 import com.tokopedia.deals.home.listener.DealsFavouriteCategoriesListener
 import com.tokopedia.deals.home.listener.DealsVoucherPlaceCardListener
-import com.tokopedia.deals.home.ui.adapter.delegate.DealsBannerAdapterDelegate
-import com.tokopedia.deals.home.ui.adapter.delegate.DealsCategoriesAdapterDelegate
-import com.tokopedia.deals.home.ui.adapter.delegate.DealsFavouriteCategoriesAdapterDelegate
-import com.tokopedia.deals.home.ui.adapter.delegate.VoucherPlaceCardAdapterDelegate
+import com.tokopedia.deals.home.ui.adapter.delegate.*
 
 /**
  * @author by jessica on 16/06/20
@@ -35,6 +32,7 @@ class DealsHomeAdapter(dealsVoucherPlaceCardListener: DealsVoucherPlaceCardListe
                 .addDelegate(DealsCommonBrandAdapterDelegate(brandActionListener))
                 .addDelegate(DealsFavouriteCategoriesAdapterDelegate(favouriteCategoriesActionListener))
                 .addDelegate(LoadingMoreUnifyAdapterDelegate())
+                .addDelegate(DealsTickerAdapterDelegate())
     }
 
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
