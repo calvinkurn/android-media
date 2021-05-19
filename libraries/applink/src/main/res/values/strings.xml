@@ -130,4 +130,6 @@
 
     <string name="title_image_picker">Image Picker</string>
 
+    <!--Revamped Buyer Order Detail-->
+    <string name="title_revamped_buyer_order_detail">Detail Pesanan</string>
 </resources>

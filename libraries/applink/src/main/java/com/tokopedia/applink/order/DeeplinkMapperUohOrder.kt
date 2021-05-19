@@ -26,6 +26,8 @@ object DeeplinkMapperUohOrder {
     const val UOH_AB_TEST_KEY = "uoh_android_v2"
     const val UOH_AB_TEST_VALUE = "uoh_android_v2"
 
+    private const val REVAMPED_BUYER_ORDER_DETAIL_ROLLENCE_EXPERIMENT_NAME = "bomdetail"
+    private const val REVAMPED_BUYER_ORDER_DETAIL_ROLLENCE_VALUE = "bomdetail"
     private const val PATH_ORDER = "order"
     const val PATH_ORDER_ID = "order_id"
     const val PATH_PAYMENT_ID = "payment_id"
@@ -203,7 +205,7 @@ object DeeplinkMapperUohOrder {
 
                 var category = ""
                 if (deepLink.startsWith(MARKETPLACE_ORDER)) {
-                    category = ApplinkConstInternalOrder.MARKETPLACE_ORDER
+                    category = if (useRevampedBuyerOrderDetail()) ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER_REVAMPED else ApplinkConstInternalOrder.MARKETPLACE_ORDER
                 } else if (deepLink.startsWith(DIGITAL_ORDER)) {
                     category = ApplinkConstInternalOrder.DIGITAL_ORDER
                 }
@@ -220,7 +222,7 @@ object DeeplinkMapperUohOrder {
 
                 var category = ""
                 if (deepLink.startsWith(MARKETPLACE_ORDER)) {
-                    category = ApplinkConstInternalOrder.MARKETPLACE_ORDER
+                    category = if (useRevampedBuyerOrderDetail()) ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER_REVAMPED else ApplinkConstInternalOrder.MARKETPLACE_ORDER
                 } else if (deepLink.startsWith(DIGITAL_ORDER)) {
                     category = ApplinkConstInternalOrder.DIGITAL_ORDER
                 }
@@ -253,6 +255,14 @@ object DeeplinkMapperUohOrder {
                         .toString()
             }
             else -> ""
+        }
+    }
+
+    private fun useRevampedBuyerOrderDetail(): Boolean {
+        return try {
+            return RemoteConfigInstance.getInstance().abTestPlatform.getString(REVAMPED_BUYER_ORDER_DETAIL_ROLLENCE_EXPERIMENT_NAME, "") == REVAMPED_BUYER_ORDER_DETAIL_ROLLENCE_VALUE
+        } catch (e: Exception) {
+            false
         }
     }
 }

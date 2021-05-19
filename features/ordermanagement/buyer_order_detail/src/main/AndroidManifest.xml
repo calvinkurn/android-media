@@ -13,12 +13,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <!--for testing only-->
-                <!--tokopedia://buyer/neworderpage-->
                 <data
-                    android:host="buyer"
-                    android:path="/neworderpage"
-                    android:scheme="tokopedia" />
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_order_revamped"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
     </application>

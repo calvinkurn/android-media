@@ -131,6 +131,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDERLIST_DIGITA
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PESAWAT_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER_REVAMPED
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.TRACK
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
@@ -513,6 +514,9 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Order History
             add(DFP({ it.startsWith(TRACK) }, DF_BASE, R.string.title_order_management_history))
+
+            // Revamped buyer order detail (features/ordermanagement/buyer_order_detail)
+            add(DFP({ it.startsWith(MARKETPLACE_INTERNAL_ORDER_REVAMPED) }, DF_BASE, R.string.title_revamped_buyer_order_detail))
         }
     }
 
