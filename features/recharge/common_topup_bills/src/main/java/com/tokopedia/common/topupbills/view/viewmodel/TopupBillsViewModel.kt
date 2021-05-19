@@ -3,11 +3,11 @@ package com.tokopedia.common.topupbills.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -164,7 +164,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
             }
 
             override fun onError(e: Throwable?) {
-                _checkVoucherData.value = Fail(MessageErrorException(e?.message))
+                _checkVoucherData.value = Fail(e ?: MessageErrorException(e?.message))
             }
 
         }
@@ -194,7 +194,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                     Success(data.data)
                 }
                 else -> {
-                    Fail(MessageErrorException("error"))
+                    Fail(MessageErrorException())
                 }
             }
             _expressCheckoutData.postValue(result)

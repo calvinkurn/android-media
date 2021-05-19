@@ -180,7 +180,13 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                             navigateToPayment(it.data)
                         }
                     }
-                    is Fail -> onExpressCheckoutError(it.throwable)
+                    is Fail -> {
+                        var throwable = it.throwable
+                        if (it.throwable.message.isNullOrEmpty()) {
+                            throwable = MessageErrorException(getString(R.string.common_topup_enquiry_error))
+                        }
+                        onExpressCheckoutError(throwable)
+                    }
                 }
             }
         })

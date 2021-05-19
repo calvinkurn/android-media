@@ -177,9 +177,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         })
 
         viewModel.errorThrowable.observe(viewLifecycleOwner, Observer {
-            val throwableMessage = if (!ErrorHandler.getErrorMessage(requireContext(), it).isNullOrEmpty()) {
-                ErrorHandler.getErrorMessage(requireContext(), it)
-            } else ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+            var throwableMessage = ErrorHandler.getErrorMessage(requireContext(), it)
+            if (throwableMessage.isNullOrEmpty()) throwableMessage = ErrorNetMessage.MESSAGE_ERROR_DEFAULT
             closeViewWithMessageAlert(throwableMessage)
         })
 
