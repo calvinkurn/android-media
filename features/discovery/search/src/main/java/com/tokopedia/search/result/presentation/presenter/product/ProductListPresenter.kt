@@ -1047,7 +1047,8 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun shouldShowSearchPMProPopUp(): Boolean {
-        return searchCoachMarkLocalCache.shouldShowSearchPMProPopUp() && shouldShowPMProPopUp
+        return if (shouldShowPMProPopUp) searchCoachMarkLocalCache.shouldShowSearchPMProPopUp()
+        else shouldShowPMProPopUp
     }
 
     private fun getFirstProductPositionWithBOELabel(list: List<Visitable<*>>): Int {
