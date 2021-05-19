@@ -346,6 +346,5 @@ class DealsHomeFragment : DealsBaseFragment(),
         private const val PREFERENCES_NAME = "deals_home_preferences"
         private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key"
         private const val COACH_MARK_START_DELAY = 1000L
-        private const val DEVICE_TYPE = "ANDROID"
     }
 }

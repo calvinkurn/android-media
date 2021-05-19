@@ -101,9 +101,7 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     }
 
     private fun setTickerData(tickerData: DealsEventHome.TickerHome){
-        //testing purpose only
-        mutableTickerData = DealsEventHome.TickerHome("ANDROID","Untuk sementara beberapa voucher tidak dapat dibeli karena ada kendala yang sedang diperbaiki")
-//        mutableTickerData = tickerData
+        mutableTickerData = tickerData
     }
 
     companion object {
