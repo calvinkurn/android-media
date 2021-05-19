@@ -28,6 +28,7 @@ import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -50,6 +51,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         @IdRes
         val END_TIME_TEXTFIELD_ID = R.id.text_field_end_time_ops_hour
 
+        private const val DEFAULT_FIRST_DAY_INDEX = 0
         private const val MIN_OPEN_HOUR = 0
         private const val MIN_OPEN_MINUTE = 0
         private const val MAX_CLOSE_HOUR = 23
@@ -70,6 +72,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     private var headerSetOpsHour: HeaderUnify? = null
     private var opsHourAccordion: AccordionUnify? = null
     private var loader: LoaderUnify? = null
+    private var holidayTicker: Ticker? = null
     private var startTimePicker: DateTimePickerUnify? = null
     private var endTimePicker: DateTimePickerUnify? = null
     private var currentSetShopOperationalHourList: MutableList<ShopOperationalHour> = mutableListOf()
@@ -107,6 +110,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         headerSetOpsHour = findViewById(R.id.header_shop_set_operational_hours)
         opsHourAccordion = findViewById(R.id.shop_ops_hour_list_accordion)
         loader = findViewById(R.id.ops_hour_list_loader)
+        holidayTicker = findViewById(R.id.ops_hour_holiday_ticker)
     }
 
     private fun initListener() {
@@ -168,7 +172,8 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                         val accordionOpsHourItem = AccordionDataUnify(
                                 title = OperationalHoursUtil.getDayName(opsHour.day),
                                 subtitle = OperationalHoursUtil.generateDatetime(opsHour.startTime, opsHour.endTime),
-                                expandableView = generateAccordionChildView(opsHour)
+                                expandableView = generateAccordionChildView(opsHour),
+                                isExpanded = index == DEFAULT_FIRST_DAY_INDEX
                         )
                         if (index == hourList.lastIndex) {
                             accordionOpsHourItem.setBorder(borderTop = false, borderBottom = false)
@@ -197,8 +202,16 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
             val connector = findViewById<Typography>(R.id.ops_hour_connector)
 
             when (OperationalHoursUtil.generateDatetime(opsHour.startTime, opsHour.endTime)) {
-                OperationalHoursUtil.ALL_DAY -> allDayRadioButton.isChecked = true
-                OperationalHoursUtil.HOLIDAY -> holidayRadioButton.isChecked = true
+                OperationalHoursUtil.ALL_DAY -> {
+                    allDayRadioButton.isChecked = true
+                    chooseRadioButton.isChecked = false
+                    shouldShowTimeTextField(startTimeTextField, endTimeTextField, connector, chooseRadioButton.isChecked)
+                }
+                OperationalHoursUtil.HOLIDAY -> {
+                    holidayRadioButton.isChecked = true
+                    chooseRadioButton.isChecked = false
+                    shouldShowTimeTextField(startTimeTextField, endTimeTextField, connector, chooseRadioButton.isChecked)
+                }
                 else -> {
                     chooseRadioButton.isChecked = true
                     shouldShowTimeTextField(startTimeTextField, endTimeTextField, connector, chooseRadioButton.isChecked)
@@ -213,6 +226,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     R.id.option_all_day -> {
                         // set time for selected day to 24 hours
                         shouldShowTimeTextField(startTimeTextField, endTimeTextField, connector, chooseRadioButton.isChecked)
+                        shouldShowHolidayTicker(false)
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].startTime = OperationalHoursUtil.MIN_START_TIME
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].endTime = OperationalHoursUtil.MAX_END_TIME
                     }
@@ -220,6 +234,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     R.id.option_holiday -> {
                         // set close time for selected day
                         shouldShowTimeTextField(startTimeTextField, endTimeTextField, connector, chooseRadioButton.isChecked)
+                        shouldShowHolidayTicker(true)
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].startTime = OperationalHoursUtil.MIN_START_TIME
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].endTime = OperationalHoursUtil.MIN_START_TIME
                     }
@@ -227,6 +242,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     R.id.option_choose -> {
                         // show textField to choose open & close time
                         shouldShowTimeTextField(startTimeTextField, endTimeTextField, connector, chooseRadioButton.isChecked)
+                        shouldShowHolidayTicker(false)
                         setupStartTimeTextField(startTimeTextField, opsHour)
                         setupEndTimeTextField(endTimeTextField, opsHour)
                     }
@@ -271,6 +287,10 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                 setupEndTimePicker()
             }
         }
+    }
+
+    private fun shouldShowHolidayTicker(isShow: Boolean) {
+        holidayTicker?.showWithCondition(isShow)
     }
 
     private fun shouldShowTimeTextField(

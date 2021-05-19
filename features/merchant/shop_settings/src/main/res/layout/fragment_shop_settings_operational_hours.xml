@@ -13,13 +13,62 @@
         app:unify_header_is_show_back_button="true" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_title_shop_ops_hour"
+        android:id="@+id/tv_title_shop_holiday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/header_shop_operational_hours"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginStart="@dimen/dp_18"
         android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/shop_operational_hour_title_holiday"
+        app:typographyType="heading_5"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_desc_shop_holiday"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_shop_holiday"
+        app:layout_constraintLeft_toLeftOf="@id/tv_title_shop_holiday"
+        app:layout_constraintRight_toLeftOf="@id/ic_edit_ops_hour"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/shop_operational_hour_desc_holiday"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_N700_68"
+        />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_add_holiday_schedule"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/shop_operational_hour_list_button_add_holiday_text"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="main"
+        app:layout_constraintTop_toBottomOf="@id/tv_desc_shop_holiday"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="@dimen/dp_18"
+        android:layout_marginEnd="@dimen/dp_18"
+        android:layout_marginTop="@dimen/dp_16"
+        />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/ops_hour_divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/btn_add_holiday_schedule"
+        android:layout_marginTop="@dimen/dp_18"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title_shop_ops_hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/ops_hour_divider"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="@dimen/dp_18"
+        android:layout_marginTop="@dimen/dp_18"
         android:text="@string/shop_operational_hour_title_set_hour"
         app:typographyType="heading_5"
         />
@@ -47,6 +96,18 @@
         android:text="@string/shop_operational_hour_desc_set_hour"
         app:typographyType="body_3"
         android:textColor="@color/Unify_N700_68"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_shop_operational_hours_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_desc_shop_ops_hour"
+        app:layout_constraintLeft_toLeftOf="@id/tv_desc_shop_ops_hour"
+        android:layout_marginTop="@dimen/dp_16"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_N700_96"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
