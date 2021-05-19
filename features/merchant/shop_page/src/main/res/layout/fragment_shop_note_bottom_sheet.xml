@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ScrollView
-        android:id="@+id/parentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusableInTouchMode="true"
-        android:descendantFocusability="blocksDescendants"
+        android:nestedScrollingEnabled="true"
         android:orientation="vertical">
 
         <LinearLayout
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -23,6 +23,7 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
+
     </ScrollView>
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -30,8 +31,7 @@
         android:layout_margin="@dimen/unify_space_16"
         android:layout_width="@dimen/dp_25"
         android:layout_height="@dimen/dp_25"
-        android:layout_centerVertical="true"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:visibility="gone"/>
 
     <com.tokopedia.globalerror.GlobalError
@@ -42,4 +42,4 @@
         android:gravity="center"
         android:visibility="gone" />
 
-</RelativeLayout>
+</FrameLayout>

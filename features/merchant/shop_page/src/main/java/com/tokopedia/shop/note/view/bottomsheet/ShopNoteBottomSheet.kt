@@ -37,8 +37,6 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
 
     companion object {
         val TAG = ShopNoteBottomSheet::class.java.simpleName
-        private const val LAST_TAG_CHAR = '>'
-        private const val TAG_PARAGRAPH = "<p></p>"
         private const val SHOP_ID = "EXTRA_SHOP_ID"
         private val LAYOUT = R.layout.fragment_shop_note_bottom_sheet
 
@@ -128,13 +126,9 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
     }
 
     private fun setAccordion(model: ShopNoteModel) {
-        var content = model.content
-        if (content?.last() != LAST_TAG_CHAR) {
-            content += TAG_PARAGRAPH
-        }
         val tvContent = TextView(context)
         tvContent.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        tvContent.text = MethodChecker.fromHtml(content)
+        tvContent.text = MethodChecker.fromHtml(model.content)
         context?.let {
             tvContent.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         }
