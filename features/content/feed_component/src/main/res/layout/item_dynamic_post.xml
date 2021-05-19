@@ -21,7 +21,6 @@
         android:layout_marginTop="@dimen/dp_2"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
-        android:background="@color/cardview_background_color"
         app:cardBackgroundColor="@color/cardview_background_color"
         app:cardCornerRadius="@dimen/dp_8">
 
