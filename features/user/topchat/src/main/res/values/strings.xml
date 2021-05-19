@@ -218,4 +218,6 @@ yang ditemukan</string>
     <string name="title_topchat_dilayani_tokocabang">Dilayani TokoCabang</string>
 
     <string name="topchat_desc_empty_text_box">Oops, tulis pesan dulu ya sebelum kirim chat.</string>
+    <string name="title_topchat_resend">Kirim ulang</string>
+    <string name="title_topchat_delete">Hapus</string>
 </resources>
