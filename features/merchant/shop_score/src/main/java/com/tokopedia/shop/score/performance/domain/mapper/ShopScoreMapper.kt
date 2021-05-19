@@ -125,7 +125,11 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         val isEligiblePM = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePm
         val isEligiblePMPro = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePmPro
         val shopScoreResult = shopScoreWrapperResponse.shopScoreLevelResponse?.result
-        val shopAge = shopInfoPeriodUiModel.shopAge
+        val shopAge = if (shopScoreWrapperResponse.goldGetPMShopInfoResponse != null) {
+            shopScoreWrapperResponse.goldGetPMShopInfoResponse?.shopAge
+        } else {
+            shopInfoPeriodUiModel.shopAge
+        } ?: 0
         val isNewSeller = shopInfoPeriodUiModel.isNewSeller
 
         val isNewSellerProjection = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
@@ -636,8 +640,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         val nextSellerDays = COUNT_DAYS_NEW_SELLER - shopAge
 
         val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays)
-        return Pair(ItemTimerNewSellerUiModel(
-                effectiveDate = effectiveDate,
+        return Pair(ItemTimerNewSellerUiModel(effectiveDate = effectiveDate,
                 effectiveDateText = format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER),
                 isTenureDate = isEndTenure,
                 shopAge = shopAge

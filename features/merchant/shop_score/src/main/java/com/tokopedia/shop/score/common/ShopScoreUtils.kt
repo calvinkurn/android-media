@@ -9,7 +9,6 @@ import android.text.method.LinkMovementMethod
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.gm.common.constant.GoldMerchantUtil
 import com.tokopedia.shop.score.R
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -85,11 +84,4 @@ fun getColoredIndicator(context: Context, colorRes: Int): Drawable? {
     val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
     drawable.colorFilter = filter
     return drawable
-}
-
-fun rangeTotalDays(periodDate: String): Int {
-    val splitPeriodDate = periodDate.split("-")
-    val startDate = splitPeriodDate.getOrNull(0) ?: ""
-    val endDate = splitPeriodDate.getOrNull(1) ?: ""
-    return GoldMerchantUtil.totalRangeDays(startDate, endDate)
 }

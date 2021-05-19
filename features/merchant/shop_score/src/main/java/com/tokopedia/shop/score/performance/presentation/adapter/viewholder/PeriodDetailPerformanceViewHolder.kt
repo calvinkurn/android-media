@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.rangeTotalDays
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import kotlinx.android.synthetic.main.item_section_detail_performance.view.*
 
@@ -24,9 +23,8 @@ class PeriodDetailPerformanceViewHolder(view: View) :
             tvPerformanceDetailDate?.text = getString(R.string.title_update_date, element?.nextUpdate.orEmpty())
 
             if (element?.isNewSeller == true) {
-                val totalRangeDays = rangeTotalDays(element.period).toString()
                 tvPerformanceDetailLabel?.text = getString(R.string.title_detail_performance_new_seller)
-                tvPerformanceDetailDate?.text = context?.getString(R.string.title_update_date_new_seller, element.period, totalRangeDays)
+                tvPerformanceDetailDate?.text = context?.getString(R.string.title_update_date_new_seller, element.period)
                 tvPerformanceDetailDateNewSeller?.text = getString(R.string.title_update_date, element.nextUpdate)
             } else {
                 tvPerformanceDetailLabel?.text = getString(R.string.title_detail_performa, element?.period.orEmpty())
