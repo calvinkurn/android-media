@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.converter;
 
 import androidx.annotation.NonNull;
 
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShopTypeInfo;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
@@ -14,6 +15,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData;
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
@@ -235,10 +237,8 @@ public class ShipmentDataConverter {
         Shop shop = groupShop.getShop();
         shipmentCartItemModel.setShopId(shop.getShopId());
         shipmentCartItemModel.setShopName(shop.getShopName());
-        shipmentCartItemModel.setOfficialStore(shop.isOfficial());
-        shipmentCartItemModel.setGoldMerchant(shop.isGold());
-        shipmentCartItemModel.setShopBadge(shop.getShopBadge());
         shipmentCartItemModel.setShopAlertMessage(shop.getShopAlertMessage());
+        shipmentCartItemModel.setShopTypeInfoData(shop.getShopTypeInfoData());
 
         shipmentCartItemModel.setCartString(groupShop.getCartString());
         shipmentCartItemModel.setShippingId(groupShop.getShippingId());

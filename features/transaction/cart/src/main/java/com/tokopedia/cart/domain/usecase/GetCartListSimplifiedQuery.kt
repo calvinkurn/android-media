@@ -127,36 +127,18 @@ fun getQueryCartRevamp(): String {
                     maximum_shipping_weight
                     shop_alert_message
                     shop_id
-                    user_id
                     admin_ids
                     shop_name
                     shop_image
                     shop_url
                     shop_status
-                    is_gold
-                    is_official
-                    is_free_returns
-                    gold_merchant {
-                      is_gold
-                      is_gold_badge
-                      gold_merchant_logo_url
-                    }
-                    official_store {
-                      is_official
-                      os_logo_url
-                    }
-                    address_id
                     postal_code
                     latitude
                     longitude
-                    district_id
                     district_name
                     origin
                     address_street
-                    province_id
-                    city_id
                     city_name
-                    province_id
                     province_name
                     country_name
                     is_allow_manage
@@ -175,6 +157,15 @@ fun getQueryCartRevamp(): String {
                         additional_fee
                       }
                       is_dropship_enabled
+                    }
+                    is_gold
+                    is_official
+                    shop_type_info {
+                      shop_tier
+                      shop_grade
+                      badge
+                      badge_svg
+                      title
                     }
                   }
                   promo_codes
@@ -379,34 +370,17 @@ fun getQueryCartRevamp(): String {
                   shop {
                     shop_alert_message
                     shop_id
-                    user_id
                     admin_ids
                     shop_name
                     shop_image
                     shop_url
                     shop_status
-                    is_gold
-                    is_official
-                    is_free_returns
-                    gold_merchant {
-                      is_gold
-                      is_gold_badge
-                      gold_merchant_logo_url
-                    }
-                    official_store {
-                      is_official
-                      os_logo_url
-                    }
-                    address_id
                     postal_code
                     latitude
                     longitude
-                    district_id
                     district_name
                     origin
                     address_street
-                    province_id
-                    city_id
                     city_name
                     province_id
                     province_name
@@ -427,6 +401,15 @@ fun getQueryCartRevamp(): String {
                         additional_fee
                       }
                       is_dropship_enabled
+                    }
+                    is_gold
+                    is_official
+                    shop_type_info {
+                      shop_tier
+                      shop_grade
+                      badge
+                      badge_svg
+                      title
                     }
                   }
                   promo_codes

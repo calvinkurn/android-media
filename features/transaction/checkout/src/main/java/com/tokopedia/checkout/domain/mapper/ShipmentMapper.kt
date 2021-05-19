@@ -9,8 +9,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
-import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
-import com.tokopedia.logisticcart.shipping.model.CodModel
+import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -131,7 +130,7 @@ class ShipmentMapper @Inject constructor() {
                         shipmentInformationData = mapShipmentInformationData(it.shipmentInformation)
                         shop = mapShopData(it.shop)
                         shopShipments = mapShopShipments(it.shopShipments)
-                        products = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
+                        products = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
                         isDisableChangeCourier = it.isDisableChangeCourier
                         boMetadata = it.boMetadata
                     }
@@ -143,7 +142,8 @@ class ShipmentMapper @Inject constructor() {
     private fun mapProducts(groupShop: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
                             groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
                             shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
-                            isDisablePPP: Boolean): MutableList<Product> {
+                            isDisablePPP: Boolean,
+                            shopTypeInfoData: ShopTypeInfoData): MutableList<Product> {
         val productListResult = arrayListOf<Product>()
         groupShop.products.forEach {
             val productResult = Product().apply {
@@ -152,7 +152,8 @@ class ShipmentMapper @Inject constructor() {
                         groupAddress.userAddress,
                         groupShop,
                         shipmentAddressFormDataResponse.cod,
-                        shipmentAddressFormDataResponse.promoSAFResponse
+                        shipmentAddressFormDataResponse.promoSAFResponse,
+                        shopTypeInfoData
                 )
                 if (it.tradeInInfo.isValidTradeIn) {
                     productPrice = it.tradeInInfo.newDevicePrice.toLong()
@@ -217,7 +218,8 @@ class ShipmentMapper @Inject constructor() {
                                                 userAddress: UserAddress,
                                                 groupShop: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupShop,
                                                 cod: Cod,
-                                                promoSAFResponse: PromoSAFResponse): AnalyticsProductCheckoutData {
+                                                promoSAFResponse: PromoSAFResponse,
+                                                shopTypeInfoData: ShopTypeInfoData): AnalyticsProductCheckoutData {
         return AnalyticsProductCheckoutData().apply {
             productId = product.productId.toString()
             productAttribution = product.productTrackerData.attribution
@@ -231,7 +233,7 @@ class ShipmentMapper @Inject constructor() {
             }
             productShopId = groupShop.shop.shopId.toString()
             productShopName = groupShop.shop.shopName
-            productShopType = generateShopType(groupShop.shop)
+            productShopType = shopTypeInfoData.shopType
             productVariant = ""
             productBrand = ""
             productQuantity = product.productQuantity
@@ -297,21 +299,11 @@ class ShipmentMapper @Inject constructor() {
     private fun mapShopData(shop: Shop): com.tokopedia.checkout.domain.model.cartshipmentform.Shop {
         return com.tokopedia.checkout.domain.model.cartshipmentform.Shop().apply {
             shopId = shop.shopId
-            userId = shop.userId
             shopName = shop.shopName
             shopImage = shop.shopImage
             shopUrl = shop.shopUrl
             shopStatus = shop.shopStatus
-            isGold = shop.goldMerchant.isGoldBadge
-            isGoldBadge = shop.goldMerchant.isGoldBadge
-            isOfficial = shop.isOfficial == 1
-            if (shop.isOfficial == 1) {
-                shopBadge = shop.officialStore.osLogoUrl
-            } else if (shop.goldMerchant.isGold == 1) {
-                shopBadge = shop.goldMerchant.goldMerchantLogoUrl
-            }
-            isFreeReturns = shop.isFreeReturns == 1
-            addressId = shop.addressId
+            shopTypeInfoData = mapShopTypeInfo(shop)
             postalCode = shop.postalCode
             latitude = shop.latitude
             longitude = shop.longitude
@@ -323,6 +315,25 @@ class ShipmentMapper @Inject constructor() {
             cityId = shop.cityId
             cityName = shop.cityName
             shopAlertMessage = shop.shopAlertMessage
+        }
+    }
+
+    private fun mapShopTypeInfo(shop: Shop): ShopTypeInfoData {
+        val shopTypeInfo = shop.shopTypeInfo
+        val tmpShopType =
+                when {
+                    shop.isGold == 1 -> SHOP_TYPE_GOLD_MERCHANT
+                    shop.isOfficial == 1 -> SHOP_TYPE_OFFICIAL_STORE
+                    else -> SHOP_TYPE_REGULER
+                }
+        return ShopTypeInfoData().apply {
+            shopTier = shopTypeInfo.shopTier
+            shopGrade = shopTypeInfo.shopGrade
+            shopBadge = shopTypeInfo.shopBadge
+            badgeSvg = shopTypeInfo.badgeSvg
+            title = shopTypeInfo.title
+            titleFmt = shopTypeInfo.titleFmt
+            shopType = tmpShopType
         }
     }
 
@@ -718,10 +729,6 @@ class ShipmentMapper @Inject constructor() {
             }
         }
         return hasError
-    }
-
-    private fun generateShopType(shop: Shop): String {
-        return if (shop.isOfficial == 1) SHOP_TYPE_OFFICIAL_STORE else if (shop.goldMerchant.isGoldBadge) SHOP_TYPE_GOLD_MERCHANT else SHOP_TYPE_REGULER
     }
 
     companion object {

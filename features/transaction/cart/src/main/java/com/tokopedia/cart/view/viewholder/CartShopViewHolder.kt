@@ -65,17 +65,11 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderShopBadge(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.shopGroupAvailableData?.isOfficialStore == true || cartShopHolderData.shopGroupAvailableData?.isGoldMerchant == true) {
-            if (cartShopHolderData.shopGroupAvailableData?.shopBadge?.isNotEmpty() == true) {
-                ImageHandler.loadImageWithoutPlaceholder(binding.imgShopBadge, cartShopHolderData.shopGroupAvailableData?.shopBadge)
-                val shopType = if (cartShopHolderData.shopGroupAvailableData?.isOfficialStore == true) {
-                    itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_official_store)
-                } else {
-                    itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_power_merchant)
-                }
-                binding.imgShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopType)
-                binding.imgShopBadge.show()
-            }
+        val shopTypeInfoData = cartShopHolderData.shopGroupAvailableData?.shopTypeInfo
+        if (shopTypeInfoData?.shopBadge?.isNotBlank() == true) {
+            ImageHandler.loadImageWithoutPlaceholder(binding.imgShopBadge, shopTypeInfoData.shopBadge)
+            binding.imgShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopTypeInfoData.title.toLowerCase(Locale("id")))
+            binding.imgShopBadge.show()
         } else {
             binding.imgShopBadge.gone()
         }
