@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.activity_recharge_cc.*
 
 /*
  * applink production = tokopedia://digital/form?category_id=26&menu_id=169&template=tagihancc
- * instant checkout applink = tokopedia://digital/form?operator_id=18&category_id=26&product_id=269&signature=asdasassa&token=asdaszz
+ * sample instant checkout applink = tokopedia://digital/form?operator_id=18&category_id=26&product_id=269&signature=asdasassa&identifier=asdaszz&client_number=04898****398
  * applink staging = tokopedia://digital/form?category_id=26&menu_id=86&template=tagihancc
  * for activating staging, dont forget change base url on submit PCIDSS
  */
