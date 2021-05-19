@@ -57,6 +57,8 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewM
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -104,6 +106,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private var pmProCoachmark: CoachMark2? = null
     private var pmProCoachmarkItem: ArrayList<CoachMark2Item> = arrayListOf()
     private var pmProProductPosition: Int = -1
+    private var remoteConfigInstance: RemoteConfigInstance? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.layout_home_feed_fragment, container, false)
@@ -119,6 +122,9 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         this.coachmarkLocalCache = CoachMarkLocalCache(context = context)
+        activity?.let {
+            this.remoteConfigInstance = RemoteConfigInstance(it.application)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -337,7 +343,20 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     private fun shouldShowPmProCoachmark(): Boolean {
-        return if (pmProCoachmark == null) {
+        val pmProAbTestValue =
+                try {
+                    remoteConfigInstance?.abTestPlatform?.getString(
+                            AbTestPlatform.POWER_MERCHANT_PRO_POP_UP,
+                            AbTestPlatform.POWER_MERCHANT_PRO_POP_UP_NOT_SHOW
+                    )
+                } catch (e: Exception) {
+                    false
+                }
+
+        val isPmProRollenceActive =
+                pmProAbTestValue == AbTestPlatform.POWER_MERCHANT_PRO_POP_UP_SHOW
+
+        return if (pmProCoachmark == null && isPmProRollenceActive) {
             coachmarkLocalCache?.shouldShowHomePMProCoachMark()?: false
         } else {
             false
