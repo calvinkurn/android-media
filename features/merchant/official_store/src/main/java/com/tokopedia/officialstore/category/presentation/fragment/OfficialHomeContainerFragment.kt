@@ -68,10 +68,12 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
 
     }
+    private val queryHashingKey = "android_do_query_hashing"
+    private val tabAdapter: OfficialHomeContainerAdapter by lazy {
+        OfficialHomeContainerAdapter(context, childFragmentManager)
+    }
 
     @Inject
-    lateinit var viewModel: OfficialStoreCategoryViewModel
-
     private var statusBar: View? = null
     private var mainToolbar: NavToolbar? = null
     private var toolbar: MainToolbar? = null
@@ -85,19 +87,30 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var useNewInbox = false
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var chooseAddressData = OSChooseAddressData()
+    private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
+    private var chooseAddressWidgetInitialized: Boolean = false
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var tracking: OfficialStoreTracking
     private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
-    private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
-
     private lateinit var remoteConfig: RemoteConfig
-    private val queryHashingKey = "android_do_query_hashing"
+    lateinit var viewModel: OfficialStoreCategoryViewModel
 
-    private var chooseAddressWidgetInitialized: Boolean = false
+    fun selectFirstTab() {
+        val tab = tabLayout?.getTabAt(0)
+        tab?.let {
+            it.select()
+        }
+    }
 
-    private val tabAdapter: OfficialHomeContainerAdapter by lazy {
-        OfficialHomeContainerAdapter(context, childFragmentManager)
+    fun selectTabByCategoryId(categoryId: String) {
+        val position = tabLayout?.getPositionBasedOnCategoryId(categoryId) ?: -1
+        if (position != -1) {
+            val tab = tabLayout?.getTabAt(position)
+            tab?.let {
+                it.select()
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,11 +148,6 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     override fun onResume() {
         super.onResume()
         conditionalViewModelRefresh()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        chooseAddressWidgetInitialized = false
     }
 
     override fun getComponent(): OfficialStoreCategoryComponent? {
@@ -196,6 +204,22 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         userVisibleHint = !hidden
+    }
+
+    override fun onChooseAddressUpdated() {
+        val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+        chooseAddressData.setLocalCacheModel(localCacheModel)
+        chooseAddressWidgetInitialized = false
+        chooseAddressWidget?.updateWidget()
+        fetchOSCategory()
+    }
+
+    override fun onChooseAddressServerDown() {
+        removeChooseAddressWidget()
+    }
+
+    private fun removeChooseAddressWidget() {
+        chooseAddressWidget?.gone()
     }
 
     private fun fetchOSCategory() {
@@ -268,23 +292,6 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
             }
 
         })
-    }
-
-    fun selectFirstTab() {
-        val tab = tabLayout?.getTabAt(0)
-        tab?.let {
-            it.select()
-        }
-    }
-
-    fun selectTabByCategoryId(categoryId: String) {
-        val position = tabLayout?.getPositionBasedOnCategoryId(categoryId) ?: -1
-        if (position != -1) {
-            val tab = tabLayout?.getTabAt(position)
-            tab?.let {
-                it.select()
-            }
-        }
     }
 
     private fun convertToCategoriesTabItem(data: List<Category>): List<OfficialCategoriesTab.CategoriesItemTab> {
@@ -422,22 +429,6 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     private fun isChooseAddressRollenceActive(): Boolean {
         return ChooseAddressUtils.isRollOutUser(requireContext())
-    }
-
-    override fun onChooseAddressUpdated() {
-        val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(requireContext())
-        chooseAddressData.setLocalCacheModel(localCacheModel)
-        chooseAddressWidgetInitialized = false
-        chooseAddressWidget?.updateWidget()
-        fetchOSCategory()
-    }
-
-    override fun onChooseAddressServerDown() {
-        removeChooseAddressWidget()
-    }
-
-    private fun removeChooseAddressWidget() {
-        chooseAddressWidget?.gone()
     }
 
     private fun initializeChooseAddressWidget(needToShowChooseAddress: Boolean) {
