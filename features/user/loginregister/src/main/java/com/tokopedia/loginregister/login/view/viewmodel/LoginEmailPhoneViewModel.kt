@@ -146,18 +146,17 @@ class LoginEmailPhoneViewModel @Inject constructor(
         get() = mutableDynamicBannerResponse
 
     fun registerCheck(id: String) {
-        registerCheckUseCase.apply {
-            setRequestParams(this.getRequestParams(id))
-            execute({
-                if (it.data.errors.isEmpty())
-                    mutableRegisterCheckResponse.value = Success(it.data)
-                else if (it.data.errors.isNotEmpty() && it.data.errors[0].isNotEmpty()) {
-                    mutableRegisterCheckResponse.value = Fail(MessageErrorException(it.data.errors[0]))
-                } else mutableRegisterCheckResponse.value = Fail(RuntimeException())
-            }, {
-                mutableRegisterCheckResponse.value = Fail(it)
-            })
-        }
+        launchCatchError(coroutineContext, {
+            registerCheckUseCase.setRequestParams(registerCheckUseCase.getRequestParams(id))
+            val response = registerCheckUseCase.executeOnBackground()
+            if (response.data.errors.isEmpty())
+                mutableRegisterCheckResponse.value = Success(response.data)
+            else if (response.data.errors.isNotEmpty() && response.data.errors[0].isNotEmpty()) {
+                mutableRegisterCheckResponse.value = Fail(MessageErrorException(response.data.errors[0]))
+            } else mutableRegisterCheckResponse.value = Fail(RuntimeException())
+        }, {
+            mutableRegisterCheckResponse.value = Fail(it)
+        })
     }
 
     fun discoverLogin() {
