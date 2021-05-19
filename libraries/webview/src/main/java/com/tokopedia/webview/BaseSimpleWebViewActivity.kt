@@ -2,6 +2,7 @@ package com.tokopedia.webview
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ResolveInfo
 import android.net.ParseException
 import android.net.Uri
 import android.os.Bundle
@@ -352,16 +353,20 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             return if (resolveInfos.size >= 1) {
                 // open chrome app by default
                 val resolveInfo = resolveInfos.find { it.resolvePackageName == CHROME_PACKAGE }?: resolveInfos.first()
-                val browserIntent = Intent()
-                browserIntent.setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
-                browserIntent.data = webUri
-                browserIntent
-            } else {
+                getBrowserIntent(resolveInfo, webUri)
+            } else getSimpleWebViewActivityIntent(context, webUrl)
+        }
+
+        private fun getBrowserIntent(resolveInfo: ResolveInfo, webUri: Uri) =
+                Intent().apply {
+                    setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
+                    data = webUri
+                }
+
+        private fun getSimpleWebViewActivityIntent(context: Context, webUrl: String) =
                 Intent(context, BaseSimpleWebViewActivity::class.java).apply {
                     putExtra(KEY_URL, webUrl)
                 }
-            }
-        }
     }
 
 }
