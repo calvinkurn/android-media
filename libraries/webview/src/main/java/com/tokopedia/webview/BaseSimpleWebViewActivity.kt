@@ -2,7 +2,6 @@ package com.tokopedia.webview
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.ParseException
 import android.net.Uri
 import android.os.Bundle
@@ -26,8 +25,6 @@ import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.webview.BaseSimpleWebViewActivity.DeeplinkIntent.APP_WHITELISTED_DOMAINS_URL
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
-import timber.log.Timber
-import java.util.*
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
@@ -332,10 +329,11 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         @DeepLink(ApplinkConst.BROWSER, ApplinkConst.SellerApp.BROWSER)
         @JvmStatic
         fun getCallingIntentOpenBrowser(context: Context?, extras: Bundle): Intent? {
-            val uriData = Uri.parse(extras.getString("url", getInstance().WEB).decode())
+            val webUrl = extras.getString("url", getInstance().WEB).decode()
+            val webUri = Uri.parse(webUrl)
 
             val destinationIntent = Intent(Intent.ACTION_VIEW)
-            if (context == null) return destinationIntent.apply { data = uriData }
+            if (context == null) return destinationIntent.apply { data = webUri }
 
             // hacky way: to avoid looping forever
             destinationIntent.data = Uri.parse(EXAMPLE_DOMAIN)
@@ -356,10 +354,12 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 val resolveInfo = resolveInfos.find { it.resolvePackageName == CHROME_PACKAGE }?: resolveInfos.first()
                 val browserIntent = Intent()
                 browserIntent.setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
-                browserIntent.data = uriData
+                browserIntent.data = webUri
                 browserIntent
             } else {
-                destinationIntent
+                Intent(context, BaseSimpleWebViewActivity::class.java).apply {
+                    putExtra(KEY_URL, webUrl)
+                }
             }
         }
     }
