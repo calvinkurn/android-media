@@ -1,6 +1,6 @@
 package com.tokopedia.rechargegeneral.screenshot
 
-import com.tokopedia.rechargegeneral.screenshot.Base.BaseListrikScreenShotTest
+import com.tokopedia.rechargegeneral.screenshot.base.BaseListrikScreenShotTest
 
 class ListrikScreenShotLightTest: BaseListrikScreenShotTest() {
 

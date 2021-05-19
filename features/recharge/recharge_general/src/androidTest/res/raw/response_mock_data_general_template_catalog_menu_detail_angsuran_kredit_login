@@ -1,0 +1,154 @@
+[
+  {
+    "data": {
+      "rechargeCatalogMenuDetail": {
+        "catalog": {
+          "id": 123,
+          "name": "angsuran-kredit",
+          "label": "Angsuran Kredit",
+          "icon": ""
+        },
+        "recommendations": [
+          {
+            "iconUrl": "https://ecs7.tokopedia.net/img/recharge/operator/multifinance-radana.png",
+            "title": "Radana Finance",
+            "clientNumber": "191111424111",
+            "appLink": "tokopedia://digital/form?category_id=7&client_number=191111424111&product_id=407&operator_id=88&is_from_widget=true",
+            "webLink": "https://pulsa.tokopedia.com/?action=init_data&operator_id=88&product_id=407&client_number=191111424111",
+            "type": "history",
+            "categoryId": 7,
+            "productId": 407,
+            "isATC": true,
+            "description": "",
+            "operatorID": 88
+          }
+        ],
+        "promos": [
+          {
+            "id": 2300,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/4/7/22885574/22885574_de60a0e2-37db-4082-b66c-c0b7843efe86.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-2/",
+            "status": 1,
+            "title": "Top Up, Tagihan, Travel, Entertainment cashback hingga Rp400rb.",
+            "subtitle": "Kode Promo: {DGTOPED}",
+            "promo_code": "DGTOPED"
+          },
+          {
+            "id": 2978,
+            "filename": "",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-5/",
+            "status": 1,
+            "title": "[Pengguna Baru] Top Up Pulsa & Token Listrik Diskon Rp15rb",
+            "subtitle": "kode promo : {DISKON15}",
+            "promo_code": "DISKON15"
+          },
+          {
+            "id": 2897,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/18/144156949/144156949_ad533a35-5890-4f34-9718-d1ba140cd64f.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-10",
+            "status": 1,
+            "title": "[DGELECTRO]. Bayar Tagihan Dapat Kupon Cashback Belanja Elektronik",
+            "subtitle": "Kode Promo: {DGELECTRO}",
+            "promo_code": "DGELECTRO"
+          },
+          {
+            "id": 2476,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/11/26/42484317/42484317_9716befc-4764-43e8-a2eb-44a0fede33fc.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-8",
+            "status": 1,
+            "title": "[FASHDG] Bayar Tagihan sampai Hiburan Dapat Kupon Belanja Fashion",
+            "subtitle": "kode promo : {FASHDG}",
+            "promo_code": "FASHDG"
+          },
+          {
+            "id": 2930,
+            "filename": "",
+            "filename_webp": "",
+            "img_url": "tokopedia://digital/form?category_id=7&menu_id=123&template=general",
+            "status": 1,
+            "title": "Cobain Yuk! Bayar Angsuran KTA DBS Cashback hingga Rp30rb",
+            "subtitle": "Kode Promo {BAYARDBSKTA}",
+            "promo_code": "BAYARDBSKTA"
+          },
+          {
+            "id": 2927,
+            "filename": "",
+            "filename_webp": "",
+            "img_url": " https://www.tokopedia.com/promo/digital-angsuran-10",
+            "status": 1,
+            "title": "Cobain Yuk! Bayar Angsuran Pegadaian\r\nTerasa Ringan. Cashback hingga Rp30 rb",
+            "subtitle": "Kode Promo {BAYARPEGADAIAN}",
+            "promo_code": "BAYARPEGADAIAN"
+          },
+          {
+            "id": 2252,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/4/34631992/34631992_ecb8b9a8-2345-489e-b8d4-4a4a8143f40a.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-7/",
+            "status": 1,
+            "title": "[COBABAYAR] Bayar Tagihan, Cashback hingga Rp100.000. ",
+            "subtitle": "Kode Promo: {COBABAYAR}",
+            "promo_code": "COBABAYAR"
+          },
+          {
+            "id": 2093,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/9/30/42484317/42484317_a2884af5-2dc9-4759-9aa5-527113543c99.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-pln-3/",
+            "status": 1,
+            "title": "[BAYARINYUK] Bayarin tagihan mama, papa, saudara, siapa pun, cashback hingga Rp50.000! Klik di sini.",
+            "subtitle": "Kode Promo: {BAYARINYUK}",
+            "promo_code": "BAYARINYUK"
+          },
+          {
+            "id": 1573,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/31/42484317/42484317_fa7e8881-26ca-411d-8371-86dd0aee2b1c.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-17/",
+            "status": 1,
+            "title": "[Tagihan] Bayar Tagihan, Cashback terus-terusan. Klik di Sini.",
+            "subtitle": "kode promo : {BAYARTERUS}",
+            "promo_code": "BAYARTERUS"
+          },
+          {
+            "id": 2881,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/5/132674561/132674561_30ea6bfa-64fe-45ca-abb8-c358490b1d2f.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-angsuran-8/",
+            "status": 1,
+            "title": "[Angsuran TAF] Bayar Angsuran TAF di Tokopedia, ada cashback s.d Rp30.000! ",
+            "subtitle": "Kode promo: {COBABAYARTAF}",
+            "promo_code": "COBABAYARTAF"
+          },
+          {
+            "id": 2796,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/8/132674561/132674561_9f232584-32f6-425e-90f3-93aa9cfbd43b.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-angsuran-5/",
+            "status": 1,
+            "title": "[Angsuran Kredivo] Bayar Cicilan Kredivo, Dapat Kupon Diskon Belanja 10rb",
+            "subtitle": "Kode Promo: {KREDIVOHEMAT}",
+            "promo_code": "KREDIVOHEMAT"
+          }
+        ],
+        "tickers": [
+          {
+            "ID": 132,
+            "Name": "Sudah Tersedia Pembayaran KTA Bank DBS",
+            "Content": "Sekarang kamu sudah bisa membayarkan KTA Bank DBS mu disini!",
+            "Type": "info",
+            "Environment": "all",
+            "ActionText": "Bayar Sekarang",
+            "ActionLink": ""
+          }
+        ],
+        "banners": [],
+        "express_checkout": false
+      }
+    }
+  }
+]

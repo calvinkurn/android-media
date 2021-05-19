@@ -1,4 +1,4 @@
-package com.tokopedia.rechargegeneral.screenshot.Base
+package com.tokopedia.rechargegeneral.screenshot.base
 
 import android.app.Activity
 import android.app.Instrumentation

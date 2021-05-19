@@ -1,4 +1,4 @@
-package com.tokopedia.rechargegeneral.screenshot.Base
+package com.tokopedia.rechargegeneral.screenshot.base
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions

@@ -1,6 +1,6 @@
 package com.tokopedia.rechargegeneral.screenshot
 
-import com.tokopedia.rechargegeneral.screenshot.Base.BasePbbScreenShotTest
+import com.tokopedia.rechargegeneral.screenshot.base.BasePbbScreenShotTest
 
 class PbbScreenShotDarkTest: BasePbbScreenShotTest() {
 

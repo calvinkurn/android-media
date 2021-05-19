@@ -1,0 +1,387 @@
+[
+  {
+    "data": {
+      "rechargeCatalogOperatorSelectGroup": {
+        "text": "Penyedia Layanan",
+        "style": "select_dropdown",
+        "operatorGroup": [
+          {
+            "name": "",
+            "operators": [
+              {
+                "type": "",
+                "id": 2754,
+                "attributes": {
+                  "name": "Bank DBS",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/3/22/47231715/47231715_7952c2dc-e36e-4dab-bfe1-c9687c13a901.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2715,
+                "attributes": {
+                  "name": "Toyota Astra Financial Services (TAF)",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/2/24/31997636/31997636_da78895c-9f78-4853-8cef-360fb40a7d6a.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 93,
+                "attributes": {
+                  "name": "WOM Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/multifinance-wom.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 166,
+                "attributes": {
+                  "name": "AEON Credit Service Indonesia",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/aeon.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 111,
+                "attributes": {
+                  "name": "Al Ijarah Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/logo-alijarah.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 123,
+                "attributes": {
+                  "name": "Artha Prima Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/logo-arthaprima-finance.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 168,
+                "attributes": {
+                  "name": "Astra Credit Companies",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/acc.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 526,
+                "attributes": {
+                  "name": "BFI Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/bfi.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 89,
+                "attributes": {
+                  "name": "Bima Multi Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/multifinance-bima.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 1327,
+                "attributes": {
+                  "name": "BPR Kredit Mandiri",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/10/21/37591046/37591046_982e8449-1f30-4df0-bd19-e714cd1415b0.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 661,
+                "attributes": {
+                  "name": "BTN",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/btn.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 91,
+                "attributes": {
+                  "name": "Bussan Auto Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/baf.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 1324,
+                "attributes": {
+                  "name": " Buana Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/10/21/37591046/37591046_e1df1ef8-c55e-437d-a52b-8dca68b9481b.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 653,
+                "attributes": {
+                  "name": "Home Credit",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/homecredit.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 255,
+                "attributes": {
+                  "name": "Indomobil Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/indomobil.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 90,
+                "attributes": {
+                  "name": "JACCS MPM Finance Indonesia",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/2/8/31997636/31997636_bc832544-03cb-41d6-8eda-6d4a5c5ca001.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 636,
+                "attributes": {
+                  "name": "JTrust Olympindo Multi Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/jtofinance.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 150,
+                "attributes": {
+                  "name": "Kreditplus/Finansia",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/kreditplus.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2305,
+                "attributes": {
+                  "name": "Mandala Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2020/8/19/37591046/37591046_78601474-0d89-4ebc-8d91-a1a4006f8417.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 662,
+                "attributes": {
+                  "name": "Kredivo",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/kredivo.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 124,
+                "attributes": {
+                  "name": "Mandiri Tunas Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2020/1/20/37591046/37591046_cbe5caa1-d7de-47cc-964a-7f276c41a0a4.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 1185,
+                "attributes": {
+                  "name": "Mandiri Utama Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/9/10/47231715/47231715_430ee975-6b41-4282-8b44-0a643528a98e.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2648,
+                "attributes": {
+                  "name": "Maybank Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2020/12/23/37591046/37591046_cd803f8d-28f0-4b1a-920b-200ff41a3343.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 108,
+                "attributes": {
+                  "name": "Mega Auto Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/maf_2.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 109,
+                "attributes": {
+                  "name": "Mega Central Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/mcf_2.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 119,
+                "attributes": {
+                  "name": "Mega Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/logo-mega-finance.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 1334,
+                "attributes": {
+                  "name": "Mitra Dana Top Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/10/28/37591046/37591046_18bffef5-735e-4b67-b88a-77ae46a2e47b.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 1335,
+                "attributes": {
+                  "name": "Orico Balimor Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/4/19/31997636/31997636_8cf69979-21ed-4f83-b2d9-155cf2b133db.jpg",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 1904,
+                "attributes": {
+                  "name": "Pegadaian",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2020/4/20/37591046/37591046_3c27200e-7914-4e98-a6a6-4233aafb38ea.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 167,
+                "attributes": {
+                  "name": "NSC Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/nscfinance.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 1325,
+                "attributes": {
+                  "name": "Permata Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/10/28/37591046/37591046_b141c4d7-eac5-439d-8c37-46334f2a19f0.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 88,
+                "attributes": {
+                  "name": "Radana Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/multifinance-radana.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 110,
+                "attributes": {
+                  "name": "Smart Multi Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/logo-smart-finance.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 1058,
+                "attributes": {
+                  "name": "SMS Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/8/6/47231715/47231715_7fee687e-3176-4322-b67d-bd525efb45e6.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 628,
+                "attributes": {
+                  "name": "Suzuki Finance Indonesia",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/suzukifinance.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 1323,
+                "attributes": {
+                  "name": "Trihamas Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/10/21/37591046/37591046_639fa780-ad9a-4cb9-80f1-78d47d8be734.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 122,
+                "attributes": {
+                  "name": "WOKA Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/logo-woka-finance.png",
+                  "description": ""
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

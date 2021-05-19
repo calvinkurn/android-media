@@ -1,4 +1,4 @@
-package com.tokopedia.rechargegeneral.screenshot.Base
+package com.tokopedia.rechargegeneral.screenshot.base
 
 import com.tokopedia.rechargegeneral.RechargeGeneralLoginMockResponseConfig
 import com.tokopedia.rechargegeneral.cases.RechargeGeneralProduct
