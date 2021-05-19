@@ -78,6 +78,7 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
         LayoutInflater.from(context).inflate(LAYOUT, null)?.apply {
             loader = findViewById(R.id.loader)
             globalError = findViewById(R.id.global_error)
+            accordion = findViewById(R.id.accordion)
             setTitle(getString(R.string.shop_note_title))
             setChild(this)
             setCloseClickListener {
@@ -85,7 +86,6 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
             }
         }
 
-        accordion = view?.findViewById(R.id.accordion)
         showKnob = true
         showCloseIcon = !showKnob
         isDragable = showKnob
