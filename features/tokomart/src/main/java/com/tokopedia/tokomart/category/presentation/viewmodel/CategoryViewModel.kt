@@ -60,6 +60,14 @@ class CategoryViewModel @Inject constructor (
     override fun createFooterVisitableList() = listOf(
             CategoryAisleDataView(
                     listOf(
+                            CategoryAisleItemDataView(
+                                    "Daging & Seafood",
+                                    "https://thefatkidinside.com/wp-content/uploads/2019/08/jakarta-header-716x375.jpg"
+                            ),
+                            CategoryAisleItemDataView(
+                                    "Makanan Kering",
+                                    "https://thefatkidinside.com/wp-content/uploads/2019/08/jakarta-header-716x375.jpg"
+                            )
                     )
             ),
     )
