@@ -3,7 +3,7 @@ package com.tokopedia.play.view.uimodel
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.variant_common.model.VariantCategory
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 
 /**
  * Created by jegul on 06/03/20

@@ -26,9 +26,9 @@ import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.variant_common.view.ProductVariantListener
 
