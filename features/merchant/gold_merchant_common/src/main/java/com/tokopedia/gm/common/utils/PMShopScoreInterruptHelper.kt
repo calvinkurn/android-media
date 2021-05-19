@@ -3,7 +3,6 @@ package com.tokopedia.gm.common.utils
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
-import android.os.Handler
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -21,8 +20,6 @@ import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.local.PMCommonPreferenceManager
-import com.tokopedia.gm.common.view.bottomsheet.PMFinalInterruptBottomSheet
-import com.tokopedia.gm.common.view.bottomsheet.PMTransitionInterruptBottomSheet
 import com.tokopedia.gm.common.view.bottomsheet.SimpleInterruptBottomSheet
 import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
 import com.tokopedia.gm.common.view.worker.GetPMInterruptDataWorker
@@ -31,7 +28,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.Toaster
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -118,7 +114,7 @@ class PMShopScoreInterruptHelper @Inject constructor() {
     fun showToasterPmProInterruptPage(uri: Uri, rootView: View?) {
         val state = uri.getQueryParameter(PowerMerchantDeepLinkMapper.QUERY_PARAM_STATE).orEmpty()
         rootView?.run {
-            val message = when(state) {
+            val message = when (state) {
                 PowerMerchantDeepLinkMapper.VALUE_STATE_APPROVED -> context.getString(R.string.gmc_pm_pro_interrupt_action_approved)
                 PowerMerchantDeepLinkMapper.VALUE_STATE_STAY -> context.getString(R.string.gmc_pm_pro_interrupt_action_stay)
                 PowerMerchantDeepLinkMapper.VALUE_STATE_AGREED -> context.getString(R.string.gmc_pm_pro_interrupt_action_agreed)
@@ -225,34 +221,8 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         bottomSheet.show(fm)
     }
 
-    private fun setupInterruptFinalPeriod(data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
-        val bottomSheet = PMFinalInterruptBottomSheet.getInstance(fm)
-        if (!bottomSheet.isAdded && !fm.isStateSaved) {
-            Handler().post {
-                bottomSheet.setData(data).show(fm)
-            }
-        }
-    }
-
     private fun setupInterruptTransitionPeriod(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
         showInterruptPage(context, data)
-    }
-
-    private fun showTransitionPmInterruptPopup(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
-        if (!hasOpenedInterruptPopup()) {
-            val bottomSheet = PMTransitionInterruptBottomSheet.getInstance(fm)
-            Handler().post {
-                if (!bottomSheet.isAdded && !fm.isStateSaved) {
-                    pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_TRANSITION_INTERRUPT_POPUP, true)
-                    pmCommonPreferenceManager?.apply()
-                    bottomSheet.setData(data)
-                            .setOnCtaClickListener {
-                                RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL)
-                            }
-                            .show(fm)
-                }
-            }
-        }
     }
 
     private fun showInterruptPage(context: Context, data: PowerMerchantInterruptUiModel) {
