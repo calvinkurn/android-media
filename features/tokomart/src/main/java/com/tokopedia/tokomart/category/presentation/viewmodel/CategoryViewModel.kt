@@ -50,8 +50,9 @@ class CategoryViewModel @Inject constructor (
     }
 
     override fun MutableMap<String, Any>.prependQueryParam() {
-        this[SearchApiConst.SC] = categoryId
+        this[SearchApiConst.NAVSOURCE] = TOKONOW_DIRECTORY
         this[SearchApiConst.SOURCE] = TOKONOW_DIRECTORY
+        this[SearchApiConst.SRP_PAGE_ID] = categoryId
     }
 
     private fun onGetCategoryFirstPageSuccess(categoryModel: CategoryModel) {

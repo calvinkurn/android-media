@@ -22,9 +22,10 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
     protected fun createExpectedMandatoryTokonowQueryParams(page: Int): Map<String, String> = mapOf(
             SearchApiConst.PAGE to page.toString(),
             SearchApiConst.USE_PAGE to true.toString(),
+            SearchApiConst.NAVSOURCE to TOKONOW_DIRECTORY,
             SearchApiConst.SOURCE to TOKONOW_DIRECTORY,
             SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
-            SearchApiConst.SC to defaultCategoryId.toString(),
+            SearchApiConst.SRP_PAGE_ID to defaultCategoryId.toString(),
     )
 
     protected fun `Then assert request params map`(
