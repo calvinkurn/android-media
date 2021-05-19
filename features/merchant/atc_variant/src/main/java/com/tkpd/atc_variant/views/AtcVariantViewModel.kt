@@ -159,12 +159,19 @@ class AtcVariantViewModel @Inject constructor(
 
             _aggregatorData.postValue(aggregatorResult)
 
-            //generate data for render variant (determine empty, promo, etc), and cart data for button view
-            val selectedVariantChild = aggregatorResult.variantData.getChildByProductId(aggregatorParams.productId)
-            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedVariantChild, aggregatorResult.cardRedirection)
-            val selectedWarehouse = getSelectedWarehouse(selectedVariantChild?.productId ?: "")
-            val visitables = generateVisitable(selectedVariantChild, selectedWarehouse?.isFulfillment
-                    ?: false, aggregatorParams.isTokoNow, aggregatorResult.variantData)
+            //Get selected child by product id, if product parent auto select first child
+            //If parent just update the header and ignore the variant selection
+            val pairParentAndChild = aggregatorResult.variantData.getFirstChildIfParent(aggregatorParams.productId)
+            val isParent = pairParentAndChild.first
+            val selectedChild = pairParentAndChild.second
+
+            //Get cart redirection , and warehouse by selected product id to render button and toko cabang
+            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedChild, aggregatorResult.cardRedirection)
+            val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
+
+            //Generate visitables
+            val visitables = generateVisitable(selectedChild, selectedWarehouse?.isFulfillment
+                    ?: false, aggregatorParams.isTokoNow, isParent, aggregatorResult.variantData)
 
             if (visitables != null) {
                 _initialData.postValue(visitables.asSuccess())
@@ -234,8 +241,8 @@ class AtcVariantViewModel @Inject constructor(
                     shopId = shopIdInt
                     quantity = selectedChild?.getFinalMinOrder() ?: 0
                     notes = ""
-                    attribution = trackerAttributionPdp ?: ""
-                    listTracker = trackerListNamePdp ?: ""
+                    attribution = trackerAttributionPdp
+                    listTracker = trackerListNamePdp
                     warehouseId = selectedWarehouse?.id?.toIntOrZero() ?: 0
                     atcFromExternalSource = AddToCartRequestParams.ATC_FROM_PDP
                     productName = selectedChild?.name ?: ""
@@ -318,13 +325,13 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    private fun generateVisitable(selectedVariantChild: VariantChild?, isFulfillment: Boolean, isTokoNow: Boolean, variantData: ProductVariant): List<AtcVariantVisitable>? {
-        val initialVariantSelectedOptionIds = AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
+    private fun generateVisitable(selectedVariantChild: VariantChild?, isFulfillment: Boolean, isTokoNow: Boolean, isParent: Boolean, variantData: ProductVariant): List<AtcVariantVisitable>? {
+        val selectedOptionIds = AtcCommonMapper.determineSelectedOptionIds(isParent, variantData, selectedVariantChild)
         return AtcCommonMapper.mapToVisitable(
                 selectedChild = selectedVariantChild,
                 isTokoNow = isTokoNow,
-                initialSelectedVariant = initialVariantSelectedOptionIds,
-                processedVariant = AtcVariantMapper.processVariant(variantData, initialVariantSelectedOptionIds),
+                initialSelectedVariant = selectedOptionIds,
+                processedVariant = AtcVariantMapper.processVariant(variantData, selectedOptionIds),
                 selectedProductFulfillment = isFulfillment,
                 totalStock = variantData.totalStockChilds)
     }

@@ -1,5 +1,6 @@
 package com.tkpd.atc_variant.views.bottomsheet
 
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -23,6 +24,7 @@ import com.tkpd.atc_variant.views.adapter.AtcVariantAdapterTypeFactoryImpl
 import com.tkpd.atc_variant.views.adapter.AtcVariantDiffutil
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -30,6 +32,8 @@ import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.showToasterError
+import com.tokopedia.product.detail.common.showToasterSuccess
+import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -68,11 +72,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     private var baseAtcBtn: PartialAtcButtonView? = null
     private var listener: AtcVariantBottomSheetListener? = null
     private var rvVariantBottomSheet: RecyclerView? = null
+    private var buttonActionType = 0
 
     fun show(fragmentManager: FragmentManager,
              tag: String,
              listener: AtcVariantBottomSheetListener) {
-
         this.listener = listener
         show(fragmentManager, tag)
     }
@@ -152,6 +156,60 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 baseAtcBtn?.visibility = false
             }
         })
+
+        observeCart()
+    }
+
+    private fun observeCart() {
+        viewModel.addToCartLiveData.observe(viewLifecycleOwner, {
+            loadingProgressDialog?.dismiss()
+            if (it is Success) {
+                onSuccessAtc(it.data)
+            } else {
+                // todo
+            }
+        })
+    }
+
+    private fun onSuccessAtc(result: AddToCartDataModel) {
+        val cartId = result.data.cartId
+        when (buttonActionType) {
+            ProductDetailCommonConstant.OCS_BUTTON -> {
+                if (result.data.success == 0) {
+//                    validateOvo(result)
+                } else {
+//                    sendTrackingATC(cartId)
+                    goToCheckout()
+                }
+            }
+            ProductDetailCommonConstant.OCC_BUTTON -> {
+//                sendTrackingATC(cartId)
+                ProductCartHelper.goToOneClickCheckout(getAtcActivity())
+            }
+            ProductDetailCommonConstant.BUY_BUTTON -> {
+//                sendTrackingATC(cartId)
+                ProductCartHelper.goToCartCheckout(getAtcActivity(), cartId)
+            }
+            ProductDetailCommonConstant.ATC_BUTTON -> {
+//                sendTrackingATC(cartId)
+//                ProductCartHelper.showAddToCartDoneBottomSheet()
+                viewContent?.showToasterSuccess("sukses atc")
+            }
+        }
+    }
+
+    private fun getAtcActivity(): Activity {
+        return context as AtcVariantActivity
+    }
+
+    private fun goToCheckout() {
+        context?.let {
+            ProductCartHelper.goToCheckout(it as AtcVariantActivity, ShipmentFormRequest
+                    .BundleBuilder()
+                    .deviceId("")
+                    .build()
+                    .bundle)
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -191,11 +249,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     private fun doAtc(buttonAction: Int) {
+        buttonActionType = buttonAction
         context?.let {
-            showProgressDialog {
-                loadingProgressDialog?.dismiss()
-            }
-
             val isPartialySelected = AtcVariantMapper.isPartiallySelectedOptionId(viewModel.getSelectedOptionIds())
 
             if (isPartialySelected) {
@@ -205,6 +260,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
             val sharedData = sharedViewModel.aggregatorParams.value
 
+            showProgressDialog {
+                loadingProgressDialog?.dismiss()
+            }
             viewModel.hitAtc(buttonAction,
                     sharedData?.shopId?.toIntOrZero() ?: 0,
                     sharedData?.categoryName ?: "",

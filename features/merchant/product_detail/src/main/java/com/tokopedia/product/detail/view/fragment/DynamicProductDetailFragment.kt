@@ -2968,6 +2968,16 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 ) { data, code ->
                     startActivityForResult(data, code)
                 }
+
+//                AtcVariantHelper.goToAtcVariant(
+//                        context = it,
+//                        productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
+//                        pageSource = "pdp",
+//                        isTokoNow = false,
+//                        productParentId = ""
+//                ) { data, code ->
+//                    startActivityForResult(data, code)
+//                }
             }
         }
     }

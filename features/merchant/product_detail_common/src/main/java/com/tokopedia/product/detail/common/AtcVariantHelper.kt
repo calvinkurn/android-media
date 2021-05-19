@@ -37,7 +37,6 @@ object AtcVariantHelper {
                         cartRedirection: Map<String, CartTypeData>,
                         startActivitResult: (Intent, Int) -> Unit) {
 
-
         val cacheManager = SaveInstanceCacheManager(context, true)
         val parcelData = ProductVariantBottomSheetParams(
                 productId = productInfoP1.basic.productID,

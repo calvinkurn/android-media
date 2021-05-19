@@ -5,6 +5,7 @@ import com.tkpd.atc_variant.views.adapter.AtcVariantVisitable
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.usecase.coroutines.Fail
@@ -14,6 +15,37 @@ import com.tokopedia.usecase.coroutines.Success
  * Created by Yehezkiel on 11/05/21
  */
 object AtcCommonMapper {
+
+    /**
+     * Generate selected option ids for initial variant selection state
+     * if product parent, we dont want to select the variant except it has abillity to auto select
+     * if product not buyable, also ignore
+     *
+     * auto select will run if there is only 1 child left buyable
+     */
+    fun determineSelectedOptionIds(isParent: Boolean, variantData: ProductVariant, selectedChild: VariantChild?): MutableMap<String, String> {
+        val shouldAutoSelect = variantData.autoSelectedOptionIds()
+        return when {
+            isParent -> {
+                if (shouldAutoSelect.isNotEmpty()) {
+                    //if product parent and able to auto select, do auto select
+                    AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
+                } else {
+                    //if product parent, dont update selected variant
+                    AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
+                }
+            }
+            selectedChild?.isBuyable == true -> {
+                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
+            }
+            shouldAutoSelect.isNotEmpty() -> {
+                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
+            }
+            else -> {
+                AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
+            }
+        }
+    }
 
     fun mapToCartRedirectionData(selectedChild: VariantChild?, cartTypeData: Map<String, CartTypeData>?, isShopOwner: Boolean = false): PartialButtonDataModel {
         return PartialButtonDataModel(selectedChild?.isBuyable

@@ -80,7 +80,7 @@ class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
 
     private fun observeData() {
         sharedViewModel.activityResult.observe(this, {
-            val cacheManager = SaveInstanceCacheManager(this)
+            val cacheManager = SaveInstanceCacheManager(this, true)
             val resultIntent = Intent().apply {
                 putExtra(PDP_CACHE_ID_KEY, cacheManager.id)
             }
