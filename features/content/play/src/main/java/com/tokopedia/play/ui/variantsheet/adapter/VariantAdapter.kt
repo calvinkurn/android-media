@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.ui.variantsheet.adapter.delegate.VariantCategoryAdapterDelegate
 import com.tokopedia.play.ui.variantsheet.adapter.delegate.VariantPlaceholderAdapterDelegate
-import com.tokopedia.variant_common.model.VariantCategory
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.variant_common.view.ProductVariantListener
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder.Companion.VARIANT_OPTION_CHANGED
 
