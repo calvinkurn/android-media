@@ -24,7 +24,6 @@ import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoLocationUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
@@ -398,7 +397,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 VALIDATION_SUCCESS else VALIDATION_ERROR
             val validationException = MessageErrorException(validationMessages.joinToString("\n"))
 
-            mValidationResult.value = ValidationResultModel(validationResult, validationException)
+            mValidationResult.value = ValidationResultModel(validationResult, validationException, response.toString())
             mIsLoading.value = false
         }, onError = {
             mValidationResult.value = ValidationResultModel(VALIDATION_ERROR, it)
