@@ -23,7 +23,7 @@ data class BaseNotificationModel(
         var notificationId: Int = 0,
 
         @ColumnInfo(name = "elementId")
-        var elementId: String = "",
+        var elementId: String? = "",
 
         @PrimaryKey
         @ColumnInfo(name = "campaignId")
