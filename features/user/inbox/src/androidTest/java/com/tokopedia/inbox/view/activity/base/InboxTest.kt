@@ -8,12 +8,15 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inbox.fake.InboxFakeDependency
 import com.tokopedia.inbox.fake.di.DaggerFakeInboxComponent
 import com.tokopedia.inbox.fake.di.FakeInboxComponent
+import com.tokopedia.inbox.fake.di.chat.DaggerFakeChatListComponent
+import com.tokopedia.inbox.fake.di.chat.FakeChatListComponent
 import com.tokopedia.inbox.fake.di.common.DaggerFakeBaseAppComponent
 import com.tokopedia.inbox.fake.di.common.FakeAppModule
 import com.tokopedia.inbox.fake.di.common.FakeBaseAppComponent
 import com.tokopedia.inbox.fake.view.activity.FakeInboxActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.topchat.chatlist.di.ChatListContextModule
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -41,6 +44,7 @@ abstract class InboxTest {
         setupGraphqlMockResponse(InboxModelConfig())
         setupDaggerBaseComponent()
         setupInboxDaggerComponent()
+        setupChatListDaggerComponent()
         inboxComponent!!.inject(this)
     }
 
@@ -48,6 +52,7 @@ abstract class InboxTest {
     fun tearDown() {
         baseComponent = null
         inboxComponent = null
+        chatListComponent = null
     }
 
     private fun setupDaggerBaseComponent() {
@@ -59,6 +64,13 @@ abstract class InboxTest {
     private fun setupInboxDaggerComponent() {
         inboxComponent = DaggerFakeInboxComponent.builder()
                 .fakeBaseAppComponent(baseComponent)
+                .build()
+    }
+
+    private fun setupChatListDaggerComponent() {
+        chatListComponent = DaggerFakeChatListComponent.builder()
+                .fakeBaseAppComponent(baseComponent)
+                .chatListContextModule(ChatListContextModule(context))
                 .build()
     }
 
@@ -84,6 +96,7 @@ abstract class InboxTest {
     companion object {
         var baseComponent: FakeBaseAppComponent? = null
         var inboxComponent: FakeInboxComponent? = null
+        var chatListComponent: FakeChatListComponent? = null
     }
 }
 

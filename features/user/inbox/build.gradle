@@ -77,9 +77,13 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
+    androidTestImplementation rootProject.ext.debugToolsDependencies.chuck
+    androidTestImplementation project(rootProject.ext.features.shopCommon)
 }
 
 project.ext {

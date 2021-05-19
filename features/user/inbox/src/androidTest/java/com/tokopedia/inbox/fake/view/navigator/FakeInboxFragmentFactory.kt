@@ -1,11 +1,12 @@
 package com.tokopedia.inbox.fake.view.navigator
 
 import androidx.fragment.app.Fragment
+import com.tokopedia.inbox.fake.view.fragment.FakeChatListInboxFragment
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactory
 
-class FakeInboxFragmentFactory: InboxFragmentFactory {
+class FakeInboxFragmentFactory : InboxFragmentFactory {
     override fun createChatListFragment(): Fragment {
-        return Fragment()
+        return FakeChatListInboxFragment.create()
     }
 
     override fun createNotificationFragment(): Fragment {
