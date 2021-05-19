@@ -3,11 +3,9 @@ package com.tokopedia.tokomart.category.presentation.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
-import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
+import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
 import io.mockk.every
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.instanceOf
-import org.junit.Assert
 import org.junit.Assert.assertThat
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
@@ -22,7 +20,7 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
     }
 
     protected fun `Then assert visitable list footer`(visitableList: List<Visitable<*>>) {
-        assertThat(visitableList.last(), instanceOf(CategoryIsleDataView::class.java))
+        assertThat(visitableList.last(), instanceOf(CategoryAisleDataView::class.java))
     }
 
     protected fun `Then assert visitable list end with loading more model`(visitableList: List<Visitable<*>>) {
