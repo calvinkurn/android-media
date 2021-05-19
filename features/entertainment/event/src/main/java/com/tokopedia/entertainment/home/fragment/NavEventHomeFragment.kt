@@ -224,7 +224,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     override fun clickBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {
-        analytics.clickBanner(item, position)
+        analytics.clickBanner(item, position, userSession.userId)
     }
 
     override fun impressionBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {
@@ -236,11 +236,11 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     override fun clickLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>, position: Int) {
-        analytics.clickLocationEvent(item, listItems, position)
+        analytics.clickLocationEvent(item, listItems, position, userSession.userId)
     }
 
     override fun clickSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, title: String, position: Int) {
-        analytics.clickSectionEventProduct(item, listItems, title, position)
+        analytics.clickSectionEventProduct(item, listItems, title, position, userSession.userId)
     }
 
     override fun clickSeeAllCuratedEventProduct(title: String, position: Int) {
@@ -256,11 +256,11 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     override fun impressionLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>, position: Int) {
-        analytics.impressionLocationEvent(item, listItems, position)
+        analytics.impressionLocationEvent(item, listItems, position, userSession.userId)
     }
 
     override fun impressionSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, title: String, position: Int) {
-        analytics.impressionSectionEventProduct(item, listItems, title, position)
+        analytics.impressionSectionEventProduct(item, listItems, title, position, userSession.userId)
     }
 
     override fun impressionTopEventProduct(item: EventItemModel, listItems: List<String>, position: Int) {

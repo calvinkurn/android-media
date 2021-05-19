@@ -59,7 +59,7 @@ class EventHomeViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), cacheStrategy)
             }.getSuccessData<EventHomeDataResponse.Data>()
 
-            mutableEventHomeListData.postValue(Success(mappingItem(data)))
+            mutableEventHomeListData.value = Success(mappingItem(data))
         }){
             mutableEventHomeListData.postValue(Fail(it))
         }
