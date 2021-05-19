@@ -15,7 +15,7 @@ class OSChooseAddressWidgetCallback(
 ): ChooseAddressWidget.ChooseAddressWidgetListener {
 
     companion object {
-        const val sourcePageName = "OS"
+        const val sourcePageName = "official store"
         const val trackingPageName = "official store page"
     }
     override fun onLocalizingAddressUpdatedFromWidget() {
