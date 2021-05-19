@@ -5,20 +5,20 @@ import com.tokopedia.user.session.UserSession
 
 class FakeUserSession(context: Context?) : UserSession(context) {
 
-    var hasShopStub = true
-    var shopNameStub = "Toko Rifqi"
-    var nameStub = "Rifqi MF"
+    var fakeHasShop = true
+    var fakeShopName = "Toko Rifqi"
+    var fakeName = "Rifqi MF"
 
     override fun hasShop(): Boolean {
-        return hasShopStub
+        return fakeHasShop
     }
 
     override fun getShopName(): String {
-        return shopNameStub
+        return fakeShopName
     }
 
     override fun getName(): String {
-        return nameStub
+        return fakeName
     }
 
 }
