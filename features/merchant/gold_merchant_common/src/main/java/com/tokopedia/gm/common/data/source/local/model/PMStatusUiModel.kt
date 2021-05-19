@@ -12,4 +12,8 @@ data class PMStatusUiModel(
         val expiredTime: String = "",
         val isOfficialStore: Boolean = false,
         val autoExtendEnabled: Boolean = true
-)
+) {
+    companion object {
+        const val PM_AUTO_EXTEND_OFF = "off"
+    }
+}

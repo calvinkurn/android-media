@@ -544,10 +544,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         widgets.add(getShopGradeWidgetData(data))
         widgets.add(WidgetDividerUiModel)
         widgets.add(getCurrentShopGradeBenefit(data))
-        widgets.add(WidgetDividerUiModel)
-        if (pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT) {
-            val upgradePmProWidget = getUpgradePmProWidget()
-            upgradePmProWidget?.let {
+        val shouldShowUpgradePmProWidget = isAutoExtendEnabled && !isPmPro
+        if (shouldShowUpgradePmProWidget) {
+            widgets.add(WidgetDividerUiModel)
+            getUpgradePmProWidget()?.let {
                 widgets.add(it)
                 widgets.add(WidgetDividerUiModel)
             }
@@ -557,12 +557,13 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         if (shouldShowNextGradeWidget) {
             val pmProThreshold = pmBasicInfo?.shopInfo?.itemSoldPmProThreshold
                     ?: PMShopInfoUiModel.DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD
+            widgets.add(WidgetDividerUiModel)
             widgets.add(getNextShopGradeWidgetData(data))
             widgets.add(WidgetDividerUiModel)
             widgets.add(WidgetNextUpdateUiModel(pmProThreshold, data.nextQuarterlyCalibrationRefreshDate))
         }
-        widgets.add(WidgetDividerUiModel)
         if (isAutoExtendEnabled) {
+            widgets.add(WidgetDividerUiModel)
             widgets.add(WidgetPMDeactivateUiModel)
         }
         recyclerView?.visible()
