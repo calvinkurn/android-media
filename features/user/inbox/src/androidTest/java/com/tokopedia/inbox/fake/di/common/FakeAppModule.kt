@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.fake.common.di.module
+package com.tokopedia.inbox.fake.di.common
 
 import android.content.Context
 import com.tokopedia.abstraction.AbstractionRouter

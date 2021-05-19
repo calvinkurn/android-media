@@ -4,7 +4,7 @@ import com.tokopedia.inbox.di.InboxCommonModule
 import com.tokopedia.inbox.di.InboxComponent
 import com.tokopedia.inbox.di.InboxScope
 import com.tokopedia.inbox.di.InboxViewModelModule
-import com.tokopedia.inbox.fake.common.di.FakeBaseAppComponent
+import com.tokopedia.inbox.fake.di.common.FakeBaseAppComponent
 import dagger.Component
 
 @InboxScope

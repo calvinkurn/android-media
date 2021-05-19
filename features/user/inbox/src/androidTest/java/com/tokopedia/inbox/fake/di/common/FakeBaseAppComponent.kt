@@ -1,8 +1,7 @@
-package com.tokopedia.inbox.fake.common.di
+package com.tokopedia.inbox.fake.di.common
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
-import com.tokopedia.inbox.fake.common.di.module.FakeAppModule
 import dagger.Component
 
 @ApplicationScope

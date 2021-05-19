@@ -1,9 +1,9 @@
 package com.tokopedia.inbox.fake.view.activity
 
 import com.tokopedia.inbox.di.InboxComponent
-import com.tokopedia.inbox.fake.common.di.DaggerFakeBaseAppComponent
-import com.tokopedia.inbox.fake.common.di.module.FakeAppModule
+import com.tokopedia.inbox.fake.di.common.FakeAppModule
 import com.tokopedia.inbox.fake.di.DaggerFakeInboxComponent
+import com.tokopedia.inbox.fake.di.common.DaggerFakeBaseAppComponent
 import com.tokopedia.inbox.fake.view.navigator.FakeInboxFragmentFactory
 import com.tokopedia.inbox.view.activity.InboxActivity
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactory
