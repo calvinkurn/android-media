@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.car
 import android.app.Application
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -21,15 +22,13 @@ class CarouselErrorLoadViewModel(val application: Application, private val compo
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
-
     }
 
     fun loadData(){
         launchCatchError(block = {
-            syncData.value = productCardUseCase.getCarouselPaginatedData(components.parentComponentId, components.pageEndPoint, PRODUCT_PER_PAGE)
+            syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
         }, onError = {
             it.printStackTrace()
         })

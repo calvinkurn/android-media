@@ -48,7 +48,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             it.noOfPagesLoaded = 1
             if (productListData.isEmpty()) return true
             it.pageLoadedCounter = 2
-            it.productListFailState = false
+            it.verticalProductFailState = false
             return true
         }
         return false
@@ -82,7 +82,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                 component1.showVerticalLoader = true
                 (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productListData)
             }
-            component1.productListFailState = false
+            component1.verticalProductFailState = false
             return true
         }
         return false

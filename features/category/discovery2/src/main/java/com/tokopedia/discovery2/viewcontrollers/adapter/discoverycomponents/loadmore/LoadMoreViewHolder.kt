@@ -11,10 +11,15 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 
 class LoadMoreViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private lateinit var loadMoreViewModel: LoadMoreViewModel
     private var parentLayout: ConstraintLayout = itemView.findViewById(R.id.root_layout)
+    private var loaderUnify: LoaderUnify = itemView.findViewById(R.id.progressBar)
+//    private var horizontalErrorLoadMore: ImageUnify = itemView.findViewById(R.id.horizontalErrorLoadMore)
+//    private var verticalErrorLoadMore: ImageUnify = itemView.findViewById(R.id.verticalErrorLoadMore)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         loadMoreViewModel = discoveryBaseViewModel as LoadMoreViewModel
@@ -29,6 +34,14 @@ class LoadMoreViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
     private fun setLoaderView() {
         if(loadMoreViewModel.getViewOrientation()){
+            // For horizontal product list
+
+            if(loadMoreViewModel.getHorizontalProductFailState()){
+
+            }else{
+
+            }
+
             val layoutParams: ViewGroup.LayoutParams = parentLayout.layoutParams
             layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
             layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT

@@ -66,4 +66,5 @@
     <string name="choose_address_description">Biar pengalaman belanjamu lebih asyik dan mudah.</string>
     <string name="discovery_product_empty_state_title">Bagian ini gagal ditampilkan</string>
     <string name="discovery_product_empty_state_description">Sambil kami perbaiki, lihat-lihat dulu ke atas atau coba lagi.</string>
+    <string name="discovery_error_500_action">Coba Lagi</string>
 </resources>

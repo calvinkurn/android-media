@@ -79,11 +79,10 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             components.noOfPagesLoaded = 0
             components.pageLoadedCounter = 1
             productLoadError.value = true
-            it.printStackTrace()
         })
     }
 
-
+// Remove
 //    fun fetchProductCarouselData(reload : Boolean) {
 //        launchCatchError(block = {
 //            if (reload) {
@@ -173,9 +172,11 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         })
     }
 
-    private fun paginatedErrorData() {
+    suspend fun paginatedErrorData() {
+        components.horizontalProductFailState = true
         getProductList()?.let {
             isLoading = false
+            reSyncProductCardHeight(it)
             productCarouselList.value = addErrorReLoadView(it)
             syncData.value = true
         }
@@ -195,7 +196,6 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         }
         return productLoadState
     }
-
     private fun addErrorReLoadView(productDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
         val productLoadState: ArrayList<ComponentsItem> = ArrayList()
         productLoadState.addAll(productDataList)
@@ -203,13 +203,10 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             pageEndPoint = components.pageEndPoint
             parentComponentId = components.id
             id = ComponentNames.CarouselErrorLoad.componentName
+            loadForHorizontal = false
             discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
         })
         return productLoadState
-    }
-
-    private fun handleErrorReloadCTA(){
-        fetchCarouselPaginatedProducts()
     }
 
     fun isUserLoggedIn() = UserSession(application).isLoggedIn

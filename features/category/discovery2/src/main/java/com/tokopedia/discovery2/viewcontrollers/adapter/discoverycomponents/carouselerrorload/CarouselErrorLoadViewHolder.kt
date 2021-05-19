@@ -35,9 +35,16 @@ class CarouselErrorLoadViewHolder(itemView: View, private val fragment: Fragment
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            carouselErrorLoadViewModel.syncData.observe(lifecycleOwner, Observer {
+            carouselErrorLoadViewModel.getSyncPageLiveData().observe(lifecycleOwner, {
                 (fragment as DiscoveryFragment).reSync()
             })
+        }
+    }
+
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let {
+            carouselErrorLoadViewModel.getSyncPageLiveData().removeObservers(it)
         }
     }
 }

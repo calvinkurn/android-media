@@ -22,23 +22,45 @@ class LoadMoreViewModel(val application: Application, private val components: Co
 
     fun getViewOrientation() = components.loadForHorizontal
 
+    fun getHorizontalProductFailState() = components.horizontalProductFailState
+
+    fun getVerticalProductFailState() = components.verticalProductFailState
+
+//    override fun onAttachToViewHolder() {
+//        super.onAttachToViewHolder()
+//        launchCatchError(block = {
+//            if (!getViewOrientation()) syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
+//        }, onError = {
+//            getComponent(components.parentComponentId, components.pageEndPoint)?.verticalProductFailState = true
+//            syncData.value = true
+//        })
+//    }
+
+
+    // Remove
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         launchCatchError(block = {
-            if (!getViewOrientation()) syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
+            //            throw Exception("Error message")
         }, onError = {
-            getComponent(components.parentComponentId, components.pageEndPoint)?.productListFailState = true
+            getComponent(components.parentComponentId, components.pageEndPoint)?.verticalProductFailState = true
             syncData.value = true
         })
     }
+
 
     // Remove
 //    override fun onAttachToViewHolder() {
 //        super.onAttachToViewHolder()
 //        launchCatchError(block = {
+//            //          if (!getViewOrientation()) syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
 //            throw Exception("Error message")
 //        }, onError = {
-//            getComponent(components.parentComponentId, components.pageEndPoint)?.productListFailState = true
+//            if (getViewOrientation()) {
+//                getComponent(components.parentComponentId, components.pageEndPoint)?.horizontalProductFailState = true
+//            } else {
+//                getComponent(components.parentComponentId, components.pageEndPoint)?.verticalProductFailState = true
+//            }
 //            syncData.value = true
 //        })
 //    }
