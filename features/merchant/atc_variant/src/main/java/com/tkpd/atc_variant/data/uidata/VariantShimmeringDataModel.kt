@@ -12,7 +12,7 @@ class VariantShimmeringDataModel(
 ) : AtcVariantVisitable {
     override fun uniqueId(): Long = position
     override fun isEqual(newData: AtcVariantVisitable): Boolean {
-        return newData is VariantStockDataModel
+        return newData is VariantShimmeringDataModel
     }
 
     override fun getChangePayload(newData: AtcVariantVisitable): Bundle? {

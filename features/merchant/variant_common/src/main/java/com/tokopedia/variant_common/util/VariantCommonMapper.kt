@@ -1,9 +1,9 @@
 package com.tokopedia.variant_common.util
 
+import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
-import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 
@@ -79,6 +79,17 @@ object VariantCommonMapper {
         var pairOfValue: Pair<Int, VariantChild?>? = null
         for ((index, it: VariantChild) in variantData.children.withIndex()) {
             if (it.optionIds == selectedOptionId) {
+                pairOfValue = Pair(index, it)
+                break
+            }
+        }
+        return pairOfValue
+    }
+
+    fun selectedProductData(variantData: ProductVariant, selectedOptionIds:List<String>): Pair<Int, VariantChild?>? {
+        var pairOfValue: Pair<Int, VariantChild?>? = null
+        for ((index, it: VariantChild) in variantData.children.withIndex()) {
+            if (it.optionIds == selectedOptionIds) {
                 pairOfValue = Pair(index, it)
                 break
             }

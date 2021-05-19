@@ -6,8 +6,9 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCat
  * Created by Yehezkiel on 17/05/21
  */
 data class ProductVariantResult(
-        val successAtc: Boolean = false,
-        val atcMessage: String = "",
-        val listOfVariantSelected: List<VariantCategory>? = null,
-        val mapOfSelectedVariantOption: MutableMap<String, String>? = null
+        var successAtc: Boolean = false,
+        var atcMessage: String = "",
+        var productId: String = "",
+        var listOfVariantSelected: List<VariantCategory>? = null,
+        var mapOfSelectedVariantOption: MutableMap<String, String>? = null
 )

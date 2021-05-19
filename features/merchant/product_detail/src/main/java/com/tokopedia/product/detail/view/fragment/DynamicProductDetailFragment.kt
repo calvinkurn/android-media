@@ -453,6 +453,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
         context?.let {
             AtcVariantHelper.onActivityResultPdpAtcVariant(it, requestCode, data) {
+                pdpUiUpdater?.updateVariantSelected(mapOfSelectedVariantOption)
                 updateVariantDataToExistingProductData(listOfVariantSelected)
             }
         }
@@ -1305,7 +1306,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     private fun updateVariantDataToExistingProductData(variantProcessedData: List<VariantCategory>?) {
         val selectedChildAndPosition = VariantCommonMapper.selectedProductData(viewModel.variantData
-                ?: ProductVariant())
+                ?: ProductVariant(), pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant?.values?.toList() ?: listOf())
         val selectedChild = selectedChildAndPosition?.second
         val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
 

@@ -1,11 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rv_variant_viewholder"
-    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clipToPadding="false"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/dp_16" />
+    android:orientation="vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_variant_viewholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dp_16"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_variant_tokocabang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="4dp"
+        android:text="@string/atc_variant_toko_cabang_label"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_variant_empty_stock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="@string/atc_variant_empty_stock_label"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        tools:visibility="visible" />
+
+</LinearLayout>
 

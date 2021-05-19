@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
@@ -23,7 +24,6 @@ import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -536,6 +536,15 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 val copyMap: MutableMap<String, String> = it.mapOfSelectedVariant.toMutableMap()
                 copyMap[variantKey] = variantId
                 it.mapOfSelectedVariant = copyMap
+            }
+        }
+    }
+
+    fun updateVariantSelected(mapOfSelectedIds: MutableMap<String, String>?) {
+        if (mapOfSelectedIds == null) return
+        updateData(ProductDetailConstant.VARIANT_OPTIONS) {
+            productNewVariantDataModel?.let {
+                it.mapOfSelectedVariant = mapOfSelectedIds
             }
         }
     }

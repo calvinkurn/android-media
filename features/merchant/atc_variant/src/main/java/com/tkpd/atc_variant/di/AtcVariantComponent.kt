@@ -9,6 +9,8 @@ import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -57,4 +59,14 @@ class AtcVariantModule {
     fun provideAtcOccMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
     }
+
+    @AtcVariantScope
+    @Provides
+    fun provideRemoveWishListUseCase(@ApplicationContext context: Context): RemoveWishListUseCase =
+            RemoveWishListUseCase(context)
+
+    @AtcVariantScope
+    @Provides
+    fun provideAddWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase =
+            AddWishListUseCase(context)
 }

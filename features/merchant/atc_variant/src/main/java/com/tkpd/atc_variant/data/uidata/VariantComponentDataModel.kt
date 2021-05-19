@@ -12,9 +12,13 @@ data class VariantComponentDataModel(
         val position: Long = 0,
         var listOfVariantCategory: List<VariantCategory>? = null,
         var mapOfSelectedVariant: MutableMap<String, String> = mutableMapOf(),
-        var stockWording: String = "",
-        var tokoCabangWording: String = ""
+        var isEmptyStock: Boolean = false,
+        var isTokoCabang: Boolean = false
 ) : AtcVariantVisitable {
+
+    fun getSelectedVariantName(): String {
+        return listOfVariantCategory?.mapNotNull { it.getSelectedOption()?.variantName }?.joinToString() ?: ""
+    }
 
     override fun uniqueId(): Long = position
 
@@ -22,8 +26,8 @@ data class VariantComponentDataModel(
         return if (newData is VariantComponentDataModel) {
             mapOfSelectedVariant == newData.mapOfSelectedVariant &&
                     listOfVariantCategory == newData.listOfVariantCategory &&
-                    stockWording == newData.stockWording &&
-                    tokoCabangWording == newData.tokoCabangWording
+                    isEmptyStock == newData.isEmptyStock &&
+                    isTokoCabang == newData.isTokoCabang
         } else {
             false
         }

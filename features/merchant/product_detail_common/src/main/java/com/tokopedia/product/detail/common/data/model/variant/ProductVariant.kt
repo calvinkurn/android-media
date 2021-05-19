@@ -67,6 +67,11 @@ data class ProductVariant(
                 return children.filter{ it.isBuyable }.count()
         }
 
+        val totalStockChilds : Int
+                get() = children.sumOf {
+                        it.getVariantFinalStock()
+                }
+
         val hasChildren: Boolean
                 get() = with(children) { this.isNotEmpty() }
 

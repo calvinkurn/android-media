@@ -1,6 +1,7 @@
 package com.tkpd.atc_variant.views.adapter
 
 import androidx.recyclerview.widget.AsyncDifferConfig
+import com.tkpd.atc_variant.data.uidata.VariantComponentDataModel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapterDiffutil
 
@@ -9,4 +10,9 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapterDiffut
  */
 
 class AtcVariantAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>,
-                        typeFactoryImpl: AtcVariantAdapterTypeFactoryImpl) : BaseListAdapterDiffutil<AtcVariantAdapterTypeFactoryImpl>(asyncDifferConfig, typeFactoryImpl)
+                        typeFactoryImpl: AtcVariantAdapterTypeFactoryImpl) : BaseListAdapterDiffutil<AtcVariantAdapterTypeFactoryImpl>(asyncDifferConfig, typeFactoryImpl) {
+
+    fun getVariantDataModel(): VariantComponentDataModel? {
+        return currentList.firstOrNull { it is VariantComponentDataModel } as? VariantComponentDataModel
+    }
+}

@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -25,12 +26,11 @@ class AtcVariantHeaderViewHolder(private val view: View) : AbstractViewHolder<Va
         val LAYOUT = R.layout.atc_variant_header_viewholder
     }
 
-    val productImage = view.findViewById<ImageUnify>(R.id.img_header_main)
-    val productPrice = view.findViewById<Typography>(R.id.txt_header_main_price)
-    val productSlashPrice = view.findViewById<Typography>(R.id.txt_header_slash_price)
-    val productStock = view.findViewById<Typography>(R.id.txt_header_stock)
-    val labelCashback = view.findViewById<Label>(R.id.lbl_header_cashback_percentage)
-    val labelDiscount = view.findViewById<Label>(R.id.lbl_header_discounted_percentage)
+    private val productImage = view.findViewById<ImageUnify>(R.id.img_header_main)
+    private val productPrice = view.findViewById<Typography>(R.id.txt_header_main_price)
+    private val productSlashPrice = view.findViewById<Typography>(R.id.txt_header_slash_price)
+    private val productStock = view.findViewById<Typography>(R.id.txt_header_stock)
+    private val labelDiscount = view.findViewById<Label>(R.id.lbl_header_discounted_percentage)
 
     override fun bind(element: VariantHeaderDataModel) {
         loadImage(element.productImage)
@@ -61,8 +61,13 @@ class AtcVariantHeaderViewHolder(private val view: View) : AbstractViewHolder<Va
             renderCampaignActive(headerData)
         }
 
-        productStock.shouldShowWithAction(headerData.productStockWording != "") {
-            productStock.text = MethodChecker.fromHtml(headerData.productStockWording ?: "")
+        if (headerData.isInitialState) {
+            productStock.text = view.context.getString(R.string.atc_variant_total_stock_empty_label, headerData.totalStock.toString())
+            productStock.show()
+        } else {
+            productStock.shouldShowWithAction(headerData.productStockWording != "") {
+                productStock.text = MethodChecker.fromHtml(headerData.productStockWording ?: "")
+            }
         }
     }
 

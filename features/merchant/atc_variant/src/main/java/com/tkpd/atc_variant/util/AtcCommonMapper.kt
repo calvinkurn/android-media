@@ -3,6 +3,7 @@ package com.tkpd.atc_variant.util
 import com.tkpd.atc_variant.data.uidata.*
 import com.tkpd.atc_variant.views.adapter.AtcVariantVisitable
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -22,13 +23,18 @@ object AtcCommonMapper {
     fun mapToVisitable(selectedChild: VariantChild?,
                        isTokoNow: Boolean,
                        initialSelectedVariant: MutableMap<String, String>,
-                       processedVariant: List<VariantCategory>?): List<AtcVariantVisitable>? {
+                       processedVariant: List<VariantCategory>?,
+                       selectedProductFulfillment: Boolean,
+                       totalStock: Int): List<AtcVariantVisitable>? {
         if (processedVariant == null) return null
 
         var idCounter = 0L
         val result: MutableList<AtcVariantVisitable> = mutableListOf()
+        val isInitialState = initialSelectedVariant.values.all {
+            it == "0"
+        }
 
-        val headerData = generateHeaderDataModel(selectedChild)
+        val headerData = generateHeaderDataModel(selectedChild, isInitialState, totalStock)
         result.add(
                 VariantHeaderDataModel(
                         position = idCounter,
@@ -42,7 +48,9 @@ object AtcCommonMapper {
                 VariantComponentDataModel(
                         position = idCounter,
                         listOfVariantCategory = processedVariant,
-                        mapOfSelectedVariant = initialSelectedVariant)
+                        mapOfSelectedVariant = initialSelectedVariant,
+                        isEmptyStock = totalStock == 0,
+                        isTokoCabang = selectedProductFulfillment)
         ).also {
             idCounter += 1
         }
@@ -64,6 +72,7 @@ object AtcCommonMapper {
                         processedVariant: List<VariantCategory>?,
                         isPartiallySelected: Boolean,
                         selectedVariantIds: MutableMap<String, String>?,
+                        allChildEmpty: Boolean,
                         selectedVariantChild: VariantChild?,
                         variantImage: String,
                         selectedProductFulfillment: Boolean): List<AtcVariantVisitable> {
@@ -74,16 +83,15 @@ object AtcCommonMapper {
                     it.copy(listOfVariantCategory = processedVariant,
                             mapOfSelectedVariant = selectedVariantIds
                                     ?: mutableMapOf(),
-                            stockWording = if (isPartiallySelected) "" else selectedVariantChild?.stock?.stockWordingHTML
-                                    ?: "",
-                            tokoCabangWording = if(selectedProductFulfillment)"toko cabang" else "")
+                            isEmptyStock = allChildEmpty,
+                            isTokoCabang = selectedProductFulfillment)
                 }
                 is VariantHeaderDataModel -> {
                     if (isPartiallySelected) {
                         //update image only when exist
                         it.copy(productImage = variantImage)
                     } else {
-                        val headerData = generateHeaderDataModel(selectedVariantChild)
+                        val headerData = generateHeaderDataModel(selectedChild = selectedVariantChild)
                         it.copy(productImage = headerData.first, headerData = headerData.second)
                     }
                 }
@@ -94,7 +102,35 @@ object AtcCommonMapper {
         }
     }
 
-    fun generateHeaderDataModel(selectedChild: VariantChild?): Pair<String, ProductHeaderData> {
+    fun updateActivityResultData(recentData: ProductVariantResult?,
+                                 listVariant: List<VariantCategory>?,
+                                 selectedProductId: String,
+                                 mapOfSelectedVariantOption: MutableMap<String, String>?,
+                                 atcMessage: String = ""): ProductVariantResult {
+        val result = recentData?.let {
+            it.copy(
+                    listOfVariantSelected = listVariant,
+                    productId = selectedProductId,
+                    mapOfSelectedVariantOption = mapOfSelectedVariantOption
+            )
+        } ?: ProductVariantResult(
+                listOfVariantSelected = listVariant,
+                productId = selectedProductId,
+                mapOfSelectedVariantOption = mapOfSelectedVariantOption
+        )
+
+        if (atcMessage.isNotEmpty()) {
+            result.atcMessage = atcMessage
+        }
+        return result
+    }
+
+    /**
+     * @isInitialState means user not yet select any variant, so we need to calculate total stock
+     */
+    private fun generateHeaderDataModel(selectedChild: VariantChild?,
+                                        isInitialState: Boolean = false,
+                                        totalStock: Int = 0): Pair<String, ProductHeaderData> {
         val productImage = selectedChild?.picture?.original ?: ""
         val headerData = ProductHeaderData(
                 productMainPrice = selectedChild?.price?.getCurrencyFormatted()
@@ -107,7 +143,9 @@ object AtcCommonMapper {
                         ?: "",
                 productStockWording = selectedChild?.stock?.stockWordingHTML
                         ?: "",
-                isProductBuyable = selectedChild?.isBuyable ?: false
+                isProductBuyable = selectedChild?.isBuyable ?: false,
+                totalStock = totalStock,
+                isInitialState = isInitialState
         )
         return productImage to headerData
     }

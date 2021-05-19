@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_activity_atc_variant">Varian</string>
-    <string name="title_bottomsheet_atc_variant">Varian barang</string>
+    <string name="title_bottomsheet_atc_variant">Varian barang: %1s</string>
 
     <string name="atc_variant_empty">Habis</string>
     <string name="atc_variant_option_builder_1">Pilih %1$s: </string>
@@ -11,6 +11,10 @@
 
     <string name="atc_variant_quantity_label">Jumlah barang: </string>
     <string name="atc_variant_oke_label">Oke</string>
+    <string name="atc_variant_toko_cabang_label">Varian ini akan dikirim dari TokoCabang</string>
+    <string name="atc_variant_empty_stock_label">Stok habis. Klik Ingatkan Saya untuk aktifkan pengingat ketika barang kembali tersedia.</string>
+    <string name="atc_variant_total_stock_empty_label">Total Stok: %1$s</string>
 
     <string name="atc_content_desc_txtChipVariant">text varian %1s</string>
+
 </resources>

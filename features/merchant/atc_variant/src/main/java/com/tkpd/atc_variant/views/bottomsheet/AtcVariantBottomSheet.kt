@@ -1,6 +1,7 @@
 package com.tkpd.atc_variant.views.bottomsheet
 
 import android.app.ProgressDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tkpd.atc_variant.R
 import com.tkpd.atc_variant.data.uidata.PartialButtonDataModel
+import com.tkpd.atc_variant.data.uidata.VariantComponentDataModel
 import com.tkpd.atc_variant.di.AtcVariantComponent
 import com.tkpd.atc_variant.di.DaggerAtcVariantComponent
 import com.tkpd.atc_variant.util.AtcVariantMapper
@@ -19,7 +21,6 @@ import com.tkpd.atc_variant.views.*
 import com.tkpd.atc_variant.views.adapter.AtcVariantAdapter
 import com.tkpd.atc_variant.views.adapter.AtcVariantAdapterTypeFactoryImpl
 import com.tkpd.atc_variant.views.adapter.AtcVariantDiffutil
-import com.tkpd.atc_variant.views.adapter.AtcVariantVisitable
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
@@ -65,7 +66,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     private var viewContent: View? = null
 
     private var baseAtcBtn: PartialAtcButtonView? = null
-    private var currentData: List<AtcVariantVisitable> = listOf()
     private var listener: AtcVariantBottomSheetListener? = null
     private var rvVariantBottomSheet: RecyclerView? = null
 
@@ -91,7 +91,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         isHideable = true
         clearContentPadding = true
 
-        setTitle(context?.getString(R.string.title_bottomsheet_atc_variant) ?: "")
+        updateBottomSheetTitle("Pilih varian")
 
         setShowListener {
             bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -106,16 +106,16 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             })
         }
 
-        setOnDismissListener {
-            listener?.onBottomSheetDismiss()
-        }
-
         viewContent = View.inflate(context, R.layout.bottomsheet_atc_variant, null)
         viewContent?.let {
             baseAtcBtn = PartialAtcButtonView.build(it.findViewById(R.id.base_atc_btn), this)
         }
         setupRv(viewContent)
         setChild(viewContent)
+    }
+
+    private fun updateBottomSheetTitle(value: String) {
+        setTitle(context?.getString(R.string.title_bottomsheet_atc_variant, value) ?: "")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -135,8 +135,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
         viewModel.initialData.observe(viewLifecycleOwner, {
             if (it is Success) {
-                currentData = it.data
                 adapter.submitList(it.data)
+
+                (it.data.firstOrNull { it is VariantComponentDataModel } as? VariantComponentDataModel)?.getSelectedVariantName()?.also { title ->
+                    if (title.isNotEmpty()) {
+                        updateBottomSheetTitle(title)
+                    }
+                }
             }
         })
 
@@ -147,6 +152,14 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 baseAtcBtn?.visibility = false
             }
         })
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        viewModel.variantActivityResult.value?.let {
+            sharedViewModel.setActivityResult(it)
+        } ?: listener?.onBottomSheetDismiss()
+
+        super.onDismiss(dialog)
     }
 
     override fun getComponent(): AtcVariantComponent {

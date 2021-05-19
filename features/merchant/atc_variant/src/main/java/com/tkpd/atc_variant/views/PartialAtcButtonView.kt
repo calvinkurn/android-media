@@ -29,12 +29,12 @@ class PartialAtcButtonView private constructor(val view: View,
         fun build(_view: View, _buttonListener: PartialAtcButtonListener) = PartialAtcButtonView(_view, _buttonListener)
     }
 
-    fun renderButtonView(isProductEmpty: Boolean, isShopOwner: Boolean, cartTypeData: CartTypeData? = null) {
+    fun renderButtonView(isProductBuyable: Boolean, isShopOwner: Boolean, cartTypeData: CartTypeData? = null) {
         val onSuccessGetCartType = cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
-        renderButton(onSuccessGetCartType, isShopOwner, isProductEmpty, cartTypeData)
+        renderButton(onSuccessGetCartType, isShopOwner, isProductBuyable, cartTypeData)
     }
 
-    private fun renderButton(isCartRedirectionNotEmpty: Boolean, isShopOwner: Boolean, isProductEmpty: Boolean, cartRedirectionData: CartTypeData? = null) {
+    private fun renderButton(isCartRedirectionNotEmpty: Boolean, isShopOwner: Boolean, isProductBuyable: Boolean, cartRedirectionData: CartTypeData? = null) {
         val shouldRenderCartRedirection = !GlobalConfig.isSellerApp() && isCartRedirectionNotEmpty
         val shouldRenderFallbackButton = !GlobalConfig.isSellerApp() && !isCartRedirectionNotEmpty
 
@@ -46,10 +46,10 @@ class PartialAtcButtonView private constructor(val view: View,
         if (shouldRenderCartRedirection) {
             renderCartRedirectionButton(cartRedirectionData)
         } else if (shouldRenderFallbackButton) {
-            if (isProductEmpty) {
-                showNoStockButton()
-            } else {
+            if (isProductBuyable) {
                 renderFallbackCheckoutButton()
+            } else {
+                showNoStockButton()
             }
         }
         visibility = true

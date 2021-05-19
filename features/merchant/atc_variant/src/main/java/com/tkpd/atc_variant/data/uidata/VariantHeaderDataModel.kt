@@ -58,5 +58,8 @@ data class ProductHeaderData(
         val productSlashPrice: String = "",
         val productStockWording: String = "",
         val isProductBuyable: Boolean = false,
-        val isShopOwner: Boolean = false
+        val isShopOwner: Boolean = false,
+        val totalStock: Int = 0,
+        //Not of variant has been selected or partially selected
+        val isInitialState: Boolean = false
 )

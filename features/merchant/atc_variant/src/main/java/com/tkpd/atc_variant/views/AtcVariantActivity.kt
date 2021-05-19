@@ -1,5 +1,7 @@
 package com.tkpd.atc_variant.views
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -10,6 +12,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_CACHE_ID_KEY
 import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_PARCEL_KEY_RESPONSE
+import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_PARCEL_KEY_RESULT
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import timber.log.Timber
 
@@ -69,8 +72,22 @@ class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
             Timber.e(th)
         }
 
+        observeData()
+
         sharedViewModel.setAtcBottomSheetParams(paramsData)
         AtcVariantBottomSheet().show(supportFragmentManager, "test", this)
+    }
+
+    private fun observeData() {
+        sharedViewModel.activityResult.observe(this, {
+            val cacheManager = SaveInstanceCacheManager(this)
+            val resultIntent = Intent().apply {
+                putExtra(PDP_CACHE_ID_KEY, cacheManager.id)
+            }
+            cacheManager.put(PDP_PARCEL_KEY_RESULT, it)
+            setResult(Activity.RESULT_OK, resultIntent)
+            finish()
+        })
     }
 
     override fun onBottomSheetDismiss() {

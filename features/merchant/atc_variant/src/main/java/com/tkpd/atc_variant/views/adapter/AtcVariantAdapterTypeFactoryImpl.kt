@@ -1,9 +1,15 @@
 package com.tkpd.atc_variant.views.adapter
 
 import android.view.View
-import com.tkpd.atc_variant.data.uidata.*
+import com.tkpd.atc_variant.data.uidata.VariantComponentDataModel
+import com.tkpd.atc_variant.data.uidata.VariantHeaderDataModel
+import com.tkpd.atc_variant.data.uidata.VariantQuantityDataModel
+import com.tkpd.atc_variant.data.uidata.VariantShimmeringDataModel
 import com.tkpd.atc_variant.views.AtcVariantListener
-import com.tkpd.atc_variant.views.viewholder.*
+import com.tkpd.atc_variant.views.viewholder.AtcVariantComponentViewHolder
+import com.tkpd.atc_variant.views.viewholder.AtcVariantHeaderViewHolder
+import com.tkpd.atc_variant.views.viewholder.AtcVariantQuantityViewHolder
+import com.tkpd.atc_variant.views.viewholder.AtcVariantShimmeringViewHolder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -26,10 +32,6 @@ class AtcVariantAdapterTypeFactoryImpl(private val variantListener: AtcVariantLi
         return AtcVariantQuantityViewHolder.LAYOUT
     }
 
-    override fun type(data : VariantStockDataModel): Int {
-        return AtcVariantStockViewHolder.LAYOUT
-    }
-
     override fun type(data: VariantComponentDataModel): Int {
         return AtcVariantComponentViewHolder.LAYOUT
     }
@@ -37,7 +39,6 @@ class AtcVariantAdapterTypeFactoryImpl(private val variantListener: AtcVariantLi
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             AtcVariantHeaderViewHolder.LAYOUT -> AtcVariantHeaderViewHolder(view)
-            AtcVariantStockViewHolder.LAYOUT -> AtcVariantStockViewHolder(view)
             AtcVariantQuantityViewHolder.LAYOUT -> AtcVariantQuantityViewHolder(view)
             AtcVariantShimmeringViewHolder.LAYOUT -> AtcVariantShimmeringViewHolder(view)
             AtcVariantComponentViewHolder.LAYOUT -> AtcVariantComponentViewHolder(view, variantListener)
