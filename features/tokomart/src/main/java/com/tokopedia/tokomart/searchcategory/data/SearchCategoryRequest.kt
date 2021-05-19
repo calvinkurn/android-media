@@ -7,6 +7,12 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokomart.searchcategory.domain.model.CategoryFilterModel
 import com.tokopedia.tokomart.searchcategory.domain.model.QuickFilterModel
+import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
+import com.tokopedia.usecase.RequestParams
+
+internal fun getTokonowQueryParam(requestParams: RequestParams): Map<String?, Any> {
+    return requestParams.parameters[TOKONOW_QUERY_PARAMS] as? Map<String?, Any> ?: mapOf()
+}
 
 internal fun createAceSearchProductRequest(params: Map<String?, Any>) = GraphqlRequest(
         ACE_SEARCH_PRODUCT_QUERY,

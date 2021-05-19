@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.category.presentation.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
+import com.tokopedia.tokomart.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokomart.searchcategory.jsonToObject
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.SortFilterItemDataView
@@ -92,7 +93,7 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
             selectedQuickFilter: SortFilterItemDataView
     ) {
         val selectedQuickFilterKey = selectedQuickFilter.option.key
-        val actualParamsValue = requestParams.parameters[selectedQuickFilterKey].toString()
+        val actualParamsValue = getTokonowQueryParam(requestParams)[selectedQuickFilterKey].toString()
 
         assertThat(actualParamsValue, shouldBe(selectedQuickFilter.option.value))
     }

@@ -5,6 +5,7 @@ import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.data.createAceSearchProductRequest
 import com.tokopedia.tokomart.searchcategory.data.createCategoryFilterRequest
 import com.tokopedia.tokomart.searchcategory.data.createQuickFilterRequest
+import com.tokopedia.tokomart.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokomart.searchcategory.data.mapper.getCategoryFilter
 import com.tokopedia.tokomart.searchcategory.data.mapper.getQuickFilter
 import com.tokopedia.tokomart.searchcategory.data.mapper.getSearchProduct
@@ -15,12 +16,12 @@ class GetSearchFirstPageUseCase(
 ): UseCase<SearchModel>() {
 
     override suspend fun executeOnBackground(): SearchModel {
-        val params = useCaseRequestParams.parameters
+        val queryParams = getTokonowQueryParam(useCaseRequestParams)
 
         graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(createAceSearchProductRequest(params))
-        graphqlUseCase.addRequest(createCategoryFilterRequest(params))
-        graphqlUseCase.addRequest(createQuickFilterRequest(params))
+        graphqlUseCase.addRequest(createAceSearchProductRequest(queryParams))
+        graphqlUseCase.addRequest(createCategoryFilterRequest(queryParams))
+        graphqlUseCase.addRequest(createQuickFilterRequest(queryParams))
 
         val graphqlResponse = graphqlUseCase.executeOnBackground()
 

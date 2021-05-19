@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.tokomart.search.domain.model.SearchModel
+import com.tokopedia.tokomart.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokomart.searchcategory.jsonToObject
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.SortFilterItemDataView
@@ -95,7 +96,7 @@ class SearchQuickFilterTest: SearchTestFixtures() {
             selectedQuickFilter: SortFilterItemDataView
     ) {
         val selectedQuickFilterKey = selectedQuickFilter.option.key
-        val actualParamsValue = requestParams.parameters[selectedQuickFilterKey].toString()
+        val actualParamsValue = getTokonowQueryParam(requestParams)[selectedQuickFilterKey].toString()
 
         assertThat(actualParamsValue, shouldBe(selectedQuickFilter.option.value))
     }

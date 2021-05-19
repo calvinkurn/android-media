@@ -28,6 +28,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.util.DummyDataViewGenerator
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
+import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -65,13 +66,17 @@ abstract class BaseSearchCategoryViewModel(
     abstract fun onViewCreated()
 
     protected open fun createRequestParams(): RequestParams {
-        return RequestParams.create().also {
-            it.prependParams()
+        val tokonowQueryParam = mutableMapOf<String, Any>().also {
+            it.prependQueryParam()
             it.putAll(queryParam)
+        }
+
+        return RequestParams.create().also {
+            it.putObject(TOKONOW_QUERY_PARAMS, tokonowQueryParam)
         }
     }
 
-    protected open fun RequestParams.prependParams() {
+    protected open fun MutableMap<String, Any>.prependQueryParam() {
 
     }
 

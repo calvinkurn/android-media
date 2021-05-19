@@ -42,11 +42,11 @@ class SearchViewModel @Inject constructor (
         )
     }
 
-    override fun RequestParams.prependParams() {
-        putInt(SearchApiConst.PAGE, nextPage)
-        putBoolean(SearchApiConst.USE_PAGE, true)
-        putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
-        putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
+    override fun MutableMap<String, Any>.prependQueryParam() {
+        put(SearchApiConst.PAGE, nextPage)
+        put(SearchApiConst.USE_PAGE, true)
+        put(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
+        put(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
     }
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {
