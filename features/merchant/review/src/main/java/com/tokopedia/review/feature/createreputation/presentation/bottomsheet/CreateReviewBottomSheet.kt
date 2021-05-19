@@ -79,6 +79,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var incentivesTicker: Ticker? = null
     private var textAreaTitle: Typography? = null
     private var textArea: CreateReviewTextArea? = null
+    private var incentivesHelperText: Typography? = null
     private var templatesRecyclerView: RecyclerView? = null
     private var addPhoto: CreateReviewAddPhoto? = null
     private var photosRecyclerView: RecyclerView? = null
@@ -96,6 +97,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var isEditMode: Boolean = false
     private var utmSource: String = ""
     private var isReviewIncomplete = false
+    private var incentiveHelper = ""
 
     private val imageAdapter: ImageReviewAdapter by lazy {
         ImageReviewAdapter(this)
@@ -191,7 +193,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     override fun onExpandButtonClicked(text: String) {
         CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId.toString())
-        textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text)
+        if (incentiveHelper.isBlank()) incentiveHelper = context?.getString(R.string.review_create_text_area_eligible) ?: ""
+        textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text, incentiveHelper, createReviewViewModel.isUserEligible())
         (textAreaBottomSheet as BottomSheetUnify).setTitle(textAreaTitle?.text.toString())
         fragmentManager?.let { textAreaBottomSheet?.show(it, "") }
     }
@@ -215,6 +218,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     override fun onTextChanged(textLength: Int) {
+        setHelperText(textLength)
         val isNotEmpty = textLength != 0
         updateButtonState(isGoodRating(), isNotEmpty)
         createReviewViewModel.updateProgressBarFromTextArea(isNotEmpty)
@@ -271,6 +275,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         photosRecyclerView = view?.findViewById(R.id.review_form_photos_rv)
         textAreaTitle = view?.findViewById(R.id.review_form_text_area_title)
         textArea = view?.findViewById(R.id.review_form_text_area)
+        incentivesHelperText = view?.findViewById(R.id.review_form_incentive_helper_text)
         templatesRecyclerView = view?.findViewById(R.id.review_form_templates_rv)
         anonymousOption = view?.findViewById(R.id.review_form_anonymous_option)
         progressBar = view?.findViewById(R.id.review_form_progress_bar_widget)
@@ -713,5 +718,26 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun hideLoading() {
         loadingView?.hide()
+    }
+
+    private fun setHelperText(textLength: Int) {
+        if (!createReviewViewModel.isUserEligible()) {
+            return
+        }
+        incentivesHelperText?.apply {
+            incentiveHelper = when {
+                textLength >= CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
+                    context?.getString(R.string.review_create_text_area_eligible) ?: ""
+                }
+                textLength < CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD && textLength != 0 -> {
+                    context?.getString(R.string.review_create_text_area_partial) ?: ""
+                }
+                else -> {
+                    context?.getString(R.string.review_create_text_area_empty) ?: ""
+                }
+            }
+            text = incentiveHelper
+            show()
+        }
     }
 }

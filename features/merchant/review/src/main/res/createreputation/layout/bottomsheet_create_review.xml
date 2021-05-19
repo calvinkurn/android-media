@@ -68,6 +68,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/review_form_text_area_title" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/review_form_incentive_helper_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:visibility="gone"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3"
+            app:layout_constraintStart_toStartOf="@id/review_form_text_area"
+            app:layout_constraintTop_toBottomOf="@id/review_form_text_area"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/review_form_templates_rv"
             android:layout_width="match_parent"
@@ -78,7 +90,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/review_form_text_area"
+            app:layout_constraintTop_toBottomOf="@id/review_form_incentive_helper_text"
             tools:listitem="@layout/item_image_chooser_review" />
 
         <androidx.recyclerview.widget.RecyclerView
