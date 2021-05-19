@@ -376,8 +376,8 @@ open class TopChatViewStateImpl constructor(
         if(!isOfficialAccountTokopedia(userChatRoom)) {
             val blockChatMenu = createBlockChatMenu()
             listMenu.add(blockChatMenu)
+            listMenu.add(TopchatItemMenu(view.context.getString(R.string.chat_report_user), R.drawable.ic_topchat_report_bold_grey))
         }
-        listMenu.add(TopchatItemMenu(view.context.getString(R.string.chat_report_user), R.drawable.ic_topchat_report_bold_grey))
         listMenu.add(TopchatItemMenu(view.context.getString(R.string.delete_conversation), R.drawable.ic_trash_filled_grey))
         return listMenu
     }
