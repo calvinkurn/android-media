@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">varian</string>
-    <string name="title_atc_variant_activity">Varian barang</string>
+    <string name="title_activity_atc_variant">Varian Barang</string>
     <string name="title_bottomsheet_atc_variant">Varian barang: %1s</string>
 
     <string name="atc_variant_empty">Habis</string>

@@ -11,7 +11,7 @@
 
         <activity
             android:name=".views.AtcVariantActivity"
-            android:label="@string/title_atc_variant_activity"
+            android:label="@string/title_activity_atc_variant"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.Translucent">
 
