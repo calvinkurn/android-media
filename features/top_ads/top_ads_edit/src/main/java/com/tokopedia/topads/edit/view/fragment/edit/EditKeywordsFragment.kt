@@ -210,11 +210,12 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         sharedViewModel.getProuductIds().observe(viewLifecycleOwner, Observer {
             productId = it
             getLatestBid()
+            val suggestions = java.util.ArrayList<DataSuggestions>()
+            val dummyId: MutableList<Long> = mutableListOf()
+            suggestions.add(DataSuggestions("group", dummyId))
+            viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
         })
-        val suggestions = java.util.ArrayList<DataSuggestions>()
-        val dummyId: MutableList<Long> = mutableListOf()
-        suggestions.add(DataSuggestions("group", dummyId))
-        viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
+
         if (productIds.isNotEmpty())
             viewModelKeyword.getSuggestionKeyword(productIds, 0, ::onSuccessRecommended)
     }
@@ -567,16 +568,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             if (existingKeyword?.isEmpty() == true) {
                 setEmptyView()
             } else {
-                ticker.setTextDescription(
-                    MethodChecker.fromHtml(
-                        String.format(
-                            getString(
-                                com.tokopedia.topads.common.R.string.topads_common_added_key_ticker_text
-                            ),
-                            existingKeyword?.count() ?: 0
-                        )
-                    )
-                )
+                ticker.visibility = View.GONE
                 checkForCommonData()
                 setCount()
                 setVisibilityOperation(View.VISIBLE)
@@ -596,7 +588,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun setVisibilityOperation(visibility: Int) {
         addKeyword.visibility = visibility
-        ticker.visibility = visibility
+        ticker.visibility = View.GONE
         keywordTitle.visibility = visibility
         selected_Keyword.visibility = visibility
         info2.visibility = visibility

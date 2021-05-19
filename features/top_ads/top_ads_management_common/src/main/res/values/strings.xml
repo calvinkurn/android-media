@@ -36,6 +36,7 @@
     <string name="recommendated_bid_message_new">Rekomendasi &lt;b>Rp%s&lt;/b></string>
     <string name="min_bid_error">Biaya minimum Rp%s</string>
     <string name="angarran_harrian_min_bid_error">Angaran harian min. Rp%s</string>
+    <string name="angarran_harrian_max_bid_error">Angaran harian maks. Rp%s</string>
     <string name="max_bid_error">Biaya maksimum Rp%s</string>
     <string name="min_bid_error_new">Biaya min. Rp%s</string>
     <string name="max_bid_error_new">Biaya maks. Rp%s</string>

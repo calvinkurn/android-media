@@ -1,6 +1,5 @@
 package com.tokopedia.topads.view.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.*
 import android.text.method.LinkMovementMethod
@@ -15,13 +14,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.topads.common.activity.NoCreditActivity
-import com.tokopedia.topads.common.activity.SuccessActivity
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
@@ -34,9 +30,8 @@ import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
-import com.tokopedia.topads.common.getSellerMigrationFeatureName
-import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
-import com.tokopedia.topads.common.isFromPdpSellerMigration
+import com.tokopedia.topads.common.view.sheet.TopAdsOutofCreditSheet
+import com.tokopedia.topads.common.view.sheet.TopAdsSuccessSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
@@ -137,23 +132,15 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private fun onSuccess(data: DepositAmount) {
         isEnoughDeposit = data.amount > 0
-        val intent: Intent = if (isEnoughDeposit) {
-            Intent(context, SuccessActivity::class.java).apply {
-                if (isFromPdpSellerMigration(activity?.intent?.extras)) {
-                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
-                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
-                }
-            }
+        if(isEnoughDeposit) {
+            val sheet = TopAdsSuccessSheet()
+            sheet.overlayClickDismiss = false
+            sheet.show(childFragmentManager)
         } else {
-            Intent(context, NoCreditActivity::class.java).apply {
-                if (isFromPdpSellerMigration(activity?.intent?.extras)) {
-                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
-                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
-                }
-            }
+            val sheet = TopAdsOutofCreditSheet()
+            sheet.overlayClickDismiss = false
+            sheet.show(childFragmentManager)
         }
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
     }
 
     private fun errorResponse(throwable: Throwable) {
@@ -367,7 +354,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                     actionEnable()
                 } else if (input > MAXIMUM_LIMIT.toDouble() && daily_budget.isVisible) {
                     daily_budget.setError(true)
-                    daily_budget.setMessage(String.format(getString(R.string.topads_common_maximum_daily_budget), Utils.convertToCurrency(MAXIMUM_LIMIT.toLong())))
+                    daily_budget.setMessage(String.format(getString(com.tokopedia.topads.common.R.string.angarran_harrian_max_bid_error), Utils.convertToCurrency(MAXIMUM_LIMIT.toLong())))
                     validation2 = false
                     actionEnable()
                 } else {
