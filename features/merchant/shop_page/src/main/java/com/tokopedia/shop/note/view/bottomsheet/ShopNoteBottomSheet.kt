@@ -37,8 +37,8 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
 
     companion object {
         val TAG = ShopNoteBottomSheet::class.java.simpleName
-        const val LAST_TAG_CHAR = '>'
-        const val TAG_PARAGRAPH = "<p></p>"
+        private const val LAST_TAG_CHAR = '>'
+        private const val TAG_PARAGRAPH = "<p></p>"
         private const val SHOP_ID = "EXTRA_SHOP_ID"
         private val LAYOUT = R.layout.fragment_shop_note_bottom_sheet
 
@@ -129,8 +129,8 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
 
     private fun setAccordion(model: ShopNoteModel) {
         var content = model.content
-        if (content?.last() != ShopNoteBottomSheetViewHolder.LAST_TAG_CHAR) {
-            content += ShopNoteBottomSheetViewHolder.TAG_PARAGRAPH
+        if (content?.last() != LAST_TAG_CHAR) {
+            content += TAG_PARAGRAPH
         }
         val tvContent = TextView(context)
         tvContent.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
