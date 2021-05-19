@@ -2831,9 +2831,9 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         DynamicProductDetailTracking.Click.onVariantErrorPartialySelected(viewModel.getDynamicProductInfoP1, buttonActionType)
         scrollToPosition(getComponentPosition(pdpUiUpdater?.productNewVariantDataModel))
         val variantErrorMessage = if (viewModel.variantData?.getVariantsIdentifier()?.isEmpty() == true) {
-            getString(R.string.add_to_cart_error_variant)
+            getString(com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant)
         } else {
-            getString(R.string.add_to_cart_error_variant_builder, viewModel.variantData?.getVariantsIdentifier()
+            getString(com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant_builder, viewModel.variantData?.getVariantsIdentifier()
                     ?: "")
         }
 
