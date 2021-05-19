@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.constant.NEW_SELLER_DAYS
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
-import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
@@ -126,11 +125,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         val isEligiblePM = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePm
         val isEligiblePMPro = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePmPro
         val shopScoreResult = shopScoreWrapperResponse.shopScoreLevelResponse?.result
-        val shopAge = if (shopScoreWrapperResponse.goldGetPMShopInfoResponse != null) {
-            shopScoreWrapperResponse.goldGetPMShopInfoResponse?.shopAge
-        } else {
-            shopInfoPeriodUiModel.shopAge
-        } ?: 0
+        val shopAge = shopInfoPeriodUiModel.shopAge
         val isNewSeller = shopInfoPeriodUiModel.isNewSeller
 
         val isNewSellerProjection = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
@@ -400,8 +395,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             val sortShopScoreLevelParam = sortItemDetailPerformanceFormatted(shopScoreLevelFilter)
             sortShopScoreLevelParam.forEachIndexed { index, shopScoreDetail ->
 
-                val minValueFormattedPercent = (shopScoreDetail.nextMinValue * ONE_HUNDRED_PERCENT).roundToInt()
-                val roundNextMinValue = shopScoreDetail.nextMinValue.roundToInt()
+                val minValueFormattedPercent = (shopScoreDetail.nextMinValue * ONE_HUNDRED_PERCENT)
+                val roundNextMinValue = shopScoreDetail.nextMinValue
 
                 val (targetDetailPerformanceText, parameterItemDetailPerformance) =
                         when (shopScoreDetail.identifier) {
@@ -412,24 +407,27 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                 Pair("$minValueFormattedPercent$percentText", percentText)
                             }
                             TOTAL_BUYER_KEY -> {
-                                Pair("$roundNextMinValue $peopleText", peopleText)
+                                Pair("${roundNextMinValue.roundToInt()} $peopleText", peopleText)
                             }
                             OPEN_TOKOPEDIA_SELLER_KEY -> {
-                                Pair("$roundNextMinValue $dayText", dayText)
+                                Pair("${roundNextMinValue.roundToInt()} $dayText", dayText)
                             }
                             else -> Pair("-", "")
                         }
 
                 val rawValueFormatted =
-                        if (shopScoreDetail.rawValue.roundToInt().isLessThanZero()) {
+                        if (shopScoreDetail.rawValue < 0.0) {
                             "-"
                         } else {
                             when (shopScoreDetail.identifier) {
                                 ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY -> {
-                                    (shopScoreDetail.rawValue * ONE_HUNDRED_PERCENT).roundToInt().toString()
+                                    (shopScoreDetail.rawValue * ONE_HUNDRED_PERCENT).toString()
+                                }
+                                TOTAL_BUYER_KEY, OPEN_TOKOPEDIA_SELLER_KEY -> {
+                                    shopScoreDetail.rawValue.roundToInt().toString()
                                 }
                                 else -> {
-                                    shopScoreDetail.rawValue.roundToInt().toString()
+                                    shopScoreDetail.rawValue.toString()
                                 }
                             }
                         }
@@ -638,7 +636,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         val nextSellerDays = COUNT_DAYS_NEW_SELLER - shopAge
 
         val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays)
-        return Pair(ItemTimerNewSellerUiModel(effectiveDate = effectiveDate,
+        return Pair(ItemTimerNewSellerUiModel(
+                effectiveDate = effectiveDate,
                 effectiveDateText = format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER),
                 isTenureDate = isEndTenure,
                 shopAge = shopAge
