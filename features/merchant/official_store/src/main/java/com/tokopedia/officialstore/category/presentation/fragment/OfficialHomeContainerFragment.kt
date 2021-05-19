@@ -428,6 +428,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(requireContext())
         chooseAddressData.setLocalCacheModel(localCacheModel)
         chooseAddressWidgetInitialized = false
+        chooseAddressWidget?.updateWidget()
+        fetchOSCategory()
     }
 
     override fun onChooseAddressServerDown() {
