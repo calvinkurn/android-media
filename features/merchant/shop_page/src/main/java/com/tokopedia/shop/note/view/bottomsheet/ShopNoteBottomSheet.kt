@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.globalerror.GlobalError
@@ -19,6 +20,7 @@ import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
+import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteBottomSheetViewHolder
 import com.tokopedia.shop.note.view.viewmodel.ShopNoteBottomSheetViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -35,6 +37,8 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
 
     companion object {
         val TAG = ShopNoteBottomSheet::class.java.simpleName
+        const val LAST_TAG_CHAR = '>'
+        const val TAG_PARAGRAPH = "<p></p>"
         private const val SHOP_ID = "EXTRA_SHOP_ID"
         private val LAYOUT = R.layout.fragment_shop_note_bottom_sheet
 
@@ -124,9 +128,13 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
     }
 
     private fun setAccordion(model: ShopNoteModel) {
+        var content = model.content
+        if (content?.last() != ShopNoteBottomSheetViewHolder.LAST_TAG_CHAR) {
+            content += ShopNoteBottomSheetViewHolder.TAG_PARAGRAPH
+        }
         val tvContent = TextView(context)
         tvContent.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        tvContent.text = model.content
+        tvContent.text = MethodChecker.fromHtml(content)
         accordion?.addGroup(AccordionDataUnify(
                 model.title ?: "",
                 "",
