@@ -66,7 +66,7 @@ abstract class InboxTest {
             isSellerApp: Boolean = false,
             intentModifier: (Intent) -> Unit = {}
     ) {
-        val intent = Intent()
+        val intent = createActivityIntent()
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
@@ -74,6 +74,8 @@ abstract class InboxTest {
             GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
         }
     }
+
+    abstract fun createActivityIntent(): Intent
 
     protected fun waitForIt(timeMillis: Long) {
         Thread.sleep(timeMillis)
