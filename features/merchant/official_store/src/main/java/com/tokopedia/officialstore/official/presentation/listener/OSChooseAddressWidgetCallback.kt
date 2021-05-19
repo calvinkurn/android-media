@@ -13,6 +13,11 @@ class OSChooseAddressWidgetCallback(
         val listener: OSContainerListener,
         val fragment: Fragment
 ): ChooseAddressWidget.ChooseAddressWidgetListener {
+
+    companion object {
+        const val sourcePageName = "OS"
+        const val trackingPageName = "official store page"
+    }
     override fun onLocalizingAddressUpdatedFromWidget() {
         listener.onChooseAddressUpdated()
     }
@@ -34,11 +39,11 @@ class OSChooseAddressWidgetCallback(
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return "OS"
+        return sourcePageName
     }
 
     override fun getLocalizingAddressHostSourceTrackingData(): String {
-        return "official store"
+        return trackingPageName
     }
 
     override fun onLocalizingAddressLoginSuccess() {
