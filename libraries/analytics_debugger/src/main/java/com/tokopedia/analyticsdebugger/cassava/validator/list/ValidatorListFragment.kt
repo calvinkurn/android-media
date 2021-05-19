@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,25 +13,35 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils
+import com.tokopedia.analyticsdebugger.cassava.di.CassavaComponentInstance
 import com.tokopedia.analyticsdebugger.cassava.validator.main.ValidatorViewModel
 import timber.log.Timber
+import javax.inject.Inject
 
 class ValidatorListFragment : Fragment() {
 
     private var listener: Listener? = null
 
+    private lateinit var listingAdapter: FileListingAdapter
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     val viewModel: ValidatorViewModel by lazy {
-        activity?.application?.let {
-            ViewModelProvider(requireActivity(), ViewModelProvider.AndroidViewModelFactory(it))
-                    .get(ValidatorViewModel::class.java)
-        } ?: throw IllegalArgumentException("Requires activity, fragment should be attached")
+        ViewModelProvider(requireActivity(), viewModelFactory)
+                .get(ValidatorViewModel::class.java)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initInjector()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -39,12 +50,13 @@ class ValidatorListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val listTests = Utils.listAssetFiles(requireContext(), TRACKER_ROOT_PATH)
-        Timber.d("List files: %s", listTests)
+        observeLiveData()
 
-        val listingAdapter = FileListingAdapter().also {
-            it.setItems(listTests)
-            it.setOnItemClickListener { listener?.goToTestPage(it) }
+        listingAdapter = FileListingAdapter().also { adapter ->
+            adapter.setOnItemClickListener {
+                listener?.goToTestPage(it.first,
+                        view.findViewById<ToggleButton>(R.id.toggle_cassava_source).isChecked)
+            }
         }
 
         view.findViewById<ImageView>(R.id.iv_delete).setOnClickListener {
@@ -56,6 +68,13 @@ class ValidatorListFragment : Fragment() {
             setHasFixedSize(true)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
             adapter = listingAdapter
+        }
+
+        with(view.findViewById<ToggleButton>(R.id.toggle_cassava_source)) {
+            viewModel.changeSource(isChecked)
+            setOnCheckedChangeListener { _, isChecked ->
+                viewModel.changeSource(isChecked)
+            }
         }
 
         val searchBarTextField = view.findViewById<EditText>(R.id.searchbar_textfield)
@@ -72,7 +91,7 @@ class ValidatorListFragment : Fragment() {
                     s?.run {
                         searchBarClearButton.visibility = if (s.isNotEmpty()) View.VISIBLE else View.GONE
                         // Filter test cases based on search query
-                        val filteredListTests = listTests.filter { it.contains(s.toString(), true) }
+                        val filteredListTests = viewModel.getListFiles().filter { it.second.contains(s.toString(), true) }
                         listingAdapter.setItems(filteredListTests)
                     }
                 }
@@ -91,8 +110,15 @@ class ValidatorListFragment : Fragment() {
             searchBarTextField.text.clear()
             searchBarClearButton.visibility = View.GONE
             clearSearchBarFocus(searchBarTextField)
-            listingAdapter.setItems(listTests)
+            listingAdapter.setItems(viewModel.getListFiles())
         }
+    }
+
+    private fun observeLiveData() {
+        viewModel.listFiles.observe(viewLifecycleOwner, {
+            Timber.d("List files: %s", it)
+            listingAdapter.setItems(it)
+        })
     }
 
     private fun clearSearchBarFocus(editText: EditText) {
@@ -105,8 +131,19 @@ class ValidatorListFragment : Fragment() {
         this.listener = listener
     }
 
+    private fun initInjector() {
+        activity?.let {
+            CassavaComponentInstance.getInstance(it).inject(this)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        CassavaComponentInstance.clear()
+    }
+
     interface Listener {
-        fun goToTestPage(filepath: String)
+        fun goToTestPage(filepath: String, isFromNetwork: Boolean)
     }
 
     companion object {

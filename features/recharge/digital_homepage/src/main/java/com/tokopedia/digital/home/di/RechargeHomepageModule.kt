@@ -5,8 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
 import com.tokopedia.digital.home.old.domain.DigitalHomepageSearchByDynamicIconUseCase
 import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -28,10 +26,6 @@ class RechargeHomepageModule {
     fun provideGraphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
-
-    @RechargeHomepageScope
-    @Provides
-    fun provideDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @RechargeHomepageScope
     @Provides

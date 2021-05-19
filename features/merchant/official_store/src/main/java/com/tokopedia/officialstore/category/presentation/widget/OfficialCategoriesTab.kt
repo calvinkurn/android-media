@@ -24,6 +24,7 @@ class OfficialCategoriesTab(context: Context,
                             attributes: AttributeSet) : TabLayout(context, attributes) {
 
     private val categoriesItemTab = ArrayList<CategoriesItemTab>()
+    private var itemTabMap = mutableMapOf<String, Int>()
 
     private var totalScrollUp: Int = 0
     private var tabMaxHeight: Int = 0
@@ -38,6 +39,9 @@ class OfficialCategoriesTab(context: Context,
     fun setup(viewPager: ViewPager, tabItemDataList: List<CategoriesItemTab>) {
         this.categoriesItemTab.clear()
         this.categoriesItemTab.addAll(tabItemDataList)
+        tabItemDataList.forEachIndexed{index, item ->
+            itemTabMap.put(item.categoryId, index)
+        }
         initResources()
         clearOnTabSelectedListeners()
         viewPager.clearOnPageChangeListeners()
@@ -231,7 +235,16 @@ class OfficialCategoriesTab(context: Context,
         adjustCollapseExpandTab(totalScrollUp in 0..10)
     }
 
+    fun getPositionBasedOnCategoryId(categoryId: String): Int {
+        return try {
+            itemTabMap.getValue(categoryId)
+        } catch (e: Exception) {
+            -1
+        }
+    }
+
     class CategoriesItemTab(
+            var categoryId: String = "0",
             val title: String,
             val iconUrl: String,
             val inactiveIconUrl: String,

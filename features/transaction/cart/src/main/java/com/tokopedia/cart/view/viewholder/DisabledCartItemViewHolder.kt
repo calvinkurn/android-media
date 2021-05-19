@@ -141,7 +141,7 @@ class DisabledCartItemViewHolder(private val binding: HolderItemCartErrorBinding
                     }
                 }
             }
-            setTextColor(ContextCompat.getColor(context, R.color.Unify_G500))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             show()
         }
     }
@@ -154,7 +154,7 @@ class DisabledCartItemViewHolder(private val binding: HolderItemCartErrorBinding
                     actionListener?.onSimilarProductUrlClicked(data.selectedUnavailableActionLink)
                 }
             }
-            setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
             show()
         }
@@ -168,7 +168,7 @@ class DisabledCartItemViewHolder(private val binding: HolderItemCartErrorBinding
                     actionListener?.onTobaccoLiteUrlClicked(data.selectedUnavailableActionLink, data, actionData)
                 }
             }
-            setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             actionListener?.onShowTickerTobacco()
             show()
         }
@@ -178,11 +178,11 @@ class DisabledCartItemViewHolder(private val binding: HolderItemCartErrorBinding
         binding.textMoveToWishlist.apply {
             if (data.isWishlisted && actionData.id == ACTION_WISHLISTED) {
                 text = actionData.message
-                setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_44))
+                setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
                 setOnClickListener { }
             } else if (!data.isWishlisted && actionData.id == ACTION_WISHLIST) {
                 text = actionData.message
-                setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
+                setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 setOnClickListener {
                     binding.iuImageProduct.let {
                         actionListener?.onAddDisabledItemToWishlist(data, it)

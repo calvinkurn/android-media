@@ -80,7 +80,7 @@ class CartModule {
     @CartScope
     @Named("atcMutation")
     fun provideAddToCartMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
     }
 
     @Provides
@@ -160,21 +160,21 @@ class CartModule {
     @CartScope
     @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
     fun provideUpdateCartCounterMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_update_cart_counter)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.gql_update_cart_counter)
     }
 
     @Provides
     @CartScope
     @Named(AtcConstant.MUTATION_ATC_EXTERNAL)
     fun provideAddToCartExternalMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart_external)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_external)
     }
 
     @Provides
     @CartScope
     @Named(FollowShopUseCase.MUTATION_NAME)
     fun provideFollowShopMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_favorite_shop)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_mutation_favorite_shop)
     }
 
 }

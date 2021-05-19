@@ -18,6 +18,8 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.customview.ShopReputa
 import com.tokopedia.review.feature.inbox.buyerreview.view.customview.UserReputationView;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputation;
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel;
+import com.tokopedia.review.feature.inbox.common.presentation.InboxUnifiedRemoteConfig;
+import com.tokopedia.unifycomponents.NotificationUnify;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**
@@ -40,7 +42,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private ShopReputationView shopReputationView;
     private Typography date;
     private Typography action;
-    private ImageView unreadNotification;
+    private NotificationUnify unreadNotification;
     private Context context;
 
     public InboxReputationViewHolder(Context context, View itemView, InboxReputation.View viewListener) {
@@ -108,6 +110,11 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     }
 
     private void setUnreadNotification(InboxReputationItemUiModel element) {
+        if(InboxUnifiedRemoteConfig.INSTANCE.isInboxUnified()) {
+            unreadNotification.setNotification("", NotificationUnify.Companion.getNONE_TYPE(), NotificationUnify.Companion.getCOLOR_SECONDARY());
+        } else {
+            unreadNotification.setNotification("", NotificationUnify.Companion.getNONE_TYPE(), NotificationUnify.Companion.getCOLOR_PRIMARY());
+        }
         if (element.getReputationDataUiModel().isShowBookmark()) {
             unreadNotification.setVisibility(View.VISIBLE);
         } else {
