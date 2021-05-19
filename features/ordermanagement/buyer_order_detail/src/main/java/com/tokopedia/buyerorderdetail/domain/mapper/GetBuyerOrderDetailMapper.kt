@@ -12,7 +12,7 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
                 actionButtonsUiModel = mapActionButtons(buyerOrderDetail.button, buyerOrderDetail.dotMenu),
                 orderStatusUiModel = mapOrderStatusUiModel(buyerOrderDetail.orderStatus, buyerOrderDetail.tickerInfo, buyerOrderDetail.invoice, buyerOrderDetail.invoiceUrl, buyerOrderDetail.deadline, buyerOrderDetail.paymentDate, buyerOrderDetail.orderId),
                 paymentInfoUiModel = mapPaymentInfoUiModel(buyerOrderDetail.payment, buyerOrderDetail.cashbackInfo),
-                productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.shop, buyerOrderDetail.meta),
+                productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.shop, buyerOrderDetail.meta, buyerOrderDetail.orderId),
                 shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment)
         )
     }
@@ -42,9 +42,9 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         )
     }
 
-    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta): ProductListUiModel {
+    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta, orderId: String): ProductListUiModel {
         return ProductListUiModel(
-                productList = mapProductList(products),
+                productList = mapProductList(products, orderId),
                 productListHeaderUiModel = mapProductListHeaderUiModel(shop, meta)
         )
     }
@@ -211,16 +211,17 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         return if (os) 2 else if (pm) 1 else 0
     }
 
-    private fun mapProductList(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>): List<ProductListUiModel.ProductUiModel> {
+    private fun mapProductList(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, orderId: String): List<ProductListUiModel.ProductUiModel> {
         return products.map {
-            mapProduct(it)
+            mapProduct(it, orderId)
         }
     }
 
-    private fun mapProduct(product: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product): ProductListUiModel.ProductUiModel {
+    private fun mapProduct(product: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product, orderId: String): ProductListUiModel.ProductUiModel {
         return ProductListUiModel.ProductUiModel(
                 button = mapActionButton(product.button),
                 orderDetailId = product.orderDetailId,
+                orderId = orderId,
                 price = product.price,
                 priceText = product.priceText,
                 productId = product.productId,

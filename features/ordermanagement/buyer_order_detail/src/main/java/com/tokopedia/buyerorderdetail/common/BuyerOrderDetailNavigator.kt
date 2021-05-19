@@ -114,6 +114,11 @@ object BuyerOrderDetailNavigator {
         fragment.startActivityForResult(intent, BuyerOrderDetailFragment.REQUEST_CODE_CREATE_RESOLUTION)
     }
 
+    fun goToHelpPage(fragment: Fragment, url: String) {
+        val intent: Intent = RouteManager.getIntent(fragment.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+        fragment.startActivity(intent)
+    }
+
     private fun composeCallIntentData(phoneNumber: String): Uri {
         return Uri.parse("$TELEPHONY_URI$phoneNumber")
     }

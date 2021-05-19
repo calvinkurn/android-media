@@ -32,10 +32,7 @@ import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailVie
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -134,6 +131,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> onComplaintActionButtonClicked(button)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION -> onReceiveConfirmationActionButtonClicked(button)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_DO_RECEIVE_CONFIRMATION -> onDoReceiveConfirmationActionButtonClicked(button)
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_HELP -> onHelpActionButtonClicked(button)
         }
     }
 
@@ -188,6 +186,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun onDoReceiveConfirmationActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
         viewModel.finishOrder()
+    }
+
+    private fun onHelpActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
+        BuyerOrderDetailNavigator.goToHelpPage(this, button.url)
     }
 
     private fun setupViews() {
@@ -310,7 +312,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun setupActionButtons(actionButtonsUiModel: ActionButtonsUiModel) {
         if (actionButtonsUiModel.primaryActionButton.key.isNotBlank()) {
-            setupPrimaryButton(actionButtonsUiModel.primaryActionButton)
+            setupPrimaryButton(actionButtonsUiModel.primaryActionButton, actionButtonsUiModel.secondaryActionButtons.size)
             setupSecondaryButton(actionButtonsUiModel.secondaryActionButtons)
             actionButtonAnimator.showActionButtons()
         } else {
@@ -318,9 +320,15 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         }
     }
 
-    private fun setupPrimaryButton(primaryActionButton: ActionButtonsUiModel.ActionButton) {
-        btnBuyerOrderDetailPrimaryActions.text = primaryActionButton.label
-        btnBuyerOrderDetailPrimaryActions.setOnClickListener(primaryActionButtonClickListener)
+    private fun setupPrimaryButton(primaryActionButton: ActionButtonsUiModel.ActionButton, secondaryActionButtonCount: Int) {
+        btnBuyerOrderDetailPrimaryActions.apply {
+            val layoutParamsCopy = layoutParams as ViewGroup.MarginLayoutParams
+            layoutParamsCopy.marginStart = if (secondaryActionButtonCount == 0) 0 else getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            layoutParams = layoutParamsCopy
+            text = primaryActionButton.label
+            setOnClickListener(primaryActionButtonClickListener)
+        }
+
     }
 
     private fun setupSecondaryButton(secondaryActionButtons: List<ActionButtonsUiModel.ActionButton>) {

@@ -48,7 +48,7 @@ class ProductViewHolder(
 
     private fun goToProductSnapshotPage() {
         element?.let {
-            BuyerOrderDetailNavigator.goToProductSnapshotPage(itemView.context, it.productId, it.orderDetailId)
+            BuyerOrderDetailNavigator.goToProductSnapshotPage(itemView.context, it.orderId, it.orderDetailId)
         }
     }
 

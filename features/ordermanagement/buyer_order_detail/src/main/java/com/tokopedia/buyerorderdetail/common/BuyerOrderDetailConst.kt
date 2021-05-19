@@ -8,6 +8,7 @@ object BuyerOrderDetailConst {
     const val ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION = "receive_confirmation"
     const val ACTION_BUTTON_KEY_DO_RECEIVE_CONFIRMATION = "do_receive_confirmation"
     const val ACTION_BUTTON_KEY_BACK = "back"
+    const val ACTION_BUTTON_KEY_HELP = "help"
 
     const val SECTION_HEADER_PRODUCT_LIST = "Daftar Produk"
     const val SECTION_HEADER_SHIPMENT_INFO = "Info Pengiriman"

@@ -22,6 +22,7 @@ data class ProductListUiModel(
     data class ProductUiModel(
             val button: ActionButtonsUiModel.ActionButton,
             val orderDetailId: String,
+            val orderId: String,
             val price: String,
             val priceText: String,
             val productId: String,
