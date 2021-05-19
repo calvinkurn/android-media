@@ -3,13 +3,16 @@ package com.tokopedia.review.feature.createreputation.presentation.activity
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
@@ -17,11 +20,12 @@ import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
+import com.tokopedia.review.feature.inbox.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import timber.log.Timber
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
-class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, ReviewPerformanceMonitoringListener {
+class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, ReviewPerformanceMonitoringListener {
 
     companion object {
         const val PARAM_RATING = "rating"
@@ -39,35 +43,23 @@ class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, Rev
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var createReviewBottomSheet: BottomSheetUnify? = null
 
-//    override fun getNewFragment(): Fragment? {
-//        if (isNewWriteForm()) return null
-//        setToolbar()
-//        createReviewFragment = CreateReviewFragment.createInstance(
-//                productId,
-//                reputationId,
-//                rating,
-//                isEditMode,
-//                feedbackId,
-//                utmSource
-//        )
-//        return createReviewFragment
-//    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromApplinkOrIntent()
         startPerformanceMonitoring()
+        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+            setTranslucentTheme()
+        } else {
+            setWhiteTheme()
+            setToolbar()
+        }
         super.onCreate(savedInstanceState)
-        if (isNewWriteForm()) {
+        if (InboxUnifiedRemoteConfig.isInboxUnified()) {
             handleDimming()
+            hideToolbar()
             showWriteFormBottomSheet()
             return
         }
-        intent.extras?.run {
-            (applicationContext
-                    .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                    .cancel(getInt(CreateReviewFragment.REVIEW_NOTIFICATION_ID))
-        }
-        supportActionBar?.elevation = 0f
+        setupOldFragment()
     }
 
 
@@ -75,10 +67,28 @@ class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, Rev
         return (application as BaseMainApplication).baseAppComponent
     }
 
+    override fun getNewFragment(): Fragment? {
+        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+            return null
+        }
+        setToolbar()
+        createReviewFragment = CreateReviewFragment.createInstance(
+                productId,
+                reputationId,
+                rating,
+                isEditMode,
+                feedbackId,
+                utmSource
+        )
+        return createReviewFragment
+    }
+
     override fun onBackPressed() {
-        createReviewFragment?.let {
-            CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId, it.createReviewViewModel.isUserEligible())
-            it.showCancelDialog()
+        if(!InboxUnifiedRemoteConfig.isInboxUnified()) {
+            createReviewFragment?.let {
+                CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId, it.createReviewViewModel.isUserEligible())
+                it.showCancelDialog()
+            }
         }
     }
 
@@ -177,6 +187,14 @@ class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, Rev
         setTheme(R.style.Theme_AppCompat_Translucent)
     }
 
+    private fun setWhiteTheme() {
+        setTheme(R.style.Theme_White)
+    }
+
+    private fun hideToolbar() {
+        findViewById<Toolbar>(com.tokopedia.abstraction.R.id.toolbar)?.hide()
+    }
+
     private fun showWriteFormBottomSheet() {
         createReviewBottomSheet = CreateReviewBottomSheet.createInstance(rating, productId.toLongOrZero(), reputationId.toLongOrZero(), feedbackId, utmSource, isEditMode)
         createReviewBottomSheet?.apply {
@@ -191,7 +209,12 @@ class CreateReviewActivity : BaseActivity(), HasComponent<BaseAppComponent>, Rev
         }
     }
 
-    private fun isNewWriteForm(): Boolean {
-        return true
+    private fun setupOldFragment() {
+        intent.extras?.run {
+            (applicationContext
+                    .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+                    .cancel(getInt(CreateReviewFragment.REVIEW_NOTIFICATION_ID))
+        }
+        supportActionBar?.elevation = 0f
     }
 }
