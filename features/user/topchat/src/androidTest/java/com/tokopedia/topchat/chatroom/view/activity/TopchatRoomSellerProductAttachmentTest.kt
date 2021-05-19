@@ -513,7 +513,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         val variantStockResult = 0
         val variantName = "Biru"
         val variantResult = UpdateCampaignVariantResult(
-                ProductStatus.INACTIVE, variantStockResult, variantName
+                ProductStatus.ACTIVE, variantStockResult, variantName
         )
         val variantMapResult = hashMapOf(
                 productId to variantResult
@@ -539,7 +539,6 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         assertStockCountValueAt(
                 R.id.recycler_view, 1, 0
         )
-        assertEmptyStockLabelOnProductCard(R.id.recycler_view, 1)
     }
 
     @Test
