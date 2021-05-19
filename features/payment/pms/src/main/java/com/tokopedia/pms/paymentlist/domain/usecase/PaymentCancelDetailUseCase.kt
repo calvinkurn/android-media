@@ -3,9 +3,8 @@ package com.tokopedia.pms.paymentlist.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.pms.payment.data.model.CancelDetail
-import com.tokopedia.pms.payment.data.model.DataCancelDetail
 import com.tokopedia.pms.paymentlist.domain.data.CancelDetailWrapper
+import com.tokopedia.pms.paymentlist.domain.data.DataCancelDetail
 import com.tokopedia.pms.paymentlist.domain.gql.GQL_GET_CANCEL_QUERY
 import javax.inject.Inject
 
@@ -26,7 +25,14 @@ class PaymentCancelDetailUseCase @Inject constructor(
         this.setGraphqlQuery(PaymentCancelDetailQuery.GQL_QUERY)
         this.execute(
             { result ->
-                onSuccess(CancelDetailWrapper(transactionId, merchantCode, productName, result.cancelDetail))
+                onSuccess(
+                    CancelDetailWrapper(
+                        transactionId,
+                        merchantCode,
+                        productName,
+                        result.cancelDetail
+                    )
+                )
             }, { error ->
                 onError(error)
             }

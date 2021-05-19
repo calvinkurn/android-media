@@ -5,8 +5,6 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.pms.R
-import com.tokopedia.pms.payment.data.model.CancelPayment
-import com.tokopedia.pms.payment.data.model.PaymentListInside
 import com.tokopedia.pms.paymentlist.domain.data.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase

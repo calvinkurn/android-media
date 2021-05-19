@@ -16,7 +16,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pms.R
-import com.tokopedia.pms.payment.data.model.CancelDetail
+import com.tokopedia.pms.paymentlist.domain.data.CancelDetail
 import com.tokopedia.pms.paymentlist.di.PaymentListComponent
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 import com.tokopedia.pms.paymentlist.domain.data.CancelDetailWrapper
@@ -92,7 +92,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
         })
     }
 
-    // showDialog here
+    // showDialog cancel detail dialog
     private fun showCancelDetailMessage(data: CancelDetailWrapper) {
         val description = if (data.cancelDetailData.combineMessage.isNullOrBlank()) {
             data.cancelDetailData.refundMessage ?: ""
@@ -116,6 +116,9 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
     }
 
     private fun handlePaymentListSuccess(data: ArrayList<BasePaymentModel>) {
+        recycler_view.visible()
+        noPendingTransactionEmptyState.gone()
+        paymentListGlobalError.gone()
         (recycler_view.adapter as DeferredPaymentListAdapter).addItems(data)
     }
 

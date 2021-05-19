@@ -3,8 +3,8 @@ package com.tokopedia.pms.paymentlist.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.pms.payment.data.model.CancelPayment
-import com.tokopedia.pms.payment.data.model.DataCancelPayment
+import com.tokopedia.pms.paymentlist.domain.data.CancelPayment
+import com.tokopedia.pms.paymentlist.domain.data.DataCancelPayment
 import com.tokopedia.pms.paymentlist.domain.gql.GQL_CANCEL_PAYMENT_MUTATION
 import javax.inject.Inject
 
