@@ -1,13 +1,15 @@
 package com.tokopedia.productcard.test.grid
 
 import android.view.View
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.test.ProductCardModelMatcher
 import com.tokopedia.productcard.test.R
 import com.tokopedia.productcard.test.productCardModelMatcherData
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
+import com.tokopedia.productcard.test.utils.isQuantityEditorDisplayedWithValue
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
 import com.tokopedia.productcard.test.utils.withDrawable
@@ -20,15 +22,15 @@ internal val productCardGridTestData = productCardModelMatcherData + mutableList
     it.add(testAddToCartButtonNonVariantWithQuantity())
     it.add(testAddToCartVariantWithNoQuantity())
     it.add(testAddToCartVariantWithQuantity())
-    it.add(testAddToCartVariantWithQuantity2())
+    it.add(testAddToCartVariantWithQuantityAbove99())
 }
 
 private fun testOutOfStock(): ProductCardModelMatcher {
-    val labelProductStatus = ProductCardModel.LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Stok habis", type = TRANSPARENT_BLACK)
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Stok habis", type = TRANSPARENT_BLACK)
     val productCardModel = ProductCardModel(
             isOutOfStock = true,
             productImageUrl = productImageUrl,
-            labelGroupList = mutableListOf<ProductCardModel.LabelGroup>().also { labelGroups ->
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelProductStatus)
             },
             productName = "Out of stock",
@@ -36,8 +38,8 @@ private fun testOutOfStock(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
-        it[R.id.outOfStockOverlay] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.outOfStockOverlay] = isDisplayed()
         it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
@@ -47,9 +49,9 @@ private fun testOutOfStock(): ProductCardModelMatcher {
 }
 
 private fun testAddToCartButtonNonVariant(): ProductCardModelMatcher {
-    val labelProductStatus = ProductCardModel.LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
-    val labelPrice = ProductCardModel.LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
-    val labelGimmick = ProductCardModel.LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
 
     val productCardModel = ProductCardModel(
             productName = "Add to Cart Button from Non Variant",
@@ -63,7 +65,7 @@ private fun testAddToCartButtonNonVariant(): ProductCardModelMatcher {
             reviewCount = 60,
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
-            labelGroupList = mutableListOf<ProductCardModel.LabelGroup>().also { labelGroups ->
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelProductStatus)
                 labelGroups.add(labelPrice)
                 labelGroups.add(labelGimmick)
@@ -77,34 +79,38 @@ private fun testAddToCartButtonNonVariant(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
         it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = ViewMatchers.isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
         it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = ViewMatchers.isDisplayed()
+        it[R.id.linearLayoutImageRating] = isDisplayed()
         it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = ViewMatchers.isDisplayed()
-        it[R.id.buttonAddToCart] = ViewMatchers.isDisplayed()
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.buttonAddToCart] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
 private fun testAddToCartButtonNonVariantWithQuantity(): ProductCardModelMatcher {
-    val labelProductStatus = ProductCardModel.LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
-    val labelPrice = ProductCardModel.LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
-    val labelGimmick = ProductCardModel.LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
-
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+    val nonVariant = ProductCardModel.NonVariant(
+            quantity = 30,
+            minQuantity = 1,
+            maxQuantity = 100
+    )
     val productCardModel = ProductCardModel(
             productName = "Add to Cart Button from Non Variant with Quantity",
             productImageUrl = productImageUrl,
@@ -117,47 +123,43 @@ private fun testAddToCartButtonNonVariantWithQuantity(): ProductCardModelMatcher
             reviewCount = 60,
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
-            labelGroupList = mutableListOf<ProductCardModel.LabelGroup>().also { labelGroups ->
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelProductStatus)
                 labelGroups.add(labelPrice)
                 labelGroups.add(labelGimmick)
             },
             hasAddToCartButton = false,
-            nonVariant = ProductCardModel.NonVariant(
-                    quantity = 30,
-                    minQuantity = 1,
-                    maxQuantity = 100
-            )
+            nonVariant = nonVariant
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
         it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = ViewMatchers.isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
         it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = ViewMatchers.isDisplayed()
+        it[R.id.linearLayoutImageRating] = isDisplayed()
         it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = ViewMatchers.isDisplayed()
-        it[R.id.quantityEditorNonVariant] = isDisplayedWithText("30")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.quantityEditorNonVariant] = isQuantityEditorDisplayedWithValue(nonVariant.quantity)
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
 private fun testAddToCartVariantWithNoQuantity(): ProductCardModelMatcher {
-    val labelProductStatus = ProductCardModel.LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
-    val labelPrice = ProductCardModel.LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
-    val labelGimmick = ProductCardModel.LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
 
     val productCardModel = ProductCardModel(
             productName = "Add to Cart Button from Variant with No Quantity",
@@ -171,7 +173,7 @@ private fun testAddToCartVariantWithNoQuantity(): ProductCardModelMatcher {
             reviewCount = 60,
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
-            labelGroupList = mutableListOf<ProductCardModel.LabelGroup>().also { labelGroups ->
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelProductStatus)
                 labelGroups.add(labelPrice)
                 labelGroups.add(labelGimmick)
@@ -183,23 +185,23 @@ private fun testAddToCartVariantWithNoQuantity(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
         it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = ViewMatchers.isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
         it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = ViewMatchers.isDisplayed()
+        it[R.id.linearLayoutImageRating] = isDisplayed()
         it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = ViewMatchers.isDisplayed()
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.buttonAddVariant] = isDisplayedWithText("Pilih Varian")
     }
 
@@ -207,9 +209,9 @@ private fun testAddToCartVariantWithNoQuantity(): ProductCardModelMatcher {
 }
 
 private fun testAddToCartVariantWithQuantity(): ProductCardModelMatcher {
-    val labelProductStatus = ProductCardModel.LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
-    val labelPrice = ProductCardModel.LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
-    val labelGimmick = ProductCardModel.LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
 
     val productCardModel = ProductCardModel(
             productName = "Add to Cart Button from Variant with Quantity under 99",
@@ -223,7 +225,7 @@ private fun testAddToCartVariantWithQuantity(): ProductCardModelMatcher {
             reviewCount = 60,
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
-            labelGroupList = mutableListOf<ProductCardModel.LabelGroup>().also { labelGroups ->
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelProductStatus)
                 labelGroups.add(labelPrice)
                 labelGroups.add(labelGimmick)
@@ -235,35 +237,35 @@ private fun testAddToCartVariantWithQuantity(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
         it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = ViewMatchers.isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
         it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = ViewMatchers.isDisplayed()
+        it[R.id.linearLayoutImageRating] = isDisplayed()
         it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = ViewMatchers.isDisplayed()
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.buttonAddVariant] = isDisplayedWithText("+ varian lain")
-        it[R.id.dividerVariantQuantity] = ViewMatchers.isDisplayed()
+        it[R.id.dividerVariantQuantity] = isDisplayed()
         it[R.id.textVariantQuantity] = isDisplayedWithText("${productCardModel.variant?.quantity} pcs")
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
-private fun testAddToCartVariantWithQuantity2(): ProductCardModelMatcher {
-    val labelProductStatus = ProductCardModel.LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
-    val labelPrice = ProductCardModel.LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
-    val labelGimmick = ProductCardModel.LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+private fun testAddToCartVariantWithQuantityAbove99(): ProductCardModelMatcher {
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
 
     val productCardModel = ProductCardModel(
             productName = "Add to Cart Button from Variant with Quantity Above 99",
@@ -277,7 +279,7 @@ private fun testAddToCartVariantWithQuantity2(): ProductCardModelMatcher {
             reviewCount = 60,
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
-            labelGroupList = mutableListOf<ProductCardModel.LabelGroup>().also { labelGroups ->
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelProductStatus)
                 labelGroups.add(labelPrice)
                 labelGroups.add(labelGimmick)
@@ -289,25 +291,25 @@ private fun testAddToCartVariantWithQuantity2(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
         it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = ViewMatchers.isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
         it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = ViewMatchers.isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = ViewMatchers.isDisplayed()
+        it[R.id.linearLayoutImageRating] = isDisplayed()
         it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = ViewMatchers.isDisplayed()
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.buttonAddVariant] = isDisplayedWithText("+ varian lain")
-        it[R.id.dividerVariantQuantity] = ViewMatchers.isDisplayed()
+        it[R.id.dividerVariantQuantity] = isDisplayed()
         it[R.id.textVariantQuantity] = isDisplayedWithText("99+ pcs")
     }
 
