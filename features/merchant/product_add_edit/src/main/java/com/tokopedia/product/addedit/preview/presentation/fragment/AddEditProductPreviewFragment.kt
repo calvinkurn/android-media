@@ -1081,6 +1081,8 @@ class AddEditProductPreviewFragment :
                 }
                 ValidationResultModel.Result.VALIDATION_ERROR -> {
                     showToasterFailed(result.exception)
+                    // log error
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(result.exception)
                 }
                 else -> {
                     // no-op
