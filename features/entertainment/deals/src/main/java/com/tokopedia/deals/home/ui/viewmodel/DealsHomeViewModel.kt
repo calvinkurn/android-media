@@ -37,7 +37,7 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     val observableEventHomeLayout: LiveData<Result<List<DealsBaseItemDataView>>>
         get() = _observableEventHomeLayout
 
-    private var mutableTickerData = DealsEventHome.TickerHome()
+    var mutableTickerData = DealsEventHome.TickerHome()
 
     init {
         _observableEventHomeLayout.postValue(Success(GetInitialHomeLayoutModelUseCase.requestEmptyViewModels()))
@@ -100,10 +100,8 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         }
     }
 
-    fun setTickerData(tickerData: DealsEventHome.TickerHome){
-        //testing purpose only
-        mutableTickerData = DealsEventHome.TickerHome("ANDROID","Untuk sementara beberapa voucher tidak dapat dibeli karena ada kendala yang sedang diperbaiki")
-//        mutableTickerData = tickerData
+    private fun setTickerData(tickerData: DealsEventHome.TickerHome){
+        mutableTickerData = tickerData
     }
 
     companion object {
