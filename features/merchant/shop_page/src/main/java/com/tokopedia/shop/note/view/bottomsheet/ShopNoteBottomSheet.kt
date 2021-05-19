@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.accordion.AccordionDataUnify
@@ -20,7 +21,6 @@ import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
-import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteBottomSheetViewHolder
 import com.tokopedia.shop.note.view.viewmodel.ShopNoteBottomSheetViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -135,6 +135,9 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
         val tvContent = TextView(context)
         tvContent.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         tvContent.text = MethodChecker.fromHtml(content)
+        context?.let {
+            tvContent.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
+        }
         accordion?.addGroup(AccordionDataUnify(
                 model.title ?: "",
                 "",
