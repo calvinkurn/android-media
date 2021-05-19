@@ -344,6 +344,11 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun playVideo(catalogVideo: VideoComponentData, position: Int) {
         context?.let {
+            CatalogDetailAnalytics.sendEvent(
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                    CatalogDetailAnalytics.ActionKeys.CLICK_VIDEO_WIDGET,
+                    catalogId,userSession.userId)
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                     == YouTubeInitializationResult.SUCCESS) {
                 catalogVideo.url?.let {videoUrl ->
