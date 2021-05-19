@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.inbox.fake.InboxFakeDependency
 import com.tokopedia.inbox.fake.di.DaggerFakeInboxComponent
 import com.tokopedia.inbox.fake.di.FakeInboxComponent
 import com.tokopedia.inbox.fake.di.common.DaggerFakeBaseAppComponent
@@ -16,8 +17,10 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import javax.inject.Inject
 
 abstract class InboxTest {
+
     @get:Rule
     var activityTestRule = IntentsTestRule(
             FakeInboxActivity::class.java, false, false
@@ -30,11 +33,15 @@ abstract class InboxTest {
         get() = InstrumentationRegistry
                 .getInstrumentation().context.applicationContext
 
+    @Inject
+    protected lateinit var inboxDep: InboxFakeDependency
+
     @Before
     open fun before() {
         setupGraphqlMockResponse(InboxModelConfig())
         setupDaggerBaseComponent()
         setupInboxDaggerComponent()
+        inboxComponent!!.inject(this)
     }
 
     @After
