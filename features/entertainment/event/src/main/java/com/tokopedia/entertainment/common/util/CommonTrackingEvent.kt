@@ -31,11 +31,13 @@ object CommonTrackingEvent{
          const val USER_ID = "userId"
 
          const val ITEMS = "items"
+         const val ITEM_LIST = "item_list"
          const val ITEM_ID = "item_id"
          const val ITEM_NAME = "item_name"
          const val ITEM_BRAND = "item_brand"
          const val ITEM_CATEGORY = "item_category"
          const val ITEM_VARIANT = "item_variant"
+         const val INDEX = "index"
          const val PRICE = "price"
          const val QUANTITY = "quantity"
          const val SHOP_ID = "shop_id"
@@ -44,6 +46,10 @@ object CommonTrackingEvent{
          const val CATEGORY_ID = "category_id"
          const val CHECKOUT_OPTION = "checkout_option"
          const val CHECKOUT_STEP = "checkout_step"
+         const val CREATIVE_NAME = "creative_name"
+         const val CREATIVE_URL = "creative_url"
+         const val CREATIVE_SLOT = "creative_slot"
+         const val PROMOTION = "promotions"
 
     }
 
