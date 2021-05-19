@@ -38,10 +38,6 @@ class SearchQuickFilterTest: SearchTestFixtures() {
         `Then assert quick filter selected type`(selectedFilterOption, quickFilterVisitable)
     }
 
-    private fun `When view created`() {
-        searchViewModel.onViewCreated()
-    }
-
     private fun List<Visitable<*>>?.getQuickFilterDataView(): QuickFilterDataView {
         return this?.find { it is QuickFilterDataView } as? QuickFilterDataView ?:
                 throw AssertionError("Quick filter data view not found")
@@ -81,10 +77,6 @@ class SearchQuickFilterTest: SearchTestFixtures() {
                 requestParamsSlot.captured,
                 selectedQuickFilter
         )
-    }
-
-    private fun `Given view already created`() {
-        searchViewModel.onViewCreated()
     }
 
     private fun `When quick filter selected`(selectedQuickFilter: SortFilterItemDataView) {

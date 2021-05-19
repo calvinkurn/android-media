@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
 import com.tokopedia.tokomart.searchcategory.assertBannerDataView
+import com.tokopedia.tokomart.searchcategory.assertCategoryFilterDataView
 import com.tokopedia.tokomart.searchcategory.assertChooseAddressDataView
 import com.tokopedia.tokomart.searchcategory.assertProductCountDataView
 import com.tokopedia.tokomart.searchcategory.assertQuickFilterDataView
@@ -46,8 +47,9 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         visitableList[0].assertChooseAddressDataView()
         visitableList[1].assertBannerDataView()
         visitableList[2].assertTitleDataView(title = "Category_Title", hasSeeAllCategoryButton = true)
-        visitableList[3].assertQuickFilterDataView(categoryModel.quickFilter)
-        visitableList[4].assertProductCountDataView(categoryModel.searchProduct.header.totalDataText)
+        visitableList[3].assertCategoryFilterDataView(categoryModel.categoryFilter)
+        visitableList[4].assertQuickFilterDataView(categoryModel.quickFilter)
+        visitableList[5].assertProductCountDataView(categoryModel.searchProduct.header.totalDataText)
     }
 
     private fun `Then assert visitable list contents`(

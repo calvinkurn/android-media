@@ -38,10 +38,6 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
         }
     }
 
-    private fun `Given view already created`() {
-        searchViewModel.onViewCreated()
-    }
-
     private fun `When view load more`() {
         searchViewModel.onLoadMore()
     }

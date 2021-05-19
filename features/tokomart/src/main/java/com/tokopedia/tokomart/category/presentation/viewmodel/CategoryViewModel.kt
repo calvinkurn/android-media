@@ -48,6 +48,7 @@ class CategoryViewModel @Inject constructor (
                 title = "Category_Title",
                 hasSeeAllCategoryButton = true,
                 aceSearchProductHeader = categoryModel.searchProduct.header,
+                categoryFilterDataValue = categoryModel.categoryFilter,
                 quickFilterDataValue = categoryModel.quickFilter,
         )
 

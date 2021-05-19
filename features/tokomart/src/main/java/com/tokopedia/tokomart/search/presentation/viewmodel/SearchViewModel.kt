@@ -54,6 +54,7 @@ class SearchViewModel @Inject constructor (
                 title = "",
                 hasSeeAllCategoryButton = false,
                 aceSearchProductHeader = searchModel.searchProduct.header,
+                categoryFilterDataValue = searchModel.categoryFilter,
                 quickFilterDataValue = searchModel.quickFilter,
         )
 
