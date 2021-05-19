@@ -280,6 +280,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
         const val CHROME_PACKAGE = "com.android.chrome"
 
+        private const val EXAMPLE_DOMAIN = "http://example.com/"
+
         @DeepLink(ApplinkConst.WEBVIEW_PARENT_HOME)
         @JvmStatic
         fun getInstanceIntentAppLinkBackToHome(context: Context, extras: Bundle): TaskStackBuilder {
@@ -330,17 +332,16 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         @DeepLink(ApplinkConst.BROWSER, ApplinkConst.SellerApp.BROWSER)
         @JvmStatic
         fun getCallingIntentOpenBrowser(context: Context?, extras: Bundle): Intent? {
-            val webUrl = extras.getString("url", getInstance().WEB)
+            val uriData = Uri.parse(extras.getString("url", getInstance().WEB).decode())
+
             val destinationIntent = Intent(Intent.ACTION_VIEW)
-            val decodedUrl: String?
-            decodedUrl = webUrl.decode()
-            val uriData = Uri.parse(decodedUrl)
-            destinationIntent.data = uriData
-            if (context == null) {
-                return destinationIntent
-            }
+            if (context == null) return destinationIntent.apply { data = uriData }
+
+            // hacky way: to avoid looping forever
+            destinationIntent.data = Uri.parse(EXAMPLE_DOMAIN)
+
             val resolveInfos = context.packageManager.queryIntentActivities(destinationIntent, 0)
-            // remove deeplink tokopedia if any
+            // remove package tokopedia if any
             for (i in resolveInfos.indices.reversed()) {
                 val resolveInfo = resolveInfos[i]
                 val packageName = resolveInfo.activityInfo.packageName
