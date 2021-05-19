@@ -24,6 +24,7 @@ import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoLocationUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
@@ -392,15 +393,14 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 validateProductNameUseCase.setParamsProductName(productId.value, productName)
                 validateProductNameUseCase.executeOnBackground()
             }
-            val validationMessage = response.productValidateV3.data.validationResults
-                    .joinToString("\n")
-            val validationResult = if (response.productValidateV3.isSuccess)
+            val validationMessages = response.productValidateV3.data.validationResults
+            val validationResult = if (validationMessages.isEmpty())
                 VALIDATION_SUCCESS else VALIDATION_ERROR
-            mValidationResult.value = ValidationResultModel(validationResult, MessageErrorException(validationMessage))
+            val validationException = MessageErrorException(validationMessages.joinToString("\n"))
+
+            mValidationResult.value = ValidationResultModel(validationResult, validationException)
             mIsLoading.value = false
         }, onError = {
-            // log error
-            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
             mValidationResult.value = ValidationResultModel(VALIDATION_ERROR, it)
             mIsLoading.value = false
         })
