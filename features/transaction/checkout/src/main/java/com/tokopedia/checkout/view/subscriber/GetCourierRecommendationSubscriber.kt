@@ -49,10 +49,11 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                                     shippingRecommendationData.logisticPromo?.let {
                                         val disableMsg = it.disableText
                                         courierItemData.logPromoMsg = disableMsg
+                                        courierItemData.logPromoDesc = it.description
 
                                         // Auto apply Promo Stacking Logistic
-                                        if (it.shipperId == shipperId && it.shipperProductId == spId && !it.promoCode.isEmpty()
-                                                && !it.disabled) {
+                                        if ((shipmentCartItemModel.isDisableChangeCourier || it.shipperId == shipperId && it.shipperProductId == spId)
+                                                && it.promoCode.isNotEmpty() && !it.disabled) {
                                             courierItemData.logPromoCode = it.promoCode
                                             courierItemData.discountedRate = it.discountedRate
                                             courierItemData.shippingRate = it.shippingRate

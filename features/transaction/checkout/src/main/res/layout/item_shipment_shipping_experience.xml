@@ -335,16 +335,44 @@
                 tools:visibility="gone">
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/label_selected_single_shipping"
-                    android:layout_width="0dp"
+                    android:id="@+id/label_selected_single_shipping_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/Unify_N700_96"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
+                    tools:text="Pengiriman 2 jam (" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_selected_single_shipping_original_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler"
+                    tools:text="Rp25.000" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/label_selected_single_shipping_discounted_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
+                    tools:text=" Rp10.000)" />
+
+                <androidx.constraintlayout.helper.widget.Flow
+                    android:id="@+id/flow_label_selected_single_shipping"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="label_selected_single_shipping_title,label_selected_single_shipping_original_price,label_selected_single_shipping_discounted_price"
+                    app:flow_horizontalBias="0"
+                    app:flow_horizontalStyle="packed"
+                    app:flow_wrapMode="chain"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="body_3"
-                    app:typographyWeight="reguler"
-                    tools:text="Pengiriman 2 jam (Rp25.000 Rp10.000)" />
+                    tools:visibility="visible" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_single_shipping_eta"
@@ -354,10 +382,11 @@
                     android:textColor="@color/Unify_N700_96"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/label_selected_single_shipping"
+                    app:layout_constraintTop_toBottomOf="@+id/flow_label_selected_single_shipping"
                     app:typographyType="body_3"
                     app:typographyWeight="reguler"
-                    tools:text="Estimasi tiba pukul 20.00. Garansi Tepat Waktu!" />
+                    tools:text="Estimasi tiba pukul 20.00. Garansi Tepat Waktu!"
+                    tools:visibility="gone" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_single_shipping_message"
@@ -370,7 +399,8 @@
                     app:layout_constraintTop_toBottomOf="@+id/label_single_shipping_eta"
                     app:typographyType="small"
                     app:typographyWeight="reguler"
-                    tools:text="Transaksimu belum mencapai batas minimum gratis ongkir." />
+                    tools:text="Transaksimu belum mencapai batas minimum gratis ongkir."
+                    tools:visibility="gone" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -425,32 +455,32 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_failed_shipping_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:text="Pengiriman"
                     android:textColor="@color/Unify_N700_96"
                     app:layout_constraintEnd_toStartOf="@+id/icon_reload_shipping"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="body_3"
-                    app:typographyWeight="bold"
-                    tools:text="Pengiriman" />
+                    app:typographyWeight="bold" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_failed_shipping_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl1"
+                    android:text="Gagal menampilkan pengiriman"
                     android:textColor="@color/Unify_R600"
                     app:layout_constraintEnd_toStartOf="@+id/icon_reload_shipping"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/label_failed_shipping_title"
                     app:typographyType="body_3"
-                    app:typographyWeight="reguler"
-                    tools:text="Gagal menampilkan pengiriman" />
+                    app:typographyWeight="reguler" />
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/icon_reload_shipping"
