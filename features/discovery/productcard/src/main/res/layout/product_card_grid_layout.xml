@@ -193,6 +193,75 @@
             app:typographyWeight="bold"
             tools:text="989jt orang"/>
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textVariantQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/product_card_text_add_variant_quantity_height"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/product_card_text_add_variant_quantity_margin_top"
+            android:textColor="@color/Unify_N700_96"
+            tools:text="@string/product_card_text_variant_quantity_grid"
+            android:visibility="gone"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/quantityEditorNonVariant"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="visible"/>
+
+        <View
+            android:id="@+id/dividerVariantQuantity"
+            android:layout_width="@dimen/dp_5"
+            android:layout_height="@dimen/dp_5"
+            android:layout_marginStart="@dimen/dp_4"
+            android:background="@drawable/product_card_dot_divider"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/textVariantQuantity"
+            app:layout_constraintEnd_toStartOf="@id/buttonAddVariant"
+            app:layout_constraintTop_toTopOf="@id/textVariantQuantity"
+            app:layout_constraintBottom_toBottomOf="@id/textVariantQuantity"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonAddVariant"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/product_card_button_add_variant_height"
+            android:layout_marginStart="@dimen/product_card_button_add_variant_with_quantity_margin_start"
+            android:layout_marginTop="@dimen/product_card_button_add_variant_with_quantity_margin_top"
+            android:layout_marginEnd="@dimen/dp_8"
+            app:layout_goneMarginStart="@dimen/product_card_button_add_variant_margin_start"
+            app:layout_goneMarginTop="@dimen/product_card_button_add_variant_margin_top"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?selectableItemBackground"
+            android:gravity="center"
+            android:text="@string/product_card_text_add_variant_grid"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/dividerVariantQuantity"
+            app:layout_constraintTop_toBottomOf="@id/quantityEditorNonVariant"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:typographyType="heading_6"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.QuantityEditorUnify
+            android:id="@+id/quantityEditorNonVariant"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/product_card_quantity_editor_height"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/product_card_quantity_editor_margin_top"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:foreground="?selectableItemBackground"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonAddToCart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/buttonAddVariant"
+            tools:visibility="visible" />
+
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonAddToCart"
             android:layout_width="@dimen/dp_0"
@@ -209,7 +278,7 @@
             android:padding="@dimen/dp_8"
             android:text="@string/product_card_text_add_to_cart_grid"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/quantityEditorNonVariant"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/buttonNotify"
