@@ -4,10 +4,13 @@ import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.minicart.R
+import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.minicart.common.widget.uimodel.MiniCartWidgetUiModel
@@ -23,6 +26,7 @@ class MiniCartWidget @JvmOverloads constructor(
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private var fragmentManager: FragmentManager? = null
     private var totalAmount: TotalAmount? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
 
@@ -34,7 +38,9 @@ class MiniCartWidget @JvmOverloads constructor(
         totalAmount?.let {
             it.enableAmountChevron(true)
             it.amountChevronView.setOnClickListener {
-                // Todo : open mini cart bottomsheet or summary transaction bottomsheet
+                fragmentManager?.let {
+                    MiniCartListBottomSheet.show(it, context)
+                }
             }
         }
 
@@ -50,6 +56,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
         viewModel = ViewModelProvider(activity, viewModelFactory).get(MiniCartWidgetViewModel::class.java)
         miniCartWidgetListener = listener
+        fragmentManager = activity.supportFragmentManager
         viewModel.miniCartWidgetUiModel.observe(activity, {
             renderWidget(it)
         })
@@ -66,6 +73,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
         viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartWidgetViewModel::class.java)
         miniCartWidgetListener = listener
+        fragmentManager = fragment.parentFragmentManager
         viewModel.miniCartWidgetUiModel.observe(fragment, {
             renderWidget(it)
         })
