@@ -3,7 +3,10 @@ package com.tokopedia.minicart.cartlist.uimodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 
-class MiniCartTickerErrorUiModel : Visitable<MiniCartListAdapterTypeFactory> {
+data class MiniCartTickerErrorUiModel(
+        var errorMessage: String = "",
+        var isShowErrorActionLabel: Boolean = false
+) : Visitable<MiniCartListAdapterTypeFactory> {
 
     override fun type(typeFactory: MiniCartListAdapterTypeFactory): Int {
         return typeFactory.type(this)
