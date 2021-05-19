@@ -24,10 +24,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 
 
 /**
@@ -82,7 +79,7 @@ class HomeViewModelPopularKeywordUnitTest {
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         // Load popular keyword
-        homeViewModel.getPopularKeywordData()
+        homeViewModel.getPopularKeyword()
 
         // Expect popular keyword will show on user screen
         verifyOrder {
@@ -111,18 +108,11 @@ class HomeViewModelPopularKeywordUnitTest {
             }
         }
 
-        launch {
-            channel.send(HomeDataModel(
-                    isCache = true,
-                    list = listOf(popular)
-            ))
-        }
-
-        // Popular keyword data
+        // Initial popular keyword data
         coEvery { getPopularKeywordUseCase.executeOnBackground() } returns HomeWidget.PopularKeywordQuery(
                 data = HomeWidget.PopularKeywordList(
                         keywords = listOf(
-                                HomeWidget.PopularKeyword(),
+                                HomeWidget.PopularKeyword(keyword = "1"),
                                 HomeWidget.PopularKeyword(),
                                 HomeWidget.PopularKeyword(),
                                 HomeWidget.PopularKeyword()
@@ -130,38 +120,33 @@ class HomeViewModelPopularKeywordUnitTest {
                 )
         )
 
+        getHomeUseCase.givenGetHomeDataReturn(HomeDataModel(
+                list = listOf(PopularKeywordListDataModel())
+        ))
+
         // home viewModel
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPopularKeywordUseCase = getPopularKeywordUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.getPopularKeyword()
 
-        launch {
-            channel.send(HomeDataModel(
-                    list = listOf(popular),
-                    isProcessingAtf = false
-            ))
-        }
-        // Expect popular keyword will show on user screen
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.isNotEmpty() && homeDataModel.list.find { it is PopularKeywordListDataModel } != null
-            })
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.isNotEmpty() && homeDataModel.list.find { it is HomeLoadingMoreModel } != null
-            })
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.isNotEmpty() && homeDataModel.list.find { it is HomeRetryModel } != null
-            })
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.isNotEmpty()
-            })
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.find { it is PopularKeywordListDataModel } != null
-                        && (homeDataModel.list.find { it is PopularKeywordListDataModel } as PopularKeywordListDataModel).popularKeywordList.isNotEmpty()
-            })
-        }
-        confirmVerified(observerHome)
-        channel.close()
+        // Refreshed popular keyword data
+        coEvery { getPopularKeywordUseCase.executeOnBackground() } returns HomeWidget.PopularKeywordQuery(
+                data = HomeWidget.PopularKeywordList(
+                        keywords = listOf(
+                                HomeWidget.PopularKeyword(keyword = "2"),
+                                HomeWidget.PopularKeyword(),
+                                HomeWidget.PopularKeyword(),
+                                HomeWidget.PopularKeyword()
+                        )
+                )
+        )
+        homeViewModel.getPopularKeyword()
+
+        val popularKeywordModel = homeViewModel.homeDataModel.list.find {
+            it is PopularKeywordListDataModel
+        } as? PopularKeywordListDataModel
+
+        val firstItemPopularKeyword = popularKeywordModel!!.popularKeywordList[0]
+        Assert.assertEquals("2", firstItemPopularKeyword.title)
     }
 
     @Test
