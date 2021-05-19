@@ -2,13 +2,15 @@ package com.tokopedia.gm.common.data.source.local
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 23/03/21
  */
 
-class PMCommonPreferenceManager(
-        private val appContext: Context
+class PMCommonPreferenceManager @Inject constructor(
+        @ApplicationContext private val appContext: Context
 ) {
     companion object {
         private const val PREF_NAME = "pm_common_shared_preferences"
