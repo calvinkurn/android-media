@@ -89,6 +89,21 @@ class DealsHomeFragment : DealsBaseFragment(),
         baseViewModel.observableCurrentLocation.observe(viewLifecycleOwner, Observer {
             onBaseLocationChanged(it)
         })
+
+        homeViewModel.tickerData.observe(viewLifecycleOwner, Observer {
+            when(it){
+                is Success ->{
+                    if (it.data.devices.isNotEmpty() && it.data.message.isNotEmpty() && it.data.devices.contains(DEVICE_TYPE)){
+                        //showTicker
+                    }else{
+                        //hideTicker
+                    }
+                }
+                is Fail ->{
+                    //hideTicker
+                }
+            }
+        })
     }
 
     private fun getErrorNetworkModel(): ErrorNetworkModel {
@@ -346,5 +361,6 @@ class DealsHomeFragment : DealsBaseFragment(),
         private const val PREFERENCES_NAME = "deals_home_preferences"
         private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key"
         private const val COACH_MARK_START_DELAY = 1000L
+        private const val DEVICE_TYPE = "ANDROID"
     }
 }
