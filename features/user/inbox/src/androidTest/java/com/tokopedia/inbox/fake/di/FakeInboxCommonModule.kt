@@ -1,14 +1,13 @@
 package com.tokopedia.inbox.fake.di
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.inbox.di.InboxScope
 import com.tokopedia.inbox.domain.cache.InboxCacheManager
-import com.tokopedia.inbox.domain.cache.InboxCacheManagerImpl
 import com.tokopedia.inbox.fake.common.FakeUserSession
+import com.tokopedia.inbox.fake.domain.cache.FakeInboxCacheManager
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -44,22 +43,20 @@ class FakeInboxCommonModule {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 
-    @InboxScope
-    @Provides
-    internal fun provideInboxSharedPref(
-            @ApplicationContext context: Context
-    ): SharedPreferences {
-        return context.getSharedPreferences(
-                "prefs_inbox_v2",
-                Context.MODE_PRIVATE
-        )
-    }
+    // -- separator -- //
 
     @InboxScope
     @Provides
     internal fun provideInboxCacheManager(
-            sharedPreferences: SharedPreferences
+            fakeInboxCacheManager: FakeInboxCacheManager
     ): InboxCacheManager {
-        return InboxCacheManagerImpl(sharedPreferences)
+        return fakeInboxCacheManager
     }
+
+    @InboxScope
+    @Provides
+    internal fun provideFakeInboxCacheManager(): FakeInboxCacheManager {
+        return FakeInboxCacheManager()
+    }
+
 }
