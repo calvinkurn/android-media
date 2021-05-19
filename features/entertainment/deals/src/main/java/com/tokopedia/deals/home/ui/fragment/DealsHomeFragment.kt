@@ -89,21 +89,6 @@ class DealsHomeFragment : DealsBaseFragment(),
         baseViewModel.observableCurrentLocation.observe(viewLifecycleOwner, Observer {
             onBaseLocationChanged(it)
         })
-
-        homeViewModel.tickerData.observe(viewLifecycleOwner, Observer {
-            when(it){
-                is Success ->{
-                    if (it.data.devices.isNotEmpty() && it.data.message.isNotEmpty() && it.data.devices.contains(DEVICE_TYPE)){
-                        //showTicker
-                    }else{
-                        //hideTicker
-                    }
-                }
-                is Fail ->{
-                    //hideTicker
-                }
-            }
-        })
     }
 
     private fun getErrorNetworkModel(): ErrorNetworkModel {

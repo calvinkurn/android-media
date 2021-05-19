@@ -3,7 +3,7 @@ package com.tokopedia.deals.home.ui.adapter.delegate
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.deals.home.data.DealsEventHome
+import com.tokopedia.deals.common.ui.dataview.DealsTickerDataView
 import com.tokopedia.deals.home.ui.adapter.viewholder.DealsTickerViewHolder
 
 /**
@@ -11,13 +11,13 @@ import com.tokopedia.deals.home.ui.adapter.viewholder.DealsTickerViewHolder
  */
 
 class DealsTickerAdapterDelegate():
-        TypedAdapterDelegate<DealsEventHome.TickerHome, Any, DealsTickerViewHolder>(DealsTickerViewHolder.LAYOUT)  {
+        TypedAdapterDelegate<DealsTickerDataView, Any, DealsTickerViewHolder>(DealsTickerViewHolder.LAYOUT)  {
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): DealsTickerViewHolder {
         return DealsTickerViewHolder(basicView)
     }
 
-    override fun onBindViewHolder(item: DealsEventHome.TickerHome, holder: DealsTickerViewHolder) {
+    override fun onBindViewHolder(item: DealsTickerDataView, holder: DealsTickerViewHolder) {
         holder.bind(item)
     }
 }

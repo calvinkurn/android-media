@@ -27,12 +27,12 @@ class DealsHomeAdapter(dealsVoucherPlaceCardListener: DealsVoucherPlaceCardListe
     init {
         delegatesManager.addDelegate(VoucherPlaceCardAdapterDelegate(dealsVoucherPlaceCardListener))
                 .addDelegate(DealsBannerAdapterDelegate(bannerActionListener))
+                .addDelegate(DealsTickerAdapterDelegate())
                 .addDelegate(DealsCategoriesAdapterDelegate(categoryListener))
                 .addDelegate(CuratedProductCategoryAdapterDelegate(curatedProductCategoryListener))
                 .addDelegate(DealsCommonBrandAdapterDelegate(brandActionListener))
                 .addDelegate(DealsFavouriteCategoriesAdapterDelegate(favouriteCategoriesActionListener))
                 .addDelegate(LoadingMoreUnifyAdapterDelegate())
-                .addDelegate(DealsTickerAdapterDelegate())
     }
 
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {

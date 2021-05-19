@@ -37,9 +37,7 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     val observableEventHomeLayout: LiveData<Result<List<DealsBaseItemDataView>>>
         get() = _observableEventHomeLayout
 
-    private val mutableTickerData = MutableLiveData<Result<DealsEventHome.TickerHome>>()
-    val tickerData: LiveData<Result<DealsEventHome.TickerHome>>
-        get() = mutableTickerData
+    private var mutableTickerData = DealsEventHome.TickerHome()
 
     init {
         _observableEventHomeLayout.postValue(Success(GetInitialHomeLayoutModelUseCase.requestEmptyViewModels()))
@@ -53,7 +51,7 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                 val brands = getBrandPopular(location)
                 val location = getNearestLocation(location)
 
-                val homeLayout = dealsHomeMapper.mapLayoutToBaseItemViewModel(eventHomeLayouts, brands, location)
+                val homeLayout = dealsHomeMapper.mapLayoutToBaseItemViewModel(eventHomeLayouts, brands, location, mutableTickerData)
                 _observableEventHomeLayout.postValue(Success(homeLayout))
             } catch (t: Throwable) {
                 _observableEventHomeLayout.postValue(Fail(t))
@@ -66,10 +64,9 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             val data = getEventHomeLayoutUseCase.apply {
                 useParams(GetEventHomeLayoutUseCase.createParams(location.coordinates, location.locType.name))
             }.executeOnBackground()
-            fetchTicker(Success(data.response.ticker))
+            setTickerData(data.response.ticker)
             return data.response.layout
         } catch (t: Throwable) {
-            fetchTicker(Fail(t))
             throw t
         }
     }
@@ -103,8 +100,8 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         }
     }
 
-    fun fetchTicker(tickerData: Result<DealsEventHome.TickerHome>){
-        mutableTickerData.value = tickerData
+    fun setTickerData(tickerData: DealsEventHome.TickerHome){
+        mutableTickerData = tickerData
     }
 
     companion object {
