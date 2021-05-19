@@ -60,6 +60,7 @@ class SearchFragment: BaseSearchCategoryFragment() {
             titleListener = this,
             bannerListener = this,
             quickFilterListener = this,
+            categoryFilterListener = this,
     )
 
     override fun getViewModel() = searchViewModel

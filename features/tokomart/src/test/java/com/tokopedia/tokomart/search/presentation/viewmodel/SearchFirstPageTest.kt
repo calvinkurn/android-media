@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.search.presentation.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.assertBannerDataView
+import com.tokopedia.tokomart.searchcategory.assertCategoryFilterDataView
 import com.tokopedia.tokomart.searchcategory.assertChooseAddressDataView
 import com.tokopedia.tokomart.searchcategory.assertProductCountDataView
 import com.tokopedia.tokomart.searchcategory.assertQuickFilterDataView
@@ -29,10 +30,6 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert has next page value`(false)
     }
 
-    private fun `When view created`() {
-        searchViewModel.onViewCreated()
-    }
-
     private fun `Then assert first page visitables`(visitableList: List<Visitable<*>>, searchModel: SearchModel) {
         `Then assert visitable list header`(visitableList, searchModel)
         `Then assert visitable list contents`(visitableList, searchModel)
@@ -45,8 +42,9 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         visitableList[0].assertChooseAddressDataView()
         visitableList[1].assertBannerDataView()
         visitableList[2].assertTitleDataView(title = "", hasSeeAllCategoryButton = false)
-        visitableList[3].assertQuickFilterDataView(searchModel.quickFilter)
-        visitableList[4].assertProductCountDataView(searchModel.searchProduct.header.totalDataText)
+        visitableList[3].assertCategoryFilterDataView(searchModel.categoryFilter)
+        visitableList[4].assertQuickFilterDataView(searchModel.quickFilter)
+        visitableList[5].assertProductCountDataView(searchModel.searchProduct.header.totalDataText)
     }
 
     private fun `Then assert visitable list contents`(

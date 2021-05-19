@@ -34,7 +34,7 @@ class CategoryChooserBottomSheet(
 
         val childView = View.inflate(context, R.layout.bottom_sheet_tokomart_category_chooser, null)
         val itemDivider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-                .apply { context?.let { ContextCompat.getDrawable(it, R.drawable.divider_category_chooser) } }
+                .apply { context?.let { ContextCompat.getDrawable(it, R.drawable.tokomart_divider_category_chooser) } }
 
         rvSubcategory = childView.findViewById(R.id.rv_category_chooser)
         mAdapter = CategoryChooserAdapter(subCategoryList.map { it.first }, this)

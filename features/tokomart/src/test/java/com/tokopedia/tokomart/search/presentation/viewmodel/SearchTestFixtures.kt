@@ -54,4 +54,12 @@ open class SearchTestFixtures {
             firstArg<(SearchModel) -> Unit>().invoke(searchModel)
         }
     }
+
+    protected fun `Given view already created`() {
+        searchViewModel.onViewCreated()
+    }
+
+    protected fun `When view created`() {
+        searchViewModel.onViewCreated()
+    }
 }

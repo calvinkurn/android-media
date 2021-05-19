@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
@@ -20,13 +20,14 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.common.base.listener.BannerComponentListener
-import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
-import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
+import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
+import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
+import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.unifycomponents.Toaster
 
 abstract class BaseSearchCategoryFragment:
@@ -34,7 +35,9 @@ abstract class BaseSearchCategoryFragment:
         ChooseAddressListener,
         BannerComponentListener,
         TitleListener,
-        QuickFilterListener, SortFilterBottomSheet.Callback {
+        CategoryFilterListener,
+        QuickFilterListener,
+        SortFilterBottomSheet.Callback {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
@@ -208,5 +211,9 @@ abstract class BaseSearchCategoryFragment:
         dynamicFilterModel?.let { it ->
             sortFilterBottomSheet?.setDynamicFilterModel(it)
         }
+    }
+
+    override fun onCategoryFilterChipClick(option: Option, isSelected: Boolean) {
+
     }
 }

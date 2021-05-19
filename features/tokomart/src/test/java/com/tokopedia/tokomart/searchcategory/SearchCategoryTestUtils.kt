@@ -7,6 +7,7 @@ import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
 import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupVariantDataView
@@ -46,6 +47,21 @@ fun Visitable<*>.assertTitleDataView(title: String, hasSeeAllCategoryButton: Boo
     val titleDataView = this as TitleDataView
     assertThat(titleDataView.title, shouldBe(title))
     assertThat(titleDataView.hasSeeAllCategoryButton, shouldBe(hasSeeAllCategoryButton))
+}
+
+fun Visitable<*>.assertCategoryFilterDataView(categoryFilterDataValue: DataValue) {
+    assertThat(this, instanceOf(CategoryFilterDataView::class.java))
+
+    val categoryFilterDataView = this as CategoryFilterDataView
+    val categoryFilterItemList = categoryFilterDataView.categoryFilterItemList
+    val expectedCategoryFilter = categoryFilterDataValue.filter
+    assertThat(categoryFilterItemList.size, shouldBe(expectedCategoryFilter.size))
+
+    expectedCategoryFilter.forEachIndexed { index, categoryFilter ->
+        val categoryFilterItemDataView = categoryFilterItemList[index]
+
+        assertThat(categoryFilterItemDataView.option, shouldBe(categoryFilter.options[0]))
+    }
 }
 
 fun Visitable<*>.assertQuickFilterDataView(quickFilterDataValue: DataValue) {

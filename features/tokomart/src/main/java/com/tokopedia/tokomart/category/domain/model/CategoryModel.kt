@@ -10,6 +10,10 @@ data class CategoryModel(
         @Expose
         val searchProduct: SearchProduct = SearchProduct(),
 
+        @SerializedName("category_filter")
+        @Expose
+        val categoryFilter: DataValue = DataValue(),
+
         @SerializedName("quick_filter")
         @Expose
         val quickFilter: DataValue = DataValue(),

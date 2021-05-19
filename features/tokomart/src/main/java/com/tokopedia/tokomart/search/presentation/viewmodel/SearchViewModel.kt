@@ -42,12 +42,11 @@ class SearchViewModel @Inject constructor (
         )
     }
 
-    private fun createRequestParams() = RequestParams.create().also {
-        it.putInt(SearchApiConst.PAGE, nextPage)
-        it.putBoolean(SearchApiConst.USE_PAGE, true)
-        it.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
-        it.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
-        it.putAll(queryParamMutable as Map<String, String>)
+    override fun RequestParams.prependParams() {
+        putInt(SearchApiConst.PAGE, nextPage)
+        putBoolean(SearchApiConst.USE_PAGE, true)
+        putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
+        putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
     }
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {
@@ -55,6 +54,7 @@ class SearchViewModel @Inject constructor (
                 title = "",
                 hasSeeAllCategoryButton = false,
                 aceSearchProductHeader = searchModel.searchProduct.header,
+                categoryFilterDataValue = searchModel.categoryFilter,
                 quickFilterDataValue = searchModel.quickFilter,
         )
 
