@@ -26,11 +26,14 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
 
         `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(1))
         `Then assert first page visitables`(visitableList, categoryModel)
-        `Then assert visitable list footer`(visitableList)
+        `Then assert visitable list footer`(visitableList, categoryModel.categoryDetail.data.navigation)
         `Then assert has next page value`(false)
     }
 
-    private fun `Then assert first page visitables`(visitableList: List<Visitable<*>>, categoryModel: CategoryModel) {
+    private fun `Then assert first page visitables`(
+            visitableList: List<Visitable<*>>,
+            categoryModel: CategoryModel,
+    ) {
         `Then assert visitable list header`(visitableList, categoryModel)
         `Then assert visitable list contents`(visitableList, categoryModel)
     }
@@ -39,9 +42,11 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
             visitableList: List<Visitable<*>>,
             categoryModel: CategoryModel,
     ) {
+        val categoryTitle = categoryModel.categoryDetail.data.name
+
         visitableList[0].assertChooseAddressDataView()
         visitableList[1].assertBannerDataView()
-        visitableList[2].assertTitleDataView(title = "Category_Title", hasSeeAllCategoryButton = true)
+        visitableList[2].assertTitleDataView(title = categoryTitle, hasSeeAllCategoryButton = true)
         visitableList[3].assertCategoryFilterDataView(categoryModel.categoryFilter)
         visitableList[4].assertQuickFilterDataView(categoryModel.quickFilter)
         visitableList[5].assertProductCountDataView(categoryModel.searchProduct.header.totalDataText)

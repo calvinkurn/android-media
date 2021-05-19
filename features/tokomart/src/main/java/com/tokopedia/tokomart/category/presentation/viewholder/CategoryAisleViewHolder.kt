@@ -5,6 +5,7 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
@@ -42,7 +43,7 @@ class CategoryAisleViewHolder(itemView: View): AbstractViewHolder<CategoryAisleD
         val imgCategoryLeft = itemView.findViewById<ImageUnify?>(R.id.tokomartSearchCategoryAisleImageLeft)
 
         txtCategoryNameLeft?.text = item.name
-        imgCategoryLeft?.setImageUrl(item.imgUrl)
+        imgCategoryLeft?.loadImage(item.imgUrl)
     }
 
     private fun bindRightAisle(item: CategoryAisleItemDataView) {
@@ -50,6 +51,6 @@ class CategoryAisleViewHolder(itemView: View): AbstractViewHolder<CategoryAisleD
         val imgCategoryRight = itemView.findViewById<ImageUnify?>(R.id.tokomartSearchCategoryAisleImageRight)
 
         txtCategoryNameRight?.text = item.name
-        imgCategoryRight?.setImageUrl(item.imgUrl)
+        imgCategoryRight?.loadImage(item.imgUrl)
     }
 }

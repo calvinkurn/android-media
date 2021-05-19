@@ -3,7 +3,9 @@ package com.tokopedia.tokomart.category.presentation.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.tokomart.category.domain.model.CategoryDetail
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
+import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.usecase.RequestParams
@@ -59,8 +61,24 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
         }
     }
 
-    protected fun `Then assert visitable list footer`(visitableList: List<Visitable<*>>) {
-        assertThat(visitableList.last(), instanceOf(CategoryAisleDataView::class.java))
+    protected fun `Then assert visitable list footer`(
+            visitableList: List<Visitable<*>>,
+            categoryNavigation: CategoryDetail.Navigation
+    ) {
+        val lastVisitable = visitableList.last()
+        assertThat(lastVisitable, instanceOf(CategoryAisleDataView::class.java))
+
+        val categoryAisleDataView = lastVisitable as CategoryAisleDataView
+        val categoryAisleItemList = categoryAisleDataView.items
+
+        assertThat(categoryAisleItemList.size, shouldBe(2))
+        categoryAisleItemList[0].assertAisle(categoryNavigation.prev)
+        categoryAisleItemList[1].assertAisle(categoryNavigation.next)
+    }
+
+    private fun CategoryAisleItemDataView.assertAisle(navigationItem: CategoryDetail.NavigationItem) {
+        assertThat(this.name, shouldBe(navigationItem.name))
+        assertThat(this.imgUrl, shouldBe(navigationItem.imageUrl))
     }
 
     protected fun `Then assert visitable list end with loading more model`(visitableList: List<Visitable<*>>) {

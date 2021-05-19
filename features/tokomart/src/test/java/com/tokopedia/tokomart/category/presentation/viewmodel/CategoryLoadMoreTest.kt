@@ -25,7 +25,7 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
         val visitableList = categoryViewModel.visitableListLiveData.value!!
         `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(2))
         `Then assert load more page data`(categoryModelPage1, categoryModelPage2, visitableList)
-        `Then assert visitable list footer`(visitableList)
+        `Then assert visitable list footer`(visitableList, categoryModelPage1.categoryDetail.data.navigation)
         `Then assert has next page value`(false)
     }
 
@@ -49,9 +49,15 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
         val firstProductIndex = visitableList.indexOfFirst { it is ProductItemDataView }
         val nextPageProductIndex = firstProductIndex + categoryModelPage1.searchProduct.data.productList.size
         val page2ProductList = categoryModelPage2.searchProduct.data.productList
-        val nextPageVisitableList = visitableList.subList(nextPageProductIndex, nextPageProductIndex + page2ProductList.size)
+        val nextPageVisitableList = visitableList.subList(
+                nextPageProductIndex,
+                nextPageProductIndex + page2ProductList.size
+        )
 
-        verifyProductItemDataViewList(page2ProductList, nextPageVisitableList.filterIsInstance<ProductItemDataView>())
+        verifyProductItemDataViewList(
+                page2ProductList,
+                nextPageVisitableList.filterIsInstance<ProductItemDataView>()
+        )
     }
 
     @Test

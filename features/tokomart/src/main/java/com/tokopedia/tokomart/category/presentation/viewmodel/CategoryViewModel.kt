@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.category.presentation.viewmodel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.tokomart.category.domain.model.CategoryDetail
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
@@ -37,6 +38,8 @@ class CategoryViewModel @Inject constructor (
         chooseAddressWrapper
 ) {
 
+    private var navigation: CategoryDetail.Navigation? = null
+
     override fun onViewCreated() {
         getCategoryFirstPageUseCase.cancelJobs()
         getCategoryFirstPageUseCase.execute(
@@ -52,8 +55,10 @@ class CategoryViewModel @Inject constructor (
     }
 
     private fun onGetCategoryFirstPageSuccess(categoryModel: CategoryModel) {
+        navigation = categoryModel.categoryDetail.data.navigation
+
         val headerDataView = HeaderDataView(
-                title = "Category_Title",
+                title = categoryModel.categoryDetail.data.name,
                 hasSeeAllCategoryButton = true,
                 aceSearchProductHeader = categoryModel.searchProduct.header,
                 categoryFilterDataValue = categoryModel.categoryFilter,
@@ -71,20 +76,21 @@ class CategoryViewModel @Inject constructor (
 
     }
 
-    override fun createFooterVisitableList() = listOf(
-            CategoryAisleDataView(
-                    listOf(
-                            CategoryAisleItemDataView(
-                                    "Daging & Seafood",
-                                    "https://thefatkidinside.com/wp-content/uploads/2019/08/jakarta-header-716x375.jpg"
-                            ),
-                            CategoryAisleItemDataView(
-                                    "Makanan Kering",
-                                    "https://thefatkidinside.com/wp-content/uploads/2019/08/jakarta-header-716x375.jpg"
-                            )
-                    )
-            ),
+    override fun createFooterVisitableList() = listOf(createAisleDataView())
+
+    private fun createAisleDataView() = CategoryAisleDataView(
+            listOf(
+                    createAisleItem(navigation?.prev),
+                    createAisleItem(navigation?.next),
+            )
     )
+
+    private fun createAisleItem(navigationItem: CategoryDetail.NavigationItem?): CategoryAisleItemDataView {
+        return CategoryAisleItemDataView(
+                name = navigationItem?.name ?: "",
+                imgUrl = navigationItem?.imageUrl ?: "",
+        )
+    }
 
     override fun executeLoadMore() {
         getCategoryLoadMorePageUseCase.execute(

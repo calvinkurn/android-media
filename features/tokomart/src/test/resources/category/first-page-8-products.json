@@ -1,4 +1,36 @@
 {
+  "category_detail": {
+    "header": {
+      "process_time": 0.288540449,
+      "messages": [],
+      "reason": "",
+      "error_code": ""
+    },
+    "data":{
+      "id": "113",
+      "name": "Daging, ikan, makanan laut & protein lainnya",
+      "url": "https://www.tokopedia.com/daging-ikan-makanan-laut-&-protein-lainnya/",
+      "applinks": "tokopedia://tokonow/daging-ikan-makanan-laut-&-protein-lainnya/",
+      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/64-square/iEWsxH/2021/2/16/8d6c7fe1-b005-4609-b066-b91c788605c5.png",
+      "navigation":{
+        "prev":{
+          "id": "275",
+          "name": "Telur & olahan susu",
+          "url": "https://www.tokopedia.com/telur-&-olahan-susu",
+          "applinks": "tokopedia://tokonow/telur-&-olahan-susu",
+          "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/64-square/iEWsxH/2021/2/18/203d11b9-1aad-4473-a572-6b3b5fc5f14f.png"
+        },
+        "next":{
+          "id": "275",
+          "name": "Bahan makanan kering",
+          "url": "https://www.tokopedia.com/bahan-makanan-kering",
+          "applinks": "tokopedia://tokonow/bahan-makanan-kering",
+          "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/64-square/iEWsxH/2021/2/18/203d11b9-1aad-4473-a572-6b3b5fc5f14f.png"
+        }
+      }
+    }
+  },
+
   "ace_search_product_v4": {
     "header": {
       "responseCode": 0,

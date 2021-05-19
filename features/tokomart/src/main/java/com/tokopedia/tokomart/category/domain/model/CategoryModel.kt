@@ -6,6 +6,10 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 
 data class CategoryModel(
+        @SerializedName("category_detail")
+        @Expose
+        val categoryDetail: CategoryDetail = CategoryDetail(),
+
         @SerializedName("ace_search_product_v4")
         @Expose
         val searchProduct: SearchProduct = SearchProduct(),
