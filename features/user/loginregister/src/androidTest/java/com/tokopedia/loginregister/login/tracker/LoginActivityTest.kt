@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.login
+package com.tokopedia.loginregister.login.tracker
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -20,6 +20,9 @@ import com.facebook.FacebookSdk
 import com.google.firebase.FirebaseApp
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
+import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.helper.LoginSocmedTestHelper
 import com.tokopedia.loginregister.login.helper.LoginSocmedTestHelper.Companion.LOGIN_SOCMED_TRACKER
 import com.tokopedia.loginregister.login.helper.LoginTestHelper.Companion.LOGIN_EMAIL_P1
@@ -33,6 +36,8 @@ import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.managepassword.forgotpassword.view.activity.ForgotPasswordActivity
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import io.mockk.coEvery
+import io.mockk.mockk
 import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
@@ -44,6 +49,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class LoginActivityTest {
 
+    lateinit var registerCheckUseCase: RegisterCheckUseCase
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(targetContext)
 
@@ -70,6 +76,28 @@ class LoginActivityTest {
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().toBlocking().first()
+        registerCheckUseCase = mockk( relaxed = true)
+    }
+
+    @Test
+    fun testRegisterCheck() {
+        val data = RegisterCheckData(isExist = false, userID = "0", registerType = "email")
+        val response = RegisterCheckPojo(data = data)
+
+        coEvery { registerCheckUseCase.executeOnBackground() } returns response
+        inputEditText("yoris.prayogo+3@tokopedia.com")
+        clickSubmit()
+
+        Thread.sleep(3000)
+//        runBlocking {
+//            val data = RegisterCheckData(isExist = false, userID = "0")
+//            val response = RegisterCheckPojo(data = data)
+//            whenever(registerCheckUseCase.executeOnBackground()).thenReturn(response)
+//
+//            inputEditText("yoris.prayogo+3@tokopedia.com")
+//            clickSubmit()
+//        }
+
     }
 
     @Test
