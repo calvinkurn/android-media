@@ -53,16 +53,18 @@ import kotlinx.android.synthetic.main.fragment_official_home.*
 import java.util.*
 import javax.inject.Inject
 
-class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<OfficialStoreCategoryComponent>,
+class OfficialHomeContainerFragment
+    : BaseDaggerFragment(),
+        HasComponent<OfficialStoreCategoryComponent>,
         AllNotificationListener,
         RecyclerViewScrollListener,
-        OSContainerListener{
+        OSContainerListener {
 
     companion object {
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeContainerFragment().apply { arguments = bundle }
-
         const val KEY_CATEGORY = "key_category"
+
         private const val EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
         private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
         private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
@@ -73,7 +75,6 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         OfficialHomeContainerAdapter(context, childFragmentManager)
     }
 
-    @Inject
     private var statusBar: View? = null
     private var mainToolbar: NavToolbar? = null
     private var toolbar: MainToolbar? = null
@@ -94,6 +95,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private lateinit var tracking: OfficialStoreTracking
     private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
     private lateinit var remoteConfig: RemoteConfig
+
+    @Inject
     lateinit var viewModel: OfficialStoreCategoryViewModel
 
     fun selectFirstTab() {
