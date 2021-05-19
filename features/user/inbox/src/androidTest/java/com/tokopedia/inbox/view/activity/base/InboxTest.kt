@@ -5,10 +5,15 @@ import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.inbox.fake.di.DaggerFakeInboxComponent
 import com.tokopedia.inbox.fake.di.FakeInboxComponent
+import com.tokopedia.inbox.fake.di.common.DaggerFakeBaseAppComponent
+import com.tokopedia.inbox.fake.di.common.FakeAppModule
+import com.tokopedia.inbox.fake.di.common.FakeBaseAppComponent
 import com.tokopedia.inbox.fake.view.activity.FakeInboxActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 
@@ -19,7 +24,6 @@ abstract class InboxTest {
     )
 
     protected lateinit var activity: FakeInboxActivity
-    protected lateinit var inboxComponent: FakeInboxComponent
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     protected val applicationContext: Context
@@ -29,6 +33,26 @@ abstract class InboxTest {
     @Before
     open fun before() {
         setupGraphqlMockResponse(InboxModelConfig())
+        setupDaggerBaseComponent()
+        setupInboxDaggerComponent()
+    }
+
+    @After
+    fun tearDown() {
+        baseComponent = null
+        inboxComponent = null
+    }
+
+    private fun setupDaggerBaseComponent() {
+        baseComponent = DaggerFakeBaseAppComponent.builder()
+                .fakeAppModule(FakeAppModule(applicationContext))
+                .build()
+    }
+
+    private fun setupInboxDaggerComponent() {
+        inboxComponent = DaggerFakeInboxComponent.builder()
+                .fakeBaseAppComponent(baseComponent)
+                .build()
     }
 
     protected fun setupInboxActivity(
@@ -48,6 +72,10 @@ abstract class InboxTest {
         Thread.sleep(timeMillis)
     }
 
+    companion object {
+        var baseComponent: FakeBaseAppComponent? = null
+        var inboxComponent: FakeInboxComponent? = null
+    }
 }
 
 /**
