@@ -50,9 +50,8 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
         val itemView = View.inflate(context,
                 R.layout.bottom_sheet_power_merchant_deactivation, null)
 
-        isFullpage = true
         setChild(itemView)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.PmBottomSheet)
+        setStyle(DialogFragment.STYLE_NORMAL, com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

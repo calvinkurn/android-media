@@ -88,8 +88,6 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
     private fun getCurrentPMGrade(currentPmGrade: CurrentPmGradeModel?): PMCurrentGradeUiModel? {
         currentPmGrade?.let {
             return PMCurrentGradeUiModel(
-                    shopLevel = it.shopLevel.orZero(),
-                    shopScore = it.shopScore.orZero(),
                     gradeName = it.gradeName.orEmpty(),
                     imgBadgeUrl = it.imgBadgeUrl.orEmpty(),
                     backgroundUrl = it.backgroundUrl.orEmpty()

@@ -121,7 +121,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginBottom="@dimen/layout_lvl3"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/guidelinePmShopGradeRight"
         app:layout_constraintStart_toStartOf="@+id/guidelinePmShopGradeLeft"

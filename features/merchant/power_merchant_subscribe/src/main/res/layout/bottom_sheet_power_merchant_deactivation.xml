@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl5">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -151,7 +151,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/power_merchant_horizontal_spacing_small"
-            android:layout_marginLeft="@dimen/power_merchant_horizontal_spacing_small"
             android:gravity="center_vertical"
             android:text="@string/power_merchant_free_shipping"
             android:textColor="@color/Unify_N700"

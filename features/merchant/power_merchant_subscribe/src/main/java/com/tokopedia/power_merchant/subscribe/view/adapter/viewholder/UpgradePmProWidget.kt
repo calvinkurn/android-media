@@ -1,16 +1,15 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
+import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.data.source.local.model.PMGradeBenefitUiModel
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.view.adapter.GradeBenefitAdapter
 import com.tokopedia.power_merchant.subscribe.view.adapter.RegistrationTermAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
@@ -21,7 +20,10 @@ import kotlinx.android.synthetic.main.widget_upgrade_pm_pro.view.*
  * Created By @ilhamsuaib on 10/05/21
  */
 
-class UpgradePmProWidget(itemView: View?) : AbstractViewHolder<WidgetUpgradePmProUiModel>(itemView) {
+class UpgradePmProWidget(
+        itemView: View?,
+        private val listener: Listener
+) : AbstractViewHolder<WidgetUpgradePmProUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.widget_upgrade_pm_pro
@@ -70,6 +72,7 @@ class UpgradePmProWidget(itemView: View?) : AbstractViewHolder<WidgetUpgradePmPr
             tvPmUpgradeBenefitDescription.text = getString(R.string.pm_pro_upgrade_eligible_description).parseAsHtml()
             tvPmProTncDescription.visible()
             btnPmProUpgrade.visible()
+            showTncMessage()
             setExpandedChanged(false)
         } else {
             val threshold = element.shopInfo.shopScorePmProThreshold
@@ -83,6 +86,27 @@ class UpgradePmProWidget(itemView: View?) : AbstractViewHolder<WidgetUpgradePmPr
         viewPmUpgradeTermSection.setOnSectionHeaderClickListener {
             setExpandedChanged(it)
         }
+
+        btnPmProUpgrade.isLoading = false
+        btnPmProUpgrade.setOnClickListener {
+            btnPmProUpgrade.isLoading = true
+            listener.onUpgradePmProClickListener(adapterPosition)
+        }
+    }
+
+    private fun showTncMessage() = with(itemView) {
+        val clickableText = "S&K"
+        val ctaTextColor = com.tokopedia.unifycomponents.R.color.Unify_G500
+        val termDescription = PowerMerchantSpannableUtil.createSpannableString(
+                text = context.getString(R.string.pm_pro_upgrade_tnc_description).parseAsHtml(),
+                highlightText = clickableText,
+                colorId = context.getResColor(ctaTextColor),
+                isBold = true
+        ) {
+            RouteManager.route(itemView.context, Constant.Url.POWER_MERCHANT_TERMS_AND_CONDITION)
+        }
+        tvPmProTncDescription.movementMethod = LinkMovementMethod.getInstance()
+        tvPmProTncDescription.text = termDescription
     }
 
     private fun setExpandedChanged(isExpanded: Boolean) = with(itemView) {
@@ -95,5 +119,9 @@ class UpgradePmProWidget(itemView: View?) : AbstractViewHolder<WidgetUpgradePmPr
             rvPmUpgradeTerms.gone()
             horLinePmUpgrade1.gone()
         }
+    }
+
+    interface Listener {
+        fun onUpgradePmProClickListener(adapterPosition: Int)
     }
 }

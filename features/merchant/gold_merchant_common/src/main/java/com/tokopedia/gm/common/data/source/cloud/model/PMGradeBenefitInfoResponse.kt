@@ -74,10 +74,6 @@ data class NextPMGradeModel(
 )
 
 data class CurrentPmGradeModel(
-        @SerializedName("shop_level")
-        val shopLevel: Int? = 0,
-        @SerializedName("shop_score")
-        val shopScore: Int? = 0,
         @SerializedName("grade_name")
         val gradeName: String? = "",
         @SerializedName("image_badge_url")

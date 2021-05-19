@@ -50,12 +50,12 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
     }
 
     private fun setupUpdateInfo(data: WidgetExpandableUiModel) {
-        val isUpdateInfoVisible = data.pmStatus == PMStatusConst.ACTIVE
+        val isUpdateInfoVisible = data.pmStatus == PMStatusConst.ACTIVE && data.isAutoExtendEnabled
         viewPmNextUpdateInfo.isVisible = isUpdateInfoVisible
 
         if (!isUpdateInfoVisible) return
 
-        tvPmUpdateDate.text = context.getString(R.string.pm_label_next_three_months_pm_grade_update, data.nextMonthlyCalDate)
+        tvPmUpdateDate.text = context.getString(R.string.pm_label_next_three_months_pm_grade_update, data.nextMonthlyRefreshDate)
         val ctaTextColor = com.tokopedia.unifyprinciples.R.color.Unify_G500
         val updateInfoDescription = if (data.isDowngradePeriod()) {
             context.getString(R.string.pm_update_info_pm_pro_transition_period_description_text)

@@ -1,6 +1,7 @@
 package com.tokopedia.gm.common.domain.interactor
 
 import com.tokopedia.gm.common.data.source.cloud.model.GoldActivationSubscription
+import com.tokopedia.gm.common.data.source.local.model.PMActivationStatusUiModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
@@ -13,17 +14,22 @@ import javax.inject.Inject
 
 class PowerMerchantActivateUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository
-) : BaseGqlUseCase<Boolean>() {
+) : BaseGqlUseCase<PMActivationStatusUiModel>() {
 
-    override suspend fun executeOnBackground(): Boolean {
+    override suspend fun executeOnBackground(): PMActivationStatusUiModel {
         val gqlRequest = GraphqlRequest(QUERY, GoldActivationSubscription::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val gqlErrors = gqlResponse.getError(GoldActivationSubscription::class.java)
         if (gqlErrors.isNullOrEmpty()) {
             val data: GoldActivationSubscription = gqlResponse.getData<GoldActivationSubscription>(GoldActivationSubscription::class.java)
-                    ?: throw NullPointerException("returns null from backend")
-            return data.isSuccess()
+                    ?: throw MessageErrorException("returns null from backend")
+            val errorMessage = data.goldActivationData.header.message.firstOrNull().orEmpty()
+            return PMActivationStatusUiModel(
+                    isSuccess = data.isSuccess(),
+                    errorMessage = errorMessage,
+                    currentShopTier = data.goldActivationData.data.shopTier
+            )
         } else {
             throw MessageErrorException(gqlErrors.firstOrNull()?.message.orEmpty())
         }

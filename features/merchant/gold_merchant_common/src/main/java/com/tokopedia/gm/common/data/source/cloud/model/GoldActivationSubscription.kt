@@ -9,7 +9,7 @@ data class GoldActivationSubscription(
         val goldActivationData: GMActivation = GMActivation()
 ) {
     fun isSuccess(): Boolean {
-        return goldActivationData.header.errorCode == ""
+        return goldActivationData.header.errorCode.isBlank()
     }
 }
 

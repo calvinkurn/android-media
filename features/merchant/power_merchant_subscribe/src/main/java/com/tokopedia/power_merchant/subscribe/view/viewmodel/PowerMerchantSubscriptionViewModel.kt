@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.gm.common.data.source.local.model.PMActivationStatusUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMGradeBenefitUseCase
 import com.tokopedia.gm.common.domain.interactor.PowerMerchantActivateUseCase
@@ -36,15 +37,15 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         get() = _pmActiveData
     val pmGradeBenefitInfo: LiveData<Result<List<PMGradeWithBenefitsUiModel>>>
         get() = _pmGradeBenefitInfo
-    val pmActivationStatus: LiveData<Result<Boolean>>
+    val pmActivationStatus: LiveData<Result<PMActivationStatusUiModel>>
         get() = _pmActivationStatus
-    val pmCancelDeactivationStatus: LiveData<Result<Boolean>>
+    val pmCancelDeactivationStatus: LiveData<Result<PMActivationStatusUiModel>>
         get() = _pmCancelDeactivationStatus
 
     private val _pmActiveData: MutableLiveData<Result<PMActiveDataUiModel>> = MutableLiveData()
     private val _pmGradeBenefitInfo: MutableLiveData<Result<List<PMGradeWithBenefitsUiModel>>> = MutableLiveData()
-    private val _pmActivationStatus: MutableLiveData<Result<Boolean>> = MutableLiveData()
-    private val _pmCancelDeactivationStatus: MutableLiveData<Result<Boolean>> = MutableLiveData()
+    private val _pmActivationStatus: MutableLiveData<Result<PMActivationStatusUiModel>> = MutableLiveData()
+    private val _pmCancelDeactivationStatus: MutableLiveData<Result<PMActivationStatusUiModel>> = MutableLiveData()
 
     fun getPmRegistrationData() {
         launchCatchError(block = {
