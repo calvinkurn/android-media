@@ -4,8 +4,6 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
@@ -34,12 +32,6 @@ open class LoginModule {
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher {
         return Main
-    }
-
-    @LoginScope
-    @Provides
-    fun provideCoroutineDispatchersProvider(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
     }
 
     @LoginScope

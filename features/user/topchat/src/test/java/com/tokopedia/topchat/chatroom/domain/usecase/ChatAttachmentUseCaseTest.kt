@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.domain.usecase
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.collection.ArrayMap
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.FileUtil
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
@@ -54,7 +55,10 @@ class ChatAttachmentUseCaseTest {
         // Given
         coEvery { gqlUseCase.executeOnBackground() } returns Dummy.successResponse
         // When
-        useCase.getAttachments(Dummy.msgId, Dummy.attachmentId, onSuccess, onError)
+        useCase.getAttachments(
+                Dummy.msgId, Dummy.attachmentId, LocalCacheModel(),
+                onSuccess, onError
+        )
         // Then
         verify { onSuccess.invoke(any()) }
     }
@@ -64,7 +68,9 @@ class ChatAttachmentUseCaseTest {
         // Given
         coEvery { gqlUseCase.executeOnBackground() } throws Dummy.throwable
         // When
-        useCase.getAttachments(Dummy.msgId, Dummy.attachmentId, onSuccess, onError)
+        useCase.getAttachments(
+                Dummy.msgId, Dummy.attachmentId, LocalCacheModel(), onSuccess, onError
+        )
         // Then
         verify { onError.invoke(Dummy.throwable, any()) }
     }

@@ -339,6 +339,8 @@ public interface ShipmentContract {
         ValidateUsePromoRequest getLastValidateUseRequest();
 
         String generateRatesMvcParam(String cartString);
+
+        void setCheckoutData(CheckoutData checkoutData);
     }
 
 }

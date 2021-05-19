@@ -53,6 +53,10 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                 config{
                   hasPromo
                   isReminderSet
+                  promo_labels {
+                    text
+                    type
+                  }
                 }
                 partner {
                   ID

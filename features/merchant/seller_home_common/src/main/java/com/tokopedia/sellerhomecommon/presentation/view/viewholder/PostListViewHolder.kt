@@ -51,7 +51,7 @@ class PostListViewHolder(
             data == null -> onLoading()
             data.error.isNotEmpty() -> {
                 onError(postListWidgetUiModel.title)
-                listener.setOnErrorWidget(adapterPosition, postListWidgetUiModel)
+                listener.setOnErrorWidget(adapterPosition, postListWidgetUiModel, data.error)
             }
             else -> onSuccessLoadData(postListWidgetUiModel)
         }

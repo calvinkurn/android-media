@@ -34,11 +34,9 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.customer_mid_app.R;
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -53,6 +51,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
+import com.tokopedia.applink.travel.DeeplinkMapperTravel;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -61,7 +60,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import rx.Subscriber;
 import timber.log.Timber;
@@ -101,10 +99,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     @Inject
     UserSessionInterface userSession;
-
-    @Inject
-    @Named("productUseCase")
-    GraphqlUseCase<ProductInfo.Response> getProductUseCase;
 
     public DeepLinkPresenterImpl(DeepLinkActivity activity) {
         this.viewListener = activity;
@@ -368,7 +362,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         List<String> linkSegment = uri.getPathSegments();
         if (linkSegment.size() > 1) {
             if (linkSegment.get(1).equals("search")) {
-                RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_SRP + "?" + uri.getQuery());
+                DeeplinkMapperTravel.getRegisteredNavigationTravel(context, uri.toString());
                 context.finish();
             } else if (linkSegment.size() >= 4 && linkSegment.get(2).equals("h")) {
                 // eg : https://www.tokopedia.com/hotel/Indonesia/h/the-apurva-kempinski-bali-960088/
@@ -673,7 +667,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
                         Intent productIntent = RouteManager.getIntent(context,
                                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE,
-                                uriData,
                                 linkSegment.get(0),
                                 linkSegment.get(1),
                                 affiliateString);

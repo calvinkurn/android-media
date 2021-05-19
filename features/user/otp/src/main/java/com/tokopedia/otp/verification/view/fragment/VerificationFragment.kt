@@ -14,24 +14,21 @@ import android.text.SpannableString
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.util.TypedValue
 import android.view.View
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.gms.auth.api.phone.SmsRetrieverClient
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
@@ -42,9 +39,6 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Screen.SCREEN_ACCO
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.VerificationPref
-import com.tokopedia.otp.verification.common.util.PhoneCallBroadcastReceiver
-import com.tokopedia.otp.verification.common.util.SmsBroadcastReceiver
-import com.tokopedia.otp.verification.common.util.SmsBroadcastReceiver.ReceiveSMSListener
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
@@ -54,13 +48,9 @@ import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.viewbinding.VerificationViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.pin.PinUnify
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.permission.PermissionCheckerHelper
-import java.lang.Exception
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -68,7 +58,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 02/06/20.
  */
 
-open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCallBroadcastReceiver.OnCallStateChange {
+open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     @Inject
     lateinit var analytics: TrackingOtpUtil
@@ -79,29 +69,19 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var smsBroadcastReceiver: SmsBroadcastReceiver
-
-    @Inject
-    lateinit var phoneCallBroadcastReceiver: PhoneCallBroadcastReceiver
-
-    @Inject
-    lateinit var smsRetrieverClient: SmsRetrieverClient
-
-    private lateinit var otpData: OtpData
+    protected lateinit var otpData: OtpData
     private lateinit var modeListData: ModeListData
     private lateinit var countDownTimer: CountDownTimer
 
     private var isRunningCountDown = false
     private var isFirstSendOtp = true
-    private var isMoreThanOneMethod = true
+    protected var isMoreThanOneMethod = true
 
     private var tempOtp: CharSequence? = null
     private var indexTempOtp = 0
     private val delayAnimateText: Long = 350
 
-    private var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
-    private var handler: Handler? = null
+    private var handler: Handler = Handler()
 
     private val characterAdder: Runnable = object : Runnable {
         override fun run() {
@@ -114,15 +94,14 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
         }
     }
 
-    private val viewModel by lazy {
+    protected val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(VerificationViewModel::class.java)
     }
 
     override val viewBound = VerificationViewBinding()
-  
+
     override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
-  
-    private val permissionCheckerHelper = PermissionCheckerHelper()
+
 
     override fun getScreenName() = when (otpData.otpType) {
         OtpConstant.OtpType.REGISTER_EMAIL -> SCREEN_ACCOUNT_ACTIVATION
@@ -135,8 +114,10 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
         super.onCreate(savedInstanceState)
         otpData = arguments?.getParcelable(OtpConstant.OTP_DATA_EXTRA) ?: OtpData()
         modeListData = arguments?.getParcelable(OtpConstant.OTP_MODE_EXTRA) ?: ModeListData()
-        viewModel.isLoginRegisterFlow = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW)?: false
-        isMoreThanOneMethod = arguments?.getBoolean(OtpConstant.IS_MORE_THAN_ONE_EXTRA, true) ?: true
+        viewModel.isLoginRegisterFlow = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW)
+                ?: false
+        isMoreThanOneMethod = arguments?.getBoolean(OtpConstant.IS_MORE_THAN_ONE_EXTRA, true)
+                ?: true
         activity?.runOnUiThread {
             handler = Handler()
         }
@@ -146,10 +127,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
         super.onViewCreated(view, savedInstanceState)
         initView()
         initObserver()
-        if (!(modeListData.modeText == OtpConstant.OtpMode.PIN || modeListData.modeText == OtpConstant.OtpMode.GOOGLE_AUTH)) {
-            smsRetrieverClient.startSmsRetriever()
-            sendOtp()
-        }
     }
 
     override fun onStart() {
@@ -159,38 +136,11 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
 
     override fun onResume() {
         super.onResume()
-        context?.let {
-            if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                registerIncomingPhoneCall(it)
-            } else {
-                smsBroadcastReceiver.register(it, getOtpReceiverListener())
-            }
-        }
         showKeyboard()
-    }
-
-    private fun registerIncomingPhoneCall(it: Context) {
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
-        val disableAutoReadMissCall = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_DISABLE_AUTOREAD_MISSCALL, false)
-        if (disableAutoReadMissCall) {
-            return
-        }
-        if (permissionCheckerHelper.hasPermission(it, getPermissions())) {
-            phoneCallBroadcastReceiver.registerReceiver(it, this)
-        } else {
-            sendLogTracker("PhoneCallBroadcastReceiver not registered; permission=${permissionCheckerHelper.hasPermission(it, getPermissions())}")
-        }
     }
 
     override fun onPause() {
         super.onPause()
-        if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) {
-            if (::phoneCallBroadcastReceiver.isInitialized){
-                activity?.let { phoneCallBroadcastReceiver.unregisterReceiver(it) }
-            }
-        } else {
-            if (::smsBroadcastReceiver.isInitialized) activity?.unregisterReceiver(smsBroadcastReceiver)
-        }
         hideKeyboard()
     }
 
@@ -211,16 +161,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
         return true
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            context?.let {
-                permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
-            }
-        }
-    }
-
-    private fun sendOtp() {
+    protected fun sendOtp() {
         if (isCountdownFinished()) {
             viewModel.sendOtp(
                     otpType = otpData.otpType.toString(),
@@ -236,7 +177,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
         }
     }
 
-    private fun validate(code: String) {
+    protected fun validate(code: String) {
         when (otpData.otpType) {
             OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
                 analytics.trackClickVerificationRegisterPhoneButton()
@@ -263,49 +204,46 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
     private fun initObserver() {
         viewModel.sendOtpResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessSendOtp().invoke(it.data)
+                is Success -> onSuccessSendOtp(it.data)
                 is Fail -> onFailedSendOtp().invoke(it.throwable)
             }
         })
         viewModel.otpValidateResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessOtpValidate().invoke(it.data)
+                is Success -> onSuccessOtpValidate(it.data)
                 is Fail -> onFailedOtpValidate().invoke(it.throwable)
             }
         })
     }
 
-    private fun onSuccessSendOtp(): (OtpRequestData) -> Unit {
-        return { otpRequestData ->
-            when {
-                otpRequestData.success -> {
-                    if (!isFirstSendOtp) {
-                        when (otpData.otpType) {
-                            OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
-                                analytics.trackSuccessClickResendRegisterPhoneOtpButton()
-                            }
-                            OtpConstant.OtpType.REGISTER_EMAIL -> {
-                                analytics.trackSuccessClickResendRegisterEmailOtpButton()
-                            }
+    open fun onSuccessSendOtp(otpRequestData: OtpRequestData) {
+        when {
+            otpRequestData.success -> {
+                if (!isFirstSendOtp) {
+                    when (otpData.otpType) {
+                        OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                            analytics.trackSuccessClickResendRegisterPhoneOtpButton()
+                        }
+                        OtpConstant.OtpType.REGISTER_EMAIL -> {
+                            analytics.trackSuccessClickResendRegisterEmailOtpButton()
                         }
                     }
-                    setPrefixMiscall(otpRequestData.prefixMisscall)
-                    startCountDown()
-                    viewBound.containerView?.let {
-                        Toaster.make(it, otpRequestData.message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-                    }
                 }
-                otpRequestData.errorMessage.isNotEmpty() -> {
-                    onFailedSendOtp().invoke(MessageErrorException(otpRequestData.errorMessage))
-                }
-                else -> {
-                    onFailedSendOtp().invoke(Throwable())
+                startCountDown()
+                viewBound.containerView?.let {
+                    Toaster.make(it, otpRequestData.message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                 }
             }
-
-            isFirstSendOtp = false
-            showKeyboard()
+            otpRequestData.errorMessage.isNotEmpty() -> {
+                onFailedSendOtp().invoke(MessageErrorException(otpRequestData.errorMessage))
+            }
+            else -> {
+                onFailedSendOtp().invoke(Throwable())
+            }
         }
+
+        isFirstSendOtp = false
+        showKeyboard()
     }
 
     private fun onFailedSendOtp(): (Throwable) -> Unit {
@@ -332,52 +270,55 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
         }
     }
 
-    private fun onSuccessOtpValidate(): (OtpValidateData) -> Unit {
-        return { otpValidateData ->
-            when {
-                otpValidateData.success -> {
-                    viewModel.done = true
-                    when (otpData.otpType) {
-                        OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
-                            analytics.trackSuccessClickVerificationRegisterPhoneButton()
-                        }
-                        OtpConstant.OtpType.REGISTER_EMAIL -> {
-                            analytics.trackSuccessClickVerificationRegisterEmailButton()
-                        }
-                    }
-                    resetCountDown()
-
-                    activity?.let { activity ->
-                        val bundle = Bundle().apply {
-                            putString(ApplinkConstInternalGlobal.PARAM_UUID, otpValidateData.validateToken)
-                            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, otpValidateData.validateToken)
-                            putString(ApplinkConstInternalGlobal.PARAM_MSISDN, otpData.msisdn)
-                            putString(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
-                            putString(ApplinkConstInternalGlobal.PARAM_SOURCE, otpData.source)
-                            putString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, viewBound.pin?.value.toString())
-                        }
-                        if ((activity as VerificationActivity).isResetPin2FA) {
-                            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
-                                bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true)
-                                bundle.putString(ApplinkConstInternalGlobal.PARAM_USER_ID, otpData.userId)
-                                putExtras(bundle)
-                            }
-                            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-                            activity.startActivity(intent)
-                        } else {
-                            activity.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
-                        }
-                        activity.finish()
-                    }
+    private fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {
+        when {
+            otpValidateData.success -> {
+                viewModel.done = true
+                trackSuccess()
+                resetCountDown()
+                val bundle = Bundle().apply {
+                    putString(ApplinkConstInternalGlobal.PARAM_UUID, otpValidateData.validateToken)
+                    putString(ApplinkConstInternalGlobal.PARAM_TOKEN, otpValidateData.validateToken)
+                    putString(ApplinkConstInternalGlobal.PARAM_MSISDN, otpData.msisdn)
+                    putString(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
+                    putString(ApplinkConstInternalGlobal.PARAM_SOURCE, otpData.source)
+                    putString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, viewBound.pin?.value.toString())
                 }
-                otpValidateData.errorMessage.isNotEmpty() -> {
-                    onFailedOtpValidate().invoke(MessageErrorException(otpValidateData.errorMessage))
-                }
-                else -> {
-                    onFailedOtpValidate().invoke(Throwable())
-                }
+                redirectAfterValidationSuccessful(bundle)
+            }
+            otpValidateData.errorMessage.isNotEmpty() -> {
+                onFailedOtpValidate().invoke(MessageErrorException(otpValidateData.errorMessage))
+            }
+            else -> {
+                onFailedOtpValidate().invoke(Throwable())
             }
         }
+    }
+
+    private fun trackSuccess() {
+        when (otpData.otpType) {
+            OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                analytics.trackSuccessClickVerificationRegisterPhoneButton()
+            }
+            OtpConstant.OtpType.REGISTER_EMAIL -> {
+                analytics.trackSuccessClickVerificationRegisterEmailButton()
+            }
+        }
+    }
+
+    private fun redirectAfterValidationSuccessful(bundle: Bundle) {
+        if ((activity as VerificationActivity).isResetPin2FA) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
+                bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true)
+                bundle.putString(ApplinkConstInternalGlobal.PARAM_USER_ID, otpData.userId)
+                putExtras(bundle)
+            }
+            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+            activity?.startActivity(intent)
+        } else {
+            activity?.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
+        }
+        activity?.finish()
     }
 
     private fun onFailedOtpValidate(): (Throwable) -> Unit {
@@ -397,14 +338,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
             }
             viewBound.pin?.isError = true
             showKeyboard()
-        }
-    }
-
-    private fun getOtpReceiverListener(): ReceiveSMSListener {
-        return object : ReceiveSMSListener {
-            override fun onReceiveOTP(otpCode: String) {
-                animateText(otpCode)
-            }
         }
     }
 
@@ -448,26 +381,10 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
         verificationPref.hasTimer = false
     }
 
-    private fun initView() {
-
-        setPrefixMiscall()
-
-        if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) {
-            viewBound.prefixTextMethodIcon?.visible()
-            val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 270f, resources.displayMetrics)
-            viewBound.methodIcon?.layoutParams.apply {
-                this?.height = height.toInt()
-                this?.width = WRAP_CONTENT
-                viewBound.methodIcon?.layoutParams = this
-            }
-            viewBound.methodIcon?.setMargin(0, 0, 0, 0)
-            viewBound.methodIcon?.setImageUrl(MISSCALL_IMAGE_URL)
+    open fun initView() {
+        if (modeListData.otpListImgUrl.isNotEmpty()) {
+            viewBound.methodIcon?.setImageUrl(modeListData.otpListImgUrl)
             viewBound.methodIcon?.scaleType = ImageView.ScaleType.FIT_CENTER
-        } else {
-            if (modeListData.otpListImgUrl.isNotEmpty()) {
-                viewBound.methodIcon?.setImageUrl(modeListData.otpListImgUrl)
-                viewBound.methodIcon?.scaleType = ImageView.ScaleType.FIT_CENTER
-            }
         }
 
         if (modeListData.afterOtpListTextHtml.isNotEmpty()) {
@@ -475,10 +392,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
         }
 
         viewBound.pin?.pinCount = modeListData.otpDigit
-
-        if (modeListData.modeText == OtpConstant.OtpMode.PIN) {
-            viewBound.pin?.type = PinUnify.TYPE_HIDDEN
-        }
 
         viewBound.pin?.pinPrimaryActionView?.hide()
 
@@ -527,37 +440,15 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
         }
     }
 
-    private fun setFooterText() {
+    open fun setFooterText(spannable: Spannable? = SpannableString("")) {
         context?.let {
-            var spannable: Spannable = SpannableString("")
-            if (otpData.otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE) {
-                val message = getString(R.string.forgot_pin)
-                spannable = SpannableString(message)
-                setForgotPinFooterSpan(message, spannable)
-            } else if (modeListData.modeText == OtpConstant.OtpMode.PIN ||
-                    modeListData.modeText == OtpConstant.OtpMode.GOOGLE_AUTH) {
-                if (otpData.canUseOtherMethod && isMoreThanOneMethod) {
-                    val message = it.getString(R.string.login_with_other_method)
-                    spannable = SpannableString(message)
-                    setOtherMethodPinFooterSpan(message, spannable)
-                }
-            } else if (otpData.canUseOtherMethod && isMoreThanOneMethod) {
-                val message = it.getString(R.string.validation_resend_email_or_with_other_method)
-                spannable = SpannableString(message)
-                setResendOtpFooterSpan(message, spannable)
-                setOtherMethodFooterSpan(message, spannable)
-            } else {
-                val message = it.getString(R.string.validation_resend_email)
-                spannable = SpannableString(message)
-                setResendOtpFooterSpan(message, spannable)
-            }
             viewBound.pin?.pinMessageView?.visible()
             viewBound.pin?.pinMessageView?.movementMethod = LinkMovementMethod.getInstance()
             viewBound.pin?.pinMessageView?.setText(spannable, TextView.BufferType.SPANNABLE)
         }
     }
 
-    private fun setResendOtpFooterSpan(message: String, spannable: Spannable) {
+    protected fun setResendOtpFooterSpan(message: String, spannable: Spannable) {
 
         val otpMsg = getString(R.string.resend_otp)
         val start = message.indexOf(otpMsg)
@@ -597,29 +488,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
         )
     }
 
-    private fun setForgotPinFooterSpan(message: String, spannable: Spannable) {
-        spannable.setSpan(
-                object : ClickableSpan() {
-                    override fun onClick(view: View) {
-                        viewModel.done = true
-                        val data = otpData
-                        data.otpType = OtpConstant.OtpType.RESET_PIN
-                        data.otpMode = ""
-                        (activity as VerificationActivity).goToMethodPageResetPin(data)
-                    }
-
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
-                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                    }
-                },
-                message.indexOf(getString(R.string.forgot_pin)),
-                message.indexOf(getString(R.string.forgot_pin)) + getString(R.string.forgot_pin).length,
-                0
-        )
-    }
-
-    private fun setOtherMethodFooterSpan(message: String, spannable: Spannable) {
+    protected fun setOtherMethodFooterSpan(message: String, spannable: Spannable) {
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
@@ -639,7 +508,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
         )
     }
 
-    private fun setOtherMethodPinFooterSpan(message: String, spannable: Spannable) {
+    protected fun setOtherMethodPinFooterSpan(message: String, spannable: Spannable) {
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
@@ -667,78 +536,11 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, Phon
         viewBound.pin?.pinMessage = MethodChecker.fromHtml(text)
     }
 
-    private fun setPrefixMiscall(prefix: String = DEFAULT_PREFIX_MISCALL) {
-        if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) {
-            viewBound.prefixTextMethodIcon?.text = prefix
-            viewBound.pin?.pinPrefixText = prefix
-        }
-    }
-
-    override fun onIncomingCallStart(phoneNumber: String) {
-        autoFillPhoneNumber(phoneNumber)
-    }
-
-    override fun onMissedCall(phoneNumber: String) {
-        autoFillPhoneNumber(phoneNumber)
-    }
-
-    override fun onIncomingCallEnded(phoneNumber: String) {
-        autoFillPhoneNumber(phoneNumber)
-    }
-
-    private fun autoFillPhoneNumber(number: String) {
-        val phoneHint = replaceRegionPhoneCode(viewBound.pin?.pinPrefixText.toString())
-        var phoneNumber = replaceRegionPhoneCode(number)
-
-        if (phoneNumber.contains(phoneHint)) {
-            phoneNumber = phoneNumber.substring(phoneNumber.length - 4, phoneNumber.length)
-            viewBound.pin?.value = phoneNumber
-            validate(phoneNumber)
-        }
-    }
-
-    private fun replaceRegionPhoneCode(phoneNumber: String): String {
-        val regionRegex = Regex(REGEX_PHONE_NUMBER_REGION)
-        val symbolRegex = Regex(REGEX_PHONE_NUMBER)
-        var result = phoneNumber
-
-        if (phoneNumber.contains(regionRegex)) {
-            result = phoneNumber.replace(regionRegex, "0")
-        }
-
-        return result.replace(symbolRegex, "")
-    }
-
-    private fun getPermissions(): Array<String> {
-        return arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_READ_CALL_LOG,
-                PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
-                PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE
-        )
-    }
-
-    private fun sendLogTracker(message: String) {
-        try {
-            crashlytics.recordException(Throwable(message))
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
     companion object {
-
-        private const val DEFAULT_PREFIX_MISCALL = "000-00"
-        private const val MISSCALL_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/otp_miscall_img.png"
-
         private const val INTERVAL = 1000
         private const val COUNTDOWN_LENGTH = 30
 
-        private const val REGEX_PHONE_NUMBER = """[+()\-\s]"""
-        private const val REGEX_PHONE_NUMBER_REGION = "^(\\+\\d{1,2})"
-
-        private const val REMOTE_CONFIG_KEY_DISABLE_AUTOREAD_MISSCALL = "android_disable_autoread_misscall"
-
-        fun createInstance(bundle: Bundle?): Fragment {
+        fun createInstance(bundle: Bundle?): VerificationFragment {
             val fragment = VerificationFragment()
             fragment.arguments = bundle ?: Bundle()
             return fragment

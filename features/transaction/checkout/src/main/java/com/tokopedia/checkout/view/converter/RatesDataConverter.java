@@ -87,7 +87,7 @@ public class RatesDataConverter {
         shipmentCartData.setDestinationLongitude(!UtilsKt.isNullOrEmpty(userAddress.getLongitude()) ?
                 userAddress.getLongitude() : null);
         shipmentCartData.setDestinationPostalCode(userAddress.getPostalCode());
-        shipmentCartData.setOriginDistrictId(String.valueOf(groupShop.getShop().getDistrictId()));
+        shipmentCartData.setOriginDistrictId(groupShop.getShop().getDistrictId());
         shipmentCartData.setOriginLatitude(!UtilsKt.isNullOrEmpty(groupShop.getShop().getLatitude()) ?
                 groupShop.getShop().getLatitude() : null);
         shipmentCartData.setOriginLongitude(!UtilsKt.isNullOrEmpty(groupShop.getShop().getLongitude()) ?

@@ -8,6 +8,6 @@ object PasswordUtils {
     fun isValidPassword(password: String): Boolean = password.isNotEmpty() && isValidMinimumLength(password) && isValidMaxLength(password)
     fun isValidMinimumLength(password: String): Boolean = password.length >= PASSWORD_MINIMUM_LENGTH
     fun isValidMaxLength(password: String): Boolean = password.length <= PASSWORD_MAXIMUM_LENGTH
-    fun isTooShortLength(password: String): Boolean = password.length <= PASSWORD_MINIMUM_LENGTH
-    fun isExceedMaximumLength(password: String): Boolean = password.length >= PASSWORD_MAXIMUM_LENGTH
+    fun isTooShortLength(password: String): Boolean = password.length < PASSWORD_MINIMUM_LENGTH
+    fun isExceedMaximumLength(password: String): Boolean = password.length > PASSWORD_MAXIMUM_LENGTH
 }
