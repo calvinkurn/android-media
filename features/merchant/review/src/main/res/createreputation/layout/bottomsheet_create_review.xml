@@ -147,6 +147,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/review_form_progress_bar_divider" />
 
+        <include
+            android:id="@+id/shimmering_create_review_form"
+            layout="@layout/bottomsheet_create_review_loading"
+            android:visibility="visible"
+            tools:visibility="gone"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.core.widget.NestedScrollView>

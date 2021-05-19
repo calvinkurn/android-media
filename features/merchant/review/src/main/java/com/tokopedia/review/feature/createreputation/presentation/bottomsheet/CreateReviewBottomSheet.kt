@@ -60,14 +60,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         ImageClickListener, ReviewTemplateListener {
 
     companion object {
-        fun createInstance(rating: Int, productId: Long, reputationId: Long, feedbackId: Long, utmSource: String, isEditMode: Boolean): CreateReviewBottomSheet {
+        fun createInstance(rating: Int, productId: Long, reputationId: Long, utmSource: String): CreateReviewBottomSheet {
             return CreateReviewBottomSheet().apply {
                 this.rating = rating
                 this.productId = productId
                 this.reputationId = reputationId
-                this.feedbackId = feedbackId
                 this.utmSource = utmSource
-                this.isEditMode = isEditMode
             }
         }
     }
@@ -88,6 +86,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var anonymousOption: CreateReviewAnonymousOption? = null
     private var progressBar: CreateReviewProgressBar? = null
     private var submitButton: UnifyButton? = null
+    private var loadingView: View? = null
     private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
 
     private var rating: Int = 0
@@ -120,16 +119,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews()
+        showLoading()
         setOnTouchOutsideListener()
-        if (isEditMode) {
-            observeReviewDetail()
-            getReviewDetailData()
-        } else {
-            observeGetForm()
-            observeIncentive()
-            getForm()
-            getIncentiveOvoData()
-        }
+        observeGetForm()
+        observeIncentive()
+        getForm()
+        getIncentiveOvoData()
         observeSubmitReview()
         observeTemplates()
         observeButtonState()
@@ -280,6 +275,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         anonymousOption = view?.findViewById(R.id.review_form_anonymous_option)
         progressBar = view?.findViewById(R.id.review_form_progress_bar_widget)
         submitButton = view?.findViewById(R.id.review_form_submit_button)
+        loadingView = view?.findViewById(R.id.shimmering_create_review_form)
     }
 
     private fun setRatingClickListener() {
@@ -317,10 +313,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         createReviewViewModel.getProductIncentiveOvo(productId, reputationId)
     }
 
-    private fun getReviewDetailData() {
-        createReviewViewModel.getReviewDetails(feedbackId)
-    }
-
     private fun getTemplates() {
         createReviewViewModel.getReviewTemplates(productId)
     }
@@ -348,22 +340,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             when (it) {
                 is Success -> onSuccessGetTemplate(it.data)
                 is Fail -> onFailGetTemplate(it.throwable)
-            }
-        })
-    }
-
-    private fun observeReviewDetail() {
-        createReviewViewModel.reviewDetails.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is com.tokopedia.review.common.data.Success -> {
-
-                }
-                is com.tokopedia.review.common.data.Fail -> {
-
-                }
-                is com.tokopedia.review.common.data.LoadingView -> {
-
-                }
             }
         })
     }
@@ -397,6 +373,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
+        hideLoading()
         with(data.productrevGetForm) {
             when {
                 !validToReview -> {
@@ -462,12 +439,11 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun setProductDetail(data: ProductData) {
-        productCard?.setProduct(data)
-    }
-
-    private fun setProductOnClickListener() {
-        productCard?.setOnClickListener {
-            goToPdp()
+        productCard?.apply {
+            setProduct(data)
+            setOnClickListener {
+                goToPdp()
+            }
         }
     }
 
@@ -492,6 +468,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun goToPdp() {
+        dismiss()
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId.toString())
     }
 
@@ -510,7 +487,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun onErrorGetReviewForm(throwable: Throwable) {
-
+        logToCrashlytics(throwable)
+        finishIfRoot()
     }
 
     private fun updateTitleBasedOnSelectedRating(position: Int) {
@@ -727,5 +705,13 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             dismiss()
             finish()
         }
+    }
+
+    private fun showLoading() {
+        loadingView?.show()
+    }
+
+    private fun hideLoading() {
+        loadingView?.hide()
     }
 }

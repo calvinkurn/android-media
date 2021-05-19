@@ -196,7 +196,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     private fun showWriteFormBottomSheet() {
-        createReviewBottomSheet = CreateReviewBottomSheet.createInstance(rating, productId.toLongOrZero(), reputationId.toLongOrZero(), feedbackId, utmSource, isEditMode)
+        createReviewBottomSheet = CreateReviewBottomSheet.createInstance(rating, productId.toLongOrZero(), reputationId.toLongOrZero(), utmSource)
         createReviewBottomSheet?.apply {
             isDragable = true
             isHideable = true
