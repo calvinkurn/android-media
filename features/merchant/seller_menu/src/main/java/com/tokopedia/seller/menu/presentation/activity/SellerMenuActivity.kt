@@ -23,7 +23,10 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        (fragment as? SellerMenuFragment)?.onNewIntent(intent?.data)
+        val sellerMenuLifecycleState = (fragment as? SellerMenuFragment)?.lifecycle?.currentState
+        if (sellerMenuLifecycleState?.isAtLeast(Lifecycle.State.CREATED) == true) {
+            (fragment as? SellerMenuFragment)?.onNewIntent(intent?.data)
+        }
     }
 
     override fun getNewFragment(): Fragment? {

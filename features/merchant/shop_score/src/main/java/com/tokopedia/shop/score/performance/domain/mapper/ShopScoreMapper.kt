@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.constant.NEW_SELLER_DAYS
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
-import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
@@ -168,34 +167,31 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     }
 
                     if (shopAge >= SHOP_AGE_SIXTY) {
-                        if (isNewSellerProjection) {
-                            add(mapToItemPMUiModel(isNewSeller, isNewSellerProjection))
-                            return@apply
-                        } else {
-                            when (isEligiblePMPro) {
-                                true -> {
-                                    add(mapToSectionPMPro(shopInfoPeriodUiModel))
-                                    return@apply
-                                }
-                                else -> {
-                                    add(mapToItemPMUiModel(isNewSeller, isNewSellerProjection))
-                                    return@apply
-                                }
+                        when (isEligiblePMPro) {
+                            true -> {
+                                add(mapToSectionPMPro(shopInfoPeriodUiModel))
+                                return@apply
+                            }
+                            else -> {
+                                add(mapToItemPMUiModel(isNewSeller, isNewSellerProjection))
+                                return@apply
                             }
                         }
                     }
                 }
                 else -> {
-                    if (isNewSellerProjection) {
-                        add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerProjection))
-                        return@apply
-                    } else {
-                        if (isEligiblePM == true) {
+                    if (shopAge >= SHOP_AGE_SIXTY) {
+                        if (isNewSellerProjection) {
                             add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerProjection))
                             return@apply
                         } else {
-                            add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
-                            return@apply
+                            if (isEligiblePM == true) {
+                                add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerProjection))
+                                return@apply
+                            } else {
+                                add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
+                                return@apply
+                            }
                         }
                     }
                 }
@@ -403,8 +399,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             val sortShopScoreLevelParam = sortItemDetailPerformanceFormatted(shopScoreLevelFilter)
             sortShopScoreLevelParam.forEachIndexed { index, shopScoreDetail ->
 
-                val minValueFormattedPercent = (shopScoreDetail.nextMinValue * ONE_HUNDRED_PERCENT).roundToInt()
-                val roundNextMinValue = shopScoreDetail.nextMinValue.roundToInt()
+                val minValueFormattedPercent = (shopScoreDetail.nextMinValue * ONE_HUNDRED_PERCENT)
+                val roundNextMinValue = shopScoreDetail.nextMinValue
 
                 val (targetDetailPerformanceText, parameterItemDetailPerformance) =
                         when (shopScoreDetail.identifier) {
@@ -415,27 +411,30 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                 Pair("$minValueFormattedPercent$percentText", percentText)
                             }
                             TOTAL_BUYER_KEY -> {
-                                Pair("$roundNextMinValue $peopleText", peopleText)
+                                Pair("${roundNextMinValue.roundToInt()} $peopleText", peopleText)
                             }
                             OPEN_TOKOPEDIA_SELLER_KEY -> {
-                                Pair("$roundNextMinValue $dayText", dayText)
+                                Pair("${roundNextMinValue.roundToInt()} $dayText", dayText)
                             }
                             else -> Pair("-", "")
                         }
 
                 val rawValueFormatted =
-                        if (shopScoreDetail.rawValue.roundToInt().isLessThanZero()) {
+                        if (shopScoreDetail.rawValue < 0.0) {
                             "-"
                         } else {
-                        when (shopScoreDetail.identifier) {
-                            ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY -> {
-                                (shopScoreDetail.rawValue * ONE_HUNDRED_PERCENT).roundToInt().toString()
-                            }
-                            else -> {
-                                shopScoreDetail.rawValue.roundToInt().toString()
+                            when (shopScoreDetail.identifier) {
+                                ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY -> {
+                                    (shopScoreDetail.rawValue * ONE_HUNDRED_PERCENT).toString()
+                                }
+                                TOTAL_BUYER_KEY, OPEN_TOKOPEDIA_SELLER_KEY -> {
+                                    shopScoreDetail.rawValue.roundToInt().toString()
+                                }
+                                else -> {
+                                    shopScoreDetail.rawValue.toString()
+                                }
                             }
                         }
-                }
 
                 add(ItemDetailPerformanceUiModel(
                         titleDetailPerformance = shopScoreDetail.title,
@@ -489,7 +488,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
     private fun mapToSectionPeriodDetailPerformanceUiModel(shopScoreTooltipResponse: ShopLevelTooltipResponse.ShopLevel.Result?, isNewSeller: Boolean): PeriodDetailPerformanceUiModel {
         return PeriodDetailPerformanceUiModel(period = shopScoreTooltipResponse?.period
-                ?: "-", nextUpdate = shopScoreTooltipResponse?.nextUpdate ?: "-", isNewSeller = isNewSeller)
+                ?: "-", nextUpdate = shopScoreTooltipResponse?.nextUpdate
+                ?: "-", isNewSeller = isNewSeller)
     }
 
     private fun mapToTransitionPeriodReliefUiModel(endDate: String): TransitionPeriodReliefUiModel {
