@@ -23,8 +23,8 @@ public class TemplateChatSettingTypeFactoryImpl extends BaseAdapterTypeFactory i
 
     TemplateChatContract.View viewListener;
 
-    public TemplateChatSettingTypeFactoryImpl(TemplateChatFragment context) {
-        this.viewListener = context;
+    public TemplateChatSettingTypeFactoryImpl(TemplateChatContract.View listener) {
+        this.viewListener = listener;
     }
 
     @Override
