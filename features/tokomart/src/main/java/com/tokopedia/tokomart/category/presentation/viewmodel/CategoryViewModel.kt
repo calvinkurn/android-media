@@ -3,7 +3,8 @@ package com.tokopedia.tokomart.category.presentation.viewmodel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
-import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
+import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
+import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokomart.category.utils.CATEGORY_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokomart.category.utils.CATEGORY_ID
 import com.tokopedia.tokomart.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CASE
@@ -64,7 +65,18 @@ class CategoryViewModel @Inject constructor (
     }
 
     override fun createFooterVisitableList() = listOf(
-            CategoryIsleDataView(),
+            CategoryAisleDataView(
+                    listOf(
+                            CategoryAisleItemDataView(
+                                    "Daging & Seafood",
+                                    "https://thefatkidinside.com/wp-content/uploads/2019/08/jakarta-header-716x375.jpg"
+                            ),
+                            CategoryAisleItemDataView(
+                                    "Makanan Kering",
+                                    "https://thefatkidinside.com/wp-content/uploads/2019/08/jakarta-header-716x375.jpg"
+                            )
+                    )
+            ),
     )
 
     override fun executeLoadMore() {

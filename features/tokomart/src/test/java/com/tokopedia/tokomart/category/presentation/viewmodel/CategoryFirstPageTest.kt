@@ -1,9 +1,7 @@
 package com.tokopedia.tokomart.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
-import com.tokopedia.tokomart.category.presentation.model.CategoryIsleDataView
 import com.tokopedia.tokomart.searchcategory.assertBannerDataView
 import com.tokopedia.tokomart.searchcategory.assertCategoryFilterDataView
 import com.tokopedia.tokomart.searchcategory.assertChooseAddressDataView
@@ -13,9 +11,6 @@ import com.tokopedia.tokomart.searchcategory.assertTitleDataView
 import com.tokopedia.tokomart.searchcategory.jsonToObject
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.verifyProductItemDataViewList
-import io.mockk.every
-import org.hamcrest.CoreMatchers.instanceOf
-import org.junit.Assert.assertThat
 import org.junit.Test
 
 class CategoryFirstPageTest: BaseCategoryPageLoadTest() {

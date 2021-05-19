@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/tokomartSearchCategoryAisleContainer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="@dimen/dp_16">
+
+    <View
+        android:id="@+id/tokomartSearchCategoryAisleDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/Unify_N50"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokomartSearchCategoryAisleHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:text="@string/tokomart_category_aisle_header"
+        app:typographyType="heading_4"
+        app:layout_constraintTop_toBottomOf="@id/tokomartSearchCategoryAisleDivider"/>
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/tokomartSearchCategoryAisleCardLeft"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:card_type="shadow"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tokomartSearchCategoryAisleHeader"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tokomartSearchCategoryAisleCardRight"
+        app:layout_constraintHorizontal_weight="1">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_120">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/tokomartSearchCategoryAisleImageLeft"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:src="@drawable/ic_delete_soon_18"
+                app:unify_image_corner_radius="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/tokomartSearchCategoryAisleNameLeft"
+                app:layout_constraintVertical_weight="7"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tokomartSearchCategoryAisleNameLeft"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:typographyType="body_3"
+                android:padding="@dimen/dp_8"
+                app:layout_constraintTop_toBottomOf="@id/tokomartSearchCategoryAisleImageLeft"
+                app:layout_constraintStart_toEndOf="@id/tokomartSearchCategoryAisleImageLeft"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_weight="3"
+                tools:text="Kategori"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/tokomartSearchCategoryAisleCardRight"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:card_type="shadow"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:layout_constraintTop_toBottomOf="@id/tokomartSearchCategoryAisleHeader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tokomartSearchCategoryAisleCardLeft"
+        app:layout_constraintHorizontal_weight="1">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_120">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/tokomartSearchCategoryAisleImageRight"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:src="@drawable/ic_delete_soon_18"
+                app:unify_image_corner_radius="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/tokomartSearchCategoryAisleNameRight"
+                app:layout_constraintVertical_weight="7"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tokomartSearchCategoryAisleNameRight"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:typographyType="body_3"
+                android:padding="@dimen/dp_8"
+                app:layout_constraintTop_toBottomOf="@id/tokomartSearchCategoryAisleImageRight"
+                app:layout_constraintStart_toEndOf="@id/tokomartSearchCategoryAisleImageRight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_weight="3"
+                tools:text="Kategori"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+</androidx.constraintlayout.widget.ConstraintLayout>
