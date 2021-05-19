@@ -2,15 +2,14 @@ package com.tokopedia.entertainment.home.analytics
 
 import android.os.Bundle
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.entertainment.common.util.CommonTrackingEvent.Misc.EVENT_VALUE_SELECT_CONTENT
+import com.tokopedia.entertainment.common.util.CommonTrackingEvent.Misc.EVENT_VALUE_VIEW_ITEM
+import com.tokopedia.entertainment.common.util.CommonTrackingEvent.addGeneralClick
+import com.tokopedia.entertainment.common.util.CommonTrackingEvent.addGeneralClickedBundle
+import com.tokopedia.entertainment.common.util.CommonTrackingEvent.addGeneralImpression
 import com.tokopedia.entertainment.home.adapter.viewholder.CategoryEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemLocationModel
-import com.tokopedia.entertainment.home.analytics.EventHomePageTracking.Misc.BUSINESSUNIT_VALUE
-import com.tokopedia.entertainment.home.analytics.EventHomePageTracking.Misc.CATEGORY_VALUE
-import com.tokopedia.entertainment.home.analytics.EventHomePageTracking.Misc.CURRENTSITE_VALUE
-import com.tokopedia.entertainment.home.analytics.EventHomePageTracking.Misc.EVENT_VALUE_CLICK
-import com.tokopedia.entertainment.home.analytics.EventHomePageTracking.Misc.EVENT_VALUE_SELECT_CONTENT
-import com.tokopedia.entertainment.home.analytics.EventHomePageTracking.Misc.EVENT_VALUE_VIEW_ITEM
 import com.tokopedia.entertainment.home.analytics.EventHomePageTracking.Promo.PROMOTION
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 import com.tokopedia.track.TrackApp
@@ -27,7 +26,6 @@ class EventHomePageTracking {
         val CATEGORY = "eventCategory"
         val ACTION = "eventAction"
         val LABEL = "eventLabel"
-        val USER_ID = "userId"
     }
 
     private object Ecommerce {
@@ -88,12 +86,6 @@ class EventHomePageTracking {
         val CURRENTSITE = "currentSite"
         val BUSINESSUNIT = "businessUnit"
         val CATEGORY = "category"
-        const val BUSINESSUNIT_VALUE = "travel & entertainment"
-        const val CURRENTSITE_VALUE = "tokopediadigitalEvent"
-        const val CATEGORY_VALUE = "digital - event"
-        const val EVENT_VALUE_CLICK = "clickDigitalEvent"
-        const val EVENT_VALUE_VIEW_ITEM = "view_item"
-        const val EVENT_VALUE_SELECT_CONTENT = "select_content"
     }
 
     companion object{
@@ -105,31 +97,6 @@ class EventHomePageTracking {
         return TrackApp.getInstance().gtm
     }
 
-    private fun MutableMap<String, Any>.addGeneralClick(): MutableMap<String, Any>? {
-        this[TrackAppUtils.EVENT] = EVENT_VALUE_CLICK
-        this[TrackAppUtils.EVENT_CATEGORY] = CATEGORY_VALUE
-        this[Misc.CURRENTSITE] = CURRENTSITE_VALUE
-        this[Misc.BUSINESSUNIT] = BUSINESSUNIT_VALUE
-        return this
-    }
-
-    private fun Bundle.addGeneralImpression(userId: String): Bundle {
-        this.putString(TrackAppUtils.EVENT, EVENT_VALUE_VIEW_ITEM)
-        this.putString(TrackAppUtils.EVENT_CATEGORY, CATEGORY_VALUE)
-        this.putString(Misc.CURRENTSITE, CURRENTSITE_VALUE)
-        this.putString(Misc.BUSINESSUNIT, BUSINESSUNIT_VALUE)
-        this.putString(Event.USER_ID, userId)
-        return this
-    }
-
-    private fun Bundle.addGeneralClickedBundle(userId: String): Bundle {
-        this.putString(TrackAppUtils.EVENT, EVENT_VALUE_SELECT_CONTENT)
-        this.putString(TrackAppUtils.EVENT_CATEGORY, CATEGORY_VALUE)
-        this.putString(Misc.CURRENTSITE, CURRENTSITE_VALUE)
-        this.putString(Misc.BUSINESSUNIT, BUSINESSUNIT_VALUE)
-        this.putString(Event.USER_ID, userId)
-        return this
-    }
 
     fun openHomeEvent() {
         val data = DataLayer.mapOf(
@@ -195,7 +162,6 @@ class EventHomePageTracking {
         }
         eventDataLayer.addGeneralClickedBundle(userId)
         getTracker().sendEnhanceEcommerceEvent(EVENT_VALUE_SELECT_CONTENT, eventDataLayer)
-
     }
 
     fun impressionSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>,
