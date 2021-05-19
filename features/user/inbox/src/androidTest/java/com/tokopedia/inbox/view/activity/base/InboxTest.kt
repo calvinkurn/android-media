@@ -7,6 +7,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inbox.fake.di.FakeInboxComponent
 import com.tokopedia.inbox.fake.view.activity.FakeInboxActivity
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.Before
 import org.junit.Rule
 
@@ -26,7 +28,7 @@ abstract class InboxTest {
 
     @Before
     open fun before() {
-
+        setupGraphqlMockResponse(InboxModelConfig())
     }
 
     protected fun setupInboxActivity(
@@ -46,4 +48,18 @@ abstract class InboxTest {
         Thread.sleep(timeMillis)
     }
 
+}
+
+/**
+ * Dummy model config for query notification from
+ * [com.tokopedia.searchbar.navigation_component.NavToolbar]
+ * prevent it from requesting to the internet
+ */
+class InboxModelConfig : MockModelConfig() {
+    override fun createMockModel(context: Context): MockModelConfig {
+        addMockResponse(
+                "query Notification", "", FIND_BY_CONTAINS
+        )
+        return this
+    }
 }

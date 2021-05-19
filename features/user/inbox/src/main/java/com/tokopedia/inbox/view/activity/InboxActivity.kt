@@ -250,7 +250,7 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
     }
 
     private fun setupToolbar() {
-        toolbar?.let { this.lifecycle.addObserver(it) }
+        setupToolbarLifecycle()
         toolbar?.switchToLightToolbar()
         val view = View.inflate(
                 this, R.layout.partial_inbox_nav_content_view, null
@@ -267,6 +267,10 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
             toolbar?.setToolbarContentType(TOOLBAR_TYPE_TITLE)
             toolbar?.setToolbarTitle(title)
         }
+    }
+
+    protected open fun setupToolbarLifecycle() {
+        toolbar?.let { this.lifecycle.addObserver(it) }
     }
 
     private fun updateToolbarIcon(hasChatSearch: Boolean = false) {

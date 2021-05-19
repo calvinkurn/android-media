@@ -22,4 +22,8 @@ class FakeInboxActivity : InboxActivity() {
     override fun createFragmentFactory(): InboxFragmentFactory {
         return FakeInboxFragmentFactory()
     }
+
+    override fun setupToolbarLifecycle() {
+        // prevent getting notification from NavToolbar
+    }
 }
