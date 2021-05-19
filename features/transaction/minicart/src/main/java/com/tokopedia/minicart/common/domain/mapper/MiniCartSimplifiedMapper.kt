@@ -1,7 +1,7 @@
 package com.tokopedia.minicart.common.domain.mapper
 
-import com.tokopedia.minicart.common.data.response.minicartlistsimplified.Data
-import com.tokopedia.minicart.common.data.response.minicartlistsimplified.MiniCartData
+import com.tokopedia.minicart.common.data.response.minicartlist.Data
+import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData

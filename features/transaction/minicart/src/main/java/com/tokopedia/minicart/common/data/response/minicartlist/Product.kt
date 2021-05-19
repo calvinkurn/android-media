@@ -48,7 +48,7 @@ data class Product(
         @SerializedName("last_update_price")
         val lastUpdatePrice: Long = 0,
         @SerializedName("parent_id")
-        val parentId: Int = 0,
+        val parentId: String = "",
         @SerializedName("price_changes")
         val priceChanges: PriceChanges = PriceChanges(),
         @SerializedName("product_alert_message")

@@ -1,11 +1,7 @@
 package com.tokopedia.minicart.common.domain.usecase
 
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.minicart.common.data.response.minicartwidgetdata.Data
-import com.tokopedia.minicart.common.data.response.minicartwidgetdata.MiniCartData
-import com.tokopedia.minicart.common.data.response.minicartwidgetdata.MiniCartWidgetGqlResponse
+import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -25,8 +21,8 @@ class GetMiniCartWidgetDataUseCase @Inject constructor(private val graphqlReposi
 //        )
 /*
         val params = mapOf<String, String>()
-        val request = GraphqlRequest(QUERY, MiniCartWidgetGqlResponse::class.java, params)
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<MiniCartWidgetGqlResponse>()
+        val request = GraphqlRequest(QUERY, MiniCartGqlResponse::class.java, params)
+        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<MiniCartGqlResponse>()
 
         if (response.miniCart.status == "OK") {
             return response.miniCart

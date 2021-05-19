@@ -3,7 +3,7 @@ package com.tokopedia.minicart.common.domain.usecase
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.minicart.common.data.response.minicartlistsimplified.MiniCartSimplifiedGqlResponse
+import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
 import com.tokopedia.network.exception.ResponseErrorException
@@ -17,8 +17,8 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(private val graphqlRe
 
     override suspend fun executeOnBackground(): MiniCartSimplifiedData {
         val params = mapOf<String, String>()
-        val request = GraphqlRequest(QUERY, MiniCartSimplifiedGqlResponse::class.java, params)
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<MiniCartSimplifiedGqlResponse>()
+        val request = GraphqlRequest(QUERY, MiniCartGqlResponse::class.java, params)
+        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<MiniCartGqlResponse>()
 
         if (response.miniCart.status == "OK") {
             return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(response.miniCart)
