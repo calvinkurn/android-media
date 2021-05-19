@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -16,7 +17,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pms.R
-import com.tokopedia.pms.paymentlist.domain.data.CancelDetail
 import com.tokopedia.pms.paymentlist.di.PaymentListComponent
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 import com.tokopedia.pms.paymentlist.domain.data.CancelDetailWrapper
@@ -36,7 +36,7 @@ import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 
-class DeferredPaymentListFragment : BaseDaggerFragment() {
+class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -62,11 +62,13 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
             }
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
+        swipe_refresh_layout.setOnRefreshListener(this)
         loadInitialDeferredTransactions()
         observeViewModels()
     }
 
-    private fun loadInitialDeferredTransactions() {
+    fun loadInitialDeferredTransactions() {
+        swipe_refresh_layout.isRefreshing = true
         (recycler_view.adapter as DeferredPaymentListAdapter).clearAllElements()
         viewModel.getPaymentList()
     }
@@ -74,8 +76,8 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
     private fun observeViewModels() {
         viewModel.paymentListResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
-                is Success -> handlePaymentListSuccess(it.data)
-                is Fail -> handlePaymentListError(it.throwable)
+                is Success -> renderPaymentList(it.data)
+                is Fail -> showError(it.throwable)
             }
         })
         viewModel.cancelPaymentDetailLiveData.observe(viewLifecycleOwner, {
@@ -115,14 +117,16 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handlePaymentListSuccess(data: ArrayList<BasePaymentModel>) {
+    private fun renderPaymentList(data: ArrayList<BasePaymentModel>) {
+        swipe_refresh_layout.isRefreshing = false
         recycler_view.visible()
         noPendingTransactionEmptyState.gone()
         paymentListGlobalError.gone()
         (recycler_view.adapter as DeferredPaymentListAdapter).addItems(data)
     }
 
-    private fun handlePaymentListError(throwable: Throwable) {
+    private fun showError(throwable: Throwable) {
+        swipe_refresh_layout.isRefreshing = false
         when(throwable) {
             is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
             is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
@@ -196,6 +200,10 @@ class DeferredPaymentListFragment : BaseDaggerFragment() {
         const val ACTION_INVOICE_PAGE_REDIRECTION_COMBINED_VA = 3
         const val ACTION_CHEVRON_ACTIONS = 4
         fun createInstance() = DeferredPaymentListFragment()
+    }
+
+    override fun onRefresh() {
+        loadInitialDeferredTransactions()
     }
 
 }

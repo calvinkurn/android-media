@@ -44,7 +44,6 @@
             app:layout_constraintStart_toStartOf="@+id/cardTitle"
             app:layout_constraintTop_toBottomOf="@+id/cardTitle"
             app:typographyType="small"
-            app:typographyWeight="reguler"
             tools:text="15 Mar 2021" />
 
         <com.tokopedia.unifycomponents.Label
@@ -104,7 +103,6 @@
             app:layout_constraintStart_toEndOf="@+id/ivGatewayImage"
             app:layout_constraintTop_toTopOf="@+id/ivGatewayImage"
             app:typographyType="heading_4"
-            app:typographyWeight="reguler"
             tools:text="Kartu Credit" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -116,7 +114,6 @@
             app:layout_constraintEnd_toEndOf="@+id/headerDivider"
             app:layout_constraintStart_toStartOf="@+id/headerDivider"
             app:typographyType="small"
-            app:typographyWeight="reguler"
             android:text="@string/pms_hwp_total_pembayaran" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -129,7 +126,6 @@
             app:layout_constraintEnd_toEndOf="@+id/headerDivider"
             app:layout_constraintStart_toStartOf="@+id/headerDivider"
             app:typographyType="heading_6"
-            app:typographyWeight="reguler"
             tools:text="Rp1.330.000" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

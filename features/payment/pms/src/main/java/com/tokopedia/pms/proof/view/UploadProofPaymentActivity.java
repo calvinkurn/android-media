@@ -37,12 +37,6 @@ public class UploadProofPaymentActivity extends BaseSimpleActivity {
         }
     }
 
-    public static Intent createIntent(Context context, PaymentListModel paymentListModel){
-        Intent intent = new Intent(context, UploadProofPaymentActivity.class);
-        intent.putExtra(Constant.PAYMENT_LIST_MODEL_EXTRA , paymentListModel);
-        return intent;
-    }
-
     public static Intent createIntent(Context context, BasePaymentModel paymentListModel){
         Intent intent = new Intent(context, UploadProofPaymentActivity.class);
         intent.putExtra(Constant.PAYMENT_LIST_MODEL_EXTRA , paymentListModel);
@@ -56,7 +50,7 @@ public class UploadProofPaymentActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        PaymentListModel paymentListModel = getIntent().getParcelableExtra(Constant.PAYMENT_LIST_MODEL_EXTRA);
+        BasePaymentModel paymentListModel = getIntent().getParcelableExtra(Constant.PAYMENT_LIST_MODEL_EXTRA);
         return UploadProofPaymentFragment.createInstance(paymentListModel);
     }
 }

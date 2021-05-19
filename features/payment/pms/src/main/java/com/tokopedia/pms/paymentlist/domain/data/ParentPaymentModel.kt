@@ -85,7 +85,8 @@ data class BankTransferPaymentModel(
 @Parcelize
 class BankInfo(
     val accountNumber: String?,
-    val accountName: String?
+    val accountName: String?,
+    val bankId: String?
 ): Parcelable
 
 fun BasePaymentModel.extractValues(): Pair<String, String> {
@@ -97,6 +98,7 @@ fun BasePaymentModel.extractValues(): Pair<String, String> {
         else -> Pair("", "")
     }
 }
+
 
 open class TransactionActionType(var actionName: String = "", var actionIcon: Int = -1)
 

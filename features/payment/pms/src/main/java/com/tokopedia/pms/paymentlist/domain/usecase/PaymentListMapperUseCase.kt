@@ -203,8 +203,8 @@ class PaymentListMapperUseCase @Inject constructor(
             return BankTransferPaymentModel(
                 transactionId, merchantCode, transactionExpireUnix,
                 transactionDate, paymentAmount, isShowCancelButton, productName,
-                BankInfo(userBankAccount.accNo, userBankAccount.accName),
-                BankInfo(destBankAccount.accNo, destBankAccount.accName)
+                BankInfo(userBankAccount.accNo, userBankAccount.accName, userBankAccount.bankId.toString()),
+                BankInfo(destBankAccount.accNo, destBankAccount.accName, null)
             )
         }
     }

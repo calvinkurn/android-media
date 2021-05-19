@@ -25,6 +25,8 @@ import com.tokopedia.pms.common.Constant;
 import com.tokopedia.pms.common.SpinnerTextViewBankList;
 import com.tokopedia.pms.payment.view.model.PaymentListModel;
 import com.tokopedia.pms.bankaccount.di.DaggerChangeBankAccountComponent;
+import com.tokopedia.pms.paymentlist.domain.data.BankTransferPaymentModel;
+import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel;
 
 import javax.inject.Inject;
 
@@ -38,7 +40,7 @@ public class ChangeBankAccountFragment extends BaseDaggerFragment implements Cha
     @Inject
     ChangeBankAccountPresenter changeBankAccountPresenter;
 
-    private PaymentListModel paymentListModel;
+    private BankTransferPaymentModel paymentListModel;
     private SpinnerTextViewBankList spinnerBankDest;
     private EditText inputAccountNo;
     private EditText inputAccountName;
@@ -61,7 +63,7 @@ public class ChangeBankAccountFragment extends BaseDaggerFragment implements Cha
         changeBankAccountPresenter.attachView(this);
     }
 
-    public static Fragment createInstance(PaymentListModel paymentListModel) {
+    public static Fragment createInstance(BasePaymentModel paymentListModel) {
         ChangeBankAccountFragment changeBankAccountFragment = new ChangeBankAccountFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(Constant.PAYMENT_LIST_MODEL_EXTRA, paymentListModel);
@@ -71,7 +73,9 @@ public class ChangeBankAccountFragment extends BaseDaggerFragment implements Cha
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        paymentListModel = getArguments().getParcelable(Constant.PAYMENT_LIST_MODEL_EXTRA);
+        BasePaymentModel model = getArguments().getParcelable(Constant.PAYMENT_LIST_MODEL_EXTRA);
+        if (model instanceof BankTransferPaymentModel)
+            paymentListModel = (BankTransferPaymentModel)model;
         super.onCreate(savedInstanceState);
     }
 
@@ -87,10 +91,11 @@ public class ChangeBankAccountFragment extends BaseDaggerFragment implements Cha
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
 
-        inputAccountNo.setText(paymentListModel.getUserAccountNo());
-        inputAccountName.setText(paymentListModel.getUserAccountName());
-        spinnerBankDest.setSpinnerValue(paymentListModel.getBankId());
-
+        if (paymentListModel != null) {
+            inputAccountNo.setText(paymentListModel.getSenderBankInfo().getAccountNumber());
+            inputAccountName.setText(paymentListModel.getSenderBankInfo().getAccountName());
+            spinnerBankDest.setSpinnerValue(paymentListModel.getSenderBankInfo().getBankId());
+        }
         buttonUse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

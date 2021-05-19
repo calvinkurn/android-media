@@ -29,12 +29,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/unify_space_12"
+            android:text="@string/pms_deferred_payment_card_title"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toEndOf="@+id/cardIcon"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="small"
-            app:typographyWeight="bold"
-            android:text="@string/pms_deferred_payment_card_title" />
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPaymentTransactionDate"
@@ -44,7 +44,6 @@
             app:layout_constraintStart_toStartOf="@+id/cardTitle"
             app:layout_constraintTop_toBottomOf="@+id/cardTitle"
             app:typographyType="small"
-            app:typographyWeight="reguler"
             tools:text="15 Mar 2021" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -53,14 +52,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginEnd="@dimen/unify_space_8"
+            android:text="@string/pms_deferred_payment_expire_title"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintBottom_toTopOf="@+id/tvTransactionExpireTime"
             app:layout_constraintEnd_toStartOf="@+id/cardMenu"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
-            app:typographyType="small"
-            app:typographyWeight="reguler"
-            android:text="@string/pms_deferred_payment_expire_title"/>
+            app:typographyType="small" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTransactionExpireTime"
@@ -138,7 +136,6 @@
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_goneMarginBottom="@dimen/unify_space_12"
             app:typographyType="heading_4"
-            app:typographyWeight="reguler"
             tools:text="Transfer Manual BCA" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -155,7 +152,6 @@
             app:layout_constraintTop_toBottomOf="@+id/tvPaymentGatewayName"
             app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="body_3"
-            app:typographyWeight="reguler"
             tools:text="ALFATOPED1233"
             tools:visibility="visible" />
 
@@ -187,8 +183,7 @@
             app:layout_constraintBottom_toTopOf="@+id/tvCustomerBankAccountNumber"
             app:layout_constraintEnd_toStartOf="@+id/bankInfoDivider"
             app:layout_constraintStart_toStartOf="@id/headerDivider"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler" />
+            app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCustomerBankAccountNumber"
@@ -212,7 +207,6 @@
             app:layout_constraintEnd_toStartOf="@+id/bankInfoDivider"
             app:layout_constraintStart_toStartOf="@id/headerDivider"
             app:typographyType="body_3"
-            app:typographyWeight="reguler"
             tools:text="a.n Miguel Nurdin" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -225,8 +219,7 @@
             app:layout_constraintBottom_toTopOf="@+id/tvDestinationBankAccountNumber"
             app:layout_constraintEnd_toEndOf="@+id/headerDivider"
             app:layout_constraintStart_toStartOf="@id/bankInfoDivider"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler" />
+            app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvDestinationBankAccountNumber"
@@ -250,7 +243,6 @@
             app:layout_constraintEnd_toEndOf="@+id/headerDivider"
             app:layout_constraintStart_toStartOf="@id/tvDestinationBankInformation"
             app:typographyType="body_3"
-            app:typographyWeight="reguler"
             tools:text="a.n PT. Tokopedia" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -263,8 +255,7 @@
             app:layout_constraintBottom_toTopOf="@+id/tvTotalPaymentAmount"
             app:layout_constraintEnd_toStartOf="@+id/goToHowToPay"
             app:layout_constraintStart_toStartOf="@+id/headerDivider"
-            app:typographyType="small"
-            app:typographyWeight="reguler" />
+            app:typographyType="small" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTotalPaymentAmount"
@@ -277,7 +268,6 @@
             app:layout_constraintEnd_toStartOf="@+id/goToHowToPay"
             app:layout_constraintStart_toStartOf="@+id/headerDivider"
             app:typographyType="heading_6"
-            app:typographyWeight="reguler"
             tools:text="Rp1.330.000" />
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -291,7 +281,7 @@
             app:unifyButtonSize="micro"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

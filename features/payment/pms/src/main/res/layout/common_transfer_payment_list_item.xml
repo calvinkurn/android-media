@@ -44,7 +44,6 @@
             app:layout_constraintStart_toStartOf="@+id/cardTitle"
             app:layout_constraintTop_toBottomOf="@+id/cardTitle"
             app:typographyType="small"
-            app:typographyWeight="reguler"
             tools:text="15 Mar 2021" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -59,7 +58,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="small"
-            app:typographyWeight="reguler"
             android:text="@string/pms_deferred_payment_expire_title"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -139,7 +137,6 @@
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_goneMarginBottom="@dimen/unify_space_12"
             app:typographyType="heading_4"
-            app:typographyWeight="reguler"
             tools:text="Transfer Manual BCA" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -156,7 +153,6 @@
             app:layout_constraintTop_toBottomOf="@+id/tvPaymentGatewayName"
             app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="body_3"
-            app:typographyWeight="reguler"
             tools:text="ALFATOPED1233"
             tools:visibility="visible" />
 
@@ -171,8 +167,7 @@
             app:layout_constraintBottom_toTopOf="@+id/tvTotalPaymentAmount"
             app:layout_constraintEnd_toStartOf="@+id/goToHowToPay"
             app:layout_constraintStart_toStartOf="@+id/headerDivider"
-            app:typographyType="small"
-            app:typographyWeight="reguler" />
+            app:typographyType="small" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTotalPaymentAmount"
@@ -185,7 +180,6 @@
             app:layout_constraintEnd_toStartOf="@+id/goToHowToPay"
             app:layout_constraintStart_toStartOf="@+id/headerDivider"
             app:typographyType="heading_6"
-            app:typographyWeight="reguler"
             tools:text="Rp1.330.000" />
 
         <com.tokopedia.unifycomponents.UnifyButton

@@ -205,18 +205,18 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
     }
 
     private void changeAccountDetail(PaymentListModel paymentListModel) {
-        Intent intent = ChangeBankAccountActivity.createIntent(getActivity(), paymentListModel);
-        startActivityForResult(intent, REQUEST_CODE_CHANGE_BANK_ACCOUNT);
+        //Intent intent = ChangeBankAccountActivity.createIntent(getActivity(), paymentListModel);
+        //startActivityForResult(intent, REQUEST_CODE_CHANGE_BANK_ACCOUNT);
     }
 
     private void uploadProofPayment(PaymentListModel paymentListModel) {
-        Intent intent = UploadProofPaymentActivity.createIntent(getActivity(), paymentListModel);
-        startActivityForResult(intent, REQUEST_CODE_UPLOAD_PROOF);
+        //Intent intent = UploadProofPaymentActivity.createIntent(getActivity(), paymentListModel);
+        //startActivityForResult(intent, REQUEST_CODE_UPLOAD_PROOF);
     }
 
     private void changeBcaUserId(PaymentListModel paymentListModel) {
-        Intent intent = ChangeClickBcaActivity.createIntent(getActivity(), paymentListModel.getTransactionId(), paymentListModel.getMerchantCode(), paymentListModel.getValueDynamicViewDetailPayment());
-        startActivityForResult(intent, REQUEST_CODE_CHANGE_BCA_ID);
+        //Intent intent = ChangeClickBcaActivity.createIntent(getActivity(), paymentListModel.getTransactionId(), paymentListModel.getMerchantCode(), paymentListModel.getValueDynamicViewDetailPayment());
+        //startActivityForResult(intent, REQUEST_CODE_CHANGE_BCA_ID);
     }
 
     @Override

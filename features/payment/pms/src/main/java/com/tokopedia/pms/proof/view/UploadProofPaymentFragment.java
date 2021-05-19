@@ -30,6 +30,8 @@ import com.tokopedia.imagepicker.common.ImagePickerRouterKt;
 import com.tokopedia.pms.R;
 import com.tokopedia.pms.common.Constant;
 import com.tokopedia.pms.payment.view.model.PaymentListModel;
+import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel;
+import com.tokopedia.pms.paymentlist.domain.data.ParentPaymentModelKt;
 import com.tokopedia.pms.proof.di.DaggerUploadProofPaymentComponent;
 import com.tokopedia.pms.proof.di.UploadProofPaymentModule;
 import com.tokopedia.pms.proof.model.PaymentProofResponse;
@@ -40,6 +42,8 @@ import javax.inject.Inject;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.unifycomponents.Toaster;
+
+import kotlin.Pair;
 
 /**
  * Created by zulfikarrahman on 7/6/18.
@@ -53,7 +57,7 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     @Inject
     UploadProofPaymentPresenter uploadProofPaymentPresenter;
 
-    private PaymentListModel paymentListModel;
+    private BasePaymentModel paymentListModel;
     private View containerHelpUploadProof;
     private View containerImageUpload;
     private ImageView buttonActionCloseImage;
@@ -168,7 +172,8 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
         } else if (buttonSave.getText().toString().equals(getString(R.string.payment_label_finish))) {
             getActivity().finish();
         } else {
-            uploadProofPaymentPresenter.uploadProofPayment(paymentListModel.getTransactionId(), paymentListModel.getMerchantCode(), imageUrl);
+            Pair<String, String> idPair = ParentPaymentModelKt.extractValues(paymentListModel);
+            uploadProofPaymentPresenter.uploadProofPayment(idPair.getFirst(),idPair.getSecond(), imageUrl);
         }
     }
 
@@ -192,7 +197,7 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
         }
     }
 
-    public static Fragment createInstance(PaymentListModel paymentListModel) {
+    public static Fragment createInstance(BasePaymentModel paymentListModel) {
         UploadProofPaymentFragment uploadProofPaymentFragment = new UploadProofPaymentFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(Constant.PAYMENT_LIST_MODEL_EXTRA, paymentListModel);

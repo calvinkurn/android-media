@@ -44,11 +44,6 @@ public class ChangeClickBcaActivity extends BaseSimpleActivity {
         return intent;
     }
 
-    public static Intent createIntent(Context context, BasePaymentModel model){
-        Intent intent = new Intent(context, ChangeClickBcaActivity.class);
-        return intent;
-    }
-
     @Override
     protected Fragment getNewFragment() {
         String transactionId = getIntent().getStringExtra(Constant.TRANSACTION_ID);

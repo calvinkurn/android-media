@@ -1,5 +1,6 @@
 package com.tokopedia.pms.paymentlist.presentation.activity
 
+import android.app.Activity
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -10,6 +11,7 @@ import com.tokopedia.pms.clickbca.view.ChangeClickBcaActivity
 import com.tokopedia.pms.paymentlist.di.DaggerPaymentListComponent
 import com.tokopedia.pms.paymentlist.di.PaymentListComponent
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
+import com.tokopedia.pms.paymentlist.domain.data.extractValues
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment
 import com.tokopedia.pms.paymentlist.presentation.listeners.PaymentListActionListener
 import com.tokopedia.pms.proof.view.UploadProofPaymentActivity
@@ -33,7 +35,11 @@ class PaymentListActivity : BaseSimpleActivity(), HasComponent<PaymentListCompon
         return component
     }
 
-    override fun cancelSingleTransaction(transactionId: String, merchantCode: String, productName: String?) {
+    override fun cancelSingleTransaction(
+        transactionId: String,
+        merchantCode: String,
+        productName: String?
+    ) {
         (fragment as DeferredPaymentListFragment).invokeCancelSingleTransaction(
             transactionId,
             merchantCode, productName
@@ -55,8 +61,22 @@ class PaymentListActivity : BaseSimpleActivity(), HasComponent<PaymentListCompon
     }
 
     override fun changeBcaUserId(model: BasePaymentModel) {
-        val intent = ChangeClickBcaActivity.createIntent(this, model)
+        val codePair = model.extractValues()
+        val intent = ChangeClickBcaActivity.createIntent(
+            this, codePair.first,
+            codePair.second, model.paymentCode
+        )
         startActivityForResult(intent, REQUEST_CODE_CHANGE_BCA_ID)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            when(requestCode) {
+                REQUEST_CODE_CHANGE_BANK_ACCOUNT, REQUEST_CODE_UPLOAD_PROOF,
+                REQUEST_CODE_CHANGE_BCA_ID -> (fragment as DeferredPaymentListFragment).loadInitialDeferredTransactions()
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     companion object {
