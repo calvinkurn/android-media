@@ -54,6 +54,8 @@ public class AutoCompleteActivity extends BaseActivity
     protected SuggestionFragment suggestionFragment;
     protected InitialStateFragment initialStateFragment;
 
+    private String baseSRPApplink = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(0, 0);
@@ -104,12 +106,23 @@ public class AutoCompleteActivity extends BaseActivity
 
     private void handleIntent(Intent intent) {
         SearchParameter searchParameter = getSearchParameterFromIntentUri(intent);
+        baseSRPApplink = getBaseSRPApplink(searchParameter);
+        removeBaseSRPApplink(searchParameter);
 
         handleIntentAutoComplete(searchParameter);
 
         if (intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             autocompleteTracking.eventSearchShortcut();
         }
+    }
+
+    private String getBaseSRPApplink(SearchParameter searchParameter) {
+        return searchParameter.get(SearchApiConst.BASE_SRP_APPLINK);
+    }
+
+    private void removeBaseSRPApplink(SearchParameter searchParameter) {
+        searchParameter.remove(SearchApiConst.BASE_SRP_APPLINK);
+
     }
 
     private SearchParameter getSearchParameterFromIntentUri(Intent intent) {
@@ -178,23 +191,16 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private String createSearchResultApplink() {
-        String baseSRPApplink = getBaseSRPApplink();
-
         if (baseSRPApplink.isEmpty()) {
             return ApplinkConstInternalDiscovery.SEARCH_RESULT
                     + "?"
                     + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
         }
         else {
-            searchParameter.remove(SearchApiConst.BASE_SRP_APPLINK);
             return baseSRPApplink
                     + "?"
                     + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
         }
-    }
-
-    private String getBaseSRPApplink() {
-        return searchParameter.get(SearchApiConst.BASE_SRP_APPLINK);
     }
 
     private void sendVoiceSearchGTM(String keyword) {
