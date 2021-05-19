@@ -371,7 +371,7 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
         exclude group: 'com.android.support'
     }
-    implementation project(path: ':libraries:screenshot_observer')
+    implementation project(path: ':features:merchant:seller_feedback')
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

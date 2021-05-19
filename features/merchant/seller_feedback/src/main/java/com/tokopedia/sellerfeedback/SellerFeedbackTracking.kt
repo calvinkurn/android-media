@@ -57,8 +57,8 @@ object SellerFeedbackTracking {
 
     object Impression {
 
-        const val EVENT_VIEW_HOMEPAGE = "viewHomepageIris"
-        const val EVENT_ACTION_IMPRESSION_FEEDBACK_BUTTON = "impression feedback button"
+        private const val EVENT_VIEW_HOMEPAGE = "viewHomepageIris"
+        private const val EVENT_ACTION_IMPRESSION_FEEDBACK_BUTTON = "impression feedback button"
 
         fun eventViewHomepage() {
             val mapEvent = TrackAppUtils.gtmData(

@@ -19,6 +19,8 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
@@ -49,6 +51,9 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
+import com.tokopedia.sellerfeedback.SellerFeedbackScreenshot;
+import com.tokopedia.sellerfeedback.SellerFeedbackTracking;
+import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragment;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
@@ -296,11 +301,9 @@ public class SellerMainApplication extends SellerRouterApplication implements
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
         registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
-        registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
-            @Override
-            public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
-                openFeedbackForm(uri, className, isFromScreenshot);
-            }
+        registerActivityLifecycleCallbacks(new SellerFeedbackScreenshot(getApplicationContext().getContentResolver(), (uri, className, isFromScreenshot) -> {
+            SellerFeedbackTracking.Click.INSTANCE.eventClickFeedbackButton();
+            openFeedbackForm(uri);
         }));
     }
 
@@ -372,10 +375,10 @@ public class SellerMainApplication extends SellerRouterApplication implements
                 && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
     }
 
-    private void openFeedbackForm(Uri uri, String className, boolean isFromScreenshot) {
+    private void openFeedbackForm(Uri uri) {
         Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.SellerApp.SELLER_FEEDBACK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(SellerFeedbackFragmentV2.EXTRA_URI_IMAGE, uri);
+        intent.putExtra(SellerFeedbackFragment.EXTRA_URI_IMAGE, uri);
         getApplicationContext().startActivity(intent);
     }
 

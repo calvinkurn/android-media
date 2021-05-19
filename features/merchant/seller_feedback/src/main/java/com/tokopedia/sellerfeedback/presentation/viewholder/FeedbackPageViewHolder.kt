@@ -22,59 +22,47 @@ class FeedbackPageViewHolder(
         val LAYOUT = R.layout.item_feedback_page
     }
 
-    private val sampleList = listOf(
-            "Home",
-            "Chat",
-            "Diskusi",
-            "Tambah Produk",
-            "Ubah Produk",
-            "Produk Toko",
-            "Penjualan",
-            "Statistik",
-            "Iklan dan Promosi",
-            "Dekorasi Toko",
-            "Ulasan",
-            "Pesanan Dikomplain",
-            "Pengaturan Toko",
-            "Pengaturan Admin"
-    )
-
     private var searchBar: SearchBarUnify? = null
     private var listPage: ListUnify? = null
-
-    private val pages = mapToListItemUnify(sampleList)
+    private var stringPages: List<String>? = null
+    private var itemPages: ArrayList<ListItemUnify>? = null
 
     override fun bind(data: FeedbackPageUiModel) {
         itemView.run {
             searchBar = findViewById(R.id.search_bar)
             listPage = findViewById(R.id.list_page)
 
+            resources.getStringArray(R.array.feedback_pages).toList().let {
+                stringPages = it
+                itemPages = mapToListItemUnify(it)
+            }
+
             initList(data)
             setupInteraction()
-
         }
     }
 
     private fun initList(data: FeedbackPageUiModel) {
-        listPage?.apply {
+        val listPage = listPage
+        val itemPages = itemPages
+        val stringPages = stringPages
 
-            setData(pages)
+        if (listPage == null || itemPages == null || stringPages == null) return
 
-            onLoadFinish {
-                val position = sampleList.indexOf(data.title)
-                setSelection(position)
-                onItemClickListener = generateOnItemClickListener(pages)
+        listPage.setData(itemPages)
+        listPage.onLoadFinish {
+            val selectedPosition = stringPages.indexOf(data.title)
+            listPage.setSelection(selectedPosition)
 
-                pages.forEachIndexed { index, item ->
-                    item.listRightRadiobtn?.apply {
-                        if (index == position) isChecked = true
-                        setOnClickListener {
-                            listener.onItemClicked(item.listTitleText)
-                        }
+            listPage.onItemClickListener = generateOnItemClickListener(itemPages)
+            itemPages.forEachIndexed { index, item ->
+                item.listRightRadiobtn?.apply {
+                    if (index == selectedPosition) isChecked = true
+                    setOnClickListener {
+                        listener.onItemClicked(item.listTitleText)
                     }
                 }
             }
-
         }
     }
 
@@ -93,11 +81,13 @@ class FeedbackPageViewHolder(
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
-                listPage?.apply {
+                val listPage = listPage
+                val itemPages = itemPages
+                if (listPage != null && itemPages != null) {
                     val text = p0?.toString() ?: ""
-                    val filteredPages = pages.filter { it.listTitleText.contains(text, true) } as ArrayList<ListItemUnify>
-                    setData(filteredPages)
-                    onLoadFinish { onItemClickListener = generateOnItemClickListener(filteredPages) }
+                    val filteredPages = itemPages.filter { it.listTitleText.contains(text, true) } as ArrayList<ListItemUnify>
+                    listPage.setData(filteredPages)
+                    listPage.onLoadFinish { listPage.onItemClickListener = generateOnItemClickListener(filteredPages) }
                 }
             }
         }

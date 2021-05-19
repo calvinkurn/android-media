@@ -7,10 +7,13 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.sellerfeedback.data.SubmitGlobalFeedback
 import com.tokopedia.sellerfeedback.domain.SubmitGlobalFeedbackUseCase
 import com.tokopedia.sellerfeedback.presentation.SellerFeedback
 import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
@@ -32,8 +35,8 @@ class SellerFeedbackViewModel @Inject constructor(
     private val feedbackImages = MutableLiveData<List<ImageFeedbackUiModel>>()
     fun getFeedbackImages(): LiveData<List<ImageFeedbackUiModel>> = feedbackImages
 
-    private val submitResult = MutableLiveData<Boolean>()
-    fun getSubmitResult(): LiveData<Boolean> = submitResult
+    private val submitResult = MutableLiveData<Result<SubmitGlobalFeedback>>()
+    fun getSubmitResult(): LiveData<Result<SubmitGlobalFeedback>> = submitResult
 
     fun setImages(images: List<ImageFeedbackUiModel>) {
         feedbackImageList.clear()
@@ -59,11 +62,10 @@ class SellerFeedbackViewModel @Inject constructor(
                 if (it.error) {
                     throw Throwable(it.errorMsg)
                 }
+                submitResult.postValue(Success(it))
             }
-            submitResult.postValue(true)
         }, onError = {
-            it.message
-//            submitResult.postVa
+            submitResult.postValue(Fail(it))
         })
     }
 

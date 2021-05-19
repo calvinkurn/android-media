@@ -20,6 +20,23 @@
 
     <string name="feedback_form_detail_error_empty">Wajib diisi</string>
 
+    <string name="feedback_form_toast_success_submit">Feedback-mu berhasil dikirim. Terima kasih, ya!</string>
 
+    <string-array name="feedback_pages">
+        <item>Home</item>
+        <item>Chat</item>
+        <item>Diskusi</item>
+        <item>Tambah Produk</item>
+        <item>Ubah Produk</item>
+        <item>Produk Toko</item>
+        <item>Penjualan</item>
+        <item>Statistik</item>
+        <item>Iklan dan Promosi</item>
+        <item>Dekorasi Toko</item>
+        <item>Ulasan</item>
+        <item>Pesanan Dikomplain</item>
+        <item>Pengaturan Toko</item>
+        <item>Pengaturan Admin</item>
+    </string-array>
 
 </resources>
