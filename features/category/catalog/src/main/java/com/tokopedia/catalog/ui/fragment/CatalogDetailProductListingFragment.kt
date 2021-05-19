@@ -423,7 +423,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun onItemClicked(item: CatalogProductItem, adapterPosition: Int) {
-        val intent = getProductIntent(item.id, item.categoryId.toString())
+        val intent = getProductIntent(item.id, "")
 
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
