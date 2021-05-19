@@ -3,6 +3,7 @@ package com.tokopedia.applink.digital
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_CC
@@ -11,7 +12,7 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_VOUC
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_POSTPAID_TELCO
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_PREPAID_TELCO
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.applink.order.DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder
 
 
 object DeeplinkMapperDigital {
@@ -59,12 +60,15 @@ object DeeplinkMapperDigital {
                     && !uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty() -> {
                 ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
             }
+            deeplink.startsWith(ApplinkConst.DIGITAL_ORDER) -> {
+                getRegisteredNavigationUohOrder(context, deeplink)
+            }
             else -> deeplink
         }
     }
 
     private fun getDigitalCheckoutNavigation(context: Context, deeplink: String): String {
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val remoteConfig = FirebaseRemoteConfigInstance.get(context)
         val getDigitalCart = remoteConfig.getBoolean(REMOTE_CONFIG_MAINAPP_RECHARGE_CHECKOUT, true)
         return if (getDigitalCart) ApplinkConsInternalDigital.CHECKOUT_DIGITAL
                 else ApplinkConsInternalDigital.CART_DIGITAL

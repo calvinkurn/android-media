@@ -270,6 +270,7 @@ class DiscoveryFragment :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
+        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
         setAdapter()
@@ -301,16 +302,19 @@ class DiscoveryFragment :
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
                         if (listComponent.isNullOrEmpty()) {
+                            discoveryAdapter.addDataList(ArrayList())
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
                             scrollToPinnedComponent(listComponent)
                         }
                     }
+                    hideGlobalError()
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
                 }
                 is Fail -> {
                     mProgressBar.hide()
+                    setPageErrorState(it)
                 }
             }
             mSwipeRefreshLayout.isRefreshing = false
@@ -336,6 +340,7 @@ class DiscoveryFragment :
                     setToolBarPageInfoOnSuccess(it.data)
                 }
                 is Fail -> {
+                    discoveryAdapter.addDataList(ArrayList())
                     setToolBarPageInfoOnFail()
                     setPageErrorState(it)
                 }
@@ -581,6 +586,10 @@ class DiscoveryFragment :
         }
     }
 
+    private fun hideGlobalError(){
+        globalError.hide()
+    }
+
     private fun fetchDiscoveryPageData() {
         discoveryViewModel.getDiscoveryData(discoveryViewModel.getQueryParameterMapFromBundle(arguments), userAddressData)
     }
@@ -674,7 +683,14 @@ class DiscoveryFragment :
         }
         when (requestCode) {
             LOGIN_REQUEST_CODE -> {
-                discoveryBaseViewModel?.loggedInCallback()
+                if (resultCode == Activity.RESULT_OK) {
+                    if(this.componentPosition != null && this.componentPosition!! >= 0) {
+                        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
+                        discoveryBaseViewModel?.loggedInCallback()
+                    }else{
+                        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
+                    }
+                }
             }
             MOBILE_VERIFICATION_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -685,6 +701,7 @@ class DiscoveryFragment :
             }
             PAGE_REFRESH_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK) {
+                    discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
                     refreshPage()
                 }
             }

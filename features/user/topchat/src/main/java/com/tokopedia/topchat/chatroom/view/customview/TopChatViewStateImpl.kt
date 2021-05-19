@@ -14,15 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
-import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.Menus
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
@@ -43,6 +40,7 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -260,16 +258,17 @@ open class TopChatViewStateImpl constructor(
         getAdapter().addNewMessage(visitable)
     }
 
-    fun onSuccessLoadFirstTime(viewModel: ChatroomViewModel,
-                               onToolbarClicked: () -> Unit,
-                               headerMenuListener: HeaderMenuListener,
-                               alertDialog: Dialog) {
+    fun onSuccessLoadFirstTime(
+            viewModel: ChatroomViewModel,
+            onToolbarClicked: () -> Unit,
+            headerMenuListener: HeaderMenuListener
+    ) {
         chatRoomViewModel = viewModel
         updateBlockStatus(viewModel)
         scrollToBottom()
         updateHeader(viewModel, onToolbarClicked)
         showLastTimeOnline(viewModel)
-        setHeaderMenuButton(headerMenuListener, alertDialog)
+        setHeaderMenuButton(headerMenuListener)
         showReplyBox(viewModel.replyable)
         initListPadding(viewModel)
         onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel.blockedStatus)
@@ -336,27 +335,36 @@ open class TopChatViewStateImpl constructor(
 
     private fun isOfficialStore(viewModel: ChatroomViewModel) = viewModel.headerModel.isOfficialStore()
 
-    private fun setHeaderMenuButton(headerMenuListener: HeaderMenuListener, alertDialog: Dialog) {
+    private fun setHeaderMenuButton(
+            headerMenuListener: HeaderMenuListener
+    ) {
         headerMenuButton.visibility = View.VISIBLE
         headerMenuButton.setOnClickListener {
-            showHeaderMenuBottomSheet(chatRoomViewModel, headerMenuListener, alertDialog)
+            showHeaderMenuBottomSheet(
+                    chatRoomViewModel, headerMenuListener
+            )
         }
     }
 
-    private fun showHeaderMenuBottomSheet(chatroomViewModel: ChatroomViewModel, headerMenuListener: HeaderMenuListener, alertDialog: Dialog) {
+    private fun showHeaderMenuBottomSheet(
+            chatroomViewModel: ChatroomViewModel,
+            headerMenuListener: HeaderMenuListener
+    ) {
         if (roomMenu.isAdded) return
         roomMenu.apply {
             setItemMenuList(createRoomMenu(chatroomViewModel))
             setOnItemMenuClickListener { itemMenus, _ ->
-                handleRoomMenuClick(itemMenus, chatroomViewModel, headerMenuListener, alertDialog)
+                handleRoomMenuClick(
+                        itemMenus, chatroomViewModel, headerMenuListener
+                )
                 dismiss()
             }
         }.show(sendListener.getSupportChildFragmentManager(), LongClickMenu.TAG)
     }
 
 
-    private fun createRoomMenu(userChatRoom: ChatroomViewModel): MutableList<Menus.ItemMenus> {
-        val listMenu = ArrayList<Menus.ItemMenus>()
+    private fun createRoomMenu(userChatRoom: ChatroomViewModel): MutableList<TopchatItemMenu> {
+        val listMenu = ArrayList<TopchatItemMenu>()
 
         if (userChatRoom.isChattingWithSeller()) {
             val followStatusMenu = createFollowMenu()
@@ -366,12 +374,12 @@ open class TopChatViewStateImpl constructor(
         }
         val blockChatMenu = createBlockChatMenu()
         listMenu.add(blockChatMenu)
-        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_report_user), R.drawable.ic_topchat_report_bold_grey))
-        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.delete_conversation), R.drawable.ic_trash_filled_grey))
+        listMenu.add(TopchatItemMenu(view.context.getString(R.string.chat_report_user), R.drawable.ic_topchat_report_bold_grey))
+        listMenu.add(TopchatItemMenu(view.context.getString(R.string.delete_conversation), R.drawable.ic_trash_filled_grey))
         return listMenu
     }
 
-    private fun createBlockChatMenu(): Menus.ItemMenus {
+    private fun createBlockChatMenu(): TopchatItemMenu {
         val blockChatStatusTitle: String
         @DrawableRes val blockChatStatusDrawable: Int
         if (blockStatus.isBlocked) {
@@ -381,10 +389,10 @@ open class TopChatViewStateImpl constructor(
             blockChatStatusTitle = view.context.getString(R.string.title_block_user_chat)
             blockChatStatusDrawable = R.drawable.ic_topchat_block_user_chat
         }
-        return Menus.ItemMenus(blockChatStatusTitle, blockChatStatusDrawable)
+        return TopchatItemMenu(blockChatStatusTitle, blockChatStatusDrawable)
     }
 
-    private fun createFollowMenu(): Menus.ItemMenus {
+    private fun createFollowMenu(): TopchatItemMenu {
         val followStatusTitle: String
         @DrawableRes val followStatusDrawable: Int
         if (isShopFollowed) {
@@ -394,10 +402,10 @@ open class TopChatViewStateImpl constructor(
             followStatusTitle = view.context.getString(R.string.follow_store)
             followStatusDrawable = R.drawable.ic_topchat_add_bold_grey
         }
-        return Menus.ItemMenus(followStatusTitle, followStatusDrawable)
+        return TopchatItemMenu(followStatusTitle, followStatusDrawable)
     }
 
-    private fun createPromoMenu(): Menus.ItemMenus {
+    private fun createPromoMenu(): TopchatItemMenu {
         val promoStatusTitle: String
         @DrawableRes val promoStatusDrawable: Int
         if (blockStatus.isPromoBlocked) {
@@ -407,14 +415,13 @@ open class TopChatViewStateImpl constructor(
             promoStatusTitle = view.context.getString(R.string.title_block_promo)
             promoStatusDrawable = R.drawable.ic_topchat_block_promo
         }
-        return Menus.ItemMenus(promoStatusTitle, promoStatusDrawable)
+        return TopchatItemMenu(promoStatusTitle, promoStatusDrawable)
     }
 
     private fun handleRoomMenuClick(
-            itemMenus: Menus.ItemMenus,
+            itemMenus: TopchatItemMenu,
             chatroomViewModel: ChatroomViewModel,
-            headerMenuListener: HeaderMenuListener,
-            alertDialog: Dialog
+            headerMenuListener: HeaderMenuListener
     ) {
         when {
             itemMenus.icon == R.drawable.ic_topchat_unblock_user_chat -> {
@@ -430,7 +437,7 @@ open class TopChatViewStateImpl constructor(
                 headerMenuListener.onClickBlockPromo()
             }
             itemMenus.title == view.context.getString(R.string.delete_conversation) -> {
-                showDeleteChatDialog(headerMenuListener, alertDialog)
+                showDeleteChatDialog(headerMenuListener)
             }
             itemMenus.title == view.context.getString(R.string.follow_store) -> {
                 headerMenuListener.followUnfollowShop(true)
@@ -571,16 +578,25 @@ open class TopChatViewStateImpl constructor(
         return ReplyParcelableModel(item.messageId, item.message, item.replyTime)
     }
 
-    private fun showDeleteChatDialog(headerMenuListener: HeaderMenuListener, myAlertDialog: Dialog) {
-        myAlertDialog.setTitle(view.context.getString(R.string.delete_chat_question))
-        myAlertDialog.setDesc(view.context.getString(R.string.delete_chat_warning_message))
-        myAlertDialog.setBtnOk(view.context.getString(R.string.topchat_chat_delete_confirm))
-        myAlertDialog.setOnOkClickListener {
-            headerMenuListener.onDeleteConversation()
+    private fun showDeleteChatDialog(
+            headerMenuListener: HeaderMenuListener
+    ) {
+        view.context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(it.getString(R.string.delete_chat_question))
+                setDescription(it.getString(R.string.delete_chat_warning_message))
+                setSecondaryCTAText(it.getString(
+                        com.tokopedia.resources.common.R.string.general_label_cancel
+                ))
+                setPrimaryCTAText(it.getString(R.string.topchat_chat_delete_confirm))
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+                setPrimaryCTAClickListener {
+                    headerMenuListener.onDeleteConversation()
+                }
+            }.show()
         }
-        myAlertDialog.setBtnCancel(view.context.getString(com.tokopedia.resources.common.R.string.general_label_cancel))
-        myAlertDialog.setOnCancelClickListener { myAlertDialog.dismiss() }
-        myAlertDialog.show()
     }
 
     override fun showErrorWebSocket(isWebSocketError: Boolean) {

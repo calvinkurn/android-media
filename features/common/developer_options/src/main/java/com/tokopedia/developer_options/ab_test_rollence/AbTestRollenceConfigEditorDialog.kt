@@ -27,14 +27,20 @@ class AbTestRollenceConfigEditorDialog : BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.dialog_remote_config_editor, container, false)
         val editedKeyView: AppCompatTextView = view.findViewById(R.id.edited_key)
-        val editorSendButton: FrameLayout = view.findViewById(R.id.save_button)
+        val editorSaveButton: FrameLayout = view.findViewById(R.id.save_button)
+        val editorDeleteKeyButton: FrameLayout = view.findViewById(R.id.delete_key_button)
         val editorValueInput: AppCompatEditText = view.findViewById(R.id.new_config_value)
 
         val selectedKey = arguments?.getString(AbTestRollenceConfigFragmentActivity.ARGS_SELECTED_KEY) ?: "-"
+        val selectedKeyValue = arguments?.getString(AbTestRollenceConfigFragmentActivity.ARGS_SELECTED_KEY_VALUE) ?: "-"
         editedKeyView.text = selectedKey
-
-        editorSendButton.setOnClickListener {
+        editorValueInput.setText(selectedKeyValue)
+        editorSaveButton.setOnClickListener {
             listener.onEditorSaveButtonClick(selectedKey, editorValueInput.text.toString().trim())
+            dismiss()
+        }
+        editorDeleteKeyButton.setOnClickListener {
+            listener.onEditorDeleteKeyButtonClick(selectedKey)
             dismiss()
         }
 
