@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.tokopedia.minicart.example.ExampleActivity">
 
-    <com.tokopedia.minicart.ui.widget.MiniCartWidget
+    <com.tokopedia.minicart.common.widget.MiniCartWidget
         android:id="@+id/mini_cart_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
