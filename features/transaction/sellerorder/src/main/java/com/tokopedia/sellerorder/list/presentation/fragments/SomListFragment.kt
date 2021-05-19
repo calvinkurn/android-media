@@ -541,7 +541,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private fun onTickerDescriptionClicked(linkUrl: String) {
         if (linkUrl.isNotBlank()) {
             context?.let { context ->
-                RouteManager.route(context, linkUrl)
+                if (linkUrl.startsWith(SomConsts.PREFIX_HTTP)) {
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                } else {
+                    RouteManager.route(context, linkUrl)
+                }
             }
         }
     }
