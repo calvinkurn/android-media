@@ -359,7 +359,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                     onFailSubmitReview(it.fail)
                 }
                 is com.tokopedia.review.common.data.LoadingView -> {
-
+                    showButtonLoading()
                 }
             }
         })
@@ -421,11 +421,13 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun onSuccessSubmitReview() {
+        stopButtonLoading()
         dismiss()
         activity?.setResult(Activity.RESULT_OK)
     }
 
     private fun onFailSubmitReview(throwable: Throwable) {
+        stopButtonLoading()
         logToCrashlytics(throwable)
     }
 
@@ -738,6 +740,20 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             }
             text = incentiveHelper
             show()
+        }
+    }
+
+    private fun showButtonLoading() {
+        submitButton?.apply {
+            isLoading = true
+            setOnClickListener(null)
+        }
+    }
+
+    private fun stopButtonLoading() {
+        submitButton?.apply {
+            isLoading = false
+            setSubmitButtonOnClickListener()
         }
     }
 }
