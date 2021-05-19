@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
@@ -68,6 +69,9 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun createRequestParams(): RequestParams {
         val tokonowQueryParam = mutableMapOf<String, Any>().also {
             it.prependQueryParam()
+            it[SearchApiConst.PAGE] = nextPage
+            it[SearchApiConst.USE_PAGE] = true
+            it[SearchApiConst.DEVICE] = DEFAULT_VALUE_OF_PARAMETER_DEVICE
             it.putAll(queryParam)
         }
 

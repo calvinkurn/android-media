@@ -19,7 +19,7 @@ open class CategoryTestFixtures {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    protected val defaultCategoryId = 0
+    protected val defaultCategoryId = 123
     protected val defaultQueryParamMap = mapOf<String, String>()
     protected val getCategoryFirstPageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
     protected val getCategoryLoadMorePageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)

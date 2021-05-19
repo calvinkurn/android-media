@@ -24,7 +24,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
         val visitableList = searchViewModel.visitableListLiveData.value!!
 
-        `Then assert request params map`(createFirstPageMandatoryParams(1))
+        `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(1))
         `Then assert first page visitables`(visitableList, searchModel)
         `Then assert visitable list does not end with loading more model`(visitableList)
         `Then assert has next page value`(false)
@@ -66,7 +66,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
         val visitableList = searchViewModel.visitableListLiveData.value!!
 
-        `Then assert request params map`(createFirstPageMandatoryParams(1))
+        `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(1))
         `Then assert first page visitables`(visitableList, searchModel)
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)

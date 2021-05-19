@@ -9,7 +9,6 @@ import com.tokopedia.tokomart.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_QUERY_PARAM_MAP
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
@@ -43,10 +42,8 @@ class SearchViewModel @Inject constructor (
     }
 
     override fun MutableMap<String, Any>.prependQueryParam() {
-        put(SearchApiConst.PAGE, nextPage)
-        put(SearchApiConst.USE_PAGE, true)
+//        put(SearchApiConst.SOURCE, TOKONOW)
         put(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
-        put(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
     }
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {

@@ -24,7 +24,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
 
         val visitableList = categoryViewModel.visitableListLiveData.value!!
 
-        // Then assert request params
+        `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(1))
         `Then assert first page visitables`(visitableList, categoryModel)
         `Then assert visitable list footer`(visitableList)
         `Then assert has next page value`(false)
@@ -60,13 +60,13 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
     @Test
     fun `test first page has next page`() {
         val categoryModel = "category/first-page-16-products.json".jsonToObject<CategoryModel>()
-        `Given get category first page use case will be successful`(categoryModel)
+        `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
 
         `When view created`()
 
         val visitableList = categoryViewModel.visitableListLiveData.value!!
 
-        // Then assert request params
+        `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(1))
         `Then assert first page visitables`(visitableList, categoryModel)
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)

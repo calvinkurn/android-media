@@ -138,7 +138,8 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().hasNextPageLiveData.observe(viewLifecycleOwner, this::updateEndlessScrollListener)
         getViewModel().isFilterPageOpenLiveData.observe(viewLifecycleOwner, this::openBottomSheetFilter)
         getViewModel().dynamicFilterModelLiveData.observe(
-                viewLifecycleOwner, this::onDynamicFilterModelChanged)
+                viewLifecycleOwner, this::onDynamicFilterModelChanged
+        )
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel

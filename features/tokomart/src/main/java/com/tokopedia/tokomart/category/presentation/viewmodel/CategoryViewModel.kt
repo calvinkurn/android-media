@@ -1,6 +1,7 @@
 package com.tokopedia.tokomart.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
@@ -11,6 +12,7 @@ import com.tokopedia.tokomart.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokomart.category.utils.CATEGORY_QUERY_PARAM_MAP
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
+import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -42,6 +44,11 @@ class CategoryViewModel @Inject constructor (
                 this::onGetCategoryFirstPageError,
                 createRequestParams(),
         )
+    }
+
+    override fun MutableMap<String, Any>.prependQueryParam() {
+        this[SearchApiConst.SC] = categoryId
+        this[SearchApiConst.SOURCE] = TOKONOW_DIRECTORY
     }
 
     private fun onGetCategoryFirstPageSuccess(categoryModel: CategoryModel) {

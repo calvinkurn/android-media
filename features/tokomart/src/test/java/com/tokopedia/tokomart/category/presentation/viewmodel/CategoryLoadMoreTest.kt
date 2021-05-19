@@ -2,7 +2,6 @@ package com.tokopedia.tokomart.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
-import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.jsonToObject
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.verifyProductItemDataViewList
@@ -24,6 +23,7 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
         `When view load more`()
 
         val visitableList = categoryViewModel.visitableListLiveData.value!!
+        `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(2))
         `Then assert load more page data`(categoryModelPage1, categoryModelPage2, visitableList)
         `Then assert visitable list footer`(visitableList)
         `Then assert has next page value`(false)
@@ -31,7 +31,7 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
 
     private fun `Given get category load more page use case will be successful`(categoryModel: CategoryModel) {
         every {
-            getCategoryLoadMorePageUseCase.execute(any(), any(), any())
+            getCategoryLoadMorePageUseCase.execute(any(), any(), capture(requestParamsSlot))
         } answers {
             firstArg<(CategoryModel) -> Unit>().invoke(categoryModel)
         }
@@ -66,6 +66,7 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
         `When view load more`()
 
         val visitableList = categoryViewModel.visitableListLiveData.value!!
+        `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(2))
         `Then assert load more page data`(categoryModelPage1, categoryModelPage2, visitableList)
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)
