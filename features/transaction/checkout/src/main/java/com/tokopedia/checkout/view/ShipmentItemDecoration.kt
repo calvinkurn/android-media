@@ -6,7 +6,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.R
 import com.tokopedia.checkout.view.viewholder.*
-import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShippingCompletionTickerViewHolder
 
 class ShipmentItemDecoration : RecyclerView.ItemDecoration() {
     private var verticalSpaceHeight = 0
@@ -56,6 +55,10 @@ class ShipmentItemDecoration : RecyclerView.ItemDecoration() {
                     outRect.bottom = it.resources.getDimension(R.dimen.dp_0).toInt()
                 }
                 viewHolder is ShipmentTickerAnnouncementViewHolder -> {
+                    outRect.bottom = if (viewHolder.isEmptyTicker()) it.resources.getDimension(R.dimen.dp_0).toInt() else verticalSpaceHeight
+                }
+                viewHolder is ShipmentTickerErrorViewHolder -> {
+                    outRect.top = it.resources.getDimension(R.dimen.dp_0).toInt()
                     outRect.bottom = if (viewHolder.isEmptyTicker()) it.resources.getDimension(R.dimen.dp_0).toInt() else verticalSpaceHeight
                 }
                 else -> {

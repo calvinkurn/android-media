@@ -13,6 +13,7 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
@@ -258,6 +259,8 @@ public interface ShipmentContract {
         ShipmentCostModel getShipmentCostModel();
 
         EgoldAttributeModel getEgoldAttributeModel();
+
+        ShipmentTickerErrorModel getShipmentTickerErrorModel();
 
         TickerAnnouncementHolderData getTickerAnnouncementHolderData();
 

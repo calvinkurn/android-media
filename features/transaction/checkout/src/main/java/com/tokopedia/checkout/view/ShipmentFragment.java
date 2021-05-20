@@ -56,6 +56,7 @@ import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.dialog.DialogUnify;
@@ -447,7 +448,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 getArguments().getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "").length() > 0;
     }
 
-    private void initRecyclerViewData(TickerAnnouncementHolderData tickerAnnouncementHolderData,
+    private void initRecyclerViewData(ShipmentTickerErrorModel shipmentTickerErrorModel,
+                                      TickerAnnouncementHolderData tickerAnnouncementHolderData,
                                       RecipientAddressModel recipientAddressModel,
                                       List<ShipmentCartItemModel> shipmentCartItemModelList,
                                       ShipmentDonationModel shipmentDonationModel,
@@ -461,8 +463,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         rvShipment.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvShipment.setAdapter(shipmentAdapter);
 
+        shipmentAdapter.addTickerErrorData(shipmentTickerErrorModel);
+
         if (tickerAnnouncementHolderData != null) {
-            shipmentAdapter.addTickerAnnouncementdata(tickerAnnouncementHolderData);
+            shipmentAdapter.addTickerAnnouncementData(tickerAnnouncementHolderData);
         }
 
         if (recipientAddressModel != null) {
@@ -724,6 +728,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.setShowOnboarding(shipmentPresenter.isShowOnboarding());
         setCampaignTimer();
         initRecyclerViewData(
+                shipmentPresenter.getShipmentTickerErrorModel(),
                 shipmentPresenter.getTickerAnnouncementHolderData(),
                 recipientAddressModel,
                 shipmentPresenter.getShipmentCartItemModelList(),
@@ -748,6 +753,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderDataChanged() {
         initRecyclerViewData(
+                shipmentPresenter.getShipmentTickerErrorModel(),
                 shipmentPresenter.getTickerAnnouncementHolderData(),
                 shipmentPresenter.getRecipientAddressModel(),
                 shipmentPresenter.getShipmentCartItemModelList(),
@@ -2604,7 +2610,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             // If ticker not exist, add ticker to list, then update the list
             TickerAnnouncementHolderData tickerAnnouncementHolderData = shipmentPresenter.getTickerAnnouncementHolderData();
-            shipmentAdapter.addTickerAnnouncementdata(tickerAnnouncementHolderData);
+            shipmentAdapter.addTickerAnnouncementData(tickerAnnouncementHolderData);
             if (rvShipment.isComputingLayout()) {
                 rvShipment.post(this::onAddTickerAnnouncementMessage);
             } else {
@@ -2615,10 +2621,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onAddTickerAnnouncementMessage() {
         if (!rvShipment.canScrollVertically(-1)) {
-            shipmentAdapter.notifyItemInserted(ShipmentAdapter.HEADER_POSITION);
+            shipmentAdapter.notifyItemInserted(ShipmentAdapter.SECOND_HEADER_POSITION);
             rvShipment.scrollToPosition(0);
         } else {
-            shipmentAdapter.notifyItemInserted(ShipmentAdapter.HEADER_POSITION);
+            shipmentAdapter.notifyItemInserted(ShipmentAdapter.SECOND_HEADER_POSITION);
         }
     }
 

@@ -46,6 +46,7 @@ import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.fingerprint.util.FingerPrintUtil;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -151,6 +152,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final ExecutorSchedulers executorSchedulers;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
+    private ShipmentTickerErrorModel shipmentTickerErrorModel = new ShipmentTickerErrorModel();
     private TickerAnnouncementHolderData tickerAnnouncementHolderData = new TickerAnnouncementHolderData();
     private RecipientAddressModel recipientAddressModel;
     private ShipmentCostModel shipmentCostModel;
@@ -273,6 +275,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             shipmentCostModel = new ShipmentCostModel();
         }
         return shipmentCostModel;
+    }
+
+    @Override
+    public ShipmentTickerErrorModel getShipmentTickerErrorModel() {
+        return shipmentTickerErrorModel;
     }
 
     @Override
@@ -546,6 +553,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void initializePresenterData(CartShipmentAddressFormData cartShipmentAddressFormData) {
         setLatValidateUseRequest(null);
         setValidateUsePromoRevampUiModel(null);
+
+        shipmentTickerErrorModel = new ShipmentTickerErrorModel(cartShipmentAddressFormData.getErrorTicker());
 
         if (cartShipmentAddressFormData.getTickerData() != null) {
             setTickerAnnouncementHolderData(
