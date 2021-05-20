@@ -32,4 +32,18 @@ class InboxChatBuyerGeneralTest : InboxChatBuyerTest() {
         )
     }
 
+    // TODO: test filter size buyer
+    // TODO: test filter click buyer and its empty state
+    // TODO: test pinned icon is visible for pinned chat
+    // TODO: test success pin unpin chat
+    // TODO: test error pin/unpin chat
+    // TODO: test mark read/unread chat
+    // TODO: test delete chat
+
+    // TODO: test receive chat from seller
+    // TODO: test receive chat from myself sent from different platform
+    // TODO: test nothing happened when chat received from buyer
+    // TODO: test nothing happened when sending chat as seller from different platform
+    // TODO: test ws message queued when receive event onStop fragment
+
 }
