@@ -113,7 +113,7 @@
     <string name="title_due_to_violations">Akibat Pelanggaran</string>
 
     <string name="desc_tips_success_order">Pastikan informasi produk dan jumlah stok produkmu sesuai untuk menghindari pembatalan pesanan.</string>
-    <string name="desc_tips_speed_reply_chat">Berlaku untuk chat (60%) dan diskusi (40%) yang dibalas di jam operasional toko.
+    <string name="desc_tips_speed_reply_chat">Berlaku untuk chat (40%) dan diskusi (60%).
         &lt;br /&gt;&lt;br /&gt;Untuk perhitungan chat, setting awal jam operasional Tokopedia adalah 09.00 - 18.00 (termasuk weekend), namun jka toko sudah memiliki jam operasional, maka perhitungan chat akan mengikuti jam operasional toko.</string>
     <string name="desc_tips_level_reply_chat">Pastikan Seller menjadi pihak terakhir yang membalas pesan, jika tidak, maka akan terhitung sebagai chat yang tidak dibalas.</string>
     <string name="desc_tips_speed_process_order">Jam operasional berdasarkan pengiriman:
@@ -249,7 +249,7 @@
     <string name="score_parameter_shop_score_2">Max. 25</string>
 
     <string name="title_parameter_shop_score_3">III. Penalti</string>
-    <string name="desc_parameter_shop_score_3">Penalti adalah skema pengurangan poin sebagai imbas dari adanya pelanggaran produk, transaksi, dan tindakan fraud. Setiap pelanggaran akan mengurangi jumlah skor performa toko. Apabila jumlah poin penalti mencapai batas tertentu, penjual akan mendapatkan tambahan limitasi.
+    <string name="desc_parameter_shop_score_3">Penalti adalah skema pengurangan poin sebagai imbas dari adanya pelanggaran produk dan transaksi. Setiap pelanggaran akan mengurangi jumlah skor performa toko.
     </string>
     <string name="score_parameter_shop_score_3">Max. -15</string>
 
@@ -274,7 +274,7 @@
     <string name="desc_tooltip_information_next_update">Level toko akan dinilai dari 90 hari terakhir dan akan di-update setiap bulan di hari Senin pertama.</string>
     <string name="item_detail_performance_value">%1s %2s</string>
     <string name="item_detail_performance_target">Target %s</string>
-    <string name="desc_potential_eligible_power_merchant">Hingga %s, Power Merchant akan dapat grade dari reputasi dan akan tetap aktif walaupun skor di bawah 60, ya.</string>
+    <string name="desc_potential_eligible_power_merchant">Hingga %s, Power Merchant akan tetap aktif walaupun skor di bawah 60, ya.</string>
 
     <string name="shop_performance_level_header">Level %s</string>
     

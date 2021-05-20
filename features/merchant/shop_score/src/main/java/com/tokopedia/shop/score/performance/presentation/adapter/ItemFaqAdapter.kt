@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.item_faq_shop_score.view.*
 
 class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) : RecyclerView.Adapter<ItemFaqAdapter.ItemFaqViewHolder>() {
 
-    private var itemFaqList = mutableListOf<ItemFaqUiModel>()
+    private val itemFaqList = mutableListOf<ItemFaqUiModel>()
 
     fun updateArrowItemFaq(position: Int) {
         itemFaqList.mapIndexed { index, itemFaqUiModel ->

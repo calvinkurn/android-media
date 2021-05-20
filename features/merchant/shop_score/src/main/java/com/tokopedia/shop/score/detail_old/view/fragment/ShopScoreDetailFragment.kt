@@ -21,17 +21,15 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.constant.GM_BADGE_TITLE
-import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
 import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_TYPE_OS
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_TYPE_PM
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_TYPE_RM
@@ -54,9 +52,10 @@ class ShopScoreDetailFragment : Fragment() {
     @Inject
     lateinit var viewModel: ShopScoreDetailViewModel
 
-    private var adapter: ShopScoreDetailAdapter? = null
+    @Inject
+    lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
 
-    private val tickerImpressHolder = ImpressHolder()
+    private var adapter: ShopScoreDetailAdapter? = null
 
     override fun onAttach(context: Context) {
         SplitCompat.install(context)
@@ -93,17 +92,20 @@ class ShopScoreDetailFragment : Fragment() {
     private fun setupTickerShopScore(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
         ticker_info_shop_score?.apply {
             showWithCondition(shopInfoPeriodUiModel.periodType == COMMUNICATION_PERIOD)
-            addOnImpressionListener(tickerImpressHolder) {
+            if (isVisible) {
                 ShopScoreDetailTracking.impressHereTickerOldShopScoreDetail(viewModel.userSession.userId, getTypeShop())
             }
+
             setHtmlDescription(getString(R.string.ticker_info_shop_score, getShopScoreDate(context)))
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     when (shopInfoPeriodUiModel.periodType) {
                         COMMUNICATION_PERIOD -> {
                             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, GMCommonUrl.SHOP_INTERRUPT_PAGE)
+                            shopScorePenaltyTracking.clickMoreInfoTickerOldShopScore()
                         }
-                        else -> {}
+                        else -> {
+                        }
                     }
                     ShopScoreDetailTracking.clickHereTickerOldShopScoreDetail(viewModel.userSession.userId, getTypeShop())
                 }

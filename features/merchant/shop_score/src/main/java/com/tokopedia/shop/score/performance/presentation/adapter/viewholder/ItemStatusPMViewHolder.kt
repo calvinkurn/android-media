@@ -4,7 +4,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.setTextMakeHyperlink
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemStatusPowerMerchantListener
@@ -18,14 +17,7 @@ class ItemStatusPMViewHolder(view: View,
         val LAYOUT = R.layout.item_status_power_merchant
     }
 
-    private val impressHolderPowerMerchantHeader = ImpressHolder()
-
     override fun bind(element: ItemStatusPMUiModel?) {
-        with(itemView) {
-            potentialPowerMerchantWidget?.addOnImpressionListener(impressHolderPowerMerchantHeader) {
-                itemStatusPowerMerchantListener.onImpressHeaderPowerMerchantSection()
-            }
-        }
         setupIconClickListener()
         setupItemPowerMerchant(element)
     }
@@ -38,8 +30,13 @@ class ItemStatusPMViewHolder(view: View,
                 tv_desc_content_pm_section?.setTextMakeHyperlink(it) {
                     itemStatusPowerMerchantListener.onItemClickedGotoPMPro()
                 }
+                if (element.isNewSellerProjection) {
+                    tv_desc_content_pm_section?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                } else {
+                    tv_desc_content_pm_section?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                }
             }
-            tv_title_content_pm_section?.showWithCondition(element?.isNewSeller == false)
+            tv_title_content_pm_section?.showWithCondition(element?.isNewSellerProjection == false)
         }
     }
 
@@ -47,6 +44,9 @@ class ItemStatusPMViewHolder(view: View,
         with(itemView) {
             ic_pm_reputation_right?.setOnClickListener {
                 itemStatusPowerMerchantListener.onItemClickedGoToPMActivation()
+            }
+            if (ic_pm_reputation_right?.isVisible == true) {
+                itemStatusPowerMerchantListener.onImpressHeaderPowerMerchantSection()
             }
         }
     }

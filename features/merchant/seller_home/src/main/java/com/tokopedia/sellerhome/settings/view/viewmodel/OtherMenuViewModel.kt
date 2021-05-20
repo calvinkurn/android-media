@@ -10,6 +10,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
@@ -42,9 +43,9 @@ class OtherMenuViewModel @Inject constructor(
     private val _isToasterAlreadyShown = NonNullLiveData(false)
     private val _isStatusBarInitialState = MutableLiveData<Boolean>().apply { value = true }
     private val _isFreeShippingActive = MutableLiveData<Boolean>()
-    private val _shopPeriodType = MutableLiveData<Result<String>>()
+    private val _shopPeriodType = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
 
-    val shopPeriodType: LiveData<Result<String>>
+    val shopPeriodType: LiveData<Result<ShopInfoPeriodUiModel>>
         get() = _shopPeriodType
     val settingShopInfoLiveData: LiveData<Result<SettingShopInfoUiModel>>
         get() = _settingShopInfoLiveData
@@ -74,7 +75,7 @@ class OtherMenuViewModel @Inject constructor(
                 getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toIntOrZero())
                 getShopInfoPeriodUseCase.executeOnBackground()
             }
-            _shopPeriodType.value = Success(periodData.periodType)
+            _shopPeriodType.value = Success(periodData)
         }, onError = {
             _shopPeriodType.value = Fail(it)
         })

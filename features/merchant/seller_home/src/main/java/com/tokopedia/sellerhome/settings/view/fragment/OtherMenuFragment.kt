@@ -31,6 +31,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
 import com.tokopedia.gm.common.constant.END_PERIOD
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -55,6 +56,7 @@ import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
+import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
@@ -102,6 +104,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     lateinit var sellerHomeConfig: SellerHomeRemoteConfig
     @Inject
     lateinit var freeShippingTracker: SettingFreeShippingTracker
+
+    @Inject lateinit var settingPerformanceTracker: SettingPerformanceTracker
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
 
@@ -335,9 +339,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         otherMenuViewModel.getShopPeriodType()
     }
 
-    private fun setPerformanceMenu(periodType: String) {
-        if (periodType.isNotBlank()) {
-            if (periodType == TRANSITION_PERIOD || periodType == END_PERIOD) {
+    private fun setPerformanceMenu(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
+        if (shopInfoPeriodUiModel.periodType.isNotBlank()) {
+            if (shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD || shopInfoPeriodUiModel.periodType == END_PERIOD) {
                 val shopPerformanceData = adapter.list.filterIsInstance<MenuItemUiModel>().find {
                     it.onClickApplink == ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
                 }
@@ -354,11 +358,16 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                             null,
                             ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
                             eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
-                            iconUnify = IconUnify.PERFORMANCE)
+                            iconUnify = IconUnify.PERFORMANCE,
+                            clickAction = {
+                                settingPerformanceTracker.clickItemEntryPointPerformance(shopInfoPeriodUiModel.isNewSeller)
+                            }
+                    )
 
                     if (promotionIndex != -1) {
                         adapter.addElement(promotionIndex + 1, performanceData)
                         adapter.notifyItemRangeInserted(promotionIndex, 1)
+                        settingPerformanceTracker.impressItemEntryPointPerformance(shopInfoPeriodUiModel.isNewSeller)
                     }
                 }
             }

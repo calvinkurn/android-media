@@ -253,6 +253,6 @@ class OtherMenuViewModelTest {
 
         val actualResult = (mViewModel.shopPeriodType.observeAwaitValue() as Success).data
         assert(mViewModel.shopPeriodType.observeAwaitValue() is Success)
-        assert(actualResult == shopInfoPeriodUiModel.periodType)
+        assert(actualResult == shopInfoPeriodUiModel)
     }
 }
