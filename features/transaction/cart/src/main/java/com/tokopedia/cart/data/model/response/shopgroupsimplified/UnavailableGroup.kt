@@ -3,8 +3,6 @@ package com.tokopedia.cart.data.model.response.shopgroupsimplified
 import com.google.gson.annotations.SerializedName
 
 data class UnavailableGroup(
-        @SerializedName("user_address_id")
-        val userAddressId: Int = 0,
         @SerializedName("shipment_information")
         val shipmentInformation: ShipmentInformation = ShipmentInformation(),
         @SerializedName("shop")
