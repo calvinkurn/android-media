@@ -33,11 +33,11 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
         bindTopAdsHeadlineView(data)
     }
 
-    private fun fetchTopadsHeadlineAds(topAdsHeadlineView: TopAdsHeadlineView, data: CartTopAdsHeadlineData, userSession: UserSessionInterface) {
-        topAdsHeadlineView.getHeadlineAds(getHeadlineAdsParam(data, userSession), this::onSuccessResponse, this::hideHeadlineView)
+    private fun fetchTopadsHeadlineAds(topAdsHeadlineView: TopAdsHeadlineView, userSession: UserSessionInterface) {
+        topAdsHeadlineView.getHeadlineAds(getHeadlineAdsParam(userSession), this::onSuccessResponse, this::hideHeadlineView)
     }
 
-    private fun getHeadlineAdsParam(data: CartTopAdsHeadlineData, userSession: UserSessionInterface): String {
+    private fun getHeadlineAdsParam(userSession: UserSessionInterface): String {
         return UrlParamHelper.generateUrlParamString(mutableMapOf(
                 PARAM_DEVICE to "android",
                 PARAM_EP to "cpm",
@@ -71,7 +71,7 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
             if (data.cpmModel != null) {
                 showHeadlineView(data.cpmModel)
             } else {
-                fetchTopadsHeadlineAds(this, data, userSession)
+                fetchTopadsHeadlineAds(this, userSession)
             }
         }
     }

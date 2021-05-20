@@ -642,9 +642,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     private fun addCartTopAdsHeadlineData(index: Int) {
-        val cartTopAdsHeadlineData = CartTopAdsHeadlineData().apply {
-            productIds = allCartItemProductId
-        }
+        val cartTopAdsHeadlineData = CartTopAdsHeadlineData()
         this.cartTopAdsHeadlineData = cartTopAdsHeadlineData
         cartDataList.add(index, cartTopAdsHeadlineData)
     }
