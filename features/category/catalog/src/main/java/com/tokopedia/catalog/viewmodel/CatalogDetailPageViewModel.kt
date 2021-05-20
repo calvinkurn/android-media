@@ -14,7 +14,7 @@ class CatalogDetailPageViewModel @Inject constructor(private var catalogDetailUs
 
     private val catalogDetailDataModel = MutableLiveData<Result<CatalogDetailDataModel>>()
 
-    fun getProductCatalog(catalogId: String) {
+    fun getProductCatalog(catalogId: String, userId : String, device : String) {
         viewModelScope.launchCatchError(
                 block = {
                     catalogDetailUseCase.getCatalogDetail(catalogId,catalogDetailDataModel)

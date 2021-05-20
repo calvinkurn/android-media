@@ -123,7 +123,7 @@ class CatalogDetailPageFragment : Fragment(),
         activity?.let { observer ->
             val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
             catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
-            catalogDetailPageViewModel.getProductCatalog(catalogId)
+            catalogDetailPageViewModel.getProductCatalog(catalogId,userSession.userId,CatalogConstant.DEVICE)
             showShimmer()
             userSession = UserSession(observer)
         }
@@ -216,7 +216,7 @@ class CatalogDetailPageFragment : Fragment(),
             shimmerLayout?.show()
             bottom_sheet_fragment_container.show()
             global_error.hide()
-            catalogDetailPageViewModel.getProductCatalog(catalogId)
+            catalogDetailPageViewModel.getProductCatalog(catalogId,userSession.userId,CatalogConstant.DEVICE)
         }
     }
 
