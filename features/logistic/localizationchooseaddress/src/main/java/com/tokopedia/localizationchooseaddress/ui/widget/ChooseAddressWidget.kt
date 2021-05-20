@@ -167,7 +167,8 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             if (hasClicked == false ) {
                 val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
                 val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceTrackingData()
-                source?.let { it -> ChooseAddressTracking.onClickWidget(it, userSession.userId) }
+                val eventLabel = chooseAddressWidgetListener?.getEventLabelHostPage()
+                source?.let { _source -> eventLabel?.let { _eventLabel -> ChooseAddressTracking.onClickWidget(_source, userSession.userId, _eventLabel) } }
                 val chooseAddressBottomSheet = ChooseAddressBottomSheet()
                 chooseAddressBottomSheet.setListener(this)
                 chooseAddressBottomSheet.show(fragment?.childFragmentManager)
@@ -260,6 +261,14 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
          * host/fragment need to refresh their page
          */
         fun onLocalizingAddressLoginSuccess()
+
+        /**
+         * String Event Label of Host Page
+         * By default, this method will return String empty
+         */
+        fun getEventLabelHostPage(): String {
+            return ""
+        }
     }
 
 }

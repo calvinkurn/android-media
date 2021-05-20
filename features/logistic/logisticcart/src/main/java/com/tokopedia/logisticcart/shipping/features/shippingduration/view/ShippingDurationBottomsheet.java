@@ -141,6 +141,7 @@ public class ShippingDurationBottomsheet implements ShippingDurationContract.Vie
             if (shippingDurationBottomsheetListener != null) {
                 shippingDurationBottomsheetListener.onShippingDurationButtonCloseClicked();
             }
+            bottomSheet.dismiss();
             return Unit.INSTANCE;
         });
     }

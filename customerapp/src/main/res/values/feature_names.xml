@@ -31,6 +31,7 @@
     <string name="flight_cancellation_reason_title">Pilih Alasan Pembatalan</string>
     <string name="flight_insurance_webview_toolbar_title">Asuransi Perjalanan</string>
     <string name="flight_order_invoice_toolbar_title">Tokopedia</string>
+    <string name="hotel_pay_at_hotel_promo_header_title">Pakai Promo</string>
 
     <!--Travel Slice -->
     <string name="travel_slice_host_name">travelslice</string>
@@ -361,5 +362,4 @@
     <string name="vidpick_app_name">Video Recorder</string>
     <string name="album">Album</string>
     <string name="edit_image">Edit Gambar</string>
-    <string name="instagram_label_login">Instagram Login</string>
 </resources>

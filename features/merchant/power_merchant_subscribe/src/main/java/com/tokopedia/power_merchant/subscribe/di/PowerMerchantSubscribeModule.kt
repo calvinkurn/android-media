@@ -7,8 +7,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.gm.common.constant.GMParamConstant
 import com.tokopedia.gm.common.di.GmCommonModule
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
@@ -40,7 +38,9 @@ class PowerMerchantSubscribeModule {
 
     @PowerMerchantSubscribeScope
     @Provides
-    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
+    fun provideGraphqlRepository(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
+    }
 
     @PowerMerchantSubscribeScope
     @Provides

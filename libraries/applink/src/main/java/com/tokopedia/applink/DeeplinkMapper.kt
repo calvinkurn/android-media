@@ -72,10 +72,12 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomNewOrderAp
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShipAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
+import com.tokopedia.applink.travel.DeeplinkMapperTravel
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import org.json.JSONObject
-import timber.log.Timber
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -158,7 +160,7 @@ object DeeplinkMapper {
 
             val webviewApplink = UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, weblink)
 
-            Timber.w("P1#WEBVIEW_SWITCH#'$link';url='$weblink'")
+            ServerLogger.log(Priority.P1, "WEBVIEW_SWITCH", mapOf("type" to link, "url" to weblink))
 
             return createAppendDeeplinkWithQuery(webviewApplink, uri.query)
         } catch (e: Exception) { return mappedLink }
@@ -289,7 +291,7 @@ object DeeplinkMapper {
                     targetDeeplink = { _, _, deeplink -> DeeplinkMapperMerchant.getRegisteredProductDetail(deeplink) }),
             DLP(logic = { _, _, deeplink -> DeeplinkMapperMerchant.isProductDetailAffiliatePageDeeplink(deeplink) },
                     targetDeeplink = { _, _, deeplink -> DeeplinkMapperMerchant.getRegisteredProductDetailAffiliate(deeplink) }),
-            DLP.startWith(ApplinkConst.INBOX) { _, _, _ -> DeeplinkMapperHome.getRegisteredInboxNavigation() },
+            DLP.startWith(ApplinkConst.INBOX) { _, _, deeplink -> DeeplinkMapperHome.getRegisteredInboxNavigation(deeplink) },
             DLP.startWith(ApplinkConst.QRSCAN, ApplinkConstInternalMarketplace.QR_SCANNEER),
             DLP.startWith(ApplinkConst.SALAM_UMRAH_SHOP) { ctx, _, deeplink -> getRegisteredNavigationSalamUmrahShop(deeplink, ctx) },
             DLP(logic = { _, _, deeplink -> deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && isChatBotTrue(deeplink) },
@@ -327,7 +329,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME) { ctx , _, deeplink -> getRegisteredNavigationDigital(ctx, deeplink) },
             DLP.exact(ApplinkConst.TRAVEL_AND_ENTERTAINMENT_ORDER) { ctx, _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
             DLP.exact(ApplinkConst.PURCHASE_ONGOING) { ctx , _, deeplink -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) },
-            DLP.startWith(ApplinkConst.HOTEL) { _, _, deeplink -> deeplink },
+            DLP.startWith(ApplinkConst.HOTEL) {ctx, _, deeplink -> DeeplinkMapperTravel.getRegisteredNavigationTravel(ctx, deeplink) },
             DLP.startWith(ApplinkConst.DIGITAL) { ctx, _, deeplink -> getRegisteredNavigationDigital(ctx, deeplink) },
             DLP.startWith(ApplinkConst.RECHARGE) { ctx, _, deeplink -> getRegisteredNavigationDigital(ctx, deeplink) },
             DLP.startWith(ApplinkConst.DISCOVERY_SEARCH) { _, _, deeplink -> getRegisteredNavigationSearch(deeplink) },
@@ -416,7 +418,7 @@ object DeeplinkMapper {
             DLP(logic = { _, uri, _ -> DeeplinkMapperMerchant.isShopPageInfoDeeplink(uri) },
                     targetDeeplink = { _, uri, _ -> DeeplinkMapperMerchant.getShopPageInfoInternalApplink(uri) }),
             DLP(logic = { _, uri, _ -> DeeplinkMapperMerchant.isShopPageNoteDeeplink(uri) },
-                    targetDeeplink = { _, uri, _ -> DeeplinkMapperMerchant.getShopPageInfoInternalApplink(uri) }),
+                    targetDeeplink = { _, uri, _ -> DeeplinkMapperMerchant.getShopPageNoteInternalApplink(uri) }),
             DLP(logic = { _, uri, _ -> DeeplinkMapperMerchant.isShopPageResultEtalaseDeepLink(uri) },
                     targetDeeplink = { _, uri, _ -> DeeplinkMapperMerchant.getShopPageResultEtalaseInternalAppLink(uri) }),
             DLP.startWith(ApplinkConst.SELLER_INFO_DETAIL) { _, uri, _ -> DeeplinkMapperMerchant.getSellerInfoDetailApplink(uri) },
@@ -452,6 +454,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.PMS, ApplinkConstInternalPayment.PMS_PAYMENT_LIST),
             DLP.exact(ApplinkConst.SETTING_NOTIFICATION, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING),
             DLP.exact(ApplinkConst.KYC, ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO),
+            DLP.exact(ApplinkConst.REGISTER, ApplinkConstInternalGlobal.INIT_REGISTER),
             DLP.exact(ApplinkConst.ADD_NAME_PROFILE, ApplinkConstInternalGlobal.MANAGE_NAME),
             DLP.exact(ApplinkConst.KYC_NO_PARAM, ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO_BASE),
             DLP.exact(ApplinkConst.KYC_FORM_NO_PARAM, ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM_BASE),
@@ -491,6 +494,8 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER),
             DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalGlobal.PROFILE_COMPLETION),
             DLP.exact(ApplinkConst.FEEDBACK_FORM, ApplinkConstInternalGlobal.FEEDBACK_FORM),
+            DLP(logic = { _, uri, _ -> uri.host == ApplinkConst.HOST_LOGIN
+            }, targetDeeplink = { _, _, _ -> ApplinkConstInternalUserPlatform.LOGIN }),
             DLP.startWith(ApplinkConst.CHANGE_INACTIVE_PHONE, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE),
             DLP.startWith(ApplinkConst.OVO_REGISTER_INIT, ApplinkConstInternalGlobal.OVO_REG_INIT),
             DLP.startWith(ApplinkConst.REGISTER_INIT, ApplinkConstInternalGlobal.INIT_REGISTER),

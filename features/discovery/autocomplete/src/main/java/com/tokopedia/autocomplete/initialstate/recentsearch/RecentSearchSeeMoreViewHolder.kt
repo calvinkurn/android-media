@@ -7,18 +7,18 @@ import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import kotlinx.android.synthetic.main.layout_see_more_recent_search.view.*
 
-class RecentSearchSeeMoreViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<RecentSearchSeeMoreViewModel>(itemView) {
+class RecentSearchSeeMoreViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<RecentSearchSeeMoreDataView>(itemView) {
 
     private fun bindTitle() {
         itemView.autocompleteSeeMoreButton?.text = getString(R.string.autocomplete_see_more_recent_search)
     }
 
-    override fun bind(element: RecentSearchSeeMoreViewModel) {
+    override fun bind(element: RecentSearchSeeMoreDataView) {
         bindTitle()
         bindListener(element)
     }
 
-    private fun bindListener(item: RecentSearchSeeMoreViewModel) {
+    private fun bindListener(item: RecentSearchSeeMoreDataView) {
         itemView.autocompleteSeeMoreButton?.setOnClickListener { clickListener.onRecentSearchSeeMoreClicked() }
     }
 

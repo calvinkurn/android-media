@@ -3,7 +3,7 @@ package com.tokopedia.otp.verification.viewmodel
 import FileUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.otp.verification.DispatcherProviderTest
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.otp.verification.domain.data.*
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
@@ -52,7 +52,7 @@ class VerificationViewModelTest {
     @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
 
-    private val dispatcherProviderTest = DispatcherProviderTest()
+    private val dispatcherProviderTest = CoroutineTestDispatchersProvider
 
     private lateinit var viewmodel: VerificationViewModel
 

@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.loginfingerprint.data.model.ValidateFingerprintResult
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.domain.usecase.ValidateFingerprintUseCase
-import com.tokopedia.loginfingerprint.utils.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -23,13 +23,13 @@ import javax.inject.Inject
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class ScanFingerprintViewModel @Inject constructor(dispatcher: DispatcherProvider,
+class ScanFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                                    private val userSession: UserSessionInterface,
                                                    private val cryptographyUtils: Cryptography?,
                                                    private val fingerprintSetting: FingerprintSetting,
                                                    private val loginTokenUseCase: LoginTokenUseCase,
                                                    private val validateFingerprintUseCase: ValidateFingerprintUseCase)
-    : BaseViewModel(dispatcher.io()) {
+    : BaseViewModel(dispatcher.io) {
 
     private val mutableLoginFingerprintResult = MutableLiveData<com.tokopedia.usecase.coroutines.Result<LoginTokenPojo>>()
     val loginFingerprintResult: LiveData<com.tokopedia.usecase.coroutines.Result<LoginTokenPojo>>

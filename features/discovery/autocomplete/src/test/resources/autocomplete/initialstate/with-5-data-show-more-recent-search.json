@@ -128,19 +128,19 @@
           "type": "keyword"
         },
         {
-          "id": "0",
-          "template": "list_single_line",
-          "image_url": "https://ecs7.tokopedia.net/img/autocomplete/icTime-3x.png",
-          "applink": "tokopedia://search?q=baju&source=universe&st=product",
-          "url": "/search?q=baju&source=universe&st=product",
-          "title": "tas",
-          "subtitle": "",
-          "icon_title": "",
-          "icon_subtitle": "",
-          "label": "",
+          "id": "2400899",
+          "template": "list_double_line",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/shops-1/2017/12/22/2400899/2400899_a1a81e3e-9067-4685-a62f-7be063df8377.png",
+          "applink": "tokopedia://shop/2400899?source=universe&st=product",
+          "url": "/samsung?source=universe&st=product",
+          "title": "Samsung Mobile Indonesia",
+          "subtitle": "Jakarta",
+          "icon_title": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+          "icon_subtitle": "https://ecs7.tokopedia.net/img/autocomplete/location.png",
+          "label": "Toko",
           "label_type": "",
-          "shortcut_image": "https://ecs7.tokopedia.net/img/autocomplete/ic-close-3x.png",
-          "type": "keyword"
+          "shortcut_image": "",
+          "type": "shop"
         }
       ]
     },

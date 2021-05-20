@@ -1,7 +1,6 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.digital.home.RechargeHomepageTestDispatchersProvider
 import com.tokopedia.digital.home.model.RechargeHomepageSectionAction
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
@@ -11,6 +10,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -50,7 +50,7 @@ class RechargeHomepageViewModelTest {
 
         rechargeHomepageViewModel = RechargeHomepageViewModel(
                 graphqlRepository,
-                RechargeHomepageTestDispatchersProvider()
+                CoroutineTestDispatchersProvider
         )
     }
 
@@ -88,6 +88,7 @@ class RechargeHomepageViewModelTest {
         assertEquals(placeHolderData, searchBarPlaceholder)
         assertEquals(sectionIcons, listOf("2","3"))
         assertNotNull(skeletonData.data.searchBarAppLink == searchBarApplink)
+        assertEquals(rechargeHomepageViewModel.calledSectionIds.size, 0)
     }
 
     @Test
@@ -122,6 +123,7 @@ class RechargeHomepageViewModelTest {
         assertEquals(placeHolderData, searchBarPlaceholder)
         assertEquals(sectionIcons, listOf<String>())
         assertNotNull(skeletonData.data.searchBarAppLink == searchBarApplink)
+        assertEquals(rechargeHomepageViewModel.calledSectionIds.size, 0)
     }
 
     @Test
@@ -135,6 +137,7 @@ class RechargeHomepageViewModelTest {
         assert(actualData is Fail)
         assertEquals(placeHolderData, "")
         assertEquals(sectionIcons, arrayListOf<String>())
+        assertEquals(rechargeHomepageViewModel.calledSectionIds.size, 0)
     }
 
     @Test
@@ -196,6 +199,8 @@ class RechargeHomepageViewModelTest {
         assertNotNull(skeletonData is Success)
         assertNotNull((skeletonData as Success).data.searchBarPlaceholder == searchBarPlaceholder)
         assertNotNull(skeletonData.data.searchBarAppLink == searchBarApplink)
+
+        assertEquals(rechargeHomepageViewModel.calledSectionIds.size, 1)
     }
 
     @Test
@@ -208,6 +213,8 @@ class RechargeHomepageViewModelTest {
         sections?.run {
             assert(isEmpty())
         }
+
+        assertEquals(rechargeHomepageViewModel.calledSectionIds.size, 1)
     }
 
     @Test

@@ -1,6 +1,10 @@
 package com.tokopedia.shop.product.view.widget
 
 import android.content.Context
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
+import android.os.Build
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.ViewGroup
@@ -8,8 +12,8 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.R
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.shop.R
 
 /**
  * Created by tlh on 2017/1/21 :)
@@ -61,13 +65,14 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         mRecyclerView = view
         recyclerViewPaddingTop = mRecyclerView?.paddingTop.orZero()
         mHeaderContainer = FrameLayout(context)
-        mHeaderContainer?.background = MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom)
+        val backgroundDrawable = MethodChecker.getDrawable(context, R.drawable.shop_page_view_shadow_bottom)
+        mHeaderContainer?.background = backgroundDrawable
         mHeaderContainer?.clipToPadding = false
         mHeaderContainer?.clipChildren = false
         mHeaderContainer?.isClickable = true
         mHeaderContainer?.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         mHeaderContainer?.visibility = GONE
-        mHeaderContainer?.background = MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom)
+        mHeaderContainer?.background = backgroundDrawable
         addView(mHeaderContainer)
         val onScrollListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

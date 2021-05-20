@@ -22,40 +22,6 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.contactus.home.view.BuyerPurchaseListActivity"
-            android:exported="true"
-            android:label="@string/invoice_list_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
-            android:name="com.tokopedia.contactus.orderquery.view.OrderQueryTicketActivity"
-            android:exported="true"
-            android:label="@string/order_query_ticket_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
-            android:name="com.tokopedia.contactus.orderquery.view.QueryTicketDetailActivity"
-            android:exported="true"
-            android:label="@string/order_query_ticket_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
-            android:name="com.tokopedia.contactus.orderquery.view.SubmitTicketActivity"
-            android:exported="true"
-            android:label="@string/submit_ticket_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity
-            android:name="com.tokopedia.contactus.orderquery.view.PopularFiveArticleActivity"
-            android:exported="true"
-            android:label="@string/contact_us_title_home"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity
             android:name="com.tokopedia.contactus.createticket.activity.ContactUsActivity"
             android:hardwareAccelerated="true"
             android:label="@string/contact_us_title_home"

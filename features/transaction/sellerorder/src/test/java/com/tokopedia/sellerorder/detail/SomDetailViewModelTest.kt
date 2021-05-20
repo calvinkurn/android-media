@@ -49,7 +49,7 @@ class SomDetailViewModelTest: SomOrderBaseViewModelTest<SomDetailViewModel>() {
     override fun setUp() {
         super.setUp()
         viewModel = SomDetailViewModel(somAcceptOrderUseCase, somRejectOrderUseCase, somEditRefNumUseCase,
-                somRejectCancelOrderUseCase, userSessionInterface, dispatcher,
+                somRejectCancelOrderUseCase, somValidateOrderUseCase, userSessionInterface, dispatcher,
                 somGetOrderDetailUseCase, somReasonRejectUseCase, somSetDeliveredUseCase,
                 authorizeSomDetailAccessUseCase, authorizeChatReplyAccessUseCase)
 
