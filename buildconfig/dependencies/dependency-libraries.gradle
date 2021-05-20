@@ -8,7 +8,7 @@ ext {
             url                     : "com.tokopedia.url:url:1.0.10",
             network                 : "com.tokopedia.network:network:1.1.17",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
-            usersession             : "com.tokopedia.user.session:user_session:1.0.38",
+            usersession             : "com.tokopedia.user.session:user_session:1.0.41",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.6",
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.6",
             betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.9",
