@@ -139,7 +139,7 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
                 null,
                 tvContent,
                 false
-        ).setContentPadding(0.toPx(), 4.toPx(), 16.toPx(), 4.toPx()))
+        ).setContentPadding(16.toPx(), 4.toPx(), 16.toPx(), 4.toPx()))
     }
 
     private fun getShopNotes() {
