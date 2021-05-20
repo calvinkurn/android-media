@@ -101,12 +101,14 @@ class CategoryFilterViewHolder(
     private class ItemDecoration(private val spacing: Int): RecyclerView.ItemDecoration() {
 
         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            val adapter = parent.adapter ?: return
+
             when (parent.getChildAdapterPosition(view)) {
                 0 -> {
                     outRect.left = spacing
                     outRect.right = spacing / 4
                 }
-                parent.adapter?.itemCount -> {
+                (adapter.itemCount - 1) -> {
                     outRect.left = spacing / 4
                     outRect.right = spacing
                 }
