@@ -58,6 +58,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                     cover
                     ratio
                     isATC
+                    etalaseID
                   }
                   data {
                     ... on DisplayWidget {

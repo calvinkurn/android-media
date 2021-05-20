@@ -161,7 +161,10 @@ class ShopHomeCarousellProductViewHolder(
         )
     }
 
-    private fun isEtalaseCarousel() : Boolean = shopHomeCarousellProductUiModel?.header?.etalaseId?.isNotEmpty() == true
+    private fun isEtalaseCarousel() : Boolean {
+        val etalaseId = shopHomeCarousellProductUiModel?.header?.etalaseId
+        return etalaseId?.isNotEmpty() == true && etalaseId != "0"
+    }
 
     private fun isHasAtc(): Boolean {
         return (shopHomeCarousellProductUiModel?.header?.isATC ?: 0) == IS_ATC
