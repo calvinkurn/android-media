@@ -151,7 +151,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 //    }
 
 
-    // Remove
+//     Remove
     fun fetchCarouselPaginatedProducts() {
         isLoading = true
         launchCatchError(block = {
@@ -172,7 +172,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         })
     }
 
-    suspend fun paginatedErrorData() {
+    private suspend fun paginatedErrorData() {
         components.horizontalProductFailState = true
         getProductList()?.let {
             isLoading = false
@@ -203,7 +203,8 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             pageEndPoint = components.pageEndPoint
             parentComponentId = components.id
             id = ComponentNames.CarouselErrorLoad.componentName
-            loadForHorizontal = false
+//            loadForHorizontal = false
+            parentComponentPosition = components.position
             discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
         })
         return productLoadState
@@ -229,4 +230,13 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     }
 
     fun getPageSize() = PRODUCT_PER_PAGE
+
+    override fun refreshProductCarouselError(){
+        getProductList()?.let {
+            isLoading = false
+//            reSyncProductCardHeight(it)
+            productCarouselList.value = it
+            syncData.value = true
+        }
+    }
 }

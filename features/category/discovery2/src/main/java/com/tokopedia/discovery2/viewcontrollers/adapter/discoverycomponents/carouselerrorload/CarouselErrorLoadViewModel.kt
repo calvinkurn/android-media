@@ -22,13 +22,12 @@ class CarouselErrorLoadViewModel(val application: Application, private val compo
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    override fun onAttachToViewHolder() {
-        super.onAttachToViewHolder()
-    }
+
+    fun getParentComponentPosition() = components.parentComponentPosition
 
     fun loadData(){
         launchCatchError(block = {
-            syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
+            syncData.value = productCardUseCase.getCarouselPaginatedData(components.parentComponentId, components.pageEndPoint)
         }, onError = {
             it.printStackTrace()
         })

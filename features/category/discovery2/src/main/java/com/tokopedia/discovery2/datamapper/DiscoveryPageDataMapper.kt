@@ -109,19 +109,6 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 }
             }
 
-//            ComponentNames.ProductCardCarousel.componentName,
-//            ComponentNames.ProductCardSprintSaleCarousel.componentName -> {
-//                if(component.productCarouselFailState){
-// Comment                    component.productCarouselFailState = false
-//                    listComponents.add(component.copy().apply {
-//                        setComponentsItem(component.getComponentsItem())
-//                        productCarouselFailState = false
-//                    })
-//                }else{
-//                    listComponents.add(component)
-//                }
-//            }
-
             ComponentNames.QuickFilter.componentName -> {
                 listComponents.add(component.copy())
             }
@@ -257,33 +244,6 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         }
         return false
     }
-
-    //    private fun parseProductVerticalList(component: ComponentsItem): List<ComponentsItem> {
-//        val listComponents: ArrayList<ComponentsItem> = ArrayList()
-//        if (component.getComponentsItem().isNullOrEmpty() && component.noOfPagesLoaded == 0) {
-//            listComponents.add(component.copy().apply {
-//                setComponentsItem(component.getComponentsItem(), component.tabName)
-//            })
-//            component.needPagination = true
-//            component.userAddressData = localCacheModel
-//            listComponents.addAll(List(10) { ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName).apply {
-//                properties = component.properties
-//            } })
-//        } else {
-//            listComponents.add(component)
-//            component.getComponentsItem()?.let {
-//                listComponents.addAll(getDiscoveryComponentList(it))
-//            }
-//            if (component.getComponentsItem()?.size.isMoreThanZero() &&
-//                    component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0
-//                    && component.showVerticalLoader || component.verticalProductFailState) {
-//                listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
-//            } else if (component.getComponentsItem()?.size == 0) {
-//                listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))
-//            }
-//        }
-//        return listComponents
-//    }
 
     private fun parseProductVerticalList(component: ComponentsItem): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
