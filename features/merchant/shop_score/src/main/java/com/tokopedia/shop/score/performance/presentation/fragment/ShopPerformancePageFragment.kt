@@ -47,7 +47,7 @@ import javax.inject.Inject
 class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceListener, ItemShopPerformanceListener,
         ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
-        ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, ItemHeaderShopPerformanceListener, SectionFaqListener,
+        ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, SectionFaqListener,
         GlobalErrorListener, ItemStatusPMProListener {
 
     @Inject
@@ -212,10 +212,6 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         goToPowerMerchantSubscribe(PARAM_PM_PRO)
     }
 
-    override fun onImpressHeaderTicker() {
-        shopScorePenaltyTracking.impressTickerPenaltyShopScore()
-    }
-
     /**
      * ItemRecommendationFeatureListener
      */
@@ -315,7 +311,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun impressMenuShopPerformance() {
-        if (menu?.findItem(PENALTY_WARNING_MENU_ID)?.isVisible == true) shopScorePenaltyTracking.impressMenuPenalty()
+        if (menu?.findItem(PENALTY_WARNING_MENU_ID)?.isVisible == true)
+            if (!isNewSeller) shopScorePenaltyTracking.impressMenuPenalty()
 
         if (menu?.findItem(INFO_MENU_ID)?.isVisible == true) shopScorePenaltyTracking.impressMenuInfoPage()
     }

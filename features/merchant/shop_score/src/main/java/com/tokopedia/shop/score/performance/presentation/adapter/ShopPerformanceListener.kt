@@ -17,10 +17,6 @@ interface ItemStatusPMProListener {
     fun onGotoPMProPage()
 }
 
-interface ItemHeaderShopPerformanceListener {
-    fun onImpressHeaderTicker()
-}
-
 interface ItemPotentialRegularMerchantListener {
     fun onItemClickedBenefitPotentialRM()
     fun onImpressBenefitSeeAll()
