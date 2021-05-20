@@ -37,69 +37,19 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
         topAdsHeadlineView.getHeadlineAds(getHeadlineAdsParam(data, userSession), this::onSuccessResponse, this::hideHeadlineView)
     }
 
-    /**
-     * device=android
-     * &page=1
-     * &ep=headline
-     * &headline_product_count=3
-     * &item=1
-     * &src=fav_product
-     * &template_id=3
-     * &user_id=8828956"
-     */
-
-    /*
-    * dep_id=
-    * &device=desktop
-    * &ep=cpm
-    * &headline_product_count=3
-    * &item=10
-    * &q=
-    * &src=cart
-    * &st=product
-    * &template_id=2%2C3%2C4
-    * &user_id=148220336
-    * &page=1
-    *
-    * */
     private fun getHeadlineAdsParam(data: CartTopAdsHeadlineData, userSession: UserSessionInterface): String {
         return UrlParamHelper.generateUrlParamString(mutableMapOf(
                 PARAM_DEVICE to "android",
                 PARAM_EP to "cpm",
                 PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
                 PARAM_ITEM to "10",
-                PARAM_SRC to "fav_product",
+                PARAM_SRC to VALUE_SRC_CART,
                 "st" to "product",
                 PARAM_PAGE to 1,
                 PARAM_TEMPLATE_ID to "2%2C3%2C4",
-                PARAM_USER_ID to "148220336"
+                PARAM_USER_ID to userSession.userId
         ))
     }
-
-    //2021-05-10 13:37:50.448 2123-6281/com.tokopedia.tkpd D/OkHttp: [
-//2021-05-10 13:37:50.448 2123-6281/com.tokopedia.tkpd D/OkHttp:   {
-//2021-05-10 13:37:50.448 2123-6281/com.tokopedia.tkpd D/OkHttp:     "md5": "7a2ff0e8f81cd215ba974371d292cd84",
-//2021-05-10 13:37:50.448 2123-6281/com.tokopedia.tkpd D/OkHttp:     "operationName": null,
-//2021-05-10 13:37:50.448 2123-6281/com.tokopedia.tkpd D/OkHttp:     "query": "query TopadsCPMHeadlineQuery($displayParams: String!) { displayAdsV3(displayParams: $displayParams) { status { error_code message } header { process_time total_data } data { ad_click_url ad_ref_key id redirect applinks headline { promoted_text name button_text layout position description image { full_url full_ecs } shop { id name tagline slogan location city domain is_followed merchant_vouchers product { id name applinks image { m_url } image_product { image_url image_click_url } price_format product_rating count_review_format } image_shop { xs_url } } badges { image_url title show } template_id } } } } ",
-//2021-05-10 13:37:50.448 2123-6281/com.tokopedia.tkpd D/OkHttp:     "variables": {
-//2021-05-10 13:37:50.448 2123-6281/com.tokopedia.tkpd D/OkHttp:       "displayParams": "dep_id=&device=desktop&ep=cpm&headline_product_count=3&item=10&q=&src=cart&st=product&page=1&template_id=2%252C3%252C4&user_id=148220336"
-//2021-05-10 13:37:50.448 2123-6281/com.tokopedia.tkpd D/OkHttp:     }
-//2021-05-10 13:37:50.448 2123-6281/com.tokopedia.tkpd D/OkHttp:   }
-//2021-05-10 13:37:50.448 2123-6281/com.tokopedia.tkpd D/OkHttp: ]
-
-//[
-//    {
-//        "md5": "7a2ff0e8f81cd215ba974371d292cd84",
-//        "operationName": null,
-//        "query": "query TopadsCPMHeadlineQuery($displayParams: String!) { displayAdsV3(displayParams: $displayParams) { status { error_code message } header { process_time total_data } data { ad_click_url ad_ref_key id redirect applinks headline { promoted_text name button_text layout position description image { full_url full_ecs } shop { id name tagline slogan location city domain is_followed merchant_vouchers product { id name applinks image { m_url } image_product { image_url image_click_url } price_format product_rating count_review_format } image_shop { xs_url } } badges { image_url title show } template_id } } } } ",
-//              "variables": {
-//                   "displayParams": "device=android&page=1&ep=headline&headline_product_count=3&item=1&src=fav_product&template_id=3&user_id=8828956"
-//              }
-//     }
-//]
-
-
-    // // 2021-05-10 13:37:54.489 2123-6281/com.tokopedia.tkpd D/OkHttp: [{"data":{"displayAdsV3":{"status":{"error_code":0,"message":"OK"},"header":{"process_time":0.00315168,"total_data":0},"data":[]}}}]
 
     private fun onSuccessResponse(cpmModel: CpmModel) {
         data?.apply {
