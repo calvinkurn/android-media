@@ -106,4 +106,9 @@ class PaymentListViewModel @Inject constructor(
         cancelPaymentDetailUseCase.cancelJobs()
         super.onCleared()
     }
+
+    fun refreshPage() {
+        isHasNextPage = true
+        lastCursor = ""
+    }
 }

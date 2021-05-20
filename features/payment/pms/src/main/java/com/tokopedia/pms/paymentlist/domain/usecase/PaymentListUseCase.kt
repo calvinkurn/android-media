@@ -29,9 +29,10 @@ class PaymentListUseCase @Inject constructor(
         )
     }
 
-    private fun getRequestParams(cursor: String) = mapOf(CURSOR to cursor)
+    private fun getRequestParams(cursor: String) = mapOf(LANGUAGE to "ID", CURSOR to cursor)
 
     companion object {
         const val CURSOR = "cursor"
+        const val LANGUAGE = "lang"
     }
 }

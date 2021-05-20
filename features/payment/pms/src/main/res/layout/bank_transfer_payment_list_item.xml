@@ -115,6 +115,7 @@
             android:layout_marginStart="@dimen/unify_space_16"
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginBottom="@dimen/unify_space_12"
+            android:scaleType="centerInside"
             app:layout_constraintBottom_toTopOf="@+id/tvCustomerBankInformation"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/headerDivider"

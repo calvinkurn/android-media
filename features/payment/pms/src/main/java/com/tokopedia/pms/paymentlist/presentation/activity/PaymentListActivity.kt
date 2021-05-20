@@ -73,7 +73,7 @@ class PaymentListActivity : BaseSimpleActivity(), HasComponent<PaymentListCompon
         if (resultCode == Activity.RESULT_OK) {
             when(requestCode) {
                 REQUEST_CODE_CHANGE_BANK_ACCOUNT, REQUEST_CODE_UPLOAD_PROOF,
-                REQUEST_CODE_CHANGE_BCA_ID -> (fragment as DeferredPaymentListFragment).loadInitialDeferredTransactions()
+                REQUEST_CODE_CHANGE_BCA_ID -> (fragment as DeferredPaymentListFragment).onRefresh()
             }
         }
         super.onActivityResult(requestCode, resultCode, data)

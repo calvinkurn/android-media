@@ -83,7 +83,7 @@ class PaymentListMapperUseCase @Inject constructor(
                 // will be null in case of Combined VA which is intentional
                 model?.let {
                     model.paymentCode = paymentCode
-                    model.gatewayImage = gatewayImg
+                    model.gatewayImage = if (bankImg.isNullOrBlank()) gatewayImg else bankImg
                     model.gatewayName = gatewayName
                     model.productImage = productImg
                     model.howtoPayAppLink = appLink

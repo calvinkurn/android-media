@@ -15,11 +15,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pms.R
 import com.tokopedia.pms.paymentlist.di.PaymentListComponent
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 import com.tokopedia.pms.paymentlist.domain.data.CancelDetailWrapper
+import com.tokopedia.pms.paymentlist.domain.data.CancelPayment
 import com.tokopedia.pms.paymentlist.domain.data.VirtualAccountPaymentModel
 import com.tokopedia.pms.paymentlist.presentation.adapter.DeferredPaymentListAdapter
 import com.tokopedia.pms.paymentlist.presentation.bottomsheet.PaymentTransactionActionSheet
@@ -29,8 +31,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_payment_list.*
-import timber.log.Timber
-import java.lang.NullPointerException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -50,7 +50,11 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     override fun initInjector() = getComponent(PaymentListComponent::class.java).inject(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         return inflater.inflate(R.layout.fragment_payment_list, container, false)
     }
 
@@ -67,7 +71,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         observeViewModels()
     }
 
-    fun loadInitialDeferredTransactions() {
+    private fun loadInitialDeferredTransactions() {
         swipe_refresh_layout.isRefreshing = true
         (recycler_view.adapter as DeferredPaymentListAdapter).clearAllElements()
         viewModel.getPaymentList()
@@ -77,37 +81,47 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         viewModel.paymentListResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> renderPaymentList(it.data)
-                is Fail -> showError(it.throwable)
+                is Fail -> showErrorUi(it.throwable)
             }
         })
         viewModel.cancelPaymentDetailLiveData.observe(viewLifecycleOwner, {
-            when(it) {
+            when (it) {
                 is Success -> showCancelDetailMessage(it.data)
-                is Fail -> Timber.d(it.throwable)
+                is Fail -> showToast(it.throwable.message, Toaster.TYPE_ERROR)
             }
         })
         viewModel.cancelPaymentLiveData.observe(viewLifecycleOwner, {
-            when(it) {
-                is Success -> Toaster.make(recycler_view, it.data.message, Toaster.LENGTH_LONG)
-                is Fail ->  Timber.d(it.throwable)
+            when (it) {
+                is Success -> showCancelPaymentResult(it.data)
+                is Fail -> showToast(it.throwable.message, Toaster.TYPE_ERROR)
             }
         })
+    }
+
+    private fun showCancelPaymentResult(data: CancelPayment) {
+        // refresh page
+        if (data.isSuccess) {
+            showToast(data.message, Toaster.TYPE_NORMAL)
+            onRefresh()
+        } else showToast(data.message, Toaster.TYPE_ERROR)
     }
 
     // showDialog cancel detail dialog
     private fun showCancelDetailMessage(data: CancelDetailWrapper) {
         val description = if (data.cancelDetailData.combineMessage.isNullOrBlank()) {
             data.cancelDetailData.refundMessage ?: ""
-        } else data.cancelDetailData.combineMessage +"\n" + data.cancelDetailData.refundMessage
+        } else data.cancelDetailData.combineMessage + "\n" + data.cancelDetailData.refundMessage
         context?.let {
-            val title = if (data.productName == null) it.getString(R.string.payment_cancel_title_default)
-            else "Yakin ingin batalkan ${data.productName}"
+            val title =
+                if (data.productName == null) it.getString(R.string.payment_cancel_title_default)
+                else "Yakin ingin batalkan ${data.productName}?"
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(title)
-            dialog.setDescription(description)
+            dialog.setDescription(description.parseAsHtml())
             dialog.setPrimaryCTAText(getString(R.string.payment_cancel_yes))
             dialog.setPrimaryCTAClickListener {
                 viewModel.cancelPayment(data.transactionId, data.merchantCode)
+                dialog.dismiss()
             }
             dialog.setSecondaryCTAText(getString(R.string.payment_cancel_back))
             dialog.setSecondaryCTAClickListener {
@@ -125,9 +139,9 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         (recycler_view.adapter as DeferredPaymentListAdapter).addItems(data)
     }
 
-    private fun showError(throwable: Throwable) {
+    private fun showErrorUi(throwable: Throwable) {
         swipe_refresh_layout.isRefreshing = false
-        when(throwable) {
+        when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
             is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
             is NullPointerException -> showEmptyState()
@@ -137,7 +151,12 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     private fun showEmptyState() {
         noPendingTransactionEmptyState.visible()
-        noPendingTransactionEmptyState.setPrimaryCTAClickListener { RouteManager.route(context, ApplinkConst.HOME) }
+        noPendingTransactionEmptyState.setPrimaryCTAClickListener {
+            RouteManager.route(
+                context,
+                ApplinkConst.HOME
+            )
+        }
     }
 
     private fun setGlobalErrors(errorType: Int) {
@@ -151,7 +170,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun handleActionRedirection(actionItem: Int, model: BasePaymentModel) {
-        when(actionItem) {
+        when (actionItem) {
             ACTION_HOW_TO_PAY_REDIRECTION -> redirectToHowToPay(model)
             ACTION_INVOICE_PAGE_REDIRECTION -> openInvoiceDetail(model)
             ACTION_INVOICE_PAGE_REDIRECTION_COMBINED_VA -> checkAndOpenInvoiceDetail(model)
@@ -175,7 +194,11 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         }
     }
 
-    fun invokeCancelSingleTransaction(transactionId: String, merchantCode: String, productName: String?) {
+    fun invokeCancelSingleTransaction(
+        transactionId: String,
+        merchantCode: String,
+        productName: String?
+    ) {
         viewModel.getCancelPaymentDetail(transactionId, merchantCode, productName)
     }
 
@@ -188,10 +211,17 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     fun showCombinedTransactionDetail(model: BasePaymentModel) {
         (model as VirtualAccountPaymentModel).let {
             val bundle = Bundle()
-            bundle.putParcelableArrayList(PaymentTransactionDetailSheet.TRANSACTION_LIST, model.transactionList)
+            bundle.putParcelableArrayList(
+                PaymentTransactionDetailSheet.TRANSACTION_LIST,
+                model.transactionList
+            )
             bundle.putString(PaymentTransactionDetailSheet.GATEWAY_NAME, model.gatewayName)
             PaymentTransactionDetailSheet.show(bundle, childFragmentManager)
         }
+    }
+
+    fun showToast(toastMessage: String?, toastType: Int) {
+        Toaster.make(recycler_view, toastMessage ?: "", Toaster.LENGTH_LONG, toastType)
     }
 
     companion object {
@@ -203,6 +233,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     override fun onRefresh() {
+        viewModel.refreshPage()
         loadInitialDeferredTransactions()
     }
 

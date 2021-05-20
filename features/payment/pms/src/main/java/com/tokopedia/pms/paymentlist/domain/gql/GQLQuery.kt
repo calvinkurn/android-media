@@ -1,7 +1,7 @@
 package com.tokopedia.pms.paymentlist.domain.gql
 
-const val GQL_PAYMENT_LIST_QUERY = """query paymentList(${'$'}cursor : String!){
-    paymentList(lang: "ID", cursor:${'$'}cursor, perPage:10) {
+const val GQL_PAYMENT_LIST_QUERY = """query paymentList(${'$'}lang : String!, ${'$'}cursor : String!){
+    paymentList(lang: ${'$'}lang, cursor:${'$'}cursor, perPage:50) {
         last_cursor
         has_next_page
         payment_list {
@@ -35,10 +35,8 @@ const val GQL_PAYMENT_LIST_QUERY = """query paymentList(${'$'}cursor : String!){
           show_edit_klikbca_button
           show_cancel_button
           show_help_page
-          show_ticker_message
           ticker_message
           app_link
-          how_to_pay_url
         }
     }
 }
