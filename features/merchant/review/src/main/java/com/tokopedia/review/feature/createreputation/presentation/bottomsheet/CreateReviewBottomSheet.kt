@@ -48,6 +48,7 @@ import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDoma
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.toPx
@@ -74,6 +75,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     lateinit var createReviewViewModel: CreateReviewViewModel
 
     // View Elements
+    private var reviewFormCoordinatorLayout: View? = null
     private var productCard: CreateReviewProductCard? = null
     private var ratingStars: AnimatedRatingPickerCreateReviewView? = null
     private var incentivesTicker: Ticker? = null
@@ -268,6 +270,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun bindViews() {
+        reviewFormCoordinatorLayout = view?.findViewById(R.id.review_form_coordinator_layout)
         productCard = view?.findViewById(R.id.review_form_product_card)
         ratingStars = view?.findViewById(R.id.review_form_rating)
         incentivesTicker = view?.findViewById(R.id.review_form_incentives_ticker)
@@ -428,6 +431,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun onFailSubmitReview(throwable: Throwable) {
         stopButtonLoading()
+        showToasterError(throwable.message ?: getString(R.string.review_create_fail_toaster))
         logToCrashlytics(throwable)
     }
 
@@ -495,7 +499,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun onErrorGetReviewForm(throwable: Throwable) {
         logToCrashlytics(throwable)
-        finishIfRoot()
+        finishIfRoot(false, throwable.message ?: getString(R.string.review_toaster_page_error))
     }
 
     private fun updateTitleBasedOnSelectedRating(position: Int) {
@@ -754,6 +758,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         submitButton?.apply {
             isLoading = false
             setSubmitButtonOnClickListener()
+        }
+    }
+
+    private fun showToasterError(message: String) {
+        reviewFormCoordinatorLayout?.let {
+            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR, getString(R.string.review_oke)).show()
         }
     }
 }
