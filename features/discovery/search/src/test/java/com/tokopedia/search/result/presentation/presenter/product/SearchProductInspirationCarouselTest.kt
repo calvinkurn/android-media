@@ -652,13 +652,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         url shouldBe inspirationCarouselProduct.url
         applink shouldBe inspirationCarouselProduct.applink
         priceString shouldBe inspirationCarouselProduct.priceStr
-//        shopLocation shouldBe inspirationCarouselProduct.
         ratingAverage shouldBe inspirationCarouselProduct.ratingAverage
-
-//        badgeItemDataViewList.listShouldBe(inspirationCarouselProduct) { actual, expected ->
-//            actual.imageUrl shouldBe expected.imageUrl
-//            actual.isShown shouldBe expected.isShown
-//        }
 
         labelGroupDataList.listShouldBe(inspirationCarouselProduct.labelGroupList) { actual, expected ->
             actual.title shouldBe expected.title
