@@ -35,7 +35,7 @@ public class Constants {
     public static final String AUTOFILL_USER_DATA = "AUTOFILL_USER_DATA";
     public static final String LOGIN_METHOD = "LOGIN_METHOD";
     public static final String UUID_KEY = "uuid";
-    public static final String LOGIN_UUID_KEY = "LOGIN_UUID_KEY";
+    public static final String LOGIN_UUID_KEY = "LOGIN_UUID";
 
     public static final String TEMP_NAME = "TEMP_NAME";
     public static final String GCM_STORAGE = "GCM_STORAGE";
