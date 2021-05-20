@@ -3,6 +3,7 @@ package com.tokopedia.officialstore.category.presentation.viewutil
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,9 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.fragment.app.Fragment
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isDeviceAnimationDisabled
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.category.presentation.listener.OSContainerListener
@@ -106,23 +110,33 @@ class OSChooseAddressWidgetView : FrameLayout {
                     requestLayout()
                 }
             }
-        if(this.measuredHeight == 0) {
-            animationExpand?.start()
-            isExpand = true
-            motionlayout_choose_address.setTransitionListener(object : MotionLayout.TransitionListener {
-                override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
-                }
+        if (itemContext.isDeviceAnimationDisabled()) {
+            this.show()
+        } else {
+            if (this.measuredHeight == 0) {
+                animationExpand?.start()
+                isExpand = true
+                motionlayout_choose_address.setTransitionListener(object : MotionLayout.TransitionListener {
+                    override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
+                        Log.d("osScroll", "shouldExpand: start expand")
+                    }
 
-                override fun onTransitionChange(p0: MotionLayout, p1: Int, p2: Int, progress: Float) {
-                }
+                    override fun onTransitionChange(p0: MotionLayout, p1: Int, p2: Int, progress: Float) {
+                        Log.d("osScroll", "shouldExpand: chane expand: " + progress)
+                    }
 
-                override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-                }
+                    override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+                        Log.d("osScroll", "shouldExpand: done expand")
+                    }
 
-                override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
-                }
-            })
-            motionlayout_choose_address.transitionToStart()
+                    override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
+                        Log.d("osScroll", "shouldExpand: trigger expand")
+                    }
+                })
+                motionlayout_choose_address.transitionToStart()
+            } else {
+                Log.d("osScroll", "shouldExpand: not expand")
+            }
         }
 
     }
@@ -136,23 +150,33 @@ class OSChooseAddressWidgetView : FrameLayout {
                         requestLayout()
                     }
                 }
-        if(this.measuredHeight == viewMaxHeight) {
-            animationCollapse?.start()
-            isExpand = false
-            motionlayout_choose_address.setTransitionListener(object : MotionLayout.TransitionListener {
-                override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
-                }
+        if (itemContext.isDeviceAnimationDisabled()) {
+            this.gone()
+        } else {
+            if (this.measuredHeight == viewMaxHeight) {
+                animationCollapse?.start()
+                isExpand = false
+                motionlayout_choose_address.setTransitionListener(object : MotionLayout.TransitionListener {
+                    override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
+                        Log.d("osScroll", "shouldExpand: start collapse")
+                    }
 
-                override fun onTransitionChange(p0: MotionLayout, p1: Int, p2: Int, progress: Float) {
-                }
+                    override fun onTransitionChange(p0: MotionLayout, p1: Int, p2: Int, progress: Float) {
+                        Log.d("osScroll", "shouldExpand: change collapse: " + progress)
+                    }
 
-                override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-                }
+                    override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+                        Log.d("osScroll", "shouldExpand: done collapse")
+                    }
 
-                override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
-                }
-            })
-            motionlayout_choose_address.transitionToEnd()
+                    override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
+                        Log.d("osScroll", "shouldExpand: trigger collapse")
+                    }
+                })
+                motionlayout_choose_address.transitionToEnd()
+            } else {
+                Log.d("osScroll", "shouldExpand: not collapse")
+            }
         }
     }
 }
