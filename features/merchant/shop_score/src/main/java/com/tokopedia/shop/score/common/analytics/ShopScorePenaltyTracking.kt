@@ -37,6 +37,8 @@ import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_TYPE_PM
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_TYPE_RM
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.TOKOPEDIA_SELLER
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.TOP_ADS
+import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.TOP_ADS_IDENTIFIER
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.TRANSITION_PERIOD_PENALTY_PAGE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.TRANSITION_PERIOD_SHOP_SCORE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.USER_ID
@@ -110,6 +112,7 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
             FREE_SHIPPING_IDENTIFIER -> FREE_SHIPPING
             VOUCHER_RECOMMENDATION_IDENTIFIER -> MERCHANT_VOUCHER
             BROADCAST_CHAT_IDENTIFIER -> BROADCAST_CHAT
+            TOP_ADS_IDENTIFIER -> TOP_ADS
             else -> ""
         }
         val mapData = mapOf(
