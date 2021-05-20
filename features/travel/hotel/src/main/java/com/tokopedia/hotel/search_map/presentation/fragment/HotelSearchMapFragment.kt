@@ -551,7 +551,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                val opacity = 1f - (slideOffset * 2.5f)
+                val opacity = 1f - (slideOffset * 3f)
                 rvHorizontalPropertiesHotelSearchMap.alpha = opacity
             }
 
