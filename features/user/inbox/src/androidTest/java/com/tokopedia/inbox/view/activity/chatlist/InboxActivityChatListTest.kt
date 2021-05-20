@@ -14,7 +14,6 @@ class InboxActivityChatListTest : InboxChatTest() {
     fun test_inbox() {
         // Given
         setupInboxActivity()
-        waitForIt(5000)
     }
 
 }

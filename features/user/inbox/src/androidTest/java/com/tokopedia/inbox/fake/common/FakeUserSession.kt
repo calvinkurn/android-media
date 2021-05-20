@@ -2,8 +2,11 @@ package com.tokopedia.inbox.fake.common
 
 import android.content.Context
 import com.tokopedia.user.session.UserSession
+import javax.inject.Inject
 
-class FakeUserSession(context: Context?) : UserSession(context) {
+class FakeUserSession @Inject constructor(
+        context: Context?
+) : UserSession(context) {
 
     var fakeHasShop = true
     var fakeShopName = "Toko Rifqi"

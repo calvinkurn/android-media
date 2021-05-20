@@ -5,8 +5,9 @@ import com.tokopedia.inbox.fake.common.FakeGraphqlUseCase
 import com.tokopedia.topchat.chatlist.domain.mapper.GetChatListMessageMapper
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.usecase.GetChatListMessageUseCase
+import javax.inject.Inject
 
-class FakeGetChatListMessageUseCase(
+class FakeGetChatListMessageUseCase @Inject constructor(
         private val gqlUseCase: FakeGraphqlUseCase<ChatListPojo>,
         mapper: GetChatListMessageMapper,
         dispatchers: CoroutineDispatchers
