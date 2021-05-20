@@ -63,7 +63,7 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
                 convertCCResponse(submitCCUseCase.executeOnBackground())
             }
 
-            val ccRedirectUrl = data.data
+            val ccRedirectUrl = data?.data ?: CCRedirectUrl()
             if (ccRedirectUrl.redirectUrl != "") {
                 ccRedirectUrl.clientNumber = mapParam[PARAM_CLIENT_NUMBER] ?: ""
                 ccRedirectUrl.operatorId = mapParam[PARAM_OPERATOR_ID] ?: ""
@@ -100,8 +100,8 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
 
         const val ERROR_DEFAULT = "Terjadi kesalahan, silakan ulangi beberapa saat lagi"
 
-        fun convertCCResponse(typeRestResponseMap: Map<Type, RestResponse?>): CCRedirectUrlResponse {
-            return typeRestResponseMap[CCRedirectUrlResponse::class.java]?.getData() as CCRedirectUrlResponse
+        fun convertCCResponse(typeRestResponseMap: Map<Type, RestResponse?>): CCRedirectUrlResponse? {
+            return typeRestResponseMap[CCRedirectUrlResponse::class.java]?.getData() as CCRedirectUrlResponse?
         }
     }
 }

@@ -1,10 +1,15 @@
 package com.tokopedia.recharge_credit_card.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.recharge_credit_card.datamodel.*
+import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrl
+import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrlResponse
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignature
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignatureReponse
 import com.tokopedia.recharge_credit_card.usecase.RechargeSubmitCcUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -46,16 +51,20 @@ class RechargeSubmitCCViewModelTest {
         //given
         val signature = "abcdefg"
         val rechargeCCSignature = RechargeCCSignature(signature, "")
-        val ccRedirectUrl = CCRedirectUrlResponse(data = CCRedirectUrl("", "www.tokopedia.com"))
         val mapParam = hashMapOf<String, String>()
 
         val result = HashMap<Type, Any>()
         result[RechargeCCSignatureReponse::class.java] = RechargeCCSignatureReponse(rechargeCCSignature)
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
+        val ccRedirectUrl = CCRedirectUrlResponse(data = CCRedirectUrl("", "www.tokopedia.com"))
+        val token = object : TypeToken<CCRedirectUrlResponse>() {}.type
+        val response = RestResponse(ccRedirectUrl, 200, false)
+        val submitCcResponse = mapOf<Type, RestResponse>(token to response)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-        coEvery { rechargeSubmitCcUseCase.setMapParam(mapParam)} returns mockk()
-        coEvery { RechargeSubmitCCViewModel.convertCCResponse(rechargeSubmitCcUseCase.executeOnBackground())} returns ccRedirectUrl
+        coEvery { rechargeSubmitCcUseCase.setMapParam(mapParam) } returns mockk()
+        coEvery { rechargeSubmitCcUseCase.executeOnBackground() } returns submitCcResponse
 
         //when
         rechargeSubmitViewModel.postCreditCard("", "26", mapParam)
@@ -72,16 +81,19 @@ class RechargeSubmitCCViewModelTest {
         //given
         val signature = "abcdefg"
         val rechargeCCSignature = RechargeCCSignature(signature, "")
-        val ccRedirectUrl = CCRedirectUrlResponse(data = CCRedirectUrl("Error dari API", ""))
         val mapParam = hashMapOf<String, String>()
-
         val result = HashMap<Type, Any>()
         result[RechargeCCSignatureReponse::class.java] = RechargeCCSignatureReponse(rechargeCCSignature)
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
+        val ccRedirectUrl = CCRedirectUrlResponse(data = CCRedirectUrl("Error dari API", ""))
+        val token = object : TypeToken<CCRedirectUrlResponse>() {}.type
+        val response = RestResponse(ccRedirectUrl, 200, false)
+        val submitCcResponse = mapOf<Type, RestResponse>(token to response)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-        coEvery { rechargeSubmitCcUseCase.setMapParam(mapParam)} returns mockk()
-        coEvery { RechargeSubmitCCViewModel.convertCCResponse(rechargeSubmitCcUseCase.executeOnBackground())} returns ccRedirectUrl
+        coEvery { rechargeSubmitCcUseCase.setMapParam(mapParam) } returns mockk()
+        coEvery { rechargeSubmitCcUseCase.executeOnBackground() } returns submitCcResponse
 
         //when
         rechargeSubmitViewModel.postCreditCard("", "26", mapParam)
