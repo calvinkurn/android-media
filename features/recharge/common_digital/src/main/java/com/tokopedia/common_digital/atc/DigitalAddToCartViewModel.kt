@@ -68,7 +68,6 @@ class DigitalAddToCartViewModel @Inject constructor(private val digitalAddToCart
         }
     }
 
-    class DigitalUserNotLoginException : Exception()
     class DigitalFailGetCartId : Exception()
 
     companion object {
