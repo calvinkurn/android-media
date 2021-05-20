@@ -6,5 +6,4 @@ interface ReminderWidgetListener {
     fun onReminderWidgetClickListener(reminderData: ReminderWidgetModel)
     fun onReminderWidgetDeclineClickListener(reminderData: ReminderWidgetModel,toggleTracking: Boolean = false)
     fun onReminderWidgetImpressionListener(reminderData: ReminderWidgetModel)
-    fun getReminderWidgetData(reminderData: ReminderWidgetModel)
 }

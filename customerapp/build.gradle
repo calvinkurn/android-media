@@ -271,6 +271,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.promoGamificationCommon)
+    implementation project(rootProject.ext.features.promoMvcWidget)
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.linker)
@@ -421,6 +422,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
+
+    implementation rootProject.ext.unifyDependencies.empty_state
 }
 
 apply plugin: 'com.google.gms.google-services'
