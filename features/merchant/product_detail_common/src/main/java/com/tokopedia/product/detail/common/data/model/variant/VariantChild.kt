@@ -60,6 +60,14 @@ data class VariantChild(
         @SerializedName("thematicCampaign")
         val thematicCampaign: ThematicCampaign? = null
 ){
+        val finalMainPrice:Float
+                get() {
+                        return if(campaign?.isActive == true) {
+                                campaign.originalPrice ?: 0F
+                        } else {
+                                price
+                        }
+                }
 
         val finalPrice: Long
                 get() {

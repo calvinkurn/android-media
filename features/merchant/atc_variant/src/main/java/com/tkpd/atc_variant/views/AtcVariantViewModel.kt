@@ -32,6 +32,7 @@ import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantR
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
@@ -83,12 +84,12 @@ class AtcVariantViewModel @Inject constructor(
             val selectedVariantIds = updateSelectedOptionIds(selectedOptionKey, selectedOptionId)
 
             //Run variant logic to determine selected , empty , etc
-            val processedVariant = AtcVariantMapper.processVariant(_aggregatorData.value?.variantData,
+            val processedVariant = AtcVariantMapper.processVariant(getVariantData(),
                     selectedVariantIds,
                     variantLevel
             )
 
-            val selectedVariantChild = _aggregatorData.value?.variantData?.getChildByOptionId(selectedVariantIds?.values?.toList()
+            val selectedVariantChild = getVariantData()?.getChildByOptionId(selectedVariantIds?.values?.toList()
                     ?: listOf())
             val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedVariantChild, _aggregatorData.value?.cardRedirection)
 
@@ -102,7 +103,7 @@ class AtcVariantViewModel @Inject constructor(
                     isPartiallySelected = isPartiallySelected,
                     selectedVariantIds = selectedVariantIds,
                     variantImage = variantImage,
-                    allChildEmpty = _aggregatorData.value?.variantData?.getBuyableVariantCount() == 0,
+                    allChildEmpty = getVariantData()?.getBuyableVariantCount() == 0,
                     selectedVariantChild = selectedVariantChild,
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false)
 
@@ -112,15 +113,38 @@ class AtcVariantViewModel @Inject constructor(
                 // if user only select 1 of 2 variant, no need to update the button
                 // this validation only be execute when user clicked variant
                 _buttonData.postValue(cartData.asSuccess())
-                _variantActivityResult.run {
-                    postValue(AtcCommonMapper.updateActivityResultData(
-                            recentData = value,
-                            listVariant = processedVariant,
-                            selectedProductId = selectedVariantChild?.productId ?: "",
-                            mapOfSelectedVariantOption = selectedVariantIds))
-                }
+                updateActivityResult(
+                        listVariant = processedVariant,
+                        selectedProductId = selectedVariantChild?.productId ?: "",
+                        mapOfSelectedVariantOption = selectedVariantIds)
             }
-        }) {}
+        }) {
+
+        }
+    }
+
+    fun getVariantData(): ProductVariant? {
+        return _aggregatorData.value?.variantData
+    }
+
+    fun updateActivityResult(listVariant: List<VariantCategory>? = null,
+                             selectedProductId: String? = null,
+                             mapOfSelectedVariantOption: MutableMap<String, String>? = null,
+                             atcSuccessMessage: String? = null,
+                             shouldRefreshValidateOvo: Boolean? = null,
+                             requestCode:Int? = null) {
+
+        _variantActivityResult.run {
+            postValue(AtcCommonMapper.updateActivityResultData(
+                    recentData = value,
+                    listVariant = listVariant,
+                    parentProductId = getVariantData()?.parentId,
+                    selectedProductId = selectedProductId,
+                    mapOfSelectedVariantOption = mapOfSelectedVariantOption,
+                    atcMessage = atcSuccessMessage,
+                    requestCode = requestCode,
+                    shouldRefreshValidateOvo = shouldRefreshValidateOvo))
+        }
     }
 
     private fun updateSelectedOptionIds(selectedOptionKey: String, selectedOptionId: String): MutableMap<String, String>? {
@@ -195,7 +219,7 @@ class AtcVariantViewModel @Inject constructor(
                trackerAttributionPdp: String = "",
                trackerListNamePdp: String = "") {
 
-        val selectedChild = _aggregatorData.value?.variantData?.getChildByOptionId(getSelectedOptionIds()?.values?.toList()
+        val selectedChild = getVariantData()?.getChildByOptionId(getSelectedOptionIds()?.values?.toList()
                 ?: listOf())
         val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
 

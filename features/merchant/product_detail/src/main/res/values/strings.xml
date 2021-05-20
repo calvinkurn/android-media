@@ -16,7 +16,6 @@
     <string name="title_activity_product_detail">Rincian Produk</string>
     <string name="template_cashback">Cashback %1$s%%</string>
     <string name="template_price">%1$s%2$s</string>
-    <string name="template_campaign_off">%1$s%%</string>
     <string name="ticker_atc_done_some_store">Barang dikirim dari toko yang sama</string>
     <string name="ticker_atc_done_different_store">Barang dikirim dari toko yang berbeda</string>
     <string name="apply_credit">Ajukan Kredit</string>
@@ -228,7 +227,6 @@
     <string name="merchant_product_detail_success_follow_shop_npl">Kamu berhasil follow toko. Yuk, buruan beli barangnya sebelum kehabisan!</string>
     <string name="merchant_product_detail_success_follow_shop">Kamu berhasil mengikuti Toko ini!</string>
     <string name="merchant_product_detail_success_unfollow_shop">Anda berhenti mengikuti Toko ini!</string>
-    <string name="merchant_product_detail_error_default">Terjadi kesalahan. Coba lagi</string>
 
     <string name="ticker_out_of_stock_description">Wishlist barang ini untuk bisa diingatkan saat stok kembali tersedia atau &lt;a href="#"&gt;Cari Barang Serupa.&lt;/a&gt;</string>
     <string name="ticker_product_inactive_title">Barang Tak Tersedia</string>

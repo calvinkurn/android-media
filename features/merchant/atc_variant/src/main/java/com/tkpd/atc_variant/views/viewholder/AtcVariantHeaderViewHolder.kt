@@ -1,5 +1,6 @@
 package com.tkpd.atc_variant.views.viewholder
 
+import android.graphics.Paint
 import android.view.View
 import com.tkpd.atc_variant.R
 import com.tkpd.atc_variant.data.uidata.ProductHeaderData
@@ -86,10 +87,11 @@ class AtcVariantHeaderViewHolder(private val view: View) : AbstractViewHolder<Va
 
         productSlashPrice.shouldShowWithAction(headerData.productSlashPrice != "") {
             productSlashPrice?.text = headerData.productMainPrice
+            productSlashPrice.paintFlags = productSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
         labelDiscount.shouldShowWithAction(headerData.productDiscountedPercentage != 0) {
-            labelDiscount.text = headerData.productDiscountedPercentage.toString()
+            labelDiscount.text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, headerData.productDiscountedPercentage.toString())
         }
     }
 

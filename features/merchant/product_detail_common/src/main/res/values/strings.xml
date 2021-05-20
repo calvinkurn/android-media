@@ -10,6 +10,7 @@
     <string name="buy_now">Beli Sekarang</string>
     <string name="plus_product_to_cart">+ Keranjang</string>
     <string name="empty_stock_atc">Stok Habis</string>
+    <string name="template_campaign_off">%1$s%%</string>
 
     <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>
     <string name="add_to_cart_error_variant_builder">Oops, pilih %s dulu, ya</string>
@@ -22,5 +23,7 @@
     <string name="product_detail_estimation_price_min">Estimasi Ongkir termurah</string>
     <string name="product_detail_ovo_cash_points">OVO Cash + OVO Points</string>
     <string name="product_detail_total_pay">OVO Kamu Kurang</string>
+    <string name="merchant_product_detail_error_default">Terjadi kesalahan. Coba lagi</string>
+    <string name="merchant_product_detail_success_atc_default">barang berhasil ditambahkan ke keranjang belanja.</string>
 
 </resources>

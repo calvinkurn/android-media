@@ -10,7 +10,7 @@ import com.tkpd.atc_variant.views.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atc_variant.views.bottomsheet.AtcVariantBottomSheetListener
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_CACHE_ID_KEY
+import com.tokopedia.product.detail.common.AtcVariantHelper.ATC_VARIANT_CACHE_ID
 import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_PARCEL_KEY_RESPONSE
 import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_PARCEL_KEY_RESULT
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
@@ -49,7 +49,7 @@ class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
         var paramsData = ProductVariantBottomSheetParams()
 
         if (bundle != null) {
-            val cacheId = bundle.getString(PDP_CACHE_ID_KEY)
+            val cacheId = bundle.getString(ATC_VARIANT_CACHE_ID)
 
             val cacheManager = SaveInstanceCacheManager(this, cacheId)
             val data: ProductVariantBottomSheetParams? = cacheManager.get(PDP_PARCEL_KEY_RESPONSE, ProductVariantBottomSheetParams::class.java, null)
@@ -82,7 +82,7 @@ class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
         sharedViewModel.activityResult.observe(this, {
             val cacheManager = SaveInstanceCacheManager(this, true)
             val resultIntent = Intent().apply {
-                putExtra(PDP_CACHE_ID_KEY, cacheManager.id)
+                putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
             }
             cacheManager.put(PDP_PARCEL_KEY_RESULT, it)
             setResult(Activity.RESULT_OK, resultIntent)

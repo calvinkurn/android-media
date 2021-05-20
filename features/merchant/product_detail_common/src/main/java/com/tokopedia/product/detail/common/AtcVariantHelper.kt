@@ -20,12 +20,14 @@ object AtcVariantHelper {
     const val PDP_PARCEL_KEY_RESPONSE = "pdp_page_response"
     const val PDP_PARCEL_KEY_RESULT = "pdp_page_result"
 
-    const val PDP_CACHE_ID_KEY = "pdp_atc_variant_cache_id"
+    const val ATC_VARIANT_CACHE_ID = "atc_variant_cache_id"
     const val PDP_PAGE_SOURCE = "pdp"
 
-    const val PDP_ATC_RESULT_CODE = 19201
     const val ATC_VARIANT_RESULT_CODE = 19202
 
+    /**
+     * For PDP only
+     */
     fun pdpToAtcVariant(context: Context,
                         productInfoP1: DynamicProductInfoP1,
                         warehouseId: String,
@@ -61,13 +63,13 @@ object AtcVariantHelper {
         cacheManager.put(PDP_PARCEL_KEY_RESPONSE, parcelData)
 
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productInfoP1.basic.productID, "", "", "")
-                .putExtra(PDP_CACHE_ID_KEY, cacheManager.id)
-        startActivitResult.invoke(intent, PDP_ATC_RESULT_CODE)
+                .putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
+        startActivitResult.invoke(intent, ATC_VARIANT_RESULT_CODE)
     }
 
-    fun onActivityResultPdpAtcVariant(context: Context, requestCode: Int, data: Intent?, updateView: ProductVariantResult.() -> Unit) {
-        if (requestCode != PDP_ATC_RESULT_CODE || data == null) return
-        val cacheId = data.getStringExtra(PDP_CACHE_ID_KEY)
+    fun onActivityResultAtcVariant(context: Context, requestCode: Int, data: Intent?, updateView: ProductVariantResult.() -> Unit) {
+        if (requestCode != ATC_VARIANT_RESULT_CODE || data == null) return
+        val cacheId = data.getStringExtra(ATC_VARIANT_CACHE_ID)
         val cacheManager = SaveInstanceCacheManager(context, cacheId)
 
         val result: ProductVariantResult = cacheManager.get(PDP_PARCEL_KEY_RESULT, ProductVariantResult::class.java)
@@ -79,10 +81,9 @@ object AtcVariantHelper {
     fun goToAtcVariant(context: Context,
                        productId: String,
                        pageSource: String,
-                       isTokoNow: Boolean,
-                       productParentId: String = "",
+                       isTokoNow: Boolean = false,
                        startActivitResult: (Intent, Int) -> Unit) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, pageSource, isTokoNow.toString(), productParentId)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, pageSource, isTokoNow.toString())
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
     }
 }

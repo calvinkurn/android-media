@@ -3,15 +3,52 @@ package com.tokopedia.product.detail.common
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 
 /**
  * Created by Yehezkiel on 17/05/21
  */
 object ProductCartHelper {
+
+    fun validateOvo(activity: FragmentActivity?,
+                    result: AddToCartDataModel,
+                    parentProductId: String,
+                    userId: String,
+                    refreshPage: () -> Unit,
+                    onError: () -> Unit
+    ) {
+        if (result.data.refreshPrerequisitePage) {
+            refreshPage.invoke()
+        } else {
+            activity?.let {
+                when (result.data.ovoValidationDataModel.status) {
+                    ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
+                        val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
+                            parentProductId
+                        }"
+                        ProductTrackingCommon.eventActivationOvo(
+                                parentProductId,
+                                userId)
+                        RouteManager.route(it, applink)
+                    }
+                    ProductDetailCommonConstant.OVO_INSUFFICIENT_BALANCE_STATUS -> {
+                        val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(
+                                parentProductId,
+                                userId,
+                                result.data.ovoValidationDataModel)
+                        bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
+                    }
+                    else -> onError.invoke()
+                }
+            }
+        }
+    }
 
     fun generateButtonAction(it: String, atcButton: Boolean, leasing: Boolean): Int {
         return when {

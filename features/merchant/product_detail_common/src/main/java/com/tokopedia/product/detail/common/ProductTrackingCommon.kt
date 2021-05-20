@@ -8,16 +8,22 @@ import com.tokopedia.track.TrackAppUtils
  */
 object ProductTrackingCommon {
 
+    fun eventActivationOvo(productId: String, userId: String) {
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_BUY_ACTIVATION_OVO,
+                ProductTrackingConstant.Label.EMPTY_LABEL)
+        addComponentOvoTracker(mapEvent, productId, userId)
+    }
+
     fun eventSeeBottomSheetOvo(title: String, productId: String, userId: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 "${ProductTrackingConstant.Action.CLICK_SEE_BOTTOMSHEET_OVO} $title",
                 ProductTrackingConstant.Label.EMPTY_LABEL)
-        mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
-        mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
-        mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
-        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+        addComponentOvoTracker(mapEvent, productId, userId)
     }
 
     fun eventTopupBottomSheetOvo(title: String, buttonTitle: String, productId: String, userId: String) {

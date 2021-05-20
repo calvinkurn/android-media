@@ -3,6 +3,7 @@ package com.tkpd.atc_variant.views.bottomsheet
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,8 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -35,6 +38,7 @@ import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -89,6 +93,15 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT -> {
+                viewModel.updateActivityResult(requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     private fun initLayout() {
@@ -164,23 +177,33 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         viewModel.addToCartLiveData.observe(viewLifecycleOwner, {
             loadingProgressDialog?.dismiss()
             if (it is Success) {
-                onSuccessAtc(it.data)
-            } else {
-                // todo
+                onSuccessTransaction(it.data)
+            } else if (it is Fail) {
+                it.throwable.run {
+                    viewModel.updateActivityResult(atcSuccessMessage = "")
+                    if (this is AkamaiErrorException && message != null) {
+                        viewContent?.showToasterError(message
+                                ?: "", ctaText = getString(R.string.atc_variant_oke_label))
+                    } else {
+                        viewContent?.showToasterError(getErrorMessage(this), ctaText = getString(R.string.atc_variant_oke_label))
+                    }
+                }
             }
         })
     }
 
-    private fun onSuccessAtc(result: AddToCartDataModel) {
+    private fun getErrorMessage(throwable: Throwable): String {
+        return context?.let {
+            ErrorHandler.getErrorMessage(it, throwable);
+        }
+                ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
+    }
+
+    private fun onSuccessTransaction(result: AddToCartDataModel) {
         val cartId = result.data.cartId
         when (buttonActionType) {
             ProductDetailCommonConstant.OCS_BUTTON -> {
-                if (result.data.success == 0) {
-//                    validateOvo(result)
-                } else {
-//                    sendTrackingATC(cartId)
-                    goToCheckout()
-                }
+                onSuccessOcs(result)
             }
             ProductDetailCommonConstant.OCC_BUTTON -> {
 //                sendTrackingATC(cartId)
@@ -192,14 +215,38 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             }
             ProductDetailCommonConstant.ATC_BUTTON -> {
 //                sendTrackingATC(cartId)
-//                ProductCartHelper.showAddToCartDoneBottomSheet()
-                viewContent?.showToasterSuccess("sukses atc")
+                onSuccessAtc(result.errorMessage.firstOrNull())
             }
+        }
+    }
+
+    private fun onSuccessOcs(result: AddToCartDataModel) {
+        if (result.data.success == 0) {
+            val parentId = viewModel.getVariantData()?.parentId ?: ""
+            ProductCartHelper.validateOvo(activity, result, parentId, userSessionInterface.userId, {
+                viewModel.updateActivityResult(shouldRefreshValidateOvo = true)
+                dismiss()
+            }, {
+                viewContent?.showToasterError(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
+                        ctaText = getString(R.string.atc_variant_oke_label))
+            })
+        } else {
+//                    sendTrackingATC(cartId)
+            goToCheckout()
         }
     }
 
     private fun getAtcActivity(): Activity {
         return context as AtcVariantActivity
+    }
+
+    private fun onSuccessAtc(successMessage: String?) {
+        context?.let {
+            val message = if (successMessage == null || successMessage.isEmpty()) it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default) else
+                successMessage
+            viewModel.updateActivityResult(atcSuccessMessage = message)
+            viewContent?.showToasterSuccess(message)
+        }
     }
 
     private fun goToCheckout() {
@@ -292,10 +339,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     private fun showErrorVariantUnselected() {
-        val variantErrorMessage = if (viewModel.aggregatorData.value?.variantData?.getVariantsIdentifier()?.isEmpty() == true) {
+        val variantErrorMessage = if (viewModel.getVariantData()?.getVariantsIdentifier()?.isEmpty() == true) {
             getString(com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant)
         } else {
-            getString(com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant_builder, viewModel.aggregatorData.value?.variantData?.getVariantsIdentifier()
+            getString(com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant_builder, viewModel.getVariantData()?.getVariantsIdentifier()
                     ?: "")
         }
         viewContent?.showToasterError(variantErrorMessage, ctaText = getString(R.string.atc_variant_oke_label))

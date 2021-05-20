@@ -452,9 +452,17 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         }
 
         context?.let {
-            AtcVariantHelper.onActivityResultPdpAtcVariant(it, requestCode, data) {
-                pdpUiUpdater?.updateVariantSelected(mapOfSelectedVariantOption)
-                updateVariantDataToExistingProductData(listOfVariantSelected)
+            AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
+                if (shouldRefreshValidateOvo) {
+                    productId = selectedProductId
+                    onSwipeRefresh()
+                } else {
+                    if (requestCode == ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT) {
+                        updateCartNotification()
+                    }
+                    pdpUiUpdater?.updateVariantSelected(mapOfSelectedVariantOption)
+                    updateVariantDataToExistingProductData(listOfVariantSelected)
+                }
             }
         }
 
@@ -1306,7 +1314,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     private fun updateVariantDataToExistingProductData(variantProcessedData: List<VariantCategory>?) {
         val selectedChildAndPosition = VariantCommonMapper.selectedProductData(viewModel.variantData
-                ?: ProductVariant(), pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant?.values?.toList() ?: listOf())
+                ?: ProductVariant(), pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant?.values?.toList()
+                ?: listOf())
         val selectedChild = selectedChildAndPosition?.second
         val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
 
@@ -1333,7 +1342,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 viewModel.getUserLocationCache()
         )
 
-        renderRestrictionBottomSheet(viewModel.p2Data.value?.restrictionInfo ?: RestrictionInfoResponse())
+        renderRestrictionBottomSheet(viewModel.p2Data.value?.restrictionInfo
+                ?: RestrictionInfoResponse())
 
         /*
             If the p2 data is empty, dont update the button
@@ -1751,7 +1761,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun renderRestrictionBottomSheet(data: RestrictionInfoResponse) {
-        val reData = data.getReByProductId(viewModel.getDynamicProductInfoP1?.basic?.productID ?: "")
+        val reData = data.getReByProductId(viewModel.getDynamicProductInfoP1?.basic?.productID
+                ?: "")
         if (reData == null) {
             nplFollowersButton?.setupVisibility = false
             return
@@ -2955,29 +2966,28 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
         context?.let {
             if (viewModel.getDynamicProductInfoP1 != null) {
-                AtcVariantHelper.pdpToAtcVariant(
-                        context = it,
-                        productInfoP1 = viewModel.getDynamicProductInfoP1!!,
-                        warehouseId = warehouseId ?: "",
-                        pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
-                        isTokoNow = false,
-                        isCheckImeiRemoteConfig = enableCheckImeiRemoteConfig,
-                        productVariant = viewModel.variantData ?: ProductVariant(),
-                        warehouseResponse = viewModel.p2Data.value?.nearestWarehouseInfo ?: mapOf(),
-                        cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf()
-                ) { data, code ->
-                    startActivityForResult(data, code)
-                }
-
-//                AtcVariantHelper.goToAtcVariant(
+//                AtcVariantHelper.pdpToAtcVariant(
 //                        context = it,
-//                        productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
-//                        pageSource = "pdp",
+//                        productInfoP1 = viewModel.getDynamicProductInfoP1!!,
+//                        warehouseId = warehouseId ?: "",
+//                        pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
 //                        isTokoNow = false,
-//                        productParentId = ""
+//                        isCheckImeiRemoteConfig = enableCheckImeiRemoteConfig,
+//                        productVariant = viewModel.variantData ?: ProductVariant(),
+//                        warehouseResponse = viewModel.p2Data.value?.nearestWarehouseInfo ?: mapOf(),
+//                        cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf()
 //                ) { data, code ->
 //                    startActivityForResult(data, code)
 //                }
+
+                AtcVariantHelper.goToAtcVariant(
+                        context = it,
+                        productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
+                        pageSource = "pdp",
+                        isTokoNow = false
+                ) { data, code ->
+                    startActivityForResult(data, code)
+                }
             }
         }
     }
@@ -3015,7 +3025,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun setupNplVisibility(isFavorite: Boolean) {
-        val reData = viewModel.p2Data.value?.restrictionInfo?.getReByProductId(viewModel.getDynamicProductInfoP1?.basic?.productID ?: "")
+        val reData = viewModel.p2Data.value?.restrictionInfo?.getReByProductId(viewModel.getDynamicProductInfoP1?.basic?.productID
+                ?: "")
         if (reData?.restrictionShopFollowersType() == false) return
 
         nplFollowersButton?.setupVisibility = if (reData != null && reData.action.isNotEmpty() && !viewModel.isShopOwner()) {
@@ -3215,7 +3226,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     private fun getErrorMessage(throwable: Throwable): String {
         return context?.let {
             ProductDetailErrorHandler.getErrorMessage(it, throwable)
-        } ?: getString(R.string.merchant_product_detail_error_default)
+        }
+                ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
     }
 
     private fun hideProgressDialog() {

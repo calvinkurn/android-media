@@ -135,25 +135,23 @@ object AtcCommonMapper {
     }
 
     fun updateActivityResultData(recentData: ProductVariantResult?,
-                                 listVariant: List<VariantCategory>?,
-                                 selectedProductId: String,
-                                 mapOfSelectedVariantOption: MutableMap<String, String>?,
-                                 atcMessage: String = ""): ProductVariantResult {
-        val result = recentData?.let {
-            it.copy(
-                    listOfVariantSelected = listVariant,
-                    productId = selectedProductId,
-                    mapOfSelectedVariantOption = mapOfSelectedVariantOption
-            )
-        } ?: ProductVariantResult(
-                listOfVariantSelected = listVariant,
-                productId = selectedProductId,
-                mapOfSelectedVariantOption = mapOfSelectedVariantOption
-        )
+                                 listVariant: List<VariantCategory>? = null,
+                                 selectedProductId: String? = null,
+                                 parentProductId: String? = null,
+                                 mapOfSelectedVariantOption: MutableMap<String, String>? = null,
+                                 atcMessage: String? = null,
+                                 shouldRefreshValidateOvo: Boolean? = null,
+                                 requestCode: Int? = null): ProductVariantResult {
+        val result = recentData?.copy() ?: ProductVariantResult()
 
-        if (atcMessage.isNotEmpty()) {
-            result.atcMessage = atcMessage
-        }
+        if (listVariant != null) result.listOfVariantSelected = listVariant
+        if (selectedProductId != null) result.selectedProductId = selectedProductId
+        if (mapOfSelectedVariantOption != null) result.mapOfSelectedVariantOption = mapOfSelectedVariantOption
+        if (atcMessage != null) result.atcMessage = atcMessage
+        if (parentProductId != null) result.parentProductId = parentProductId
+        if (shouldRefreshValidateOvo != null) result.shouldRefreshValidateOvo = shouldRefreshValidateOvo
+        if (requestCode != null) result.requestCode = requestCode
+
         return result
     }
 
@@ -165,13 +163,13 @@ object AtcCommonMapper {
                                         totalStock: Int = 0): Pair<String, ProductHeaderData> {
         val productImage = selectedChild?.picture?.original ?: ""
         val headerData = ProductHeaderData(
-                productMainPrice = selectedChild?.price?.getCurrencyFormatted()
+                productMainPrice = selectedChild?.finalMainPrice?.getCurrencyFormatted()
                         ?: "",
                 productDiscountedPercentage = selectedChild?.campaign?.discountedPercentage?.toInt()
                         ?: 0,
                 productCampaignIdentifier = selectedChild?.campaign?.campaignIdentifier
                         ?: 0,
-                productSlashPrice = selectedChild?.campaign?.discountedPriceFmt
+                productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted()
                         ?: "",
                 productStockWording = selectedChild?.stock?.stockWordingHTML
                         ?: "",

@@ -119,7 +119,7 @@ class PartialContentView(private val view: View, private val listener: DynamicPr
         }
 
         text_discount_red?.run {
-            text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.toString())
+            text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, campaign.percentageAmount.toString())
             show()
         }
         hideGimmick(campaign)

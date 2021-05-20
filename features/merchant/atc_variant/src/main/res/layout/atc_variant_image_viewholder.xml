@@ -5,11 +5,10 @@
     android:id="@+id/variant_img_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/dp_12"
-    android:layout_marginRight="@dimen/dp_12">
+    android:layout_marginEnd="@dimen/dp_2">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/dp_4"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -18,8 +17,8 @@
 
         <FrameLayout
             android:id="@+id/img_container_variant"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@drawable/bg_atc_variant_img_unselected"
             android:padding="@dimen/dp_4"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -29,8 +28,8 @@
 
             <com.tokopedia.product.detail.common.data.views.ProductRoundedImageView
                 android:id="@+id/img_rounded_variant"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
                 app:borderRadius="@dimen/dp_6"
                 tools:src="@tools:sample/avatars" />
 

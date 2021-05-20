@@ -6,9 +6,19 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCat
  * Created by Yehezkiel on 17/05/21
  */
 data class ProductVariantResult(
-        var successAtc: Boolean = false,
         var atcMessage: String = "",
-        var productId: String = "",
+        var selectedProductId: String = "",
+        var parentProductId: String = "",
+        var requestCode: Int = 0,
+
+        /**
+         * PDP Only
+         */
+        var shouldRefreshValidateOvo: Boolean = false,
         var listOfVariantSelected: List<VariantCategory>? = null,
         var mapOfSelectedVariantOption: MutableMap<String, String>? = null
-)
+) {
+    fun onSuccessAtc():Boolean {
+        return atcMessage.isNotEmpty()
+    }
+}
