@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.common
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
@@ -77,7 +76,6 @@ object ProductCartHelper {
         val intent = RouteManager.getIntent(activity.applicationContext, ApplinkConstInternalMarketplace.CHECKOUT)
         intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
         intent.putExtras(shipmentFormRequest)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
     }
 
