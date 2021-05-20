@@ -154,10 +154,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
         })
 
         rechargeCCViewModel.bankNotSupported.observe(viewLifecycleOwner, Observer {
-            var throwable = it
-            if (it.message.isNullOrEmpty()) {
-                throwable = MessageErrorException(getString(R.string.cc_bank_is_not_supported))
-            }
+            var throwable =  MessageErrorException(getString(R.string.cc_bank_is_not_supported))
             cc_widget_client_number.setErrorTextField(ErrorHandler.getErrorMessage(requireContext(), throwable))
         })
 
@@ -271,8 +268,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
             rechargeSubmitCCViewModel.postCreditCard(RechargeCCGqlQuery.rechargeCCSignature, categoryId, mapParam)
         } else {
-            navigateUserLogin()
             hideLoading()
+            navigateUserLogin()
         }
     }
 

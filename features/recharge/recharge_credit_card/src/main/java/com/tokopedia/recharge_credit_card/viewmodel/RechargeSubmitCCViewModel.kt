@@ -98,8 +98,6 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
         const val VALUE_ACTION = "init_data"
         const val PARAM_PCIDSS = "pcidss_signature"
 
-        const val ERROR_DEFAULT = "Terjadi kesalahan, silakan ulangi beberapa saat lagi"
-
         fun convertCCResponse(typeRestResponseMap: Map<Type, RestResponse?>): CCRedirectUrlResponse? {
             return typeRestResponseMap[CCRedirectUrlResponse::class.java]?.getData() as CCRedirectUrlResponse?
         }

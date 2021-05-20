@@ -124,6 +124,5 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
     companion object {
         private const val CATEGORY_ID = "categoryId"
         private const val MENU_ID = "menuId"
-        private const val ERROR_DEFAULT = "Terjadi kesalahan, silakan ulangi beberapa saat lagi"
     }
 }

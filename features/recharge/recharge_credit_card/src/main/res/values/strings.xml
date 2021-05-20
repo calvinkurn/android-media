@@ -8,7 +8,7 @@
     <string name="cc_label_input_number">Masukkan Nomor Kartu Kredit</string>
     <string name="cc_error_credit_number">Nomor kartu kredit tidak ditemukan</string>
     <string name="cc_error_invalid_number">Mohon cek kembali nomor kartu kredit anda</string>
-    <string name="cc_error_default_message">Terjadi kesalahan, silakan ulangi beberapa saat lagi.</string>
+    <string name="cc_error_default_message">Maaf, belum berhasil lanjut ke Pembayaran. Coba lagi, yuk!</string>
     <string name="cc_placeholder_input_number">0123 4567 8901 2345</string>
     <string name="cc_label_list_bank">Lihat Daftar Bank</string>
     <string name="cc_bank_is_not_supported">Bank belum didukung</string>
