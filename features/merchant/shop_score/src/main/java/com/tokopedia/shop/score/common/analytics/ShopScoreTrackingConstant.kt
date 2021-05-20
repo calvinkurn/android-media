@@ -28,6 +28,7 @@ object ShopScoreTrackingConstant {
     const val MERCHANT_VOUCHER = "merchant voucher"
     const val FREE_SHIPPING = "bebas ongkir"
     const val BROADCAST_CHAT = "broadcast chat"
+    const val TOP_ADS = "topads"
 
     const val OLD_PERFORMA_TOKO_PAGE = "old performa toko page"
     const val CLICK_LEARN_MORE = "click - pelajari selengkapnya"
@@ -49,5 +50,5 @@ object ShopScoreTrackingConstant {
     const val FREE_SHIPPING_IDENTIFIER = "bebas_ongkir_recommendation"
     const val VOUCHER_RECOMMENDATION_IDENTIFIER = "voucher_recommendation"
     const val BROADCAST_CHAT_IDENTIFIER = "broadcast_chat_recommendation"
-
+    const val TOP_ADS_IDENTIFIER = "topads_recommendation"
 }

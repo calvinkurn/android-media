@@ -36,7 +36,8 @@ import javax.inject.Inject
  */
 
 class PMShopScoreInterruptHelper @Inject constructor(
-        private val pmCommonPreferenceManager: PMCommonPreferenceManager
+        private val pmCommonPreferenceManager: PMCommonPreferenceManager,
+        private val remoteConfig: PMCommonRemoteConfig
 ) {
 
     companion object {
@@ -54,8 +55,11 @@ class PMShopScoreInterruptHelper @Inject constructor(
     fun getPeriodType() = data?.periodType
 
     fun showInterrupt(context: Context, owner: LifecycleOwner, fm: FragmentManager) {
-        initWorker()
+        if(!remoteConfig.getPmShopScoreInterruptEnabled()) {
+            return
+        }
 
+        initWorker()
         fetchInterruptDataWorker(context, owner) {
             this.data = it
             showPmShopScoreInterrupt(context, it, fm)
