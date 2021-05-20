@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class InboxActivityChatListTest : InboxChatBuyerTest() {
+class InboxChatBuyerGeneralTest : InboxChatBuyerTest() {
 
     @Test
     fun should_render_empty_view_when_response_is_empty() {
