@@ -57,6 +57,7 @@ import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
+import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
@@ -89,6 +90,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
         private const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
+        private const val ERROR_GET_SHOP_OPERATIONAL_HOUR = "Error when get operational hour in other setting."
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -104,6 +106,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     lateinit var sellerHomeConfig: SellerHomeRemoteConfig
     @Inject
     lateinit var freeShippingTracker: SettingFreeShippingTracker
+    @Inject
+    lateinit var shopOperationalTracker: SettingShopOperationalTracker
 
     @Inject lateinit var settingPerformanceTracker: SettingPerformanceTracker
 
@@ -164,7 +168,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         setupView(view)
         observeLiveData()
         observeShopPeriod()
-        observeFreeShippingStatus()
         context?.let { UpdateShopActiveService.startService(it) }
     }
 
@@ -304,6 +307,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     is Success -> {
                         showSettingShopInfoState(result.data)
                         otherMenuViewModel.getFreeShippingStatus()
+                        otherMenuViewModel.getShopOperational()
                     }
                     is Fail -> {
                         SellerHomeErrorHandler.logExceptionToCrashlytics(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
@@ -315,6 +319,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 canShowErrorToaster = !isToasterAlreadyShown
             })
         }
+        observeFreeShippingStatus()
+        observeShopOperationalHour()
     }
 
     private fun observeFreeShippingStatus() {
@@ -359,11 +365,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                             ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
                             eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
                             iconUnify = IconUnify.PERFORMANCE,
-                            clickAction = {
+                            clickSendTracker = {
                                 settingPerformanceTracker.clickItemEntryPointPerformance(shopInfoPeriodUiModel.isNewSeller)
                             }
                     )
-
                     if (promotionIndex != -1) {
                         adapter.addElement(promotionIndex + 1, performanceData)
                         adapter.notifyItemRangeInserted(promotionIndex, 1)
@@ -372,6 +377,21 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 }
             }
         } else return
+    }
+
+    private fun observeShopOperationalHour() {
+        otherMenuViewModel.shopOperational.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> otherMenuViewHolder?.showOperationalHourLayout(it.data)
+                is Fail -> {
+                    otherMenuViewHolder?.onErrorGetSettingShopInfoData()
+                    SellerHomeErrorHandler.logExceptionToCrashlytics(
+                        it.throwable,
+                        ERROR_GET_SHOP_OPERATIONAL_HOUR
+                    )
+                }
+            }
+        })
     }
 
     private fun populateAdapterData() {
@@ -502,7 +522,17 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         thematicIllustration = view.findViewById(R.id.iv_other_menu_thematic)
         populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
-        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this, freeShippingTracker, userSession) }
+        context?.let {
+            otherMenuViewHolder = OtherMenuViewHolder(
+                itemView = view,
+                context = it,
+                listener = this,
+                trackingListener = this,
+                freeShippingTracker = freeShippingTracker,
+                shopOperationalTracker = shopOperationalTracker,
+                userSession = userSession
+            )
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (isDefaultDarkStatusBar) {
                 activity?.requestStatusBarDark()

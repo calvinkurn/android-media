@@ -18,6 +18,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
@@ -25,6 +27,7 @@ import com.tokopedia.webview.BaseSimpleWebViewActivity.DeeplinkIntent.APP_WHITEL
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 import timber.log.Timber
+import java.util.*
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
@@ -236,11 +239,11 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             val baseDomain = getBaseDomain(domain)
             if (!baseDomain.equals(TOKOPEDIA_DOMAIN, ignoreCase = true)) {
                 if(!isDomainWhitelisted(baseDomain) && whiteListedDomains.isEnabled) {
-                    Timber.w("P1#WEBVIEW_OPENED#browser;domain='$domain';url='$url'")
+                    ServerLogger.log(Priority.P1, "WEBVIEW_OPENED", mapOf("type" to "browser", "domain" to domain, "url" to url))
                     redirectToNativeBrowser()
                     return
                 }
-                Timber.w("P1#WEBVIEW_OPENED#webview;domain='$domain';url='$url'")
+                ServerLogger.log(Priority.P1, "WEBVIEW_OPENED", mapOf("type" to "webview", "domain" to domain, "url" to url))
             }
         }
     }

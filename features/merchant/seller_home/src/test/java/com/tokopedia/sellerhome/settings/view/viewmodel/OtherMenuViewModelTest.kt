@@ -12,12 +12,18 @@ import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopBadgeUiModel
+import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
+import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
+import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
 import com.tokopedia.sellerhome.utils.observeAwaitValue
 import com.tokopedia.sellerhome.utils.observeOnce
 import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoFreeShipping
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -47,6 +53,9 @@ class OtherMenuViewModelTest {
     lateinit var getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase
 
     @RelaxedMockK
+    lateinit var getShopOperationalUseCase: GetShopOperationalUseCase
+
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
@@ -72,6 +81,7 @@ class OtherMenuViewModelTest {
                         getAllShopInfoUseCase,
                         getShopFreeShippingInfoUseCase,
                         getShopInfoPeriodUseCase,
+                        getShopOperationalUseCase,
                         userSession,
                         remoteConfig
                 )
@@ -254,5 +264,44 @@ class OtherMenuViewModelTest {
         val actualResult = (mViewModel.shopPeriodType.observeAwaitValue() as Success).data
         assert(mViewModel.shopPeriodType.observeAwaitValue() is Success)
         assert(actualResult == shopInfoPeriodUiModel)
+    }
+
+    @Test
+    fun `when getShopOperational success should set live data success`() {
+        val uiModel = ShopOperationalUiModel(
+            "00:00 - 23:59",
+            R.string.shop_operational_hour_24_hour,
+            R.string.settings_operational_hour_open,
+            R.drawable.ic_sah_clock,
+            Label.GENERAL_LIGHT_GREEN,
+            true
+        )
+
+        coEvery {
+            getShopOperationalUseCase.executeOnBackground()
+        } returns uiModel
+
+        mViewModel.getShopOperational()
+
+        val expectedResult = Success(uiModel)
+
+        mViewModel.shopOperational
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when getShopOperational error should set live data fail`() {
+        val error = IllegalStateException()
+
+        coEvery {
+            getShopOperationalUseCase.executeOnBackground()
+        } throws error
+
+        mViewModel.getShopOperational()
+
+        val expectedResult = Fail(error)
+
+        mViewModel.shopOperational
+            .verifyErrorEquals(expectedResult)
     }
 }

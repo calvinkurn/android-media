@@ -58,4 +58,7 @@ class HotelPropertyData {
     @Expose
     val rooms: List<HotelPropertyRoom> = listOf()
 
+    @SerializedName("isDirectPaymentString")
+    @Expose
+    val isDirectPaymentString: String = ""
 }

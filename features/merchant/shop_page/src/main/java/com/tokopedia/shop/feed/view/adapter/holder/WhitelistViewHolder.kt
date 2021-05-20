@@ -1,10 +1,10 @@
 package com.tokopedia.shop.feed.view.adapter.holder
 
-import androidx.annotation.LayoutRes
 import android.view.View
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.shop.R
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.WhitelistUiModel
@@ -33,11 +33,7 @@ class WhitelistViewHolder(v: View,
         itemView.tvCaption.text = MethodChecker.fromHtml(formatWhiteListTitle(
                 model.whitelist.title))
 
-        ImageHandler.loadImageCircle2(
-                itemView.ivAvatar.context,
-                itemView.ivAvatar,
-                model.whitelist.image
-        )
+        itemView.ivAvatar.loadImageCircle(model.whitelist.image)
     }
 
     private fun formatWhiteListTitle(title: String): String {

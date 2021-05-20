@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.view.SurfaceView
 import androidx.lifecycle.*
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
@@ -30,7 +31,6 @@ import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -50,7 +50,7 @@ class PlayBroadcastViewModel @Inject constructor(
         private val createChannelUseCase: CreateChannelUseCase,
         private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
         private val playSocket: PlayBroadcastSocket,
         private val playBroadcastMapper: PlayBroadcastMapper,
@@ -157,7 +157,7 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
     
-    private val liveStateProcessor = livePusherStateProcessorFactory.create(livePusher)
+    private val liveStateProcessor = livePusherStateProcessorFactory.create(livePusher, dispatcher, scope)
     private var isLiveStarted: Boolean = false
 
     init {
@@ -307,23 +307,29 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun reconnectLiveStream() {
         sendLivePusherState(PlayLivePusherState.Connecting)
-        scope.launch {
-            val err = getChannelDetail()
-            if (err == null && _observableChannelInfo.value is NetworkResult.Success) {
-                val channelInfo = (_observableChannelInfo.value as NetworkResult.Success).data
-                when (channelInfo.status) {
-                    PlayChannelStatusType.Pause,
-                    PlayChannelStatusType.Live -> livePusher.resume()
-                    else -> stopLiveStream(shouldNavigate = true)
+
+        fun reconnectJob() {
+            scope.launch {
+                val err = getChannelDetail()
+                if (err == null && _observableChannelInfo.value is NetworkResult.Success) {
+                    val channelInfo = (_observableChannelInfo.value as NetworkResult.Success).data
+                    when (channelInfo.status) {
+                        PlayChannelStatusType.Pause,
+                        PlayChannelStatusType.Live -> livePusher.reconnect()
+                        else -> stopLiveStream(shouldNavigate = true)
+                    }
+                } else {
+                    sendLivePusherState(
+                            PlayLivePusherState.Error(
+                                    PlayLivePusherErrorState.NetworkLoss,
+                                    IllegalStateException("Failed to get channel details")
+                            )
+                    )
+                    reconnectJob()
                 }
-            } else {
-                sendLivePusherState(
-                        PlayLivePusherState.Error(
-                                PlayLivePusherErrorState.ConnectFailed(),
-                                IllegalStateException("Failed to get channel details")
-                        ))
             }
         }
+        reconnectJob()
     }
 
     fun startCountDownTimer() {

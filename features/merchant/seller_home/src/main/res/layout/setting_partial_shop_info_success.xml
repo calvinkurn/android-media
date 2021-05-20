@@ -19,6 +19,11 @@
         android:visibility="gone"
         layout="@layout/setting_partial_free_shipping" />
 
+    <include
+        android:id="@+id/shopOperationalHour"
+        layout="@layout/settings_partial_shop_operational_hour"
+        android:visibility="gone" />
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_divider_thin"/>

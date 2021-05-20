@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.domain.usecase.searchproduct
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -26,24 +26,20 @@ class SearchProductUseCaseModule {
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
     fun provideSearchProductFirstPageUseCase(
             searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
-            remoteConfig: RemoteConfig,
-            userSession: UserSessionInterface
+            userSession: UserSessionInterface,
+            coroutineDispatchers: CoroutineDispatchers
     ): UseCase<SearchProductModel> {
-        // Temporarily keep 2 search use case for TDN and without TDN
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SEARCH_TDN)) {
-            val topAdsImageViewUseCase = TopAdsImageViewUseCase(
-                    userSession.userId,
-                    TopAdsRepository()
-            )
-            return SearchProductTDNFirstPageGqlUseCase(
-                    GraphqlUseCase(),
-                    searchProductModelMapper,
-                    topAdsImageViewUseCase,
-                    CoroutineDispatchersProvider,
-                    SearchLogger()
-            )
-        }
-        return SearchProductFirstPageGqlUseCase(GraphqlUseCase(), searchProductModelMapper)
+        val topAdsImageViewUseCase = TopAdsImageViewUseCase(
+                userSession.userId,
+                TopAdsRepository()
+        )
+        return SearchProductFirstPageGqlUseCase(
+                GraphqlUseCase(),
+                searchProductModelMapper,
+                topAdsImageViewUseCase,
+                coroutineDispatchers,
+                SearchLogger()
+        )
     }
 
     @SearchScope

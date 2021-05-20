@@ -100,8 +100,6 @@
     <string name="label_title_draft_product">Draft Produk</string>
     <string name="label_title_category_picker">Pilih Kategori</string>
 
-    <string name="vidpick_app_name">Video Recorder</string>
-
     <!-- Review   -->
     <string name="review_text">Ulasan</string>
     <string name="title_review_reply">Balas Ulasan</string>

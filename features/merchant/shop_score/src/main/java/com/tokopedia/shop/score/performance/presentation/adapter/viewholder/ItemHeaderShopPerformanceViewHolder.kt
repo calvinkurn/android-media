@@ -126,6 +126,8 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
             tickerShopHasPenalty?.apply {
                 if (element?.scorePenalty != null) {
                     setHtmlDescription(getString(R.string.ticker_deduction_point_penalty, element.scorePenalty?.toString()))
+                }
+                if (!isNewSeller) {
                     shopPerformanceListener.onTickerImpressionToPenaltyPage()
                 }
                 setDescriptionClickEvent(object : TickerCallback {

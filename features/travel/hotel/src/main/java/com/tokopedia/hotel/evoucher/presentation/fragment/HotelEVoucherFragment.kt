@@ -13,7 +13,6 @@ import android.os.Environment
 import android.os.FileUtils
 import android.provider.MediaStore
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -146,6 +145,9 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         v.measure(View.MeasureSpec.makeMeasureSpec(v.width, View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
 
+        /**Stretch out layout to fit root view (because, footer is sticky) */
+        v.layout(0, 0, v.measuredWidth, v.measuredHeight)
+
         val b = Bitmap.createBitmap(v.measuredWidth, v.measuredHeight, Bitmap.Config.ARGB_8888)
         val c = Canvas(b)
         v.draw(c)
@@ -154,6 +156,10 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
     private fun saveImage(bitmap: Bitmap?, isShare: Boolean) {
         if (bitmap != null) {
+
+            /**Reset layout to origin*/
+            container_root.requestLayout()
+
             permissionChecker.checkPermission(this,
                     PERMISSION_WRITE_EXTERNAL_STORAGE,
                     object : PermissionCheckerHelper.PermissionCheckListener {

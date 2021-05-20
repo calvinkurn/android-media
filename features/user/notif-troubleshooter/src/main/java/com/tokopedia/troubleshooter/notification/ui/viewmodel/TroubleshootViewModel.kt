@@ -22,7 +22,7 @@ import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState
 import com.tokopedia.troubleshooter.notification.ui.state.StatusState
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
-import com.tokopedia.troubleshooter.notification.util.dispatchers.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -57,8 +57,8 @@ class TroubleshootViewModel @Inject constructor(
         private val instanceManager: FirebaseInstanceManager,
         private val ringtoneMode: RingtoneModeService,
         private val userSession: UserSessionInterface,
-        private val dispatcher: DispatcherProvider
-) : BaseViewModel(dispatcher.io()), TroubleshootContract, LifecycleObserver {
+        private val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io), TroubleshootContract, LifecycleObserver {
 
     private val _notificationStatus = MutableLiveData<Boolean>()
     val notificationStatus: LiveData<Boolean> get() = _notificationStatus
@@ -118,7 +118,7 @@ class TroubleshootViewModel @Inject constructor(
     override fun troubleshoot() {
         launchCatchError(block = {
             val result = troubleshootUseCase(RequestParams.EMPTY)
-            withContext(dispatcher.main()) {
+            withContext(dispatcher.main) {
                 _troubleshoot.value = Success(result.notificationSendTroubleshoot)
             }
         }, onError = {
@@ -131,7 +131,7 @@ class TroubleshootViewModel @Inject constructor(
         launchCatchError(block = {
             val notification = userSettingUseCase.executeOnBackground()
             val seller = sellerSettingUseCase.executeOnBackground()
-            withContext(dispatcher.main()) {
+            withContext(dispatcher.main) {
                 val userNotification = notificationSetting(notification)
                 val sellerNotification = notificationSetting(seller)
 

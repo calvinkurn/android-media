@@ -15,7 +15,7 @@ class GetPMInterruptDataMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(data: PMInterruptDataResponse): PowerMerchantInterruptUiModel {
         return PowerMerchantInterruptUiModel(
                 isNewSeller = data.shopInfo?.isNewSeller ?: true,
-                shopAge = data.shopInfo?.shopAge ?: 1,
+                shopAge = data.shopInfo?.shopAge ?: PowerMerchantInterruptUiModel.MIN_SHOP_AGE,
                 pmStatus = data.pmStatus?.data?.powerMerchant?.status.orEmpty(),
                 isOfficialStore = data.pmStatus?.data?.officialStore?.status == PMStatusConst.ACTIVE,
                 periodType = data.pmSettingInfo?.periodeType ?: PeriodType.COMMUNICATION_PERIOD

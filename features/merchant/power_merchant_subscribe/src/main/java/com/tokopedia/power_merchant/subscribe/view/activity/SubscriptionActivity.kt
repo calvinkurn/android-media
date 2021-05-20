@@ -58,8 +58,9 @@ class SubscriptionActivity : BaseActivity(), SubscriptionActivityInterface, HasC
     }
 
     private fun openPowerMerchantWebView() {
-        val encodedUrl = URLEncoder.encode(PMConstant.Urls.POWER_MERCHANT_PAGE, "UTF-8")
-        val applink = String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        val url = "%s?navHide=true"
+        val encodedUrl = URLEncoder.encode(String.format(url, PMConstant.Urls.POWER_MERCHANT_PAGE), "UTF-8")
+        val applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(this, applink)
         finish()
     }

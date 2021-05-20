@@ -9,7 +9,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
@@ -27,7 +27,7 @@ import javax.inject.Inject
 class ShippingDurationViewModel @Inject constructor(private val useCase: GetShippingDurationUseCase,
                                                     private val useCaseRates: GetRatesUseCase,
                                                     private val mapperPrice: ShippingDurationModelWithPriceMapper,
-                                                    private val dispatchers: ExecutorDispatchers) : BaseViewModel(dispatchers.main) {
+                                                    private val dispatchers: CoroutineDispatchers) : BaseViewModel(dispatchers.immediate) {
 
     var selectedId = -1
     private var shippingDurationModel: ShippingListModel? = null
@@ -81,7 +81,7 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
 
 
     /*With Price*/
-    fun getRates(listShopShipment: ArrayList<ShopShipment>?, shippingParam: ShippingParam?, isNewLayout: Boolean) {
+    fun getRates(listShopShipment: ArrayList<ShopShipment>?, shippingParam: ShippingParam?) {
         _shippingDuration.value = OccState.Loading
         OccIdlingResource.increment()
         val ratesParam = shippingParam?.let { listShopShipment?.let { list -> RatesParam.Builder(list, it) } }?.build()
@@ -99,7 +99,7 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
                                     if (!shippingRecomendationData.errorMessage.isNullOrEmpty()) {
                                         _shippingDuration.value = OccState.Failed(Failure(MessageErrorException(shippingRecomendationData.errorMessage)))
                                     } else {
-                                        logicSelection(mapToModelPrice(shippingRecomendationData, isNewLayout))
+                                        logicSelection(mapToModelPrice(shippingRecomendationData))
                                     }
                                 }
 
@@ -111,8 +111,8 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
         }
     }
 
-    private fun mapToModelPrice(responses: ShippingRecommendationData, isNewLayout: Boolean): ShippingListModel {
-        return mapperPrice.convertToDomainModelWithPrice(responses, isNewLayout)
+    private fun mapToModelPrice(responses: ShippingRecommendationData): ShippingListModel {
+        return mapperPrice.convertToDomainModelWithPrice(responses)
     }
 
     override fun onCleared() {
