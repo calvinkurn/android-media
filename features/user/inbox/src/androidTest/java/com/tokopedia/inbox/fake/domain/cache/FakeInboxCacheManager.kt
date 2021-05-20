@@ -3,8 +3,9 @@ package com.tokopedia.inbox.fake.domain.cache
 import com.tokopedia.inbox.domain.cache.InboxCacheManager
 import com.tokopedia.inbox.viewmodel.InboxViewModel
 import java.lang.reflect.Type
+import javax.inject.Inject
 
-class FakeInboxCacheManager: InboxCacheManager {
+class FakeInboxCacheManager @Inject constructor(): InboxCacheManager {
 
     val booleanMap = mutableMapOf(
             InboxViewModel.KEY_ONBOARDING_SELLER to true,

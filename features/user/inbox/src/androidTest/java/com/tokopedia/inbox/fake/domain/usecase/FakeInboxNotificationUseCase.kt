@@ -4,8 +4,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inbox.domain.data.notification.InboxNotificationResponse
 import com.tokopedia.inbox.domain.usecase.InboxNotificationUseCase
 import com.tokopedia.inbox.fake.common.FakeGraphqlUseCase
+import javax.inject.Inject
 
-class FakeInboxNotificationUseCase(
+class FakeInboxNotificationUseCase @Inject constructor(
         private val gqlUseCase: FakeGraphqlUseCase<InboxNotificationResponse>,
         dispatchers: CoroutineDispatchers
 ) : InboxNotificationUseCase(gqlUseCase, dispatchers) {
