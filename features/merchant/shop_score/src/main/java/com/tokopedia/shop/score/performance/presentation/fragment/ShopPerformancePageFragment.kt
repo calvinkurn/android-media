@@ -189,7 +189,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onItemClickedGoToPMActivation() {
         goToPowerMerchantSubscribe(PARAM_PM)
-        shopScorePenaltyTracking.clickPowerMerchantSection()
+        shopScorePenaltyTracking.clickPowerMerchantSection(isNewSeller)
     }
 
     override fun onImpressHeaderPowerMerchantSection() {

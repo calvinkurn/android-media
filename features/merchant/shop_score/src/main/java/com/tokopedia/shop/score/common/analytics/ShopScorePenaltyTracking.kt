@@ -89,12 +89,12 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
         sendShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, CLICK_COMPLETE_INFO)
     }
 
-    fun clickPowerMerchantSection() {
-        sendShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, CLICK_YOUR_SHOP_GET_PM)
+    fun clickPowerMerchantSection(isNewSeller: Boolean) {
+        sendShopScoreItemEvent(SHOP_SCORE_PAGE, CLICK_YOUR_SHOP_GET_PM, isNewSeller)
     }
 
     fun clickSeeAllBenefitInRM(isNewSeller: Boolean) {
-        sendShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, CLICK_SEE_ALL_BENEFIT, isNewSeller)
+        sendShopScoreItemEvent(SHOP_SCORE_PAGE, CLICK_SEE_ALL_BENEFIT, isNewSeller)
     }
 
     fun clickLearMorePenaltyPage() {
@@ -137,11 +137,11 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
     }
 
     fun impressPotentialPowerMerchant(isNewSeller: Boolean) {
-        impressShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_GET_PM, isNewSeller)
+        impressShopScoreItemEvent(SHOP_SCORE_PAGE, IMPRESSION_GET_PM, isNewSeller)
     }
 
     fun impressSeeAllBenefitPowerMerchant(isNewSeller: Boolean) {
-        impressShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_SEE_ALL_BENEFIT, isNewSeller)
+        impressShopScoreItemEvent(SHOP_SCORE_PAGE, IMPRESSION_SEE_ALL_BENEFIT, isNewSeller)
     }
 
     fun impressLearnMorePenaltyPage() {
