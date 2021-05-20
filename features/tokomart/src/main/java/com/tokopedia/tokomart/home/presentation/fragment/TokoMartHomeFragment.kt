@@ -1,10 +1,13 @@
 package com.tokopedia.tokomart.home.presentation.fragment
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -13,6 +16,8 @@ import com.tokopedia.tokomart.R
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.tokomart.home.di.component.DaggerTokoMartHomeComponent
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapter
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeFactory
@@ -33,6 +38,9 @@ class TokoMartHomeFragment: Fragment() {
     @Inject
     lateinit var viewModel: TokoMartHomeViewModel
 
+    private var navToolbar: NavToolbar? = null
+    private var statusBarBackground: View? = null
+
     private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(this), TokoMartHomeListDiffer()) }
 
     private var localCacheModel: LocalCacheModel? = null
@@ -51,6 +59,9 @@ class TokoMartHomeFragment: Fragment() {
         observeLiveData()
         getLayoutData()
         updateCurrentPageLocalCacheModelData()
+        navToolbar = view.findViewById(R.id.navToolbar)
+        statusBarBackground = view.findViewById(R.id.status_bar_bg)
+        activity?.let { navToolbar?.setupToolbarWithStatusBar(it) }
     }
 
     override fun onAttach(context: Context) {
@@ -68,6 +79,30 @@ class TokoMartHomeFragment: Fragment() {
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    private fun setupStatusBar() {
+        activity?.let {
+            statusBarBackground?.background = ColorDrawable(
+                    ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            )
+        }
+        //status bar background compability, we show view background for android >= Kitkat
+//because in that version, status bar can't forced to dark mode, we must set background
+//to keep status bar icon visible
+        statusBarBackground?.layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            statusBarBackground?.visibility = View.INVISIBLE
+        } else
+            statusBarBackground?.visibility = View.VISIBLE
+        //initial condition for status and searchbar
+        setStatusBarAlpha(0f)
+    }
+
+    private fun setStatusBarAlpha(alpha: Float) {
+        val drawable = statusBarBackground?.background
+        drawable?.alpha = alpha.toInt()
+        statusBarBackground?.background = drawable
     }
 
     private fun setupRecyclerView() {
