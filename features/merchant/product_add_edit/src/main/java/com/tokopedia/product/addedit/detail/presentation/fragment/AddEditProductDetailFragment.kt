@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.detail.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -48,6 +47,8 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.*
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailModule
 import com.tokopedia.product.addedit.detail.di.DaggerAddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
@@ -58,7 +59,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PRICE_RECOMMENDATION_BANNER_URL
@@ -75,8 +75,6 @@ import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
@@ -115,8 +113,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
+@FlowPreview
 class AddEditProductDetailFragment : BaseDaggerFragment(),
         ProductPhotoViewHolder.OnPhotoChangeListener,
         NameRecommendationAdapter.ProductNameItemClickListener,
@@ -503,21 +503,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
 
         // product name text change listener
-        productNameField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-
-            override fun afterTextChanged(editable: Editable) {
-                viewModel.isProductNameChanged = true
-                Handler().postDelayed({ viewModel.validateProductNameInput(editable.toString()) }, DEBOUNCE_DELAY_MILLIS)
-                // make sure when user is typing the field, the behaviour to get categories is not blocked by this variable
-                if (needToSetCategoryName && editable.isNotBlank()) {
-                    needToSetCategoryName = false
-                }
+        productNameField?.textFieldInput?.afterTextChanged { editable ->
+            // make sure when user is typing the field, the behaviour to get categories is not blocked by this variable
+            if (needToSetCategoryName && editable.isNotBlank()) {
+                needToSetCategoryName = false
             }
 
-            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
+            viewModel.setProductNameInput(editable)
+            showProductNameLoadingIndicator()
+        }
 
         // product price text change listener
         if (viewModel.productInputModel.variantInputModel.selections.isNotEmpty() &&
@@ -921,7 +915,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         }
                     }
                     productCategoryLayout?.show()
-                    productCategoryRecListView?.setToDisplayText(categoryName, requireContext())
+                    productCategoryRecListView?.setToDisplayText(categoryName.orEmpty(), requireContext())
 
                     // clear specification, get new annotation spec
                     getAnnotationCategory()
@@ -1290,7 +1284,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 // prevent queries getting called from recursive name selection and clicked submit button
                 if (!viewModel.isNameRecommendationSelected && viewModel.isProductNameChanged) {
                     // show product name recommendations
-                    showProductNameLoadingIndicator()
                     productNameRecAdapter?.setProductNameInput(productNameInput)
                     viewModel.getProductNameRecommendation(query = productNameInput)
                 }
@@ -1301,6 +1294,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             } else {
                 // show empty recommendations for input with error
                 productNameRecAdapter?.setProductNameRecommendations(emptyList())
+                hideProductNameLoadingIndicator()
                 // keep the category
                 if (viewModel.isAdding && !viewModel.hasVariants) {
                     productCategoryRecListView?.setData(ArrayList(emptyList()))
@@ -1467,8 +1461,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.productPriceRecommendation.observe(viewLifecycleOwner) {
             val productPrice = viewModel.productInputModel.detailInputModel.price
             val productSuggestedPrice = it.suggestedPrice.toBigDecimal().toBigInteger()
+            val priceWhenLoaded = SharedPreferencesUtil.getPriceWhenLoaded(requireActivity())
 
-            productPriceRecommendation?.isVisible = it.suggestedPrice > 0.0 && it.price > it.suggestedPrice
+            // hide/ show price recommendation
+            productPriceRecommendation?.isVisible = it.suggestedPrice > 0.0
+                    && priceWhenLoaded > it.suggestedPrice.toBigDecimal().toBigInteger()
+
+            // display suggestion only when price recomendation visible
             if (productPriceRecommendation?.isVisible == true) {
                 val minText = it.suggestedPriceMin.getCurrencyFormatted()
                 val maxText = it.suggestedPriceMax.getCurrencyFormatted()
@@ -1478,6 +1477,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 productPriceRecommendation?.description = descriptionText
             }
 
+            // expand/ collapse price recommendation
             if (productPrice <= productSuggestedPrice) {
                 productPriceRecommendation?.setSuggestedPriceSelected()
             }
@@ -1658,13 +1658,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun enableSubmitButton() {
         submitButton?.isClickable = true
-        submitButton?.setBackgroundResource(com.tokopedia.product.addedit.R.drawable.product_add_edit_rect_green_solid)
+        submitButton?.setBackgroundResource(R.drawable.product_add_edit_rect_green_solid)
         context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)) }
     }
 
     private fun disableSubmitButton() {
         submitButton?.isClickable = false
-        submitButton?.setBackgroundResource(com.tokopedia.product.addedit.R.drawable.rect_grey_solid)
+        submitButton?.setBackgroundResource(R.drawable.rect_grey_solid)
         context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)) }
     }
 
@@ -1736,24 +1736,26 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         observe(viewModel.productNameRecommendations) {
             when (it) {
                 is Success -> {
-                    productNameRecAdapter?.setProductNameRecommendations(it.data)
-                    productNameRecLoader?.hide()
-                    productNameRecShimmering?.hide()
                     productNameRecView?.visible()
+                    productNameRecAdapter?.setProductNameRecommendations(it.data)
                 }
                 is Fail -> {
-                    productNameRecLoader?.hide()
-                    productNameRecShimmering?.hide()
                     productNameRecView?.hide()
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
+            hideProductNameLoadingIndicator()
         }
     }
 
     private fun showProductNameLoadingIndicator() {
         productNameRecLoader?.visible()
         productNameRecShimmering?.visible()
+    }
+
+    private fun hideProductNameLoadingIndicator() {
+        productNameRecLoader?.hide()
+        productNameRecShimmering?.hide()
     }
 
     private fun showImmutableCategoryDialog() {

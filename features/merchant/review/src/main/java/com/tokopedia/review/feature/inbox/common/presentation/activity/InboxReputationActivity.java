@@ -39,6 +39,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputat
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationListener;
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
+import com.tokopedia.review.feature.inbox.common.presentation.listener.OnTabChangeListener;
 import com.tokopedia.review.feature.inboxreview.presentation.fragment.InboxReviewFragment;
 import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputationFragment;
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;
@@ -145,10 +146,23 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         indicator.setCustomTabMode(TabLayout.MODE_SCROLLABLE);
         indicator.setCustomTabGravity(TabLayout.GRAVITY_FILL);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
+        final int[] selectedTabPosition = {indicator.getTabLayout().getSelectedTabPosition()};
         indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 super.onTabSelected(tab);
+                int position = tab.getPosition();
+                if (position != selectedTabPosition[0]) {
+                    List<Fragment> fragmentList = getFragmentList();
+                    for (int i = 0; i < fragmentList.size(); i++) {
+                        Fragment fragment= fragmentList.get(i);
+                        if(fragment instanceof InboxReviewFragment) {
+                            OnTabChangeListener onTabChangeListener = (OnTabChangeListener) fragmentList.get(i);
+                            onTabChangeListener.onTabChange(position);
+                        }
+                    }
+                    selectedTabPosition[0] = position;
+                }
                 if (!canFireTracking) {
                     canFireTracking = true;
                     return;
@@ -321,7 +335,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     }
 
     private void setupStatusBar() {
-       if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
 
@@ -350,7 +364,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
 
     @Override
     public void startPerformanceMonitoring() {
-        if(GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             pageLoadTimePerformance = new PageLoadTimePerformanceCallback(
                     ReviewConstants.RATING_PRODUCT_PLT_PREPARE_METRICS,
                     ReviewConstants.RATING_PRODUCT_PLT_NETWORK_METRICS,
@@ -361,7 +375,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
                     0,
                     null
             );
-            if(pageLoadTimePerformance != null) {
+            if (pageLoadTimePerformance != null) {
                 pageLoadTimePerformance.startMonitoring(ReviewConstants.RATING_PRODUCT_TRACE);
                 pageLoadTimePerformance.startPreparePagePerformanceMonitoring();
             }
@@ -371,7 +385,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     @Override
     public void stopPerformanceMonitoring() {
         if (GlobalConfig.isSellerApp()) {
-            if(pageLoadTimePerformance != null) {
+            if (pageLoadTimePerformance != null) {
                 pageLoadTimePerformance.stopMonitoring();
                 pageLoadTimePerformance = null;
             }
@@ -381,7 +395,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     @Override
     public void startPreparePagePerformanceMonitoring() {
         if (GlobalConfig.isSellerApp()) {
-            if(pageLoadTimePerformance != null) {
+            if (pageLoadTimePerformance != null) {
                 pageLoadTimePerformance.startPreparePagePerformanceMonitoring();
             }
         }
@@ -390,7 +404,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     @Override
     public void stopPreparePagePerformanceMonitoring() {
         if (GlobalConfig.isSellerApp()) {
-            if(pageLoadTimePerformance != null) {
+            if (pageLoadTimePerformance != null) {
                 pageLoadTimePerformance.stopPreparePagePerformanceMonitoring();
             }
         }
@@ -399,7 +413,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     @Override
     public void startNetworkRequestPerformanceMonitoring() {
         if (GlobalConfig.isSellerApp()) {
-            if(pageLoadTimePerformance != null) {
+            if (pageLoadTimePerformance != null) {
                 pageLoadTimePerformance.startNetworkRequestPerformanceMonitoring();
             }
         }
@@ -408,7 +422,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     @Override
     public void stopNetworkRequestPerformanceMonitoring() {
         if (GlobalConfig.isSellerApp()) {
-            if(pageLoadTimePerformance != null) {
+            if (pageLoadTimePerformance != null) {
                 pageLoadTimePerformance.stopNetworkRequestPerformanceMonitoring();
             }
         }
@@ -417,7 +431,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     @Override
     public void startRenderPerformanceMonitoring() {
         if (GlobalConfig.isSellerApp()) {
-            if(pageLoadTimePerformance != null) {
+            if (pageLoadTimePerformance != null) {
                 pageLoadTimePerformance.startRenderPerformanceMonitoring();
             }
         }
@@ -426,7 +440,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     @Override
     public void stopRenderPerformanceMonitoring() {
         if (GlobalConfig.isSellerApp()) {
-            if(pageLoadTimePerformance != null) {
+            if (pageLoadTimePerformance != null) {
                 pageLoadTimePerformance.stopRenderPerformanceMonitoring();
             }
         }

@@ -9,98 +9,12 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/cards_ui_with_padding"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:id="@+id/reputation_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:layout_marginRight="@dimen/dp_5"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/dp_10"
-            android:paddingRight="@dimen/dp_10">
-
-            <ImageView
-                android:id="@+id/rep_icon"
-                android:layout_width="@dimen/dp_15"
-                android:layout_height="@dimen/dp_15"
-                android:contentDescription="@null"/>
-
-            <TextView
-                android:id="@+id/rep_rating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_5"
-                android:gravity="center_vertical"
-                android:textColor="@color/tkpd_main_green"
-                android:textSize="@dimen/sp_12" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/msg_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@id/reputation_view"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:paddingLeft="@dimen/dp_10"
-            android:paddingRight="@dimen/dp_10"
-            android:singleLine="true" />
-
-    </RelativeLayout>
-
     <LinearLayout
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
-
-        <RelativeLayout
-            android:id="@+id/chat_blocked_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_5"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:background="@drawable/border_green_white_box"
-            android:padding="@dimen/dp_8"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/blocked_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/chat_blocked_text"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_12" />
-
-            <TextView
-                android:id="@+id/enable_chat_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/blocked_text"
-                android:text="@string/enable_chat_settings"
-                android:textColor="@color/tkpd_main_green"
-                android:textSize="12sp" />
-
-        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/add_comment_area"
@@ -232,21 +146,40 @@
 
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/footer"
-        android:layout_below="@id/header"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
-
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/chatbot_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:tickerShapeType="full" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/dateIndicatorContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/chatbot_ticker"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_14"
+        android:visibility="gone"
+        app:cardCornerRadius="@dimen/dp_12"
+        app:cardBackgroundColor="#E5F5FF"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/dateIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_68"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:paddingTop="@dimen/spacing_lvl1"
+            android:paddingBottom="@dimen/spacing_lvl1"
+            android:paddingLeft="@dimen/unify_space_12"
+            android:paddingRight="@dimen/unify_space_12"
+            app:typographyType="body_3"
+            tools:text="1 Jan"/>
+
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -284,13 +217,14 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/white"
-            tools:text="JJJJ" />
+            tools:text="JJJJ"
+            app:typographyType="body_2" />
 
         <ProgressBar
             android:id="@+id/action"

@@ -11,6 +11,7 @@
     <color name="play_dms_bg_shadow">#1F31353B</color>
 
     <color name="play_dms_cover_crop_overlay">#80C4C4C4</color>
+    <color name="play_dms_bg_cover_image_setup">#26292E</color>
     <color name="play_dms_bg_choose_cover">#4D40454C</color>
     <color name="play_dms_white_68">#ADFFFFFF</color>
     <color name="play_dms_white_96">#F5FFFFFF</color>

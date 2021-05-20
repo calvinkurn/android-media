@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_N0"
-    android:foreground="?selectableItemBackground">
+    android:foreground="?selectableItemBackground"
+    tools:ignore="Overdraw">
 
     <RelativeLayout
         android:id="@+id/rl_content"
@@ -14,15 +15,18 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_8"
-            app:srcCompat="@drawable/ic_check"
-            tools:ignore="ContentDescription" />
+            android:contentDescription="@string/content_img_check"
+            app:icon_color_light_enable="@color/Unify_G500"
+            app:icon_color_night_enable="@color/Unify_G500"
+            app:icon_enable_state="true"
+            app:icon_name="CHECK_BIG" />
 
         <LinearLayout
             android:id="@+id/ll_top_container"
@@ -70,6 +74,7 @@
             android:layout_below="@id/ll_top_container"
             android:layout_marginTop="4dp"
             android:lineSpacingExtra="4sp"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Bebas Ongkir (2 - 4 hari)" />
@@ -93,6 +98,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginTop="4dp"
             android:layout_toStartOf="@id/img_check"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="pengiriman melebihi limit bebas ongkir, kamu cukup bayar Rp3.000" />
@@ -105,6 +111,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginTop="4dp"
             android:layout_toStartOf="@id/img_check"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Estimasi tiba" />

@@ -1,0 +1,32 @@
+[
+  {
+    "data": {
+      "id_2618": {
+        "id": 2618,
+        "catalog_type": 4,
+        "icon": "https://ecs7.tokopedia.net/img/blog/promo/2017/12/06140338/market-place%402x.png",
+        "expired": " 1 Jan 1970",
+        "points": 0,
+        "title": "Undian Mitra x PG x DG",
+        "sub_title": "Undian Mitra x PG x DG",
+        "expired_label": "",
+        "expired_str": "",
+        "is_disabled": true,
+        "is_disabled_button": true,
+        "disable_error_message": "",
+        "upper_text_desc": [],
+        "description": "Undian Mitra x PG x DG",
+        "overview": "",
+        "how_to_use": "1. D\u003cbr\u003e2. E\u003cbr\u003e3. F\u003cbr\u003e",
+        "thumbnail_url": "https://ecs7.tokopedia.net/img/blog/promo/2020/02/Kupon-OS-576x192-Kamis-Pilihan-Bunda-W1.jpg",
+        "thumbnail_url_mobile": "https://ecs7.tokopedia.net/img/blog/promo/2020/02/Kupon-OS-576x192-Kamis-Pilihan-Bunda-W1.jpg",
+        "image_url": "https://ecs7.tokopedia.net/img/blog/promo/2020/02/Kupon-OS-960x160_1-Kamis-Pilihan-Bunda-W1.jpg",
+        "image_url_mobile": "https://ecs7.tokopedia.net/img/blog/promo/2020/02/Kupon-OS-960x160-Kamis-Pilihan-Bunda-W1.jpg",
+        "thumbnail_v2_url": "https://ecs7.tokopedia.net/img/blog/promo/2020/02/Kupon-OS-360x120-Kamis-Pilihan-Bunda-W1.jpg",
+        "thumbnail_v2_url_mobile": "",
+        "minimumUsage": "",
+        "minimumUsageLabel": "Tanpa minimum transaksi"
+      }
+    }
+  }
+]

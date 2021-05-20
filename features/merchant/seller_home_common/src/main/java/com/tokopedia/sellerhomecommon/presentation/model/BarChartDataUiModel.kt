@@ -5,14 +5,14 @@ package com.tokopedia.sellerhomecommon.presentation.model
  */
 
 data class BarChartDataUiModel(
-        override val dataKey: String = "",
+        override var dataKey: String = "",
         override var error: String = "",
         override var isFromCache: Boolean = false,
         override val showWidget: Boolean = false,
         val chartData: BarChartUiModel = BarChartUiModel()
 ) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {
-        return !isFromCache && (chartData.yAxis.all { it.value == 0 })
+        return chartData.yAxis.all { it.value == 0 }
     }
 }
 

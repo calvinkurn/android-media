@@ -14,7 +14,7 @@ class PromoCouponView @JvmOverloads constructor(
 
     private var shadowPaint = Paint()
     private var shadowPath = Path()
-    private var shadowColor = Color.BLACK
+    private var shadowColor = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900)
     private var shadowStrokeWidth = 15f
     private var porterDuffXfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
     private var blurRadius = 0f
@@ -60,10 +60,10 @@ class PromoCouponView @JvmOverloads constructor(
         setLayerType(View.LAYER_TYPE_SOFTWARE, null)
 
         bottomPaint.style = Paint.Style.FILL
-        bottomPaint.color = Color.WHITE
+        bottomPaint.color = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         bottomPaint.isAntiAlias = true
 
-        shadowColor = ContextCompat.getColor(context, R.color.promo_ui_com_shadow_color)
+        shadowColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
         readDataFromAttrs(attrs)
         configure()
 
@@ -78,7 +78,7 @@ class PromoCouponView @JvmOverloads constructor(
                 topPadding = defaultPadding
                 shadowTopOffset += dpToPx(4)
                 shadowStrokeWidth = dpToPx(3)
-                shadowColor = ContextCompat.getColor(context, R.color.promo_ui_mvc_shadow_color)
+                shadowColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
             }
         }
     }

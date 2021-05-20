@@ -26,7 +26,10 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
+import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
+import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -37,14 +40,15 @@ class OtherMenuViewHolder(private val itemView: View,
                           private val listener: Listener,
                           private val trackingListener: SettingTrackingListener,
                           private val freeShippingTracker: SettingFreeShippingTracker,
+                          private val shopOperationalTracker: SettingShopOperationalTracker,
                           private val userSession: UserSessionInterface) {
 
     companion object {
         private val GREEN_TIP = R.drawable.setting_tip_bar_enabled
-        private val GREEN_TEXT_COLOR = R.color.setting_green
+        private val GREEN_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_G500
         private val GREY_TIP = R.drawable.setting_tip_bar_disabled
-        private val GREY_TEXT_COLOR = R.color.setting_grey_text
-        private val RED_TEXT_COLOR = R.color.setting_red_text
+        private val GREY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        private val RED_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_R500
         private val GREY_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant_inactive
         private val GREEN_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant
     }
@@ -171,6 +175,35 @@ class OtherMenuViewHolder(private val itemView: View,
         itemView.shopInfoLayout.findViewById<FrameLayout>(R.id.freeShippingLayout)?.hide()
     }
 
+    fun showOperationalHourLayout(shopOperational: ShopOperationalUiModel) {
+        itemView.findViewById<View>(R.id.shopOperationalHour)?.run {
+            val timeLabel = shopOperational.timeLabel
+            val shopOperationalStatus = itemView.context.getString(shopOperational.status)
+
+            findViewById<Typography>(R.id.textOperationalHour)?.text = if(timeLabel != null) {
+                context.getString(timeLabel)
+            } else {
+                shopOperational.time
+            }
+            findViewById<Label>(R.id.labelShopStatus)?.apply {
+                text = shopOperationalStatus
+                setLabelType(shopOperational.labelType)
+            }
+            findViewById<ImageView>(R.id.imageOperationalHour)?.apply {
+                setImageDrawable(ContextCompat.getDrawable(context, shopOperational.icon))
+            }
+
+            if (shopOperational.hasShopSettingsAccess) {
+                setOnClickListener {
+                    shopOperationalTracker.trackClickShopOperationalHour(shopOperationalStatus)
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+                }
+            }
+
+            visibility = View.VISIBLE
+        }
+    }
+
     private fun setDotVisibility(shopFollowers: Long) {
         val shouldShowFollowers = shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
         val dotVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
@@ -251,7 +284,7 @@ class OtherMenuViewHolder(private val itemView: View,
 
     private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
         val shopType = shopStatusUiModel.shopType
-        showShopStatusHeader(shopType)
+        showShopStatusHeader(shopType, shopStatusUiModel.thematicIllustrationUrl)
         val layoutInflater = LayoutInflater.from(context).inflate(shopType.shopTypeLayoutRes, null, false)
         val shopStatusLayout: View = when(shopType) {
             is RegularMerchant -> {
@@ -289,22 +322,16 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    private fun showShopStatusHeader(shopType: ShopType) {
-        itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes))
-        itemView.shopStatusHeaderIcon?.run {
-            if (shopType !is RegularMerchant) {
-                visibility = View.VISIBLE
-                shopType.shopTypeHeaderIconRes?.let { iconRes ->
-                    setImageDrawable(ContextCompat.getDrawable(context, iconRes))
-                }
-            } else {
-                visibility = View.GONE
-            }
+    private fun showShopStatusHeader(shopType: ShopType, thematicIllustrationUrl: String = "") {
+        itemView.shopStatusHeader?.setImageResource(shopType.shopTypeHeaderRes)
+
+        itemView.findViewById<AppCompatImageView>(R.id.iv_other_menu_thematic)?.let { thematicIv ->
+            ImageHandler.loadImageWithoutPlaceholderAndError(thematicIv, thematicIllustrationUrl)
         }
     }
 
     private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant) : View {
-        findViewById<Typography>(R.id.regularMerchantStatus).run {
+        findViewById<Typography>(R.id.regularMerchantStatus)?.run {
             text = when(regularMerchant) {
                 is RegularMerchant.NeedUpgrade -> context.resources.getString(R.string.setting_upgrade)
                 is RegularMerchant.NeedVerification -> context.resources.getString(R.string.setting_verifikasi)

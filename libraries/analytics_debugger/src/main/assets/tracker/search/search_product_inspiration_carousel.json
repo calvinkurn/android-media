@@ -6,25 +6,25 @@
       "event": "clickSearchResult",
       "eventCategory": "search result",
       "eventAction": "click - inspiration carousel search",
-      "eventLabel": "{{.* - .* - .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".* - .* - .*",
+      "sessionIris": ".*"
     },
     {
       "event": "view_item_list",
       "eventCategory": "search result",
       "eventAction": "impression - inspiration carousel product",
-      "eventLabel": "{{.* - .*}}",
+      "eventLabel": ".* - .*",
       "item_list": "/search - carousel",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "items": [
         {
-          "item_name": "{{.*}}",
-          "item_id": "{{.*}}",
-          "price": "{{.*}}",
+          "item_name": ".*",
+          "item_id": ".*",
+          "price": ".*",
           "item_brand": "none / other",
           "item_category": "none / other",
           "item_variant": "none / other",
-          "index": "{{.*}}"
+          "index": ".*"
         }
       ]
     },
@@ -32,18 +32,18 @@
       "event": "select_content",
       "eventCategory": "search result",
       "eventAction": "click - inspiration carousel product",
-      "eventLabel": "{{.* - .*}}",
+      "eventLabel": ".* - .*",
       "item_list": "/search - carousel",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "items": [
         {
-          "item_name": "{{.*}}",
-          "item_id": "{{.*}}",
-          "price": "{{.*}}",
+          "item_name": ".*",
+          "item_id": ".*",
+          "price": ".*",
           "item_brand": "none / other",
           "item_category": "none / other",
           "item_variant": "none / other",
-          "index": "{{.*}}",
+          "index": ".*",
           "attribution": "none / other"
         }
       ]
@@ -52,14 +52,14 @@
       "event": "view_item",
       "eventCategory": "search result",
       "eventAction": "impression - carousel banner",
-      "eventLabel": "{{.* - .*}}",
-      "sessionIris": "{{.*}}",
+      "eventLabel": ".* - .*",
+      "sessionIris": ".*",
       "promotions": [
         {
-          "item_id": "{{.*}}",
+          "item_id": ".*",
           "item_name": "/search - carousel",
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{.*}}",
+          "creative_name": ".*",
+          "creative_slot": ".*",
           "category": "none / other"
         }
       ]
@@ -68,14 +68,14 @@
       "event": "select_content",
       "eventCategory": "search result",
       "eventAction": "click",
-      "eventLabel": "{{.* - .*}}",
-      "sessionIris": "{{.*}}",
+      "eventLabel": ".* - .*",
+      "sessionIris": ".*",
       "promotions": [
         {
-          "item_id": "{{.*}}",
+          "item_id": ".*",
           "item_name": "/search - carousel",
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{.*}}",
+          "creative_name": ".*",
+          "creative_slot": ".*",
           "category": "none / other"
         }
       ]
@@ -84,19 +84,87 @@
       "event": "select_content",
       "eventCategory": "search result",
       "eventAction": "click lihat sekarang - carousel banner",
-      "eventLabel": "{{.+ - .+}}",
+      "eventLabel": ".+ - .+",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "businessUnit": "search",
-      "sessionIris": "{{.+}}",
+      "sessionIris": ".+",
       "promotions": [
         {
-          "creative_name": "{{.+}}",
-          "creative_slot": "{{.+}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{/search - .+}}"
+          "creative_name": ".+",
+          "creative_slot": ".+",
+          "item_id": ".+",
+          "item_name": "/search - .+"
         }
       ]
+    },
+    {
+      "event": "view_item_list",
+      "eventCategory": "search result",
+      "eventAction": "impression - inspiration carousel chips product",
+      "eventLabel": ".+ - .+ - .+",
+      "item_list": "/search - carousel chips",
+      "sessionIris": ".+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+",
+      "items": [
+        {
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_brand": "none / other",
+          "item_category": "none / other",
+          "item_variant": "none / other",
+          "index": "\\d*.\\d*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "dimension61": ".*",
+          "dimension40": "/search - carousel chips"
+        }
+      ]
+    },
+    {
+      "event": "clickSearchResult",
+      "eventCategory": "search result",
+      "eventAction": "click - inspiration carousel chips lihat semua",
+      "eventLabel": ".+ - .+ - .+",
+      "sessionIris": ".+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+"
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "search result",
+      "eventAction": "click - inspiration carousel chips product",
+      "eventLabel": ".+ - .+ - .+",
+      "item_list": "/search - carousel chips",
+      "sessionIris": ".+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+",
+      "items": [
+        {
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_brand": "none / other",
+          "item_category": "none / other",
+          "item_variant": "none / other",
+          "index": "\\d*.\\d*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "dimension61": ".*",
+          "dimension40": "/search - carousel chips"
+        }
+      ]
+    },
+    {
+      "event": "clickSearchResult",
+      "eventCategory": "search result",
+      "eventAction": "click - inspiration carousel chips variant",
+      "eventLabel": ".+ - .+ - .+",
+      "sessionIris": ".+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+"
     }
   ]
 }

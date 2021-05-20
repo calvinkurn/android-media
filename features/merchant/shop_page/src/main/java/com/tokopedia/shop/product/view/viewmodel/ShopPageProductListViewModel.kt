@@ -10,10 +10,9 @@ import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
-import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
+import com.tokopedia.shop.product.domain.interactor.ClaimBenefitMembershipUseCase
+import com.tokopedia.shop.product.domain.interactor.GetMembershipUseCaseNew
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.util.ShopUtil.isFilterNotIgnored
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
@@ -24,7 +23,6 @@ import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopPageMapper
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
 import com.tokopedia.shop.product.view.datamodel.*
@@ -52,7 +50,6 @@ class ShopPageProductListViewModel @Inject constructor(
         private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
         private val getShopProductUseCase: GqlGetShopProductUseCase,
         private val getShopHighlightProductUseCase: Provider<GqlGetShopProductUseCase>,
-        private val deleteShopInfoUseCase: DeleteShopInfoCacheUseCase,
         private val dispatcherProvider: CoroutineDispatchers,
         private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
         private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
@@ -249,7 +246,7 @@ class ShopPageProductListViewModel @Inject constructor(
 
     private suspend fun getSortListData(): MutableList<ShopProductSortModel> {
         val listSort = gqlGetShopSortUseCase.executeOnBackground()
-        return shopProductSortMapper.convertSort(listSort)
+        return shopProductSortMapper.convertSort(listSort).toMutableList()
     }
 
     private suspend fun getProductList(
@@ -352,7 +349,6 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     fun clearCache() {
-        deleteShopInfoUseCase.executeSync()
         getShopEtalaseByShopUseCase.clearCache()
         clearGetShopProductUseCase()
         listGetShopHighlightProductUseCase.forEach {

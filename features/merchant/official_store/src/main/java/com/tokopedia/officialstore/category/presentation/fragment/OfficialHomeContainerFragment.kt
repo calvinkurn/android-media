@@ -144,7 +144,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
             if (!useNewInbox) {
                 setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             }
-            setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+            setBadgeCounter(getInboxIcon(), inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
         toolbar?.run {
@@ -232,10 +232,31 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         })
     }
 
+    fun selectFirstTab() {
+        val tab = tabLayout?.getTabAt(0)
+        tab?.let {
+            it.select()
+        }
+    }
+
+    fun selectTabByCategoryId(categoryId: String) {
+        val position = tabLayout?.getPositionBasedOnCategoryId(categoryId) ?: -1
+        if (position != -1) {
+            val tab = tabLayout?.getTabAt(position)
+            tab?.let {
+                it.select()
+            }
+        }
+    }
+
     private fun convertToCategoriesTabItem(data: List<Category>): List<OfficialCategoriesTab.CategoriesItemTab> {
         val tabItemDataList = ArrayList<OfficialCategoriesTab.CategoriesItemTab>()
         data.forEach {
-            tabItemDataList.add(OfficialCategoriesTab.CategoriesItemTab(it.title, it.icon, it.imageInactiveURL))
+            tabItemDataList.add(OfficialCategoriesTab.CategoriesItemTab(
+                    categoryId = it.categoryId,
+                    title = it.title,
+                    iconUrl = it.icon,
+                    inactiveIconUrl = it.imageInactiveURL))
         }
         return tabItemDataList
     }
@@ -244,6 +265,14 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
         ) == AbTestPlatform.VARIANT_NEW_INBOX && isNavRevamp()
+    }
+
+    private fun getInboxIcon(): Int {
+        return if (useNewInbox) {
+            IconList.ID_INBOX
+        } else {
+            IconList.ID_MESSAGE
+        }
     }
 
     private fun init(view: View) {
@@ -264,7 +293,6 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         }
         statusBar?.visibility = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
             else -> View.GONE
         }
     }
@@ -300,7 +328,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     private fun getToolbarIcons(): IconBuilder {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                        .addIcon(IconList.ID_MESSAGE) {}
+                        .addIcon(getInboxIcon()) {}
 
         if (!useNewInbox) {
             icons.addIcon(IconList.ID_NOTIFICATION) {}

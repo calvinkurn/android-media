@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -28,6 +29,7 @@ data class RecommendationEntity (
     )
 
     class Recommendation {
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         val id: Long = 0
         @SerializedName("name")
@@ -52,6 +54,7 @@ data class RecommendationEntity (
         val trackerImageUrl: String = ""
         @SerializedName("imageUrl")
         val imageUrl: String = ""
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: String = ""
         @SerializedName("priceInt")
@@ -82,6 +85,15 @@ data class RecommendationEntity (
         val badges: List<Badges> = listOf()
         @SerializedName("minOrder")
         val minOrder: Int = 0
+        @SerializedName("specificationLabels")
+        val specificationsLabels: List<SpecificationsLabels> = listOf()
+
+        class SpecificationsLabels {
+            @SerializedName("key")
+            val key: String = ""
+            @SerializedName("value")
+            val value: String = ""
+        }
 
         class LabelGroup {
             @SerializedName("position")
@@ -95,6 +107,7 @@ data class RecommendationEntity (
         }
 
         class Shop {
+            @SuppressLint("Invalid Data Type")
             @SerializedName("id")
             val id: Int = -1
             @SerializedName("name")
@@ -129,6 +142,8 @@ data class RecommendationEntity (
             val source: String = "",
             @SerializedName("title")
             val title: String = "",
+            @SerializedName("subtitle")
+            val subtitle: String = "",
             @SerializedName("foreignTitle")
             val foreignTitle: String = "",
             @SerializedName("widgetUrl")
@@ -142,6 +157,30 @@ data class RecommendationEntity (
             @SerializedName("pagination")
             val pagination: Pagination = Pagination(),
             @SerializedName("recommendation")
-            val recommendation: List<Recommendation> = listOf()
+            val recommendation: List<Recommendation> = listOf(),
+            @SerializedName("campaign")
+            val campaign: RecommendationCampaign = RecommendationCampaign()
     )
+
+    class RecommendationCampaign {
+        @SerializedName("appLandingPageLink")
+        val appLandingPageLink: String = ""
+        @SerializedName("landingPageLink")
+        val landingPageLink: String = ""
+        @SerializedName("assets")
+        val assets: Assets = Assets()
+        @SerializedName("foreignTitle")
+        val foreignTitle: String = ""
+
+        class Assets {
+            @SerializedName("banner")
+            val banner: Banner = Banner()
+        }
+
+        class Banner {
+            @SerializedName("apps")
+            val apps: String = ""
+        }
+
+    }
 }

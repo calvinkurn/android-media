@@ -5,9 +5,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
-import com.tokopedia.officialstore.OfficialStoreDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
@@ -27,7 +28,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class OfficialHomeMapper (
         private val context: Context,
-        private val dispatchers: OfficialStoreDispatcherProvider
+        private val dispatchers: CoroutineDispatchers
 ){
     private val listOfficialStore = mutableListOf<Visitable<*>>()
     companion object {
@@ -116,6 +117,10 @@ class OfficialHomeMapper (
                     when(officialStore.channel.layout) {
                         DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> {
                             views.add(MixLeftDataModel(
+                                    OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
+                        }
+                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> {
+                            views.add(MixTopDataModel(
                                     OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
                         }
                         else -> views.add(DynamicChannelDataModel(officialStore))
@@ -213,7 +218,7 @@ class OfficialHomeMapper (
     suspend fun getMaxHeightProductCards(productCardModels: List<ProductCardModel>): Int{
         return productCardModels.getMaxHeightForGridView(
                 context = context,
-                coroutineDispatcher = dispatchers.io(),
+                coroutineDispatcher = dispatchers.io,
                 productImageWidth = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
         )
     }

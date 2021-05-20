@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.util.LoggingUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import rx.Observable
@@ -82,14 +83,17 @@ open class GraphqlUseCase<T: Any> @Inject constructor(private val graphqlReposit
 
         val type = tClass ?: throw RuntimeException("Please set valid class type before call execute()")
         val request = GraphqlRequest(doQueryHash, graphqlQuery, type, requestParams)
-        val response = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val listOfRequest = listOf(request)
+        val response = graphqlRepository.getReseponse(listOfRequest, cacheStrategy)
 
         val error = response.getError(tClass)
 
         if (error == null || error.isEmpty()){
             return response.getData(tClass)
         } else {
-            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
+            val errorMessage = error.mapNotNull { it.message }.joinToString(separator = ", ")
+            LoggingUtils.logGqlErrorBackend("executeOnBackground", listOfRequest.toString() ,errorMessage)
+            throw MessageErrorException(errorMessage)
         }
     }
 }

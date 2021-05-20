@@ -20,9 +20,6 @@ class FlightCalendarOneWayWidget : SinglePickCalendarWidget() {
 
     private lateinit var fareCalendarViewModel: FlightFareCalendarViewModel
 
-    lateinit var minCalendarDate: Date
-    lateinit var maxCalendarDate: Date
-    lateinit var selectedCalendarDate: Date
     lateinit var departureCode: String
     lateinit var arrivalCode: String
 
@@ -38,18 +35,6 @@ class FlightCalendarOneWayWidget : SinglePickCalendarWidget() {
         fareCalendarViewModel = viewModelProvider.get(FlightFareCalendarViewModel::class.java)
 
         arguments?.run {
-            this.getString(ARG_MIN_DATE)?.let {
-                minCalendarDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it)
-            }
-
-            this.getString(ARG_MAX_DATE)?.let {
-                maxCalendarDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it)
-            }
-
-            this.getString(ARG_SELECTED_DATE)?.let {
-                selectedCalendarDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it)
-            }
-
             this.getString(ARG_DEPARTURE_CODE)?.let {
                 departureCode = it
             }
@@ -80,11 +65,11 @@ class FlightCalendarOneWayWidget : SinglePickCalendarWidget() {
             val mapFareParam = hashMapOf<String, Any>()
             mapFareParam[PARAM_DEPARTURE_CODE] = departureCode
             mapFareParam[PARAM_ARRIVAL_CODE] = arrivalCode
-            mapFareParam[PARAM_YEAR] = minCalendarDate.dateToString(TRAVEL_CAL_YYYY)
+            mapFareParam[PARAM_YEAR] = minDate.dateToString(TRAVEL_CAL_YYYY)
             mapFareParam[PARAM_CLASS] = classFlight.toString()
 
             activity?.run {
-                fareCalendarViewModel.getFareFlightCalendar(mapFareParam, minCalendarDate, maxCalendarDate)
+                fareCalendarViewModel.getFareFlightCalendar(mapFareParam, minDate, maxDate)
             }
 
             fareCalendarViewModel.fareFlightCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -99,16 +84,12 @@ class FlightCalendarOneWayWidget : SinglePickCalendarWidget() {
         val subTitleList = arrayListOf<SubTitle>()
         listFareAttribute.map {
             subTitleList.add(SubTitle(TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.dateFare),
-                    it.displayedFare, if (it.isLowestFare) getString(R.string.flight_calendar_lowest_fare_price_color) else ""))
+                    it.displayedFare, if (it.isLowestFare) getString(R.string.flight_dms_calendar_lowest_fare_price_color) else ""))
         }
         return subTitleList
     }
 
     companion object {
-
-        private const val ARG_MIN_DATE = "arg_min_date"
-        private const val ARG_MAX_DATE = "arg_max_date"
-        private const val ARG_SELECTED_DATE = "arg_selected_date"
         private const val ARG_DEPARTURE_CODE = "arg_departure_code"
         private const val ARG_ARRIVAL_CODE = "arg_arrival_code"
         private const val ARG_CLASS = "arg_class"
@@ -124,9 +105,9 @@ class FlightCalendarOneWayWidget : SinglePickCalendarWidget() {
                         classFlight: Int): FlightCalendarOneWayWidget =
                 FlightCalendarOneWayWidget().also {
                     it.arguments = Bundle().apply {
-                        putString(ARG_MIN_DATE, minDateString)
-                        putString(ARG_MAX_DATE, maxDateString)
-                        putString(ARG_SELECTED_DATE, selectedDate)
+                        putString(MIN_DATE, minDateString)
+                        putString(MAX_DATE, maxDateString)
+                        putString(SELECTED_DATE, selectedDate)
                         putString(ARG_DEPARTURE_CODE, departureCode)
                         putString(ARG_ARRIVAL_CODE, arrivalCode)
                         putInt(ARG_CLASS, classFlight)

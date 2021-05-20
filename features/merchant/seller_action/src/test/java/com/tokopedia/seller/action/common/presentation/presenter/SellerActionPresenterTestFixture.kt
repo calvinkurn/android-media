@@ -5,7 +5,7 @@ import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.seller.action.common.interfaces.SellerActionContract
 import com.tokopedia.seller.action.common.provider.SellerActionProvider
-import com.tokopedia.seller.action.coroutine.SellerActionTestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.seller.action.order.domain.model.Order
 import com.tokopedia.seller.action.order.domain.usecase.SliceMainOrderListUseCase
 import io.mockk.MockKAnnotations
@@ -41,7 +41,7 @@ open class SellerActionPresenterTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        presenter = SellerActionPresenter(sliceMainOrderListUseCase, SellerActionTestCoroutineDispatchers, provider)
+        presenter = SellerActionPresenter(sliceMainOrderListUseCase, CoroutineTestDispatchersProvider, provider)
     }
 
     protected fun attachView() {

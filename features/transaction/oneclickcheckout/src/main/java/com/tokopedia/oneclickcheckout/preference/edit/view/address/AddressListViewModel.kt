@@ -4,11 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
@@ -18,7 +19,7 @@ import kotlinx.coroutines.withContext
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
-class AddressListViewModel @Inject constructor(private val useCase: GetAddressCornerUseCase, private val dispatcher: ExecutorDispatchers) : BaseViewModel(dispatcher.main) {
+class AddressListViewModel @Inject constructor(private val useCase: GetAddressCornerUseCase, private val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.immediate) {
 
     var savedQuery: String = ""
     var selectedId: String = DEFAULT_SELECTED_ID
@@ -113,6 +114,16 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
                         destinationLatitude = item.latitude
                         destinationLongitude = item.longitude
                         destinationPostalCode = item.postalCode
+
+                        selectedAddressModel = AddressModel(
+                                addressId = item.id.toLongOrZero(),
+                                cityId = item.cityId.toLongOrZero(),
+                                districtId = item.destinationDistrictId.toLongOrZero(),
+                                latitude = item.latitude,
+                                longitude = item.longitude,
+                                addressName = item.addressName,
+                                receiverName = item.recipientName,
+                                postalCode = item.postalCode)
                     }
                 }
                 addressListModel.listAddress = if (isLoadMore) {
@@ -140,9 +151,9 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
         if (addressModel != null && (_addressList.value is OccState.Success || _addressList.value is OccState.FirstLoad)) {
             selectedId = address.id
             selectedAddressModel = AddressModel(
-                    addressId = address.id?.toIntOrZero() ?: 0,
-                    cityId = address.cityId?.toIntOrZero() ?: 0,
-                    districtId = address.destinationDistrictId?.toIntOrZero() ?: 0,
+                    addressId = address.id.toLongOrZero(),
+                    cityId = address.cityId.toLongOrZero(),
+                    districtId = address.destinationDistrictId.toLongOrZero(),
                     latitude = address.latitude,
                     longitude = address.longitude,
                     addressName = address.addressName,

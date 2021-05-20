@@ -10,7 +10,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
-class GetOfficialStoreFeaturedUseCase @Inject constructor(
+class   GetOfficialStoreFeaturedUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase,
         @Named(QUERY_OFFICIAL_STORE_FEATURED_SHOPS) val query: String
 ): UseCase<OfficialStoreFeaturedShop>() {

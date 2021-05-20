@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/loader_shop_img"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        app:corners="100"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/loader_shop_name"
+        android:layout_width="@dimen/dp_112"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_8"
+        app:corners="10"
+        app:layout_constraintBottom_toBottomOf="@id/loader_shop_img"
+        app:layout_constraintStart_toEndOf="@+id/loader_shop_img"
+        app:layout_constraintTop_toTopOf="@id/loader_shop_img"
+        app:layout_constraintVertical_bias="0.3" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/loader_shop_location"
+        android:layout_width="@dimen/dp_160"
+        android:layout_height="@dimen/dp_6"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        app:corners="10"
+        app:layout_constraintStart_toEndOf="@+id/loader_shop_img"
+        app:layout_constraintTop_toBottomOf="@+id/loader_shop_name" />
+
+    <LinearLayout
+        android:id="@+id/container_loader_shop_performance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/loader_shop_img">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            app:layout_constraintTop_toBottomOf="@id/loader_shop_img">
+
+            <com.elyeproj.loaderviewlibrary.LoaderImageView
+                android:id="@+id/shop_performance_widget_loader_title"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_6"
+                android:layout_marginRight="@dimen/dp_6"
+                app:corners="10"
+                app:layout_constraintBottom_toTopOf="@id/shop_performance_widget_loader_description"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderImageView
+                android:id="@+id/shop_performance_widget_loader_description"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_6"
+                android:layout_marginTop="@dimen/dp_4"
+                app:corners="10"
+                app:layout_constraintHorizontal_weight="0.5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/shop_performance_widget_loader_title"
+                app:layout_constraintVertical_bias="1" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/divider_1"
+            android:layout_width="@dimen/dp_1"
+            android:layout_height="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:background="@color/Unify_N75"
+            android:visibility="visible"
+            app:layout_constraintLeft_toRightOf="@id/shop_performance_widget_loader_description"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            app:layout_constraintTop_toBottomOf="@id/loader_shop_img">
+
+            <com.elyeproj.loaderviewlibrary.LoaderImageView
+                android:id="@+id/shop_performance_widget_loader_title_2"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_6"
+                android:layout_marginRight="@dimen/dp_6"
+                app:corners="10"
+                app:layout_constraintBottom_toTopOf="@id/shop_performance_widget_loader_description_2"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderImageView
+                android:id="@+id/shop_performance_widget_loader_description_2"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_6"
+                android:layout_marginTop="@dimen/dp_4"
+                app:corners="10"
+                app:layout_constraintHorizontal_weight="0.5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/shop_performance_widget_loader_title_2"
+                app:layout_constraintVertical_bias="1" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="@dimen/dp_1"
+            android:layout_height="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:background="@color/Unify_N75"
+            android:visibility="visible"
+            app:layout_constraintLeft_toRightOf="@id/shop_performance_widget_loader_description"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            app:layout_constraintTop_toBottomOf="@id/loader_shop_img">
+
+            <com.elyeproj.loaderviewlibrary.LoaderImageView
+                android:id="@+id/shop_performance_widget_loader_title_3"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_6"
+                android:layout_marginRight="@dimen/dp_6"
+                app:corners="10"
+                app:layout_constraintBottom_toTopOf="@id/shop_performance_widget_loader_description_3"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderImageView
+                android:id="@+id/shop_performance_widget_loader_description_3"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_6"
+                android:layout_marginTop="@dimen/dp_4"
+                app:corners="10"
+                app:layout_constraintHorizontal_weight="0.5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/shop_performance_widget_loader_title_3"
+                app:layout_constraintVertical_bias="1" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="@dimen/dp_1"
+            android:layout_height="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:background="@color/Unify_N75"
+            android:visibility="visible"
+            app:layout_constraintLeft_toRightOf="@id/shop_performance_widget_loader_description"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            app:layout_constraintTop_toBottomOf="@id/loader_shop_img">
+
+            <com.elyeproj.loaderviewlibrary.LoaderImageView
+                android:id="@+id/shop_performance_widget_loader_title_4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_6"
+                android:layout_marginRight="@dimen/dp_6"
+                app:corners="10"
+                app:layout_constraintBottom_toTopOf="@id/shop_performance_widget_loader_description_4"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderImageView
+                android:id="@+id/shop_performance_widget_loader_description_4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_6"
+                android:layout_marginTop="@dimen/dp_4"
+                app:corners="10"
+                app:layout_constraintHorizontal_weight="0.5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/shop_performance_widget_loader_title_4"
+                app:layout_constraintVertical_bias="1" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/button_1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        app:corners="10"
+        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/button_2"
+        app:layout_constraintTop_toBottomOf="@+id/container_loader_shop_performance" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/button_2"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:corners="10"
+        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintLeft_toRightOf="@id/button_1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/container_loader_shop_performance" />
+
+
+    <FrameLayout
+        android:id="@+id/tab_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_24"
+        android:paddingBottom="@dimen/dp_10"
+        app:layout_constraintHorizontal_weight="0.2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tab_2"
+        app:layout_constraintTop_toBottomOf="@id/button_1">
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_gravity="center"
+            app:corners="10" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/tab_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_24"
+        android:paddingBottom="@dimen/dp_10"
+        app:layout_constraintHorizontal_weight="0.2"
+        app:layout_constraintLeft_toRightOf="@id/tab_1"
+        app:layout_constraintRight_toLeftOf="@id/tab_3"
+        app:layout_constraintTop_toBottomOf="@id/button_1">
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_gravity="center"
+            app:corners="10" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/tab_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_24"
+        android:paddingBottom="@dimen/dp_10"
+        app:layout_constraintHorizontal_weight="0.2"
+        app:layout_constraintLeft_toRightOf="@id/tab_2"
+        app:layout_constraintRight_toLeftOf="@id/tab_4"
+        app:layout_constraintTop_toBottomOf="@id/button_1">
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_gravity="center"
+            app:corners="10" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/tab_4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_24"
+        android:paddingBottom="@dimen/dp_10"
+        app:layout_constraintHorizontal_weight="0.2"
+        app:layout_constraintLeft_toRightOf="@id/tab_3"
+        app:layout_constraintRight_toLeftOf="@id/tab_5"
+        app:layout_constraintTop_toBottomOf="@id/button_1">
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_gravity="center"
+            app:corners="10" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/tab_5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_24"
+        android:paddingBottom="@dimen/dp_10"
+        app:layout_constraintHorizontal_weight="0.2"
+        app:layout_constraintLeft_toRightOf="@id/tab_4"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_1">
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_gravity="center"
+            app:corners="10" />
+    </FrameLayout>
+
+    <View
+        android:id="@+id/tab_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        android:background="@color/Unify_N75"
+        app:layout_constraintTop_toBottomOf="@id/tab_1" />
+
+    <!--  Content 1  -->
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/loader_shop_img_1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_10"
+        app:corners="@integer/radius_40"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/loader_shop_img_2"
+        app:layout_constraintTop_toBottomOf="@+id/tab_indicator" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/loader_shop_name_1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/loader_shop_name_2"
+        app:layout_constraintTop_toBottomOf="@+id/loader_shop_img_1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/loader_shop_location_1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/loader_shop_location_2"
+        app:layout_constraintTop_toBottomOf="@+id/loader_shop_name_1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/loader_shop_img_2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_10"
+        app:corners="@integer/radius_40"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintLeft_toRightOf="@id/loader_shop_img_1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tab_indicator" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/loader_shop_name_2"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintLeft_toRightOf="@id/loader_shop_name_1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loader_shop_img_2" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/loader_shop_location_2"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintLeft_toRightOf="@id/loader_shop_location_1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loader_shop_name_2" />
+
+
+    <!--  Content 2  -->
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/loader_shop_img_3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_10"
+        app:corners="@integer/radius_40"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/loader_shop_img_4"
+        app:layout_constraintTop_toBottomOf="@+id/loader_shop_location_1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/loader_shop_name_3"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/loader_shop_name_4"
+        app:layout_constraintTop_toBottomOf="@+id/loader_shop_img_3" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/loader_shop_location_3"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/loader_shop_location_4"
+        app:layout_constraintTop_toBottomOf="@+id/loader_shop_name_3" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/loader_shop_img_4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_10"
+        app:corners="@integer/radius_40"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintLeft_toRightOf="@id/loader_shop_img_3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loader_shop_location_2" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/loader_shop_name_4"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintLeft_toRightOf="@id/loader_shop_name_3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loader_shop_img_4" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/loader_shop_location_4"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        app:layout_constraintHorizontal_weight="0.5"
+        app:layout_constraintLeft_toRightOf="@id/loader_shop_location_3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loader_shop_name_4" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

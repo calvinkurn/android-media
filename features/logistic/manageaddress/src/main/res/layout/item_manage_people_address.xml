@@ -5,26 +5,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16"
     android:orientation="vertical"
-    android:layout_marginRight="@dimen/dp_16"
     app:cardCornerRadius="@dimen/dp_4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16">
+        android:layout_height="wrap_content">
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_location_state"
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_20"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             android:layout_marginStart="@dimen/dp_18"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_18"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tokopedia_note"
-            app:srcCompat="@drawable/ic_pinpoint_green"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -77,7 +77,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
             android:text="@string/receiver_name"
             android:textColor="@color/Unify_N700_96"
@@ -105,7 +104,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_6"
             android:text="@string/address_detail"
@@ -120,7 +119,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_6"
             android:text="@string/tokopedia_note"

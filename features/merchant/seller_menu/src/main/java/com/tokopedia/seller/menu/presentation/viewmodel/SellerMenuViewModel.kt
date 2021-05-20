@@ -77,7 +77,7 @@ class SellerMenuViewModel @Inject constructor(
                     .tabs
             }
 
-            _shopProductLiveData.value = Success(mapToProductUiModel(response))
+            _shopProductLiveData.value = Success(mapToProductUiModel(response, userSession.isShopOwner))
         }, onError = {
             _shopProductLiveData.value = Fail(it)
         })
@@ -87,7 +87,7 @@ class SellerMenuViewModel @Inject constructor(
         launchCatchError(block = {
             val data = withContext(dispatchers.io) {
                 val response = getSellerMenuNotifications.executeOnBackground()
-                mapToNotificationUiModel(response)
+                mapToNotificationUiModel(response, userSession.isShopOwner)
             }
 
             _sellerMenuNotification.value = Success(data)

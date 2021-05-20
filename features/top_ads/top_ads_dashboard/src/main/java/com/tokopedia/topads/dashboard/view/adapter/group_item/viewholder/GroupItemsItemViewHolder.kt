@@ -114,7 +114,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         }
 
         view.img_menu.setOnClickListener {
-            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName)
+            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName, item.data.groupId)
             sheet?.onEditAction = {
                 editDone.invoke(item.data.groupId)
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_ATUR_IKLAN, "")

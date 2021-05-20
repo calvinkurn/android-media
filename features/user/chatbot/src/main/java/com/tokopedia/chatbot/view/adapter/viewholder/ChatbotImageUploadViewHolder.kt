@@ -1,16 +1,21 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import androidx.cardview.widget.CardView
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 
@@ -25,6 +30,7 @@ class ChatbotImageUploadViewHolder(itemView: View?,
     override fun getLeftActionId() = R.id.left_action
     override fun getChatBalloonId() = R.id.fl_image_container
     override fun getReadStatusId() = com.tokopedia.chat_common.R.id.chat_status
+    private val datContainer:CardView? = itemView?.findViewById(R.id.dateContainer)
 
     private val cancelUpload = itemView?.findViewById<ImageView>(R.id.progress_cross)
 
@@ -54,6 +60,7 @@ class ChatbotImageUploadViewHolder(itemView: View?,
         chatStatus?.let { bindChatReadStatus(element, it) }
         bindBackground()
         cancelUpload?.setOnClickListener { listener.onImageUploadCancelClicked(element) }
+        setHeaderDate(element)
     }
 
     private fun bindBackground() {
@@ -78,14 +85,24 @@ class ChatbotImageUploadViewHolder(itemView: View?,
     }
 
     fun LoadImage(imageview: ImageView, url: String?) {
-        if (imageview.context != null) {
-            Glide.with(imageview.context)
-                    .load(url)
-                    .fitCenter()
-                    .dontAnimate()
-                    .placeholder(R.drawable.chatbot_image_placeloader)
-                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
-                    .into(imageview)
+        try {
+            if (imageview.context != null) {
+                Glide.with(imageview.context)
+                        .load(url)
+                        .fitCenter()
+                        .dontAnimate()
+                        .placeholder(R.drawable.chatbot_image_placeloader)
+                        .error(com.tokopedia.abstraction.R.drawable.error_drawable)
+                        .into(imageview)
+            }
+        } catch (e: Exception) {
+            if (imageview.context != null) {
+                Glide.with(imageview.context)
+                        .asBitmap()
+                        .load(R.drawable.chatbot_image_placeloader)
+                        .dontAnimate()
+                        .into(imageview)
+            }
         }
     }
 
@@ -102,6 +119,25 @@ class ChatbotImageUploadViewHolder(itemView: View?,
             checkMark.gone()
         }
     }
+
+    override fun setHeaderDate(element: BaseChatViewModel?) {
+        if (date == null) return
+        val time = element?.replyTime?.let {
+            ChatBotTimeConverter.getDateIndicatorTime(
+                    it,
+                    itemView.context.getString(com.tokopedia.chat_common.R.string.chat_today_date),
+                    itemView.context.getString(com.tokopedia.chat_common.R.string.chat_yesterday_date))
+        }
+        date.text = time
+        if (date != null && element?.isShowDate ==true
+                && !TextUtils.isEmpty(time)) {
+            datContainer?.show()
+        } else if (date != null) {
+            datContainer?.hide()
+        }
+    }
+
+    override fun getDateId(): Int = R.id.date
 
     companion object {
         val LAYOUT = R.layout.item_chatbot_chat_image_upload

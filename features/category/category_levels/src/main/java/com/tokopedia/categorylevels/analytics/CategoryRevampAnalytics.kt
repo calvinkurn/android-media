@@ -328,6 +328,19 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         getTracker().sendGeneralEvent(createGeneralEvent(eventName = EVENT_CLICK_FILTER, eventAction = APPLY_FILTER, eventLabel = label.removePrefix("&")))
     }
 
+
+    override fun getHostSource(): String {
+        return CATEGORY_HOST_SOURCE
+    }
+
+    override fun getHostTrackingSource(): String {
+        return CATEGORY_HOST_TRACKING_SOURCE
+    }
+
+    override fun getEventLabel(): String {
+        return categoryPageIdentifier
+    }
+
     override fun trackLihatSemuaClick(headerName: String?) {
         getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_LIHAT_SEMUA, eventLabel = CAROUSEL_BEST_SELLER))
     }

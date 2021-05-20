@@ -57,8 +57,8 @@ import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSe
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel.Companion.NULL_PRODUCT_ERROR
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
-import com.tokopedia.rechargegeneral.util.RechargeGeneralGqlQuery
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
+import com.tokopedia.rechargegeneral.util.RechargeGeneralGqlQuery
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -77,7 +77,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
 
     lateinit var viewModel: RechargeGeneralViewModel
     lateinit var sharedViewModel: SharedRechargeGeneralViewModel
@@ -218,7 +218,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         hideLoading()
                     }
                     view?.let { v ->
-                        Toaster.build(v, getString(R.string.selection_null_product_error), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                        Toaster.build(v, getString(R.string.selection_null_product_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
                 }
@@ -914,7 +914,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun onEnquiryError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
@@ -933,14 +933,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun onCheckVoucherError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }

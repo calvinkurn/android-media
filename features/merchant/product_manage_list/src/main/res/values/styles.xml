@@ -13,11 +13,11 @@
     <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />
 
     <style name="Theme.Green.WhiteMenu" parent="Theme.Green">
-        <item name="android:colorBackground">@color/white</item>
+        <item name="android:colorBackground">@color/Unify_N0</item>
     </style>
 
     <style name="ProductManageCheckBoxStyle" parent="Base.Theme.AppCompat">
-        <item name="colorAccent">@color/light_G500</item>
-        <item name="android:textColorSecondary">@color/light_N400</item>
+        <item name="colorAccent">@color/Unify_G500</item>
+        <item name="android:textColorSecondary">@color/Unify_N400</item>
     </style>
 </resources>

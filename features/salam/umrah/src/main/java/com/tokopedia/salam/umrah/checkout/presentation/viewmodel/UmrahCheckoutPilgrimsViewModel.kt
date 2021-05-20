@@ -3,7 +3,7 @@ package com.tokopedia.salam.umrah.checkout.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
 import kotlinx.coroutines.launch
@@ -13,8 +13,8 @@ import javax.inject.Inject
  * @author by firman on 20/12/2019
  */
 
-class UmrahCheckoutPilgrimsViewModel @Inject constructor(val getContactListUseCase: GetContactListUseCase, coroutineDispatcher: UmrahDispatchersProvider)
-    : BaseViewModel(coroutineDispatcher.Main) {
+class UmrahCheckoutPilgrimsViewModel @Inject constructor(val getContactListUseCase: GetContactListUseCase, coroutineDispatcher: CoroutineDispatchers)
+    : BaseViewModel(coroutineDispatcher.main) {
     private val contactListResultMutable = MutableLiveData<List<TravelContactListModel.Contact>>()
     val contactListResult: LiveData<List<TravelContactListModel.Contact>>
         get() = contactListResultMutable

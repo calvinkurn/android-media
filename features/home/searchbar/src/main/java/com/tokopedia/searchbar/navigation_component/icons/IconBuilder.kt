@@ -4,9 +4,10 @@ import android.os.Bundle
 
 class IconBuilder(val builderFlags: IconBuilderFlag = IconBuilderFlag()) {
     private val listIcon = mutableListOf<IconToolbar>()
+    private val useCentralizedIconNotification = mutableMapOf<Int, Boolean>()
 
     internal fun build(): IconConfig {
-        return IconConfig(listIcon)
+        return IconConfig(listIcon, useCentralizedIconNotification)
     }
 
     //image icon
@@ -14,6 +15,12 @@ class IconBuilder(val builderFlags: IconBuilderFlag = IconBuilderFlag()) {
         when(iconId) {
             //image
             IconList.ID_MESSAGE -> listIcon.add(IconList.MessageIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
+            IconList.ID_INBOX -> listIcon.add(
+                    IconList.InboxIcon.get(
+                            builderFlags.pageSource, disableRouteManager,
+                            disableDefaultGtmTracker, onClick
+                    )
+            )
             IconList.ID_WISHLIST -> listIcon.add(IconList.WishlistIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
             IconList.ID_SHARE -> listIcon.add(IconList.ShareIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
             IconList.ID_CART -> listIcon.add(IconList.CartIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
@@ -27,11 +34,16 @@ class IconBuilder(val builderFlags: IconBuilderFlag = IconBuilderFlag()) {
             //Animated vector drawable
             IconList.ID_NAV_ANIMATED_WISHLIST -> listIcon.add(IconList.AnimatedWishlistIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
         }
+        useCentralizedIconNotification[iconId] = true
         return this
+    }
+
+    fun disableIconNotification(iconId: Int) {
+        useCentralizedIconNotification[iconId] = false
     }
 }
 
-internal data class IconConfig(val iconList: MutableList<IconToolbar>)
+internal data class IconConfig(val iconList: MutableList<IconToolbar>, val useCentralizedIconNotification: Map<Int, Boolean>)
 
 internal data class IconToolbar(val id: Int, val name: String = "", val bundle: Bundle? = Bundle(), val imageRes: Int? = null, val applink: String, var nonLoginApplink: String = applink, var badgeCounter: Int = 0, var disableRouteManager: Boolean = false, var disableDefaultGtmTracker: Boolean = false, val iconType: Int = TYPE_IMAGE, val paddingEndRes: Int = 0, val onIconClicked: ()->Unit) {
     companion object {

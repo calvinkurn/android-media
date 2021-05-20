@@ -163,18 +163,27 @@ class HomeRevampRepositoryImpl @Inject constructor(
              * 4. Get above the fold content
              */
             if (homeData.atfData?.dataList?.isNotEmpty() == true) {
+                var nonTickerResponseFinished = false
+
                 homeData.atfData?.dataList?.map { atfData ->
                     when(atfData.component) {
                         TYPE_TICKER -> {
                             val job = async {
                                 try {
-                                    val ticker = homeRemoteDataSource.getHomeTickerUseCase()
+                                    val ticker = homeRemoteDataSource.getHomeTickerUseCase(
+                                            locationParams = applicationContext?.let {
+                                                ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: "")
                                     ticker?.let {
                                         atfData.content = gson.toJson(ticker.ticker)
                                         atfData.status = AtfKey.STATUS_SUCCESS
                                     }
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
+                                }
+                                if (nonTickerResponseFinished) {
+                                    cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                                        saveToDatabase(homeData)
+                                    })
                                 }
                                 atfData
                             }
@@ -201,6 +210,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                 cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
                                     saveToDatabase(homeData)
                                 })
+                                nonTickerResponseFinished = true
                                 atfData
                             }
                             jobList.add(job)
@@ -208,7 +218,10 @@ class HomeRevampRepositoryImpl @Inject constructor(
                         TYPE_ICON -> {
                             val job = async {
                                 try {
-                                    val dynamicIcon = homeRemoteDataSource.getHomeIconUseCase(atfData.param)
+                                    val dynamicIcon = homeRemoteDataSource.getHomeIconUseCase(
+                                            param = atfData.param,
+                                            locationParams = applicationContext?.let {
+                                                ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: "")
                                     dynamicIcon.let {
                                         atfData.content = gson.toJson(dynamicIcon.dynamicHomeIcon.copy(type=if(atfData.param.contains(TYPE_ATF_1)) 1 else 2))
                                         atfData.status = AtfKey.STATUS_SUCCESS
@@ -220,6 +233,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                 cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
                                     saveToDatabase(homeData)
                                 })
+                                nonTickerResponseFinished = true
                                 atfData
                             }
                             jobList.add(job)

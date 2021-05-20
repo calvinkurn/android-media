@@ -10,7 +10,6 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       kero_unix_time
       is_robinhood
       is_hide_courier_name
-      is_blackbox
       is_show_onboarding
       is_ineligible_promo_dialog_enabled
       disabled_features
@@ -18,9 +17,6 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       open_prerequisite_site
       eligible_new_shipping_experience
       pop_up_message
-      ab_test_button {
-        enable
-      }
       group_address {
         errors
         user_address {
@@ -163,18 +159,6 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
             product_cat_id
             product_catalog_id
             product_category
-            product_shipment {
-              shipment_id
-              service_id
-            }
-            product_shipment_mapping {
-              shipment_id
-              shipping_ids
-              service_ids {
-                service_id
-                sp_ids
-              }
-            }
             purchase_protection_plan_data {
               protection_available
               protection_type_id
@@ -186,9 +170,6 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
               protection_link_url
               protection_opt_in
               protection_checkbox_disabled
-            }
-            free_returns {
-              free_returns_logo
             }
             product_tracker_data {
               attribution

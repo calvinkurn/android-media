@@ -75,7 +75,7 @@ class CreditCardViewModelTest {
         coEvery {
             creditCardSimulationUseCase.cancelJobs()
         } just Runs
-        viewModel.getCreditCardSimulationData(1000000.0f)
+        viewModel.getCreditCardSimulationData(1000000L)
         assert(viewModel.creditCardSimulationResultLiveData.value is Fail)
         Assertions.assertThat((viewModel.creditCardSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(fetchFailedErrorMessage)
     }
@@ -105,7 +105,7 @@ class CreditCardViewModelTest {
         } coAnswers {
             secondArg<(CCSimulationDataStatus) -> Unit>().invoke(StatusApiFail)
         }
-        viewModel.getCreditCardSimulationData(1000000.0f)
+        viewModel.getCreditCardSimulationData(1000000L)
         assert(viewModel.creditCardSimulationResultLiveData.value is Fail)
         Assertions.assertThat((viewModel.creditCardSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(nullDataErrorMessage)
     }
@@ -135,7 +135,7 @@ class CreditCardViewModelTest {
         } coAnswers {
             secondArg<(CCSimulationDataStatus) -> Unit>().invoke(StatusCCNotAvailable)
         }
-        viewModel.getCreditCardSimulationData(1000000.0f)
+        viewModel.getCreditCardSimulationData(1000000L)
         assert(viewModel.creditCardSimulationResultLiveData.value is Fail)
         Assertions.assertThat((viewModel.creditCardSimulationResultLiveData.value as Fail).throwable.message).isEqualTo(CreditCardViewModel.CREDIT_CARD_NOT_AVAILABLE)
     }
@@ -167,7 +167,7 @@ class CreditCardViewModelTest {
             secondArg<(CCSimulationDataStatus) -> Unit>().invoke(StatusApiSuccess(mockSimulationData.creditCardGetSimulationResult!!))
         }
 
-        viewModel.getCreditCardSimulationData(1000000.0f)
+        viewModel.getCreditCardSimulationData(1000000L)
         assert(viewModel.creditCardSimulationResultLiveData.value is Success)
         val actualInstallmentAmount = (viewModel.creditCardSimulationResultLiveData.value as Success).data.creditCardInstallmentList?.getOrNull(2)?.installmentAmount
         val expectedInstallmentAmount = mockSimulationData.creditCardGetSimulationResult?.creditCardInstallmentList?.getOrNull(2)?.installmentAmount

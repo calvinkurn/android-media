@@ -9,6 +9,7 @@ internal class GetRecommendationUseCaseRequest {
                       tID
                       source
                       title
+                      subtitle
                       foreignTitle
                       widgetUrl
                       pageName
@@ -75,6 +76,10 @@ internal class GetRecommendationUseCaseRequest {
                         recommendationType
                         stock
                         isTopads
+                        specificationLabels {
+                            key
+                            value
+                        }
                       }
                     }
                   }
@@ -111,6 +116,9 @@ internal class GetRecommendationUseCaseRequest {
                            relatedProductUrlLink
                            price
                            priceInt
+                           discountPercentage
+                           slashedPrice
+                           slashedPriceInt
                            shop {
                                id
                                name
@@ -147,6 +155,10 @@ internal class GetRecommendationUseCaseRequest {
                           recommendationType
                           stock
                           isTopads
+                          specificationLabels {
+                            key
+                            value
+                        }
                        }
                    }
                  }

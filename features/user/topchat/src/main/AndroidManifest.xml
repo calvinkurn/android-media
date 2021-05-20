@@ -8,7 +8,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateVisible">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -118,6 +118,11 @@
                 <action android:name="NotificationChatServiceReceiver.REPLY_CHAT" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".chatroom.service.UploadImageChatService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false"/>
 
     </application>
 

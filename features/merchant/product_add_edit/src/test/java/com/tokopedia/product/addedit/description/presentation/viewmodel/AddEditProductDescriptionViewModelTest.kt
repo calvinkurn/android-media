@@ -25,7 +25,6 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.runBlocking
 import org.junit.*
 import java.lang.reflect.Type
 
@@ -59,7 +58,6 @@ class AddEditProductDescriptionViewModelTest {
         AddEditProductDescriptionViewModel(CoroutineTestDispatchersProvider, resourceProvider, getYoutubeVideoUseCase, validateProductDescriptionUseCase)
     }
 
-    private val productDescription = "testing"
     private val youtubeAppHost = "youtu.be"
     private val youtubeWebsiteHost = "www.youtube.com"
     private val youtubeWebsiteHostWithoutWww = "youtube.com"
@@ -134,7 +132,8 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When user insert product description and usecase is success expect validate product description response`() = runBlocking {
+    fun `When user insert product description and usecase is success expect validate product description response`() = coroutineTestRule.runBlockingTest {
+        mockkObject(ValidateProductDescriptionUseCase)
         var message = ""
         val validateProductDescriptionResponse = ValidateProductDescriptionResponse().apply {
             productValidateV3.data.validationResults = listOf("nice", "info")
@@ -145,14 +144,14 @@ class AddEditProductDescriptionViewModelTest {
             validateProductDescriptionUseCase.executeOnBackground()
         } returns validateProductDescriptionResponse
 
-        viewModel.validateProductDescriptionInput(productDescription)
+        viewModel.validateDescriptionChanged("test")
+
+        val result = viewModel.descriptionValidationMessage.getOrAwaitValue()
+        assert(result == message)
 
         coVerify {
             validateProductDescriptionUseCase.executeOnBackground()
         }
-
-        val result = viewModel.descriptionValidationMessage.getOrAwaitValue()
-        assert(result == message)
     }
 
     @Test

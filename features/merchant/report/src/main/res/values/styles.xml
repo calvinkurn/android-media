@@ -1,6 +1,6 @@
 <resources>
     <style name="TextInputLayout.HintText">
-        <item name="android:textColor">@color/Neutral_N700</item>
+        <item name="android:textColor">@color/Unify_N700</item>
         <item name="android:textSize">@dimen/sp_12</item>
     </style>
 

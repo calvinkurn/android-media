@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.gone
@@ -24,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.info.model.description.DescriptionData
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyCustomTypefaceSpan
@@ -303,6 +305,29 @@ fun View?.showToasterSuccess(message: String,
     }
 }
 
+fun View?.showToasterSuccess(message: String,
+                           @DimenRes heightOffset: Int = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8,
+                           ctaMaxWidth: Int? = null,
+                           ctaText: String = "",
+                           ctaListener: (() -> Unit?)? = null) {
+    this?.let {
+        val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
+        ctaMaxWidth?.let {
+            Toaster.toasterCustomCtaWidth = ctaMaxWidth
+        }
+
+        Toaster.toasterCustomBottomHeight = toasterOffset
+        if (ctaText.isNotEmpty()) {
+            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText, clickListener = View.OnClickListener {
+                ctaListener?.invoke()
+            }).show()
+        } else {
+            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, clickListener = View.OnClickListener {
+                ctaListener?.invoke()
+            }).show()
+        }
+    }
+}
 fun View?.showToasterError(message: String,
                            @DimenRes heightOffset: Int = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8,
                            ctaMaxWidth: Int? = null,
@@ -373,4 +398,16 @@ internal fun View?.animateCollapse() = this?.run {
 
     animation.duration = resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
     startAnimation(animation)
+}
+
+internal fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {
+    val productCardOptionsModel = ProductCardOptionsModel()
+    productCardOptionsModel.hasWishlist = true
+    productCardOptionsModel.isWishlisted = isWishlist
+    productCardOptionsModel.productId = productId.toString()
+    productCardOptionsModel.isTopAds = isTopAds
+    productCardOptionsModel.topAdsWishlistUrl = wishlistUrl
+    productCardOptionsModel.productPosition = position
+    productCardOptionsModel.screenName = header
+    return productCardOptionsModel
 }

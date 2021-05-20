@@ -121,16 +121,18 @@ class PdpSimulationAnalytics @Inject constructor(
     }
 
     private fun sendCCGeneralEvent(map: MutableMap<String, Any>) {
-        map[BUSINESS_UNIT] = ""
-        map[CURRENT_SITE] = ""
+        map[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_FINTECH
+        map[KEY_CURRENT_SITE] = CURRENT_SITE_FINTECH
         map[KEY_USER_ID] = userSession.get().userId
         analyticTracker.sendGeneralEvent(map)
     }
 
     companion object {
         const val KEY_USER_ID = "userId"
-        const val BUSINESS_UNIT = "Fintech"
-        const val CURRENT_SITE = "tokopediafintech"
+        const val KEY_BUSINESS_UNIT = "businessUnit"
+        const val KEY_CURRENT_SITE = "currentSite"
+        const val BUSINESS_UNIT_FINTECH = "Fintech"
+        const val CURRENT_SITE_FINTECH = "tokopediafintech"
         const val EVENT_NAME_FIN_TECH = "clickFintechMicrosite"
         const val IRIS_EVENT_NAME_FIN_TECH = "viewFintechMicrositeIris"
         const val EVENT_CATEGORY_FIN_TECH = "fin - info page"

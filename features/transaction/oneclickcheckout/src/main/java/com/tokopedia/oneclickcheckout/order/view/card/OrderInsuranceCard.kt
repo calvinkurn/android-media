@@ -1,9 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
-import android.content.Context
 import android.view.View
 import androidx.constraintlayout.widget.Group
-import com.tokopedia.design.component.Tooltip
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -70,8 +68,7 @@ class OrderInsuranceCard(private val view: View, private val listener: OrderInsu
     private fun setupListeners(insuranceData: InsuranceData, productId: String) {
         imgBtInsuranceInfo?.let { iv ->
             iv.setOnClickListener {
-                showBottomSheet(iv.context,
-                        iv.context.getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
+                listener.onClickInsuranceInfo(iv.context.getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
                         insuranceData.insuranceUsedInfo,
                         com.tokopedia.purchase_platform.common.R.drawable.ic_pp_insurance)
             }
@@ -97,19 +94,10 @@ class OrderInsuranceCard(private val view: View, private val listener: OrderInsu
         }
     }
 
-    private fun showBottomSheet(context: Context, title: String, message: String, image: Int) {
-        Tooltip(context).apply {
-            setTitle(title)
-            setDesc(message)
-            setTextButton(context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
-            setIcon(image)
-            btnAction.setOnClickListener { this.dismiss() }
-            show()
-        }
-    }
-
     interface OrderInsuranceCardListener {
 
         fun onInsuranceChecked(isChecked: Boolean)
+
+        fun onClickInsuranceInfo(title: String, message: String, image: Int)
     }
 }

@@ -11,6 +11,11 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gcm.data.RegisterDeviceInteractor;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import rx.Subscriber;
 import timber.log.Timber;
@@ -89,16 +94,19 @@ public class GCMHandler {
         int result = googleAPI.isGooglePlayServicesAvailable(activity);
         if (result != ConnectionResult.SUCCESS) {
             if (googleAPI.isUserResolvableError(result)) {
-                if(!activity.isFinishing()){
+                if (!activity.isFinishing()) {
                     googleAPI.getErrorDialog(activity, result,
-                        PLAY_SERVICES_RESOLUTION_REQUEST, dialog -> {
-                            Timber.w("P1#PLAY_SERVICE_ERROR#gcm;fingerprint='%s'", Build.FINGERPRINT);
-                        }).show();
+                            PLAY_SERVICES_RESOLUTION_REQUEST, dialog -> {
+                                Map<String, String> messageMap = new HashMap<>();
+                                messageMap.put("type", "gcm");
+                                messageMap.put("fingerprint", Build.FINGERPRINT);
+                                ServerLogger.log(Priority.P1, "PLAY_SERVICE_ERROR", messageMap);
+                            }).show();
                 }
             }
 
             return false;
-        }else {
+        } else {
             return true;
         }
     }
