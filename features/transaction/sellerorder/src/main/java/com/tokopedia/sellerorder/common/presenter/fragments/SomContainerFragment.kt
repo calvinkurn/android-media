@@ -99,6 +99,7 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
     }
 
     private fun initiateListFragment() {
+        if (!isAdded) return
         somListFragment = somListFragment ?: childFragmentManager.findFragmentByTag(SomListFragment::class.java.simpleName) as? SomListFragment ?: SomListFragment.newInstance(arguments ?: Bundle.EMPTY)
         somListFragment?.apply {
             setSomListOrderListener(this@SomContainerFragment)
@@ -128,8 +129,8 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
 
     private fun attachDetailFragment(orderId: String, passOrderDetail: Boolean) {
         if (somDetailFragment == null) {
+            if (!isAdded) return
             initiateDetailFragment(orderId, passOrderDetail).let {
-                if (!isAdded) return
                 childFragmentManager.beginTransaction()
                         .replace(R.id.fragmentDetail, it, it::class.java.simpleName)
                         .commit()
