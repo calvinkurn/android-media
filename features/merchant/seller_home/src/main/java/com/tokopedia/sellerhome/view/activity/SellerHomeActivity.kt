@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -38,10 +39,7 @@ import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
-import com.tokopedia.sellerhome.common.DeepLinkHandler
-import com.tokopedia.sellerhome.common.FragmentType
-import com.tokopedia.sellerhome.common.PageFragment
-import com.tokopedia.sellerhome.common.StatusbarHelper
+import com.tokopedia.sellerhome.common.*
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
@@ -95,6 +93,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private var lastProductManagePage = PageFragment(FragmentType.PRODUCT)
     private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
     private var navigator: SellerHomeNavigator? = null
+    private val accelerometerOrientationListener: AccelerometerOrientationListener by lazy {
+        AccelerometerOrientationListener(contentResolver) {
+            onAccelerometerOrientationSettingChange(it)
+        }
+    }
 
     private var statusBarCallback: StatusBarCallback? = null
 
@@ -141,6 +144,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             RouteManager.route(this, ApplinkConst.CREATE_SHOP)
             finish()
         }
+        if (DeviceScreenInfo.isTablet(this)) {
+            accelerometerOrientationListener.register()
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -161,6 +167,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             outState.putInt(LAST_FRAGMENT_TYPE_KEY, page)
         }
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (DeviceScreenInfo.isTablet(this)) {
+            accelerometerOrientationListener.unregister()
+        }
     }
 
     override fun onDestroy() {
@@ -505,7 +518,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun setActivityOrientation() {
         if (DeviceScreenInfo.isTablet(this)) {
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+            val isAccelerometerRotationEnabled = Settings.System.getInt(contentResolver, Settings.System.ACCELEROMETER_ROTATION, 0) == 1
+            requestedOrientation = if (isAccelerometerRotationEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
+
+    private fun onAccelerometerOrientationSettingChange(isEnabled: Boolean) {
+        if (DeviceScreenInfo.isTablet(this)) {
+            requestedOrientation = if (isEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
     }
 }
