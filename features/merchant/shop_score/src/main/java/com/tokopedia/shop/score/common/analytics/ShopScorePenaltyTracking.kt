@@ -1,6 +1,5 @@
 package com.tokopedia.shop.score.common.analytics
 
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.BROADCAST_CHAT
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.BROADCAST_CHAT_IDENTIFIER
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.BUSSINESS_UNIT
