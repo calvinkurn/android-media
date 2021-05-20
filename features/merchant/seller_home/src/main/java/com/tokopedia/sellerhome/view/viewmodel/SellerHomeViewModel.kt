@@ -241,7 +241,7 @@ class SellerHomeViewModel @Inject constructor(
                     getDataFromUseCase(getLayoutUseCase.get(), _widgetLayout)
                 } else {
                     getDataFromUseCase(getLayoutUseCase.get(), _widgetLayout) {
-                        getInitialWidget(it, heightDp)
+                        getInitialWidget(it, heightDp).flowOn(dispatcher.io)
                     }
                 }
             }

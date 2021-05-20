@@ -595,6 +595,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N_MR1) {
+            recyclerView?.layoutAnimation = null
+        }
+
         setViewBackground()
     }
 
