@@ -306,7 +306,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
     implementation rootProject.ext.playServicesDependencies.measurementApi
 
     if (rootProject.ext.debugToolsEnabled) {

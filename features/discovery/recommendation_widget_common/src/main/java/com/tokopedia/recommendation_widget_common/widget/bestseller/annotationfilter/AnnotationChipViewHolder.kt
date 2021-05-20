@@ -18,9 +18,13 @@ class AnnotationChipViewHolder(
 
     fun bind(element: RecommendationFilterChipsEntity.RecommendationFilterChip) {
         view.annotation_chip.chipText = element.title
-        view.annotation_chip.chipType = if(element.isActivated) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
         view.setOnClickListener {
             listener.onFilterAnnotationClicked(element, adapterPosition)
+        }
+        if(element.isActivated) {
+            view.annotation_chip.chipType = ChipsUnify.TYPE_SELECTED
+        } else{
+            view.annotation_chip.chipType = ChipsUnify.TYPE_NORMAL
         }
     }
 
