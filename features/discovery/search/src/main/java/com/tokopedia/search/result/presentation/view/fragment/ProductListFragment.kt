@@ -966,7 +966,7 @@ class ProductListFragment: BaseDaggerFragment(),
         redirectionListener?.startActivityWithApplink(modifiedApplinkToSearchResult)
     }
 
-    private fun modifyApplinkToSearchResult(applink: String): String {
+    override fun modifyApplinkToSearchResult(applink: String): String {
         val urlParser = URLParser(applink)
 
         val params = urlParser.paramKeyValueMap

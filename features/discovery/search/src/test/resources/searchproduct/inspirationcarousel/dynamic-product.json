@@ -962,7 +962,7 @@
       {
         "title": "",
         "position": 4,
-        "layout": "dynamic_product",
+        "layout": "product_list",
         "type": "dynamic_product_type",
         "options": [
           {

@@ -54,12 +54,8 @@ internal open class ProductListPresenterTestFixtures {
     }
     protected lateinit var productListPresenter: ProductListPresenter
 
-    private val mockUri = mockk<Uri>(relaxed = true)
-
     @Before
     open fun setUp() {
-        mockkStatic(Uri::class)
-        every { Uri.parse(any()) } returns mockUri
         productListPresenter = ProductListPresenter(
                 searchProductFirstPageUseCase,
                 searchProductLoadMoreUseCase,

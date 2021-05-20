@@ -2019,19 +2019,10 @@ class ProductListPresenter @Inject constructor(
         }
 
         val applink = if (broadMatchDataView.applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
-            modifyApplinkToSearchResult(broadMatchDataView.applink)
+            view.modifyApplinkToSearchResult(broadMatchDataView.applink)
         else broadMatchDataView.applink
 
         view.redirectionStartActivity(applink, broadMatchDataView.url)
-    }
-
-    private fun modifyApplinkToSearchResult(applink: String): String {
-        val urlParser = URLParser(applink)
-
-        val params = urlParser.paramKeyValueMap
-        params[SearchApiConst.PREVIOUS_KEYWORD] = view.queryKey
-
-        return ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + UrlParamUtils.generateUrlParamString(params)
     }
 
     override fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int) {
