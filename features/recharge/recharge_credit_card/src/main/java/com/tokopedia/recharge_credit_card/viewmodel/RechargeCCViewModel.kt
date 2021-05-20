@@ -10,6 +10,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recharge_credit_card.datamodel.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -24,16 +25,16 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
     : BaseViewModel(dispatcher) {
 
     val rechargeCCBankList = MutableLiveData<RechargeCCBankList>()
-    val errorCCBankList = MutableLiveData<String>()
+    val errorCCBankList = MutableLiveData<Throwable>()
     val tickers = MutableLiveData<List<TickerCreditCard>>()
 
     private val _rechargeCreditCard = MutableLiveData<RechargeCreditCard>()
-    private val _errorPrefix = MutableLiveData<String>()
-    private val _bankNotSupported = MutableLiveData<String>()
+    private val _errorPrefix = MutableLiveData<Throwable>()
+    private val _bankNotSupported = MutableLiveData<Throwable>()
 
     val creditCardSelected: LiveData<RechargeCreditCard> = _rechargeCreditCard
-    val errorPrefix: LiveData<String> = _errorPrefix
-    val bankNotSupported: LiveData<String> = _bankNotSupported
+    val errorPrefix: LiveData<Throwable> = _errorPrefix
+    val bankNotSupported: LiveData<Throwable> = _bankNotSupported
 
     private var foundPrefix: Boolean = false
     var categoryName: String = ""
@@ -76,18 +77,11 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
             if (data.rechargeCCBankList.messageError.isEmpty()) {
                 rechargeCCBankList.postValue(data.rechargeCCBankList)
             } else {
-                errorCCBankList.postValue(data.rechargeCCBankList.messageError)
+                errorCCBankList.postValue(MessageErrorException(data.rechargeCCBankList.messageError))
             }
 
         }) {
-            if (it is UnknownHostException ||
-                    it is SocketException ||
-                    it is InterruptedIOException ||
-                    it is ConnectionShutdownException) {
-                errorCCBankList.postValue(ERROR_DEFAULT)
-            } else {
-                errorCCBankList.postValue(it.message)
-            }
+            errorCCBankList.postValue(it)
         }
     }
 
@@ -116,21 +110,14 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
                     }
                 }
             } else {
-                _bankNotSupported.postValue("")
+                _bankNotSupported.postValue(MessageErrorException(""))
             }
 
             if (!foundPrefix) {
-                _bankNotSupported.postValue("")
+                _bankNotSupported.postValue(MessageErrorException(""))
             }
         }) {
-            if (it is UnknownHostException ||
-                    it is SocketException ||
-                    it is InterruptedIOException ||
-                    it is ConnectionShutdownException) {
-                _errorPrefix.postValue(ERROR_DEFAULT)
-            } else {
-                _errorPrefix.postValue(it.message)
-            }
+            _errorPrefix.postValue(it)
         }
     }
 

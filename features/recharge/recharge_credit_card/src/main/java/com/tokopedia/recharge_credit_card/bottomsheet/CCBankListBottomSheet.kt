@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_credit_card.R
 import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
 import com.tokopedia.recharge_credit_card.adapter.CreditCardBankAdapter
@@ -86,7 +87,7 @@ class CCBankListBottomSheet(val categoryId: String) : BottomSheetUnify() {
             recyclerView.adapter = adapter
         })
         rechargeCCViewModel.errorCCBankList.observe(this, Observer {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, ErrorHandler.getErrorMessage(requireContext(), it), Toast.LENGTH_SHORT).show()
         })
 
         creditCardAnalytics.impressionBankList(categoryId,"none", userSession.userId)
