@@ -14,7 +14,6 @@ import com.tokopedia.catalog.model.datamodel.CatalogVideoDataModel
 class CatalogVideosContainerViewHolder(private val view : View,
                                        private val catalogDetailListener: CatalogDetailListener): AbstractViewHolder<CatalogVideoDataModel>(view) {
 
-    private var videosAdapter : CatalogVideosAdapter? = null
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
 
     companion object {
@@ -24,7 +23,6 @@ class CatalogVideosContainerViewHolder(private val view : View,
     override fun bind(element: CatalogVideoDataModel) {
         val videosRV = view.findViewById<RecyclerView>(R.id.catalog_videos_rv)
         videosRV.layoutManager = layoutManager
-        videosAdapter = CatalogVideosAdapter(element.videosList,catalogDetailListener)
-        videosRV.adapter = videosAdapter!!
+        videosRV.adapter = CatalogVideosAdapter(element.videosList,catalogDetailListener)
     }
 }
