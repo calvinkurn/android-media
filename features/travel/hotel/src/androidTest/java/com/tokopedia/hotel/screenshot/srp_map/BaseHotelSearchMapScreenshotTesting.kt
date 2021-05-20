@@ -6,6 +6,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.mock.HotelSearchMockResponseConfig
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
@@ -65,6 +66,32 @@ abstract class BaseHotelSearchMapScreenshotTesting {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             CommonActions.takeScreenShotVisibleViewInScreen(activityRule.activity.window.decorView, filePrefix(), "top")
         }
+
+        uiDevice.findObject(
+                UiSelector().description("Bottomsheet Hotel Search Map")
+        ).swipeDown(4)
+
+        Thread.sleep(1000)
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            CommonActions.takeScreenShotVisibleViewInScreen(activityRule.activity.window.decorView, filePrefix(), "full-map")
+        }
+
+        CommonActions.findViewHolderAndScreenshot(R.id.rvHorizontalPropertiesHotelSearchMap, 0, filePrefix(), "item-hotel-horizontal")
+
+        Thread.sleep(1000)
+
+        uiDevice.findObject(
+                UiSelector().description("Bottomsheet Hotel Search Map")
+        ).swipeUp(8)
+
+        Thread.sleep(1000)
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            CommonActions.takeScreenShotVisibleViewInScreen(activityRule.activity.window.decorView, filePrefix(), "full-srp")
+        }
+
+        CommonActions.findViewHolderAndScreenshot(R.id.rvVerticalPropertiesHotelSearchMap, 0, filePrefix(), "item-hotel-vertical")
     }
 
     abstract fun filePrefix(): String
