@@ -784,7 +784,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private void routeToNativeBrowser(String browserUrl){
-        RouteManager.route(getContext(), ApplinkConst.BROWSER + "url=" + browserUrl);
+        RouteManager.route(getContext(), ApplinkConst.BROWSER + "?url=" + browserUrl);
     }
 
     private void logApplinkErrorOpen(String url) {
