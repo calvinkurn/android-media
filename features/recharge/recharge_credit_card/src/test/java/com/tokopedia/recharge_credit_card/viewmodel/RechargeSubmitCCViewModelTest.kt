@@ -101,7 +101,7 @@ class RechargeSubmitCCViewModelTest {
         //then
         val actualData = rechargeSubmitViewModel.errorSubmitCreditCard
         assertNotNull(actualData)
-        assertEquals(ccRedirectUrl.data.messageError, actualData.value)
+        assertEquals(ccRedirectUrl.data.messageError, actualData.value?.message)
     }
 
     @Test
@@ -125,7 +125,7 @@ class RechargeSubmitCCViewModelTest {
         //then
         val actualData = rechargeSubmitViewModel.errorSubmitCreditCard
         assertNotNull(actualData)
-        assertEquals("error", actualData.value)
+        assertEquals("error", actualData.value?.message)
     }
 
     @Test
@@ -149,7 +149,7 @@ class RechargeSubmitCCViewModelTest {
         //then
         val actualData = rechargeSubmitViewModel.errorSubmitCreditCard
         assertNotNull(actualData)
-        assertEquals(RechargeSubmitCCViewModel.ERROR_DEFAULT, actualData.value)
+        assertEquals("error server", actualData.value?.message)
     }
 
     //========================================= POST CREDIT CARD, FAILED GET SIGNATURE =====================================
