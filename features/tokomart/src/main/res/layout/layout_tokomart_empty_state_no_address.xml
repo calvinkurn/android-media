@@ -68,19 +68,19 @@
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/tokomart_common_empty_state_desc_2"
-        app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateButton1"
+        app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateButtonChangeAddress"
         app:layout_constraintEnd_toEndOf="@id/tokonowEmptyStateDesc1"
         app:layout_constraintStart_toEndOf="@id/tokonowEmptyStateIcon2"
         app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateDesc1"
         app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/tokonowEmptyStateButton1"
+        android:id="@+id/tokonowEmptyStateButtonChangeAddress"
         android:layout_width="@dimen/dp_240"
         android:layout_height="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_24"
         android:text="@string/tokomart_common_empty_state_button_change_address"
-        app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateButton2"
+        app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateButtonReturn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateDesc2"
@@ -88,7 +88,7 @@
         app:unifyButtonVariant="filled" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/tokonowEmptyStateButton2"
+        android:id="@+id/tokonowEmptyStateButtonReturn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
@@ -96,7 +96,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateButton1"
+        app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateButtonChangeAddress"
         app:unifyButtonSize="medium"
         app:unifyButtonVariant="text" />
 
