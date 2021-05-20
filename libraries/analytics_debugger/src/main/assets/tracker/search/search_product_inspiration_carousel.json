@@ -205,7 +205,7 @@
           "item_name": ".+",
           "item_variant": "none / other",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
-          "dimension40": "/search - carousel"
+          "dimension40": "/search - carousel dynamic"
         }
       ],
       "userId": ".+",
