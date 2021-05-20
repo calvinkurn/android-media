@@ -260,10 +260,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         // Get total error product
         val errorProductCount = getErrorProductCount(dataList)
 
-        // Calculate Weight Per Shop
-        calculateWeightPerShop(dataList)
-
-        // Collect all Cart Item
+        // Collect all Cart Item & also calculate total weight on each shop
         val tmpAllCartItemDataList = getAvailableCartItemDataList(dataList)
 
         // Set cart item parent id
@@ -285,18 +282,24 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     private fun getAvailableCartItemDataList(dataList: List<CartShopHolderData>): ArrayList<CartItemHolderData> {
         // Collect all Cart Item, if has no error and selected
+        // Also calculate total weight on each shop
         val allCartItemDataList = ArrayList<CartItemHolderData>()
         for (cartShopHolderData in dataList) {
             if (cartShopHolderData.shopGroupAvailableData?.cartItemDataList != null &&
                     cartShopHolderData.shopGroupAvailableData?.isError == false &&
                     (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected)) {
+                var shopWeight = 0.0
                 cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
                     for (cartItemHolderData in it) {
                         if (cartItemHolderData.cartItemData?.isError == false && cartItemHolderData.isSelected) {
                             allCartItemDataList.add(cartItemHolderData)
+                            val quantity = cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0
+                            val weight = cartItemHolderData.cartItemData?.originData?.weightPlan ?: 0.0
+                            shopWeight += quantity * weight
                         }
                     }
                 }
+                cartShopHolderData.shopGroupAvailableData?.totalWeight = shopWeight
             }
         }
 
@@ -490,28 +493,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
         val pricePair = Pair(subtotalBeforeSlashedPrice, subtotalPrice)
         return Triple(totalItemQty, pricePair, subtotalCashback)
-    }
-
-    private fun calculateWeightPerShop(dataList: List<CartShopHolderData>) {
-        for (cartShopHolderData in dataList) {
-            if (cartShopHolderData.shopGroupAvailableData?.cartItemDataList != null &&
-                    cartShopHolderData.shopGroupAvailableData?.isError == false &&
-                    (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected)) {
-                var shopWeight = 0.0
-                cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
-                    for (cartItemHolderData in it) {
-                        if (cartItemHolderData.cartItemData?.isError == false && cartItemHolderData.isSelected) {
-                            val quantity = cartItemHolderData.cartItemData?.updatedData?.quantity
-                                    ?: break
-                            val weight = cartItemHolderData.cartItemData?.originData?.weightPlan
-                                    ?: break
-                            shopWeight += quantity * weight
-                        }
-                    }
-                }
-                cartShopHolderData.shopGroupAvailableData?.totalWeight = shopWeight
-            }
-        }
     }
 
     override fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
