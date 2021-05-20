@@ -444,10 +444,10 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                     rawValueFormatted
                                 }
                                 CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> {
-                                    val rawValueFormatted = if (roundNextMinValue.rem(1) == 0.0) {
-                                        roundNextMinValue.roundToInt().toString()
+                                    val rawValueFormatted = if (shopScoreDetail.rawValue.rem(1) == 0.0) {
+                                        shopScoreDetail.rawValue.roundToInt().toString()
                                     } else {
-                                        roundNextMinValue.toString()
+                                        shopScoreDetail.rawValue.toString()
                                     }
                                     rawValueFormatted
                                 }
