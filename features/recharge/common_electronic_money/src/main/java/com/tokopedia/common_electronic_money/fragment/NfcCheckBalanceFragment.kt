@@ -307,6 +307,10 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         }
     }
 
+    protected fun showInitialState(){
+        tapETollCardView.showInitialState()
+    }
+
     companion object {
         const val REQUEST_CODE_LOGIN = 1980
 
