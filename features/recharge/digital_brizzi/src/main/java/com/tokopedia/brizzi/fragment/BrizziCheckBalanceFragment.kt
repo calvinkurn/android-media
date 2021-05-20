@@ -271,7 +271,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
                 }
             }
         } else if(resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN){
-            RouteManager.route(context, ApplinkConst.HOME)
+            activity?.finish()
         }
     }
 
