@@ -1,5 +1,6 @@
 package com.tokopedia.shop.score.common.analytics
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.BROADCAST_CHAT
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.BROADCAST_CHAT_IDENTIFIER
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.BUSSINESS_UNIT
@@ -82,7 +83,7 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
     }
 
     fun clickMenuPenalty() {
-        sendShopScoreItemEvent(TRANSITION_PERIOD_PENALTY_PAGE, CLICK_CHECK_PENALTY)
+        sendShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, CLICK_CHECK_PENALTY)
     }
 
     fun clickMenuCompleteInfo() {
@@ -90,7 +91,7 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
     }
 
     fun clickPowerMerchantSection(isNewSeller: Boolean) {
-        sendShopScoreItemEvent(SHOP_SCORE_PAGE, CLICK_YOUR_SHOP_GET_PM, isNewSeller)
+        sendShopScoreItemEvent(if (isNewSeller) SHOP_SCORE_PAGE else TRANSITION_PERIOD_SHOP_SCORE, CLICK_YOUR_SHOP_GET_PM, isNewSeller)
     }
 
     fun clickSeeAllBenefitInRM(isNewSeller: Boolean) {
@@ -137,11 +138,11 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
     }
 
     fun impressPotentialPowerMerchant(isNewSeller: Boolean) {
-        impressShopScoreItemEvent(SHOP_SCORE_PAGE, IMPRESSION_GET_PM, isNewSeller)
+        impressShopScoreItemEvent(if (isNewSeller) SHOP_SCORE_PAGE else TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_GET_PM, isNewSeller)
     }
 
     fun impressSeeAllBenefitPowerMerchant(isNewSeller: Boolean) {
-        impressShopScoreItemEvent(SHOP_SCORE_PAGE, IMPRESSION_SEE_ALL_BENEFIT, isNewSeller)
+        impressShopScoreItemEvent(if (isNewSeller) SHOP_SCORE_PAGE else TRANSITION_PERIOD_SHOP_SCORE, IMPRESSION_SEE_ALL_BENEFIT, isNewSeller)
     }
 
     fun impressLearnMorePenaltyPage() {
@@ -200,7 +201,7 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
                 TrackAppUtils.EVENT to VIEW_SHOP_SCORE_IRIS,
                 TrackAppUtils.EVENT_CATEGORY to categoryName,
                 TrackAppUtils.EVENT_ACTION to actionName,
-                TrackAppUtils.EVENT_LABEL to  if (isNewSeller) "${ShopScoreTrackingConstant.NEW_SELLER} $typeShop" else typeShop,
+                TrackAppUtils.EVENT_LABEL to if (isNewSeller) "${ShopScoreTrackingConstant.NEW_SELLER} $typeShop" else typeShop,
                 BUSSINESS_UNIT to PHYSICAL_GOODS,
                 CURRENT_SITE to TOKOPEDIA_SELLER,
                 USER_ID to userSession.userId
@@ -213,7 +214,7 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
                 TrackAppUtils.EVENT to CLICK_SHOP_SCORE,
                 TrackAppUtils.EVENT_CATEGORY to categoryName,
                 TrackAppUtils.EVENT_ACTION to actionName,
-                TrackAppUtils.EVENT_LABEL to  if (isNewSeller) "${ShopScoreTrackingConstant.NEW_SELLER} $typeShop" else typeShop,
+                TrackAppUtils.EVENT_LABEL to if (isNewSeller) "${ShopScoreTrackingConstant.NEW_SELLER} $typeShop" else typeShop,
                 BUSSINESS_UNIT to PHYSICAL_GOODS,
                 CURRENT_SITE to TOKOPEDIA_SELLER,
                 USER_ID to userSession.userId

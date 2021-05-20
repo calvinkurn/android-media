@@ -2,7 +2,7 @@
     <string name="app_name">seller_menu_common</string>
 
     <string name="setting_menu_buyer_info">KATA PEMBELI</string>
-    <string name="setting_menu_performance">Performa</string>
+    <string name="setting_menu_performance">Performa Toko</string>
     <string name="setting_menu_review">Ulasan</string>
     <string name="setting_menu_discussion">Diskusi</string>
     <string name="setting_menu_complaint">Pesanan Dikomplain</string>

@@ -60,8 +60,6 @@ class ShopInfoViewHolder(
 
     private val context by lazy { itemView.context }
 
-    private val shopScoreImpressHolder = ImpressHolder()
-
     override fun bind(uiModel: ShopInfoUiModel) {
         with(uiModel.shopInfo) {
             itemView.apply {
@@ -149,9 +147,7 @@ class ShopInfoViewHolder(
             shopScoreLayout.setOnClickListener {
                 listener?.onScoreClicked()
             }
-            shopScoreLayout.addOnImpressionListener(shopScoreImpressHolder) {
-                listener?.onScoreImpressed()
-            }
+            listener?.onScoreImpressed()
         }
     }
 
