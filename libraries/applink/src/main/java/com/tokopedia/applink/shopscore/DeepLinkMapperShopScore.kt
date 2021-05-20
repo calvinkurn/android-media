@@ -1,11 +1,14 @@
 package com.tokopedia.applink.shopscore
 
+import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 /**
  * Created By @ilhamsuaib on 13/04/21
@@ -18,13 +21,25 @@ object DeepLinkMapperShopScore {
     const val TRANSITION_PERIOD = "transition_period"
     const val PARAM_TYPE = "type"
 
-    fun getShopScoreApplink(deeplink: String): String {
+    fun getShopScoreApplink(context: Context, deeplink: String): String {
         return if (deeplink.startsWith(ApplinkConst.SHOP_SCORE_DETAIL_ACKNOWLEDGE_INTERRUPT)) {
             getInterruptHandlerPageApplink()
         } else {
-            when(Uri.parse(deeplink).getQueryParameter(PARAM_TYPE)) {
-                COMMUNICATION_PERIOD -> deeplink.replace(ApplinkConst.SHOP_SCORE_DETAIL, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
-                else -> ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
+            when (Uri.parse(deeplink).getQueryParameter(PARAM_TYPE)) {
+                COMMUNICATION_PERIOD -> {
+                    deeplink.replace(ApplinkConst.SHOP_SCORE_DETAIL, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
+                }
+                else -> {
+                    if (isEnableNewShopScore(context)) {
+                        ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
+                    } else {
+                        if (GlobalConfig.isSellerApp()) {
+                            ApplinkConstInternalSellerapp.SELLER_HOME
+                        } else {
+                            ApplinkConstInternalSellerapp.SELLER_MENU
+                        }
+                    }
+                }
             }
         }
     }
@@ -39,5 +54,10 @@ object DeepLinkMapperShopScore {
         }
 
         return UriUtil.buildUriAppendParams(applink, param)
+    }
+
+    private fun isEnableNewShopScore(context: Context): Boolean {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_SHOP_SCORE))
     }
 }
