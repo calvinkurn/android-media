@@ -99,16 +99,18 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
     }
 
     private fun initiateListFragment() {
-        somListFragment = SomListFragment.newInstance(arguments ?: Bundle.EMPTY).apply {
+        somListFragment = somListFragment ?: childFragmentManager.findFragmentByTag(SomListFragment::class.java.simpleName) as? SomListFragment ?: SomListFragment.newInstance(arguments ?: Bundle.EMPTY)
+        somListFragment?.apply {
             setSomListOrderListener(this@SomContainerFragment)
         }
     }
 
     private fun initiateDetailFragment(orderId: String, passOrderDetail: Boolean): SomDetailFragment {
-        val somDetailFragment = SomDetailFragment.newInstance(Bundle().apply {
+        val somDetailFragment = this.somDetailFragment ?: childFragmentManager.findFragmentByTag(SomListFragment::class.java.simpleName) as? SomDetailFragment ?: SomDetailFragment.newInstance(Bundle().apply {
             putString(SomConsts.PARAM_ORDER_ID, orderId)
             putBoolean(SomConsts.PARAM_PASS_INVOICE, passOrderDetail)
-        }).apply {
+        })
+        somDetailFragment.apply {
             setOrderDetailListener(this@SomContainerFragment)
         }
         this.somDetailFragment = somDetailFragment
@@ -117,8 +119,9 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
 
     private fun attachListFragment() {
         somListFragment?.let {
+            if (!isAdded) return
             childFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentList, it)
+                    .replace(R.id.fragmentList, it, it::class.java.simpleName)
                     .commit()
         }
     }
@@ -126,8 +129,9 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
     private fun attachDetailFragment(orderId: String, passOrderDetail: Boolean) {
         if (somDetailFragment == null) {
             initiateDetailFragment(orderId, passOrderDetail).let {
+                if (!isAdded) return
                 childFragmentManager.beginTransaction()
-                        .replace(R.id.fragmentDetail, it)
+                        .replace(R.id.fragmentDetail, it, it::class.java.simpleName)
                         .commit()
             }
         } else {
