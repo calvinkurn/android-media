@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.fake.di.chat
 
 import com.tokopedia.inbox.fake.di.common.FakeBaseAppComponent
-import com.tokopedia.inbox.view.activity.base.InboxChatTest
+import com.tokopedia.inbox.view.activity.base.chat.InboxChatTest
 import com.tokopedia.topchat.chatlist.di.*
 import dagger.Component
 
