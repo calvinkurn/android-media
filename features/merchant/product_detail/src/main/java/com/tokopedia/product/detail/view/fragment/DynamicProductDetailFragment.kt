@@ -2966,28 +2966,28 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
         context?.let {
             if (viewModel.getDynamicProductInfoP1 != null) {
-//                AtcVariantHelper.pdpToAtcVariant(
-//                        context = it,
-//                        productInfoP1 = viewModel.getDynamicProductInfoP1!!,
-//                        warehouseId = warehouseId ?: "",
-//                        pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
-//                        isTokoNow = false,
-//                        isCheckImeiRemoteConfig = enableCheckImeiRemoteConfig,
-//                        productVariant = viewModel.variantData ?: ProductVariant(),
-//                        warehouseResponse = viewModel.p2Data.value?.nearestWarehouseInfo ?: mapOf(),
-//                        cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf()
-//                ) { data, code ->
-//                    startActivityForResult(data, code)
-//                }
-
-                AtcVariantHelper.goToAtcVariant(
+                AtcVariantHelper.pdpToAtcVariant(
                         context = it,
-                        productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
-                        pageSource = "pdp",
-                        isTokoNow = false
+                        productInfoP1 = viewModel.getDynamicProductInfoP1!!,
+                        warehouseId = warehouseId ?: "",
+                        pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
+                        isTokoNow = false,
+                        isCheckImeiRemoteConfig = enableCheckImeiRemoteConfig,
+                        productVariant = viewModel.variantData ?: ProductVariant(),
+                        warehouseResponse = viewModel.p2Data.value?.nearestWarehouseInfo ?: mapOf(),
+                        cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf()
                 ) { data, code ->
                     startActivityForResult(data, code)
                 }
+
+//                AtcVariantHelper.goToAtcVariant(
+//                        context = it,
+//                        productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
+//                        pageSource = "pdp",
+//                        isTokoNow = false
+//                ) { data, code ->
+//                    startActivityForResult(data, code)
+//                }
             }
         }
     }
