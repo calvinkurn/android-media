@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
@@ -172,6 +173,14 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                 validation3 = true
                 actionEnable()
             }
+        }
+        group_name?.textFieldInput?.imeOptions = EditorInfo.IME_ACTION_DONE
+        group_name?.textFieldInput?.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                Utils.dismissKeyboard(context, view)
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
         }
 
         group_name?.textFieldInput?.addTextChangedListener(object : TextWatcher {

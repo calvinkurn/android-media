@@ -31,7 +31,7 @@
     <string name="format_selected_keyword" tools:ignore="PluralsCandidate">%d kata kunci dipilih</string>
     <string name="format_selected_produk">%d produk dipilih</string>
     <string name="topads_common_selected_product">Produk dipilih (%d)</string>
-    <string name="no_promoted_product">Semua produk sudah \ndiiklankan</string>
+    <string name="no_promoted_product">Semua produk sudah diiklankan</string>
     <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %s</string>
     <string name="recommendated_bid_message_new">Rekomendasi &lt;b>Rp%s&lt;/b></string>
     <string name="min_bid_error">Biaya minimum Rp%s</string>

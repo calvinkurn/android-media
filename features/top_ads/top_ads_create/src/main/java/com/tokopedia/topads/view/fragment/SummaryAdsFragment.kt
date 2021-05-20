@@ -8,13 +8,13 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -164,7 +164,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 onErrorGroupName(getString(R.string.topads_create_group_name_empty_error))
             }
         }
-//        setGroupName()
         setUpInitialValues()
         toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -194,16 +193,14 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private fun setAutoBidState() {
         if (stepperModel?.autoBidState?.isEmpty() == true) {
-            keyword_layout.visible()
-            budget_layout.visible()
-            autobid_layout.gone()
+            group_non_auto?.visible()
+            group_auto?.gone()
             divider2.gone()
             divider3.visible()
             divider4.visible()
         } else {
-            keyword_layout.gone()
-            budget_layout.gone()
-            autobid_layout.visible()
+            group_non_auto?.gone()
+            group_auto?.visible()
             divider3.gone()
             divider4.gone()
         }
@@ -221,15 +218,25 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         else
             AUTOBID_DEFUALT_BUDGET
         daily_budget.textFieldInput.setText(dailyBudget.toString())
+        groupInput?.textFieldInput?.imeOptions = EditorInfo.IME_ACTION_DONE
+        groupInput?.textFieldInput?.setOnEditorActionListener { v, actionId, event ->
+            //   val imm: InputMethodManager = v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                Utils.dismissKeyboard(context, view)
+                //     imm.hideSoftInputFromWindow(v.windowToken, 0)
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
         groupInput?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus) {
+            if (hasFocus) {
                 setGroupName()
             } else {
                 groupInput.textFieldInput.setText(stepperModel?.groupName)
                 groupInput?.setError(false)
                 validation1 = true
                 actionEnable()
-                groupInput?.setMessage("")
+                groupInput?.setMessage(getString(R.string.topads_create_group_name_message))
             }
         }
     }
@@ -280,11 +287,6 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         bidRange?.text = String.format(resources.getString(R.string.bid_range), stepperModel?.minBid.toString(), stepperModel?.maxBid.toString())
         productCount?.text = stepperModel?.selectedProductIds?.count().toString()
         keywordCount?.text = stepperModel?.selectedKeywordStage?.count().toString()
-
-        goToProduct.setImageDrawable(context?.getResDrawable(com.tokopedia.iconunify.R.drawable.iconunify_edit))
-        goToAutobid.setImageDrawable(context?.getResDrawable(com.tokopedia.iconunify.R.drawable.iconunify_edit))
-        goToBudget.setImageDrawable(context?.getResDrawable(com.tokopedia.iconunify.R.drawable.iconunify_edit))
-        goToKeyword.setImageDrawable(context?.getResDrawable(com.tokopedia.iconunify.R.drawable.iconunify_edit))
 
         goToProduct?.setOnClickListener {
             stepperModel?.redirectionToSummary = true
@@ -450,7 +452,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             groupInput?.setError(false)
             validation1 = true
             actionEnable()
-            groupInput?.setMessage("")
+            groupInput?.setMessage(getString(R.string.topads_create_group_name_message))
         } else {
             onErrorGroupName(data.errors[0].detail)
         }
