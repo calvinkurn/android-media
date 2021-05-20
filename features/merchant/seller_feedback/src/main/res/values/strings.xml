@@ -21,6 +21,9 @@
     <string name="feedback_form_detail_error_empty">Wajib diisi</string>
 
     <string name="feedback_form_toast_success_submit">Feedback-mu berhasil dikirim. Terima kasih, ya!</string>
+    <string name="feedback_form_toaster_fail_upload">Oops, gambar gagal di upload</string>
+    <string name="feedback_form_toaster_fail_submit">Oops, feedback gagal di kirim</string>
+    <string name="feedback_form_toaster_fail_network">Cek dan pastikan internetmu lancar, mohon cek berkala</string>
 
     <string-array name="feedback_pages">
         <item>Home</item>

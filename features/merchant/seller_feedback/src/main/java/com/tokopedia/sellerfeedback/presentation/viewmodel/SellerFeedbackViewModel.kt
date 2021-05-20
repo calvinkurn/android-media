@@ -7,13 +7,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
-import com.tokopedia.sellerfeedback.data.SubmitGlobalFeedback
+import com.tokopedia.sellerfeedback.data.SubmitResult
 import com.tokopedia.sellerfeedback.domain.SubmitGlobalFeedbackUseCase
+import com.tokopedia.sellerfeedback.error.SubmitException
+import com.tokopedia.sellerfeedback.error.UploadException
 import com.tokopedia.sellerfeedback.presentation.SellerFeedback
 import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
@@ -35,8 +34,8 @@ class SellerFeedbackViewModel @Inject constructor(
     private val feedbackImages = MutableLiveData<List<ImageFeedbackUiModel>>()
     fun getFeedbackImages(): LiveData<List<ImageFeedbackUiModel>> = feedbackImages
 
-    private val submitResult = MutableLiveData<Result<SubmitGlobalFeedback>>()
-    fun getSubmitResult(): LiveData<Result<SubmitGlobalFeedback>> = submitResult
+    private val submitResult = MutableLiveData<SubmitResult>()
+    fun getSubmitResult(): LiveData<SubmitResult> = submitResult
 
     fun setImages(images: List<ImageFeedbackUiModel>) {
         feedbackImageList.clear()
@@ -58,14 +57,20 @@ class SellerFeedbackViewModel @Inject constructor(
 
             submitGlobalFeedbackUseCase.setParams(sellerFeedback)
             val result = submitGlobalFeedbackUseCase.executeOnBackground()
-            result.submitGlobalFeedback.let {
-                if (it.error) {
-                    throw Throwable(it.errorMsg)
-                }
-                submitResult.postValue(Success(it))
+
+            val submitGlobalFeedback = result.submitGlobalFeedback
+            if (submitGlobalFeedback.error) {
+                throw SubmitException(submitGlobalFeedback.errorMsg)
             }
+
+            submitResult.postValue(SubmitResult.Success)
         }, onError = {
-            submitResult.postValue(Fail(it))
+            val result = when (it) {
+                is UploadException -> SubmitResult.UploadFail(it.message)
+                is SubmitException -> SubmitResult.SubmitFail(it.message)
+                else -> SubmitResult.NetworkFail
+            }
+            submitResult.postValue(result)
         })
     }
 
@@ -77,7 +82,7 @@ class SellerFeedbackViewModel @Inject constructor(
         )
         return when (val result = uploaderUseCase(params)) {
             is UploadResult.Success -> result.uploadId
-            is UploadResult.Error -> throw Throwable(result.message)
+            is UploadResult.Error -> throw UploadException(result.message)
         }
     }
 }

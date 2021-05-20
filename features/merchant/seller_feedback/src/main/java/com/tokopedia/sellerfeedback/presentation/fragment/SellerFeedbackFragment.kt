@@ -29,7 +29,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.sellerfeedback.R
 import com.tokopedia.sellerfeedback.SellerFeedbackTracking
-import com.tokopedia.sellerfeedback.data.SubmitGlobalFeedback
+import com.tokopedia.sellerfeedback.data.SubmitResult
 import com.tokopedia.sellerfeedback.di.component.DaggerSellerFeedbackComponent
 import com.tokopedia.sellerfeedback.presentation.SellerFeedback
 import com.tokopedia.sellerfeedback.presentation.adapter.ImageFeedbackAdapter
@@ -42,11 +42,9 @@ import com.tokopedia.sellerfeedback.presentation.viewholder.BaseImageFeedbackVie
 import com.tokopedia.sellerfeedback.presentation.viewmodel.SellerFeedbackViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.TextAreaUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder.ImageClickListener {
@@ -310,19 +308,24 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
         checkButtonSend()
     }
 
-    private val observerSubmitResult = Observer<Result<SubmitGlobalFeedback>> {
+    private val observerSubmitResult = Observer<SubmitResult> {
         when (it) {
-            is Success -> {
+            is SubmitResult.Success -> {
                 customToast?.show()
                 activity?.finish()
             }
-            is Fail -> {
-                buttonSend?.apply {
-                    isLoading = false
-                    isClickable = true
-                }
-            }
+            is SubmitResult.UploadFail -> showErrorToaster(getString(R.string.feedback_form_toaster_fail_upload))
+            is SubmitResult.SubmitFail -> showErrorToaster(getString(R.string.feedback_form_toaster_fail_submit))
+            is SubmitResult.NetworkFail -> showErrorToaster(getString(R.string.feedback_form_toaster_fail_network))
         }
+        buttonSend?.apply {
+            isLoading = false
+            isClickable = true
+        }
+    }
+
+    private fun showErrorToaster(message: String) {
+        Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
     private fun initData() {
