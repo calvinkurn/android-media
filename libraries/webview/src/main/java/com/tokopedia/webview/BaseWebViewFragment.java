@@ -77,6 +77,7 @@ import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
 import static com.tokopedia.webview.ConstantKt.KEY_PULL_TO_REFRESH;
 import static com.tokopedia.webview.ConstantKt.KEY_URL;
+import static com.tokopedia.webview.ConstantKt.PARAM_EXTERNAL_TRUE;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
 import static com.tokopedia.webview.ConstantKt.STAGING;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
@@ -116,7 +117,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String PLAY_GOOGLE_URL = "play.google.com";
     private static final String BRANCH_IO_HOST = "tokopedia.link";
     private static final String SCHEME_INTENT = "intent";
-    private static final String PARAM_EXTERNAL = "tokopedia_external=true";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     public static final String CUST_OVERLAY_URL = "imgurl";
     private static final String CUST_HEADER = "header_text";
@@ -736,7 +736,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
         }
 
-        if (url.contains(PARAM_EXTERNAL)) {
+        if (url.contains(PARAM_EXTERNAL_TRUE)) {
             try {
                 routeToNativeBrowser(url);
                 hasMoveToNativePage = true;

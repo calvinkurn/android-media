@@ -13,3 +13,6 @@ internal const val JS_TOKOPEDIA = "js.tokopedia.com"
 internal const val JS_STAGING_TOKOPEDIA = "js-staging.tokopedia.com"
 internal const val STAGING = "staging"
 const val SEAMLESS = "seamless"
+
+internal const val PARAM_EXTERNAL_TRUE = "tokopedia_external=true"
+internal const val PARAM_EXTERNAL_FALSE = "tokopedia_external=true"
