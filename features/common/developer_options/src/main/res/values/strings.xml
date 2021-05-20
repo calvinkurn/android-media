@@ -13,6 +13,7 @@
     <string name="remote_config_type_label">TYPE</string>
     <string name="remote_config_edit_placeholder">Input new value here</string>
     <string name="remote_config_edit_btn_save">Save</string>
+    <string name="remote_config_delete_btn_key">Delete Key</string>
 
     <string name="ab_test_rollence_start_button">List AB Test Rollence Keys</string>
     <string name="ab_test_rollence_edit_text_search_hint">Search key</string>
