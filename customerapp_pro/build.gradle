@@ -284,6 +284,7 @@ dependencies {
     implementation project(rootProject.ext.features.feedbackForm)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.screenshot_observer)
+    implementation project(rootProject.ext.features.productManageCommon)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -305,7 +306,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
     implementation rootProject.ext.playServicesDependencies.measurementApi
 
     if (rootProject.ext.debugToolsEnabled) {
@@ -451,6 +451,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
+
+    implementation rootProject.ext.unifyDependencies.empty_state
 }
 
 apply plugin: 'com.google.gms.google-services'

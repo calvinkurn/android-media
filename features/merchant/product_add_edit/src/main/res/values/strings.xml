@@ -348,7 +348,6 @@
 
     <!-- Location Validation -->
     <string name="label_for_toaster_success_set_shop_location">Yay, berhasil menambah lokasi pengiriman.</string>
-    <string name="label_for_toaster_fail_set_shop_location">Terjadi kendala pada server, silahkan coba kembali</string>
     <string name="label_for_action_text_toaster_success_set_shop_location">Oke</string>
     <string name="label_for_dialog_title_that_shop_has_no_location">Mau tambah produk baru?</string>
     <string name="label_for_dialog_desc_that_shop_has_no_location">Eits, lengkapi dulu lokasi pengirimanmu di halaman Pengaturan agar bisa hitung estimasi ongkir.</string>
@@ -374,6 +373,7 @@
     <string name="action_specification_counter">, +%1$d lainnya</string>
 
     <!-- Product Limitation -->
+    <string name="label_product_limitation_start_date">10 Mei 2021</string>
     <string name="label_product_limitation_ticker">Mulai %1$s, ada perubahan Syarat &amp; Ketentuan jumlah produk. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
     <string name="action_product_limitation_item">Pelajari</string>
     <string name="action_product_limitation_item_goto_productlist">Ke Daftar Produk</string>

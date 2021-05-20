@@ -103,7 +103,6 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.LONGITUDE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.NO_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.POSTAL_CODE
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_LIMITATION_START_DATE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_STATUS_ACTIVE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHOP_ID
@@ -808,7 +807,7 @@ class AddEditProductPreviewFragment :
                         startProductAddService(productInputModel)
                         Handler().postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                     } else {
-                        view?.let { Toaster.make(it, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
+                        Toaster.build(requireView(), validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                     }
                 }
             }
@@ -1081,8 +1080,7 @@ class AddEditProductPreviewFragment :
                     Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                 }
                 ValidationResultModel.Result.VALIDATION_ERROR -> {
-                    val errorMessage = ErrorHandler.getErrorMessage(activity, result.exception)
-                    Toaster.build(requireView(), errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    showToasterFailed(result.exception)
                 }
                 else -> {
                     // no-op
@@ -1118,7 +1116,7 @@ class AddEditProductPreviewFragment :
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                     AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
                     if (isStartButtonClicked) {
-                        showToasterFailSetLocation()
+                        showToasterFailed(it.throwable)
                     }
                 }
             }
@@ -1182,6 +1180,8 @@ class AddEditProductPreviewFragment :
                         SharedPreferencesUtil.setProductLimitationModel(requireActivity(), productLimitationModel)
                     }
                     is Fail -> {
+                        productLimitationTicker?.gone()
+                        showToasterFailed(it.throwable)
                         AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                     }
                 }
@@ -1535,15 +1535,14 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun showToasterFailSetLocation() {
-        view?.let {
-            Toaster.build(
-                    it,
-                    getString(R.string.label_for_toaster_fail_set_shop_location),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
-            ).show()
-        }
+    private fun showToasterFailed(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        Toaster.build(
+                requireView(),
+                errorMessage,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+        ).show()
     }
 
     private fun getSaveShopShippingLocationData(
@@ -1638,7 +1637,8 @@ class AddEditProductPreviewFragment :
 
     private fun setupProductLimitationViews() {
         if (!RollenceUtil.getProductLimitationRollence()) return
-        val htmlDescription = getString(R.string.label_product_limitation_ticker, PRODUCT_LIMITATION_START_DATE)
+        val productLimitStartDate = getString(R.string.label_product_limitation_start_date)
+        val htmlDescription = getString(R.string.label_product_limitation_ticker, productLimitStartDate)
         productLimitationTicker?.apply {
             setHtmlDescription(htmlDescription)
             showWithCondition((isAdding() && !isDrafting()) || viewModel.isDuplicate)
@@ -1646,7 +1646,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun setupBottomSheetProductLimitation(productLimitationModel: ProductLimitationModel) {
-        if (productLimitationModel.limitAmount <= 0 || productLimitationModel.isUnlimited) {
+        if (productLimitationModel.isUnlimited) {
             productLimitationTicker?.gone()
             return
         }
