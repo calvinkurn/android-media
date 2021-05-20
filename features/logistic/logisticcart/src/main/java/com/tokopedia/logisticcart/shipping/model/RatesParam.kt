@@ -9,7 +9,6 @@ private const val VALUE_LANG_ID = "id"
 data class RatesParam(
         val spids: String,
         var shop_id: String = "",
-        var shop_tier: Int = 0,
         val origin: String,
         val destination: String,
         val weight: String,
@@ -52,7 +51,6 @@ data class RatesParam(
             trade_in = builder.trade_in,
             is_corner = builder.is_corner,
             shop_id = builder.shop_id,
-            shop_tier = builder.shop_tier,
             token = builder.token,
             ut = builder.ut,
             insurance = builder.insurance,
@@ -74,7 +72,6 @@ data class RatesParam(
     fun toMap(): Map<String, Any> = mapOf(
             "spids" to spids,
             "shop_id" to shop_id,
-            "shop_tier" to shop_tier,
             "origin" to origin,
             "destination" to destination,
             "weight" to weight,
@@ -118,8 +115,6 @@ data class RatesParam(
         var is_corner = 0
             private set
         var shop_id: String = shipping.shopId
-            private set
-        var shop_tier: Int = shipping.shopTier
             private set
         var token: String = shipping.token
             private set
