@@ -42,12 +42,12 @@ class ResultRobot {
         }
     }
 
-    fun globalErrorNoInternetConnectionShown() {
+    fun assertGlobalErrorNoInternetConnectionShown() {
         onView(withId(R.id.global_error)).check(matches(isDisplayed()))
         onView(withText("Koneksi internetmu terganggu!")).check(matches(isDisplayed()))
     }
 
-    fun checkedAtPosition(position: Int) {
+    fun assertAddressCheckedAtPosition(position: Int) {
         onView(RecyclerViewMatcher(R.id.address_list).atPosition(position))
                 .check(matches(isCardUnifyChecked()))
     }

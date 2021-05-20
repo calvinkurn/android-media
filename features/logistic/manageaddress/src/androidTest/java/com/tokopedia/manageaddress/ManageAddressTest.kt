@@ -77,19 +77,21 @@ class ManageAddressTest {
         manageAddress {
             launchWithParam(mActivityTestRule, i)
         } submit {
-            globalErrorNoInternetConnectionShown()
+            assertGlobalErrorNoInternetConnectionShown()
         }
     }
 
     @Test
     fun interactionTest() {
         val i = Intent().apply { putExtra(EXTRA_IS_LOCALIZATION, true) }
+        manageAddress {
+            launchWithParam(mActivityTestRule, i)
+        }
         for (pos in fakeGql.data.keroAddressCorner.data.indices) {
             manageAddress {
-                launchWithParam(mActivityTestRule, i)
                 selectItemAt(pos)
             } submit {
-                checkedAtPosition(pos)
+                assertAddressCheckedAtPosition(pos)
             }
             if (pos == 0) {
                 onView(RecyclerViewMatcher(R.id.address_list)

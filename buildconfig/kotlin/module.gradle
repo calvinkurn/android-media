@@ -59,6 +59,8 @@ android {
         exclude 'META-INF/LICENSE.md'
         exclude 'META-INF/LICENSE-notice.md'
         exclude('META-INF/androidx.*.version')
+        pickFirst "win32-x86-64/attach_hotspot_windows.dll"
+        pickFirst "win32-x86/attach_hotspot_windows.dll"
         exclude 'META-INF/**'
     }
     lintOptions {
