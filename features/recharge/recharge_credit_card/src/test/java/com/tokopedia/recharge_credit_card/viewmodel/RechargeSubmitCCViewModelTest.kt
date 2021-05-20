@@ -161,7 +161,7 @@ class RechargeSubmitCCViewModelTest {
         //then
         val actualData = rechargeSubmitViewModel.errorSignature
         assertNotNull(actualData)
-        assertEquals(rechargeCCSignature.messageError, actualData.value)
+        assertEquals(rechargeCCSignature.messageError, actualData.value?.message)
     }
 
     @Test
@@ -182,7 +182,7 @@ class RechargeSubmitCCViewModelTest {
         //then
         val actualData = rechargeSubmitViewModel.errorSignature
         assertNotNull(actualData)
-        assertEquals(errorGql.message, actualData.value)
+        assertEquals(errorGql.message, actualData.value?.message)
     }
 
     //========================================= CREATE MAP PARAM =====================================
