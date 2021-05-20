@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter
 
+import android.os.Bundle
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
@@ -132,5 +133,13 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         diffResult.dispatchUpdatesTo(this)
         visitables.clear()
         visitables.addAll(newItems)
+    }
+
+    fun updateItem(oldItem: Visitable<BuyerOrderDetailTypeFactory>, newItem: Visitable<BuyerOrderDetailTypeFactory>, payload: Bundle) {
+        val index = visitables.indexOf(oldItem)
+        if (index != -1) {
+            visitables[index] = newItem
+            notifyItemChanged(index, payload)
+        }
     }
 }

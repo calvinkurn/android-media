@@ -26,4 +26,5 @@
     <string name="receive_confirmation_bottomsheet_header">Selesaikan pesanan ini?</string>
     <string name="label_understand">Mengerti</string>
     <string name="label_contact_help_center">Hubungi Pusat Bantuan</string>
+    <string name="label_see">Lihat</string>
 </resources>

@@ -81,7 +81,8 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
                 key = button.key,
                 label = button.displayName,
                 popUp = mapPopUp(button.popup),
-                style = button.variant,
+                variant = button.variant,
+                type = button.type,
                 url = button.url
         )
     }
@@ -123,7 +124,8 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
                     key = it.key,
                     label = it.displayName,
                     popUp = mapPopUp(it.popup),
-                    style = "",
+                    variant = "",
+                    type = "",
                     url = it.url
             )
         }

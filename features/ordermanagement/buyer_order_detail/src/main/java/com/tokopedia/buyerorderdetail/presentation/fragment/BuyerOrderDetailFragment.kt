@@ -12,9 +12,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.common.Utils
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickListener
@@ -28,6 +32,7 @@ import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SecondaryActionBu
 import com.tokopedia.buyerorderdetail.presentation.dialog.RequestCancelResultDialog
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.empty_state.EmptyStateUnify
@@ -38,6 +43,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.text.currency.StringUtils
 import kotlinx.android.synthetic.main.fragment_buyer_order_detail.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -111,16 +117,13 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         setupViews()
         observeBuyerOrderDetail()
         observeReceiveConfirmation()
+        observeAddToCart()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_REQUEST_CANCEL_ORDER -> handleRequestCancelResult(resultCode, data)
         }
-    }
-
-    override fun onBuyAgainButtonClicked() {
-        //TODO: Implement ATC after backend provide contract
     }
 
     override fun onActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
@@ -143,6 +146,14 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         val secondaryActionButtons = viewModel.getSecondaryActionButtons()
         secondaryActionButtonBottomSheet.setSecondaryActionButtons(secondaryActionButtons)
         secondaryActionButtonBottomSheet.show(childFragmentManager)
+    }
+
+    override fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel) {
+        val productCopy = product.copy(isProcessing = true)
+        adapter.updateItem(product, productCopy, Bundle().apply {
+            putBoolean(ProductViewHolder.PAYLOAD_IS_PROCESSING, true)
+        })
+        viewModel.addToCart(productCopy)
     }
 
     private fun onAskSellerActionButtonClicked() {
@@ -263,6 +274,24 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         })
     }
 
+    private fun observeAddToCart() {
+        viewModel.atcResult.observe(viewLifecycleOwner, Observer { result ->
+            when (val requestResult = result.second) {
+                is Success -> onSuccessAddToCart(requestResult.data)
+                is Fail -> onFailedAddToCart(requestResult.throwable)
+            }
+            adapter.updateItem(result.first, result.first.copy(isProcessing = false), Bundle().apply {
+                putBoolean(ProductViewHolder.PAYLOAD_IS_PROCESSING, false)
+            })
+        })
+    }
+
+    private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
+        setupActionButtons(data.actionButtonsUiModel)
+        adapter.updateItems(data)
+        contentVisibilityAnimator.showContent()
+    }
+
     private fun onSuccessReceiveConfirmation(data: FinishOrderResponse.Data.FinishOrderBuyer) {
         bottomSheetReceiveConfirmation?.dismiss()
         secondaryActionButtonBottomSheet.dismiss()
@@ -276,10 +305,22 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         throwable.showErrorToaster()
     }
 
-    private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
-        setupActionButtons(data.actionButtonsUiModel)
-        adapter.updateItems(data)
-        contentVisibilityAnimator.showContent()
+    private fun onSuccessAddToCart(data: AtcMultiData) {
+        val msg = StringUtils.convertListToStringDelimiter(data.atcMulti.buyAgainData.message, ",")
+        if (data.atcMulti.buyAgainData.success == 1) {
+            showCommonToaster(msg, getString(R.string.label_see)) {
+                RouteManager.route(context, ApplinkConst.CART)
+            }
+        } else {
+            showErrorToaster(msg)
+        }
+    }
+
+    private fun onFailedAddToCart(throwable: Throwable) {
+        val errorMessage = context?.let {
+            ErrorHandler.getErrorMessage(it, throwable)
+        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
+        showErrorToaster(errorMessage)
     }
 
     private fun onFailedGetBuyerOrderDetail(throwable: Throwable) {
@@ -326,9 +367,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             layoutParamsCopy.marginStart = if (secondaryActionButtonCount == 0) 0 else getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             layoutParams = layoutParamsCopy
             text = primaryActionButton.label
+            buttonVariant = Utils.mapButtonVariant(primaryActionButton.variant)
+            buttonType = Utils.mapTickerType(primaryActionButton.type)
             setOnClickListener(primaryActionButtonClickListener)
         }
-
     }
 
     private fun setupSecondaryButton(secondaryActionButtons: List<ActionButtonsUiModel.ActionButton>) {
@@ -408,7 +450,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private fun Throwable.showErrorToaster() {
         val errorMessage = context?.let {
             ErrorHandler.getErrorMessage(it, this)
-        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
+        }
+                ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
         showErrorToaster(errorMessage)
     }
 

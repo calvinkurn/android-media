@@ -36,6 +36,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
+    implementation project(rootProject.ext.features.atc_common)
+
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.graphql)

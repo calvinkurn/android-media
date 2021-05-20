@@ -39,4 +39,6 @@ object BuyerOrderDetailConst {
     const val RESULT_POPUP_BODY_INSTANT_CANCEL = "result_popup_body_instant_cancel"
 
     const val PATH_TOKOPEDIA_CARE = "help"
+
+    const val DAGGER_ATC_QUERY_NAME = "atcMultiQuery"
 }
