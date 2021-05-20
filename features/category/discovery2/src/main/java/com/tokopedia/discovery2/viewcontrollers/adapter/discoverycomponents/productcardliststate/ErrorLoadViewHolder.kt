@@ -9,16 +9,20 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.empty_state.EmptyStateUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
-class ErrorLoadViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+class ErrorLoadViewHolder(itemView: View, private val fragment: Fragment) :
+        AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+
     private lateinit var errorLoadViewModel: ErrorLoadViewModel
-    private var errorReLoadState: EmptyStateUnify? = null
+    private var errorReLoadState: EmptyStateUnify = itemView.findViewById(R.id.viewEmptyState)
+    private var progressLoader: LoaderUnify = itemView.findViewById(R.id.progressLoader)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         errorLoadViewModel = discoveryBaseViewModel as ErrorLoadViewModel
         with(itemView.context) {
-            if(this is DiscoveryActivity) {
+            if (this is DiscoveryActivity) {
                 this.discoveryComponent.provideSubComponent()
                         .inject(errorLoadViewModel)
             }
@@ -27,8 +31,10 @@ class ErrorLoadViewHolder(itemView: View, private val fragment: Fragment) : Abst
     }
 
     private fun init() {
-        errorReLoadState = itemView.findViewById(R.id.viewEmptyState)
-        errorReLoadState?.run {
+        errorReLoadState.visibility = View.VISIBLE
+        progressLoader.visibility = View.GONE
+
+        errorReLoadState.run {
             setTitle(context?.getString(R.string.discovery_product_empty_state_title).orEmpty())
             setDescription(context?.getString(R.string.discovery_product_empty_state_description).orEmpty())
             setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500, null))
@@ -47,6 +53,15 @@ class ErrorLoadViewHolder(itemView: View, private val fragment: Fragment) : Abst
             errorLoadViewModel.getSyncPageLiveData().observe(lifecycle, {
                 if (it) (fragment as DiscoveryFragment).reSync()
             })
+            errorLoadViewModel.getShowLoaderStatus().observe(lifecycleOwner, {
+                if (it) {
+                    errorReLoadState.visibility = View.GONE
+                    progressLoader.visibility = View.VISIBLE
+                } else {
+                    errorReLoadState.visibility = View.VISIBLE
+                    progressLoader.visibility = View.GONE
+                }
+            })
         }
     }
 
@@ -54,6 +69,7 @@ class ErrorLoadViewHolder(itemView: View, private val fragment: Fragment) : Abst
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
             errorLoadViewModel.getSyncPageLiveData().removeObservers(it)
+            errorLoadViewModel.getShowLoaderStatus().removeObservers(it)
         }
     }
 }

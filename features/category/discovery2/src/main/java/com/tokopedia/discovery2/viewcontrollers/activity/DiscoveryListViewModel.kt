@@ -7,7 +7,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 
 class DiscoveryListViewModel(private val applicationContext: Application) : AndroidViewModel(applicationContext) {
     private var mapOfViewModels = mutableMapOf<Int, DiscoveryBaseViewModel>()
-    private var mapOfViewModelsRefrences = mutableMapOf<Int, DiscoveryBaseViewModel>()
+    private var mapOfViewModelsReferences = mutableMapOf<Int, DiscoveryBaseViewModel>()
 
     fun getViewHolderModel(viewModel: (application: Application, components: ComponentsItem, position: Int) -> DiscoveryBaseViewModel, componentItem: ComponentsItem, position: Int): DiscoveryBaseViewModel {
 
@@ -16,12 +16,12 @@ class DiscoveryListViewModel(private val applicationContext: Application) : Andr
 
             mapOfViewModels[position] = viewModelObject
         }
-        mapOfViewModelsRefrences.putAll(mapOfViewModels)
+        mapOfViewModelsReferences.putAll(mapOfViewModels)
         return mapOfViewModels[position]!!
     }
 
     fun getViewModelAtPosition(position: Int): DiscoveryBaseViewModel? {
-            return mapOfViewModelsRefrences[position]
+            return mapOfViewModelsReferences[position]
     }
 
     fun clearList() {
