@@ -21,7 +21,7 @@ class PowerMerchantActivateUseCase @Inject constructor(
         val gqlErrors = gqlResponse.getError(GoldActivationSubscription::class.java)
         if (gqlErrors.isNullOrEmpty()) {
             val data: GoldActivationSubscription = gqlResponse.getData<GoldActivationSubscription>(GoldActivationSubscription::class.java)
-                    ?: throw NullPointerException("returns null from backend")
+                    ?: throw RuntimeException("returns null from backend")
             return data.isSuccess()
         } else {
             throw MessageErrorException(gqlErrors.firstOrNull()?.message.orEmpty())
