@@ -11,22 +11,27 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
+import com.tokopedia.review.feature.createreputation.presentation.adapter.ReviewTemplatesAdapter
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
+import com.tokopedia.review.feature.createreputation.presentation.listener.ReviewTemplateListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
+class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListener {
 
     companion object {
-        fun createNewInstance(textAreaListener: TextAreaListener, text: String, incentiveHelper: String = "", isUserEligible: Boolean = false): CreateReviewTextAreaBottomSheet {
+        fun createNewInstance(textAreaListener: TextAreaListener, text: String, incentiveHelper: String = "", isUserEligible: Boolean = false, templates: List<String> = listOf()): CreateReviewTextAreaBottomSheet {
             return CreateReviewTextAreaBottomSheet().apply {
                 this.text = text
                 this.textAreaListener = textAreaListener
                 this.incentiveHelper = incentiveHelper
                 this.isUserEligible = isUserEligible
+                this.templates = templates
             }
         }
     }
@@ -35,18 +40,26 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
     private var textAreaListener: TextAreaListener? = null
     private var incentiveHelper = ""
     private var isUserEligible = false
+    private var templates: List<String> = listOf()
+
+    private var editText: EditText? = null
+    private var incentiveHelperText: Typography? = null
+    private var templatesRecyclerView: RecyclerView? = null
+    private val templatesAdapter: ReviewTemplatesAdapter by lazy {
+        ReviewTemplatesAdapter(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         clearContentPadding = true
         context?.let {
             val view = View.inflate(context, R.layout.widget_create_review_text_area_bottom_sheet, null)
-            val editText: EditText = view.findViewById(R.id.createReviewBottomSheetEditText)
-            val incentiveHelperText: Typography = view.findViewById(R.id.incentiveHelperTypography)
-            editText.apply {
+            editText = view.findViewById(R.id.createReviewBottomSheetEditText)
+            incentiveHelperText = view.findViewById(R.id.incentiveHelperTypography)
+            editText?.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     activity?.run {
                         if (hasFocus) {
-                            editText.setSelection(editText.text.length)
+                            editText?.setSelection(editText?.text?.length ?: 0)
                             showKeyboard()
                         } else {
                             hideKeyboard()
@@ -64,49 +77,55 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
                     }
 
                     override fun afterTextChanged(s: Editable?) {
-                        if(!isUserEligible) {
+                        if (!isUserEligible) {
                             return
                         }
                         val textLength = s?.length ?: 0
-                        with(incentiveHelperText) {
-                            incentiveHelper = when {
-                                textLength >= CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
-                                    context?.getString(R.string.review_create_text_area_eligible) ?: ""
-                                }
-                                textLength < CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD && textLength != 0 -> {
-                                    context?.getString(R.string.review_create_text_area_partial) ?: ""
-                                }
-                                else -> {
-                                    context?.getString(R.string.review_create_text_area_empty) ?: ""
-                                }
+                        incentiveHelper = when {
+                            textLength >= CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
+                                context?.getString(R.string.review_create_text_area_eligible)
+                                        ?: ""
                             }
-                            text = incentiveHelper
-                            show()
+                            textLength < CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD && textLength != 0 -> {
+                                context?.getString(R.string.review_create_text_area_partial)
+                                        ?: ""
+                            }
+                            else -> {
+                                context?.getString(R.string.review_create_text_area_empty) ?: ""
+                            }
                         }
+                        incentiveHelperText?.text = incentiveHelper
+                        show()
                     }
 
                 })
             }
-            incentiveHelperText.text = this.incentiveHelper
+            incentiveHelperText?.text = this.incentiveHelper
             setChild(view)
             showCloseIcon = false
             isFullpage = true
             setAction(ContextCompat.getDrawable(it, R.drawable.ic_collapse)) {
-                textAreaListener?.onCollapseButtonClicked(editText.text.toString())
+                textAreaListener?.onCollapseButtonClicked(editText?.text.toString())
             }
             setOnDismissListener {
-                editText.onFocusChangeListener = null
-                textAreaListener?.onDismissBottomSheet(editText.text.toString())
+                editText?.onFocusChangeListener = null
+                textAreaListener?.onDismissBottomSheet(editText?.text.toString())
             }
             isKeyboardOverlap = false
             setShowListener {
                 Handler().postDelayed({
-                    editText.requestFocus()
+                    editText?.requestFocus()
                 }, 100)
-                editText.setText(this@CreateReviewTextAreaBottomSheet.text)
+                editText?.setText(this@CreateReviewTextAreaBottomSheet.text)
             }
         }
+        setTemplates()
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onTemplateSelected(template: String) {
+        editText?.append(context?.getString(R.string.review_form_templates_formatting, template)
+                ?: template)
     }
 
     private fun View.showKeyboard() {
@@ -117,5 +136,19 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
     private fun Context.hideKeyboard() {
         val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+    }
+
+    private fun setTemplates() {
+        if(templates.isEmpty()) return
+        templatesRecyclerView?.apply {
+            adapter = templatesAdapter
+            layoutManager = StaggeredGridLayoutManager(2, RecyclerView.HORIZONTAL)
+            showTemplates()
+        }
+        templatesAdapter.setData(templates)
+    }
+
+    private fun showTemplates() {
+        templatesRecyclerView?.show()
     }
 }

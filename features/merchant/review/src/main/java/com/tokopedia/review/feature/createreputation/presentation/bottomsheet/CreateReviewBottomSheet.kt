@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -404,6 +405,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             if (ovoIncentiveBottomSheet == null) {
                 ovoIncentiveBottomSheet = context?.let { context -> IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(context, ovoDomain, this, "") }
             }
+            hideTemplates()
             incentivesTicker?.apply {
                 setHtmlDescription(it.subtitle)
                 setOnClickListener { _ ->
@@ -670,6 +672,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun setOnTouchOutsideListener() {
         setShowListener {
+            bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
             isCancelable = false
             dialog?.setCanceledOnTouchOutside(false)
             this.dialog?.window?.decorView?.findViewById<View>(com.google.android.material.R.id.touch_outside)?.setOnClickListener {

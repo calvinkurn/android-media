@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
@@ -199,13 +198,9 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         createReviewBottomSheet = CreateReviewBottomSheet.createInstance(rating, productId.toLongOrZero(), reputationId.toLongOrZero(), utmSource)
         createReviewBottomSheet?.apply {
             isDragable = true
-            isHideable = true
             showKnob = true
             showCloseIcon = false
             show(supportFragmentManager, "BottomSheet Tag")
-            setShowListener {
-                bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
-            }
         }
     }
 
