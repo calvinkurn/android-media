@@ -365,10 +365,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                             ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
                             eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
                             iconUnify = IconUnify.PERFORMANCE,
-                            clickSendTracker = {
-                                settingPerformanceTracker.clickItemEntryPointPerformance(shopInfoPeriodUiModel.isNewSeller)
-                            }
                     )
+                    performanceData.clickSendTracker = {
+                        settingPerformanceTracker.clickItemEntryPointPerformance(shopInfoPeriodUiModel.isNewSeller)
+                    }
                     if (promotionIndex != -1) {
                         adapter.addElement(promotionIndex + 1, performanceData)
                         adapter.notifyItemRangeInserted(promotionIndex, 1)

@@ -9,14 +9,12 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
-import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
@@ -31,13 +29,13 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class OtherMenuViewModel @Inject constructor(
-    private val dispatcher: CoroutineDispatchers,
-    private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
-    private val getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase,
-    private val getShopOperationalUseCase: GetShopOperationalUseCase,
-    private val getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase,
-    private val userSession: UserSessionInterface,
-    private val remoteConfig: FirebaseRemoteConfigImpl
+        private val dispatcher: CoroutineDispatchers,
+        private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
+        private val getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase,
+        private val getShopOperationalUseCase: GetShopOperationalUseCase,
+        private val getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase,
+        private val userSession: UserSessionInterface,
+        private val remoteConfig: FirebaseRemoteConfigImpl
 ): BaseViewModel(dispatcher.main) {
 
     companion object {

@@ -16,8 +16,7 @@ open class MenuItemUiModel(
     open val trackingAlias: String? = null,
     open val iconUnify: Int? = null,
     open var notificationCount: Int = 0,
-    open val clickAction: () -> Unit = {},
-    open val clickSendTracker: () -> Unit = {}
+    open val clickAction: () -> Unit = {}
 ) : SettingUiModel, SettingShopInfoImpressionTrackable, SettingShopInfoClickTrackable {
 
     override val onClickApplink: String?
@@ -72,6 +71,8 @@ open class MenuItemUiModel(
 
     val isNoIcon: Boolean
         get() = drawableReference == null && iconUnify == null
+
+    var clickSendTracker: () -> Unit = {}
 
     override fun type(typeFactory: OtherMenuTypeFactory): Int =
             typeFactory.type(this)
