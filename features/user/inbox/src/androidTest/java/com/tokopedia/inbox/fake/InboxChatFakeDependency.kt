@@ -1,8 +1,11 @@
 package com.tokopedia.inbox.fake
 
+import com.tokopedia.inbox.common.AndroidFileUtil
 import com.tokopedia.inbox.fake.common.FakeUserSession
 import com.tokopedia.inbox.fake.domain.chat.websocket.FakeTopchatWebSocket
 import com.tokopedia.inbox.fake.domain.usecase.chat.FakeGetChatListMessageUseCase
+import com.tokopedia.inbox.test.R
+import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import javax.inject.Inject
 
 class InboxChatFakeDependency @Inject constructor(
@@ -10,4 +13,16 @@ class InboxChatFakeDependency @Inject constructor(
         val ws: FakeTopchatWebSocket,
         val getChatList: FakeGetChatListMessageUseCase
 ) {
+
+    var getChatList_EmptyBuyerResponse = ChatListPojo()
+
+    fun init() {
+        initResponse()
+    }
+
+    private fun initResponse() {
+        getChatList_EmptyBuyerResponse = AndroidFileUtil.parseRaw(
+                R.raw.chat_list_buyer_empty, ChatListPojo::class.java
+        )
+    }
 }

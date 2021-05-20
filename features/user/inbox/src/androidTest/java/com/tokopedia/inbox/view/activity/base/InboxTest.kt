@@ -66,7 +66,7 @@ abstract class InboxTest {
                 .build()
     }
 
-    protected fun setupInboxActivity(
+    protected fun startInboxActivity(
             isSellerApp: Boolean = false,
             intentModifier: (Intent) -> Unit = {}
     ) {

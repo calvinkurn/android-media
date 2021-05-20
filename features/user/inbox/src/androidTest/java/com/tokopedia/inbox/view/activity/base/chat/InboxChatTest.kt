@@ -17,6 +17,7 @@ open class InboxChatTest : InboxTest() {
         super.before()
         setupChatListDaggerComponent()
         chatListComponent!!.inject(this)
+        inboxChatDep.init()
     }
 
     override fun onBuildUri(uriBuilder: Uri.Builder) {
