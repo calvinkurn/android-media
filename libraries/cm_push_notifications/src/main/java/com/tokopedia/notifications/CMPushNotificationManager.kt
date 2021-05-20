@@ -98,10 +98,8 @@ class CMPushNotificationManager : CoroutineScope {
          * push notification data that aren't rendered yet.
          * then, put all of push_data into local storage.
          * */
-        println("Amplification API before remote config")
         if (getAmplificationRemoteConfig()) {
             try {
-                println("Amplification API after remote config")
                 AmplificationDataSource.invoke(application)
             } catch (e: java.lang.Exception) {
                 val messageMap: MutableMap<String, String> = HashMap()
