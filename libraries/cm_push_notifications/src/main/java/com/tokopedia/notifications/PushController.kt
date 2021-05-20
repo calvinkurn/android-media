@@ -66,6 +66,9 @@ class PushController(val context: Context) : CoroutineScope {
                 val amplificationBaseNotificationModel = gson.fromJson(payloadJson, AmplificationBaseNotificationModel::class.java)
                 val model = PayloadConverter.convertToBaseModel(amplificationBaseNotificationModel)
                 if (isAmpNotificationValid(model.notificationId)) {
+                    if (model.notificationMode != NotificationMode.OFFLINE) {
+                        IrisAnalyticsEvents.sendPushEvent(context, IrisAnalyticsEvents.PUSH_RECEIVED, model)
+                    }
                     handleNotificationBundle(model, true)
                 }
             }, onError = {
