@@ -406,7 +406,13 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     override fun onClickProduct(product: CatalogProduct, position: Int) {
         //atc
         emoneyPdpViewModel.setSelectedProduct(product)
-        emoneyBuyWidget.setTotalPrice(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(product.attributes.pricePlain.toIntOrZero()))
+
+        if (product.attributes.price.isNotEmpty()) {
+            emoneyBuyWidget.setTotalPrice(product.attributes.price)
+        } else {
+            emoneyBuyWidget.setTotalPrice(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(product.attributes.pricePlain.toIntOrZero()))
+        }
+
         emoneyBuyWidgetLayout.show()
         emoneyPdpProductWidget.showPaddingBottom(true)
         emoneyBuyWidget.setVisibilityLayout(true)
