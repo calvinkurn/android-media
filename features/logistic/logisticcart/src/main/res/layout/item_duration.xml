@@ -188,6 +188,17 @@
             app:typographyWeight="reguler"
             tools:text="@string/tv_error" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lbl_dynamic_pricing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_error"
+            android:layout_marginTop="@dimen/dp_4"
+            android:text="@string/txt_label_dynamic_pricing"
+            android:visibility="gone"
+            app:labelType="general_light_green" />
+
+
         <ImageView
             android:id="@+id/img_check"
             android:layout_width="wrap_content"

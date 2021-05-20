@@ -59,6 +59,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private ConstraintLayout layoutMvc;
     private Label labelCodAvailabelEta;
     private FrameLayout flDisableContainer;
+    private Label labelDynamicPricing;
 
     private int cartPosition;
 
@@ -82,6 +83,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         tvMvcError = itemView.findViewById(R.id.tv_mvc_error);
         layoutMvc = itemView.findViewById(R.id.layout_mvc);
         flDisableContainer = itemView.findViewById(R.id.fl_container);
+        labelDynamicPricing = itemView.findViewById(R.id.lbl_dynamic_pricing);
     }
 
     public void bindData(ShippingDurationUiModel shippingDurationUiModel,
@@ -176,6 +178,14 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             labelCodAvailabelEta.setVisibility(View.GONE);
             labelCodAvailable.setText(shippingDurationUiModel.getCodText());
             labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
+        }
+
+        /*Dynamic Pricing*/
+        if (shippingDurationUiModel.getDynamicPricingModel().getTextLabel().isEmpty()) {
+            labelDynamicPricing.setVisibility(View.GONE);
+        } else {
+            labelDynamicPricing.setVisibility(View.VISIBLE);
+            labelDynamicPricing.setText(shippingDurationUiModel.getDynamicPricingModel().getTextLabel());
         }
 
         imgCheck.setVisibility(shippingDurationUiModel.isSelected() ? View.VISIBLE : View.GONE);

@@ -30,6 +30,11 @@ query RatesV3($param: OngkirRatesV3Input!) {
           text_eta_summarize
           error_code
         }
+        features {
+          dynamic_price {
+            text_label
+          }
+        }
         order_priority {
           is_now
           inactive_message
